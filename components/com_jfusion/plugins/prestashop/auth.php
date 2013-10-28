@@ -54,6 +54,6 @@ class JFusionAuth_prestashop extends JFusionAuth
 	    $helper = JFusionFactory::getHelper($this->getJname());
 	    $helper->loadFramework();
 
-	    return ToolsCore::encrypt($userinfo->password_clear);
+	    return Tools::encrypt($userinfo->password_clear);
     }
 }

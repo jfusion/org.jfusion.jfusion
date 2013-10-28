@@ -117,7 +117,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $helper = JFusionFactory::getHelper($this->getJname());
 	    $helper->loadFramework();
 
-        $cookie = new CookieCore('ps', '', '');
+        $cookie = new Cookie('ps', '', '');
 		$status['error'][] = 'Random debugging text';
 	    if(!$cookie->mylogout()) {
             $status['error'][] = 'Error Could not delete session, doe not exist';
@@ -146,20 +146,20 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $helper = JFusionFactory::getHelper($this->getJname());
 	    $helper->loadFramework();
 
-		$cookie = new CookieCore('ps', '', '');
+		$cookie = new Cookie('ps', '', '');
 		$passwd = $userinfo->password_clear;
 	    $email = $userinfo->email;
 		$passwd = trim($passwd);
 		$email = trim($email);
 		if (empty($email)) {
 		    $status['error'][] = 'invalid e-mail address';
-		} elseif (!ValidateCore::isEmail($email)) {
+		} elseif (!Validate::isEmail($email)) {
             $status['error'][] = 'invalid e-mail address';
 		} elseif (empty($passwd)) {
             $status['error'][] = 'password is required';
-		} elseif (ToolsCore::strlen($passwd) > 32) {
+		} elseif (Tools::strlen($passwd) > 32) {
             $status['error'][] = 'password is too long';
-		} elseif (!ValidateCore::isPasswd($passwd)) {
+		} elseif (!Validate::isPasswd($passwd)) {
             $status['error'][] = 'invalid password';
 		} else {
 		    /* Handle brute force attacks */
@@ -210,7 +210,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $helper = JFusionFactory::getHelper($this->getJname());
 	    $helper->loadFramework();
 
-	    $existinguser->password = ToolsCore::encrypt($userinfo->password_clear);
+	    $existinguser->password = Tools::encrypt($userinfo->password_clear);
 
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__customer SET passwd =' . $db->Quote($existinguser->password) . ' WHERE id_customer =' . (int)$existinguser->userid;
@@ -256,7 +256,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		// now have first name as $uf_name, and last name as $end_name
 
 	    if (isset($userinfo->password_clear)) {
-			$password = ToolsCore::encrypt($userinfo->password_clear);
+			$password = Tools::encrypt($userinfo->password_clear);
 		} else {
 			$password = $userinfo->password;
 		}
@@ -339,90 +339,90 @@ class JFusionUser_prestashop extends JFusionUser {
 	    no other unique variables are used so this check only includes these */
         // Do not validate address line 1 since a placeholder is been currently used
 
-        /*if (!ValidateCore::isAddress($user_variables['address1'])){
-              $errors[] = ToolsCore::displayError('address wrong');
+        /*if (!Validate::isAddress($user_variables['address1'])){
+              $errors[] = Tools::displayError('address wrong');
               unset($ps_address);
           }*/
 
 
 
         // Do not validate postcode since a placeholder is been currently used
-        /*if (!ValidateCore::isPostCode($user_variables['postcode'])){
-              $errors[] = ToolsCore::displayError('postcode wrong');
+        /*if (!Validate::isPostCode($user_variables['postcode'])){
+              $errors[] = Tools::displayError('postcode wrong');
               unset($ps_address);
           }*/
 
 
 
         // Do not validate village/town/city since a placeholder is been currently used
-        /*if (!ValidateCore::isCityName($user_variables['city'])){
-              $errors[] = ToolsCore::displayError('invalid village/town/city');
+        /*if (!Validate::isCityName($user_variables['city'])){
+              $errors[] = Tools::displayError('invalid village/town/city');
               unset($ps_address);
           }*/
 
 	    // Validate gender
 	    if (!preg_match('/^[0|1|2|9]$/ui', $user_variables['id_gender'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('gender not valid');
-	    } elseif (!ValidateCore::isName($user_variables['firstname'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('first name wrong');
-	    } elseif (!ValidateCore::isName($user_variables['lastname'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('second name wrong');
-	    } elseif (!ValidateCore::isName($user_variables['customer_firstname'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('customer first name wrong');
-	    } elseif (!ValidateCore::isName($user_variables['customer_lastname'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('customer second name wrong');
-	    } elseif (!ValidateCore::isEmail($user_variables['email'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('e-mail not valid');
-	    } elseif (!ValidateCore::isPasswd($user_variables['passwd'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('invalid password');
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('gender not valid');
+	    } elseif (!Validate::isName($user_variables['firstname'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('first name wrong');
+	    } elseif (!Validate::isName($user_variables['lastname'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('second name wrong');
+	    } elseif (!Validate::isName($user_variables['customer_firstname'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('customer first name wrong');
+	    } elseif (!Validate::isName($user_variables['customer_lastname'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('customer second name wrong');
+	    } elseif (!Validate::isEmail($user_variables['email'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('e-mail not valid');
+	    } elseif (!Validate::isPasswd($user_variables['passwd'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid password');
 	    } elseif (!@checkdate($user_variables['months'], $user_variables['days'], $user_variables['years']) AND !( $user_variables['months']== '' AND $user_variables['days'] == '' AND $user_variables['years'] == '')){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('invalid birthday');
-	    } elseif (!ValidateCore::isBool($user_variables['newsletter'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('newsletter invalid choice');
-	    } elseif (!ValidateCore::isBool($user_variables['optin'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('optin invalid choice');
-	    } elseif (!ValidateCore::isGenericName($user_variables['company'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('company name wrong');
-	    } elseif (!ValidateCore::isAddress($user_variables['address2'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('address 2nd wrong');
-        } elseif (!ValidateCore::isPhoneNumber($user_variables['phone'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('invalid phone');
-        } elseif (!ValidateCore::isPhoneNumber($user_variables['phone_mobile'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('invalid mobile');
-        } elseif (!ValidateCore::isInt($user_variables['id_country'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('invalid country');
-        } elseif (CountryCore::getIsoById($user_variables['id_country']) === ''){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('invalid country');
-        } elseif (!ValidateCore::isInt($user_variables['id_state'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('invalid state');
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid birthday');
+	    } elseif (!Validate::isBool($user_variables['newsletter'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('newsletter invalid choice');
+	    } elseif (!Validate::isBool($user_variables['optin'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('optin invalid choice');
+	    } elseif (!Validate::isGenericName($user_variables['company'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('company name wrong');
+	    } elseif (!Validate::isAddress($user_variables['address2'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('address 2nd wrong');
+        } elseif (!Validate::isPhoneNumber($user_variables['phone'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid phone');
+        } elseif (!Validate::isPhoneNumber($user_variables['phone_mobile'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid mobile');
+        } elseif (!Validate::isInt($user_variables['id_country'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid country');
+        } elseif (Validate::getIsoById($user_variables['id_country']) === ''){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid country');
+        } elseif (!Validate::isInt($user_variables['id_state'])){
+            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid state');
         } else {
-            if (!StateCore::getNameById($user_variables['id_state'])){
+            if (!State::getNameById($user_variables['id_state'])){
                 if($user_variables['id_state'] === '0'){
                     /* state valid to apply for none state */
                 } else {
-                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('invalid state');
+                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid state');
                     unset($ps_customer);
                 }
             }
 
             if(isset($ps_customer)) {
                 // Validate DNI
-                $validateDni = ValidateCore::isDniLite($user_variables['dni']);
+                $validateDni = Validate::isDniLite($user_variables['dni']);
                 if ($user_variables['dni'] != NULL && $validateDni != 1) {
                     $error = array(
-                        0 => ToolsCore::displayError('DNI isn\'t valid'),
-                        -1 => ToolsCore::displayError('this DNI has been already used'),
-                        -2 => ToolsCore::displayError('NIF isn\'t valid'),
-                        -3 => ToolsCore::displayError('CIF isn\'t valid'),
-                        -4 => ToolsCore::displayError('NIE isn\'t valid')
+                        0 => Tools::displayError('DNI isn\'t valid'),
+                        -1 => Tools::displayError('this DNI has been already used'),
+                        -2 => Tools::displayError('NIF isn\'t valid'),
+                        -3 => Tools::displayError('CIF isn\'t valid'),
+                        -4 => Tools::displayError('NIE isn\'t valid')
                     );
                     $status['error'][] = JText::_('USER_CREATION_ERROR').' '.$error[$validateDni];
-                } elseif (!ValidateCore::isMessage($user_variables['alias'])) {
-                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('invalid alias');
-                } elseif (!ValidateCore::isMessage($user_variables['other'])) {
-                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('invalid extra information');
-                } elseif (CustomerCore::customerExists($user_variables['email'])) {
-                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.ToolsCore::displayError('someone has already registered with this e-mail address');
+                } elseif (!Validate::isMessage($user_variables['alias'])) {
+                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid alias');
+                } elseif (!Validate::isMessage($user_variables['other'])) {
+                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid extra information');
+                } elseif (Customer::customerExists($user_variables['email'])) {
+                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('someone has already registered with this e-mail address');
                 } else {
                     /* enter customer account into prestashop database */ // if all information is validated
                     if ($db->insertObject('#__customer', $ps_customer, 'id_customer')) {

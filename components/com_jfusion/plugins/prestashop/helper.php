@@ -48,17 +48,29 @@ class JFusionHelper_prestashop
 
 		require_once($source_path . DS . 'config' . DS . 'settings.inc.php');
 
-		require_once($source_path . DS . 'classes' . DS . 'Context.php');
-		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . 'Context.php');
-		require_once($source_path . DS . 'classes' . DS . 'Cookie.php');
-		require_once($source_path . DS . 'classes' . DS . 'Blowfish.php');
-		require_once($source_path . DS . 'classes' . DS . 'Tools.php');
-		require_once($source_path . DS . 'classes' . DS . 'ObjectModel.php');
-		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'ObjectModel.php');
+		$this->loadClass('Context');
+
+		$this->loadClass('Blowfish');
+		$this->loadClass('Cookie');
+		$this->loadClass('Tools');
+
+		$this->loadClass('ObjectModel');
+//		require_once($source_path . DS . 'classes' . DS . 'ObjectModel.php');
+//		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'ObjectModel.php');
+
 		require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'Db.php');
-		require_once($source_path . DS . 'classes' . DS . 'Validate.php');
-		require_once($source_path . DS . 'classes' . DS . 'Country.php');
-		require_once($source_path . DS . 'classes' . DS . 'State.php');
-		require_once($source_path . DS . 'classes' . DS . 'Customer.php');
+
+		$this->loadClass('Validate');
+		$this->loadClass('Country');
+		$this->loadClass('State');
+		$this->loadClass('Customer');
+	}
+
+	function loadClass($class) {
+		$params = JFusionFactory::getParams($this->getJname());
+		$source_path = $params->get('source_path');
+
+		require_once($source_path . DS . 'classes' . DS . $class.'.php');
+		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . $class.'.php');
 	}
 }
