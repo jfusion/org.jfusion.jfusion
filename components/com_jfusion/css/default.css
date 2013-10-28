@@ -262,7 +262,6 @@ body #jfusionframeless {
 #jfusionframeless font {
 	color: inherit !important;
 	font: inherit !important;
-	color: inherit !important; /* editor's note: necessary? */
 }
 
 #jfusionframeless marquee {

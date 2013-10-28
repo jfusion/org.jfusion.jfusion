@@ -507,7 +507,7 @@ class BBCodeLibrary {
                 $result.= "'$font'";
             }
         }
-        return "<span style=\"font-family:$result\">$content</span>";
+        return "<span style=\"font-family: $result\">$content</span>";
     }
 
     /**

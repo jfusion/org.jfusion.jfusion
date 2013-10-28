@@ -45,7 +45,7 @@ class JFusionAuth_magento extends JFusionAuth
 	 */
 
 	function generateEncryptedPassword($userinfo) {
-        $magentoEncryption = $params->get('magento_encryption','MD5');
+        $magentoEncryption = $this->params->get('magento_encryption', 'MD5');
         if ($magentoEncryption == "MD5") {
 			if ($userinfo->password_salt) {
 				$hash = md5($userinfo->password_salt . $userinfo->password_clear);
