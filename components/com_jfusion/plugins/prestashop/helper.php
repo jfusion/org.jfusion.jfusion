@@ -38,39 +38,41 @@ class JFusionHelper_prestashop extends JFusionPlugin
         return 'prestashop';
     }
 
-    /**
-	 * Load Framework
-     */
-    function loadFramework()
-    {
-	    $source_path = $this->params->get('source_path');
+	function loadFramework()
+	{
+		$params = JFusionFactory::getParams($this->getJname());
+		$source_path = $params->get('source_path');
 
-	    require_once($source_path . DS . 'config' . DS . 'settings.inc.php');
+		require_once($source_path . DS . 'config' . DS . 'settings.inc.php');
 
-	    $this->loadClass('Context');
+		$this->loadClass('Context');
 
-	    $this->loadClass('Blowfish');
-	    $this->loadClass('Cookie');
-	    $this->loadClass('Tools');
+		$this->loadClass('Blowfish');
+		$this->loadClass('Cookie');
+		$this->loadClass('Tools');
+		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Tools.php');
 
-	    $this->loadClass('ObjectModel');
-//		require_once($source_path . DS . 'classes' . DS . 'ObjectModel.php');
-//		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'ObjectModel.php');
+		$this->loadClass('ObjectModel');
+		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'ObjectModel.php');
 
-	    require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'Db.php');
+		require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'Db.php');
+		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Db.php');
 
-	    $this->loadClass('Validate');
-	    $this->loadClass('Country');
-	    $this->loadClass('State');
-	    $this->loadClass('Customer');
+		$this->loadClass('Validate');
+		$this->loadClass('Country');
+		$this->loadClass('State');
+		$this->loadClass('Customer');
 
-	    $this->loadClass('Configuration');
-    }
+		$this->loadClass('Configuration');
+	}
 
 	function loadClass($class) {
-		$source_path = $this->params->get('source_path');
+		$params = JFusionFactory::getParams($this->getJname());
+		$source_path = $params->get('source_path');
 
 		require_once($source_path . DS . 'classes' . DS . $class.'.php');
-		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . $class.'.php');
+		if (file_exists(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . $class.'.php')) {
+			require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . $class.'.php');
+		}
 	}
 }
