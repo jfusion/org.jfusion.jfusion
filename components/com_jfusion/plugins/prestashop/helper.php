@@ -63,6 +63,8 @@ class JFusionHelper_prestashop extends JFusionPlugin
 	    $this->loadClass('Country');
 	    $this->loadClass('State');
 	    $this->loadClass('Customer');
+
+	    $this->loadClass('Configuration');
     }
 
 	function loadClass($class) {
