@@ -224,8 +224,10 @@ class JFusionUser_prestashop extends JFusionUser {
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    try {
-	        jimport('joomla.user.helper');
-	        $existinguser->password = md5($userinfo->password_clear);
+	        $this->helper->loadFramework();
+
+	        $existinguser->password = Tools::encrypt($userinfo->password_clear);
+
 	        $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
@@ -271,6 +273,12 @@ class JFusionUser_prestashop extends JFusionUser {
 		    }
 		    // now have first name as $uf_name, and last name as $end_name
 
+		    if (isset($userinfo->password_clear)) {
+			    $password = Tools::encrypt($userinfo->password_clear);
+		    } else {
+			    $password = $userinfo->password;
+		    }
+
 		    /* user variables submitted through form (emulated) */
 		    $user_variables = array(
 			    'id_gender' => "1", // value of either 1 for male, 2 for female
@@ -279,7 +287,7 @@ class JFusionUser_prestashop extends JFusionUser {
 			    'customer_firstname' => $uf_name, // alphanumeric values between 6 and 32 characters long
 			    'customer_lastname' => $end_name, // alphanumeric values between 6 and 32 characters long
 			    'email' => $userinfo->email, // alphanumeric values as well as @ and . symbols between 6 and 128 characters long
-			    'passwd' => $userinfo->password_clear, // alphanumeric values between 6 and 32 characters long
+			    'passwd' => $password, // alphanumeric values between 6 and 32 characters long
 			    'days' => "01", // numeric character between 1 and 31
 			    'months' => "01", // numeric character between 1 and 12
 			    'years' => "2000", // numeric character between 1900 and latest year

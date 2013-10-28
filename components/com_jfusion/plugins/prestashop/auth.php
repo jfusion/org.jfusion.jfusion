@@ -47,10 +47,7 @@ class JFusionAuth_prestashop extends JFusionAuth
      * @return string
      */
     function generateEncryptedPassword($userinfo) {
-	/*
-        $the_crypt = md5($this->params->get('cookie_key') . $userinfo->password_clear);
-        return $the_crypt;
-	*/
-        return null;
+	    $this->helper->loadFramework();
+	    return Tools::encrypt($userinfo->password_clear);
     }
 }
