@@ -33,6 +33,11 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 class JFusionUser_prestashop extends JFusionUser {
+	/**
+	 * @var $helper JFusionHelper_prestashop
+	 */
+	var $helper;
+
     /**
      * @param object $userinfo
      *
@@ -131,14 +136,8 @@ class JFusionUser_prestashop extends JFusionUser {
     function destroySession($userinfo, $option) {
         $status = array('error' => array(),'debug' => array());
 	    // use prestashop cookie class and functions to delete cookie
-	    $source_path = $this->params->get('source_path');
-		require_once($source_path . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php');
-	    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Cookie.php');
-		require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Blowfish.php');
-		require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
-		require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
-		require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
-		require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'SubDomain.php');
+	    $this->helper->loadFramework();
+
         $cookie = new CookieCore('ps', '', '');
 	    $cookie->logout();
 	    $status['debug'][] = 'Deleted session and session data';
@@ -158,15 +157,8 @@ class JFusionUser_prestashop extends JFusionUser {
 		    // this uses a code extract from authentication.php that deals with logging in completely
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $source_path = $this->params->get('source_path');
-		    require_once($source_path . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Cookie.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Blowfish.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'SubDomain.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Validate.php');
+		    $this->helper->loadFramework();
+
 		    $cookie = new CookieCore('ps', '', '');
 		    $passwd = $userinfo->password_clear;
 		    $email = $userinfo->email;
@@ -262,15 +254,9 @@ class JFusionUser_prestashop extends JFusionUser {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $source_path = $this->params->get('source_path');
+		    $this->helper->loadFramework();
 
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Validate.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Country.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'State.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
-		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Customer.php');
+		    $source_path = $this->params->get('source_path');
 
 		    /* split full name into first and with/or without middlename, and lastname */
 		    $users_name = $userinfo->name;
