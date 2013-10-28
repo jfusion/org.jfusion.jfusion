@@ -51,6 +51,7 @@ class JFusionHelper_prestashop
 		$this->loadClass('Context');
 
 		$this->loadClass('Blowfish');
+		$this->loadClass('Rijndael');
 		$this->loadClass('Cookie');
 		$this->loadClass('Tools');
 		//require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Tools.php');
