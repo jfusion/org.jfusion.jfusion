@@ -68,6 +68,7 @@ class JFusionHelper_prestashop
 		require_once($source_path . DS . 'classes' . DS . 'shop' . DS . 'Shop.php');
 		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . 'shop' . DS . 'Shop.php');
 
+		$this->loadClass('Language');
 		$this->loadClass('Validate');
 		$this->loadClass('Country');
 		$this->loadClass('State');
