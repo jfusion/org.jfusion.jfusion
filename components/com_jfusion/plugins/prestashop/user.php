@@ -139,7 +139,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $this->helper->loadFramework();
 
         $cookie = new CookieCore('ps', '', '');
-	    $cookie->logout();
+	    $cookie->mylogout();
 	    $status['debug'][] = 'Deleted session and session data';
 		return $status;
     }
