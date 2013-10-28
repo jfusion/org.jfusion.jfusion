@@ -25,6 +25,7 @@
 		<filename>jfusion.xml</filename>
 		<filename>public.php</filename>
 		<filename>user.php</filename>
+        <folder>classes</folder>
 	</files>
 	
 	<params addpath="/administrator/components/com_jfusion/elements">
