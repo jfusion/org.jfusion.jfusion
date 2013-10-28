@@ -64,6 +64,8 @@ class JFusionHelper_prestashop
 		$this->loadClass('Country');
 		$this->loadClass('State');
 		$this->loadClass('Customer');
+
+		$this->loadClass('Configuration');
 	}
 
 	function loadClass($class) {
