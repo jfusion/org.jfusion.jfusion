@@ -49,7 +49,7 @@ class JFusionHelper_prestashop
 		require_once($source_path . DS . 'config' . DS . 'settings.inc.php');
 
 		require_once($source_path . DS . 'classes' . DS . 'Context.php');
-		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'Context.php');
+		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . 'Context.php');
 		require_once($source_path . DS . 'classes' . DS . 'Cookie.php');
 		require_once($source_path . DS . 'classes' . DS . 'Blowfish.php');
 		require_once($source_path . DS . 'classes' . DS . 'Tools.php');
