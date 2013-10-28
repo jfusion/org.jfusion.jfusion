@@ -61,6 +61,7 @@ class JFusionHelper_prestashop
 		require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'Db.php');
 		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Db.php');
 
+		require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'DbPDO.php');
 		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . 'db' . DS . 'DbPDO.php');
 
 		$this->loadClass('Validate');
