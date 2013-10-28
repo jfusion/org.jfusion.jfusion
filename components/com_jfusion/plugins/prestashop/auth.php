@@ -48,6 +48,6 @@ class JFusionAuth_prestashop extends JFusionAuth
      */
     function generateEncryptedPassword($userinfo) {
 	    $this->helper->loadFramework();
-	    return Tools::encrypt($userinfo->password_clear);
+	    return ToolsCore::encrypt($userinfo->password_clear);
     }
 }
