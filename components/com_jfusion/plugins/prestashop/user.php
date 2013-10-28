@@ -109,13 +109,14 @@ class JFusionUser_prestashop extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
 	    // use prestashop cookie class and functions to delete cookie
 		$params = JFusionFactory::getParams($this->getJname());
-		require_once $params->get('source_path') . DS . 'config' . DS . 'settings.inc.php';
-	    require($params->get('source_path') . DS . 'classes' . DS . 'Cookie.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Blowfish.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Tools.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'ObjectModel.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'db' . DS . 'Db.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'SubDomain.php');
+
+	    /**
+	     * @ignore
+	     * @var $helper JFusionHelper_prestashop
+	     */
+	    $helper = JFusionFactory::getHelper($this->getJname());
+	    $helper->loadFramework();
+
         $cookie = new cookie('ps', '', '');
 		$status['error'][] = 'Random debugging text';
 	    if(!$cookie->mylogout()) {
@@ -138,14 +139,13 @@ class JFusionUser_prestashop extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         // this uses a code extract from authentication.php that deals with logging in completely
 		$db = JFusionFactory::getDatabase($this->getJname());
-		require_once $params->get('source_path') . DS . 'config' . DS . 'settings.inc.php';
-	    require($params->get('source_path') . DS . 'classes' . DS . 'Cookie.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Blowfish.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Tools.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'ObjectModel.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'db' . DS . 'Db.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'SubDomain.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Validate.php');
+	    /**
+	     * @ignore
+	     * @var $helper JFusionHelper_prestashop
+	     */
+	    $helper = JFusionFactory::getHelper($this->getJname());
+	    $helper->loadFramework();
+
 		$cookie = new cookie('ps', '', '');
 		$passwd = $userinfo->password_clear;
 	    $email = $userinfo->email;
@@ -203,11 +203,17 @@ class JFusionUser_prestashop extends JFusionUser {
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-        jimport('joomla.user.helper');
-        $existinguser->password_salt = JUserHelper::genRandomPassword(8);
-        $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
+	    /**
+	     * @ignore
+	     * @var $helper JFusionHelper_prestashop
+	     */
+	    $helper = JFusionFactory::getHelper($this->getJname());
+	    $helper->loadFramework();
+
+	    $existinguser->password = Tools::encrypt($userinfo->password_clear);
+
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__customer SET passwd =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE id_customer =' . (int)$existinguser->userid;
+        $query = 'UPDATE #__customer SET passwd =' . $db->Quote($existinguser->password) . ' WHERE id_customer =' . (int)$existinguser->userid;
         $db->setQuery($query);
         if (!$db->query()) {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
@@ -226,13 +232,13 @@ class JFusionUser_prestashop extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 	    $params = JFusionFactory::getParams($this->getJname());
         $errors = array();
-		require($params->get('source_path') . DS . "classes" . DS . "Validate.php");
-		require($params->get('source_path') . DS . "classes" . DS . "ObjectModel.php");
-		require($params->get('source_path') . DS . "classes" . DS . 'db' . DS . "Db.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Country.php");
-		require($params->get('source_path') . DS . "classes" . DS . "State.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Tools.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Customer.php");
+
+	    /**
+	     * @ignore
+	     * @var $helper JFusionHelper_prestashop
+	     */
+	    $helper = JFusionFactory::getHelper($this->getJname());
+	    $helper->loadFramework();
 		
 		/* split full name into first and with/or without middlename, and lastname */
 		$users_name = $userinfo->name;
@@ -248,7 +254,13 @@ class JFusionUser_prestashop extends JFusionUser {
 			$end_name = $ul_name[$size-1];
 		}
 		// now have first name as $uf_name, and last name as $end_name
-		
+
+	    if (isset($userinfo->password_clear)) {
+			$password = Tools::encrypt($userinfo->password_clear);
+		} else {
+			$password = $userinfo->password;
+		}
+
 		/* user variables submitted through form (emulated) */
 	    $user_variables = array(
 	    'id_gender' => "1", // value of either 1 for male, 2 for female
@@ -257,7 +269,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	    'customer_firstname' => $uf_name, // alphanumeric values between 6 and 32 characters long
 	    'customer_lastname' => $end_name, // alphanumeric values between 6 and 32 characters long
 	    'email' => $userinfo->email, // alphanumeric values as well as @ and . symbols between 6 and 128 characters long
-	    'passwd' => $userinfo->password_clear, // alphanumeric values between 6 and 32 characters long
+	    'passwd' => $password, // alphanumeric values between 6 and 32 characters long
 	    'days' => "01", // numeric character between 1 and 31
 	    'months' => "01", // numeric character between 1 and 12
 	    'years' => "2000", // numeric character between 1900 and latest year
