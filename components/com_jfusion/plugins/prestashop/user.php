@@ -117,7 +117,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $helper = JFusionFactory::getHelper($this->getJname());
 	    $helper->loadFramework();
 
-        $cookie = new cookie('ps', '', '');
+        $cookie = new CookieCore('ps', '', '');
 		$status['error'][] = 'Random debugging text';
 	    if(!$cookie->mylogout()) {
             $status['error'][] = 'Error Could not delete session, doe not exist';
@@ -146,7 +146,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $helper = JFusionFactory::getHelper($this->getJname());
 	    $helper->loadFramework();
 
-		$cookie = new cookie('ps', '', '');
+		$cookie = new CookieCore('ps', '', '');
 		$passwd = $userinfo->password_clear;
 	    $email = $userinfo->email;
 		$passwd = trim($passwd);
