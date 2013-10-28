@@ -10,7 +10,7 @@
     <version>2.0.0-000</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
-    <description>JFusion's Who's Online Module displays the number of Guests and Registered Users (ones logged in) that are currently accessing JFusion Plugin softwares.</description>
+    <description>JFusion's Who's Online Module displays the number of Guests and Registered Users (ones logged in) that are currently accessing JFusion Plugin software's.</description>
 
     <files>
         <filename module="mod_jfusion_whosonline">mod_jfusion_whosonline.php</filename>
