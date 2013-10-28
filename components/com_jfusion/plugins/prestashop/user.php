@@ -207,7 +207,7 @@ class JFusionUser_prestashop extends JFusionUser {
         $existinguser->password_salt = JUserHelper::genRandomPassword(8);
         $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__customer SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE id_customer =' . (int)$existinguser->userid;
+        $query = 'UPDATE #__customer SET passwd =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE id_customer =' . (int)$existinguser->userid;
         $db->setQuery($query);
         if (!$db->query()) {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
@@ -454,7 +454,7 @@ class JFusionUser_prestashop extends JFusionUser {
         if (!$db->query()) {
             $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
         } else {
-            $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+            $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
         }
     }
 
