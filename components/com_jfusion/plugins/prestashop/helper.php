@@ -43,7 +43,8 @@ class JFusionHelper_prestashop
 	 */
 	function loadFramework()
 	{
-		$source_path = $this->params->get('source_path');
+		$params = JFusionFactory::getParams($this->getJname());
+		$source_path = $params->get('source_path');
 
 		require_once($source_path . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php');
 		require_once($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Cookie.php');
