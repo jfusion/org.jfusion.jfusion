@@ -476,7 +476,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
 	    }
