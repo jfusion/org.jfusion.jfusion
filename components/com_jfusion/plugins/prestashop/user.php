@@ -239,7 +239,7 @@ class JFusionUser_prestashop extends JFusionUser {
 
 		    $query = $db->getQuery(true)
 			    ->update('#__customer')
-			    ->set('password = ' . $db->Quote($existinguser->password))
+			    ->set('passwd = ' . $db->Quote($existinguser->password))
 			    ->set('salt = ' . $db->Quote($existinguser->password_salt))
 			    ->where('id_customer = ' . $db->Quote((int)$existinguser->userid));
 
