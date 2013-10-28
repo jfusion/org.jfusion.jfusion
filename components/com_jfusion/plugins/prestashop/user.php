@@ -114,7 +114,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		require($params->get('source_path') . DS . 'classes' . DS . 'Blowfish.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'Tools.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'ObjectModel.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Db.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'db' . DS . 'Db.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'SubDomain.php');
         $cookie = new cookie('ps', '', '');
 		$status['error'][] = 'Random debugging text';
@@ -143,7 +143,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		require($params->get('source_path') . DS . 'classes' . DS . 'Blowfish.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'Tools.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'ObjectModel.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Db.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'db' . DS . 'Db.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'SubDomain.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'Validate.php');
 		$cookie = new cookie('ps', '', '');
@@ -228,7 +228,7 @@ class JFusionUser_prestashop extends JFusionUser {
         $errors = array();
 		require($params->get('source_path') . DS . "classes" . DS . "Validate.php");
 		require($params->get('source_path') . DS . "classes" . DS . "ObjectModel.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Db.php");
+		require($params->get('source_path') . DS . "classes" . DS . 'db' . DS . "Db.php");
 		require($params->get('source_path') . DS . "classes" . DS . "Country.php");
 		require($params->get('source_path') . DS . "classes" . DS . "State.php");
 		require($params->get('source_path') . DS . "classes" . DS . "Tools.php");
