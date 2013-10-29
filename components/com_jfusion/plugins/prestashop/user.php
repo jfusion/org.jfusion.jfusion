@@ -19,6 +19,10 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+/**
+ * load the jplugin model
+ */
+require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jplugin.php';
 
 /**
  * JFusion User Class for PrestaShop
@@ -46,13 +50,13 @@ class JFusionUser_prestashop extends JFusionUser {
         }
         // Get user info from database
 		$db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT id_customer as userid, email, passwd as password, firstname, lastname FROM #__customer WHERE email =' . $db->Quote($identifier) ;
+        $query = 'SELECT id_customer as userid, email, email as username, passwd as password, firstname, lastname FROM #__customer WHERE email =' . $db->Quote($identifier) ;
         $db->setQuery($query);
         $result = $db->loadObject();
         $result->block = 0;
         $result->activation = '';
         if ($result) {
-            $query = 'SELECT id_customer as userid, email, passwd as password, firstname, lastname FROM #__customer_group WHERE id_customer =' . $db->Quote($result->userid);
+            $query = 'SELECT id_group FROM #__customer_group WHERE id_customer =' . $db->Quote($result->userid);
             $db->setQuery($query);
             $groups = $db->loadObjectList();
 
@@ -101,11 +105,17 @@ class JFusionUser_prestashop extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param string $option
+     * @param string $options
      *
      * @return array
      */
-    function destroySession($userinfo, $option) {
+    function destroySession($userinfo, $options) {
+	    $status = array('error' => array(),'debug' => array());
+	    $params = JFusionFactory::getParams($this->getJname());
+
+	    $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(), $params->get('logout_type'));
+
+	    return $status;
         $status = array('error' => array(),'debug' => array());
 	    // use prestashop cookie class and functions to delete cookie
 		$params = JFusionFactory::getParams($this->getJname());
@@ -117,13 +127,10 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $helper = JFusionFactory::getHelper($this->getJname());
 	    $helper->loadFramework();
 
-        $cookie = new Cookie('ps', '', '');
-		$status['error'][] = 'Random debugging text';
-	    if(!$cookie->mylogout()) {
-            $status['error'][] = 'Error Could not delete session, doe not exist';
-		} else {
-            $status['debug'][] = 'Deleted session and session data';
-		}
+	    $customer = new Customer();
+	    $customer->getByEmail(trim($userinfo->email));
+	    $customer->logout();
+
 		return $status;
     }
 
@@ -135,6 +142,13 @@ class JFusionUser_prestashop extends JFusionUser {
      * @return array
      */
     function createSession($userinfo, $options, $framework = true) {
+	    if (!empty($userinfo->block) || !empty($userinfo->activation)) {
+		    $status['error'][] = JText::_('FUSION_BLOCKED_USER');
+	    } else {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $params->get('brute_force'));
+	    }
+	    return $status;
 	    $params = JFusionFactory::getParams($this->getJname());
         $status = array('error' => array(),'debug' => array());
         // this uses a code extract from authentication.php that deals with logging in completely
@@ -146,43 +160,40 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $helper = JFusionFactory::getHelper($this->getJname());
 	    $helper->loadFramework();
 
-		$cookie = new Cookie('ps', '', '');
-		$passwd = $userinfo->password_clear;
-	    $email = $userinfo->email;
-		$passwd = trim($passwd);
-		$email = trim($email);
-		if (empty($email)) {
+	    $email = trim($userinfo->email);
+	    $passwd = trim($userinfo->password_clear);
+	    $email = trim($email);
+	    if (empty($email)) {
 		    $status['error'][] = 'invalid e-mail address';
-		} elseif (!Validate::isEmail($email)) {
-            $status['error'][] = 'invalid e-mail address';
-		} elseif (empty($passwd)) {
-            $status['error'][] = 'password is required';
-		} elseif (Tools::strlen($passwd) > 32) {
-            $status['error'][] = 'password is too long';
-		} elseif (!Validate::isPasswd($passwd)) {
-            $status['error'][] = 'invalid password';
-		} else {
-		    /* Handle brute force attacks */
-		    sleep(1);
-			// check if password matches
-			$query = 'SELECT passwd FROM #__customer WHERE email = ' . $db->Quote($email);
-            $db->setQuery($query);
-            $result = $db->loadResult();
-		    if (!$result) {
-                $status['error'][] = 'authentication failed';
-			} else {
-				if(md5($params->get('cookie_key') . $passwd) === $result) {
-                    $cookie->__set('id_customer', $userinfo->userid);
-                    $cookie->__set('customer_lastname', $userinfo->lastname);
-                    $cookie->__set('customer_firstname', $userinfo->firstname);
-                    $cookie->__set('logged', 1);
-                    $cookie->__set('passwd', md5($params->get('cookie_key') . $passwd));
-                    $cookie->__set('email', $email);
-				} else {
-                    $status['error'][] = 'wrong password';
-                }
-            }
-        }
+	    } elseif (!Validate::isEmail($email)) {
+		    $status['error'][] = 'invalid e-mail address';
+	    } elseif (empty($passwd)) {
+		    $status['error'][] = 'password is required';
+	    } elseif (Tools::strlen($passwd) > 32) {
+		    $status['error'][] = 'password is too long';
+	    } elseif (!Validate::isPasswd($passwd)) {
+		    $status['error'][] = 'invalid password';
+	    } else {
+		    $customer = new Customer();
+		    $authentication = $customer->getByEmail($email, $passwd);
+		    if (!$authentication || !$customer->id) {
+			    $status['error'][] = 'Authentication failed.';
+		    } else {
+			    $cookie = new Cookie('ps', '', '');
+//		        $cookie->id_compare = isset($cookie->id_compare) ? $cookie->id_compare: CompareProduct::getIdCompareByIdCustomer($customer->id);
+			    $cookie->id_customer = (int)($customer->id);
+			    $cookie->customer_lastname = $customer->lastname;
+			    $cookie->customer_firstname = $customer->firstname;
+			    $cookie->logged = 1;
+			    $customer->logged = 1;
+			    $cookie->is_guest = $customer->isGuest();
+			    $cookie->passwd = $customer->passwd;
+			    $cookie->email = $customer->email;
+			    $cookie->id_cart = 0;
+
+			    $cookie->write();
+		    }
+	    }
         return $status;
 	}
 
