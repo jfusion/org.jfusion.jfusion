@@ -112,18 +112,18 @@
         <param name="leavealone" type="text" size="60" label="CURL_COOKIE_LEAVEALONE" default="" description="CURL_COOKIE_LEAVEALONE_DESC" />
 
         <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_LOGIN" description="" />
-        <param name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="login.php" description="CURL_LOGIN_URL_DESC" />
+        <param name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="index.php?controller=authentication" description="CURL_LOGIN_URL_DESC" />
         <param name="brute_force" type="list" default="standard" label="CURL_BRUTE_FORCE" description="CURL_BRUTE_FORCE_DESC">
             <option value="brute_force">JYES</option>
             <option value="standard">JNO</option>
         </param>
-        <param name="loginform_id" type="text" size="60" label="CURL_LOGINFORM_ID" default="login" description="CURL_LOGINFORM_ID_DESC" />
+        <param name="loginform_id" type="text" size="60" label="CURL_LOGINFORM_ID" default="login_form" description="CURL_LOGINFORM_ID_DESC" />
         <param name="relpath" type="list" default="0" label="CURL_RELPATH" description="CURL_RELPATH_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="input_username_id" type="text" size="60" label="CURL_INPUT_USERNAME_ID" default="email_address" description="CURL_INPUT_USERNAME_ID_DESC" />
-        <param name="input_password_id" type="text" size="60" label="CURL_INPUT_PASSWORD_ID" default="" description="CURL_INPUT_PASSWORD_ID_DESC" />
+        <param name="input_username_id" type="text" size="60" label="CURL_INPUT_USERNAME_ID" default="email" description="CURL_INPUT_USERNAME_ID_DESC" />
+        <param name="input_password_id" type="text" size="60" label="CURL_INPUT_PASSWORD_ID" default="passwd" description="CURL_INPUT_PASSWORD_ID_DESC" />
         <param name="hidden" type="list" default="1" label="CURL_HIDDEN" description="CURL_HIDDEN_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
@@ -139,7 +139,7 @@
             <option value="form">FORM</option>
             <option value="brute_force">BRUTE_FORCE</option>
         </param>
-        <param name="logout_url" type="text" size="60" label="CURL_LOGOUT_URL" default="logoff.php" description="CURL_LOGOUT_URL_DESC" />
+        <param name="logout_url" type="text" size="60" label="CURL_LOGOUT_URL" default="index.php?mylogout=" description="CURL_LOGOUT_URL_DESC" />
         <param name="relpathl" type="list" default="0" label="CURL_RELPATHL" description="CURL_RELPATHL_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
