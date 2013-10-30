@@ -38,6 +38,9 @@ class JFusionHelper_prestashop extends JFusionPlugin
         return 'prestashop';
     }
 
+	/**
+	 * Load Framework
+	 */
 	function loadFramework()
 	{
 		$params = JFusionFactory::getParams($this->getJname());
@@ -48,16 +51,22 @@ class JFusionHelper_prestashop extends JFusionPlugin
 		$this->loadClass('Context');
 
 		$this->loadClass('Blowfish');
+		$this->loadClass('Rijndael');
 		$this->loadClass('Cookie');
 		$this->loadClass('Tools');
-		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Tools.php');
 
 		$this->loadClass('ObjectModel');
-		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'ObjectModel.php');
 
 		require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'Db.php');
 		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Db.php');
 
+		require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'DbPDO.php');
+		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . 'db' . DS . 'DbPDO.php');
+
+		require_once($source_path . DS . 'classes' . DS . 'shop' . DS . 'Shop.php');
+		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . 'shop' . DS . 'Shop.php');
+
+		$this->loadClass('Language');
 		$this->loadClass('Validate');
 		$this->loadClass('Country');
 		$this->loadClass('State');

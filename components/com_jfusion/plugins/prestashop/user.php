@@ -54,18 +54,16 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
-			    ->select('id_customer as userid, email, passwd as password, firstname, lastname')
+			    ->select('id_customer as userid, email, email as username, passwd as password, firstname, lastname, active')
 			    ->from('#__customer')
 			    ->where('email =' . $db->Quote($identifier));
 
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
-		    $result->block = 0;
-		    $result->activation = '';
 		    if ($result) {
-
+			    $result->block = 0;
 			    $query = $db->getQuery(true)
-				    ->select('id_customer as userid, email, passwd as password, firstname, lastname')
+				    ->select('id_group')
 				    ->from('#__customer_group')
 				    ->where('id_customer =' . $db->Quote($result->userid));
 
@@ -78,6 +76,13 @@ class JFusionUser_prestashop extends JFusionUser {
 					    $result->groups[] = $result->group_id;
 				    }
 			    }
+
+			   if ($result->active) {
+				   $result->activation = '';
+			   } else {
+				   jimport('joomla.user.helper');
+				   $result->activation = JApplication::getHash(JUserHelper::genRandomPassword());
+			   }
 		    }
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());

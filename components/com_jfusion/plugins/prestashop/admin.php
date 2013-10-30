@@ -108,9 +108,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
             $params['database_prefix'] = $config['_DB_PREFIX_'];
             $params['database_type'] = $config['_DB_TYPE_'];
             $params['source_path'] = $storePath;
-            $params['cookie_key'] = $config['_COOKIE_KEY_'];
 			//return the parameters so it can be saved permanently
-
         }
         return $params;
     }
