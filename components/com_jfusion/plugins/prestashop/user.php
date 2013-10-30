@@ -50,12 +50,13 @@ class JFusionUser_prestashop extends JFusionUser {
         }
         // Get user info from database
 		$db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT id_customer as userid, email, email as username, passwd as password, firstname, lastname FROM #__customer WHERE email =' . $db->Quote($identifier) ;
+        $query = 'SELECT id_customer as userid, email, email as username, passwd as password, firstname, lastname, active FROM #__customer WHERE email =' . $db->Quote($identifier) ;
         $db->setQuery($query);
         $result = $db->loadObject();
-        $result->block = 0;
-        $result->activation = '';
+
         if ($result) {
+	        $result->block = 0;
+	        $result->activation = '';
             $query = 'SELECT id_group FROM #__customer_group WHERE id_customer =' . $db->Quote($result->userid);
             $db->setQuery($query);
             $groups = $db->loadObjectList();
@@ -66,6 +67,13 @@ class JFusionUser_prestashop extends JFusionUser {
                     $result->groups[] = $result->group_id;
                 }
             }
+
+	        if ($result->active) {
+		        $result->activation = '';
+	        } else {
+		        jimport('joomla.user.helper');
+		        $result->activation = JUserHelper::genRandomPassword();
+	        }
         }
 
         // read through params for cookie key (the salt used)
