@@ -116,22 +116,6 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(), $params->get('logout_type'));
 
 	    return $status;
-        $status = array('error' => array(),'debug' => array());
-	    // use prestashop cookie class and functions to delete cookie
-		$params = JFusionFactory::getParams($this->getJname());
-
-	    /**
-	     * @ignore
-	     * @var $helper JFusionHelper_prestashop
-	     */
-	    $helper = JFusionFactory::getHelper($this->getJname());
-	    $helper->loadFramework();
-
-	    $customer = new Customer();
-	    $customer->getByEmail(trim($userinfo->email));
-	    $customer->logout();
-
-		return $status;
     }
 
     /**
@@ -147,52 +131,6 @@ class JFusionUser_prestashop extends JFusionUser {
 	    } else {
 		    $params = JFusionFactory::getParams($this->getJname());
 		    $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $params->get('brute_force'));
-	    }
-	    return $status;
-	    $params = JFusionFactory::getParams($this->getJname());
-        $status = array('error' => array(),'debug' => array());
-        // this uses a code extract from authentication.php that deals with logging in completely
-		$db = JFusionFactory::getDatabase($this->getJname());
-	    /**
-	     * @ignore
-	     * @var $helper JFusionHelper_prestashop
-	     */
-	    $helper = JFusionFactory::getHelper($this->getJname());
-	    $helper->loadFramework();
-
-	    $email = trim($userinfo->email);
-	    $passwd = trim($userinfo->password_clear);
-	    $email = trim($email);
-	    if (empty($email)) {
-		    $status['error'][] = 'invalid e-mail address';
-	    } elseif (!Validate::isEmail($email)) {
-		    $status['error'][] = 'invalid e-mail address';
-	    } elseif (empty($passwd)) {
-		    $status['error'][] = 'password is required';
-	    } elseif (Tools::strlen($passwd) > 32) {
-		    $status['error'][] = 'password is too long';
-	    } elseif (!Validate::isPasswd($passwd)) {
-		    $status['error'][] = 'invalid password';
-	    } else {
-		    $customer = new Customer();
-		    $authentication = $customer->getByEmail($email, $passwd);
-		    if (!$authentication || !$customer->id) {
-			    $status['error'][] = 'Authentication failed.';
-		    } else {
-			    $cookie = new Cookie('ps', '', '');
-//		        $cookie->id_compare = isset($cookie->id_compare) ? $cookie->id_compare: CompareProduct::getIdCompareByIdCustomer($customer->id);
-			    $cookie->id_customer = (int)($customer->id);
-			    $cookie->customer_lastname = $customer->lastname;
-			    $cookie->customer_firstname = $customer->firstname;
-			    $cookie->logged = 1;
-			    $customer->logged = 1;
-			    $cookie->is_guest = $customer->isGuest();
-			    $cookie->passwd = $customer->passwd;
-			    $cookie->email = $customer->email;
-			    $cookie->id_cart = 0;
-
-			    $cookie->write();
-		    }
 	    }
         return $status;
 	}
