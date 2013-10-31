@@ -150,17 +150,21 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
+	    /**
+	     * @ignore
+	     * @var $helper JFusionHelper_prestashop
+	     */
+	    $helper = JFusionFactory::getHelper($this->getJname());
+	    $default_language = $helper->getDefaultLanguage();
+
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT value FROM #__configuration WHERE name IN (\'PS_LANG_DEFAULT\');';
-        $db->setQuery($query);
-        //getting the default language to load groups
-        $default_language = $db->loadResult();
+
         //prestashop uses two group categories which are employees and customers, each have there own groups to access either the front or back end
         /*
           Customers only for this plugin
         */
-        $query = 'SELECT id_group as id, name as name from #__group_lang WHERE id_lang IN (' . $db->Quote($default_language) . ');';
+        $query = 'SELECT id_group as id, name as name from #__group_lang WHERE id_lang = ' . $db->Quote($default_language);
         $db->setQuery($query);
         //getting the results
 		$result = $db->loadObjectList();
@@ -171,15 +175,25 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      * @return string
      */
     function getDefaultUsergroup() {
-	    $db = JFusionFactory::getDatabase($this->getJname());
-        //we want to output the usergroup name
-        $query = 'SELECT value FROM #__configuration WHERE name IN (\'PS_LANG_DEFAULT\');';
-        $db->setQuery($query);
-        //getting the default language to load groups
-        $default_language = $db->loadResult();
-        $query = 'SELECT name as name from #__group_lang WHERE id_lang IN (' . $db->Quote($default_language) . ') AND id_group IN (\'1\')';
-        $db->setQuery($query);
-		return $db->loadResult();
+	    $params = JFusionFactory::getParams($this->getJname());
+	    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), null);
+	    $usergroup = '';
+	    if(!empty($usergroups)) {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $usergroup_id = $usergroups[0];
+
+		    /**
+		     * @ignore
+		     * @var $helper JFusionHelper_prestashop
+		     */
+		    $helper = JFusionFactory::getHelper($this->getJname());
+		    $default_language = $helper->getDefaultLanguage();
+
+		    $query = 'SELECT name from #__group_lang WHERE id_lang = ' . $db->Quote($default_language) . ' AND id_group = '.$db->Quote($usergroup_id);
+		    $db->setQuery($query);
+		    $usergroup =  $db->loadResult();
+	    }
+	    return $usergroup;
     }
 
     /**

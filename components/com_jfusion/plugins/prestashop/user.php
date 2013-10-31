@@ -55,6 +55,13 @@ class JFusionUser_prestashop extends JFusionUser {
         $result = $db->loadObject();
 
         if ($result) {
+	        /**
+	         * @ignore
+	         * @var $helper JFusionHelper_prestashop
+	         */
+	        $helper = JFusionFactory::getHelper($this->getJname());
+	        $default_language = $helper->getDefaultLanguage();
+
 	        $result->block = 0;
 	        $result->activation = '';
             $query = 'SELECT id_group FROM #__customer_group WHERE id_customer =' . $db->Quote($result->userid);
@@ -63,8 +70,12 @@ class JFusionUser_prestashop extends JFusionUser {
 
             if ($groups) {
                 foreach($groups as $group) {
-                    $result->group_id = $group->id_group;
-                    $result->groups[] = $result->group_id;
+                    $result->groups[] = $result->group_id = $group->id_group;
+
+	                $query = 'SELECT name from #__group_lang WHERE id_lang = ' . $db->Quote($default_language) . ' AND id_group = '.$db->Quote($result->group_id);
+	                $db->setQuery($query);
+
+	                $result->groupnames[] = $result->group_name = $db->loadResult();
                 }
             }
 
@@ -190,221 +201,227 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $params = JFusionFactory::getParams($this->getJname());
         $errors = array();
 
-	    /**
-	     * @ignore
-	     * @var $helper JFusionHelper_prestashop
-	     */
-	    $helper = JFusionFactory::getHelper($this->getJname());
-	    $helper->loadFramework();
-		
-		/* split full name into first and with/or without middlename, and lastname */
-		$users_name = $userinfo->name;
-		list( $uf_name, $um_name, $ul_name ) = explode( ' ', $users_name, 3 );
-		if ( is_null($ul_name) ) // meaning only two names were entered
-		{
-			$end_name = $um_name;
-		}
-		else
-		{
-			$end_name = explode( ' ', $ul_name );
-			$size = sizeof($ul_name);
-			$end_name = $ul_name[$size-1];
-		}
-		// now have first name as $uf_name, and last name as $end_name
 
-	    if (isset($userinfo->password_clear)) {
-			$password = Tools::encrypt($userinfo->password_clear);
-		} else {
-			$password = $userinfo->password;
-		}
+	    $params = JFusionFactory::getParams($this->getJname());
+	    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), null);
 
-		/* user variables submitted through form (emulated) */
-	    $user_variables = array(
-	    'id_gender' => "1", // value of either 1 for male, 2 for female
-	    'firstname' => $uf_name, // alphanumeric values between 6 and 32 characters long
-	    'lastname' => $end_name, // alphanumeric values between 6 and 32 characters long
-	    'customer_firstname' => $uf_name, // alphanumeric values between 6 and 32 characters long
-	    'customer_lastname' => $end_name, // alphanumeric values between 6 and 32 characters long
-	    'email' => $userinfo->email, // alphanumeric values as well as @ and . symbols between 6 and 128 characters long
-	    'passwd' => $password, // alphanumeric values between 6 and 32 characters long
-	    'days' => "01", // numeric character between 1 and 31
-	    'months' => "01", // numeric character between 1 and 12
-	    'years' => "2000", // numeric character between 1900 and latest year
-	    'newsletter' => 0, // value of either 0 for no newsletters, or 1 to relieve newsletters
-	    'optin' => 0, // value of either 0 for no third party options, or 1 to relieve third party options
-	    'company' => "", // alphanumeric values between 6 and 32 characters long
-	    'address1' => "Update with your real address", // alphanumeric values between 6 and 128 characters long
-	    'address2' => "", // alphanumeric values between 6 and 128 characters long
-	    'postcode' => "Postcode", // alphanumeric values between 7 and 12 characters long
-	    'city' => "Not known", // alpha values between 6 and 64 characters long
-	    'id_country' => "17", // numeric character between 1 and 244 (normal preset)
-	    'id_state' => "0", // numeric character between 1 and 65 (normal preset)
-	    'other' => "", // alphanumeric values with mysql text limit characters long
-	    'phone' => "", // numeric values between 11 and 16 characters long
-	    'phone_mobile' => "", // numeric values between 11 and 16 characters long
-	    'alias' => "My address", // alphanumeric values between 6 and 32 characters long
-	    'dni' => "", // alphanumeric values between 6 and 16 characters long
-	    );
+	    if (empty($usergroups)) {
+		    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
+	    } else {
 
-        $ps_customer = new stdClass;
-        $ps_customer->id_customer = null;
-        $ps_customer->id_gender = $user_variables['id_gender'];
-        $ps_customer->id_default_group = 1;
-        $ps_customer->secure_key = md5(uniqid(rand(), true));
-        $ps_customer->email = $user_variables['email'];
-        $ps_customer->passwd = md5($params->get('cookie_key') . $user_variables['passwd']);
-        $ps_customer->last_passwd_gen = date('Y-m-d h:m:s',strtotime("-6 hours"));
-        $ps_customer->birthday = date('Y-m-d',mktime(0,0,0,$user_variables['months'],$user_variables['days'],$user_variables['years']));
-        $ps_customer->lastname = $user_variables['lastname'];
-        $ps_customer->newsletter = $_SERVER['REMOTE_ADDR'];
-        $ps_customer->ip_registration_newsletter = date('Y-m-d h:m:s');
-        $ps_customer->optin = $user_variables['optin'];
-        $ps_customer->firstname = $user_variables['firstname'];
-        $ps_customer->dni = $user_variables['dni'];
-        $ps_customer->active = 1;
-        $ps_customer->deleted = 0;
-        $ps_customer->date_add = date('Y-m-d h:m:s');
-        $ps_customer->date_upd = date('Y-m-d h:m:s');
+		    /**
+		     * @ignore
+		     * @var $helper JFusionHelper_prestashop
+		     */
+		    $helper = JFusionFactory::getHelper($this->getJname());
+		    $helper->loadFramework();
 
+		    /* split full name into first and with/or without middlename, and lastname */
+		    $users_name = $userinfo->name;
+		    list( $uf_name, $um_name, $ul_name ) = explode( ' ', $users_name, 3 );
+		    if ( is_null($ul_name) ) // meaning only two names were entered
+		    {
+			    $end_name = $um_name;
+		    }
+		    else
+		    {
+			    $end_name = explode( ' ', $ul_name );
+			    $size = sizeof($ul_name);
+			    $end_name = $ul_name[$size-1];
+		    }
+		    // now have first name as $uf_name, and last name as $end_name
 
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    if (isset($userinfo->password_clear)) {
+			    $password = Tools::encrypt($userinfo->password_clear);
+		    } else {
+			    $password = $userinfo->password;
+		    }
 
-        /* array to go into table ps_address */
-        $ps_address = new stdClass;
-        $ps_address->id_address = null;
-        $ps_address->id_country = $user_variables['id_country'];
-        $ps_address->id_state = $user_variables['id_state'];
-        $ps_address->id_manufacturer = 0;
-        $ps_address->id_supplier = 0;
-        $ps_address->alias = $user_variables['alias'];
-        $ps_address->company = $user_variables['company'];
-        $ps_address->lastname = $user_variables['customer_lastname'];
-        $ps_address->firstname = $user_variables['customer_firstname'];
-        $ps_address->address1 = $user_variables['address1'];
-        $ps_address->address2 = $user_variables['address2'];
-        $ps_address->postcode = $user_variables['postcode'];
-        $ps_address->city = $user_variables['city'];
-        $ps_address->other = $user_variables['other'];
-        $ps_address->phone = $user_variables['phone'];
-        $ps_address->phone_mobile = $user_variables['phone_mobile'];
-        $ps_address->date_add = date('Y-m-d h:m:s');
-        $ps_address->date_upd = date('Y-m-d h:m:s');
-        $ps_address->active = 1;
-        $ps_address->deleted = 0;
+		    /* user variables submitted through form (emulated) */
+		    $user_variables = array(
+			    'id_gender' => "1", // value of either 1 for male, 2 for female
+			    'firstname' => $uf_name, // alphanumeric values between 6 and 32 characters long
+			    'lastname' => $end_name, // alphanumeric values between 6 and 32 characters long
+			    'customer_firstname' => $uf_name, // alphanumeric values between 6 and 32 characters long
+			    'customer_lastname' => $end_name, // alphanumeric values between 6 and 32 characters long
+			    'email' => $userinfo->email, // alphanumeric values as well as @ and . symbols between 6 and 128 characters long
+			    'passwd' => $password, // alphanumeric values between 6 and 32 characters long
+			    'days' => "01", // numeric character between 1 and 31
+			    'months' => "01", // numeric character between 1 and 12
+			    'years' => "2000", // numeric character between 1900 and latest year
+			    'newsletter' => 0, // value of either 0 for no newsletters, or 1 to relieve newsletters
+			    'optin' => 0, // value of either 0 for no third party options, or 1 to relieve third party options
+			    'company' => "", // alphanumeric values between 6 and 32 characters long
+			    'address1' => "Update with your real address", // alphanumeric values between 6 and 128 characters long
+			    'address2' => "", // alphanumeric values between 6 and 128 characters long
+			    'postcode' => "Postcode", // alphanumeric values between 7 and 12 characters long
+			    'city' => "Not known", // alpha values between 6 and 64 characters long
+			    'id_country' => "17", // numeric character between 1 and 244 (normal preset)
+			    'id_state' => "0", // numeric character between 1 and 65 (normal preset)
+			    'other' => "", // alphanumeric values with mysql text limit characters long
+			    'phone' => "", // numeric values between 11 and 16 characters long
+			    'phone_mobile' => "", // numeric values between 11 and 16 characters long
+			    'alias' => "My address", // alphanumeric values between 6 and 32 characters long
+			    'dni' => "", // alphanumeric values between 6 and 16 characters long
+		    );
 
-		/* safe data check and validation of array $user_variables
-	    no other unique variables are used so this check only includes these */
-        // Do not validate address line 1 since a placeholder is been currently used
+		    $ps_customer = new stdClass;
+		    $ps_customer->id_customer = null;
+		    $ps_customer->id_gender = $user_variables['id_gender'];
+		    $ps_customer->id_default_group = $usergroups[0];
+		    $ps_customer->secure_key = md5(uniqid(rand(), true));
+		    $ps_customer->email = $user_variables['email'];
+		    $ps_customer->passwd = md5($params->get('cookie_key') . $user_variables['passwd']);
+		    $ps_customer->last_passwd_gen = date('Y-m-d h:m:s',strtotime("-6 hours"));
+		    $ps_customer->birthday = date('Y-m-d',mktime(0,0,0,$user_variables['months'],$user_variables['days'],$user_variables['years']));
+		    $ps_customer->lastname = $user_variables['lastname'];
+		    $ps_customer->newsletter = $_SERVER['REMOTE_ADDR'];
+		    $ps_customer->ip_registration_newsletter = date('Y-m-d h:m:s');
+		    $ps_customer->optin = $user_variables['optin'];
+		    $ps_customer->firstname = $user_variables['firstname'];
+		    $ps_customer->dni = $user_variables['dni'];
+		    $ps_customer->active = 1;
+		    $ps_customer->deleted = 0;
+		    $ps_customer->date_add = date('Y-m-d h:m:s');
+		    $ps_customer->date_upd = date('Y-m-d h:m:s');
 
-        /*if (!Validate::isAddress($user_variables['address1'])){
-              $errors[] = Tools::displayError('address wrong');
-              unset($ps_address);
-          }*/
+		    /* array to go into table ps_address */
+		    $ps_address = new stdClass;
+		    $ps_address->id_address = null;
+		    $ps_address->id_country = $user_variables['id_country'];
+		    $ps_address->id_state = $user_variables['id_state'];
+		    $ps_address->id_manufacturer = 0;
+		    $ps_address->id_supplier = 0;
+		    $ps_address->alias = $user_variables['alias'];
+		    $ps_address->company = $user_variables['company'];
+		    $ps_address->lastname = $user_variables['customer_lastname'];
+		    $ps_address->firstname = $user_variables['customer_firstname'];
+		    $ps_address->address1 = $user_variables['address1'];
+		    $ps_address->address2 = $user_variables['address2'];
+		    $ps_address->postcode = $user_variables['postcode'];
+		    $ps_address->city = $user_variables['city'];
+		    $ps_address->other = $user_variables['other'];
+		    $ps_address->phone = $user_variables['phone'];
+		    $ps_address->phone_mobile = $user_variables['phone_mobile'];
+		    $ps_address->date_add = date('Y-m-d h:m:s');
+		    $ps_address->date_upd = date('Y-m-d h:m:s');
+		    $ps_address->active = 1;
+		    $ps_address->deleted = 0;
 
+		    /* safe data check and validation of array $user_variables
+		no other unique variables are used so this check only includes these */
+		    // Do not validate address line 1 since a placeholder is been currently used
 
-
-        // Do not validate postcode since a placeholder is been currently used
-        /*if (!Validate::isPostCode($user_variables['postcode'])){
-              $errors[] = Tools::displayError('postcode wrong');
-              unset($ps_address);
-          }*/
+		    /*if (!Validate::isAddress($user_variables['address1'])){
+			  $errors[] = Tools::displayError('address wrong');
+			  unset($ps_address);
+		  }*/
 
 
 
-        // Do not validate village/town/city since a placeholder is been currently used
-        /*if (!Validate::isCityName($user_variables['city'])){
-              $errors[] = Tools::displayError('invalid village/town/city');
-              unset($ps_address);
-          }*/
+		    // Do not validate postcode since a placeholder is been currently used
+		    /*if (!Validate::isPostCode($user_variables['postcode'])){
+			  $errors[] = Tools::displayError('postcode wrong');
+			  unset($ps_address);
+		  }*/
 
-	    // Validate gender
-	    if (!preg_match('/^[0|1|2|9]$/ui', $user_variables['id_gender'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('gender not valid');
-	    } elseif (!Validate::isName($user_variables['firstname'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('first name wrong');
-	    } elseif (!Validate::isName($user_variables['lastname'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('second name wrong');
-	    } elseif (!Validate::isName($user_variables['customer_firstname'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('customer first name wrong');
-	    } elseif (!Validate::isName($user_variables['customer_lastname'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('customer second name wrong');
-	    } elseif (!Validate::isEmail($user_variables['email'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('e-mail not valid');
-	    } elseif (!Validate::isPasswd($user_variables['passwd'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid password');
-	    } elseif (!@checkdate($user_variables['months'], $user_variables['days'], $user_variables['years']) AND !( $user_variables['months']== '' AND $user_variables['days'] == '' AND $user_variables['years'] == '')){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid birthday');
-	    } elseif (!Validate::isBool($user_variables['newsletter'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('newsletter invalid choice');
-	    } elseif (!Validate::isBool($user_variables['optin'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('optin invalid choice');
-	    } elseif (!Validate::isGenericName($user_variables['company'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('company name wrong');
-	    } elseif (!Validate::isAddress($user_variables['address2'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('address 2nd wrong');
-        } elseif (!Validate::isPhoneNumber($user_variables['phone'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid phone');
-        } elseif (!Validate::isPhoneNumber($user_variables['phone_mobile'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid mobile');
-        } elseif (!Validate::isInt($user_variables['id_country'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid country');
-        } elseif (Country::getIsoById($user_variables['id_country']) === '') {
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid country');
-        } elseif (!Validate::isInt($user_variables['id_state'])){
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid state');
-        } else {
-            if (!State::getNameById($user_variables['id_state'])){
-                if($user_variables['id_state'] === '0'){
-                    /* state valid to apply for none state */
-                } else {
-                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid state');
-                    unset($ps_customer);
-                }
-            }
 
-            if(isset($ps_customer)) {
-                // Validate DNI
-                $validateDni = Validate::isDniLite($user_variables['dni']);
-                if ($user_variables['dni'] != NULL && $validateDni != 1) {
-                    $error = array(
-                        0 => Tools::displayError('DNI isn\'t valid'),
-                        -1 => Tools::displayError('this DNI has been already used'),
-                        -2 => Tools::displayError('NIF isn\'t valid'),
-                        -3 => Tools::displayError('CIF isn\'t valid'),
-                        -4 => Tools::displayError('NIE isn\'t valid')
-                    );
-                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.$error[$validateDni];
-                } elseif (!Validate::isMessage($user_variables['alias'])) {
-                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid alias');
-                } elseif (!Validate::isMessage($user_variables['other'])) {
-                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid extra information');
-                } elseif (Customer::customerExists($user_variables['email'])) {
-                    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('someone has already registered with this e-mail address');
-                } else {
-                    /* enter customer account into prestashop database */ // if all information is validated
-                    if ($db->insertObject('#__customer', $ps_customer, 'id_customer')) {
-                        // enter customer group into database
-                        $ps_address->id_customer = $ps_customer->id_customer;
 
-                        foreach($usergroups as $value) {
-                            $ps_customer_group = new stdClass;
-                            $ps_customer_group->id_customer = $ps_customer->id_customer;
-                            $ps_customer_group->id_group = $value;
-                            if (!$db->insertObject('#__customer_group', $ps_customer_group)) {
-                                $status['error'][] = JText::_('USER_CREATION_ERROR').' '. $db->stderr();
-                            }
-                        }
+		    // Do not validate village/town/city since a placeholder is been currently used
+		    /*if (!Validate::isCityName($user_variables['city'])){
+			  $errors[] = Tools::displayError('invalid village/town/city');
+			  unset($ps_address);
+		  }*/
 
-                        $db->insertObject('#__address', $ps_address);
+		    // Validate gender
+		    if (!preg_match('/^[0|1|2|9]$/ui', $user_variables['id_gender'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('gender not valid');
+		    } elseif (!Validate::isName($user_variables['firstname'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('first name wrong');
+		    } elseif (!Validate::isName($user_variables['lastname'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('second name wrong');
+		    } elseif (!Validate::isName($user_variables['customer_firstname'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('customer first name wrong');
+		    } elseif (!Validate::isName($user_variables['customer_lastname'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('customer second name wrong');
+		    } elseif (!Validate::isEmail($user_variables['email'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('e-mail not valid');
+		    } elseif (!Validate::isPasswd($user_variables['passwd'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid password');
+		    } elseif (!@checkdate($user_variables['months'], $user_variables['days'], $user_variables['years']) AND !( $user_variables['months']== '' AND $user_variables['days'] == '' AND $user_variables['years'] == '')){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid birthday');
+		    } elseif (!Validate::isBool($user_variables['newsletter'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('newsletter invalid choice');
+		    } elseif (!Validate::isBool($user_variables['optin'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('optin invalid choice');
+		    } elseif (!Validate::isGenericName($user_variables['company'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('company name wrong');
+		    } elseif (!Validate::isAddress($user_variables['address2'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('address 2nd wrong');
+		    } elseif (!Validate::isPhoneNumber($user_variables['phone'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid phone');
+		    } elseif (!Validate::isPhoneNumber($user_variables['phone_mobile'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid mobile');
+		    } elseif (!Validate::isInt($user_variables['id_country'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid country');
+		    } elseif (Country::getIsoById($user_variables['id_country']) === '') {
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid country');
+		    } elseif (!Validate::isInt($user_variables['id_state'])){
+			    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid state');
+		    } else {
+			    if (!State::getNameById($user_variables['id_state'])){
+				    if($user_variables['id_state'] === '0'){
+					    /* state valid to apply for none state */
+				    } else {
+					    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid state');
+					    unset($ps_customer);
+				    }
+			    }
 
-                        $status['debug'][] = JText::_('USER_CREATION');
-                        $status['userinfo'] = $this->getUser($userinfo);
-                    } else {
-                        $status['error'][] = JText::_('USER_CREATION_ERROR') .' '. $db->stderr();
-                    }
-                }
-            }
-        }
+			    if(isset($ps_customer)) {
+				    // Validate DNI
+				    $validateDni = Validate::isDniLite($user_variables['dni']);
+				    if ($user_variables['dni'] != NULL && $validateDni != 1) {
+					    $error = array(
+						    0 => Tools::displayError('DNI isn\'t valid'),
+						    -1 => Tools::displayError('this DNI has been already used'),
+						    -2 => Tools::displayError('NIF isn\'t valid'),
+						    -3 => Tools::displayError('CIF isn\'t valid'),
+						    -4 => Tools::displayError('NIE isn\'t valid')
+					    );
+					    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.$error[$validateDni];
+				    } elseif (!Validate::isMessage($user_variables['alias'])) {
+					    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid alias');
+				    } elseif (!Validate::isMessage($user_variables['other'])) {
+					    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid extra information');
+				    } elseif (Customer::customerExists($user_variables['email'])) {
+					    $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('someone has already registered with this e-mail address');
+				    } else {
+					    /* enter customer account into prestashop database */ // if all information is validated
+					    if ($db->insertObject('#__customer', $ps_customer, 'id_customer')) {
+						    // enter customer group into database
+						    $ps_address->id_customer = $ps_customer->id_customer;
+
+						    foreach($usergroups as $value) {
+							    $ps_customer_group = new stdClass;
+							    $ps_customer_group->id_customer = $ps_customer->id_customer;
+							    $ps_customer_group->id_group = $value;
+							    if (!$db->insertObject('#__customer_group', $ps_customer_group)) {
+								    $status['error'][] = JText::_('USER_CREATION_ERROR').' '. $db->stderr();
+							    }
+						    }
+
+						    $db->insertObject('#__address', $ps_address);
+
+						    $status['debug'][] = JText::_('USER_CREATION');
+						    $status['userinfo'] = $this->getUser($userinfo);
+					    } else {
+						    $status['error'][] = JText::_('USER_CREATION_ERROR') .' '. $db->stderr();
+					    }
+				    }
+			    }
+		    }
+	    }
     }
 
     /**
@@ -439,6 +456,7 @@ class JFusionUser_prestashop extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__customer SET active =\'1\' WHERE id_customer =\'' . (int)$existinguser->userid . '\'';
         $db->setQuery($query);
+	    $db->query();
     }
 
     /**
@@ -453,6 +471,7 @@ class JFusionUser_prestashop extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__customer SET active =\'0\' WHERE id_customer =\'' . (int)$existinguser->userid . '\'';
         $db->setQuery($query);
+	    $db->query();
     }
 
     /**
@@ -475,6 +494,10 @@ class JFusionUser_prestashop extends JFusionUser {
             if (!$db->query()) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
             } else {
+	            $query = 'UPDATE #__customer SET id_default_group = '.$db->Quote($usergroups[0]).' WHERE id_customer = \'' . (int)$existinguser->userid . '\'';
+	            $db->setQuery($query);
+	            $db->query();
+
                 foreach($usergroups as $value) {
                     $group = new stdClass;
                     $group->id_customer = $existinguser->userid;
