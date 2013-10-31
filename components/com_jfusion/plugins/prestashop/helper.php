@@ -84,4 +84,34 @@ class JFusionHelper_prestashop extends JFusionPlugin
 			require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . $class.'.php');
 		}
 	}
+
+	function getDefaultLanguage() {
+		static $default_language;
+		if (!isset($default_language)) {
+			$db = JFusionFactory::getDatabase($this->getJname());
+
+			$query = $db->getQuery(true)
+				->select('value')
+				->from('#__configuration')
+				->where('name IN (' . $db->Quote('PS_LANG_DEFAULT') . ')');
+
+			$db->setQuery($query);
+			//getting the default language to load groups
+			$default_language = $db->loadResult();
+		}
+		return $default_language;
+	}
+
+	function getGroupName($id) {
+		$db = JFusionFactory::getDatabase($this->getJname());
+		$query = $db->getQuery(true)
+			->select('name')
+			->from('#__group_lang')
+			->where('id_lang =' . $db->Quote($this->getDefaultLanguage()))
+			->where('id_group =' . $db->Quote($id));
+
+		$db->setQuery($query);
+
+		return $db->loadResult();
+	}
 }

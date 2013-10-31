@@ -35,7 +35,10 @@ defined('_JEXEC') or die('Restricted access');
 
 
 class JFusionPublic_prestashop extends JFusionPublic {
-
+	/**
+	 * @var $helper JFusionHelper_prestashop
+	 */
+	var $helper;
 
     /**
      * returns the name of this JFusion plugin

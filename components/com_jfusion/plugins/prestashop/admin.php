@@ -35,6 +35,11 @@ defined('_JEXEC') or die('Restricted access');
 
 class JFusionAdmin_prestashop extends JFusionAdmin
 {
+	/**
+	 * @var $helper JFusionHelper_prestashop
+	 */
+	var $helper;
+
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -175,14 +180,6 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->select('value')
-			    ->from('#__configuration')
-			    ->where('name IN (' . $db->Quote('PS_LANG_DEFAULT') . ')');
-
-		    $db->setQuery($query);
-		    //getting the default language to load groups
-		    $default_language = $db->loadResult();
 		    //prestashop uses two group categories which are employees and customers, each have there own groups to access either the front or back end
 		    /*
 		  Customers only for this plugin
@@ -190,7 +187,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 		    $query = $db->getQuery(true)
 			    ->select('id_group as id, name as name')
 			    ->from('#__group_lang')
-			    ->where('id_lang IN (' . $db->Quote($default_language) . ')');
+			    ->where('id_lang IN (' . $db->Quote($this->helper->getDefaultLanguage()) . ')');
 
 		    $db->setQuery($query);
 		    //getting the results
@@ -211,27 +208,9 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
 		    if ($usergroups !== null) {
-			    $db = JFusionFactory::getDatabase($this->getJname());
-			    //we want to output the usergroup name
-			    $query = $db->getQuery(true)
-				    ->select('value')
-				    ->from('#__configuration')
-				    ->where('name IN (' . $db->Quote('PS_LANG_DEFAULT') . ')');
-
-			    $db->setQuery($query);
-			    //getting the default language to load groups
-			    $default_language = $db->loadResult();
-
 			    $group = array();
 			    foreach($usergroups as $usergroup) {
-				    $query = $db->getQuery(true)
-					    ->select('name as name')
-					    ->from('#__group_lang')
-					    ->where('id_lang IN (' . $db->Quote($default_language) . ')')
-					    ->where('id_group IN (' . $db->Quote($usergroup) . ')');
-
-				    $db->setQuery($query);
-				    $group[] = $db->loadResult();
+				    $group[] = $this->helper->getGroupName($usergroup);
 			    }
 		    } else {
 			    $group = '';
