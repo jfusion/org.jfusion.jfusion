@@ -60,7 +60,6 @@ class JFusionUser_prestashop extends JFusionUser {
 	         * @var $helper JFusionHelper_prestashop
 	         */
 	        $helper = JFusionFactory::getHelper($this->getJname());
-	        $default_language = $helper->getDefaultLanguage();
 
 	        $result->block = 0;
 	        $result->activation = '';
@@ -71,11 +70,7 @@ class JFusionUser_prestashop extends JFusionUser {
             if ($groups) {
                 foreach($groups as $group) {
                     $result->groups[] = $result->group_id = $group->id_group;
-
-	                $query = 'SELECT name from #__group_lang WHERE id_lang = ' . $db->Quote($default_language) . ' AND id_group = '.$db->Quote($result->group_id);
-	                $db->setQuery($query);
-
-	                $result->groupnames[] = $result->group_name = $db->loadResult();
+	                $result->groupnames[] = $result->group_name = $helper->getGroupName($result->group_id);
                 }
             }
 

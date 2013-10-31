@@ -99,4 +99,14 @@ class JFusionHelper_prestashop
 		}
 		return $default_language;
 	}
+
+	function getGroupName($id) {
+		$db = JFusionFactory::getDatabase($this->getJname());
+
+		$query = 'SELECT name from #__group_lang WHERE id_lang = ' . $db->Quote($this->getDefaultLanguage()) . ' AND id_group = '.$db->Quote($id);
+		$db->setQuery($query);
+		$usergroup =  $db->loadResult();
+
+		return $db->loadResult();
+	}
 }

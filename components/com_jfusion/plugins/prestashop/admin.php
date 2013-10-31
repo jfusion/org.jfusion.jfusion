@@ -155,7 +155,6 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 	     * @var $helper JFusionHelper_prestashop
 	     */
 	    $helper = JFusionFactory::getHelper($this->getJname());
-	    $default_language = $helper->getDefaultLanguage();
 
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -164,7 +163,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
         /*
           Customers only for this plugin
         */
-        $query = 'SELECT id_group as id, name as name from #__group_lang WHERE id_lang = ' . $db->Quote($default_language);
+        $query = 'SELECT id_group as id, name as name from #__group_lang WHERE id_lang = ' . $db->Quote($helper->getDefaultLanguage());
         $db->setQuery($query);
         //getting the results
 		$result = $db->loadObjectList();
@@ -179,19 +178,12 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 	    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), null);
 	    $usergroup = '';
 	    if(!empty($usergroups)) {
-		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $usergroup_id = $usergroups[0];
-
 		    /**
 		     * @ignore
 		     * @var $helper JFusionHelper_prestashop
 		     */
 		    $helper = JFusionFactory::getHelper($this->getJname());
-		    $default_language = $helper->getDefaultLanguage();
-
-		    $query = 'SELECT name from #__group_lang WHERE id_lang = ' . $db->Quote($default_language) . ' AND id_group = '.$db->Quote($usergroup_id);
-		    $db->setQuery($query);
-		    $usergroup =  $db->loadResult();
+		    $usergroup = $helper->getGroupName($usergroups[0]);
 	    }
 	    return $usergroup;
     }
