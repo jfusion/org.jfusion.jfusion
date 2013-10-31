@@ -348,7 +348,7 @@ class JFusionUser_prestashop extends JFusionUser {
             $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid mobile');
         } elseif (!Validate::isInt($user_variables['id_country'])){
             $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid country');
-        } elseif (Validate::getIsoById($user_variables['id_country']) === ''){
+        } elseif (Country::getIsoById($user_variables['id_country']) === '') {
             $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid country');
         } elseif (!Validate::isInt($user_variables['id_state'])){
             $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid state');
