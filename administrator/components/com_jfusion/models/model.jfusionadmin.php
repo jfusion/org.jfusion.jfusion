@@ -173,7 +173,7 @@ HTML;
             curl_setopt($crl, CURLOPT_URL,$url);
             curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, 5);
-	        curl_setopt($crl, CURLOPT_TIMEOUT, 10);
+	        curl_setopt($crl, CURLOPT_TIMEOUT, 20);
             $FileData = curl_exec($crl);
             $FileInfo = curl_getinfo($crl);
             curl_close($crl);
