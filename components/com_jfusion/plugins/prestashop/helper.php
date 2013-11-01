@@ -47,6 +47,7 @@ class JFusionHelper_prestashop
 		$source_path = $params->get('source_path');
 
 		require_once($source_path . DS . 'config' . DS . 'settings.inc.php');
+		require_once($source_path . DS . 'config' . DS . 'alias.php');
 
 		$this->loadClass('Context');
 
