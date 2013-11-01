@@ -55,10 +55,10 @@ class JFusionHelper_prestashop
 		$this->loadClass('Rijndael');
 		$this->loadClass('Cookie');
 		$this->loadClass('Tools');
-		//require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Tools.php');
+		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Tools.php');
 
 		$this->loadClass('ObjectModel');
-		//require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'ObjectModel.php');
+		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'ObjectModel.php');
 
 		require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'Db.php');
 		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Db.php');
@@ -93,7 +93,8 @@ class JFusionHelper_prestashop
 		if (!isset($default_language)) {
 			$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = 'SELECT value FROM #__configuration WHERE name IN (\'PS_LANG_DEFAULT\');';
+			$query = 'SELECT value FROM #__configuration WHERE name = '. $db->Quote('PS_LANG_DEFAULT');
+
 			$db->setQuery($query);
 			//getting the default language to load groups
 			$default_language = $db->loadResult();
@@ -102,12 +103,16 @@ class JFusionHelper_prestashop
 	}
 
 	function getGroupName($id) {
-		$db = JFusionFactory::getDatabase($this->getJname());
+		static $groupname;
+		if (!isset($groupname[$id])) {
+			$db = JFusionFactory::getDatabase($this->getJname());
 
-		$query = 'SELECT name from #__group_lang WHERE id_lang = ' . $db->Quote($this->getDefaultLanguage()) . ' AND id_group = '.$db->Quote($id);
-		$db->setQuery($query);
-		$usergroup =  $db->loadResult();
+			$query = 'SELECT name from #__group_lang WHERE id_lang = ' . $db->Quote($this->getDefaultLanguage()) . ' AND id_group = '.$db->Quote($id);
+			$db->setQuery($query);
+			$usergroup =  $db->loadResult();
 
-		return $db->loadResult();
+			$groupname[$id] = $db->loadResult();
+		}
+		return $groupname[$id];
 	}
 }
