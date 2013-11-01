@@ -55,8 +55,10 @@ class JFusionHelper_prestashop extends JFusionPlugin
 		$this->loadClass('Rijndael');
 		$this->loadClass('Cookie');
 		$this->loadClass('Tools');
+		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Tools.php');
 
 		$this->loadClass('ObjectModel');
+		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'ObjectModel.php');
 
 		require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'Db.php');
 		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Db.php');
@@ -104,15 +106,19 @@ class JFusionHelper_prestashop extends JFusionPlugin
 	}
 
 	function getGroupName($id) {
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = $db->getQuery(true)
-			->select('name')
-			->from('#__group_lang')
-			->where('id_lang =' . $db->Quote($this->getDefaultLanguage()))
-			->where('id_group =' . $db->Quote($id));
+		static $groupname;
+		if (!isset($groupname[$id])) {
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = $db->getQuery(true)
+				->select('name')
+				->from('#__group_lang')
+				->where('id_lang =' . $db->Quote($this->getDefaultLanguage()))
+				->where('id_group =' . $db->Quote($id));
 
-		$db->setQuery($query);
+			$db->setQuery($query);
 
-		return $db->loadResult();
+			$groupname[$id] = $db->loadResult();
+		}
+		return $groupname[$id];
 	}
 }
