@@ -205,7 +205,7 @@ class JFusionUser_gallery2 extends JFusionUser
                     $session->put('touch', time());
                     $session->save();
                     //Close GalleryApi
-                    if ($framework) {
+                    if (!isset($options['noframework'])) {
                         GalleryEmbed::done();
                     }
                 }
