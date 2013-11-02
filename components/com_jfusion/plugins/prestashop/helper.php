@@ -51,9 +51,9 @@ class JFusionHelper_prestashop extends JFusionPlugin
 
 		$this->loadClass('Context');
 
-		$this->loadClass('Blowfish');
-		$this->loadClass('Rijndael');
-		$this->loadClass('Cookie');
+//      $this->loadClass('Blowfish'); Think this is now unneeded.
+//      $this->loadClass('Rijndael'); Think this is now unneeded.
+//      $this->loadClass('Cookie'); Think this is now unneeded.
 		$this->loadClass('Tools');
 		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Tools.php');
 
@@ -71,9 +71,9 @@ class JFusionHelper_prestashop extends JFusionPlugin
 
 		$this->loadClass('Language');
 		$this->loadClass('Validate');
-		$this->loadClass('Country');
-		$this->loadClass('State');
-		$this->loadClass('Customer');
+//      $this->loadClass('Country');
+//      $this->loadClass('State'); Think this is now unneeded.
+//      $this->loadClass('Customer'); Think this is now unneeded.
 
 		$this->loadClass('Configuration');
 	}
