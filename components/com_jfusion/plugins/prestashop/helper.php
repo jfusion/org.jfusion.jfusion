@@ -66,12 +66,12 @@ class JFusionHelper_prestashop extends JFusionPlugin
 		require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'DbPDO.php');
 		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . 'db' . DS . 'DbPDO.php');
 
-		require_once($source_path . DS . 'classes' . DS . 'shop' . DS . 'Shop.php');
-		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . 'shop' . DS . 'Shop.php');
+//		require_once($source_path . DS . 'classes' . DS . 'shop' . DS . 'Shop.php'); Think this is now unneeded.
+//		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . 'shop' . DS . 'Shop.php'); Think this is now unneeded.
 
 		$this->loadClass('Language');
 		$this->loadClass('Validate');
-//      $this->loadClass('Country');
+//      $this->loadClass('Country'); Think this is now unneeded.
 //      $this->loadClass('State'); Think this is now unneeded.
 //      $this->loadClass('Customer'); Think this is now unneeded.
 
