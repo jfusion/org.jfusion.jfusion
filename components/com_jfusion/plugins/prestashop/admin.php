@@ -98,7 +98,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      * @return array
      */
     function setupFromPath($storePath) {
-	    $config = JFusionAdmin_prestashop::loadSetup($storePath);
+	    $config = $this->loadSetup($storePath);
         $params = array();
         if (!empty($config)) {
             //save the parameters into array
