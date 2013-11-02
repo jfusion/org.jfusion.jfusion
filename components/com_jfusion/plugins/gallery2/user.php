@@ -132,14 +132,13 @@ class JFusionUser_gallery2 extends JFusionUser
     /**
      * @param object $userinfo
      * @param array $options
-     * @param bool $framework
      *
      * @return array
      */
-    function createSession($userinfo, $options, $framework = true) {
+    function createSession($userinfo, $options) {
         $status = array('error' => array(),'debug' => array());
-        
-        if ($framework) {
+
+        if (!isset($options['noframework'])) {
 	        $this->helper->loadGallery2Api(false);
         }
         global $gallery;

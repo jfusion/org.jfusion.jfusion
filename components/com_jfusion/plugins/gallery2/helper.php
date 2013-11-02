@@ -92,7 +92,9 @@ class JFusionHelper_gallery2 extends JFusionPlugin
                             if ($user->id != 0) {
                                 $userPlugin = JFusionFactory::getUser($this->getJname());
                                 $g2_user = $userPlugin->getUser($user);
-                                $userPlugin->createSession($g2_user, null, false);
+	                            $options = array();
+	                            $options['noframework'] = true;
+                                $userPlugin->createSession($g2_user, $options);
                             } else {
                                 // commented out we will need to keep an eye on if this will cause problems..
                                 //GalleryEmbed::logout();
