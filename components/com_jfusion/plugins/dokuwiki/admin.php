@@ -112,7 +112,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
             if (isset($config['cookie_secure'])) {
             	$params['cookie_secure'] = $config['cookie_secure'];
             }
-            $params['source_path'] = $Path;
+            $params['source_path'] = $softwarePath;
         }
         return $params;
     }
