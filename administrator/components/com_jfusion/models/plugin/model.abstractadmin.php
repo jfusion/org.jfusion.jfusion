@@ -137,13 +137,13 @@ class JFusionAdmin extends JFusionPlugin
 			    try {
 				    $db = JFusionFactory::getDatabase($jname);
 			    } catch (Exception $e) {
-				    throw new RuntimeException(JText::_('NO_DATABASE').' : '.$e->getMessage());
+				    throw new RuntimeException(JText::_('NO_DATABASE') . ' : ' . $e->getMessage());
 			    }
 
 			    try {
 				    $jdb = JFactory::getDBO();
 			    } catch (Exception $e) {
-				    throw new RuntimeException(' -> joomla_int '. JText::_('NO_DATABASE').' : '.$e->getMessage());
+				    throw new RuntimeException(' -> joomla_int ' . JText::_('NO_DATABASE') . ' : ' . $e->getMessage());
 			    }
 
 			    if (!$db->connected()) {
@@ -162,18 +162,18 @@ class JFusionAdmin extends JFusionPlugin
 					    $jfc = JFusionFactory::getCookies();
 					    list($url) = $jfc->getApiUrl($cookie_domain);
 					    if ($url) {
-						    require_once(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'jfusionapi.php');
+						    require_once(JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusionapi.php');
 
 						    $api = new JFusionAPI($url, JFusionFactory::getParams('joomla_int')->get('secret'));
 						    if (!$api->ping()) {
 							    list ($message) = $api->getError();
 
-							    throw new RuntimeException($api->url. ' ' .$message);
+							    throw new RuntimeException($api->url . ' ' . $message);
 						    }
 					    }
 					    $source_path = $this->params->get('source_path');
 					    if ($source_path && (strpos($source_path, 'http://') === 0 || strpos($source_path, 'https://') === 0)) {
-						    throw new RuntimeException(JText::_('ERROR_SOURCE_PATH'). ' : '.$source_path);
+						    throw new RuntimeException(JText::_('ERROR_SOURCE_PATH') . ' : ' . $source_path);
 					    } else {
 						    //get the user table name
 						    $tablename = $this->getTablename();
@@ -474,7 +474,7 @@ JS;
 				$query = $db->getQuery(true)
 					->select('params')
 					->from('#__jfusion')
-					->where('name = '.$db->Quote($jname));
+					->where('name = ' . $db->Quote($jname));
 
 				$db->setQuery($query);
 				$params = $db->loadResult();
@@ -491,7 +491,7 @@ JS;
 
 			$query = $db->getQuery(true)
 				->update('#__jfusion')
-				->set('params = '.$db->Quote($data->toString()))
+				->set('params = ' . $db->Quote($data->toString()))
 				->where('name = ' . $db->Quote($jname));
 
 			$db->setQuery($query);

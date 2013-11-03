@@ -40,7 +40,7 @@ class JFormFieldJFusionUsergroupList extends JFormField
 
 				    $multiple = ($this->element['multiple']) ? ' MULTIPLE ' : '';
 				    if (!empty($usergroups)) {
-					    $param_name = ($multiple) ? $this->formControl.'['.$this->fieldname.'][]' : $this->formControl.'['.$this->fieldname.']';
+					    $param_name = ($multiple) ? $this->formControl . '[' . $this->fieldname . '][]' : $this->formControl . '[' . $this->fieldname . ']';
 					    $output = JHTML::_('select.genericlist', $usergroups, $param_name, $multiple,
 						    'id', 'name', $this->value);
 				    } else {
@@ -53,7 +53,7 @@ class JFormFieldJFusionUsergroupList extends JFormField
 			    throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');
 		    }
 	    } catch (Exception $e) {
-		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage() . '</span>';
 	    }
 	    return $output;
     }

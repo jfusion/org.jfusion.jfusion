@@ -51,7 +51,7 @@ class jfusionViewplugineditor extends JViewLegacy
     function display($tpl = null)
     {
 	    $document = JFactory::getDocument();
-	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+	    $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
         //set jname as a global variable in order for elements to access it.
         global $jname;
         //find out the submitted name of the JFusion module

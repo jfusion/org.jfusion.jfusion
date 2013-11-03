@@ -159,7 +159,7 @@ class JFusionFrameless {
 							$u->delVar('jfile');
 						}
 						$url = $u->getQuery();
-						$url = JFusionFunction::routeURL($jfile.'?'.$url, $data->Itemid, '', true, false);
+						$url = JFusionFunction::routeURL($jfile . '?' . $url, $data->Itemid, '', true, false);
 						$mainframe->redirect($url);
 					}
 				}
@@ -267,7 +267,7 @@ class JFusionFrameless {
 					$document->addStyleSheet(JURI::base().'/components/com_jfusion/css/default.css');
 				}
 				if ($data->default_css_overflow) {
-					$style = 'style="overflow: '.$data->default_css_overflow.';"';
+					$style = 'style="overflow: ' . $data->default_css_overflow . ';"';
 					$data->style = $style;
 				} else {
 					$data->style = '';

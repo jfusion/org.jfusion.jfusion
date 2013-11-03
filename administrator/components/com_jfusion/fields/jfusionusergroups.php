@@ -59,7 +59,7 @@ class JFormFieldJFusionUsergroups extends JFormField
 		        throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');
 	        }
 	    } catch (Exception $e) {
-		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage() . '</span>';
 	    }
 	    return $output;
     }

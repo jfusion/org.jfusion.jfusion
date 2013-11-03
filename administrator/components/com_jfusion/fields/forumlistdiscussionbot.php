@@ -58,7 +58,7 @@ class JFormFieldForumListDiscussionbot extends JFormField
 					    $forumlist = $JFusionPlugin->getForumList();
 					    if (!empty($forumlist)) {
 						    $selectedValue = $jPluginParam->get($this->fieldname);
-						    $output = JHTML::_('select.genericlist', $forumlist, $this->formControl.'['.$this->group.']['.$this->fieldname.']', 'class="inputbox"', 'id', 'name', $selectedValue);
+						    $output = JHTML::_('select.genericlist', $forumlist, $this->formControl . '[' . $this->group . '][' . $this->fieldname . ']', 'class="inputbox"', 'id', 'name', $selectedValue);
 					    } else {
 						    throw new RuntimeException($jname . ': ' . JText::_('NO_LIST'));
 					    }
@@ -72,7 +72,7 @@ class JFormFieldForumListDiscussionbot extends JFormField
 			    throw new RuntimeException(JText::_('NO_PLUGIN_SELECT'));
 		    }
 	    } catch (Exception $e) {
-		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage() . '</span>';
 	    }
         return $output;
     }

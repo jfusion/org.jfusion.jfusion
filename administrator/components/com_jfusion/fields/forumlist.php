@@ -58,7 +58,7 @@ class JFormFieldForumlist extends JFormField
 			$jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
 			$jname = $jPluginParamRaw['jfusionplugin'];
 
-			$control_name = $this->formControl.'['.$this->group.']';
+			$control_name = $this->formControl . '[' . $this->group . ']';
 			if (!empty($jname)) {
 				$JFusionPlugin = JFusionFactory::getForum($jname);
 				if ($JFusionPlugin->isConfigured()) {
@@ -80,7 +80,7 @@ class JFormFieldForumlist extends JFormField
 				throw new RuntimeException(JText::_('NO_PLUGIN_SELECT'));
 			}
 		} catch(Exception $e) {
-			$output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+			$output = '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage() . '</span>';
 		}
 		return $output;
 	}

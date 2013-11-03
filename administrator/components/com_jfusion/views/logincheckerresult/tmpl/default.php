@@ -164,7 +164,7 @@ global $jfusionDebug;
 		$debug=null;
 		foreach ($textOutput as $value) {
 			if ($debug) {
-				$debug .= "\n\n".$value;
+				$debug .= "\n\n" . $value;
 			} else {
 				$debug = $value;
 			}

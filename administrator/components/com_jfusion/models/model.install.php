@@ -103,7 +103,7 @@ class JFusionModelInstaller extends InstallerModelInstall
 				    if(filter_var($url, FILTER_VALIDATE_URL) !== FALSE) {
 					    $package = $this->_getPackageFromUrl();
 				    } else {
-					    throw new RuntimeException(JText::_('INVALID_URL'). ': '.$url);
+					    throw new RuntimeException(JText::_('INVALID_URL') . ': ' . $url);
 				    }
 				    break;
 			    default:
@@ -357,13 +357,13 @@ class JFusionPluginInstaller extends JObject
 			             * Language files Processing Section
 			             * ---------------------------------------------------------------------------------------------
 			             */
-			            $languageFolder = $dir. DIRECTORY_SEPARATOR.'language';
+			            $languageFolder = $dir . DIRECTORY_SEPARATOR  .  'language';
 			            if (JFolder::exists($languageFolder)) {
 				            $files = JFolder::files($languageFolder);
 				            foreach ($files as $file) {
 					            $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file,0,5);
 					            JFolder::create($dest);
-					            JFile::copy($languageFolder. DIRECTORY_SEPARATOR .$file, $dest . DIRECTORY_SEPARATOR . $file);
+					            JFile::copy($languageFolder . DIRECTORY_SEPARATOR . $file, $dest . DIRECTORY_SEPARATOR . $file);
 				            }
 			            }
 
@@ -437,7 +437,7 @@ class JFusionPluginInstaller extends JObject
 			            $query = $db->getQuery(true)
 				            ->select('name')
 				            ->from('#__jfusion')
-				            ->where('original_name = '.$db->Quote($name));
+				            ->where('original_name = ' . $db->Quote($name));
 
 			            $db->setQuery($query);
 			            $copiedPlugins = $db->loadObjectList();
@@ -447,15 +447,15 @@ class JFusionPluginInstaller extends JObject
 			            }
 
 			            if ($result['overwrite'] == 1) {
-				            $msg = JText::_('PLUGIN') . ' ' .$name .' ' . JText::_('UPDATE') . ': ' . JText::_('SUCCESS');
+				            $msg = JText::_('PLUGIN') . ' ' . $name . ' ' . JText::_('UPDATE') . ': ' . JText::_('SUCCESS');
 			            } else {
-				            $msg = JText::_('PLUGIN') . ' ' .$name .' ' . JText::_('INSTALL') . ': ' . JText::_('SUCCESS');
+				            $msg = JText::_('PLUGIN') . ' ' . $name . ' ' . JText::_('INSTALL') . ': ' . JText::_('SUCCESS');
 			            }
 			            $result['message'] = $this->module->raise('message', $msg, $name);
 			            $result['status'] = true;
 		            }
 	            } else {
-		            $msg = JText::_('PLUGIN') . ' ' .$name . ': ' . JText::_('FAILED') . ' ' . JText::_('NEED_JFUSION_VERSION') . ' "' . $version . '" ' . JText::_('OR_HIGHER');
+		            $msg = JText::_('PLUGIN') . ' ' . $name . ': ' . JText::_('FAILED') . ' ' . JText::_('NEED_JFUSION_VERSION') . ' "' . $version . '" ' . JText::_('OR_HIGHER');
 		            $this->parent->abort($msg);
 		            $result['message'] = $this->module->raise('error', $msg, $name);
 	            }
@@ -483,7 +483,7 @@ class JFusionPluginInstaller extends JObject
 			    if (is_array($result)) {
 				    $success = $result[0];
 				    if (is_array($result[1])) {
-					    $reason = implode('</li><li>'.$jname . ': ',$result[1]);
+					    $reason = implode('</li><li>' . $jname . ': ',$result[1]);
 				    } elseif (!empty($result[1])) {
 					    $reason = $result[1];
 				    }
@@ -491,7 +491,7 @@ class JFusionPluginInstaller extends JObject
 				    $success = $jname . ': ' . $result;
 			    }
 			    if (!$success) {
-				    throw new RuntimeException(JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason);
+				    throw new RuntimeException(JText::_('PLUGIN') . ' ' . $jname . ' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason);
 			    }
 		    }
 		    $db = JFactory::getDBO();
@@ -499,7 +499,7 @@ class JFusionPluginInstaller extends JObject
 		    $query = $db->getQuery(true)
 			    ->select('name , original_name')
 			    ->from('#__jfusion')
-			    ->where('name = '.$db->Quote($jname));
+			    ->where('name = ' . $db->Quote($jname));
 
 		    $db->setQuery($query);
 		    $plugin = $db->loadObject();
@@ -547,9 +547,9 @@ class JFusionPluginInstaller extends JObject
 				    if ($removeLanguage) {
 					    $languageFolder = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language';
 					    if (JFolder::exists($languageFolder)) {
-						    $files = JFolder::files(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language',  'com_jfusion.plg_'.$jname.'.ini',true);
+						    $files = JFolder::files(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language',  'com_jfusion.plg_' . $jname . '.ini',true);
 						    foreach ($files as $file) {
-							    $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file,0,5). DIRECTORY_SEPARATOR . $file;
+							    $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file, 0, 5). DIRECTORY_SEPARATOR . $file;
 							    JFile::delete($file);
 						    }
 					    }
@@ -560,7 +560,7 @@ class JFusionPluginInstaller extends JObject
 					    throw new RuntimeException(JText::_('UNINSTALL_ERROR_DELETE'));
 				    } else {
 					    //return success
-					    $msg = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ': ' . JText::_('SUCCESS');
+					    $msg = JText::_('PLUGIN') . ' ' . $jname . ' ' . JText::_('UNINSTALL') . ': ' . JText::_('SUCCESS');
 					    $result['message'] = $this->module->raise('message', $msg);
 					    $result['status'] = true;
 					    $result['jname'] = $jname;
@@ -663,7 +663,7 @@ class JFusionPluginInstaller extends JObject
 		                return $result;
 	                }
                 }
-	            $result['message'] = $this->module->raise('message', JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('COPY') . ' ' . JText::_('SUCCESS'), $new_jname);
+	            $result['message'] = $this->module->raise('message', JText::_('PLUGIN') . ' ' . $jname . ' ' . JText::_('COPY') . ' ' . JText::_('SUCCESS'), $new_jname);
                 $result['status'] = true;
             }
         }

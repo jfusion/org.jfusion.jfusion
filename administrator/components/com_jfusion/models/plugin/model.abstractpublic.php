@@ -83,7 +83,7 @@ class JFusionPublic extends JFusionPlugin
         //parse anchors
         if(!empty($data->parse_anchors)) {
             $regex_body[]	= '#href=(?<quote>["\'])\#(.*?)(\k<quote>)#mS';
-            $replace_body[]	= 'href=$1'.$data->fullURL.'#$2$3';
+            $replace_body[]	= 'href=$1' . $data->fullURL . '#$2$3';
             $callback_body[] = '';
         }
 
@@ -94,11 +94,11 @@ class JFusionPublic extends JFusionPlugin
             $path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is' , '$3' , $data->integratedURL);
             $path = preg_replace('#//+#','/',"/$path/");
 
-            $regex_body[]	= '#(action="|href="|src="|background="|url\(\'?)'.$path.'(.*?)("|\'?\))#mS';
-            $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
+            $regex_body[]	= '#(action="|href="|src="|background="|url\(\'?)' . $path . '(.*?)("|\'?\))#mS';
+            $replace_body[]	= '$1' . $data->integratedURL . '$2$3';
             $callback_body[] = '';
 
-	        $regex_body[] = '#(?<=href=["\'])'.$path.'(.*?)(?=["\'])#m';
+	        $regex_body[] = '#(?<=href=["\'])' . $path . '(.*?)(?=["\'])#m';
 	        $replace_body[] = '';
 	        $callback_body[] = 'fixUrl';
         }
@@ -116,7 +116,7 @@ class JFusionPublic extends JFusionPlugin
 
         //parse absolute URLS
         if(!empty($data->parse_abs_url)) {
-	        $regex_body[]	= '#(?<=href=["\'])'.$data->integratedURL.'(.*?)(?=["\'])#m';
+	        $regex_body[]	= '#(?<=href=["\'])' . $data->integratedURL . '(.*?)(?=["\'])#m';
 	        $replace_body[] = '';
 	        $callback_body[] = 'fixUrl';
         }
@@ -126,23 +126,23 @@ class JFusionPublic extends JFusionPlugin
 // (?<quote>["\'])
 // \k<quote>
             $regex_body[] = '#(src=["\']|background=["\']|url\()[./|/](.*?)(["\']|\))#mS';
-            $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
+            $replace_body[]	= '$1' . $data->integratedURL . '$2$3';
             $callback_body[] = '';
 
             $regex_body[] = '#(src=["\']|background=["\']|url\()(?!\w{0,10}://|\w{0,10}:)(.*?)(["\']|\))#mS';
-            $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
+            $replace_body[]	= '$1' . $data->integratedURL . '$2$3';
             $callback_body[] = '';
         }
 
         //parse form actions
         if(!empty($data->parse_action)) {
 	        if (!empty($data->parse_abs_path)) {
-		        $regex_body[] = '#action=[\'"]'.$path.'(.*?)[\'"](.*?)>#m';
+		        $regex_body[] = '#action=[\'"]' . $path . '(.*?)[\'"](.*?)>#m';
 		        $replace_body[]	= '';
 		        $callback_body[] = 'fixAction';
 	        }
 	        if (!empty($data->parse_abs_url)) {
-		        $regex_body[] = '#action=[\'"]'.$data->integratedURL.'(.*?)[\'"](.*?)>#m';
+		        $regex_body[] = '#action=[\'"]' . $data->integratedURL . '(.*?)[\'"](.*?)>#m';
 		        $replace_body[]	= '';
 		        $callback_body[] = 'fixAction';
 	        }
@@ -160,7 +160,7 @@ class JFusionPublic extends JFusionPlugin
         //parse relative popup links to full url links
         if(!empty($data->parse_popup)) {
             $regex_body[] = '#window\.open\(\'(?!\w{0,10}://)(.*?)\'\)#mS';
-            $replace_body[]	= 'window.open(\''.$data->integratedURL.'$1\'';
+            $replace_body[]	= 'window.open(\'' . $data->integratedURL . '$1\'';
             $callback_body[] = '';
         }
 
@@ -219,24 +219,24 @@ class JFusionPublic extends JFusionPlugin
         $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
         $path = preg_replace('#//+#','/',"/$path/");
 
-	    $regex_header[]	= '#(href|src)=(?<quote>["\'])'.$path.'(.*?)(\k<quote>)#Si';
-	    $replace_header[] = '$1=$2'.$data->integratedURL.'$3$4';
+	    $regex_header[]	= '#(href|src)=(?<quote>["\'])' . $path . '(.*?)(\k<quote>)#Si';
+	    $replace_header[] = '$1=$2' . $data->integratedURL . '$3$4';
 	    $callback_header[] = '';
 
 	    $regex_header[]		= '#(href|src)=(?<quote>["\'])(./|/)(.*?)(\k<quote>)#iS';
-	    $replace_header[]	= '$1=$2'.$data->integratedURL.'$4$5';
+	    $replace_header[]	= '$1=$2' . $data->integratedURL . '$4$5';
 	    $callback_header[] = '';
 
 	    $regex_header[] 	= '#(href|src)=(?<quote>["\'])(?!\w{0,10}://)(.*?)(\k<quote>)#mSi';
-	    $replace_header[]	= '$1=$2'.$data->integratedURL.'$3$4';
+	    $replace_header[]	= '$1=$2' . $data->integratedURL . '$3$4';
 	    $callback_header[] = '';
 
-	    $regex_header[]		= '#@import(.*?)(?<quote>["\'])'.$path.'(.*?)(\k<quote>)#Sis';
-	    $replace_header[]	= '@import$1$2'.$data->integratedURL.'$3$4';
+	    $regex_header[]		= '#@import(.*?)(?<quote>["\'])' . $path . '(.*?)(\k<quote>)#Sis';
+	    $replace_header[]	= '@import$1$2' . $data->integratedURL . '$3$4';
 	    $callback_header[] = '';
 
 	    $regex_header[]		= '#@import(.*?)(?<quote>["\'])/(.*?)(\k<quote>)#Sis';
-	    $replace_header[]	= '@import$1$2'.$data->integratedURL.'$3$4';
+	    $replace_header[]	= '@import$1$2' . $data->integratedURL . '$3$4';
 	    $callback_header[] = '';
 
         //fix for URL redirects
@@ -339,8 +339,8 @@ JS;
 
         $document = JFactory::getDocument();
 
-        $sourcepath = JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR .$jname . DIRECTORY_SEPARATOR;
-        $urlpath = 'components/com_jfusion/css/'.$jname.'/';
+        $sourcepath = JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
+        $urlpath = 'components/com_jfusion/css/' . $jname . '/';
 
         jimport('joomla.filesystem.file');
         jimport('joomla.filesystem.folder');
@@ -360,10 +360,10 @@ JS;
 		                    if (strpos($cssUrlRaw,'/') === 0) {
 			                    $uri = new JURI($data->integratedURL);
 
-			                    $cssUrlRaw = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port')).$cssUrlRaw;
+			                    $cssUrlRaw = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port')) . $cssUrlRaw;
 		                    }
 		                    $filename = $this->cssCacheName(urldecode(htmlspecialchars_decode($cssUrl[1])));
-		                    $filenamesource = $sourcepath.$filename;
+		                    $filenamesource = $sourcepath . $filename;
 
 		                    if ( !JFile::exists($filenamesource) ) {
 			                    $cssparser = new cssparser('#jfusionframeless');
@@ -375,7 +375,7 @@ JS;
 		                    }
 
 		                    if ( JFile::exists($filenamesource) ) {
-			                    $html = str_replace($cssUrlRaw  , $urlpath.$filename  , $html );
+			                    $html = str_replace($cssUrlRaw  , $urlpath . $filename  , $html );
 		                    }
 	                    }
                     }
@@ -386,8 +386,8 @@ JS;
             if (preg_match_all( '#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', $html, $css )) {
                 require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'css.php');
                 foreach ($css[1] as $key => $values) {
-                    $filename = md5($values).'.css';
-                    $filenamesource = $sourcepath.'infile'.DIRECTORY_SEPARATOR.$filename;
+                    $filename = md5($values) . '.css';
+                    $filenamesource = $sourcepath . 'infile' . DIRECTORY_SEPARATOR . $filename;
 
                     if ( preg_match( '#media=[\'|"](.*?)[\'|"]#Si', $css[0][$key], $cssMedia ) ) {
                         $cssMedia = $cssMedia[1];
@@ -403,7 +403,7 @@ JS;
                         JFile::write($filenamesource, $content);
                     }
                     if ( JFile::exists($filenamesource) ) {
-                        $document->addStyleSheet($urlpath.'infile/'.$filename,'text/css',$cssMedia);
+                        $document->addStyleSheet($urlpath . 'infile/' . $filename,'text/css', $cssMedia);
                     }
                 }
                 $html = preg_replace ( '#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', '', $html );
@@ -557,25 +557,25 @@ JS;
             $return = $content;
             switch ($name) {
                 case 'size':
-                    $return = '<span style="font-size:'.$default.'">'.$content.'</span>';
+                    $return = '<span style="font-size:' . $default . '">' . $content . '</span>';
                     break;
                 case 'glow':
                     $temp = explode(',', $default);
                     $color = (!empty($temp[0])) ? $temp[0] : 'red';
-                    $return = '<span style="background-color:'.$color.'">'.$content.'</span>';
+                    $return = '<span style="background-color:' . $color . '">' . $content . '</span>';
                     break;
                 case 'shadow':
                     $temp = explode(',', $default);
                     $color = (!empty($temp[0])) ? $temp[0] : '#6374AB';
                     $dir = (!empty($temp[1])) ? $temp[1] : 'left';
                     $x = ($dir == 'left') ? '-0.2em' : '0.2em';
-                    $return = '<span style="text-shadow: '.$color.' '.$x.' 0.1em 0.2em;">'.$content.'</span>';
+                    $return = '<span style="text-shadow: ' . $color . ' ' . $x . ' 0.1em 0.2em;">' . $content . '</span>';
                     break;
                 case 'move':
-                    $return = '<marquee>'.$content.'</marquee>';
+                    $return = '<marquee>' . $content . '</marquee>';
                     break;
                 case 'pre':
-                    $return = '<pre>'.$content.'</pre>';
+                    $return = '<pre>' . $content . '</pre>';
                     break;
                 case 'hr':
 	                $return = '<hr>';
@@ -601,43 +601,43 @@ HTML;
                     if (empty($default)) {
                         $default = $content;
                     }
-                    $return = '<a href="'.$content.'">'.$default.'</a>';
+                    $return = '<a href="' . $content . '">' . $default . '</a>';
                     break;
                 case 'table':
-                    $return = '<table>'.$content.'</table>';
+                    $return = '<table>' . $content . '</table>';
                     break;
                 case 'tr':
-                    $return = '<tr>'.$content.'</tr>';
+                    $return = '<tr>' . $content . '</tr>';
                     break;
                 case 'td':
-                    $return = '<td>'.$content.'</td>';
+                    $return = '<td>' . $content . '</td>';
                     break;
                 case 'tt';
-                    $return = '<tt>'.$content.'</tt>';
+                    $return = '<tt>' . $content . '</tt>';
                     break;
                 case 'o':
                 case 'O':
                 case '0':
-                    $return = '<li type="circle">'.$content.'</li>';
+                    $return = '<li type="circle">' . $content . '</li>';
                     break;
                 case '*':
                 case '@':
-                    $return = '<li type="disc">'.$content.'</li>';
+                    $return = '<li type="disc">' . $content . '</li>';
                     break;
                 case '+':
                 case 'x':
                 case '#':
-                    $return = '<li type="square">'.$content.'</li>';
+                    $return = '<li type="square">' . $content . '</li>';
                     break;
                 case 'abbr':
                     if (empty($default)) {
                         $default = $content;
                     }
-                    $return = '<abbr title="'.$default.'">'.$content.'</abbr>';
+                    $return = '<abbr title="' . $default . '">' . $content . '</abbr>';
                     break;
                 case 'anchor':
                     if (!empty($default)) {
-                        $return = '<span id="'.$default.'">'.$content.'</span>';
+                        $return = '<span id="' . $default . '">' . $content . '</span>';
                     } else {
                         $return = $content;
                     }
@@ -647,13 +647,13 @@ HTML;
                 case 'green':
                 case 'red':
                 case 'white':
-                    $return = '<span style="color: '.$name.';">'.$content.'</span>';
+                    $return = '<span style="color: ' . $name . ';">' . $content . '</span>';
                     break;
                 case 'iurl':
                     if (empty($default)) {
                         $default = $content;
                     }
-                    $return = '<a href="' . htmlspecialchars($default) . '" class="bbcode_url" target="_self">'.$content.'</a>';
+                    $return = '<a href="' . htmlspecialchars($default) . '" class="bbcode_url" target="_self">' . $content . '</a>';
                     break;
                 case 'html':
                 case 'nobbc':
@@ -661,13 +661,13 @@ HTML;
                     $return = $content;
                     break;
                 case 'ltr':
-                    $return = '<div style="text-align: left;" dir="$name">'.$content.'</div>';
+                    $return = '<div style="text-align: left;" dir="$name">' . $content . '</div>';
                     break;
                 case 'rtl':
-                    $return = '<div style="text-align: right;" dir="$name">'.$content.'</div>';
+                    $return = '<div style="text-align: right;" dir="$name">' . $content . '</div>';
                     break;
                 case 'me':
-                    $return = '<div style="color: red;">* '.$default.' '.$content.'</div>';
+                    $return = '<div style="color: red;">* ' . $default . ' ' . $content . '</div>';
                     break;
                 case 'time':
                     $return = date('Y-m-d H:i', $content);
@@ -844,23 +844,23 @@ HTML;
 		    $columns = $this->getSearchQueryColumns();
 		    //build the query
 		    if ($phrase == 'exact') {
-			    $where = '((LOWER('.$columns->title.') LIKE \'%'.$text.'%\') OR (LOWER('.$columns->text.') like \'%'.$text.'%\'))';
+			    $where = '((LOWER(' . $columns->title . ') LIKE \'%' . $text . '%\') OR (LOWER(' . $columns->text . ') like \'%' . $text . '%\'))';
 		    } else {
 			    $words = explode(' ', $text);
 			    $wheres = array();
 			    foreach ($words as $word) {
-				    $wheres[] = '((LOWER('.$columns->title.') LIKE \'%'.$word.'%\') OR (LOWER('.$columns->text.') like \'%'.$word.'%\'))';
+				    $wheres[] = '((LOWER(' . $columns->title . ') LIKE \'%' . $word . '%\') OR (LOWER(' . $columns->text . ') like \'%' . $word . '%\'))';
 			    }
 			    if ($phrase == 'all') {
 				    $separator = 'AND';
 			    } else {
 				    $separator = 'OR';
 			    }
-			    $where = '(' . implode(') '.$separator.' (', $wheres) . ')';
+			    $where = '(' . implode(') ' . $separator . ' (', $wheres) . ')';
 		    }
 		    //pass the where clause into the plugin in case it wants to add something
 		    $this->getSearchCriteria($where, $pluginParam, $ordering);
-		    $query.= ' WHERE '.$where;
+		    $query.= ' WHERE ' . $where;
 		    //add a limiter if set
 		    $limit = $pluginParam->get('search_limit', '');
 		    if (!empty($limit)) {
@@ -1035,17 +1035,17 @@ HTML;
         //get the url
         $query = ($_GET);
 
-	    $jfile = JFactory::getApplication()->input->get('jfile','index.php','raw');
+	    $jfile = JFactory::getApplication()->input->get('jfile', 'index.php', 'raw');
 
         unset($query['option'], $query['jfile'], $query['Itemid'], $query['jFusion_Route'], $query['view'],$query['layout'], $query['controller'], $query['lang'], $query['task']);
 
         $queries = array();
 
         foreach($query as $key => $var) {
-            $queries[] = $key.'='.$var;
+            $queries[] = $key . '=' . $var;
         }
 
-        $wrap = $jfile . '?'. implode($queries,'&');
+        $wrap = $jfile . '?' . implode($queries, '&');
 
         $source_url = $this->params->get('source_url');
 

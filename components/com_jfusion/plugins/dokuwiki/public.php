@@ -129,7 +129,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic
             ob_end_clean();
 
             if (ob_get_contents() !== false) {
-                $data->buffer = ob_get_contents().$data->buffer;
+                $data->buffer = ob_get_contents() . $data->buffer;
                 ob_end_clean();
                 ob_start();
             }
@@ -227,7 +227,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic
 
             //convert relative links into absolute links
             $regex_header[]    = '#(href|src)=["\'][./|/](.*?)["\']#mS';
-            $replace_header[] = '$1="'.$data->integratedURL.'$2"';
+            $replace_header[] = '$1="' . $data->integratedURL . '$2"';
             */
         }
         $data->header = preg_replace($regex_header, $replace_header, $data->header);

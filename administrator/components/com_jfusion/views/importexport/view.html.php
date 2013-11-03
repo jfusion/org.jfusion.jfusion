@@ -56,11 +56,11 @@ class jfusionViewimportexport extends JViewLegacy
         //custom for development purposes / local use only; note do not commit your URL to GIT!!!
 
 	    $document = JFactory::getDocument();
-	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+	    $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
-	    $url = 'http://update.jfusion.org/jfusion/joomla/configs.php?version='.$jversion->getShortVersion();
+	    $url = 'http://update.jfusion.org/jfusion/joomla/configs.php?version=' . $jversion->getShortVersion();
         $ConfigList = JFusionFunctionAdmin::getFileData($url);
 
 	    $xml = JFusionFunction::getXml($ConfigList,false);

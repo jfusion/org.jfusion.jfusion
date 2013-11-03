@@ -49,7 +49,7 @@ class JFormFieldJFusionItemid extends JFormField
         } else {
             $elId++;
         }
-	    $name = $this->name.$elId;
+	    $name = $this->name . $elId;
 
 
         $feature = $this->element['feature'];

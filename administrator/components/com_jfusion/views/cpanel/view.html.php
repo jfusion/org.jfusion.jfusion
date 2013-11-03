@@ -45,7 +45,7 @@ class jfusionViewcpanel extends JViewLegacy
     {
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
-	    $cpanel = 'http://update.jfusion.org/jfusion/joomla/cpanel.php?version='.$jversion->getShortVersion();
+	    $cpanel = 'http://update.jfusion.org/jfusion/joomla/cpanel.php?version=' . $jversion->getShortVersion();
         //define the standard message when the XML is not found
         $curl_disabled = '<?xml version="1.0" standalone="yes"?>
                     <document><item><date></date>

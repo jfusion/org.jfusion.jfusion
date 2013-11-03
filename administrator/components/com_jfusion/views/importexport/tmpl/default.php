@@ -110,7 +110,7 @@ jimport('joomla.html.pane');
 				$query = $db->getQuery(true)
 					->select('name , original_name')
 					->from('#__jfusion')
-					->where('name = '.$db->Quote($this->jname));
+					->where('name = ' . $db->Quote($this->jname));
 
 		        $db->setQuery($query);
 		        $plugin = $db->loadObject();
@@ -152,15 +152,15 @@ jimport('joomla.html.pane');
 		                            <label for="importexport<?php echo $name; ?>"><?php echo ucfirst($name); ?></label>
 	                                <a href="javascript:void(0);" id="plugin<?php echo $name; ?>">[+]</a>
 	                                <div style="display:none;" id="xplugin<?php echo $name; ?>">
-								        <?php echo JText::_('VERSION').': '.$version; ?>
+								        <?php echo JText::_('VERSION') . ': ' . $version; ?>
 	                                    <br/>
-		                                <?php echo JText::_('DATE').': '.$date; ?>
+		                                <?php echo JText::_('DATE') . ': ' . $date; ?>
 	                                    <br/>
-								        <?php echo JText::_('DESCRIPTION').': '.ucfirst($description); ?>
+								        <?php echo JText::_('DESCRIPTION') . ': ' . ucfirst($description); ?>
 	                                    <br/>
-								        <?php echo JText::_('CREATOR').': '.$creator; ?>
+								        <?php echo JText::_('CREATOR') . ': ' . $creator; ?>
 	                                    <br/>
-		                                <?php echo JText::_('URL').': <a href="'.$remotefile.'">'.$remotefile. '</a>'; ?>
+		                                <?php echo JText::_('URL') . ': <a href="' . $remotefile . '">' . $remotefile . '</a>'; ?>
 	                                </div>
 	                            </td>
 	                        </tr>

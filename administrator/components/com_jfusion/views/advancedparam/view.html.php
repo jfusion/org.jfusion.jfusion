@@ -66,7 +66,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 		JHtml::_('Formbehavior.chosen');
 
 		$document = JFactory::getDocument();
-		$document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+		$document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
 		$mainframe = JFactory::getApplication();
 
@@ -113,7 +113,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$document = JFactory::getDocument();
 		$document->setTitle('Plugin Selection');
 		$template = $mainframe->getTemplate();
-		$document->addStyleSheet('templates/'.$template.'/css/general.css');
+		$document->addStyleSheet('templates/' . $template. ' /css/general.css');
 
 		$css = '.jfusion table.jfusionlist, table.jfusiontable{ font-size:11px; }';
 		$document->addStyleDeclaration($css);
@@ -216,7 +216,7 @@ HTML;
 						 */
 						$form = JForm::getInstance($jname, $xml->form->asXML(), array('control' => "params[$jname]"));
 						//add JFusion's fields
-						$form->addFieldPath(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'fields');
+						$form->addFieldPath(JPATH_COMPONENT . DIRECTORY_SEPARATOR . 'fields');
 						if (isset($value[$jname])) {
 							$form->bind($value[$jname]);
 						}
@@ -352,7 +352,7 @@ HTML;
 						 */
 						$form = JForm::getInstance($jname, $xml->form->asXML(), array('control' => "params[$jname]"));
 						//add JFusion's fields
-						$form->addFieldPath(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'fields');
+						$form->addFieldPath(JPATH_COMPONENT . DIRECTORY_SEPARATOR . 'fields');
 						//bind values
 						$form->bind($value[$key]);
 						$value[$key]['form'] = $form;

@@ -68,11 +68,11 @@ function str_get_html($str, $lowercase=true) {
  */
 function dump_html_tree($node, $show_attr=true, $deep=0) {
     $lead = str_repeat('    ', $deep);
-    echo $lead.$node->tag;
+    echo $lead . $node->tag;
     if ($show_attr && count($node->attr)>0) {
         echo '(';
-        foreach($node->attr as $k=>$v)
-            echo "[$k]=>\"".$node->$k.'", ';
+        foreach($node->attr as $k => $v)
+            echo "[$k]=>\"" . $node->$k . '", ';
         echo ')';
     }
     echo "\n";
@@ -291,7 +291,7 @@ class simple_html_dom_node {
 
         // render end tag
         if(isset($this->_[HDOM_INFO_END]) && $this->_[HDOM_INFO_END]!=0)
-            $ret .= '</'.$this->tag.'>';
+            $ret .= '</' . $this->tag . '>';
         return $ret;
     }
 
@@ -339,7 +339,7 @@ class simple_html_dom_node {
         // text, comment, unknown
         if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
 
-        $ret = '<'.$this->tag;
+        $ret = '<' . $this->tag;
         $i = -1;
 
         foreach($this->attr as $key=>$val) {
@@ -359,7 +359,7 @@ class simple_html_dom_node {
                     case HDOM_QUOTE_SINGLE: $quote = '\''; break;
                     default: $quote = '';
                 }
-                $ret .= $key.$this->_[HDOM_INFO_SPACE][$i][1].'='.$this->_[HDOM_INFO_SPACE][$i][2].$quote.$val.$quote;
+                $ret .= $key . $this->_[HDOM_INFO_SPACE][$i][1] . '=' . $this->_[HDOM_INFO_SPACE][$i][2] . $quote . $val . $quote;
             }
         }
         $ret = $this->dom->restore_noise($ret);
@@ -504,7 +504,7 @@ class simple_html_dom_node {
             case '*=':
                 if ($pattern[0]=='/')
                     return preg_match($pattern, $value);
-                return preg_match("/".$pattern."/i", $value);
+                return preg_match('/' . $pattern . '/i', $value);
         }
         return false;
     }
@@ -1038,7 +1038,7 @@ class simple_html_dom {
             if($this->pos>=$this->size-1 && $this->char!=='>') {
                 $node->nodetype = HDOM_TYPE_TEXT;
                 $node->_[HDOM_INFO_END] = 0;
-                $node->_[HDOM_INFO_TEXT] = '<'.$tag . $space[0] . $name;
+                $node->_[HDOM_INFO_TEXT] = '<' . $tag . $space[0] . $name;
                 $node->tag = 'text';
                 $this->link_nodes($node, false);
                 return true;
@@ -1265,9 +1265,9 @@ class simple_html_dom {
      */
     function restore_noise($text) {
         while(($pos=strpos($text, '___noise___'))!==false) {
-            $key = '___noise___'.$text[$pos+11].$text[$pos+12].$text[$pos+13];
+            $key = '___noise___' . $text[$pos+11] . $text[$pos+12] . $text[$pos+13];
             if (isset($this->noise[$key]))
-                $text = substr($text, 0, $pos).$this->noise[$key].substr($text, $pos+14);
+                $text = substr($text, 0, $pos) . $this->noise[$key] . substr($text, $pos+14);
         }
         return $text;
     }

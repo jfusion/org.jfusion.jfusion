@@ -26,7 +26,7 @@ class JFusionHelper {
 		if( preg_match('(login_custom_redirect|logout_custom_redirect)', $type) && strlen($params->get($type)) > 0 ) {
 			$url = $params->get($type);
 		} elseif($itemid) {
-			$url = 'index.php?Itemid='.$itemid;
+			$url = 'index.php?Itemid=' . $itemid;
 			$url = JRoute::_($url);
 		} else {
 			// Redirect to login

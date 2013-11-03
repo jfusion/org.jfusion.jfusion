@@ -140,8 +140,8 @@ class JFusionAPI {
 		if ($type) {
 			$class = $this->createClass($this->read('jfclass'));
 			if ($class) {
-				$function = $type.$task;
-				if (method_exists( $class , $function )) {
+				$function = $type . $task;
+				if (method_exists($class, $function)) {
 					$data['payload'] = $class->$function();
 
 					$this->error = $class->error;
@@ -149,10 +149,10 @@ class JFusionAPI {
 
 					$encrypt = $class->encrypt;
 				} else {
-					$this->error[] = 'Class: '.get_class($class).' Method: '.$function.' undefined';
+					$this->error[] = 'Class: ' . get_class($class) . ' Method: ' . $function . ' undefined';
 				}
 			} else {
-				$this->error[] = 'Type: '.$type.' Class: undefined';
+				$this->error[] = 'Type: ' . $type . ' Class: undefined';
 			}
 		} else {
 			$this->error[] = 'type not defined';
@@ -168,7 +168,7 @@ class JFusionAPI {
 		//controller for when api gets called externally
 		$class = ucfirst(strtolower($class));
 		if ($class) {
-			$class = 'JFusionAPI_'.$class;
+			$class = 'JFusionAPI_' . $class;
 			$class = new $class($this->createkey());
 		} else {
 			$class = null;
@@ -183,11 +183,11 @@ class JFusionAPI {
 	 *
 	 * @return string
 	 */
-	public function getExecuteURL($class,$task,$return)
+	public function getExecuteURL($class, $task, $return)
 	{
-		$url = $this->url.'?jftask='.$task.'&jfclass='.$class.'&jftype=execute&jfreturn='.base64_encode($return);
+		$url = $this->url.'?jftask=' . $task . '&jfclass=' . $class . '&jftype=execute&jfreturn=' . base64_encode($return);
 		if ($this->sid) {
-			$url .= '&PHPSESSID='.$this->sid;
+			$url .= '&PHPSESSID=' . $this->sid;
 		}
 		return $url;
 	}
@@ -199,7 +199,7 @@ class JFusionAPI {
 	 *
 	 * @return bool
 	 */
-	public function set($class, $task, $payload=array())
+	public function set($class, $task, $payload = array())
 	{
 		return $this->raw('set',$class, $task, $payload);
 	}
@@ -211,7 +211,7 @@ class JFusionAPI {
 	 *
 	 * @return bool
 	 */
-	public function get($class, $task, $payload=array())
+	public function get($class, $task, $payload = array())
 	{
 		return $this->raw('get',$class, $task, $payload);
 	}
@@ -224,13 +224,13 @@ class JFusionAPI {
 	 *
 	 * @return bool
 	 */
-	public function execute($class, $task, $payload=array(), $return='')
+	public function execute($class, $task, $payload = array(), $return = '')
 	{
 		if (!empty($return)) {
-			header('Location: '.$this->getExecuteURL($class,$task,$return).'&jfpayload='.base64_encode(json_encode($payload)));
+			header('Location: ' . $this->getExecuteURL($class, $task, $return) . '&jfpayload=' . base64_encode(json_encode($payload)));
 			return true;
 		} else {
-			return $this->raw('execute',$class, $task, $payload);
+			return $this->raw('execute', $class, $task, $payload);
 		}
 	}
 
@@ -506,13 +506,13 @@ class JFusionAPIBase {
 	 */
 	protected function doExit($url = null) {
 		if ($url && isset($_GET['jfreturn'])) {
-			$url .= '&jfreturn='.$_GET['jfreturn'];
+			$url .= '&jfreturn=' . $_GET['jfreturn'];
 		} else if (isset($_GET['jfreturn'])) {
 			$url = base64_decode($_GET['jfreturn']);
 		}
 
 		if ( $url ) {
-			header('Location: '.$url);
+			header('Location: ' . $url);
 		}
 		exit();
 	}
@@ -730,7 +730,7 @@ class JFusionAPI_Cookie extends JFusionAPIBase {
 
 			if ( isset($session['cookies']) && count($session['cookies']) && is_array($session['cookies']) ) {
 				foreach($session['cookies'] as $value ) {
-					header('Set-Cookie: '.$value, false);
+					header('Set-Cookie: ' . $value, false);
 				}
 			}
 
@@ -740,7 +740,7 @@ class JFusionAPI_Cookie extends JFusionAPIBase {
 
 					$this->payload = $this->buildPayload($this->payload);
 
-					$this->doExit($key.'?jfpayload='.$this->payload.'&PHPSESSID='.$value.'&jftype=execute&jfclass=cookie&jftask=cookies');
+					$this->doExit($key . '?jfpayload=' . $this->payload . '&PHPSESSID=' . $value . '&jftype=execute&jfclass=cookie&jftask=cookies');
 				}
 			} else {
 				$this->doExit();
@@ -783,17 +783,16 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			define('_JREQUEST_NO_CLEAN', true); // we don't want to clean variables as it can "corrupt" them for some applications, it also clear any globals used...
 
 			if (!class_exists('JVersion')) {
-				if (file_exists(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'cms'.DIRECTORY_SEPARATOR.'version'.DIRECTORY_SEPARATOR.'version.php')) {
-					include_once(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'cms'.DIRECTORY_SEPARATOR.'version'.DIRECTORY_SEPARATOR.'version.php');
-				} elseif (file_exists(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'joomla'.DIRECTORY_SEPARATOR.'version.php')) {
-					include_once(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'joomla'.DIRECTORY_SEPARATOR.'version.php');
-				} elseif (file_exists(JPATH_ROOT.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'version.php')) {
-					include_once(JPATH_ROOT.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'version.php');
+				if (file_exists(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'version' . DIRECTORY_SEPARATOR . 'version.php')) {
+					include_once(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'version' . DIRECTORY_SEPARATOR . 'version.php');
+				} elseif (file_exists(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'version.php')) {
+					include_once(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'version.php');
+				} elseif (file_exists(JPATH_ROOT . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'version.php')) {
+					include_once(JPATH_ROOT . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'version.php');
 				}
 			}
 
-			include_once JPATH_LIBRARIES.'/import.php';
-
+			include_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'import.php';
 			require_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'loader.php';
 
 			$autoloaders = spl_autoload_functions();
@@ -1035,9 +1034,9 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 		if ($user) {
 			if ($user->delete()) {
-				$this->debug[] = 'user deleted: '.$userid;
+				$this->debug[] = 'user deleted: ' . $userid;
 			} else {
-				$this->error[] = 'Delete user failed: '.$userid;
+				$this->error[] = 'Delete user failed: ' . $userid;
 			}
 		} else {
 			$this->error[] = 'invalid user';

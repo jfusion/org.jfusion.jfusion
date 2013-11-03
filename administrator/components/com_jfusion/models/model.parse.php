@@ -300,7 +300,7 @@ class JFusionParse
      */
     public function __parseTag_img($matches)
     {
-        return '[img]'.$this->parseTag($matches[1],'img').'[/img]';
+        return '[img]' . $this->parseTag($matches[1], 'img') . '[/img]';
     }
 
     /**
@@ -320,6 +320,6 @@ class JFusionParse
      */
     public function __url($matches)
     {
-    	return '[url='.JRoute::_(JFusionFunction::getJoomlaURL().$matches[1]).']'.$matches[2].'[/url]';
+    	return '[url=' . JRoute::_(JFusionFunction::getJoomlaURL() . $matches[1]) . ']' . $matches[2] . '[/url]';
     }
 }

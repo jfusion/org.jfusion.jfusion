@@ -10,7 +10,7 @@
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'map.php');
+require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'map.php');
 
 /**
  * JFusion User Class for universal

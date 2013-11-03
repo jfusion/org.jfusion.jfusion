@@ -11,7 +11,7 @@
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
-require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.cookie.php');
+require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.cookie.php');
 
 /**
  * Singleton static only class that creates instances for each specific JFusion plugin.
@@ -85,7 +85,7 @@ class JFusionCurlFrameless {
 
 	        $menu = JMenu::getInstance('site');
         	$item = $menu->getActive();
-			$index = '/'.$item->route;
+			$index = '/' . $item->route;
 			$pos = strpos($current, $index);
 			if ( $pos !== false ) {
 				$current = substr($current, $pos+strlen($index));
@@ -109,18 +109,18 @@ class JFusionCurlFrameless {
 							$name=$file['name'][$key];
 							$path=$file['tmp_name'][$key];
 							if ($name) {
-								$filepath[$key] = JPATH_ROOT.DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.$name;
+								$filepath[$key] = JPATH_ROOT . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $name;
 								rename($path, $filepath[$key]);
-								$post[$userfile.'['.$key.']']='@'.$filepath[$key];
+								$post[$userfile . '['. $key . ']'] = '@' . $filepath[$key];
 							}
 						}
 					} else {
 						$path = $file['tmp_name'];
 						$name=$file['name'];
 						$key = $path;
-						$filepath[$key] = JPATH_ROOT.DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.$name;
+						$filepath[$key] = JPATH_ROOT . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $name;
 						rename($path, $filepath[$key]);
-						$post[$userfile]='@'.$filepath[$key];
+						$post[$userfile] = '@' . $filepath[$key];
 					}
 				}
 			}
@@ -135,7 +135,7 @@ class JFusionCurlFrameless {
 		}
 
 		if(!empty($data->httpauth) ) {
-			curl_setopt($this->ch,CURLOPT_USERPWD,$data->httpauth_username.':'.$data->httpauth_password);
+			curl_setopt($this->ch,CURLOPT_USERPWD,$data->httpauth_username . ':' . $data->httpauth_password);
 
 			switch ($data->httpauth) {
 				case "basic":
@@ -165,7 +165,7 @@ class JFusionCurlFrameless {
 		$ref = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
 		curl_setopt($this->ch, CURLOPT_REFERER, $ref);
 
-		$headers[] = 'X-Forwarded-For: '.$_SERVER['REMOTE_ADDR'];
+		$headers[] = 'X-Forwarded-For: ' . $_SERVER['REMOTE_ADDR'];
 		curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
 
 		curl_setopt($this->ch, CURLOPT_TIMEOUT, 30);
@@ -199,7 +199,7 @@ class JFusionCurlFrameless {
         }
 
 		if (curl_error($this->ch)) {
-			$status['error'][] = JText::_('CURL_ERROR_MSG').': '.curl_error($this->ch).' URL:'.$url;
+			$status['error'][] = JText::_('CURL_ERROR_MSG') . ': ' . curl_error($this->ch) . ' URL:' . $url;
 			curl_close($this->ch);
 			return $status;
 		}

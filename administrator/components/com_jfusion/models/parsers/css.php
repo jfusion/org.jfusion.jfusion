@@ -100,14 +100,14 @@ class cssparser {
 			if($tagmatch & $subtagmatch & $classmatch & $idmatch) {
 		    	$temp = $_tag;
 				if((strlen($temp) > 0) & (strlen($_class) > 0)) {
-					$temp .= '.'.$_class;
+					$temp .= '.' . $_class;
 				} elseif(strlen($temp) == 0) {
-					$temp = '.'.$_class;
+					$temp = '.' . $_class;
 				}
 				if((strlen($temp) > 0) & (strlen($_subtag) > 0)) {
-					$temp .= ':'.$_subtag;
+					$temp .= ':' . $_subtag;
 				} elseif(strlen($temp) == 0) {
-					$temp = ':'.$_subtag;
+					$temp = ':' . $_subtag;
 				}
 				if(isset($this->css[$temp][$property])) {
 					$result = $this->css[$temp][$property];
@@ -141,14 +141,14 @@ class cssparser {
 			if($tagmatch & $subtagmatch & $classmatch & $idmatch) {
 				$temp = $_tag;
 				if((strlen($temp) > 0) & (strlen($_class) > 0)) {
-					$temp .= '.'.$_class;
+					$temp .= '.' . $_class;
 				} elseif(strlen($temp) == 0) {
-					$temp = '.'.$_class;
+					$temp = '.' . $_class;
 				}
 				if((strlen($temp) > 0) & (strlen($_subtag) > 0)) {
-					$temp .= ':'.$_subtag;
+					$temp .= ':' . $_subtag;
 				} elseif(strlen($temp) == 0) {
-					$temp = ':'.$_subtag;
+					$temp = ':' . $_subtag;
 				}
 				foreach($this->css[$temp] as $property => $property_value) {
 					$result[$property] = $property_value;
@@ -268,18 +268,18 @@ class cssparser {
 			if (strpos($key, '@') === false ) {
 				if (isset($this->prefix) && strpos($key, $this->prefix) === false ) {
 					if ($key == 'body' || $key == 'html' || strpos($key, 'html body') !== false){
-						$result .= $key.' '.$this->prefix.' {
+						$result .= $key . ' ' . $this->prefix . ' {
 ';
 					} else {
-						$result .= $this->prefix.' '.$key.' {
+						$result .= $this->prefix . ' ' . $key . ' {
 ';
 					}
 				} else {
-					$result .= $key.' {
+					$result .= $key . ' {
 ';
 				}
 				foreach($values as $key2 => $value) {
-					$result .= '  '.$key2.': '.$value.';
+					$result .= '  ' . $key2 . ': ' . $value . ';
 ';
 				}
 				$result .= '}
@@ -288,9 +288,9 @@ class cssparser {
 			}
 		}
 		foreach($this->media as $key => $value) {
-			$result .= $key.' {
+			$result .= $key . ' {
 ';
-			$result .= ' '.$value;
+			$result .= ' ' . $value;
 			$result .= '}
 ';
 		}
@@ -312,11 +312,11 @@ class cssparser {
 		$this->regex = array();
 		$this->replace = array();
 
-		$pathinfo = parse_url  ( $this->url   );
+		$pathinfo = parse_url($this->url);
 
-		$sorceurl = $pathinfo['scheme'].'://'.$pathinfo['host'].'/';
+		$sorceurl = $pathinfo['scheme'] . '://' . $pathinfo['host'] . '/';
 
-		$sorcepath = explode('/',$pathinfo['path']);
+		$sorcepath = explode('/', $pathinfo['path']);
 		array_shift($sorcepath);
 		array_pop($sorcepath);
 
@@ -332,26 +332,26 @@ class cssparser {
 
 			$turl = $sorceurl;
 			if (count($temp)) {
-				$turl .= implode('/', $temp).'/';
+				$turl .= implode('/', $temp) . '/';
 			}
-			$this->regex[] = '#'.$path.'#iSs';
+			$this->regex[] = '#' . $path . '#iSs';
 			$this->replace[] = $turl;
 			array_pop($sorcepath);
 		}
 
-		$this->thisUrl = $sorceurl.implode('/', $sorcepathoriginal).'/';
+		$this->thisUrl = $sorceurl . implode('/', $sorcepathoriginal) . '/';
 
 		$this->regex[] = '#\.\/#is';
-		$this->replace[] = $sorceurl.implode('/', $sorcepathoriginal).'/';
+		$this->replace[] = $sorceurl . implode('/', $sorcepathoriginal) . '/';
 
 		$this->regex[] = '#url\(([^"\'\)]*)\)#is';
 		$this->replace[] = 'url("$1")';
 
 		$this->regex[] = '#url\(["\']/([^"\']*)["\']\)#Sis';
-		$this->replace[] = 'url("'.$sorceurl.'$1")';
+		$this->replace[] = 'url("' . $sorceurl . '$1")';
 
 		$this->regex[] = '#url\(["\'](?!\w{0,10}://)([^"\']*)["\']\)#Sis';
-		$this->replace[] = 'url("'.$sorceurl.implode("/", $sorcepathoriginal).'/$1")';
+		$this->replace[] = 'url("' . $sorceurl . implode("/", $sorcepathoriginal) . '/$1")';
 
 		$regexall = $this->regex;
 		$replaceall = $this->replace;
@@ -364,9 +364,9 @@ class cssparser {
 				$cssparser->ParseUrl($import);
 				$temp = $cssparser->GetCSS();
 
-				$content = str_replace($imports[0][$key]  , ''  , $content );
+				$content = str_replace($imports[0][$key], '', $content );
 
-				$content = $temp.$content;
+				$content = $temp . $content;
 			}
 		}
 		return $content;

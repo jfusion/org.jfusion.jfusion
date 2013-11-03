@@ -70,7 +70,7 @@ class jfusionViewsyncoptions extends JViewLegacy
     function display($tpl = null)
     {
 	    $document = JFactory::getDocument();
-	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+	    $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
         //find out what the JFusion master and slaves are
         $db = JFactory::getDBO();
@@ -82,7 +82,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 	        $query = $db->getQuery(true)
 		        ->select('syncid')
 		        ->from('#__jfusion_sync')
-		        ->where('syncid = '.$db->Quote($syncid));
+		        ->where('syncid = ' . $db->Quote($syncid));
 
             $db->setQuery($query);
             if ($db->loadResult()) {

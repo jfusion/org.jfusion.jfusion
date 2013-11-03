@@ -204,9 +204,9 @@ class JFusionForum extends JFusionPlugin
 				$contentModified = JFactory::getDate($contentitem->modified)->toUnix();
 
 				$status['debug'][] = 'Thread exists...comparing dates';
-				$status['debug'][] = 'Content Modification Date: '.$contentModified.' (' . date('Y-m-d H:i:s', $contentModified). ')';
-				$status['debug'][] = 'Thread Modification Date: '.$postModified.'  (' . date('Y-m-d H:i:s', $postModified). ')';
-				$status['debug'][] = 'Is '.$contentModified.' > '.$postModified.'?';
+				$status['debug'][] = 'Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified). ')';
+				$status['debug'][] = 'Thread Modification Date: ' . $postModified . '  (' . date('Y-m-d H:i:s', $postModified). ')';
+				$status['debug'][] = 'Is ' . $contentModified . ' > ' . $postModified . '?';
 				if($contentModified > $postModified) {
 					$status['debug'][] = 'Yes...attempting to update thread';
 					//update the post if the content has been updated
@@ -291,7 +291,7 @@ class JFusionForum extends JFusionPlugin
 	                            $query = $db->getQuery(true)
 		                            ->select('parent')
 		                            ->from('#__k2_categories')
-		                            ->where('id = '.$parent_id);
+		                            ->where('id = ' . $parent_id);
 
                                 $db->setQuery($query);
                                 //keep going up
@@ -458,7 +458,7 @@ class JFusionForum extends JFusionPlugin
 				$link_text = JText::_('DEFAULT_ARTICLE_LINK_TEXT');
 			} else {
 				if($dbparams->get('first_post_link_type') == 'image') {
-					$link_text = '<img src="'.$link_text.'">';
+					$link_text = '<img src="' . $link_text . '">';
 				}
 			}
 
@@ -514,10 +514,10 @@ class JFusionForum extends JFusionPlugin
 
 		$path = 'plugins/content/jfusion/discussbot/markitup';
 
-		$document->addScript(JFusionFunction::getJoomlaURL().$path.'/jquery.markitup.js');
-		$document->addScript(JFusionFunction::getJoomlaURL().$path.'/sets/bbcode/set.js');
-		$document->addStylesheet(JFusionFunction::getJoomlaURL().$path.'/skins/simple/style.css');
-		$document->addStylesheet(JFusionFunction::getJoomlaURL().$path.'/sets/bbcode/style.css');
+		$document->addScript(JFusionFunction::getJoomlaURL() . $path . '/jquery.markitup.js');
+		$document->addScript(JFusionFunction::getJoomlaURL() . $path . '/sets/bbcode/set.js');
+		$document->addStylesheet(JFusionFunction::getJoomlaURL() . $path . '/skins/simple/style.css');
+		$document->addStylesheet(JFusionFunction::getJoomlaURL() . $path . '/sets/bbcode/style.css');
 
 		$js = <<<JS
 		JFusion.loadMarkitup = true;
@@ -557,7 +557,7 @@ HTML;
 
 		}
 		$quickReply = JFactory::getApplication()->input->post->get('quickReply','');
-	   	$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">'.$quickReply.'</textarea><br />';
+	   	$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">' . $quickReply . '</textarea><br />';
 	   	return $html;
 	}
 
@@ -578,7 +578,7 @@ HTML;
 				//answer/question method
 				$question = $dbparams->get('captcha_question');
 				if(!empty($question)) {
-					$html .= '<tr><td>'.$question.':</td><td><input name="captcha_answer" value="" class="inputbox"/></td></tr>';
+					$html .= '<tr><td>' . $question . ':</td><td><input name="captcha_answer" value="" class="inputbox"/></td></tr>';
 				}
 				break;
 			case 'joomla15captcha':
@@ -593,7 +593,7 @@ HTML;
 				break;
 			case 'recaptcha':
 				//using reCAPTCHA (http://recaptcha.net)
-				$recaptchalib = JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'recaptchalib.php';
+				$recaptchalib = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'recaptchalib.php';
 				if(file_exists($recaptchalib)) {
 					$theme = $dbparams->get('recaptcha_theme','red');
 					$lang = $dbparams->get('recaptcha_lang','en');
@@ -686,7 +686,7 @@ JS;
 				break;
 			case 'recaptcha':
 				//using reCAPTCHA (http://recaptcha.net)
-				$recaptchalib = JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'recaptchalib.php';
+				$recaptchalib = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'recaptchalib.php';
 				if(file_exists($recaptchalib)) {
 					if (!function_exists('recaptcha_check_answer')) {
                 		include_once $recaptchalib;

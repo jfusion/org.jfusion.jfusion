@@ -128,7 +128,7 @@ HTML;
 		} else {
 			$src = 'components/com_jfusion/images/clear.png';
 		}
-		$output .= '<img id="'.$this->id.'_save" src="'.$src.'" alt="' . JText::_('SAVE') . '">';
+		$output .= '<img id="' . $this->id . '_save" src="' . $src . '" alt="' . JText::_('SAVE') . '">';
 		return $output;
 	}
 }

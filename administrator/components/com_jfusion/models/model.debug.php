@@ -163,7 +163,7 @@ CSS;
 			if ($start == true) { // the "root" run
 				$neededScriptCode = static::getToggleScript();
 				$neededStyleCode = static::setStylesForScheme($schema);
-				$str = $neededScriptCode . '<div class="debug_'.$schema.'">'."\n" . $neededStyleCode;
+				$str = $neededScriptCode . '<div class="debug_' . $schema . '">' . "\n" . $neededStyleCode;
 			}
 			$emptyWhat = 'empty-array';
 			$keyClass = 'a_key';
@@ -184,21 +184,21 @@ CSS;
 							list(, $value) = $target->$function($key, $value, $args);
 						}
 					}
-					$str.= '<span class="'.$keyClass.'" style="'.$style.'"> ' . static::decorateValue($key) . '</span> ';
-					$str.= '<span class="value" style="'.$style.'" > ' . static::decorateValue($value) . '</span><br/>';
+					$str .= '<span class="' . $keyClass . '" style="' . $style . '"> ' . static::decorateValue($key) . '</span> ';
+					$str .= '<span class="value" style="' . $style . '" > ' . static::decorateValue($value) . '</span><br/>';
 					$style = $temp;
 				}
 				if ($empty) {
-					$str.= '<span class="'.$keyClass.'">'.$emptyWhat.'</span><br>'."\n";
+					$str .= '<span class="' . $keyClass . '">' . $emptyWhat . '</span><br>' . "\n";
 				}
 			} else {
 				$onClick = '';
 				if (static::$toggleFunctionName != '') $onClick = 'onclick="' . static::$toggleFunctionName . '(event)"';
-				$str.= '<table class="grid" width="100%">';
+				$str .= '<table class="grid" width="100%">';
 				if ($name != '') {
-					$str.= '<thead '.$onClick.'><tr><th colspan="2" class="title">'.$name.'</th></tr></thead>';
+					$str .= '<thead ' . $onClick . '><tr><th colspan="2" class="title">' . $name . '</th></tr></thead>';
 				}
-				$str.= '<tbody>';
+				$str .= '<tbody>';
 				foreach ($arr as $key => $value) {
 					$temp = $style;
 					$empty = false;
@@ -211,14 +211,14 @@ CSS;
 						}
 
 					}
-					$str.= '<tr>';
-					$str.= '<td class="'.$keyClass.'" '.$onClick.' style="'.$style.'">'.static::decorateValue($key).'</td>';
-					$str.= '<td class="value" style="'.$style.'">'.static::get($value, false, $style).'</td>';
-					$str.= '</tr>';
+					$str .= '<tr>';
+					$str .= '<td class="' . $keyClass . '" ' . $onClick . ' style="' . $style . '">' . static::decorateValue($key) . '</td>';
+					$str .= '<td class="value" style="' . $style . '">' . static::get($value, false, $style) . '</td>';
+					$str .= '</tr>';
 					$style = $temp;
 				}
 				if ($empty) {
-					$str.= '<tr><td colspan="2" class="'.$keyClass.'">'.$emptyWhat.'</td></tr>';
+					$str .= '<tr><td colspan="2" class="' . $keyClass . '">' . $emptyWhat . '</td></tr>';
 				}
 				$str.= '</tbody></table>';
 			}
@@ -227,7 +227,7 @@ CSS;
 			}
 		} else { // the "leave"-run
 			$str = static::decorateValue($arr);
-			if ($name != '') $str = '<div class="debug_0"><table class="grid" width="100%"><thead onclick="'.static::$toggleFunctionName.'(event)"><tr><th class="title">'.$name.'</th></tr></thead><tbody><tr><td class="a_key" onclick="'.static::$toggleFunctionName.'(event)">'.$str.'</td></tr></tbody></table></div>';
+			if ($name != '') $str = '<div class="debug_0"><table class="grid" width="100%"><thead onclick="' . static::$toggleFunctionName . '(event)"><tr><th class="title">' . $name . '</th></tr></thead><tbody><tr><td class="a_key" onclick="' . static::$toggleFunctionName . '(event)">' . $str . '</td></tr></tbody></table></div>';
 			//flush();
 
 		}
@@ -250,7 +250,7 @@ CSS;
 		}
 		$str = '';
 		if (is_string($start)) {
-			$str.= $start.' - &darr;'."\n";
+			$str .= $start . ' - &darr;' . "\n";
 		}
 		if (is_array($arr) || is_object($arr)) {
 			$emptyWhat = 'empty-array';
@@ -262,13 +262,13 @@ CSS;
 				foreach ($arr as $key => $value) {
 					$empty = false;
 					if (static::$callback) {
-						list($target,$function,$args) = static::$callback;
-						list(,$value) = $target->$function($key, $value, $args);
+						list($target, $function, $args) = static::$callback;
+						list(, $value) = $target->$function($key, $value, $args);
 					}
-					$str.= $levelText.$key.' &rarr; '.static::decorateValue($value, false)."\n";
+					$str .= $levelText . $key . ' &rarr; ' . static::decorateValue($value, false) . "\n";
 				}
 				if ($empty) {
-					$str.= $levelText.$emptyWhat."\n";
+					$str .= $levelText . $emptyWhat . "\n";
 				}
 			} else {
 				foreach ($arr as $key => $value) {
@@ -278,24 +278,24 @@ CSS;
 						$emptyWhat = 'empty-object';
 					}
 					if (static::$callback) {
-						list($target,$function,$args) = static::$callback;
-						list(,$value) = $target->$function($key, $value, $args);
+						list($target, $function, $args) = static::$callback;
+						list(, $value) = $target->$function($key, $value, $args);
 					}
 					if ( is_array($value) || is_object($value) ) {
 						if (count($value) == 0) {
-							$str.= $emptyWhat."\n";
+							$str .= $emptyWhat . "\n";
 						}
-						$str.= $levelText.$key.' - &darr; '."\n".static::getText($value, false, $level+1);
+						$str .= $levelText . $key . ' - &darr; ' . "\n" . static::getText($value, false, $level+1);
 					} else {
-						$str.= $levelText.$key.' &rarr; '.static::decorateValue($value, false)."\n";
+						$str .= $levelText . $key . ' &rarr; ' . static::decorateValue($value, false) . "\n";
 					}
 				}
 				if ($empty) {
-					$str.= $emptyWhat."\n";
+					$str .= $emptyWhat . "\n";
 				}
 			}
 		} else {
-			$str = $levelText.$arr."\n";
+			$str = $levelText . $arr . "\n";
 		}
 		return $str;
 	}
@@ -356,7 +356,7 @@ CSS;
 	private static function decorateValue($value, $html = true) {
 		if (is_string($value)) {
 			if (trim($value) == '') {
-				$decValue = '\''.$value.'\'';
+				$decValue = '\'' . $value . '\'';
 			} else {
 				$decValue = htmlspecialchars($value);
 			}
@@ -364,17 +364,17 @@ CSS;
 			if ($value) $decValue = 'true';
 			else $decValue = 'false';
 			if ($html) {
-				$decValue = '<strong>'.$decValue.'</strong>';
+				$decValue = '<strong>' . $decValue . '</strong>';
 			}
 		} else if (is_null($value)) {
 			$decValue = 'null';
 			if ($html){
-				$decValue = '<strong><i>'.$decValue.'</i></strong>';
+				$decValue = '<strong><i>' . $decValue . '</i></strong>';
 			}
 		} else {
 			$decValue = $value;
 			if ($html) {
-				$decValue = '<strong>'.$decValue.'</strong>';
+				$decValue = '<strong>' . $decValue . '</strong>';
 			}
 		}
 		return $decValue;

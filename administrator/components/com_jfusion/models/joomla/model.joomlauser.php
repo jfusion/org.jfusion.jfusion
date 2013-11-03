@@ -188,8 +188,8 @@ class JFusionJoomlaUser extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('email = '.$db->quote($userinfo->email))
-			    ->where('id = '.$db->quote($existinguser->userid));
+			    ->set('email = ' . $db->quote($userinfo->email))
+			    ->where('id = ' . $db->quote($existinguser->userid));
 
 	        $db->setQuery($query);
 		    $db->execute();
@@ -220,8 +220,8 @@ class JFusionJoomlaUser extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('password = '.$db->quote($new_password))
-			    ->where('id = '.$db->quote($existinguser->userid));
+			    ->set('password = ' . $db->quote($new_password))
+			    ->where('id = ' . $db->quote($existinguser->userid));
 
 	        $db->setQuery($query);
 		    $db->execute();
@@ -252,7 +252,7 @@ class JFusionJoomlaUser extends JFusionUser
 		        $query = $db->getQuery(true)
 			        ->update('#__users')
 			        ->set('block = 1')
-			        ->where('id = '.$db->quote($existinguser->userid));
+			        ->where('id = ' . $db->quote($existinguser->userid));
 
 	            $db->setQuery($query);
 		        $db->execute();
@@ -284,7 +284,7 @@ class JFusionJoomlaUser extends JFusionUser
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
 			    ->set('block = 0')
-			    ->where('id = '.$db->quote($existinguser->userid));
+			    ->where('id = ' . $db->quote($existinguser->userid));
 
 		    $db->setQuery($query);
 		    $db->execute();
@@ -313,8 +313,8 @@ class JFusionJoomlaUser extends JFusionUser
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
 			    ->set('block = 0')
-			    ->set('activation = '.$db->quote(''))
-			    ->where('id = '.$db->quote($existinguser->userid));
+			    ->set('activation = ' . $db->quote(''))
+			    ->where('id = ' . $db->quote($existinguser->userid));
 
 		    $db->setQuery($query);
 		    $db->execute();
@@ -344,8 +344,8 @@ class JFusionJoomlaUser extends JFusionUser
 			    $query = $db->getQuery(true)
 				    ->update('#__users')
 				    ->set('block = 1')
-				    ->set('activation = '.$db->quote($userinfo->activation))
-				    ->where('id = '.$db->quote($existinguser->userid));
+				    ->set('activation = ' . $db->quote($userinfo->activation))
+				    ->where('id = ' . $db->quote($existinguser->userid));
 
 			    $db->setQuery($query);
 			    $db->execute();
@@ -408,8 +408,8 @@ class JFusionJoomlaUser extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('username = '.$db->quote($username_clean))
-			    ->where('id = '.$db->quote($existinguser->userid));
+			    ->set('username = ' . $db->quote($username_clean))
+			    ->where('id = ' . $db->quote($existinguser->userid));
 
 		    $db->setQuery($query);
 		    try {
@@ -816,8 +816,8 @@ class JFusionJoomlaUser extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('params = '.$db->quote($params->toString()))
-			    ->where('id = '.$db->quote($existinguser->userid));
+			    ->set('params = ' . $db->quote($params->toString()))
+			    ->where('id = ' . $db->quote($existinguser->userid));
 
 		    $db->setQuery($query);
 

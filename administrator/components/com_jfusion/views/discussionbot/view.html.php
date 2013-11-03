@@ -74,7 +74,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 	    $lang->load('plg_content_jfusion', JPATH_ADMINISTRATOR);
 
 	    $document = JFactory::getDocument();
-	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+	    $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
         $mainframe = JFactory::getApplication();
  		$document	= JFactory::getDocument();
@@ -90,7 +90,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 			        ->select('id, title as name')
 			        ->from('#__sections')
 			        ->where('published = 1')
-			        ->where('scope = '.$db->quote('content'))
+			        ->where('scope = ' . $db->quote('content'))
 			        ->order('title');
 
         		$db->setQuery($query);
@@ -111,7 +111,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 		        $this->joomlaoptions = $db->loadObjectList('id');
 		        foreach ($this->joomlaoptions as &$item) {
 			        $repeat = ( $item->level - 1 >= 0 ) ? $item->level - 1 : 0;
-			        $item->name = str_repeat('- ', $repeat).$item->name;
+			        $item->name = str_repeat('- ', $repeat) . $item->name;
 		        }
 
         		break;
@@ -179,8 +179,8 @@ class jfusionViewdiscussionbot extends JViewLegacy
 
 		//joomla select options
         $template = $mainframe->getTemplate();
-		$document->addStyleSheet('templates/'.$template.'/css/general.css');
-		$document->addStyleSheet('templates/'.$template.'/css/icon.css');
+		$document->addStyleSheet('templates/' . $template . '/css/general.css');
+		$document->addStyleSheet('templates/' . $template . '/css/icon.css');
 		$document->setTitle($this->title);
 		$css = '.jfusion table.jfusionlist, table.jfusiontable{ font-size:11px; } .jfusion table.jfusionlist tbody tr td { vertical-align:top; }';
 		$document->addStyleDeclaration($css);
@@ -236,7 +236,7 @@ HTML;
     				$txt	= $pre . $v->title;
     			}
     			$list[$id] = $v;
-    			$list[$id]->name = $indent.$txt;
+    			$list[$id]->name = $indent . $txt;
     			$list = jfusionViewdiscussionbot::buildRecursiveTree($id, $indent . '- ', $list, $children, $level+1);
     		}
 	    }

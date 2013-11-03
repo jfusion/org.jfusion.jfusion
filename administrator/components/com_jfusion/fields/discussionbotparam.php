@@ -38,15 +38,15 @@ class JFormFieldDiscussionbotparam extends JFormField
 		try {
 			$db = JFactory::getDBO();
 
-			$fieldName = $this->formControl.'['.$this->group.'][' . $this->fieldname . ']';
+			$fieldName = $this->formControl . '[' . $this->group . '][' . $this->fieldname . ']';
 			$name = (string) $this->fieldname;
 			$value = $this->value;
 
 			$query = $db->getQuery(true)
 				->select('params')
 				->from('#__extensions')
-				->where('element = '.$db->quote('jfusion'))
-				->where('folder = '.$db->quote('content'));
+				->where('element = ' . $db->quote('jfusion'))
+				->where('folder = ' . $db->quote('content'));
 
 			$db->setQuery($query);
 			$results = $db->loadResult();
@@ -62,7 +62,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 				$query = $db->getQuery(true)
 					->select('enabled')
 					->from('#__extensions')
-					->where('element = '.$db->quote('com_k2'));
+					->where('element = ' . $db->quote('com_k2'));
 
 				$db->setQuery( $query );
 				$enabled = $db->loadResult();
@@ -81,7 +81,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 				$session = JFactory::getSession();
 				$session->set($hash, $value);
 
-				$link = 'index.php?option=com_jfusion&amp;task=discussionbot&amp;tmpl=component&amp;jname='.$jname.'&amp;ename='.$name.'&amp;'.$name.'='.$hash;
+				$link = 'index.php?option=com_jfusion&amp;task=discussionbot&amp;tmpl=component&amp;jname=' . $jname . '&amp;ename=' . $name . '&amp;' . $name . '=' . $hash;
 
 				$assign_paits = JText::_('ASSIGN_PAIRS');
 
@@ -98,7 +98,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 HTML;
 			}
 		} catch (Exception $e) {
-			$html = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+			$html = '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage() . '</span>';
 		}
 		return $html;
 	}

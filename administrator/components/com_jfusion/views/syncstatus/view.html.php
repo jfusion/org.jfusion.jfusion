@@ -68,7 +68,7 @@ class jfusionViewsyncstatus extends JViewLegacy
         //add css
         $document = JFactory::getDocument();
         $template = $mainframe->getTemplate();
-        $document->addStyleSheet('templates/'.$template.'/css/general.css');
+        $document->addStyleSheet('templates/' . $template . '/css/general.css');
 
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
@@ -91,7 +91,7 @@ class jfusionViewsyncstatus extends JViewLegacy
 	    $query = $db->getQuery(true)
 		    ->select('COUNT(*)')
 		    ->from('#__jfusion_sync_details')
-		    ->where('syncid = '.$db->Quote($this->syncid));
+		    ->where('syncid = ' . $db->Quote($this->syncid));
 
         $db->setQuery($query);
         $total = $db->loadResult();

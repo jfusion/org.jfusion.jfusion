@@ -296,12 +296,12 @@ class JFusionFactory
 	    $query = $db->getQuery(true)
 		    ->select('params')
 		    ->from('#__jfusion')
-		    ->where('name = '.$db->Quote($jname));
+		    ->where('name = ' . $db->Quote($jname));
 
         $db->setQuery($query);
         $params = $db->loadResult();
         //get the parameters from the XML file
-        //$file = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $jname . DIRECTORY_SEPARATOR.'jfusion.xml';
+        //$file = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
         //$parametersInstance = new JRegistry('', $file );
         //now load params without XML files, as this creates overhead when only values are needed
         $parametersInstance = new JRegistry($params);
@@ -389,10 +389,10 @@ class JFusionFactory
 		        $query->where('(slave = 1 OR master = 1)');
 		        break;
         }
-        $key = $criteria.'_'.$joomla.'_'.$active;
+        $key = $criteria . '_' . $joomla . '_' . $active;
         if (!isset($plugins[$key])) {
             if (!$joomla) {
-	            $query->where('name NOT LIKE '.$db->quote('joomla_int'));
+	            $query->where('name NOT LIKE ' . $db->quote('joomla_int'));
             }
             if ($active) {
 	            $query->where('status = 1');
@@ -450,7 +450,7 @@ class JFusionFactory
             switch ($type) {
                 case 'bbcode':
                     if (!class_exists('BBCode_Parser')) {
-                        include_once 'parsers'.DIRECTORY_SEPARATOR.'nbbc.php';
+                        include_once 'parsers' . DIRECTORY_SEPARATOR . 'nbbc.php';
                     }
                     $jfusion_code_parsers[$type] = new BBCode_Parser;
                     break;

@@ -552,7 +552,7 @@ class JFusionCurl
 				$url['path'] = $last_url['path'];
 			}
 			*/
-			$new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . ($url['query']?'?'.$url['query']:'');
+			$new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . ($url['query'] ? '?' . $url['query'] : '');
 			curl_setopt($this->ch, CURLOPT_URL, $new_url);
 			return $this->curl_redir_exec();
 		} else {
@@ -589,8 +589,8 @@ class JFusionCurl
 
 		$cookie = '';
 		if (!empty($this->cookiearr) && (trim($string) == '')) {
-			foreach ($this->cookiearr as $key=>$value) {
-				$cookie .= $key.'='.$value.'; ';
+			foreach ($this->cookiearr as $key => $value) {
+				$cookie .= $key . '=' . $value . '; ';
 			}
 			curl_setopt($this->ch, CURLOPT_COOKIE, $cookie);
 		}
@@ -926,7 +926,7 @@ class JFusionCurl
 			$this->ch = curl_init();
 		}
 		$ip = $_SERVER['REMOTE_ADDR'];
-		curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
+		curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: ' . $ip, 'X_FORWARDED_FOR: ' . $ip));
 		curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 		curl_setopt($this->ch, CURLOPT_URL, $this->options['post_url']);
 		curl_setopt($this->ch, CURLOPT_REFERER, "");
@@ -1043,7 +1043,7 @@ class JFusionCurl
 			if (!extension_loaded('curl')) {
 				$this->status['error'][] = static::_('CURL_NOTINSTALLED');
 			} else {
-				$this->status['debug'][] = static::_('CURL_POST_URL_1').' '.$this->options['post_url'];
+				$this->status['debug'][] = static::_('CURL_POST_URL_1') .' '. $this->options['post_url'];
 				$remotedata = $this->ReadPage(true);
 				if (empty($this->status['error'])) {
 					$this->status['debug'][] = static::_('CURL_PHASE_1');
@@ -1083,12 +1083,12 @@ class JFusionCurl
 							$helpthem = 'I found';
 							do {
 								if (isset($result[$i]['form_data']['id'])) {
-									$helpthem = $helpthem.' -- Name='.$result[$i]['form_data']['name'].' &ID='.$result[$i]['form_data']['id'];
+									$helpthem = $helpthem.' -- Name=' . $result[$i]['form_data']['name'] . ' &ID=' . $result[$i]['form_data']['id'];
 								}
 								$i +=1;
 							} while ($i<$frmcount);
 						}
-						$this->status['debug'][] = static::_('CURL_NO_LOGINFORM').' '.$helpthem;
+						$this->status['debug'][] = static::_('CURL_NO_LOGINFORM') . ' ' . $helpthem;
 					} else {
 						$this->status['debug'][] = static::_('CURL_VALID_FORM');
 
@@ -1139,7 +1139,7 @@ class JFusionCurl
 							case 0:
 								//add a / in front of form_action
 								if (substr($form_action, 0, 1) != '/') {
-									$form_action = '/'.$form_action;
+									$form_action = '/' . $form_action;
 								}
 								// we need to correct various situations like
 								// relative url from basedir, relative url from post dir etc
@@ -1159,17 +1159,17 @@ class JFusionCurl
 								$pathinfo['dirname'] = str_replace("\\", '/', $pathinfo['dirname']);
 								// get rid of the trailing /  in dir
 								rtrim($pathinfo['dirname'], '/');
-								$port = !empty($tmpurl[5]) ? ":".$tmpurl[5] : '';
-								$form_action = $ssl_string.$tmpurl[4].$port.$pathinfo['dirname'].$form_action;
+								$port = !empty($tmpurl[5]) ? ':' . $tmpurl[5] : '';
+								$form_action = $ssl_string . $tmpurl[4] . $port . $pathinfo['dirname'] . $form_action;
 								//$this->status['debug'][] = 'form_action_final: '.print_r($form_action,true);
 								break;
 							case 1:
 								//add a / in front of form_action
 								if (substr($form_action, 0, 1) != '/') {
-									$form_action = '/'.$form_action;
+									$form_action = '/' . $form_action;
 								}
 								$this->options['post_url']=rtrim($this->options['post_url'], '/');
-								$form_action = $this->options['post_url'].$form_action;
+								$form_action = $this->options['post_url'] . $form_action;
 								break;
 							case 2:
 								//do nothing at all
@@ -1228,8 +1228,8 @@ class JFusionCurl
 						$strParameters='';
 						if ($this->options['hidden']) {
 							for ($i = 0; $i <= $elements_count-1; $i++) {
-								if (($elements_values[$i] ['value'] != '')&& ($elements_values[$i] ['type'] == 'hidden')) {
-									$strParameters .= '&'.$elements_keys[$i].'='.urlencode($elements_values[$i] ['value']);
+								if (($elements_values[$i] ['value'] != '')&& ($elements_values[$i]['type'] == 'hidden')) {
+									$strParameters .= '&' . $elements_keys[$i] . '=' . urlencode($elements_values[$i]['value']);
 								}
 							}
 						}
@@ -1239,9 +1239,9 @@ class JFusionCurl
 							if (isset($result[$myfrm] ['buttons'][0]['type'])) {
 								if ($result[$myfrm] ['buttons'][0]['type'] =='submit') {
 									if ($result[$myfrm]['buttons'][0]['name']) {
-										$strParameters .= '&'.$result[$myfrm]['buttons'][0]['name'].'='.urlencode($result[$myfrm] ['buttons'][0]['value']);
+										$strParameters .= '&' . $result[$myfrm]['buttons'][0]['name'] . '=' . urlencode($result[$myfrm]['buttons'][0]['value']);
 									} else {
-										$strParameters .= '&'.'submit'.'='.urlencode($result[$myfrm] ['buttons'][0]['value']);
+										$strParameters .= '&' . 'submit=' . urlencode($result[$myfrm]['buttons'][0]['value']);
 									}
 								}
 							}
@@ -1258,19 +1258,19 @@ class JFusionCurl
 						}
 
 						if (empty($this->options['logout'])) {
-							$post_params = $input_username_name.'='.urlencode($this->options['username']).'&'.$input_password_name.'='.urlencode($this->options['password']);
-							$post_params_debug = $input_username_name.'='.urlencode($this->options['username']).'&'.$input_password_name.'=xxxxxx';
-							$this->status['debug'][] = static::_('CURL_STARTING_LOGIN').' '.$form_action.' parameters= '.$post_params_debug.$strParameters;
+							$post_params = $input_username_name . '=' . urlencode($this->options['username']) . '&' . $input_password_name . '=' . urlencode($this->options['password']);
+							$post_params_debug = $input_username_name . '=' . urlencode($this->options['username']) . '&' . $input_password_name . '=xxxxxx';
+							$this->status['debug'][] = static::_('CURL_STARTING_LOGIN') . ' ' . $form_action . ' parameters= ' . $post_params_debug . $strParameters;
 						} else {
 							$post_params = '';
-							$this->status['debug'][] = static::_('CURL_STARTING_LOGOUT').' '.$form_action.' parameters= '.$strParameters;
+							$this->status['debug'][] = static::_('CURL_STARTING_LOGOUT') . ' ' . $form_action . ' parameters= ' . $strParameters;
 						}
 
 						// finally submit the login/logout form:
 						if ($this->options['integrationtype'] == 1) {
 							$this->ch = curl_init();
 							$ip = $_SERVER['REMOTE_ADDR'];
-							curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
+							curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: ' . $ip, 'X_FORWARDED_FOR: ' . $ip));
 							curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 							curl_setopt($this->ch, CURLOPT_REFERER, "");
 							curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1286,7 +1286,7 @@ class JFusionCurl
 						curl_setopt($this->ch, CURLOPT_URL, $form_action);
 						curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
 						curl_setopt($this->ch, CURLOPT_POST, 1);
-						curl_setopt($this->ch, CURLOPT_POSTFIELDS, $post_params.$strParameters);
+						curl_setopt($this->ch, CURLOPT_POSTFIELDS, $post_params . $strParameters);
 						if (!empty($this->options['httpauth'])) {
 							curl_setopt($this->ch, CURLOPT_USERPWD, "{$this->options['httpauth_username']}:{$this->options['httpauth_password']}");
 							curl_setopt($this->ch, CURLOPT_HTTPAUTH, $this->options['httpauth']);
@@ -1351,7 +1351,7 @@ class JFusionCurl
 			}
 			$this->ch = curl_init();
 			$ip = $_SERVER['REMOTE_ADDR'];
-			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
+			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: ' . $ip, 'X_FORWARDED_FOR: ' . $ip));
 			curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 			curl_setopt($this->ch, CURLOPT_REFERER, "");
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1433,7 +1433,7 @@ class JFusionCurl
 		} else {
 			$this->ch = curl_init();
 			$ip = $_SERVER['REMOTE_ADDR'];
-			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
+			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: ' . $ip, 'X_FORWARDED_FOR: ' . $ip));
 			curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 			curl_setopt($this->ch, CURLOPT_REFERER, "");
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1450,9 +1450,9 @@ class JFusionCurl
 
 			if (isset($this->options['jnodeid'])) {
 				if ($this->options['postfields']) {
-					$this->options['postfields']=$this->options['postfields'].'&jnodeid='.$this->options['jnodeid'];
+					$this->options['postfields'] = $this->options['postfields'] . '&jnodeid=' . $this->options['jnodeid'];
 				} else {
-					$this->options['postfields']= 'jnodeid='.$this->options['jnodeid'];
+					$this->options['postfields'] = 'jnodeid=' . $this->options['jnodeid'];
 				}
 			}
 

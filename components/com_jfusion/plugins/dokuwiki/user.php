@@ -247,9 +247,9 @@ class JFusionUser_dokuwiki extends JFusionUser
             $sticky = 1;
         	$version = $this->helper->getVersion();
 			if ( version_compare($version, '2009-12-02 "Mulled Wine"') >= 0) {
-				$cookie_value = base64_encode($userinfo->username).'|'. $sticky . '|'.base64_encode($pass);
+				$cookie_value = base64_encode($userinfo->username) . '|'. $sticky . '|' . base64_encode($pass);
 			} else {
-                $cookie_value = base64_encode($userinfo->username.'|'.$sticky.'|'.$pass);
+                $cookie_value = base64_encode($userinfo->username . '|' . $sticky . '|' . $pass);
 			}
             $status['debug'][] = $this->addCookie(DOKU_COOKIE, $cookie_value, 60*60*24*365, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
         }
@@ -299,7 +299,7 @@ class JFusionUser_dokuwiki extends JFusionUser
 			    $status['userinfo'] = $this->getUser($userinfo);
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USER_CREATION_ERROR'). ': '.$e->getMessage();
+		    $status['error'][] = JText::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
 	    }
     }
 

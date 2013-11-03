@@ -53,11 +53,11 @@ class JFusionCookies {
 	    list ($url,$cookiedomain) = $this->getApiUrl($cookiedomain);
 
 	    if (!empty($cookiedomain)) {
-		    $cookie .= '; domain='.$cookiedomain;
+		    $cookie .= '; domain=' . $cookiedomain;
 	    }
 
 	    if (!empty($cookiepath)) {
-		    $cookie .= '; path='.$cookiepath;
+		    $cookie .= '; path=' . $cookiepath;
 	    }
 
 		if ($cookie_expires_time > 0) {
@@ -77,7 +77,7 @@ class JFusionCookies {
 				$this->_cookies[$url][] = $cookie;
 			}
 		} else {
-			header('Set-Cookie: '.$cookie, false);
+			header('Set-Cookie: ' . $cookie, false);
 		}
 
         $debug = array();
@@ -117,12 +117,12 @@ class JFusionCookies {
 	    				$return = base64_decode ( $return );
 	    				if( stripos($return,'http://') === false && stripos($return, 'https://') === false ) {
 	    					$return = ltrim($return, '/');
-	    					$return = $source_url.$return;
+	    					$return = $source_url . $return;
 	    				}
 	    			}
 	    		}
 		
-				require_once(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'jfusionapi.php');
+				require_once(JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusionapi.php');
 
                 $api = null;
                 $data = array();

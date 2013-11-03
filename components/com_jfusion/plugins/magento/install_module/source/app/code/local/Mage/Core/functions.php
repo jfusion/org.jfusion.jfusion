@@ -152,7 +152,7 @@ function mageFindClassFile($class)
     }
     $found = false;
     foreach (explode(PS, get_include_path()) as $path) {
-        $fileName = $path.DIRECTORY_SEPARATOR.$classFile;
+        $fileName = $path . DIRECTORY_SEPARATOR . $classFile;
         if (file_exists($fileName)) {
             $found = $fileName;
             break;
@@ -323,7 +323,7 @@ function mageDelTree($path) {
         $entries = scandir($path);
         foreach ($entries as $entry) {
             if ($entry != '.' && $entry != '..') {
-                mageDelTree($path.DIRECTORY_SEPARATOR.$entry);
+                mageDelTree($path . DIRECTORY_SEPARATOR . $entry);
             }
         }
         @rmdir($path);

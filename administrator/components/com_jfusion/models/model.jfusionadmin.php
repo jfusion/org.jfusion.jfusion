@@ -44,9 +44,9 @@ class JFusionFunctionAdmin
 
 		$query = $db->getQuery(true)
 			->update('#__extensions')
-			->set('enabled = '.$db->quote($status))
-			->where('element = '.$db->quote($element))
-			->where('folder = '.$db->quote($folder));
+			->set('enabled = ' . $db->quote($status))
+			->where('element = ' . $db->quote($element))
+			->where('folder = ' . $db->quote($folder));
 
 		$db->setQuery($query);
 
@@ -223,7 +223,7 @@ HTML;
     public static function currentVersion($includeRev = false)
     {
         //get the current JFusion version number
-        $filename = JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'jfusion.xml';
+        $filename = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components'  . DIRECTORY_SEPARATOR .  'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusion.xml';
         $VersionCurrent = $RevisionCurrent = 0;
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number

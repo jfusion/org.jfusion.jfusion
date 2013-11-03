@@ -59,7 +59,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        jimport('joomla.version');
 	        $jversion = new JVersion();
             //get the install xml
-	        $url = 'http://update.jfusion.org/jfusion/joomla/?version='.$jversion->getShortVersion();
+	        $url = 'http://update.jfusion.org/jfusion/joomla/?version=' . $jversion->getShortVersion();
 	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {
@@ -78,7 +78,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 
 	        $document = JFactory::getDocument();
 	        $document->addScript('components/com_jfusion/js/File.Upload.js');
-	        $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+	        $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
 	        JFusionFunction::loadJavascriptLanguage(array('COPY_MESSAGE', 'DELETE', 'PLUGIN', 'COPY'));
 
@@ -118,7 +118,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 
 				    $query = $db->getQuery(true)
 					    ->update('#__jfusion')
-					    ->set('status = '.$db->Quote($status['config']))
+					    ->set('status = ' . $db->Quote($status['config']))
 					    ->where('name = ' . $db->Quote($record->name));
 				    $db->setQuery($query);
 				    $db->execute();
@@ -158,7 +158,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    $record->wizard = JFusionFunction::hasFeature($record->name,'wizard');
 		    if($record->wizard) {
 			    $record->wizardimage = 'components/com_jfusion/images/wizard_icon.png';
-			    $record->wizardscript =  'index.php?option=com_jfusion&task=wizard&jname=' .$record->name;
+			    $record->wizardscript =  'index.php?option=com_jfusion&task=wizard&jname=' . $record->name;
 		    } else {
 			    $record->wizardimage = 'components/com_jfusion/images/wizard_icon_dim.png';
 			    $record->wizardscript =  'javascript:void(0)';
@@ -171,11 +171,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    $record->masteralt =  'unavailable';
 		    } elseif ($record->master == 1) {
 			    $record->masterimage = 'components/com_jfusion/images/tick.png';
-			    $record->masterscript =  'javascript: JFusion.changeSetting(\'master\',\'0\',\'' .$record->name.'\');';
+			    $record->masterscript =  'javascript: JFusion.changeSetting(\'master\',\'0\',\'' . $record->name . '\');';
 			    $record->masteralt =  'enabled';
 		    } else {
 			    $record->masterimage = 'components/com_jfusion/images/cross.png';
-			    $record->masterscript =  'javascript: JFusion.changeSetting(\'master\',\'1\',\'' .$record->name.'\');';
+			    $record->masterscript =  'javascript: JFusion.changeSetting(\'master\',\'1\',\'' . $record->name . '\');';
 			    $record->masteralt =  'disabled';
 		    }
 
@@ -186,11 +186,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    $record->slavealt =  'unavailable';
 		    } elseif ($record->slave == 1) {
 			    $record->slaveimage = 'components/com_jfusion/images/tick.png';
-			    $record->slavescript =  'javascript: JFusion.changeSetting(\'slave\',\'0\',\'' .$record->name.'\');';
+			    $record->slavescript =  'javascript: JFusion.changeSetting(\'slave\',\'0\',\'' . $record->name . '\');';
 			    $record->slavealt =  'enabled';
 		    } else {
 			    $record->slaveimage = 'components/com_jfusion/images/cross.png';
-			    $record->slavescript =  'javascript: JFusion.changeSetting(\'slave\',\'1\',\'' .$record->name.'\');';
+			    $record->slavescript =  'javascript: JFusion.changeSetting(\'slave\',\'1\',\'' . $record->name . '\');';
 			    $record->slavealt =  'disabled';
 		    }
 
@@ -201,11 +201,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    $record->encryptalt =  'unavailable';
 		    } elseif ($record->check_encryption == 1) {
 			    $record->encryptimage = 'components/com_jfusion/images/tick.png';
-			    $record->encryptscript =  'javascript: JFusion.changeSetting(\'check_encryption\',\'0\',\'' .$record->name.'\');';
+			    $record->encryptscript =  'javascript: JFusion.changeSetting(\'check_encryption\',\'0\',\'' . $record->name . '\');';
 			    $record->encryptalt =  'enabled';
 		    } else {
 			    $record->encryptimage = 'components/com_jfusion/images/cross.png';
-			    $record->encryptscript =  'javascript: JFusion.changeSetting(\'check_encryption\',\'1\',\'' .$record->name.'\');';
+			    $record->encryptscript =  'javascript: JFusion.changeSetting(\'check_encryption\',\'1\',\'' . $record->name . '\');';
 			    $record->encryptalt =  'disabled';
 		    }
 
@@ -216,11 +216,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    $record->dualalt =  'unavailable';
 		    } elseif ($record->dual_login == 1) {
 			    $record->dualimage = 'components/com_jfusion/images/tick.png';
-			    $record->dualscript =  'javascript: JFusion.changeSetting(\'dual_login\',\'0\',\'' .$record->name.'\');';
+			    $record->dualscript =  'javascript: JFusion.changeSetting(\'dual_login\',\'0\',\'' . $record->name . '\');';
 			    $record->dualalt =  'enabled';
 		    } else {
 			    $record->dualimage = 'components/com_jfusion/images/cross.png';
-			    $record->dualscript =  'javascript: JFusion.changeSetting(\'dual_login\',\'1\',\'' .$record->name.'\');';
+			    $record->dualscript =  'javascript: JFusion.changeSetting(\'dual_login\',\'1\',\'' . $record->name . '\');';
 			    $record->dualalt =  'disabled';
 		    }
 
@@ -246,7 +246,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    $record->description = $JFusionParam->get('description');
 		    if(empty($record->description)){
 			    //get the default description
-			    $plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
+			    $plugin_xml = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $record->name . DIRECTORY_SEPARATOR . 'jfusion.xml';
 			    if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
 				    $xml = JFusionFunction::getXml($plugin_xml);
 				    $description = $xml->description;
@@ -326,7 +326,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			foreach ($rows as $row){
 				$query = $db->getQuery(true)
 					->update('#__jfusion')
-					->set('ordering = '.$ordering)
+					->set('ordering = ' . $ordering)
 					->where('name = ' . $db->Quote($row->name));
 
 				$db->setQuery($query);
@@ -353,7 +353,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				//output detailed configuration warnings for enabled plugins
 				if ($record->status==1) {
 					//check to see if the plugin files exist
-					$plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
+					$plugin_xml = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $record->name . DIRECTORY_SEPARATOR . 'jfusion.xml';
 					if(!file_exists($plugin_xml)) {
 						$record->status = 0;
 						JFusionFunction::raiseWarning(JText::_('NO_FILES'), $record->name);

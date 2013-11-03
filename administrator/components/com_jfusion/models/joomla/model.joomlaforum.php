@@ -44,8 +44,8 @@ class JFusionJoomlaForum extends JFusionForum
 				$query = $db->getQuery(true)
 					->select('id')
 					->from('#__menu')
-					->where('type = '.$db->Quote('component'))
-					->where('link LIKE '.$db->Quote('%com_comprofiler%'));
+					->where('type = ' . $db->Quote('component'))
+					->where('link LIKE ' . $db->Quote('%com_comprofiler%'));
 				$db->setQuery($query, 0, 1);
 				$itemid = $db->loadResult();
 				if ($itemid) {
@@ -54,8 +54,8 @@ class JFusionJoomlaForum extends JFusionForum
 					$query = $db->getQuery(true)
 						->select('id')
 						->from('#__menu')
-						->where('type = '.$db->Quote('component'))
-						->where('link LIKE '.$db->Quote('%com_community%'));
+						->where('type = ' . $db->Quote('component'))
+						->where('link LIKE ' . $db->Quote('%com_community%'));
 					$db->setQuery($query, 0, 1);
 					$itemid = $db->loadResult();
 					if ($itemid) {
@@ -64,8 +64,8 @@ class JFusionJoomlaForum extends JFusionForum
 						$query = $db->getQuery(true)
 							->select('id')
 							->from('#__menu')
-							->where('type = '.$db->Quote('component'))
-							->where('link LIKE '.$db->Quote('%com_joomunity%'));
+							->where('type = ' . $db->Quote('component'))
+							->where('link LIKE ' . $db->Quote('%com_joomunity%'));
 						$db->setQuery($query, 0, 1);
 						$itemid = $db->loadResult();
 						if ($itemid) {
@@ -96,12 +96,12 @@ class JFusionJoomlaForum extends JFusionForum
 				$query = $db->getQuery(true)
 					->select('avatar')
 					->from('#__comprofiler')
-					->where('user_id = '.$uid);
+					->where('user_id = ' . $uid);
 
 				$db->setQuery($query);
 				$result = $db->loadResult();
 				if (!empty($result)) {
-					$avatar = $source_url . 'images/comprofiler/'.$result;
+					$avatar = $source_url . 'images/comprofiler/' . $result;
 				} else {
 					$avatar = $source_url . 'components/com_comprofiler/plugin/templates/default/images/avatar/nophoto_n.png';
 				}
@@ -110,7 +110,7 @@ class JFusionJoomlaForum extends JFusionForum
 					$query = $db->getQuery(true)
 						->select('avatar')
 						->from('#__community_users')
-						->where('userid = '.$uid);
+						->where('userid = ' . $uid);
 
 					$db->setQuery($query);
 					$result = $db->loadResult();
@@ -123,7 +123,7 @@ class JFusionJoomlaForum extends JFusionForum
 					$query = $db->getQuery(true)
 						->select('user_picture')
 						->from('#__joom_users')
-						->where('user_id = '.$uid);
+						->where('user_id = ' . $uid);
 
 					$db->setQuery($query);
 					$result = $db->loadResult();

@@ -71,7 +71,7 @@ class jfusionViewversioncheck extends JViewLegacy
 		ob_start();
 
 		$document = JFactory::getDocument();
-		$document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+		$document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
 		JFusionFunction::loadJavascriptLanguage( array('UPGRADE_CONFIRM_PLUGIN', 'UPGRADE_CONFIRM_BUILD', 'UPGRADE_CONFIRM_GIT', 'UPGRADE_CONFIRM_RELEASE','UPGRADE'));
 
@@ -88,19 +88,19 @@ class jfusionViewversioncheck extends JViewLegacy
 		jimport('joomla.version');
 		$jversion = new JVersion();
 		$jfusionurl = new stdClass;
-		$jfusionurl->url = 'http://update.jfusion.org/jfusion/joomla/?version='.$jversion->getShortVersion();
+		$jfusionurl->url = 'http://update.jfusion.org/jfusion/joomla/?version=' . $jversion->getShortVersion();
 		$jfusionurl->jnames = array();
 		$urls[md5($jfusionurl->url)] = $jfusionurl;
 		foreach ($plugins as $plugin) {
-			$xml = JFusionFunction::getXml(JFUSION_PLUGIN_PATH.DIRECTORY_SEPARATOR.$plugin->name.DIRECTORY_SEPARATOR.'jfusion.xml');
+			$xml = JFusionFunction::getXml(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name . DIRECTORY_SEPARATOR . 'jfusion.xml');
 			if($xml) {
 				$update = $xml->update;
 				if ($update) {
 					$u = trim((string)$update);
 					if (strpos($u,'?') === false) {
-						$u .= '?version='.$jversion->getShortVersion();
+						$u .= '?version=' . $jversion->getShortVersion();
 					} else {
-						$u .= '&version='.$jversion->getShortVersion();
+						$u .= '&version=' . $jversion->getShortVersion();
 					}
 					if (!isset($urls[md5($u)])) {
 						$url = new stdClass();

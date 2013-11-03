@@ -48,12 +48,12 @@ class jfusionViewlanguages extends JViewLegacy
         ob_start();
 
 	    $document = JFactory::getDocument();
-	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+	    $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 	    JFusionFunction::loadJavascriptLanguage(array('INSTALL_UPGRADE_LANGUAGE_PACKAGE','INSTALL'));
 
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
-        $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/jfusion/joomla/?version='.$jversion->getShortVersion());
+        $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/jfusion/joomla/?version=' . $jversion->getShortVersion());
 
 	    $xml = JFusionFunction::getXml($data,false);
         if ($xml) {
@@ -86,8 +86,8 @@ class jfusionViewlanguages extends JViewLegacy
 	    $query = $db->getQuery(true)
 		    ->select('element, manifest_cache, extension_id')
 		    ->from('#__extensions')
-		    ->where('name LIKE '.$db->Quote('jfusion %'))
-	        ->where('type LIKE '.$db->Quote('file'))
+		    ->where('name LIKE ' . $db->Quote('jfusion %'))
+	        ->where('type LIKE ' . $db->Quote('file'))
 		    ->where('client_id = 0');
 
 	    $db->setQuery($query);

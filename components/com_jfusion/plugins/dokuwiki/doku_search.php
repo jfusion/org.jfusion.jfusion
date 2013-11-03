@@ -563,7 +563,7 @@ if ( !class_exists('DokuWikiSearch') ) {
 
             $sepchar = $conf['sepchar'];
             if($sepcharpat == null) // build string only once to save clock cycles
-                $sepcharpat = '#\\'.$sepchar.'+#';
+                $sepcharpat = '#\\' . $sepchar . '+#';
 
             $id = trim((string)$raw_id);
             $id = utf8_strtolower($id);

@@ -61,7 +61,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 	function display($tpl = null)
 	{
 		//load debug library
-		require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.debug.php');
+		require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php');
 
 		$db = JFactory::getDBO();
 
@@ -176,7 +176,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 				$this->clearParameters($new,'jfusion_module', $row->module);
 				$this->addMissingParameters($new,'jfusion_module', $row->module);
 
-				$name = !empty($row->title) ? $row->module.' '.$row->title : $row->module;
+				$name = !empty($row->title) ? $row->module . ' ' . $row->title : $row->module;
 				$this->jfusion_module[$name] = $new;
 			}
 		}

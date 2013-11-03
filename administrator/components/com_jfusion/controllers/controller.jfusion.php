@@ -81,7 +81,7 @@ class JFusionController extends JControllerLegacy
 
 				    $query = $db->getQuery(true)
 					    ->update('#__jfusion')
-					    ->set('status = '.$config_status['config'])
+					    ->set('status = ' . $config_status['config'])
 					    ->where('name = ' . $db->Quote($jname));
 
 				    $db->setQuery($query);
@@ -121,7 +121,7 @@ class JFusionController extends JControllerLegacy
             //perform the update
 	        $query = $db->getQuery(true)
 		        ->update('#__jfusion')
-		        ->set($field_name.' = '.$db->Quote($field_value))
+		        ->set($field_name.' = ' . $db->Quote($field_value))
 		        ->where('name = ' . $db->Quote($jname));
             $db->setQuery($query);
             $db->execute();
@@ -231,7 +231,7 @@ class JFusionController extends JControllerLegacy
 
 			    $query = $db->getQuery(true)
 				    ->update('#__jfusion')
-				    ->set('status = '.$config_status['config'])
+				    ->set('status = ' . $config_status['config'])
 				    ->where('name = ' . $db->Quote($jname));
 
 			    $db->setQuery($query);
@@ -343,9 +343,9 @@ class JFusionController extends JControllerLegacy
 			    //apply the submitted sync error instructions
 			    JFusionUsersync::syncError($syncid, $syncError);
 		    }
-		    $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid='.$syncid);
+		    $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid=' . $syncid);
 	    } catch (Exception $e) {
-		    $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid='.$syncid, $e->getMessage(), 'error');
+		    $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid=' . $syncid, $e->getMessage(), 'error');
 	    }
 
     }
@@ -834,13 +834,13 @@ JS;
 				    default:
 					    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
 			    }
-			    throw new RuntimeException( JText::_('ERROR').': '.$error);
+			    throw new RuntimeException( JText::_('ERROR') . ': ' . $error);
 		    } else {
 			    $filename = $file['tmp_name'];
 			    $xml = JFusionFunction::getXml($filename);
 		    }
 		    if(!$xml) {
-			    throw new RuntimeException(JText::_('ERROR_LOADING_FILE').': '.$filename);
+			    throw new RuntimeException(JText::_('ERROR_LOADING_FILE') . ': ' . $filename);
 		    } else {
 			    /**
 			     * @ignore
@@ -859,7 +859,7 @@ JS;
 			    }
 
 			    if (!$info || !$config) {
-				    throw new RuntimeException(JText::_('ERROR_FILE_SYNTAX').': '.$file['type']);
+				    throw new RuntimeException(JText::_('ERROR_FILE_SYNTAX') . ': ' . $file['type']);
 			    } else {
 				    $att = $info->attributes();
 				    $original_name = (string)$att['original_name'];
@@ -868,7 +868,7 @@ JS;
 				    $query = $db->getQuery(true)
 					    ->select('name , original_name')
 					    ->from('#__jfusion')
-					    ->where('name = '.$db->Quote($jname));
+					    ->where('name = ' . $db->Quote($jname));
 
 				    $db->setQuery($query);
 				    $plugin = $db->loadObject();
@@ -913,7 +913,7 @@ JS;
 
 							    $query = $db->getQuery(true)
 								    ->update('#__jfusion')
-								    ->set('status = ' .$config_status['config'])
+								    ->set('status = ' . $config_status['config'])
 								    ->where('name = ' . $db->Quote($jname));
 
 							    $db->setQuery($query);
@@ -930,10 +930,10 @@ JS;
 				    }
 			    }
 		    }
-		    $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname='.$jname, $jname . ': ' . JText::_('IMPORT_SUCCESS'));
+		    $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $jname . ': ' . JText::_('IMPORT_SUCCESS'));
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseWarning($e, $jname);
-		    $mainframe->redirect('index.php?option=com_jfusion&task=importexport&jname='.$jname);
+		    $mainframe->redirect('index.php?option=com_jfusion&task=importexport&jname=' . $jname);
 	    }
         exit();
     }
@@ -965,7 +965,7 @@ JS;
         $info->addAttribute  ('jfusionrevision',  $RevisionCurrent);
 
         //get the current JFusion version number
-        $filename = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR.$jname.DIRECTORY_SEPARATOR.'jfusion.xml';
+        $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
 	        $element = JFusionFunction::getXml($filename);
@@ -984,7 +984,7 @@ JS;
 	    $query = $db->getQuery(true)
 		    ->select('original_name')
 		    ->from('#__jfusion')
-		    ->where('name = '.$db->Quote($jname));
+		    ->where('name = ' . $db->Quote($jname));
 
         $db->setQuery($query);
         $original_name = $db->loadResult();
@@ -1000,7 +1000,7 @@ JS;
 		    $node->addAttribute('name', $key);
 	    }
 	    header('content-type: text/xml');
-	    header('Content-disposition: attachment; filename=jfusion_'.$jname.'_config.xml');
+	    header('Content-disposition: attachment; filename=jfusion_' . $jname.'_config.xml');
 	    header('Pragma: no-cache');
 	    header('Expires: 0');
 	    echo $xml->asXML();

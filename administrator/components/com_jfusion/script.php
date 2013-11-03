@@ -455,7 +455,7 @@ class com_jfusionInstallerScript
 				//add com_content to components column
 				$query = $db->getQuery(true)
 					->update('#__jfusion_discussion_bot')
-					->set('component = '.$db->Quote('com_content'));
+					->set('component = ' . $db->Quote('com_content'));
 				$db->setQuery($query);
 				try {
 					$db->execute();
@@ -489,7 +489,7 @@ class com_jfusionInstallerScript
 
 					$query = $db->getQuery(true)
 						->update('#__jfusion_discussion_bot')
-						->set('component = '.$db->Quote('com_content'));
+						->set('component = ' . $db->Quote('com_content'));
 
 					$db->setQuery($query);
 					$db->execute();
@@ -556,11 +556,11 @@ class com_jfusionInstallerScript
 		$query = $db->getQuery(true)
 			->select('name')
 			->from('#__jfusion')
-			->where('(params IS NULL OR params = '.$db->quote('').' OR params = '.$db->quote('0').')')
+			->where('(params IS NULL OR params = ' . $db->quote('') . ' OR params = ' . $db->quote('0') . ')')
 			->where('status = 0')
 			->where('master = 0')
 			->where('slave = 0')
-			->where('name NOT LIKE '.$db->quote('joomla_int'));
+			->where('name NOT LIKE ' . $db->quote('joomla_int'));
 
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
@@ -569,7 +569,7 @@ class com_jfusionInstallerScript
 				$query = $db->getQuery(true)
 					->select('count(*)')
 					->from('#__jfusion')
-					->where('original_name LIKE '. $db->Quote($row->name));
+					->where('original_name LIKE ' . $db->Quote($row->name));
 
 				$db->setQuery($query);
 				$copys = $db->loadResult();
@@ -601,8 +601,8 @@ class com_jfusionInstallerScript
 			$query = $db->getQuery(true)
 				->update('#__extensions')
 				->set('enabled = 1')
-				->where('element = '.$db->quote('joomla'))
-				->where('folder = '.$db->quote('authentication'));
+				->where('element = ' . $db->quote('joomla'))
+				->where('folder = ' . $db->quote('authentication'));
 
 			$db->setQuery($query);
 			$db->execute();
@@ -610,8 +610,8 @@ class com_jfusionInstallerScript
 			$query = $db->getQuery(true)
 				->update('#__extensions')
 				->set('enabled = 1')
-				->where('element = '.$db->quote('joomla'))
-				->where('folder = '.$db->quote('user'));
+				->where('element = ' . $db->quote('joomla'))
+				->where('folder = ' . $db->quote('user'));
 
 			$db->setQuery($query);
 			$db->execute();
@@ -829,7 +829,7 @@ HTML;
         </tr>
     </table>
     <h2>
-		<?php echo JText::_('VERSION').' ' .$version.' ' . JText::_('INSTALLATION'); ?>
+		<?php echo JText::_('VERSION') . ' ' . $version . ' ' . JText::_('INSTALLATION'); ?>
     </h2>
     <h3>
 		<?php echo JText::_('STARTING') . ' ' . JText::_('INSTALLATION') . ' ...' ?>
@@ -1000,7 +1000,7 @@ HTML;
 		$folders = JFolder::folders($package_dir);
 		if ($folders) {
 			foreach ($folders as $folder) {
-				JFolder::delete($package_dir.DIRECTORY_SEPARATOR.$folder);
+				JFolder::delete($package_dir . DIRECTORY_SEPARATOR . $folder);
 			}
 		}
 

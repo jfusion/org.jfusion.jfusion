@@ -127,6 +127,6 @@ class jfusionViewplugininfo extends JViewLegacy
 		    	$images = 'system-help.png';
 		        break;
 		}
-		return '<img src="components/com_jfusion/images/'.$images.'"/> '.JText::_($feature);
+		return '<img src="components/com_jfusion/images/' . $images . '"/> ' . JText::_($feature);
     }
 }

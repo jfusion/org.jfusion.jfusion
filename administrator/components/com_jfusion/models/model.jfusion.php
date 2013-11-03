@@ -294,9 +294,9 @@ class JFusionFunction
 						    $user = JFusionFactory::getUser($jname->name);
 						    $puserinfo = $user->getUser($userinfo);
 						    if ($delete) {
-							    $queries[] = '(id = '.$joomla_id.' AND jname = ' . $db->Quote($jname->name) . ')';
+							    $queries[] = '(id = ' . $joomla_id . ' AND jname = ' . $db->Quote($jname->name) . ')';
 						    } else {
-							    $queries[] = '(' . $db->Quote($puserinfo->userid) . ',' . $db->Quote($puserinfo->username) . ', '.$joomla_id.', '. $db->Quote($jname->name) . ')';
+							    $queries[] = '(' . $db->Quote($puserinfo->userid) . ',' . $db->Quote($puserinfo->username) . ', ' . $joomla_id . ', ' . $db->Quote($jname->name) . ')';
 						    }
 						    unset($user);
 						    unset($puserinfo);
@@ -323,10 +323,10 @@ class JFusionFunction
 				    if ($delete) {
 					    $query = $db->getQuery(true)
 						    ->delete('#__jfusion_users_plugin')
-					        ->where('id = '.$joomla_id)
-						    ->where('jname = '.$db->Quote($jname));
+					        ->where('id = ' . $joomla_id)
+						    ->where('jname = ' . $db->Quote($jname));
 				    } else {
-					    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ('.$db->Quote($userinfo->userid) .' ,'.$db->Quote($userinfo->username) .' ,'.$joomla_id.' , '.$db->Quote($jname).' )';
+					    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (' . $db->Quote($userinfo->userid) . ' ,' . $db->Quote($userinfo->username) . ' ,' . $joomla_id . ' , ' . $db->Quote($jname) . ' )';
 				    }
 				    $db->setQuery($query);
 				    try {
@@ -375,7 +375,7 @@ class JFusionFunction
 	            $query = $db->getQuery(true)
 		            ->select('username, email')
 		            ->from('#__users')
-		            ->where('id = '.$userid);
+		            ->where('id = ' . $userid);
 
                 $db->setQuery($query);
                 $result = $db->loadResult();
@@ -397,7 +397,7 @@ class JFusionFunction
 	                $query = $db->getQuery(true)
 		                ->select('id, email')
 		                ->from('#__users')
-		                ->where('username = '.$db->Quote($username));
+		                ->where('username = ' . $db->Quote($username));
 
                     $db->setQuery($query);
                     $result = $db->loadObject();
@@ -449,7 +449,7 @@ class JFusionFunction
 
 	    $query = $db->getQuery(true)
 		    ->delete('#__jfusion_users')
-		    ->where('id = '.$userinfo->id, 'OR')
+		    ->where('id = ' . $userinfo->id, 'OR')
 	        ->where('username =' . $db->Quote($userinfo->username))
 		    ->where('LOWER(username) = ' . strtolower($db->Quote($userinfo->email)));
 
@@ -462,7 +462,7 @@ class JFusionFunction
 
 	    $query = $db->getQuery(true)
 		    ->delete('#__jfusion_users_plugin')
-		    ->where('id = '.$userinfo->id);
+		    ->where('id = ' . $userinfo->id);
         $db->setQuery($query);
 	    try {
 		    $db->execute();
@@ -524,15 +524,15 @@ class JFusionFunction
         }
 
 		$query = 'REPLACE INTO #__jfusion_discussion_bot SET
-					contentid = '.$contentid.',
-					component = '.$fdb->Quote($option).',
-					forumid = '.$threadinfo->forumid.',
-					threadid = '.$threadinfo->threadid.',
-					postid = '.$threadinfo->postid.',
-					modified = '.$fdb->Quote($modified).',
-					jname = '.$fdb->Quote($jname).',
-					published = '.$published.',
-					manual = '.$manual;
+					contentid = ' . $contentid . ',
+					component = ' . $fdb->Quote($option) . ',
+					forumid = ' . $threadinfo->forumid . ',
+					threadid = ' . $threadinfo->threadid . ',
+					postid = ' . $threadinfo->postid . ',
+					modified = ' . $fdb->Quote($modified) . ',
+					jname = ' . $fdb->Quote($jname) . ',
+					published = ' . $published . ',
+					manual = ' . $manual;
 		$fdb->setQuery($query);
 		$fdb->execute();
 	}
@@ -575,7 +575,7 @@ class JFusionFunction
                 }
             }
 
-            include_once JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_content'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'route.php';
+            include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_content'  . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
 	        $article_url = ContentHelperRoute::getArticleRoute($contentitem->slug, $contentitem->catslug);
         }
 
@@ -618,7 +618,7 @@ class JFusionFunction
             }
         }
 
-        $link = '<a href="'.$article_url.'">'.$text.'</a>';
+        $link = '<a href="' . $article_url . '">' . $text . '</a>';
 
         return $link;
     }
@@ -1010,7 +1010,7 @@ class JFusionFunction
 
         if (!isset($data[$jname][$table])) {
             $db = JFusionFactory::getDatabase($jname);
-            $query = 'SHOW FULL FIELDS FROM '.$table;
+            $query = 'SHOW FULL FIELDS FROM ' . $table;
             $db->setQuery($query);
             $fields = $db->loadObjectList();
 
@@ -1031,7 +1031,7 @@ class JFusionFunction
                 case 'utf8':
                     break;
                 default:
-	                throw new RuntimeException('JFusion Encoding support missing: '.$charset);
+	                throw new RuntimeException('JFusion Encoding support missing: ' . $charset);
                     break;
             }
             if ($encoding) {
@@ -1045,7 +1045,7 @@ class JFusionFunction
                 if ($converted !== false) {
                 	$string = $converted;
                 } else {
-	                throw new RuntimeException('JFusion Encoding failed '.$charset);
+	                throw new RuntimeException('JFusion Encoding failed ' . $charset);
                 }
             }
         }
@@ -1237,13 +1237,13 @@ class JFusionFunction
 	 * @param string|RuntimeException $msg
 	 * @param string           $jname
 	 */
-	public static function raiseMessage($msg, $jname='') {
+	public static function raiseMessage($msg, $jname = '') {
 		$app = JFactory::getApplication();
 		if ($msg instanceof RuntimeException) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {
-			$msg = $jname.': '.$msg;
+			$msg = $jname . ': ' . $msg;
 		}
 		$app->enqueueMessage($msg, 'message');
 	}
@@ -1252,13 +1252,13 @@ class JFusionFunction
 	 * @param string|RuntimeException $msg
 	 * @param string           $jname
 	 */
-	public static function raiseNotice($msg, $jname='') {
+	public static function raiseNotice($msg, $jname = '') {
 		$app = JFactory::getApplication();
 		if ($msg instanceof RuntimeException) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {
-			$msg = $jname.': '.$msg;
+			$msg = $jname . ': ' . $msg;
 		}
 		$app->enqueueMessage($msg, 'notice');
 	}
@@ -1267,13 +1267,13 @@ class JFusionFunction
 	 * @param string|RuntimeException $msg
 	 * @param string           $jname
 	 */
-	public static function raiseWarning($msg, $jname='') {
+	public static function raiseWarning($msg, $jname = '') {
 		$app = JFactory::getApplication();
 		if ($msg instanceof RuntimeException) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {
-			$msg = $jname.': '.$msg;
+			$msg = $jname . ': ' . $msg;
 		}
 		$app->enqueueMessage($msg, 'warning');
 	}
@@ -1282,13 +1282,13 @@ class JFusionFunction
 	 * @param string|RuntimeException $msg
 	 * @param string           $jname
 	 */
-	public static function raiseError($msg, $jname='') {
+	public static function raiseError($msg, $jname = '') {
 		$app = JFactory::getApplication();
 		if ($msg instanceof RuntimeException) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {
-			$msg = $jname.': '.$msg;
+			$msg = $jname . ': ' . $msg;
 		}
 		$app->enqueueMessage($msg, 'error');
 	}
@@ -1302,7 +1302,7 @@ class JFusionFunction
 	 *
 	 * @return string nothing
 	 */
-	public static function raise($type, $message, $jname='') {
+	public static function raise($type, $message, $jname = '') {
 		if (is_array($message)) {
 			foreach ($message as $msgtype => $msg) {
 				//if still an array implode for nicer display
@@ -1473,8 +1473,8 @@ JS;
 						// Cut it in parts of 2 bytes
 						$header = str_split($header[1], 2);
 						$result = new stdClass;
-						$result->width = hexdec($header[19].$header[18]);
-						$result->height = hexdec($header[23].$header[22]);
+						$result->width = hexdec($header[19] . $header[18]);
+						$result->height = hexdec($header[23] . $header[22]);
 						break;
 					case 'jpg':
 						$pos = 0;

@@ -33,6 +33,6 @@ class JFormFieldSecret extends JFormField
 			$value = substr($value, 0, 10);
 		}
 
-		return '<input type="text" name="'.$this->name.'" id="'.$this->id.'" value="'.$value.'" size="16" />';
+		return '<input type="text" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" size="16" />';
     }
 }

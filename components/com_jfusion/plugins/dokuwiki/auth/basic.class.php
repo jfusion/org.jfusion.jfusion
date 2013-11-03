@@ -222,7 +222,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 
 			require_once 'passhash.class.php';
 			$pass = new Jfusion_PassHash();
-			$call = 'hash_'.$method;
+			$call = 'hash_' . $method;
 
 			if(!method_exists($pass, $call)) {
 				$this->debug("Unsupported crypt method $method", -1);

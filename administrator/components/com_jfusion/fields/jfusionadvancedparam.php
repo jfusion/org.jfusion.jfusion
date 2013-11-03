@@ -46,7 +46,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 			$elNum = 0;
 		}
 
-		$ename = 'jfusionadvancedparam'.$elNum;
+		$ename = 'jfusionadvancedparam' . $elNum;
 
 		JFactory::getLanguage()->load('com_jfusion');
 
@@ -57,7 +57,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 		$multiselect = $this->element['multiselect'];
 
 		//Create Link
-		$link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;ename='.$ename;
+		$link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;ename=' . $ename;
 		if (!is_null($feature)) {
 			$link.= '&amp;feature=' . $feature;
 		}
@@ -70,7 +70,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 		$session = JFactory::getSession();
 		$session->set($hash, $this->value);
 
-		$link .= '&amp;'.$ename.'='.$hash;
+		$link .= '&amp;' . $ename . '=' . $hash;
 
 		//Get JRegistry from given string
 		if (empty($this->value)) {

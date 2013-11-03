@@ -160,7 +160,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 			if ($value->name == 'joomla') {
 				unset($plugins[$key]);
 			} else {
-				include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . $value->name. DIRECTORY_SEPARATOR .$value->name . '.php';
+				include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . $value->name. DIRECTORY_SEPARATOR . $value->name . '.php';
 			}
 		}
 		// Create Authentication response

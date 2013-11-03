@@ -19,7 +19,7 @@ jimport ( 'joomla.filesystem.folder' );
 $view = JFactory::getApplication()->input->get('view','plugin');
 
 //this is needed as a safe guard in the case a plugin submits a form to index.php with an input named view that is used by the integrated software
-$jfusion_views = JFolder::folders(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'views');
+$jfusion_views = JFolder::folders(JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'views');
 if(!in_array($view,$jfusion_views)) $view = 'plugin';
 
 // Load the appropriate controller

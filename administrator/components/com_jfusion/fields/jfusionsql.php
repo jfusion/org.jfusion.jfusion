@@ -46,7 +46,7 @@ class JFormFieldjfusionsql extends JFormField
 		$add_default = $this->element['add_default'];
 		$key = ($this->element['key_field']) ? (string) $this->element['key_field'] : 'value';
 		$val = ($this->element['value_field']) ? (string) $this->element['value_field'] : '';
-        $param_name = ($multiple) ? $this->formControl.'['.$this->group.']['.$this->fieldname.'][]' : $this->formControl.'['.$this->group.']['.$this->fieldname.']';
+        $param_name = ($multiple) ? $this->formControl . '[' . $this->group . '][' . $this->fieldname . '][]' : $this->formControl . '[' . $this->group . '][' . $this->fieldname . ']';
 
 	    try {
 		    if($jname) {
@@ -70,9 +70,9 @@ class JFormFieldjfusionsql extends JFormField
 					    $items = $db->loadObjectList();
 					    foreach ($items as &$item) {
 						    $repeat = ( $item->level - 1 >= 0 ) ? $item->level - 1 : 0;
-						    $item->name = str_repeat('- ', $repeat).$item->name;
+						    $item->name = str_repeat('- ', $repeat) . $item->name;
 					    }
-					    $output = JHTML::_('select.genericlist',  $items, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
+					    $output = JHTML::_('select.genericlist',  $items, $param_name, 'class="inputbox" ' . $multiple, $key, $val, $this->value, $this->formControl . '_' . $this->group . '_' . $this->fieldname);
 				    } elseif ($query == 'k2.categories') {
 					    $db = JFactory::getDBO();
 
@@ -106,7 +106,7 @@ class JFormFieldjfusionsql extends JFormField
 					    }
 
 					    $results = JFormFieldjfusionsql::buildRecursiveTree(0, '', array(), $children);
-					    $output = JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
+					    $output = JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" ' . $multiple, $key, $val, $this->value, $this->formControl . '_' . $this->group . '_' . $this->fieldname);
 				    } else {
 					    $db = JFusionFactory::getDatabase($jname);
 					    $db->setQuery($this->element['query']);
@@ -116,7 +116,7 @@ class JFormFieldjfusionsql extends JFormField
 					    if(!empty($add_default)) {
 						    array_unshift($results, JHTML::_('select.option', '', '- '.JText::_('SELECT_ONE').' -', $key, $val));
 					    }
-					    $output = JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
+					    $output = JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" ' . $multiple, $key, $val, $this->value, $this->formControl . '_' . $this->group . '_' . $this->fieldname);
 				    }
 			    } else {
 				    throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
@@ -125,7 +125,7 @@ class JFormFieldjfusionsql extends JFormField
 			    throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');
 		    }
 	    } catch (Exception $e) {
-		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage() . '</span>';
 	    }
 	    return $output;
 	}
@@ -152,7 +152,7 @@ class JFormFieldjfusionsql extends JFormField
     				$txt	= $pre . $v->title;
     			}
     			$list[$id] = $v;
-    			$list[$id]->name = $indent.$txt;
+    			$list[$id]->name = $indent . $txt;
     			$list = JFormFieldjfusionsql::buildRecursiveTree($id, $indent . '- ', $list, $children, $level+1);
     		}
 	    }

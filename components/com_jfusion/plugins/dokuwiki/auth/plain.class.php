@@ -111,7 +111,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 				$this->users[$user] = compact('pass', 'name', 'mail', 'grps');
 				return $pwd;
 			}
-			$this->debug('The '.$this->file.' file is not writable. Please inform the Wiki-Admin',-1);
+			$this->debug('The ' . $this->file . ' file is not writable. Please inform the Wiki-Admin',-1);
 			return null;
 		}
 
