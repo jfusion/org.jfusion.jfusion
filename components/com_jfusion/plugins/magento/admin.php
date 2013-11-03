@@ -52,7 +52,9 @@ class JFusionAdmin_magento extends JFusionAdmin
 	 * @param $version
 	 *
 	 * @return string
-	 */public function normalize_version($version) {
+	 */
+	public function normalize_version($version)
+	{
     	/// 1.9 Beta 2 should be read 1.9 , not 1.9.2
     	/// we can discard everything after the first space
     	$version = trim($version);
@@ -76,7 +78,8 @@ class JFusionAdmin_magento extends JFusionAdmin
 	 *
 	 * @return string
 	 */
-	function getMagentoVersion($forumPath) {
+	function getMagentoVersion($forumPath)
+	{
     	$file = file_get_contents(rtrim($forumPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php');
 
 		$pstart = strpos($file, 'function getVersionInfo()');
@@ -93,7 +96,8 @@ class JFusionAdmin_magento extends JFusionAdmin
      * @param string $softwarePath
      * @return array
      */
-    function setupFromPath($softwarePath) {
+    function setupFromPath($softwarePath)
+    {
         $xmlfile = $softwarePath . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'local.xml';
         $params = array();
         if (file_exists($xmlfile)) {
@@ -130,7 +134,8 @@ class JFusionAdmin_magento extends JFusionAdmin
      *
      * @return array
      */
-    function getUserList($limitstart = 0, $limit = 0) {
+    function getUserList($limitstart = 0, $limit = 0)
+    {
         //getting the connection to the db
         $db = JFusionFactory::getDataBase($this->getJname());
 
@@ -146,7 +151,8 @@ class JFusionAdmin_magento extends JFusionAdmin
     /**
      * @return int
      */
-    function getUserCount() {
+    function getUserCount()
+    {
         //getting the connection to the db
         $db = JFusionFactory::getDataBase($this->getJname());
 
@@ -163,7 +169,8 @@ class JFusionAdmin_magento extends JFusionAdmin
     /**
      * @return array
      */
-    function getUsergroupList() {
+    function getUsergroupList()
+    {
         //get the connection to the db
         $db = JFusionFactory::getDataBase($this->getJname());
 
@@ -178,7 +185,8 @@ class JFusionAdmin_magento extends JFusionAdmin
     /**
      * @return string|array
      */
-    function getDefaultUsergroup() {
+    function getDefaultUsergroup()
+    {
 	    try {
 		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 		    if ($usergroups !== null) {
@@ -205,18 +213,21 @@ class JFusionAdmin_magento extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowEmptyCookiePath() {
+    function allowEmptyCookiePath()
+    {
         return true;
     }
 
     /**
      * @return bool
      */
-    function allowEmptyCookieDomain() {
+    function allowEmptyCookieDomain()
+    {
         return true;
     }
 
-    function debugConfigExtra() {
+    function debugConfigExtra()
+    {
 	    try {
 		    // see if we have an api user in Magento
 		    $db = JFusionFactory::getDataBase($this->getJname());
@@ -286,7 +297,8 @@ class JFusionAdmin_magento extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowRegistration() {
+    function allowRegistration()
+    {
         $result = true;
         $registration_disabled = $this->params->get('disabled_registration');
 		if ($registration_disabled){$result = false;}
@@ -296,7 +308,8 @@ class JFusionAdmin_magento extends JFusionAdmin
     /**
      * @return string
      */
-    public function moduleInstallation() {
+    public function moduleInstallation()
+    {
         $jname = $this->getJname();
 	    try {
 		    try {
@@ -344,7 +357,8 @@ HTML;
     /**
      * @return array
      */
-    public function installModule() {
+    public function installModule()
+    {
 	    $status = array('error' => array(),'debug' => array());
 		try {
 			$jname =  $this->getJname ();
@@ -408,7 +422,8 @@ HTML;
     /**
      * @return array
      */
-    public function uninstallModule() {
+    public function uninstallModule()
+    {
         $status = array('error' => array(),'debug' => array());
 	    try {
 		    jimport ( 'joomla.filesystem.file' );
@@ -464,7 +479,8 @@ HTML;
     /**
      * @return mixed|string
      */
-    public function moduleActivation() {
+    public function moduleActivation()
+    {
 		$source_path = $this->params->get('source_path');
 		
 		$jfusion_mod_xml = $source_path .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
@@ -505,7 +521,8 @@ HTML;
         return $html;
 	}
 	
-	public function activateModule() {
+	public function activateModule()
+	{
 		
 		jimport ( 'joomla.filesystem.file' );
 		

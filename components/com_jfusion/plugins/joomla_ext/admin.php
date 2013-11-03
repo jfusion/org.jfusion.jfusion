@@ -53,7 +53,7 @@ class JFusionAdmin_joomla_ext extends JFusionJoomlaAdmin
 	 * @return object JParam JParam objects with ne newly found configuration
 	 * Now Joomla 1.6+ compatible
 	 */
-	public function setupFromPath($softwarePath)
+	function setupFromPath($softwarePath)
 	{
 		$configfile = $softwarePath . 'configuration.php';
 		//joomla 1.6+ test

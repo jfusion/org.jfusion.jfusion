@@ -44,7 +44,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
     /**
      * @return string
      */
-    function getTablename() {
+    function getTablename()
+    {
         return 'users';
     }
 
@@ -53,7 +54,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
      *
      * @return array
      */
-    function setupFromPath($softwarePath) {
+    function setupFromPath($softwarePath)
+    {
         $myfile = $softwarePath . 'inc' . DIRECTORY_SEPARATOR . 'config.php';
 
         $params = array();
@@ -122,7 +124,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
      *
      * @return array
      */
-    function getUserList($limitstart = 0, $limit = 0) {
+    function getUserList($limitstart = 0, $limit = 0)
+    {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -142,7 +145,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
     /**
      * @return int
      */
-    function getUserCount() {
+    function getUserCount()
+    {
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
@@ -163,7 +167,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
     /**
      * @return array
      */
-    function getUsergroupList() {
+    function getUsergroupList()
+    {
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
@@ -184,7 +189,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
     /**
      * @return string|array
      */
-    function getDefaultUsergroup() {
+    function getDefaultUsergroup()
+    {
 	    try {
 		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
@@ -211,7 +217,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowRegistration() {
+    function allowRegistration()
+    {
 	    $result = false;
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());

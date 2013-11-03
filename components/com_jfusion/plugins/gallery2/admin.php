@@ -48,7 +48,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     /**
      * @return string
      */
-    function getTablename() {
+    function getTablename()
+    {
         return 'User';
     }
 
@@ -57,7 +58,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      *
      * @return array
      */
-    function setupFromPath($softwarePath) {
+    function setupFromPath($softwarePath)
+    {
 	    $myfile = $softwarePath . 'config.php';
 
         $params = array();
@@ -72,13 +74,13 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
             //parse the file line by line to get only the config variables
 	        foreach ($lines as $line) {
 		        if (strpos($line, '$storeConfig') === 0) {
-			        preg_match("/.storeConfig\['(.*)'\] = (.*);/", $line, $matches);
+			        preg_match('/.storeConfig\[\'(.*)\'\] = (.*);/', $line, $matches);
 			        $name = trim($matches[1], " '");
 			        $value = trim($matches[2], " '");
 			        $config[$name] = $value;
 		        }
 		        if (strpos($line, '$gallery->setConfig') === 0) {
-			        preg_match("/.gallery->setConfig\('(.*)',(.*)\)/", $line, $matches);
+			        preg_match('/.gallery->setConfig\(\'(.*)\',(.*)\)/', $line, $matches);
 			        $name = trim($matches[1], " '");
 			        $value = trim($matches[2], " '");
 			        $config[$name] = $value;
@@ -113,7 +115,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      *
      * @return array
      */
-    function getUserList($limitstart = 0, $limit = 0) {
+    function getUserList($limitstart = 0, $limit = 0)
+    {
 	    try {
 	        // initialise some objects
 	        $db = JFusionFactory::getDatabase($this->getJname());
@@ -135,7 +138,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     /**
      * @return int
      */
-    function getUserCount() {
+    function getUserCount()
+    {
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
@@ -158,7 +162,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     /**
      * @return array
      */
-    function getUsergroupList() {
+    function getUsergroupList()
+    {
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
@@ -179,7 +184,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     /**
      * @return string|array
      */
-    function getDefaultUsergroup() {
+    function getDefaultUsergroup()
+    {
 	    try {
 		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
@@ -208,7 +214,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowRegistration() {
+    function allowRegistration()
+    {
 	    $result = false;
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
@@ -237,7 +244,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      *
      * @return array|null
      */
-    function getSitemapTree($jFusionParam, $jPluginParam, $itemId) {
+    function getSitemapTree($jFusionParam, $jPluginParam, $itemId)
+    {
         $this->helper->loadGallery2Api(true);
         global $gallery;
         $source_url = $this->params->get('source_url');
@@ -263,7 +271,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @param $parent
      * @return array|null
      */
-    function _getTree(&$items, $urlGenerator, $parent) {
+    function _getTree(&$items, $urlGenerator, $parent)
+    {
         $albums = array();
         if (!$items) return null;
         foreach ($items as $itemId) {
@@ -313,7 +322,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @param $control_name
      * @return array|string
      */
-    function show_templateList($name, $value, $node, $control_name) {
+    function show_templateList($name, $value, $node, $control_name)
+    {
 	    $this->helper->loadGallery2Api(false);
         list($ret, $themes) = GalleryCoreApi::fetchPluginStatus('theme', true);
         if ($ret) {

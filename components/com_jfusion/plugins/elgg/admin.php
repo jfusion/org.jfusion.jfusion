@@ -43,7 +43,8 @@ class JFusionAdmin_elgg extends JFusionAdmin
     /**
      * @return string
      */
-    function getTablename() {
+    function getTablename()
+    {
         return 'users_entity';
     }
 
@@ -51,7 +52,8 @@ class JFusionAdmin_elgg extends JFusionAdmin
      * @param $path
      * @return array|bool
      */
-    function loadSetup($path) {
+    function loadSetup($path)
+    {
         //generate the destination file
         if (substr($path, -1) != DIRECTORY_SEPARATOR) {
             $myfile = $path . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'settings.php';
@@ -83,7 +85,8 @@ class JFusionAdmin_elgg extends JFusionAdmin
      *
      * @return array
      */
-    function setupFromPath($softwarePath) {
+    function setupFromPath($softwarePath)
+    {
         $config = JFusionAdmin_elgg::loadSetup($softwarePath);
         $params = array();
         if (!empty($config)) {
@@ -108,7 +111,8 @@ class JFusionAdmin_elgg extends JFusionAdmin
      *
      * @return array
      */
-    function getUserList($limitstart = 0, $limit = 0) {
+    function getUserList($limitstart = 0, $limit = 0)
+    {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -130,7 +134,8 @@ class JFusionAdmin_elgg extends JFusionAdmin
     /**
      * @return int
      */
-    function getUserCount() {
+    function getUserCount()
+    {
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
@@ -151,7 +156,8 @@ class JFusionAdmin_elgg extends JFusionAdmin
     /**
      * @return array
      */
-    function getUsergroupList() {
+    function getUsergroupList()
+    {
         //NOT IMPLEMENTED YET!
         $default_group = new stdClass;
         $default_group->name = 'user';
@@ -163,7 +169,8 @@ class JFusionAdmin_elgg extends JFusionAdmin
     /**
      * @return string|array
      */
-    function getDefaultUsergroup() {
+    function getDefaultUsergroup()
+    {
         //Only seems to be 2 usergroups in elgg (without any acl setup): Administrator, and user.  So just return 'user'
 	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
@@ -177,7 +184,8 @@ class JFusionAdmin_elgg extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowRegistration() {
+    function allowRegistration()
+    {
         include_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;

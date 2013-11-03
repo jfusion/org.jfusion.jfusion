@@ -49,7 +49,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     /**
      * @return string
      */
-    function getTablename() {
+    function getTablename()
+    {
 		return 'users';
 	}
 
@@ -58,7 +59,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      * @param string $database_prefix
      * @return array
      */
-    function getUsergroupListWPA($db, $database_prefix) {
+    function getUsergroupListWPA($db, $database_prefix)
+    {
 	    $query = $db->getQuery(true)
 		    ->select('option_value')
 		    ->from('#__options')
@@ -84,7 +86,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      *
      * @return array|bool
      */
-    function setupFromPath($softwarePath) {
+    function setupFromPath($softwarePath)
+    {
 	    $myfile = $softwarePath . 'wp-config.php';
 
         $params = array();
@@ -178,7 +181,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     /**
      * @return int
      */
-    function getUserCount() {
+    function getUserCount()
+    {
 	    try {
 			//getting the connection to the db
 			$db = JFusionFactory::getDatabase($this->getJname());
@@ -200,7 +204,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	/**
      * @return array
      */
-    function getUsergroupList() {
+    function getUsergroupList()
+    {
 		$usergroups = $this->helper->getUsergroupListWP();
 		return $usergroups;
 	}
@@ -208,7 +213,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	/**
      * @return string|array
      */
-    function getDefaultUsergroup() {
+    function getDefaultUsergroup()
+    {
 	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 	    if ($usergroup !== null) {
 		    $group =  $this->helper->getUsergroupNameWP($usergroup);
@@ -221,7 +227,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	/**
      * @return bool
      */
-    function allowRegistration() {
+    function allowRegistration()
+    {
 	    $result = false;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -245,14 +252,16 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowEmptyCookiePath() {
+    function allowEmptyCookiePath()
+    {
 		return true;
 	}
 
     /**
      * @return bool
      */
-    function allowEmptyCookieDomain() {
+    function allowEmptyCookieDomain()
+    {
 		return true;
 	}
 

@@ -40,7 +40,8 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     /**
      * @return string
      */
-    function getTablename() {
+    function getTablename()
+    {
         return 'customers';
     }
 
@@ -49,7 +50,8 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
      *
      * @return array|bool
      */
-    function setupFromPath($softwarePath) {
+    function setupFromPath($softwarePath)
+    {
 	    $myfile = $softwarePath . 'includes' . DIRECTORY_SEPARATOR . 'configure.php';
 
         $params = array();
@@ -139,7 +141,8 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
      *
      * @return array
      */
-    function getUserList($limitstart = 0, $limit = 0) {
+    function getUserList($limitstart = 0, $limit = 0)
+    {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -161,7 +164,8 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     /**
      * @return int
      */
-    function getUserCount() {
+    function getUserCount()
+    {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -183,7 +187,8 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     /**
      * @return array|bool
      */
-    function getUsergroupList() {
+    function getUsergroupList()
+    {
 	    $result = array();
 	    try {
 	        $osCversion = $this->params->get('osCversion');
@@ -262,7 +267,8 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     /**
      * @return string|array
      */
-    function getDefaultUsergroup() {
+    function getDefaultUsergroup()
+    {
 
 	    try {
 		    $osCversion = $this->params->get('osCversion');
@@ -342,7 +348,8 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowRegistration() {
+    function allowRegistration()
+    {
         $result = true;
         $registration_disabled = $this->params->get('disabled_registration');
         if ($registration_disabled) {
@@ -354,14 +361,16 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowEmptyCookiePath() {
+    function allowEmptyCookiePath()
+    {
         return true;
     }
 
     /**
      * @return bool
      */
-    function allowEmptyCookieDomain() {
+    function allowEmptyCookieDomain()
+    {
         return true;
     }
 

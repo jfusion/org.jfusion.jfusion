@@ -52,7 +52,8 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     /**
      * @return string
      */
-    function getTablename() {
+    function getTablename()
+    {
         return 'customer';
     }
 
@@ -60,7 +61,8 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      * @param $storePath
      * @return array
      */
-    function loadSetup($storePath) {
+    function loadSetup($storePath)
+    {
         //check for trailing slash and generate file path
         if (substr($storePath, -1) == DIRECTORY_SEPARATOR) {
             $myfile = $storePath . 'config/settings.inc.php';
@@ -101,7 +103,8 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      * @param string $storePath
      * @return array
      */
-    function setupFromPath($storePath) {
+    function setupFromPath($storePath)
+    {
 	    $config = $this->loadSetup($storePath);
         $params = array();
         if (!empty($config)) {
@@ -126,7 +129,8 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      *
      * @return array
      */
-    function getUserList($limitstart = 0, $limit = 0) {
+    function getUserList($limitstart = 0, $limit = 0)
+    {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -150,7 +154,8 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     /**
      * @return int
      */
-    function getUserCount() {
+    function getUserCount()
+    {
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());

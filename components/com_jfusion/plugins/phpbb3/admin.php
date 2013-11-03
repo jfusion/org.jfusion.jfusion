@@ -44,7 +44,8 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     /**
      * @return string
      */
-    function getTablename() {
+    function getTablename()
+    {
         return 'users';
     }
 
@@ -53,7 +54,8 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      *
      * @return array
      */
-    function setupFromPath($softwarePath) {
+    function setupFromPath($softwarePath)
+    {
 	    $myfile = $softwarePath . 'config.php';
 
         $params = array();
@@ -139,7 +141,8 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      *
      * @return array
      */
-    function getUserList($limitstart = 0, $limit = 0) {
+    function getUserList($limitstart = 0, $limit = 0)
+    {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -163,7 +166,8 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     /**
      * @return int
      */
-    function getUserCount() {
+    function getUserCount()
+    {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -187,7 +191,8 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     /**
      * @return array
      */
-    function getUsergroupList() {
+    function getUsergroupList()
+    {
 	    try {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -208,7 +213,8 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     /**
      * @return string|array
      */
-    function getDefaultUsergroup() {
+    function getDefaultUsergroup()
+    {
 	    try {
 		    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 
@@ -244,7 +250,8 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowRegistration() {
+    function allowRegistration()
+    {
 	    $result = false;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -272,7 +279,8 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      *
      * @return string
      */
-    function generateRedirectCode($url, $itemid) {
+    function generateRedirectCode($url, $itemid)
+    {
 	    try {
 		    $cookie_name = $this->params->get('cookie_prefix') . '_u';
 		    //create the new redirection code
@@ -401,7 +409,8 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
      * @param $control_name
      * @return string
      */
-    function showRedirectMod($name, $value, $node, $control_name) {
+    function showRedirectMod($name, $value, $node, $control_name)
+    {
         $error = 0;
         $reason = '';
         $mod_file = $this->getModFile('common.php', $error, $reason);
@@ -445,7 +454,8 @@ HTML;
      * @param $control_name
      * @return mixed|string
      */
-    function showAuthMod($name, $value, $node, $control_name) {
+    function showAuthMod($name, $value, $node, $control_name)
+    {
 	    try {
 		    //do a database check to avoid fatal error with incorrect database settings
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -503,7 +513,8 @@ HTML;
 	    }
     }
 
-    function enableAuthMod() {
+    function enableAuthMod()
+    {
         $error = 0;
         $reason = '';
         $auth_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
@@ -577,7 +588,8 @@ HTML;
     /**
      * @return bool
      */
-    function disableAuthMod() {
+    function disableAuthMod()
+    {
         $return = true;
 	    try {
 		    //check to see if the mod is enabled
@@ -620,7 +632,8 @@ HTML;
      * @param $control_name
      * @return string
      */
-    function showQuickMod($name, $value, $node, $control_name) {
+    function showQuickMod($name, $value, $node, $control_name)
+    {
         $error = 0;
         $reason = '';
         $mod_file = $this->getModFile('mcp.php', $error, $reason);
@@ -700,7 +713,8 @@ HTML;
     /**
      * @return bool
      */
-    function clearConfigCache() {
+    function clearConfigCache()
+    {
         $source_path = $this->params->get('source_path');
         $cache = $source_path . 'cache' . DIRECTORY_SEPARATOR . 'data_global.php';
         if (file_exists($cache)) {
@@ -713,7 +727,8 @@ HTML;
     /**
      * @return array
      */
-    function uninstall() {
+    function uninstall()
+    {
         $return = true;
         $reasons = array();
 

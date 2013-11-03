@@ -51,7 +51,8 @@ class JFusionAdmin_efront extends JFusionAdmin
     /**
      * @return string
      */
-    function getTablename() {
+    function getTablename()
+    {
         return 'users';
     }
 
@@ -60,7 +61,8 @@ class JFusionAdmin_efront extends JFusionAdmin
      *
      * @return array
      */
-    function setupFromPath($softwarePath) {
+    function setupFromPath($softwarePath)
+    {
 	    $myfile = $softwarePath . 'libraries'. DIRECTORY_SEPARATOR. 'configuration.php';
 
         $params = array();
@@ -116,7 +118,8 @@ class JFusionAdmin_efront extends JFusionAdmin
      *
      * @return array
      */
-    function getUserList($limitstart = 0, $limit = 0) {
+    function getUserList($limitstart = 0, $limit = 0)
+    {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -138,7 +141,8 @@ class JFusionAdmin_efront extends JFusionAdmin
     /**
      * @return int
      */
-    function getUserCount() {
+    function getUserCount()
+    {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -178,14 +182,16 @@ class JFusionAdmin_efront extends JFusionAdmin
     /**
      * @return array
      */
-    function getUsergroupList() {
+    function getUsergroupList()
+    {
          return $this->helper->getUsergroupList();
     }
 
     /**
      * @return string|array
      */
-    function getDefaultUsergroup() {
+    function getDefaultUsergroup()
+    {
 	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 			$group = $this->helper->groupIdToName($usergroups);
@@ -198,7 +204,8 @@ class JFusionAdmin_efront extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowRegistration() {
+    function allowRegistration()
+    {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -224,18 +231,21 @@ class JFusionAdmin_efront extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowEmptyCookiePath() {
+    function allowEmptyCookiePath()
+    {
         return true;
     }
 
     /**
      * @return bool
      */
-    function allowEmptyCookieDomain() {
+    function allowEmptyCookieDomain()
+    {
         return true;
     }
 
-    function debugConfigExtra() {
+    function debugConfigExtra()
+    {
         // see if we have an api user in Magento
         $db = JFusionFactory::getDataBase($this->getJname());
         // check if we have valid parameters  for apiuser and api key

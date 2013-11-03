@@ -36,14 +36,16 @@ class JFusionAdmin_moodle extends JFusionAdmin
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
      */
-    function getJname(){
+    function getJname()
+    {
         return 'moodle';
     }
 
     /**
      * @return string
      */
-    function getTablename() {
+    function getTablename()
+    {
         return 'user';
     }
 
@@ -51,7 +53,8 @@ class JFusionAdmin_moodle extends JFusionAdmin
      * @param string $softwarePath
      * @return array
      */
-    function setupFromPath($softwarePath) {
+    function setupFromPath($softwarePath)
+    {
 	    $myfile = $softwarePath . 'config.php';
 
         $params = array();
@@ -130,7 +133,8 @@ class JFusionAdmin_moodle extends JFusionAdmin
     /**
      * @return int
      */
-    function getUserCount() {
+    function getUserCount()
+    {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -151,7 +155,8 @@ class JFusionAdmin_moodle extends JFusionAdmin
     /**
      * @return array
      */
-    function getUsergroupList() {
+    function getUsergroupList()
+    {
 	    try {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -171,7 +176,8 @@ class JFusionAdmin_moodle extends JFusionAdmin
     /**
      * @return string|array
      */
-    function getDefaultUsergroup() {
+    function getDefaultUsergroup()
+    {
 	    try {
 		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
@@ -199,7 +205,8 @@ class JFusionAdmin_moodle extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowRegistration() {
+    function allowRegistration()
+    {
 	    $result = false;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -224,21 +231,24 @@ class JFusionAdmin_moodle extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowEmptyCookiePath() {
+    function allowEmptyCookiePath()
+    {
         return true;
     }
 
     /**
      * @return bool
      */
-    function allowEmptyCookieDomain() {
+    function allowEmptyCookieDomain()
+    {
         return true;
     }
 
     /**
      * @return mixed|string
      */
-    public function moduleInstallation() {
+    public function moduleInstallation()
+    {
         $jname = $this->getJname ();
 	    try {
 		    try {
@@ -285,7 +295,8 @@ HTML;
     /**
      * @return array
      */
-    public function installModule() {
+    public function installModule()
+    {
 	    $status = array('error' => array(),'debug' => array());
 	    $jname = $this->getJname ();
 		try {
@@ -356,7 +367,8 @@ HTML;
     /**
      * @return array
      */
-    public function uninstallModule() {
+    public function uninstallModule()
+    {
         $status = array('error' => array(),'debug' => array());
 	    try {
 		    jimport ( 'joomla.filesystem.file' );
@@ -493,7 +505,8 @@ HTML;
     /**
      * @return mixed|string
      */
-    public function moduleActivation() {
+    public function moduleActivation()
+    {
 	    $html = JText::_('MOODLE_CONFIG_FIRST');
 	    try {
 		    $jname = $this->getJname ();
@@ -557,7 +570,8 @@ HTML;
     /**
      * @return array|bool
      */
-    public function activateModule() {
+    public function activateModule()
+    {
 	    try {
 		    $jname =  $this->getJname ();
 		    $db = JFusionFactory::getDatabase($jname);
