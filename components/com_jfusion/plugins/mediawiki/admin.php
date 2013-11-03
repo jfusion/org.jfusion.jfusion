@@ -40,28 +40,23 @@ class JFusionAdmin_mediawiki extends JFusionAdmin
     }
 
     /**
-     * @param string $source_path
+     * @param string $softwarePath
      *
      * @return array
      */
-    function setupFromPath($source_path)
+    function setupFromPath($softwarePath)
     {
-        //check for trailing slash and generate file path
-        if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
-            //remove it so that we can make it compatible with mediawiki MW_INSTALL_PATH
-            $source_path = substr($source_path, 0, -1);
-        }
-        $myfile = $source_path . DIRECTORY_SEPARATOR. 'LocalSettings.php';
+        $myfile = $softwarePath . 'LocalSettings.php';
         $params = array();
          //try to open the file
         if ( !file_exists($myfile) ) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE'). ': '.$myfile.' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE'). ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             $wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
 
-            $paths = $this->helper->includeFramework($source_path);
-            $IP = $source_path;
+            $paths = $this->helper->includeFramework($softwarePath);
+            $IP = $softwarePath;
             foreach($paths as $path) {
                 include($path);
             }
@@ -72,7 +67,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin
             $params['database_user'] = $wgDBuser;
             $params['database_password'] = $wgDBpassword;
             $params['database_prefix'] = $wgDBprefix;
-            $params['source_path'] = $source_path;
+            $params['source_path'] = $softwarePath;
 
             if (!empty($wgCookiePrefix)) {
                 $params['cookie_name'] = $wgCookiePrefix;

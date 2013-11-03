@@ -77,33 +77,29 @@ class JFusionAdmin_magento extends JFusionAdmin
 	 * @return string
 	 */
 	function getMagentoVersion($forumPath) {
-    	$file = file_get_contents(rtrim($forumPath,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'Mage.php');
+    	$file = file_get_contents(rtrim($forumPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php');
 
 		$pstart = strpos($file, 'function getVersionInfo()');
 		$pstart = strpos($file, 'return', $pstart);
 		$pend = strpos($file, ');', $pstart);
 		$version = eval(substr($file, $pstart, $pend-$pstart+2));
 
-    	return $version['major'].'.'.$version['minor'].'.'.$version['revision'];
+    	return $version['major'] . '.' . $version['minor'] . '.' . $version['revision'];
     }
     
     
 
     /**
-     * @param string $forumPath
+     * @param string $softwarePath
      * @return array
      */
-    function setupFromPath($forumPath) {
-        //check for trailing slash and generate file path
-        if (substr($forumPath, -1) != DIRECTORY_SEPARATOR) {
-            $forumPath = $forumPath . DIRECTORY_SEPARATOR;
-        }
-        $xmlfile = $forumPath . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'local.xml';
+    function setupFromPath($softwarePath) {
+        $xmlfile = $softwarePath . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'local.xml';
         $params = array();
         if (file_exists($xmlfile)) {
 	        $xml = JFusionFunction::getXml($xmlfile);
             if (!$xml) {
-                JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+                JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	            return false;
             } else {
                 //save the parameters into array
@@ -113,15 +109,15 @@ class JFusionAdmin_magento extends JFusionAdmin
                 $params['database_password'] = (string)$xml->global->resources->default_setup->connection->password;
                 $params['database_prefix'] = (string)$xml->global->resources->db->table_prefix;
                 $params['database_type'] = 'mysql';
-                $params['source_path'] = $forumPath;
+                $params['source_path'] = $softwarePath;
             }
             unset($xml);
         } else {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         }
         
-        $params['magento_version'] = $this->normalize_version($this->getMagentoVersion($forumPath));
+        $params['magento_version'] = $this->normalize_version($this->getMagentoVersion($softwarePath));
         
         return $params;
     }
@@ -309,12 +305,12 @@ class JFusionAdmin_magento extends JFusionAdmin
 			    throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
 		    }
 
-		    $source_path = $this->params->get ( 'source_path', '' );
-		    if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php' )) {
+		    $source_path = $this->params->get('source_path', '');
+		    if (! file_exists($source_path . 'app' . DIRECTORY_SEPARATOR . 'Mage.php')) {
 			    throw new RuntimeException(JText::_('MAGE_CONFIG_SOURCE_PATH'));
 		    } else {
 			    $mod_exists = false;
-			    if (file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml' )) {
+			    if (file_exists($source_path . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml')) {
 				    $mod_exists = true;
 			    }
 
@@ -356,16 +352,15 @@ HTML;
 			$source_path = $this->params->get('source_path');
 			jimport ( 'joomla.filesystem.archive' );
 			jimport ( 'joomla.filesystem.file' );
-			$pear_path = JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
-			require_once $pear_path.DIRECTORY_SEPARATOR.'PEAR.php';
-			$pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.'archive_tar'.DIRECTORY_SEPARATOR.'Archive_Tar.php';
+			$pear_path = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'pear';
+			require_once $pear_path . DIRECTORY_SEPARATOR . 'PEAR.php';
+			$pear_archive_path = $pear_path . DIRECTORY_SEPARATOR . 'archive_tar' . DIRECTORY_SEPARATOR . 'Archive_Tar.php';
 			require_once $pear_archive_path;
 
 			$archive_filename = 'magento_module_jfusion.tar.gz';
 			$old_chdir = getcwd();
 			$src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module';
 			$src_code =  $src_archive . DIRECTORY_SEPARATOR . 'source';
-			$dest = $source_path;
 
 			// Create an archive to facilitate the installation into the Magento installation while extracting
 			chdir($src_code);
@@ -374,7 +369,7 @@ HTML;
 			$tar->createModify( 'app' , '', '' );
 			chdir($old_chdir);
 
-			$ret = JArchive::extract ( $src_code . DIRECTORY_SEPARATOR . $archive_filename, $dest );
+			$ret = JArchive::extract($src_code . DIRECTORY_SEPARATOR . $archive_filename, $source_path);
 			JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
 
 			if ($ret === true) {
@@ -383,23 +378,23 @@ HTML;
 				$joomla_baseurl = $joomla->get('source_url');
 				$joomla_secret = $joomla->get('secret');
 
-				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/baseurl\', value = \''.$joomla_baseurl.'\';';
+				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/baseurl\', value = \'' . $joomla_baseurl . '\';';
 				$db->transactionStart();
 				$db->setQuery($query);
 				$db->execute();
 
-				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/installationpath\', value = \''.JPATH_SITE.'\';';
+				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/installationpath\', value = \'' . JPATH_SITE . '\';';
 				$db->transactionStart();
 				$db->setQuery($query);
 				$db->execute();
 
-				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/secret_key\', value = \''.$joomla_secret.'\';';
+				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/secret_key\', value = \'' . $joomla_secret . '\';';
 				$db->transactionStart();
 				$db->setQuery($query);
 				$db->execute();
 				$status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
 			} else {
-				$status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
+				$status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $source_path);
 			}
 		} catch (Exception $e) {
 			if (isset($db)) {
@@ -421,8 +416,8 @@ HTML;
 
 		    $jname =  $this->getJname ();
 		    $db = JFusionFactory::getDatabase($jname);
-		    $source_path = $this->params->get ( 'source_path' );
-		    $xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
+		    $source_path = $this->params->get('source_path');
+		    $xmlfile = realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
 		    $listfiles = JFusionFunction::getXml($xmlfile);
 		    $files = $listfiles->file;
@@ -433,11 +428,11 @@ HTML;
 		    foreach($files as $file) {
 			    $file = (string)$file;
 			    $file = preg_replace('#/#', DIRECTORY_SEPARATOR, $file);
-			    @chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
-			    if (!is_dir($source_path . DIRECTORY_SEPARATOR . $file)) {
-				    JFile::delete($source_path . DIRECTORY_SEPARATOR . $file);
+			    @chmod($source_path . $file, 0777);
+			    if (!is_dir($source_path . $file)) {
+				    JFile::delete($source_path . $file);
 			    } else {
-				    JFolder::delete($source_path . DIRECTORY_SEPARATOR . $file);
+				    JFolder::delete($source_path . $file);
 			    }
 		    }
 
@@ -472,7 +467,7 @@ HTML;
     public function moduleActivation() {
 		$source_path = $this->params->get('source_path');
 		
-		$jfusion_mod_xml = $source_path . DIRECTORY_SEPARATOR .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
+		$jfusion_mod_xml = $source_path .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
 		
 		if(file_exists($jfusion_mod_xml)) {
 			$xml = JFusionFunction::getXml($jfusion_mod_xml);
@@ -517,7 +512,7 @@ HTML;
 		$activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
 
 		$source_path = $this->params->get('source_path');
-		$jfusion_mod_xml = $source_path . DIRECTORY_SEPARATOR .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
+		$jfusion_mod_xml = $source_path .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
 
 		$xml = JFusionFunction::getXml($jfusion_mod_xml);
 

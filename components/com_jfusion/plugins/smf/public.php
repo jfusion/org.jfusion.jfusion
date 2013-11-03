@@ -295,13 +295,9 @@ class JFusionPublic_smf extends JFusionPublic
 	    global $db_cache, $db_count, $db_show_debug;
         // Required to avoid a warning about a license violation even though this is not the case
         global $forum_version;
-        // require_once JFUSION_PLUGIN_PATH.DIRECTORY_SEPARATOR.$this->getJname().DIRECTORY_SEPARATOR.'hooks.php';
+        // require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
         $source_path = $this->params->get('source_path');
-        if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
-            $index_file = $source_path . 'index.php';
-        } else {
-            $index_file = $source_path . DIRECTORY_SEPARATOR . 'index.php';
-        }
+	    $index_file = $source_path . 'index.php';
         if (!is_file($index_file)) {
             JFusionFunction::raiseWarning('The path to the SMF index file set in the component preferences does not exist', $this->getJname());
             return null;
@@ -333,7 +329,7 @@ class JFusionPublic_smf extends JFusionPublic
             JFusionFunction::raiseWarning('Could not find SMF in the specified directory', $this->getJname());
         }
         $document = JFactory::getDocument();
-        $document->addScript(JFusionFunction::getJoomlaURL().JFUSION_PLUGIN_DIR_URL.$this->getJname().'/js/script.js');
+        $document->addScript(JFusionFunction::getJoomlaURL().JFUSION_PLUGIN_DIR_URL . $this->getJname() . '/js/script.js');
     }
 
     /**
@@ -440,7 +436,7 @@ class JFusionPublic_smf extends JFusionPublic
             $regex_header[] = '#(href|src)=("./|"/)(.*?)"#mS';
             $replace_header[] = '$1="' . $data->integratedURL . '$3"';
             //$regex_header[]    = '#(href|src)="(.*)"#mS';
-            //$replace_header[]    = 'href="'.$data->integratedURL.'$2"';
+            //$replace_header[]    = 'href="' . $data->integratedURL . '$2"';
             //convert relative links into absolute links
             $regex_header[] = '#(href|src)=("./|"/)(.*?)"#mS';
             $replace_header[] = '$1="' . $data->integratedURL . '$3"';
@@ -560,7 +556,7 @@ class JFusionPublic_smf extends JFusionPublic
         /* Commented out because of problems with wrong variables being set
         if (is_array($url_variables)){
         foreach ($url_variables as $key => $value){
-        $replacement .=  '<input type="hidden" name="'. $key .'" value="'.$value . '"/>';
+        $replacement .=  '<input type="hidden" name="' . $key . '" value="' . $value . '"/>';
         }
         }
         */
@@ -626,7 +622,7 @@ class JFusionPublic_smf extends JFusionPublic
             }
         }
         if (!empty($fragment)) {
-            $redirectURL .= '#'.$fragment;
+            $redirectURL .= '#' . $fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
         //JFusionFunction::raiseWarning(htmlentities($return), $this->getJname());
@@ -687,15 +683,15 @@ class JFusionPublic_smf extends JFusionPublic
 				    if ( $board->ID_CAT != $cat_id ) {
 					    $cat_id = $board->ID_CAT;
 					    $path->title = $board->catname;
-					    $path->url = 'index.php#'.$board->ID_CAT;
+					    $path->url = 'index.php#' . $board->ID_CAT;
 					    $pathway[] = $path;
 
 					    $path = new stdClass();
 					    $path->title = $board->name;
-					    $path->url = 'index.php?board='.$board->ID_BOARD.'.0';
+					    $path->url = 'index.php?board=' . $board->ID_BOARD . '.0';
 				    } else {
 					    $path->title = $board->name;
-					    $path->url = 'index.php?board='.$board->ID_BOARD.'.0';
+					    $path->url = 'index.php?board=' . $board->ID_BOARD . '.0';
 				    }
 				    $pathway[] = $path;
 			    }
@@ -705,13 +701,13 @@ class JFusionPublic_smf extends JFusionPublic
 				    $path = new stdClass();
 				    if ( JFactory::getApplication()->input->get('board')) {
 					    $path->title = 'Modify Toppic ( Start new topic )';
-					    $path->url = 'index.php?action=post&board='.$board_id.'.0';;
+					    $path->url = 'index.php?action=post&board=' . $board_id . '.0';;
 				    } else if ( $msg ) {
-					    $path->title = 'Modify Toppic ( '.$topic->subject.' )';
-					    $path->url = 'index.php?action=post&topic='.$topic_id.'.msg'.$msg.'#msg'.$msg;
+					    $path->title = 'Modify Toppic ( ' . $topic->subject . ' )';
+					    $path->url = 'index.php?action=post&topic=' . $topic_id . '.msg' . $msg . '#msg' . $msg;
 				    } else {
-					    $path->title = 'Post reply ( Re: '.$topic->subject.' )';
-					    $path->url = 'index.php?action=post&topic='.$topic_id;
+					    $path->title = 'Post reply ( Re: ' . $topic->subject . ' )';
+					    $path->url = 'index.php?action=post&topic=' . $topic_id;
 				    }
 				    $pathway[] = $path;
 				    break;
@@ -780,7 +776,7 @@ class JFusionPublic_smf extends JFusionPublic
 				    if ( $topic_id ) {
 					    $path = new stdClass();
 					    $path->title = $topic->subject;
-					    $path->url = 'index.php?topic='.$topic_id;
+					    $path->url = 'index.php?topic=' . $topic_id;
 					    $pathway[] = $path;
 				    }
 		    }
@@ -865,7 +861,7 @@ class JFusionPublic_smf extends JFusionPublic
                 $sort = 'p.posterTime DESC';
                 break;
         }
-        $where .= ' ORDER BY '.$sort;
+        $where .= ' ORDER BY ' . $sort;
     }
 
     /**
@@ -1025,14 +1021,14 @@ class JFusionPublic_smf extends JFusionPublic
         	$matches = array();
             if (stripos($value, 'location') === 0) {
                 if (preg_match('#'.preg_quote($data->integratedURL,'#').'(.*?)\z#Sis' , $value , $matches)) {
-                    header('Location: '.$this->fixUrlNoAmp($matches));
+                    header('Location: ' . $this->fixUrlNoAmp($matches));
                     return $buffer;
                 }
             } else if (stripos($value, 'refresh') === 0) {
                 if (preg_match('#: (.*?) URL='.preg_quote($data->integratedURL,'#').'(.*?)\z#Sis' , $value , $matches)) {
                 	$time = $matches[1];
                 	$matches[1] = $matches[2];
-                    header('Refresh: '.$time.' URL='.$this->fixUrlNoAmp($matches));
+                    header('Refresh: ' . $time . ' URL=' . $this->fixUrlNoAmp($matches));
                     return $buffer;
                 }
             }

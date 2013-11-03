@@ -57,7 +57,7 @@ class JFusionUser_elgg extends JFusionUser {
 			    if (defined('externalpage')) {
 				    define('externalpage', true);
 			    }
-			    require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+			    require_once $this->params->get('source_path') . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
 			    // Get variables
 			    global $CONFIG;
 
@@ -98,7 +98,7 @@ class JFusionUser_elgg extends JFusionUser {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        require_once $this->params->get('source_path') . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($userinfo->username);
@@ -151,7 +151,7 @@ class JFusionUser_elgg extends JFusionUser {
             if (defined('externalpage')) {
                 define('externalpage', true);
             }
-            require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+            require_once $this->params->get('source_path') . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
             // Get variables
             global $CONFIG;
             // Action Gatekeep not necessary as person should already be validated by Joomla!
@@ -223,8 +223,8 @@ class JFusionUser_elgg extends JFusionUser {
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users_entity')
-			    ->set('password = '.$db->quote($existinguser->password))
-			    ->set('salt = '.$db->quote($existinguser->password_salt))
+			    ->set('password = ' . $db->quote($existinguser->password))
+			    ->set('salt = ' . $db->quote($existinguser->password_salt))
 			    ->where('guid = ' . (int)$existinguser->userid);
 
 	        $db->setQuery($query);
@@ -277,7 +277,7 @@ class JFusionUser_elgg extends JFusionUser {
 	            if (defined('externalpage')) {
 	                define('externalpage', true);
 	            }
-	            require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+	            require_once $this->params->get('source_path') . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
 	            // Get variables
 	            global $CONFIG;
 	            $username = $user->username;
@@ -297,8 +297,8 @@ class JFusionUser_elgg extends JFusionUser {
 
 				        $query = $db->getQuery(true)
 					        ->update('#__users_entity')
-					        ->set('password = '.$db->quote($userinfo->password))
-					        ->set('salt = '.$db->quote($userinfo->password_salt))
+					        ->set('password = ' . $db->quote($userinfo->password))
+					        ->set('salt = ' . $db->quote($userinfo->password_salt))
 					        ->where('username = ' . $db->Quote($username));
 
 				        $db->setQuery($query);
@@ -315,7 +315,7 @@ class JFusionUser_elgg extends JFusionUser {
 		        }
 	        }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USER_CREATION_ERROR').' : '.$e->getMessage();
+		    $status['error'][] = JText::_('USER_CREATION_ERROR') . ' : ' . $e->getMessage();
 	    }
     }
 
@@ -334,7 +334,7 @@ class JFusionUser_elgg extends JFusionUser {
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users_entity')
-			    ->set('email = '.$db->quote($userinfo->email))
+			    ->set('email = ' . $db->quote($userinfo->email))
 			    ->where('guid = ' . (int)$existinguser->userid);
 
 		    $db->setQuery($query);
@@ -362,7 +362,7 @@ class JFusionUser_elgg extends JFusionUser {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        require_once $this->params->get('source_path') . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
@@ -393,7 +393,7 @@ class JFusionUser_elgg extends JFusionUser {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        require_once $this->params->get('source_path') . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
@@ -419,7 +419,7 @@ class JFusionUser_elgg extends JFusionUser {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        require_once $this->params->get('source_path') . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
@@ -445,7 +445,7 @@ class JFusionUser_elgg extends JFusionUser {
 		if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        require_once $this->params->get('source_path') . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);

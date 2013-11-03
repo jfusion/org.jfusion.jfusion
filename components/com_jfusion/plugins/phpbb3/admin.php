@@ -49,20 +49,17 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     }
 
     /**
-     * @param string $forumPath
+     * @param string $softwarePath
+     *
      * @return array
      */
-    function setupFromPath($forumPath) {
-        //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
-            $myfile = $forumPath . 'config.php';
-        } else {
-            $myfile = $forumPath . DIRECTORY_SEPARATOR . 'config.php';
-        }
+    function setupFromPath($softwarePath) {
+	    $myfile = $softwarePath . 'config.php';
+
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -109,7 +106,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 			        $params['cookie_domain'] = isset($config['cookie_domain']) ? $config['cookie_domain'] : '';
 			        $params['cookie_prefix'] = isset($config['cookie_name']) ? $config['cookie_name'] : '';
 			        $params['allow_autologin'] = isset($config['allow_autologin']) ? $config['allow_autologin'] : '';
-			        $params['source_path'] = $forumPath;
+			        $params['source_path'] = $softwarePath;
 		        }
 		        $params['source_url'] = '';
 		        if (isset($config['server_name'])) {
@@ -595,16 +592,12 @@ HTML;
 		    $db->execute();
 
 		    //remove the file as well to allow for updates of the auth mod content
-		    $path = $this->params->get('source_path');
-		    if (substr($path, -1) == DIRECTORY_SEPARATOR) {
-			    $auth_file = $path . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
-		    } else {
-			    $auth_file = $path . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
-		    }
+		    $source_path = $this->params->get('source_path');
+		    $auth_file = $source_path . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
 		    if (file_exists($auth_file)) {
 			    jimport('joomla.filesystem.file');
 			    if (!JFile::delete($auth_file)) {
-				    throw new RuntimeException('Cant delete file: '.$auth_file);
+				    throw new RuntimeException('Cant delete file: ' . $auth_file);
 			    }
 		    }
 
@@ -709,7 +702,7 @@ HTML;
      */
     function clearConfigCache() {
         $source_path = $this->params->get('source_path');
-        $cache = $source_path . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'data_global.php';
+        $cache = $source_path . 'cache' . DIRECTORY_SEPARATOR . 'data_global.php';
         if (file_exists($cache)) {
             jimport('joomla.filesystem.file');
             return JFile::delete($cache);

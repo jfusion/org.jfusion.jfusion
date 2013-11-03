@@ -48,20 +48,16 @@ class JFusionAdmin_moodle extends JFusionAdmin
     }
 
     /**
-     * @param string $forumPath
+     * @param string $softwarePath
      * @return array
      */
-    function setupFromPath($forumPath) {
-        //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
-            $myfile = $forumPath . 'config.php';
-        } else {
-            $myfile = $forumPath . DIRECTORY_SEPARATOR . 'config.php';
-        }
+    function setupFromPath($softwarePath) {
+	    $myfile = $softwarePath . 'config.php';
+
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -90,7 +86,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
                     $params[$alt] = $CFG->$alt;
                 }
             }
-            $params['source_path'] = $forumPath;
+            $params['source_path'] = $softwarePath;
             if (substr($CFG->wwwroot, -1) == '/') {
                 $params['source_url'] = $CFG->wwwroot;
             } else {
@@ -252,12 +248,12 @@ class JFusionAdmin_moodle extends JFusionAdmin
 		    }
 
 		    $source_path = $this->params->get('source_path', '');
-		    if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'auth.php' )) {
-			    return JText::_ ( 'MOODLE_CONFIG_SOURCE_PATH' );
+		    if (!file_exists($source_path . 'admin' . DIRECTORY_SEPARATOR . 'auth.php')) {
+			    return JText::_('MOODLE_CONFIG_SOURCE_PATH');
 		    }
 
 		    $mod_exists = false;
-		    if (file_exists ( $source_path . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'auth.php' )) {
+		    if (file_exists($source_path . 'auth' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'auth.php')) {
 			    $mod_exists = true;
 		    }
 
@@ -291,37 +287,36 @@ HTML;
      */
     public function installModule() {
 	    $status = array('error' => array(),'debug' => array());
-	    $jname =  $this->getJname ();
+	    $jname = $this->getJname ();
 		try {
 			 $db = JFusionFactory::getDatabase($jname);
-			 $source_path = $this->params->get ( 'source_path' );
+			 $source_path = $this->params->get('source_path');
 			 jimport ( 'joomla.filesystem.archive' );
 			 jimport ( 'joomla.filesystem.file' );
 
-			 $pear_path = JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
-			 require_once $pear_path.DIRECTORY_SEPARATOR.'PEAR.php';
-			 $pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.'archive_tar'.DIRECTORY_SEPARATOR.'Archive_Tar.php';
+			 $pear_path = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'pear';
+			 require_once $pear_path . DIRECTORY_SEPARATOR . 'PEAR.php';
+			 $pear_archive_path = $pear_path . DIRECTORY_SEPARATOR . 'archive_tar' . DIRECTORY_SEPARATOR . 'Archive_Tar.php';
 			 require_once $pear_archive_path;
 
 			 $archive_filename = 'moodle_module_jfusion.tar.gz';
 			 $old_chdir = getcwd();
-			 $src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module';
+			 $src_archive =  $src_path = realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'install_module';
 			 $src_code =  $src_archive . DIRECTORY_SEPARATOR . 'source';
-			 $dest = $source_path;
 
 			 // Create an archive to facilitate the installation into the Moodle installation while extracting
 			 chdir($src_code);
-			 $tar = new Archive_Tar( $archive_filename, 'gz' );
+			 $tar = new Archive_Tar($archive_filename, 'gz');
 			 $tar->setErrorHandling(PEAR_ERROR_PRINT);
-			 $tar->createModify( 'auth lang' , '', '' );
+			 $tar->createModify('auth lang' , '', '');
 			 chdir($old_chdir);
 
-			 $ret = JArchive::extract ( $src_code . DIRECTORY_SEPARATOR . $archive_filename, $dest );
+			 $ret = JArchive::extract($src_code . DIRECTORY_SEPARATOR . $archive_filename, $source_path);
 			 JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
 
 			 if ($ret) {
 				 $joomla_baseurl = JFusionFactory::getParams('joomla_int')->get('source_url');
-				 $joomla_source_path = JPATH_ROOT.DIRECTORY_SEPARATOR;
+				 $joomla_source_path = JPATH_ROOT . DIRECTORY_SEPARATOR;
 
 				 // now set all relevant parameters in Moodles database
 				 // do not yet activate!
@@ -329,8 +324,8 @@ HTML;
 				 $querys = array();
 				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_enabled\', value = \'0\'';
 				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_ismaster\', value = \'0\'';
-				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_fullpath\', value = '.$db->quote($joomla_source_path);
-				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_baseurl\', value = '.$db->quote($joomla_baseurl);
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_fullpath\', value = ' . $db->quote($joomla_source_path);
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_baseurl\', value = ' . $db->quote($joomla_baseurl);
 				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_loginpath\', value = \'\'';
 				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_logoutpath\', value = \'\'';
 				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_formid\', value = \'login\'';
@@ -350,7 +345,7 @@ HTML;
 				 }
 				 $status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
 			 } else {
-				 throw new RuntimeException(JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest));
+				 throw new RuntimeException(JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $source_path));
 			 }
 		} catch (Exception $e) {
 			$status['error'] = $jname . ': ' . $e->getMessage();
@@ -382,11 +377,11 @@ HTML;
 		    foreach($files as $file) {
 			    $file = (string)$file;
 			    $file = preg_replace('#/#', DIRECTORY_SEPARATOR, $file);
-			    @chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
-			    if(!is_dir($source_path . DIRECTORY_SEPARATOR . $file)){
-				    JFile::delete($source_path . DIRECTORY_SEPARATOR . $file);
+			    @chmod($source_path . $file, 0777);
+			    if(!is_dir($source_path . $file)){
+				    JFile::delete($source_path . $file);
 			    } else {
-				    JFolder::delete($source_path . DIRECTORY_SEPARATOR . $file);
+				    JFolder::delete($source_path . $file);
 			    }
 		    }
 		    $querys = array();
@@ -484,7 +479,7 @@ HTML;
 			    $authstr = $auths[0];
 			    for ($i=1; $i <= (count($auths)-1);$i++){
 				    if ($auths[$i] != 'jfusion'){
-					    $authstr .= ','.$auths[$i];
+					    $authstr .= ',' . $auths[$i];
 				    }
 			    }
 
@@ -504,8 +499,8 @@ HTML;
 		    $jname = $this->getJname ();
 		    $db = JFusionFactory::getDatabase($jname);
 
-		    $source_path = $this->params->get ( 'source_path' );
-		    $jfusion_auth = $source_path . DIRECTORY_SEPARATOR .'auth'. DIRECTORY_SEPARATOR .'jfusion'. DIRECTORY_SEPARATOR .'auth.php';
+		    $source_path = $this->params->get('source_path');
+		    $jfusion_auth = $source_path . 'auth' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'auth.php';
 		    if(file_exists($jfusion_auth)){
 			    // find out if jfusion is listed in the active auth plugins
 			    $query = $db->getQuery(true)
@@ -628,7 +623,7 @@ HTML;
 				    $authstr = $auths[0];
 				    for ($i=1; $i <= (count($auths)-1);$i++){
 					    if ($auths[$i] != 'jfusion'){
-						    $authstr .= ','.$auths[$i];
+						    $authstr .= ',' . $auths[$i];
 					    }
 				    }
 

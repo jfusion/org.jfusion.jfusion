@@ -51,11 +51,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
         if (!$this->loadedGallery) {
             $source_url = $this->params->get('source_url');
             $source_path = $this->params->get('source_path');
-            if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
-                $index_file = $source_path . 'embed.php';
-            } else {
-                $index_file = $source_path . DIRECTORY_SEPARATOR . 'embed.php';
-            }
+	        $index_file = $source_path . 'embed.php';
             if (substr($source_url, 0, 1) == '/') {
                 $uri = JURI::getInstance();
                 $base = $uri->toString(array('scheme', 'host', 'port'));
@@ -66,17 +62,13 @@ class JFusionHelper_gallery2 extends JFusionPlugin
             $initParams['loginRedirect'] = JRoute::_('index.php?option=com_user&view=login');
             $initParams['fullInit'] = $fullInit;
             if (!is_file($index_file)) {
-                JFusionFunction::raiseWarning('The path to the Gallery2(path: '.$index_file.') embed file set in the component preferences does not exist', $this->getJname());
+                JFusionFunction::raiseWarning('The path to the Gallery2(path: ' . $index_file . ') embed file set in the component preferences does not exist', $this->getJname());
             } else {
                 if (!class_exists('GalleryEmbed')) {
                     require_once $index_file;
                 } else {
                     global $gallery;
-                    if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
-                        $config_file = $source_path . 'config.php';
-                    } else {
-                        $config_file = $source_path . DIRECTORY_SEPARATOR . 'config.php';
-                    }
+	                $config_file = $source_path . 'config.php';
                     require $config_file;
                 }
                 $ret = GalleryEmbed::init($initParams);
@@ -141,7 +133,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
             $source_url = $this->params->get('source_url');
             return $source_url;
         } else {
-            $path.= '&view=frameless&jname='.$this->getJname();
+            $path.= '&view=frameless&jname=' . $this->getJname();
         }
 
         //added check to prevent fatal error when creating session from outside joomla

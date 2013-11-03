@@ -207,11 +207,6 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    if ($login_type != 1 && !function_exists('deregister_globals')) {
 					    //let phpbb3 handle login
 					    $source_path = $this->params->get('source_path');
-					    //combine the path and filename
-					    if (substr($source_path, -1) != DIRECTORY_SEPARATOR) {
-						    $source_path .= DIRECTORY_SEPARATOR;
-					    }
-
 					    if (!file_exists($source_path . 'common.php')) {
 						    //set the current directory to phpBB3
 						    chdir($source_path);
@@ -972,10 +967,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    $report_posts[] = $row->post_id;
 					    $report_topics[] = $row->topic_id;
 				    }
-				    //$status['debug'][] = 'Retrieved all reported posts/topics by user '.$user_id;
+				    //$status['debug'][] = 'Retrieved all reported posts/topics by user ' . $user_id;
 			    }
 		    } catch (RuntimeException $e) {
-				throw new RuntimeException('Error Could not retrieve reported posts/topics by user '.$user_id.': '.$e->getMessage());
+				throw new RuntimeException('Error Could not retrieve reported posts/topics by user ' . $user_id . ': ' . $e->getMessage());
 		    }
 
 		    if (sizeof($report_posts)) {
@@ -998,10 +993,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    foreach ($results as $row) {
 						    $keep_report_topics[] = $row->topic_id;
 					    }
-					    //$status['debug'][] = 'Sorted through reported topics by user '.$user_id.' to keep.';
+					    //$status['debug'][] = 'Sorted through reported topics by user ' . $user_id . ' to keep.';
 				    }
 			    } catch (Exception $e) {
-				    $status['error'][] = 'Error Could not retrieve a list of topics that still contain reported posts by user '.$user_id.': '.$e->getMessage();
+				    $status['error'][] = 'Error Could not retrieve a list of topics that still contain reported posts by user ' . $user_id . ': ' . $e->getMessage();
 			    }
 
 			    if (sizeof($keep_report_topics)) {
@@ -1019,7 +1014,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status['error'][] = 'Error Could not update post reported flag: '.$e->getMessage();
+				    $status['error'][] = 'Error Could not update post reported flag: ' . $e->getMessage();
 			    }
 
 			    if (sizeof($report_topics)) {
@@ -1032,7 +1027,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    $db->setQuery($query);
 					    $db->execute();
 				    } catch (Exception $e) {
-					    $status['error'][] = 'Error Could not update topics reported flag: '.$e->getMessage();
+					    $status['error'][] = 'Error Could not update topics reported flag: ' . $e->getMessage();
 				    }
 			    }
 		    }
@@ -1045,7 +1040,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not delete reports by user '.$user_id.': '.$e->getMessage();
+			    $status['error'][] = 'Error Could not delete reports by user ' . $user_id . ': ' . $e->getMessage();
 		    }
 
 		    //update all topics started by and posts by the user to anonymous
@@ -1061,7 +1056,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not update forum last poster for user '.$user_id.': '.$e->getMessage();
+			    $status['error'][] = 'Error Could not update forum last poster for user ' . $user_id . ': ' . $e->getMessage();
 		    }
 
 		    try {
@@ -1074,7 +1069,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not update posts by user '.$user_id.': '.$e->getMessage();
+			    $status['error'][] = 'Error Could not update posts by user ' . $user_id . ': ' . $e->getMessage();
 		    }
 
 		    try {
@@ -1086,7 +1081,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $db->setQuery($query);
 		        $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not update edited posts by user '.$user_id.': '.$e->getMessage();
+			    $status['error'][] = 'Error Could not update edited posts by user ' . $user_id . ': ' . $e->getMessage();
 		    }
 
 		    try {
@@ -1100,7 +1095,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not update topics by user '.$user_id.': '.$e->getMessage();
+			    $status['error'][] = 'Error Could not update topics by user ' . $user_id . ': ' . $e->getMessage();
 		    }
 
 		    try {
@@ -1114,14 +1109,14 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not update last topic poster for user '.$user_id.': '.$e->getMessage();
+			    $status['error'][] = 'Error Could not update last topic poster for user ' . $user_id . ': ' . $e->getMessage();
 		    }
 
 		    // Since we change every post by this author, we need to count this amount towards the anonymous user
 		    $query = $db->getQuery(true)
 			    ->select('user_posts')
 			    ->from('#__users')
-			    ->where('user_id = '.$user_id);
+			    ->where('user_id = ' . $user_id);
 
 		    $db->setQuery($query);
 		    $user_posts = $db->loadResult();
@@ -1130,13 +1125,13 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    try {
 				    $query = $db->getQuery(true)
 					    ->update('#__users')
-					    ->set('user_posts = user_posts + '.$user_posts)
+					    ->set('user_posts = user_posts + ' . $user_posts)
 					    ->where('user_id = 1');
 
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status['error'][] = 'Error Could not update the number of posts for anonymous user: '.$e->getMessage();
+				    $status['error'][] = 'Error Could not update the number of posts for anonymous user: ' . $e->getMessage();
 			    }
 		    }
 		    $table_ary = array('users', 'user_group', 'topics_watch', 'forums_watch', 'acl_users', 'topics_track', 'topics_posted', 'forums_track', 'profile_fields_data', 'moderator_cache', 'drafts', 'bookmarks');
@@ -1144,12 +1139,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    try {
 				    $query = $db->getQuery(true)
 					    ->delete('#__' . $table)
-					    ->where('user_id = '.$user_id);
+					    ->where('user_id = ' . $user_id);
 
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status['error'][] = 'Error Could not delete records from '.$table.' for user '.$user_id.': '.$e->getMessage();
+				    $status['error'][] = 'Error Could not delete records from ' . $table . ' for user ' . $user_id . ': ' . $e->getMessage();
 			    }
 		    }
 
@@ -1169,10 +1164,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    $undelivered_msg[] = $row->msg_id;
 					    $undelivered_user[$row->user_id][] = true;
 				    }
-				    //$status['debug'][] = 'Retrieved undelivered private messages from user '.$user_id;
+				    //$status['debug'][] = 'Retrieved undelivered private messages from user ' . $user_id;
 			    }
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not retrieve undeliverd messages to user '.$user_id.': '.$e->getMessage();
+			    $status['error'][] = 'Error Could not retrieve undeliverd messages to user ' . $user_id . ': ' . $e->getMessage();
 		    }
 
 		    if (!empty($undelivered_msg)) {
@@ -1184,32 +1179,32 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status['error'][] = 'Error Could not delete private messages for user '.$user_id.': '.$e->getMessage();
+				    $status['error'][] = 'Error Could not delete private messages for user ' . $user_id . ': ' . $e->getMessage();
 			    }
 		    }
 
 		    try {
 			    $query = $db->getQuery(true)
 				    ->delete('#__privmsgs_to')
-				    ->where('author_id = '.$user_id)
+				    ->where('author_id = ' . $user_id)
 				    ->where('folder_id = -3');
 
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not delete private messages that are in no folder from user '.$user_id.': '.$e->getMessage();
+			    $status['error'][] = 'Error Could not delete private messages that are in no folder from user ' . $user_id . ': ' . $e->getMessage();
 		    }
 
 		    try {
 			    // Delete all to-information
 			    $query = $db->getQuery(true)
 				    ->delete('#__privmsgs_to')
-				    ->where('user_id = '.$user_id);
+				    ->where('user_id = ' . $user_id);
 
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not delete private messages to user '.$user_id.': '.$e->getMessage();
+			    $status['error'][] = 'Error Could not delete private messages to user ' . $user_id . ': ' . $e->getMessage();
 		    }
 
 		    try {
@@ -1221,7 +1216,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not update rest of private messages for user '.$user_id.' to anonymous: '.$e->getMessage();
+			    $status['error'][] = 'Error Could not update rest of private messages for user ' . $user_id . ' to anonymous: ' . $e->getMessage();
 		    }
 
 		    try {
@@ -1232,7 +1227,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not update rest of private messages for user '.$user_id.' to anonymous: '.$e->getMessage();
+			    $status['error'][] = 'Error Could not update rest of private messages for user ' . $user_id . ' to anonymous: ' . $e->getMessage();
 		    }
 
 		    foreach ($undelivered_user as $_user_id => $ary) {
@@ -1249,7 +1244,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status['error'][] = 'Error Could not update the number of PMs for user '.$_user_id.' for user '.$user_id.' was deleted: '.$e->getMessage();
+				    $status['error'][] = 'Error Could not update the number of PMs for user ' . $_user_id . ' for user ' . $user_id . ' was deleted: ' . $e->getMessage();
 			    }
 		    }
 		    //update the total user count
@@ -1377,7 +1372,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $query = $db->getQuery(true)
 								    ->select('username_clean AS username, user_email as email')
 								    ->from('#__users')
-								    ->where('user_id = '.$userlookup->userid);
+								    ->where('user_id = ' . $userlookup->userid);
 
 							    $db->setQuery($query);
 							    $user_identifiers = $db->loadObject();
@@ -1499,7 +1494,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $query = $jdb->getQuery(true)
 								    ->select('username, email')
 								    ->from('#__users')
-								    ->where('id = '.$userlookup->id);
+								    ->where('id = ' . $userlookup->id);
 
 							    $jdb->setQuery($query);
 							    $user_identifiers = $jdb->loadObject();

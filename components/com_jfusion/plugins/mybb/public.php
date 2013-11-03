@@ -74,11 +74,7 @@ class JFusionPublic_mybb extends JFusionPublic {
             $jfile = 'index.php';
         }
         //combine the path and filename
-        if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
-            $index_file = $source_path . $jfile;
-        } else {
-            $index_file = $source_path . DIRECTORY_SEPARATOR . $jfile;
-        }
+        $index_file = $source_path . $jfile;
         if (!is_file($index_file)) {
             JFusionFunction::raiseWarning('The path to the requested does not exist', $this->getJname());
         } else {
@@ -120,11 +116,11 @@ class JFusionPublic_mybb extends JFusionPublic {
         $replace_body[] = '';
         $callback_body[] = 'fixUrl';
 
-        $regex_body[]	= '#(?<=href=["\'])'.$data->integratedURL.'(.*?)(?=["\'])#m';
+        $regex_body[]	= '#(?<=href=["\'])' . $data->integratedURL . '(.*?)(?=["\'])#m';
         $replace_body[] = '';
         $callback_body[] = 'fixUrl';
 
-        $regex_body[]	= '#(?<=href=\\\")'.$data->integratedURL.'(.*?)(?=\\\")#mS';
+        $regex_body[]	= '#(?<=href=\\\")' . $data->integratedURL . '(.*?)(?=\\\")#mS';
         $replace_body[] = '';
         $callback_body[] = 'fixUrl';
 

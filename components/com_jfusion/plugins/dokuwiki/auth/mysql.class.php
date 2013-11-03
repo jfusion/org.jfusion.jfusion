@@ -271,7 +271,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 
 				if($this->dbver >= 4) {
 					$sql = substr($sql, 6); /* remove 'SELECT' or 'select' */
-					$sql = "SELECT SQL_CALC_FOUND_ROWS".$sql." LIMIT 1";
+					$sql = "SELECT SQL_CALC_FOUND_ROWS" . $sql . " LIMIT 1";
 					$this->_queryDB($sql);
 					$result = $this->_queryDB("SELECT FOUND_ROWS()");
 					$rc     = $result[0]['FOUND_ROWS()'];
@@ -299,7 +299,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 			if($this->_openDB()) {
 				$this->_lockTables("READ");
 				$sql = $this->_createSQLFilter($this->getConf('getUsers'), $filter);
-				$sql .= " ".$this->getConf('SortOrder')." LIMIT $first, $limit";
+				$sql .= ' ' . $this->getConf('SortOrder') . " LIMIT $first, $limit";
 				$result = $this->_queryDB($sql);
 
 				if(!empty($result)) {
@@ -685,7 +685,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 						}
 						$this->dbcon = $con;
 						if($this->getConf('charset')) {
-							mysql_query('SET CHARACTER SET "'.$this->getConf('charset').'"', $con);
+							mysql_query('SET CHARACTER SET "' . $this->getConf('charset') . '"', $con);
 						}
 						return true; // connection and database successfully opened
 					} else {
@@ -843,7 +843,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 
 			if($this->dbcon) {
 				foreach($filter as $item => $pattern) {
-					$tmp = '%'.$this->_escape($pattern).'%';
+					$tmp = '%' . $this->_escape($pattern) . '%';
 					if($item == 'user') {
 						if($cnt++ > 0) $SQLfilter .= " AND ";
 						$SQLfilter .= str_replace('%{user}', $tmp, $this->getConf('FilterLogin'));
@@ -865,7 +865,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 
 				if(strlen($SQLfilter)) {
 					$glue = strpos(strtolower($sql), "where") ? " AND " : " WHERE ";
-					$sql  = $sql.$glue.$SQLfilter;
+					$sql  = $sql . $glue . $SQLfilter;
 				}
 			}
 
@@ -957,7 +957,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		function readDefaultSettings() {
 			$params = JFusionFactory::getParams($this->helper->getJname());
 
-			$path = $params->get('source_path').'/authmysql/conf/';
+			$path = $params->get('source_path') . 'authmysql' . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR;
 			$conf = array();
 
 			if (file_exists($path.'default.php')) {

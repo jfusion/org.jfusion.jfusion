@@ -159,7 +159,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    ->innerJoin('#__sessions AS s ON u.user_id = s.session_user_id')
 		    ->where('s.session_viewonline = 1')
 		    ->where('s.session_user_id != 1')
-		    ->where('s.session_time > '.$active);
+		    ->where('s.session_time > ' . $active);
 
 	    if (!empty($usergroups)) {
 		    $usergroups = implode(',', $usergroups);
@@ -186,7 +186,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 			    ->select('COUNT(DISTINCT(session_ip))')
 			    ->from('#__sessions')
 			    ->where('session_user_id = 1')
-			    ->where('session_time > '.$active);
+			    ->where('session_time > ' . $active);
 
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
@@ -212,7 +212,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 			    ->from('#__sessions')
 			    ->where('session_viewonline = 1')
 			    ->where('session_user_id != 1')
-			    ->where('session_time > '.$active);
+			    ->where('session_time > ' . $active);
 
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
@@ -278,11 +278,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             exit();
         }
         //combine the path and filename
-        if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
-            $index_file = $source_path . basename($jfile);
-        } else {
-            $index_file = $source_path . DIRECTORY_SEPARATOR . basename($jfile);
-        }
+	    $index_file = $source_path . basename($jfile);
         if (!is_file($index_file)) {
             JFusionFunction::raiseWarning('The path to the requested does not exist', $this->getJname());
         } else {
@@ -513,7 +509,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		            $profile_mod_id = null;
 	            }
             }
-            if (!empty($profile_mod_id) && strstr($q, 'i='.$profile_mod_id)) {
+            if (!empty($profile_mod_id) && strstr($q, 'i=' . $profile_mod_id)) {
                 $url = 'ucp.php?i=profile&mode=signature';
                 $url = JFusionFunction::routeURL($url, JFactory::getApplication()->input->getInt('Itemid'), $this->getJname());
                 return 'href="' . $url . '"';
@@ -585,7 +581,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
         }
         if (!empty($fragment)) {
-            $redirectURL .= '#'.$fragment;
+            $redirectURL .= '#' . $fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $parts[0] . 'url=' . $redirectURL . '">';
         //JFusionFunction::raiseWarning(htmlentities($return), $this->getJname());
@@ -633,7 +629,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 	            $url_details = parse_url($url);
 	            $url_variables = array();
 	            if(!empty($url_details['query'])) {
-		            $query = '?'.$url_details['query'];
+		            $query = '?' . $url_details['query'];
 	            } else {
 		            $query = '';
 	            }
@@ -727,8 +723,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 				    $query = $db->getQuery(true)
 					    ->select('forum_id, forum_name')
 					    ->from('#__forums')
-					    ->where('left_id < '.$forum_info->left_id)
-					    ->where('right_id > '.$forum_info->right_id)
+					    ->where('left_id < ' . $forum_info->left_id)
+					    ->where('right_id > ' . $forum_info->right_id)
 				        ->order('left_id ASC');
 
 				    $db->setQuery($query);
@@ -738,7 +734,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 					    foreach ($forum_parents as $data) {
 						    $crumb = new stdClass();
 						    $crumb->title = $data->forum_name;
-						    $crumb->url = 'viewforum.php?f='.$data->forum_id;
+						    $crumb->url = 'viewforum.php?f=' . $data->forum_id;
 						    $pathway[] = $crumb;
 					    }
 				    }
@@ -755,7 +751,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 			    $query = $db->getQuery(true)
 				    ->select('topic_title')
 				    ->from('#__topics')
-				    ->where('topic_id = '.$db->Quote($topic_id));
+				    ->where('topic_id = ' . $db->Quote($topic_id));
 
 			    $db->setQuery($query);
 			    $topic_title = $db->loadObject();
@@ -763,7 +759,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 			    if (!empty($topic_title)) {
 				    $crumb = new stdClass();
 				    $crumb->title = $topic_title->topic_title;
-				    $crumb->url = 'viewtopic.php?f='.$forum_id.'&amp;t='.$topic_id;
+				    $crumb->url = 'viewtopic.php?f=' . $forum_id . '&amp;t=' . $topic_id;
 				    $pathway[] = $crumb;
 			    }
 		    }
@@ -859,7 +855,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 $sort = 'p.post_time DESC';
                 break;
         }
-        $where.= ' AND p.forum_id IN (' . implode(',', $forumids) . ') ORDER BY '.$sort;
+        $where.= ' AND p.forum_id IN (' . implode(',', $forumids) . ') ORDER BY ' . $sort;
     }
 
     /**

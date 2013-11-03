@@ -44,18 +44,18 @@ class JFusionHelper_dokuwiki extends JFusionPlugin
         $database_host = $this->params->get('database_host');
         if ($database_host && $database_type == 'mysql') {
             if (!class_exists('Jfusion_DokuWiki_Mysql')) {
-                require_once('auth'.DIRECTORY_SEPARATOR.'mysql.class.php');
+                require_once('auth' . DIRECTORY_SEPARATOR . 'mysql.class.php');
             }
             $this->auth = new Jfusion_DokuWiki_Mysql($this);
         } else {
             if (!class_exists('Jfusion_DokuWiki_Plain')) {
-                require_once('auth'.DIRECTORY_SEPARATOR.'plain.class.php');
+                require_once('auth' . DIRECTORY_SEPARATOR . 'plain.class.php');
             }
             $this->auth = new Jfusion_DokuWiki_Plain($this);
         }
 	    if (!$this->auth) {
 		    if (!class_exists('Jfusion_DokuWiki_Basic')) {
-			    require_once('auth'.DIRECTORY_SEPARATOR.'basic.class.php');
+			    require_once('auth' . DIRECTORY_SEPARATOR . 'basic.class.php');
 		    }
 		    $this->auth = new Jfusion_DokuWiki_Basic($this);
 	    }
@@ -139,12 +139,12 @@ class JFusionHelper_dokuwiki extends JFusionPlugin
             $source_path = $this->params->get('source_path');
 
             jimport('joomla.filesystem.file');
-            $file_version = file_get_contents($source_path.DIRECTORY_SEPARATOR.'VERSION');
+            $file_version = file_get_contents($source_path.'VERSION');
             $matches = array();
             if (preg_match('#([a-z]*)([0-9]*-[0-9]*-[0-9]*)([a-z]*)#is' , $file_version, $matches)) {
 	            list($fullversion, $rc, $version, $sub) = $matches;
 	            $dokuwiki_version['full'] = $fullversion;
-	            $dokuwiki_version['version'] = $version.$rc.$sub;
+	            $dokuwiki_version['version'] = $version . $rc . $sub;
             }
         }
         if (isset($dokuwiki_version[$v])) {

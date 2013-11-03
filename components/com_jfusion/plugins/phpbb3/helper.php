@@ -167,7 +167,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
 			    define('IN_PHPBB', true);
 		    }
 		    $table_prefix = $this->params->get('database_prefix');
-		    include_once ($source_path . '/includes/constants.php');
+		    include_once($source_path . 'includes' . DIRECTORY_SEPARATOR . 'constants.php');
 		    //get a bbcode_uid
 		    if (empty($this->bbcode_uid)) {
 			    $query = $db->getQuery(true)
@@ -471,7 +471,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
                 $code = str_replace($str_from, $str_to, $code);
                 if (!preg_match('/\<\?.*?\?\>/is', $code)) {
                     $remove_tags = true;
-                    $code = '<?php '.$code.' ?>';
+                    $code = '<?php ' . $code . ' ?>';
                 }
                 $conf = array('highlight.bg', 'highlight.comment', 'highlight.default', 'highlight.html', 'highlight.keyword', 'highlight.string');
                 foreach ($conf as $ini_var) {
@@ -499,7 +499,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
                 if (!empty($code) && substr($code, -1) == "\n") {
                     $code = substr($code, 0, -1);
                 }
-                return '[code='.$stx.':' . $this->bbcode_uid . ']' . $code . '[/code:' . $this->bbcode_uid . ']';
+                return '[code=' . $stx . ':' . $this->bbcode_uid . ']' . $code . '[/code:' . $this->bbcode_uid . ']';
                 break;
             default:
                 return '[code:' . $this->bbcode_uid . ']' . $this->bbcode_specialchars($code) . '[/code:' . $this->bbcode_uid . ']';
