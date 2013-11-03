@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
  * @var $config array
  */
 foreach($outputs as $output) {
-	echo '<h4>'.$output->title.'</h4>';
+	echo '<h4>' . $output->title . '</h4>';
 
 	if(!empty($output->error)) {
 		echo $output->error;
@@ -47,9 +47,9 @@ foreach($outputs as $output) {
 			 	}
 
 			 	if(!empty($user_output->user_url)) {
-			 		echo '<b><a href="'. $user_output->user_url . '">'.$user_output->display_name.'</a></b>';
+			 		echo '<b><a href="'. $user_output->user_url . '">' . $user_output->display_name . '</a></b>';
 			 	} else {
-			 		echo '<b>'.$user_output->display_name.'</b>';
+			 		echo '<b>' . $user_output->display_name . '</b>';
 			 	}
 			 	echo '</li>';
 			 }

@@ -417,7 +417,7 @@ class JFusionUser_prestashop extends JFusionUser
 
 			    $query = $db->getQuery(true)
 				    ->update('#__customer')
-				    ->set('id_default_group = '.$db->Quote($usergroups[0]))
+				    ->set('id_default_group = ' . $db->Quote($usergroups[0]))
 				    ->where('id_customer = ' . (int)$existinguser->userid);
 
 			    $db->setQuery($query);

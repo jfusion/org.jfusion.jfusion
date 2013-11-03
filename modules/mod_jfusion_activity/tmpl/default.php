@@ -27,21 +27,21 @@ foreach($results as $r) {
 
 	if(!empty($r->output->avatar_source)) :
 		echo '<li style="clear:left; margin-bottom: 5px;">';
-		echo '<img style="vertical-align:middle; float:left; margin:3px; max-width: '.$output->avatar_width.'px; max-height: '.$output->avatar_height.'px;" src="'.$output->avatar_source.'" alt="'.JText::_('AVATAR').'"/>';
+		echo '<img style="vertical-align:middle; float:left; margin:3px; max-width: ' . $output->avatar_width . 'px; max-height: ' . $output->avatar_height . 'px;" src="' . $output->avatar_source . '" alt="' . JText::_('AVATAR') . '"/>';
 	else:
 		echo '<li style="margin-bottom: 5px;">';
 	endif;
 
-	echo '<a href="'.$output->subject_url.'" target="'.$config['new_window'].'">'.$output->subject.'</a>';
+	echo '<a href="' . $output->subject_url . '" target="' . $config['new_window'] . '">' . $output->subject . '</a>';
 	if($output->newpost) :
-	   echo ' <img src="' . JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/new.png" style="margin-left:2px; margin-right:2px;" alt="'.JText::_('NEW').'"/>';
+	   echo ' <img src="' . JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/new.png" style="margin-left:2px; margin-right:2px;" alt="' . JText::_('NEW') . '"/>';
 	endif;
 
 	if ($config['showuser']):
     	if (!empty($output->profile_url)) :
-    		echo '<b> - <a href="'.$output->profile_url.'" target="'.$config['new_window'].'">'.$output->display_name.'</a></b>';
+    		echo '<b> - <a href="' . $output->profile_url . '" target="' . $config['new_window'] . '">' . $output->display_name . '</a></b>';
     	elseif(!empty($r->guest)) :
-    		echo ' - ' . $output->display_name . ' ('.JText::_('GUEST').')';
+    		echo ' - ' . $output->display_name . ' (' . JText::_('GUEST') . ')';
         else :
         	echo ' - ' . $output->display_name;
     	endif;
@@ -50,9 +50,9 @@ foreach($results as $r) {
 	echo ' ' . $output->date;
 
 	if(!empty($output->replyCount)) :
-		echo ' [' . $output->replyCount .']';
+		echo ' [' . $output->replyCount . ']';
 	elseif(!empty($output->body)):
-		echo ' - ' .$output->body;
+		echo ' - ' . $output->body;
 	endif;
 
 	echo '</li>';

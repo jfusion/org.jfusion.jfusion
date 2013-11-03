@@ -480,7 +480,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $wgDBname = $this->params->get('database_name');
 
 			    if ( $wgDBprefix ) {
-				    $wfWikiID = $wgDBname.'-'.$wgDBprefix;
+				    $wfWikiID = $wgDBname . '-' . $wgDBprefix;
 			    } else {
 				    $wfWikiID = $wgDBname;
 			    }

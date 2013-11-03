@@ -188,7 +188,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
         unset($url_variables['option'], $url_variables['Itemid']);
         if (is_array($url_variables)){
         	foreach ($url_variables as $key => $value){
-        		$replacement .=  '<input type="hidden" name="'. $key .'" value="'.$value . '"/>';
+        		$replacement .=  '<input type="hidden" name="'. $key . '" value="' . $value . '"/>';
         	}
         }
         return $replacement;
@@ -389,10 +389,10 @@ class JFusionPublic_gallery2 extends JFusionPublic
         }
 
         foreach($query as $key => $var) {
-            $queries[] = $key.'='.$var;
+            $queries[] = $key . '=' . $var;
         }
 
-        $wrap = $jfile . '?'. implode($queries,'&');
+        $wrap = $jfile . '?'. implode($queries, '&');
 
         $source_url = $this->params->get('source_url');
 
@@ -400,7 +400,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
         if (substr($source_url, -1) == '/') {
             $url = $source_url . $wrap;
         } else {
-            $url = $source_url . '/'. $wrap;
+            $url = $source_url . '/' . $wrap;
         }
 
         return $url;

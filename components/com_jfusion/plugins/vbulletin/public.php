@@ -220,7 +220,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 		    ->select('DISTINCT u.userid, u.username AS username, u.email');
 
 	    if (!empty($name_field)) {
-		    $query->select('CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN u.username ELSE f.'.$name_field.' END AS name')
+		    $query->select('CASE WHEN f.' . $name_field . ' IS NULL OR f.' . $name_field . ' = \'\' THEN u.username ELSE f.' . $name_field . ' END AS name')
 		    ->from('#__userfield as f')
 		    ->innerJoin('#__user AS u ON f.userid = u.userid');
 	    } else {
@@ -466,7 +466,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         }
         if ($this->params->get('parseCSS', false)) {
             //we need to wrap the body in a div to prevent some CSS clashes
-            $data->body = '<div id="framelessVb">'.$data->body.'</div>';
+            $data->body = '<div id="framelessVb">' . $data->body . '</div>';
         }
         if (defined('_JFUSION_DEBUG')) {
             $data->body.= '<pre><code>' . htmlentities(print_r($_SESSION['jfvbdebug'], true)) . '</code></pre>';
@@ -543,14 +543,14 @@ JS;
 						    $title = $db->loadResult();
 						    $crumb = new stdClass();
 						    $crumb->title = $title;
-						    $crumb->url = 'forumdisplay.php?f='.$p;
+						    $crumb->url = 'forumdisplay.php?f=' . $p;
 						    $pathway[] = $crumb;
 					    }
 				    }
 			    } else {
 				    $crumb = new stdClass();
 				    $crumb->title = $forum->title;
-				    $crumb->url = 'forumdisplay.php?f='.$fid;
+				    $crumb->url = 'forumdisplay.php?f=' . $fid;
 				    $pathway[] = $crumb;
 			    }
 		    } elseif (JFactory::getApplication()->input->get('t', false) !== false) {
@@ -560,7 +560,7 @@ JS;
 				    ->select('t.title AS thread, f.title AS forum, f.forumid, f.parentid, f.parentlist')
 				    ->from('#__thread AS t')
 			        ->join('', '#__forum AS f ON t.forumid = f.forumid')
-				    ->where('t.threadid = '.$db->Quote($tid));
+				    ->where('t.threadid = ' . $db->Quote($tid));
 
 			    $db->setQuery($query);
 			    $result = $db->loadObject();
@@ -577,19 +577,19 @@ JS;
 						    $title = $db->loadResult();
 						    $crumb = new stdClass();
 						    $crumb->title = $title;
-						    $crumb->url = 'forumdisplay.php?f='.$p;
+						    $crumb->url = 'forumdisplay.php?f=' . $p;
 						    $pathway[] = $crumb;
 					    }
 				    }
 			    } else {
 				    $crumb = new stdClass();
 				    $crumb->title = $result->forum;
-				    $crumb->url = 'forumdisplay.php?f='.$result->forumid;
+				    $crumb->url = 'forumdisplay.php?f=' . $result->forumid;
 				    $pathway[] = $crumb;
 			    }
 			    $crumb = new stdClass();
 			    $crumb->title = $result->thread;
-			    $crumb->url = 'showthread.php?t='.$tid;
+			    $crumb->url = 'showthread.php?t=' . $tid;
 			    $pathway[] = $crumb;
 		    } elseif (JFactory::getApplication()->input->get('p', false) !== false) {
 			    $pid = JFactory::getApplication()->input->get('p');
@@ -598,7 +598,7 @@ JS;
 				    ->select('t.title AS thread, t.threadid, f.title AS forum, f.forumid, f.parentid, f.parentlist')
 				    ->from('#__thread AS t')
 			        ->join('', '#__post AS p ON t.forumid = f.forumid AND t.threadid = p.threadid')
-				    ->where('p.postid = '.$db->Quote($pid));
+				    ->where('p.postid = ' . $db->Quote($pid));
 
 			    $db->setQuery($query);
 			    $result = $db->loadObject();
@@ -615,19 +615,19 @@ JS;
 						    $title = $db->loadResult();
 						    $crumb = new stdClass();
 						    $crumb->title = $title;
-						    $crumb->url = 'forumdisplay.php?f='.$p;
+						    $crumb->url = 'forumdisplay.php?f=' . $p;
 						    $pathway[] = $crumb;
 					    }
 				    }
 			    } else {
 				    $crumb = new stdClass();
 				    $crumb->title = $result->forum;
-				    $crumb->url = 'forumdisplay.php?f='.$result->forumid;
+				    $crumb->url = 'forumdisplay.php?f=' . $result->forumid;
 				    $pathway[] = $crumb;
 			    }
 			    $crumb = new stdClass();
 			    $crumb->title = $result->thread;
-			    $crumb->url = 'showthread.php?t='.$result->threadid;
+			    $crumb->url = 'showthread.php?t=' . $result->threadid;
 			    $pathway[] = $crumb;
 		    } elseif (JFactory::getApplication()->input->get('u', false) !== false) {
 			    if ($jfile == 'member.php') {
@@ -641,13 +641,13 @@ JS;
 				    $query = $db->getQuery(true)
 					    ->select('username')
 					    ->from('#__user')
-					    ->where('userid = '.$db->Quote($uid));
+					    ->where('userid = ' . $db->Quote($uid));
 
 				    $db->setQuery($query);
 				    $username = $db->loadResult();
 				    $crumb = new stdClass();
 				    $crumb->title = $username.'\'s Profile';
-				    $crumb->url = 'member.php?u='.$uid;
+				    $crumb->url = 'member.php?u=' . $uid;
 				    $pathway[] = $crumb;
 			    }
 		    } elseif ($jfile == 'search.php') {
@@ -821,7 +821,7 @@ JS;
                 $sort = 'p.dateline DESC';
                 break;
         }
-        $where .= ' ORDER BY '.$sort;
+        $where .= ' ORDER BY ' . $sort;
     }
 
     /**
@@ -927,7 +927,7 @@ JS;
         //we need to make some exceptions
         //absolute url, already parsed URL, JS function, or jumpto
         if (strpos($url, 'http') !== false || strpos($url, $currentURL) !== false || strpos($url, 'com_jfusion') !== false || ((string)strpos($url, '#') === (string)0 && strlen($url) == 1)) {
-            $replacement = 'href="'.$url.'" '.$extra.'>';
+            $replacement = 'href="' . $url . '" ' . $extra . '>';
             if (defined('_JFUSION_DEBUG')) {
                 $debug['parsed'] = $replacement;
             }
@@ -1015,9 +1015,9 @@ JS;
         }
         if (strpos($url, 'http') !== false) {
             if (defined('_JFUSION_DEBUG')) {
-                $debug['parsed'] = 'window.location=\''.$url.'\'';
+                $debug['parsed'] = 'window.location=\'' . $url . '\'';
             }
-            return 'window.location=\''.$url.'\'';
+            return 'window.location=\'' . $url . '\'';
         }
 
         if (empty($vbsefenabled)) {
@@ -1034,10 +1034,10 @@ JS;
         }
         $url = str_replace('&amp;', '&', $url);
         if (defined('_JFUSION_DEBUG')) {
-            $debug['parsed'] = 'window.location=\''.$url.'\'';
+            $debug['parsed'] = 'window.location=\'' . $url . '\'';
             $_SESSION['jfvbdebug'][] = $debug;
         }
-        return 'window.location=\''.$url.'\'';
+        return 'window.location=\'' . $url . '\'';
     }
 
     /**
@@ -1108,18 +1108,18 @@ JS;
                     if ($sv == 'body' || $sv == 'html' || $sv == '*') {
                         $selectors[$sk] = $sv.' #framelessVb';
                     } else {
-                        $selectors[$sk] = '#framelessVb '.$sv;
+                        $selectors[$sk] = '#framelessVb ' . $sv;
                     }
                     $imports[] = $import;
                 } elseif (strpos($sv, 'wysiwyg') === false) {
-                    $selectors[$sk] = '#framelessVb '.$sv;
+                    $selectors[$sk] = '#framelessVb ' . $sv;
                 }
             }
             //reconstruct the element
             $elements[$k] = implode(', ', $selectors) . ' {' . $element[1] . '}';
         }
         //reconstruct the css
-        $css = '<style type="text/css" id="vbulletin'.$matches[1].'">'."\n" . implode("\n", $imports) . "\n" . implode("\n", $elements) . "\n".'</style>';
+        $css = '<style type="text/css" id="vbulletin' . $matches[1] . '">' . "\n" . implode("\n", $imports) . "\n" . implode("\n", $elements) . "\n".'</style>';
         if (defined('_JFUSION_DEBUG')) {
             $debug['parsed'] = $css;
             $_SESSION['jfvbdebug'] = $debug;

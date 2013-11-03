@@ -35,7 +35,7 @@ class JFusionPublic_mediawiki extends JFusionPublic {
 	    $replace_body	= array();
 
 		$regex_body[]	= '#addButton\("/(.*?)"#mS';
-		$replace_body[]	= 'addButton("'.$data->integratedURL.'$1"';
+		$replace_body[]	= 'addButton("' . $data->integratedURL . '$1"';
 
 	    $data->body = preg_replace($regex_body, $replace_body, $data->body);
 	}
@@ -93,6 +93,6 @@ class JFusionPublic_mediawiki extends JFusionPublic {
      */
     function getSearchResultLink($post)
 	{
-		return 'index.php?title='.$post->title;
+		return 'index.php?title=' . $post->title;
 	}
 }

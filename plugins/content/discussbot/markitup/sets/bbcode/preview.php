@@ -17,8 +17,8 @@ if(!class_exists('BBCode_Parser')) {
 $bbcode = new BBCode_Parser();
 define('_JEXEC',1);
 
-$url = (!empty($_SERVER['HTTPS'])) ? "https://".$_SERVER['SERVER_NAME'] : "http://".$_SERVER['SERVER_NAME'];
-if($_SERVER['SERVER_PORT']!='80') $url .= ':'.$_SERVER['SERVER_PORT'];
+$url = (!empty($_SERVER['HTTPS'])) ? 'https://' . $_SERVER['SERVER_NAME'] : 'http://' . $_SERVER['SERVER_NAME'];
+if($_SERVER['SERVER_PORT'] != '80') $url .= ':' . $_SERVER['SERVER_PORT'];
 $url .= '/components/com_jfusion/images/smileys';
 
 $bbcode->SetSmileyURL($url);

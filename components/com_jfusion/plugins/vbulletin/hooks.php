@@ -114,25 +114,25 @@ class executeJFusionHook
                         if (!empty($query)) {
                             $q = explode('&', $query);
                             foreach ($q as $k => $v) {
-                                $url.= $k.','.$v.'/';
+                                $url.= $k . ',' . $v . '/';
                             }
                         }
                         if (!empty($query)) {
                             $queries = explode('&', $query);
                             foreach ($queries as $q) {
                                 $part = explode('=', $q);
-                                $url.= $part[0].','.$part[1].'/';
+                                $url.= $part[0] . ',' . $part[1] . '/';
                             }
                         }
                     } else {
                         $url = JOOMLABASEURL . $filename;
-                        $url.= (empty($query)) ? '' : '?'.$query;
+                        $url.= (empty($query)) ? '' : '?' . $query;
                     }
                 } else {
-                    $url = JOOMLABASEURL . '&jfile='.$filename;
-                    $url.= (empty($query)) ? '' : '&'.$query;
+                    $url = JOOMLABASEURL . '&jfile=' . $filename;
+                    $url.= (empty($query)) ? '' : '&' . $query;
                 }
-                header('Location: '.$url);
+                header('Location: ' . $url);
                 exit;
             }
         }
@@ -149,7 +149,7 @@ class executeJFusionHook
                     }
 
                     if (isset($vbulletin->pluginlist[$name])) {
-                        $vbulletin->pluginlist[$name].= "\n$code";
+                        $vbulletin->pluginlist[$name] .= "\n$code";
                     } else {
                         $vbulletin->pluginlist[$name] = $code;
                     }
@@ -251,24 +251,23 @@ class executeJFusionHook
 
 				        $query = 'INSERT IGNORE INTO #__session
                             ( sessionhash, userid, host, idhash, lastactivity, location, styleid, languageid, loggedin, inforum, inthread, incalendar, badlocation, useragent, bypass, profileupdate )
-                            VALUES ( '.
-					            $vdb->Quote($vars['dbsessionhash']).
-					            ' ,'.$vars['userid'].
-					            ' ,'.$vdb->Quote($vars['host']).
-					            ' ,'.$vdb->Quote($vars['idhash']).
-					            ' ,'.$vars['lastactivity'].
-					            ' ,'.$vdb->Quote($vars['location']).
-					            ' ,'.$vars['styleid'].
-					            ' ,'.$vars['languageid'].
-					            ' ,'.$vars['loggedin'].
-					            ' ,'.$vars['inforum'].
-					            ' ,'.$vars['inthread'].
-					            ' ,'.$vars['incalendar'].
-					            ' ,'.$vars['badlocation'].
-					            ' ,'.$vdb->Quote($vars['useragent']).
-					            ' ,'.$bypass.
-					            ' ,'.
-					            $vars['profileupdate'].
+                            VALUES ( ' .
+					            $vdb->Quote($vars['dbsessionhash']) .
+					            ' ,' . $vars['userid'] .
+					            ' ,' . $vdb->Quote($vars['host']) .
+					            ' ,' . $vdb->Quote($vars['idhash']) .
+					            ' ,' . $vars['lastactivity'] .
+					            ' ,' . $vdb->Quote($vars['location']) .
+					            ' ,' . $vars['styleid'] .
+					            ' ,' . $vars['languageid'] .
+					            ' ,' . $vars['loggedin'] .
+					            ' ,' . $vars['inforum'] .
+					            ' ,' . $vars['inthread'] .
+					            ' ,' . $vars['incalendar'] .
+					            ' ,' . $vars['badlocation'] .
+					            ' ,' . $vdb->Quote($vars['useragent']) .
+					            ' ,' . $bypass .
+					            ' ,' . $vars['profileupdate'] .
 					        ' )';
 			        } else {
 				        $query = $vdb->getQuery(true)
@@ -518,9 +517,9 @@ class executeJFusionHook
         if (!empty($this->vars['profileurl']) && $profileurlSet !== true) {
             $uid = JFactory::getApplication()->input->get('u');
             if ($vbsefenabled && $vbsefmode) {
-                $this->vars['profileurl'] = str_replace('member.php?u='.$uid, '', $this->vars['profileurl']);
+                $this->vars['profileurl'] = str_replace('member.php?u=' . $uid, '', $this->vars['profileurl']);
             } else {
-                $this->vars['profileurl'] = $baseURL . '&jfile=member.php&u='.$uid;
+                $this->vars['profileurl'] = $baseURL . '&jfile=member.php&u=' . $uid;
             }
             $profileurlSet = true;
         }

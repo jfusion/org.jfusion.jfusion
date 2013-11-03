@@ -101,7 +101,7 @@ class JFusionForum_gallery2 extends JFusionForum
             if (!empty($count) && $count > 1) {
                 $tmp = $block;
                 for ($i=1;$i < $count;$i++) {
-                    $block .= '|'.$tmp;
+                    $block .= '|' . $tmp;
                 }
             }
             /* Create the show array */
@@ -215,6 +215,6 @@ class JFusionForum_gallery2 extends JFusionForum
      * @see Gallery2:Modules:members
      */
     function getProfileURL($userid) {
-        return 'main.php?g2_view=members.MembersProfile&amp;g2_userId='.$userid;
+        return 'main.php?g2_view=members.MembersProfile&amp;g2_userId=' . $userid;
     }
 }

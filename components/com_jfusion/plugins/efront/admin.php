@@ -263,7 +263,7 @@ class JFusionAdmin_efront extends JFusionAdmin
             $db->setQuery($query);
             $api_key = $db->loadResult();
             $md5_key = $this->params->get('md5_key');
-            $params_hash = md5($apikey.$md5_key);
+            $params_hash = md5($apikey . $md5_key);
             if ($params_hash != $api_key) {
                 JFusionFunction::raiseWarning(JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
             }

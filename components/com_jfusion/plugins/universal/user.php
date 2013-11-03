@@ -46,8 +46,8 @@ class JFusionUser_universal extends JFusionUser
 
 			$query = $db->getQuery(true)
 				->select($field)
-				->from('#__'.$this->helper->getTable())
-				->where($identifier_type.' = ' . $db->Quote($identifier));
+				->from('#__' . $this->helper->getTable())
+				->where($identifier_type . ' = ' . $db->Quote($identifier));
 
 			$db->setQuery($query);
 			$result = $db->loadObject();
@@ -56,7 +56,7 @@ class JFusionUser_universal extends JFusionUser
 				if (isset($result->firstname)) {
 					$result->name = $result->firstname;
 					if (isset($result->lastname)) {
-						$result->name .= ' '.$result->lastname;
+						$result->name .= ' ' . $result->lastname;
 					}
 				}
 				$result->block = 0;
@@ -83,7 +83,7 @@ class JFusionUser_universal extends JFusionUser
 
 					$query = $db->getQuery(true)
 						->select($field)
-						->from('#__'.$groupt)
+						->from('#__' . $groupt)
 						->where($userid->field . ' = ' . $db->Quote($result->userid));
 
 					$db->setQuery($query);
@@ -123,18 +123,18 @@ class JFusionUser_universal extends JFusionUser
 				$db = JFusionFactory::getDatabase($this->getJname());
 
 				$query = $db->getQuery(true)
-					->delete('#__'.$this->helper->getTable())
+					->delete('#__' . $this->helper->getTable())
 					->where($userid->field . ' = ' . $db->Quote($userinfo->userid));
 
 				$db->setQuery($query);
 				$db->execute();
 
-				$group = $this->helper->getFieldType('GROUP','group');
+				$group = $this->helper->getFieldType('GROUP', 'group');
 				if ( isset($group) ) {
-					$userid = $this->helper->getFieldType('USERID','group');
+					$userid = $this->helper->getFieldType('USERID', 'group');
 
 					$query = $db->getQuery(true)
-						->delete('#__'.$this->helper->getTable('group'))
+						->delete('#__' . $this->helper->getTable('group'))
 						->where($userid->field . ' = ' . $db->Quote($userinfo->userid));
 
 					$maped = $this->helper->getMap('group');
@@ -144,7 +144,7 @@ class JFusionUser_universal extends JFusionUser
 							switch ($type) {
 								case 'DEFAULT':
 									if ( $value->fieldtype == 'VALUE' ) {
-										$query->where($field.' = '.$db->Quote($value->value));
+										$query->where($field . ' = ' . $db->Quote($value->value));
 									}
 									break;
 							}
@@ -227,38 +227,38 @@ class JFusionUser_universal extends JFusionUser
 			} else {
 
 				$query = $db->getQuery(true)
-					->update('#__'.$this->helper->getTable());
+					->update('#__' . $this->helper->getTable());
 
 				foreach ($maped as $value) {
 					foreach ($value->type as $type) {
 						switch ($type) {
 							case 'PASSWORD':
 								if ( isset($userinfo->password_clear) ) {
-									$query->set($value->field.' = '.$db->quote($this->helper->getValue($value->fieldtype,$userinfo->password_clear,$userinfo)));
+									$query->set($value->field . ' = ' . $db->quote($this->helper->getValue($value->fieldtype, $userinfo->password_clear, $userinfo)));
 								} else {
-									$query->set($value->field.' = '.$db->quote($userinfo->password));
+									$query->set($value->field . ' = ' . $db->quote($userinfo->password));
 								}
 								break;
 							case 'SALT':
 								if (!isset($userinfo->password_salt)) {
-									$query->set($value->field.' = '.$db->quote($this->helper->getValue($value->fieldtype,$value->value,$userinfo)));
+									$query->set($value->field . ' = ' . $db->quote($this->helper->getValue($value->fieldtype, $value->value, $userinfo)));
 								} else {
-									$query->set($value->field.' = '.$db->quote($existinguser->password_salt));
+									$query->set($value->field . ' = ' . $db->quote($existinguser->password_salt));
 								}
 								break;
 						}
 					}
 				}
 
-				$query->where($userid->field.' = ' . $db->Quote($existinguser->userid));
+				$query->where($userid->field . ' = ' . $db->Quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
 
-				$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+				$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . ': ' .$e->getMessage();
+			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . ': ' . $e->getMessage();
 		}
 	}
 
@@ -294,17 +294,17 @@ class JFusionUser_universal extends JFusionUser
 				$db = JFusionFactory::getDatabase($this->getJname());
 
 				$query = $db->getQuery(true)
-					->update('#__'.$this->helper->getTable())
-					->set($email->field.' = '.$db->quote($userinfo->email))
-					->where($userid->field.'=' . $db->Quote($existinguser->userid));
+					->update('#__' . $this->helper->getTable())
+					->set($email->field . ' = ' . $db->quote($userinfo->email))
+					->where($userid->field . '=' . $db->Quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
 
-				$status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+				$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': ' .$e->getMessage();
+			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': ' . $e->getMessage();
 		}
 	}
 
@@ -345,19 +345,19 @@ class JFusionUser_universal extends JFusionUser
 					$usergroup = $usergroups[0];
 
 					$query = $db->getQuery(true)
-						->update('#__'.$table)
-						->set($group->field.' = '.$db->quote(base64_decode($usergroup)))
-						->where($userid->field.'=' . $db->Quote($existinguser->userid));
+						->update('#__' . $table)
+						->set($group->field . ' = ' . $db->quote(base64_decode($usergroup)))
+						->where($userid->field . '=' . $db->Quote($existinguser->userid));
 
 					$db->setQuery($query);
 					$db->execute();
 
-					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
 				} else {
 					$maped = $this->helper->getMap('group');
 
 					$query = $db->getQuery(true)
-						->delete('#__'.$this->helper->getTable('group'))
+						->delete('#__' . $this->helper->getTable('group'))
 						->where($userid->field . ' = ' . $db->Quote($userinfo->userid));
 
 					foreach ($maped as $value) {
@@ -366,7 +366,7 @@ class JFusionUser_universal extends JFusionUser
 							switch ($type) {
 								case 'DEFAULT':
 									if ( $value->fieldtype == 'VALUE' ) {
-										$query->where($field.' = '.$db->Quote($value->value));
+										$query->where($field . ' = ' . $db->Quote($value->value));
 									}
 									break;
 							}
@@ -394,14 +394,14 @@ class JFusionUser_universal extends JFusionUser
 								}
 							}
 						}
-						$db->insertObject('#__'.$this->helper->getTable('group'), $addgroup );
+						$db->insertObject('#__' . $this->helper->getTable('group'), $addgroup );
 
-						$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+						$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
 					}
 				}
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' .$e->getMessage();
+			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
 		}
 	}
 
@@ -444,18 +444,18 @@ class JFusionUser_universal extends JFusionUser
 					$db = JFusionFactory::getDatabase($this->getJname());
 
 					$query = $db->getQuery(true)
-						->update('#__'.$this->helper->getTable())
-						->set($active->field.' = '.$db->quote($userStatus))
-						->where($userid->field.'=' . $db->Quote($existinguser->userid));
+						->update('#__' . $this->helper->getTable())
+						->set($active->field . ' = ' . $db->quote($userStatus))
+						->where($userid->field . ' = ' . $db->Quote($existinguser->userid));
 
 					$db->setQuery($query);
 					$db->execute();
 
-					$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+					$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 				}
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$e->getMessage();
+			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
 		}
 	}
 
@@ -484,16 +484,16 @@ class JFusionUser_universal extends JFusionUser
 				$db = JFusionFactory::getDatabase($this->getJname());
 
 				$query = $db->getQuery(true)
-					->update('#__'.$this->helper->getTable())
-					->set($active->field.' = '.$db->quote($userStatus))
-					->where($userid->field.'=' . $db->Quote($existinguser->userid));
+					->update('#__' . $this->helper->getTable())
+					->set($active->field . ' = ' . $db->quote($userStatus))
+					->where($userid->field . ' = ' . $db->Quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
-				$status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' .$e->getMessage();
+			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
 		}
 	}
 
@@ -517,17 +517,17 @@ class JFusionUser_universal extends JFusionUser
 				$db = JFusionFactory::getDatabase($this->getJname());
 
 				$query = $db->getQuery(true)
-					->update('#__'.$this->helper->getTable())
-					->set($activecode->field.' = '.$db->quote($userinfo->activation))
-					->where($userid->field.'=' . $db->Quote($existinguser->userid));
+					->update('#__' . $this->helper->getTable())
+					->set($activecode->field . ' = ' . $db->quote($userinfo->activation))
+					->where($userid->field . ' = ' . $db->Quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
 
-				$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$e->getMessage();
+			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '  . $e->getMessage();
 		}
 	}
 
@@ -551,16 +551,16 @@ class JFusionUser_universal extends JFusionUser
 				$db = JFusionFactory::getDatabase($this->getJname());
 
 				$query = $db->getQuery(true)
-					->update('#__'.$this->helper->getTable())
-					->set($activecode->field.' = '.$db->quote($userinfo->activation))
-					->where($userid->field.'=' . $db->Quote($existinguser->userid));
+					->update('#__' . $this->helper->getTable())
+					->set($activecode->field . ' = ' . $db->quote($userinfo->activation))
+					->where($userid->field . ' = ' . $db->Quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
-				$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$e->getMessage();
+			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
 		}
 	}
 
@@ -599,7 +599,7 @@ class JFusionUser_universal extends JFusionUser
 								foreach ($value->type as $type) {
 									switch ($type) {
 										case 'USERID':
-											$query = 'SHOW COLUMNS FROM #__'.$this->helper->getTable().' where Field = '.$db->Quote($field).' AND Extra like \'%auto_increment%\'';
+											$query = 'SHOW COLUMNS FROM #__' . $this->helper->getTable() . ' where Field = ' . $db->Quote($field) . ' AND Extra like \'%auto_increment%\'';
 											$db->setQuery($query);
 											$fieldslist = $db->loadObject();
 											if ($fieldslist) {
@@ -609,7 +609,7 @@ class JFusionUser_universal extends JFusionUser
 
 												$query = $db->getQuery(true)
 													->select($f)
-													->from('#__'.$this->helper->getTable())
+													->from('#__' . $this->helper->getTable())
 													->order('userid DESC');
 
 												$db->setQuery($query, 0 , 1);
@@ -678,7 +678,7 @@ class JFusionUser_universal extends JFusionUser
 								}
 							}
 							//now append the new user data
-							$db->insertObject('#__'.$this->helper->getTable(), $user, $userid->field );
+							$db->insertObject('#__' . $this->helper->getTable(), $user, $userid->field );
 
 							$group = $this->helper->getFieldType('GROUP');
 
@@ -710,7 +710,7 @@ class JFusionUser_universal extends JFusionUser
 											}
 										}
 									}
-									$db->insertObject('#__'.$this->helper->getTable('group'), $addgroup, $groupuserid->field );
+									$db->insertObject('#__' . $this->helper->getTable('group'), $addgroup, $groupuserid->field);
 								}
 							}
 							//return the good news

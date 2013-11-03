@@ -212,7 +212,7 @@ class JFusionUser_wordpress extends JFusionUser
         // get _wpnonce security value
         preg_match("/action=logout.+?_wpnonce=([\w\s-]*)[\"']/i",$remotedata,$wpnonce);
         if (!empty($wpnonce[1])){
- 					$curl_options['post_url'] = $curl_options['post_url'].'?action=logout&_wpnonce='.$wpnonce[1];
+ 					$curl_options['post_url'] = $curl_options['post_url'] . '?action=logout&_wpnonce=' . $wpnonce[1];
 					$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
         } else {
           // non wpnonce, we are probably not on the logout page. Just report
@@ -225,17 +225,17 @@ class JFusionUser_wordpress extends JFusionUser
           $cookie_hash = $this->params->get('cookie_hash');
 
           $cookies = array();
-          $cookies[0][0] ='wordpress_logged_in'.$cookie_name.'=';
-          $cookies[1][0] ='wordpress'.$cookie_name.'=';
+          $cookies[0][0] = 'wordpress_logged_in' . $cookie_name . '=';
+          $cookies[1][0] = 'wordpress' . $cookie_name . '=';
           $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $cookie_path, '');
 
           $cookies = array();
-          $cookies[1][0] ='wordpress'.$cookie_name.'=';
+          $cookies[1][0] = 'wordpress' . $cookie_name . '=';
 
-          $path = $cookie_path.'wp-content/plugins';
+          $path = $cookie_path . 'wp-content/plugins';
           $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, '');
 
-          $path = $cookie_path.'wp-admin';
+          $path = $cookie_path . 'wp-admin';
           $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, '');
         }
     }      
@@ -590,13 +590,13 @@ class JFusionUser_wordpress extends JFusionUser
 						    $db->setQuery($query);
 						    $db->execute();
 					    }
-					    $status['debug'][] = 'Reassigned posts from user with id '.$user_id.' to user '.$reassign;
+					    $status['debug'][] = 'Reassigned posts from user with id ' . $user_id . ' to user ' . $reassign;
 				    }
 
 				    $query = $db->getQuery(true)
 					    ->select('link_id')
 					    ->from('#__links')
-				        ->where('link_owner = '.$user_id);
+				        ->where('link_owner = ' . $user_id);
 
 				    $db->setQuery($query);
 				    if ($db->execute()) {
@@ -611,7 +611,7 @@ class JFusionUser_wordpress extends JFusionUser
 							    $db->setQuery($query);
 							    $db->execute();
 						    }
-						    $status['debug'][] = 'Reassigned links from user with id '.$user_id.' to user '.$reassign;
+						    $status['debug'][] = 'Reassigned links from user with id ' . $user_id . ' to user ' . $reassign;
 					    }
 				    }
 			    }
@@ -622,7 +622,7 @@ class JFusionUser_wordpress extends JFusionUser
 
 			    $db->setQuery($query);
 			    $db->execute();
-			    $status['debug'][] = 'Deleted posts from user with id '.$user_id;
+			    $status['debug'][] = 'Deleted posts from user with id ' . $user_id;
 
 			    $query = $db->getQuery(true)
 				    ->delete('#__links')
@@ -630,7 +630,7 @@ class JFusionUser_wordpress extends JFusionUser
 
 			    $db->setQuery($query);
 			    $db->execute();
-			    $status['debug'][] = 'Deleted links from user '.$user_id;
+			    $status['debug'][] = 'Deleted links from user ' . $user_id;
 		    }
 		    // now delete the user
 		    $query = $db->getQuery(true)
@@ -639,7 +639,7 @@ class JFusionUser_wordpress extends JFusionUser
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = 'Deleted userrecord of user with userid '.$user_id;
+		    $status['debug'][] = 'Deleted userrecord of user with userid ' . $user_id;
 
 		    // delete usermeta
 		    $query = $db->getQuery(true)
@@ -648,7 +648,7 @@ class JFusionUser_wordpress extends JFusionUser
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = 'Deleted usermetarecord of user with userid '.$user_id;
+		    $status['debug'][] = 'Deleted usermetarecord of user with userid ' . $user_id;
 	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
 	    }
@@ -675,7 +675,7 @@ class JFusionUser_wordpress extends JFusionUser
 			    $caps = array();
 			    foreach($usergroups as $usergroup) {
 				    $newgroupname = strtolower($this->helper->getUsergroupNameWP($usergroup));
-				    $caps[$newgroupname]='1';
+				    $caps[$newgroupname] = '1';
 			    }
 
 			    $capsfield = serialize($caps);
@@ -689,7 +689,7 @@ class JFusionUser_wordpress extends JFusionUser
 			    $db->setQuery($query);
 			    $db->execute();
 
-			    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
+			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
 		    }
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();

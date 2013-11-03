@@ -87,9 +87,9 @@ class JFusionDiscussBotHelper {
 				$query = $db->getQuery(true)
 					->select('*')
 					->from('#__jfusion_discussion_bot')
-					->where('contentid = '.$db->Quote($this->article->id))
-					->where('jname = '.$db->Quote($this->jname))
-					->where('component = '.$db->Quote($this->option));
+					->where('contentid = ' . $db->Quote($this->article->id))
+					->where('jname = ' . $db->Quote($this->jname))
+					->where('component = ' . $db->Quote($this->option));
 
 				$db->setQuery($query);
 				$threadinfo = $this->setThreadInfo($db->loadObject());
@@ -208,11 +208,11 @@ class JFusionDiscussBotHelper {
 			$url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catid);
 			$start = JFactory::getApplication()->input->getInt('start', 0);
 			if ($start) {
-				$url .= '&start='.$start;
+				$url .= '&start=' . $start;
 			}
 			$limitstart = JFactory::getApplication()->input->getInt('limitstart', 0);
 			if ($limitstart) {
-				$url .= '&limitstart='.$limitstart;
+				$url .= '&limitstart=' . $limitstart;
 			}
 			$url .= $query;
 		} else if ($this->option == 'com_k2') {
@@ -228,7 +228,7 @@ class JFusionDiscussBotHelper {
 		$url = JRoute::_($url, $xhtml);
 
 		if (!empty($jumpto)) {
-			$url .= '#'.$jumpto;
+			$url .= '#' . $jumpto;
 		}
 
 		return $url;
@@ -466,7 +466,7 @@ class JFusionDiscussBotHelper {
 														$query = $db->getQuery(true)
 															->select('parent')
 															->from('#__k2_categories')
-															->where('id = '.$db->Quote($parent_id));
+															->where('id = ' . $db->Quote($parent_id));
 
 														$db->setQuery($query);
 														//keep going up
@@ -498,7 +498,7 @@ class JFusionDiscussBotHelper {
 														$query = $db->getQuery(true)
 															->select('parent')
 															->from('#__k2_categories')
-															->where('id = '.$db->Quote($parent_id));
+															->where('id = ' . $db->Quote($parent_id));
 														$parent_id = $db->setQuery($query);
 													}
 												} else {
@@ -601,7 +601,7 @@ JS;
 		$this->debug('Rendering file ' . $file);
 		if (file_exists(DISCUSSION_TEMPLATE_PATH . $file)) {
 			ob_start();
-			include DISCUSSION_TEMPLATE_PATH.$file;
+			include DISCUSSION_TEMPLATE_PATH . $file;
 			$captured_content = ob_get_contents();
 			ob_end_clean();
 		} else {
@@ -780,7 +780,7 @@ class JFusionPagination extends JPagination {
 		$html .= ' &lt; ';
 		$html .= $list['previous']['data'];
 		foreach( $list['pages'] as $page ) {
-			$html .= ' '.$page['data'];
+			$html .= ' ' . $page['data'];
 		}
 		$html .= ' '. $list['next']['data'];
 		$html .= ' &gt;';
@@ -799,11 +799,11 @@ class JFusionPagination extends JPagination {
 	{
 		// Initialize variables
 		$html = '<div class="list-footer">';
-		$html .= '<div class="limit">'.JText::_('JGLOBAL_DISPLAY_NUM').$list['limitfield'].'</div>';
-		$html .= '<p class="counter" style="font-weight: bold; margin: 8px 0;">'.$list['pagescounter'].'</p>';
+		$html .= '<div class="limit">' . JText::_('JGLOBAL_DISPLAY_NUM') . $list['limitfield'].'</div>';
+		$html .= '<p class="counter" style="font-weight: bold; margin: 8px 0;">' . $list['pagescounter'] . '</p>';
 		$html .= $list['pageslinks'];
 
-		$html .= '<input type="hidden" name="limitstart'.$this->identifier.'" value="'.$list['limitstart'].'"/>';
+		$html .= '<input type="hidden" name="limitstart' . $this->identifier . '" value="' . $list['limitstart'] . '"/>';
 		$html .= '</div>';
 
 		return $html;
@@ -816,9 +816,9 @@ class JFusionPagination extends JPagination {
 	public function jfusion_item_active(&$item)
 	{
 		if($item->base>0) {
-			return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value='.$item->base.'; JFusion.pagination('.$this->articleid.'); return false;">'.$item->text.'</a>';
+			return '<a href="#" title="' . $item->text . '" onclick="javascript: document.jfusionPaginationForm.limitstart' . $this->identifier . '.value=' . $item->base . '; JFusion.pagination(' . $this->articleid . '); return false;">' . $item->text . '</a>';
 		} else {
-			return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value=0; JFusion.pagination('.$this->articleid.'); return false;">'.$item->text.'</a>';
+			return '<a href="#" title="' . $item->text . '" onclick="javascript: document.jfusionPaginationForm.limitstart' . $this->identifier . '.value=0; JFusion.pagination(' . $this->articleid . '); return false;">' . $item->text . '</a>';
 		}
 	}
 
@@ -829,6 +829,6 @@ class JFusionPagination extends JPagination {
 	 */
 	public function jfusion_item_inactive(&$item)
 	{
-		return '<span class="pagenav">'.$item->text.'</span>';
+		return '<span class="pagenav">' . $item->text . '</span>';
 	}
 }

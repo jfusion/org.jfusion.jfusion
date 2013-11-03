@@ -71,7 +71,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
             } else {
                 $url .= 'index.php';
             }
-            $post_data = 'jfvbtask='.$task;
+            $post_data = 'jfvbtask=' . $task;
             $post_data.= '&jfvbdata=' . urlencode(stripslashes($this->encryptApiData($data)));
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -188,7 +188,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
                 //fixed do not remove ascii backspace because we are in joomla everything is utf8
                 $vbulletin->options['blankasciistrip'] = 'u8205 u8204 u8237 u8238';
                 // set connection to use utf8
-                $vbulletin->db->query_first('SET names \''.$this->params->get('database_charset', 'utf8').'\'');
+                $vbulletin->db->query_first('SET names \'' . $this->params->get('database_charset', 'utf8') . '\'');
                 $GLOBALS['db'] = $vbulletin->db;
             } else {
                 JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'), $this->getJname());
@@ -206,7 +206,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
                 //fixed do not remove ascii backspace because we are in joomla everything is utf8
                 $this->vb_data->db->options['blankasciistrip'] = 'u8205 u8204 u8237 u8238';
                 // set connection to use utf8
-                $this->vb_data->db->query_first('SET names \''.$this->params->get('database_charset', 'utf8').'\'');
+                $this->vb_data->db->query_first('SET names \'' . $this->params->get('database_charset', 'utf8') . '\'');
                 if (empty($GLOBALS['vbulletin'])) {
                     $GLOBALS['vbulletin'] = $this->vb_data;
                 }

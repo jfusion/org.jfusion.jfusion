@@ -133,7 +133,7 @@ function login_jfusion(&$username, &$password) {
 
 				$url = str_replace('&amp;', '&', $redirect);
 
-				header('Location: '.$url);
+				header('Location: ' . $url);
 				exit();
 			} else {
 				//recreate phpBB database connection
@@ -235,7 +235,7 @@ function logout_jfusion(&$data) {
             $user->set_cookie('sid', '', $cookie_expire);
             unset($cookie_expire);
 
-            header('Location: '.$link);
+            header('Location: ' . $link);
             exit();
         }
         //backup phpbb globals

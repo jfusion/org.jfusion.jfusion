@@ -74,7 +74,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 		$params = array();
 		$lines = $this->readFile($myfile);
 		if ($lines === false) {
-			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 			return false;
 		} else {
 			//parse the file line by line to get only the config variables
@@ -457,7 +457,7 @@ HTML;
 				foreach ($tables as $tbl => $col) {
 					$query = $db->getQuery(true)
 						->select($col)
-						->from('#__'.$tbl);
+						->from('#__' . $tbl);
 
 					$db->setQuery($query);
 					$images = $db->loadRowList();
@@ -559,24 +559,24 @@ HTML;
 					$criteria = ($action == 'enable') ? 'NOT LIKE \'http%\'' : 'LIKE \'%http%\'';
 
 					$query = $db->getQuery(true)
-						->select($tbl.'id, '.$col)
-						->from('#__'.$tbl)
-						->where($col.' '.$criteria);
+						->select($tbl . 'id, ' . $col)
+						->from('#__' . $tbl)
+						->where($col . ' ' . $criteria);
 
 					$db->setQuery($query);
 					$images = $db->loadRowList();
 					foreach ($images as $i) {
 						$q = $db->getQuery(true)
-							->update('#__'.$tbl);
+							->update('#__' . $tbl);
 
 						if ($action == 'enable') {
-							$q->set($col.' = '.$q->quote($source_url.$i[1]));
+							$q->set($col . ' = ' . $q->quote($source_url . $i[1]));
 						} else {
 							$i[1] = str_replace($source_url, '', $i[1]);
-							$q->set($col.' = '.$q->quote($i[1]));
+							$q->set($col . ' = ' . $q->quote($i[1]));
 						}
 
-						$q->where($tbl.'id = '.$i[0]);
+						$q->where($tbl . 'id = ' . $i[0]);
 
 						$db->setQuery($q);
 						$db->execute();
@@ -595,12 +595,12 @@ HTML;
 						->update('#__setting');
 
 					if ($action == 'enable' && strpos($deficon, 'http') === false) {
-						$query->set('value = ' . $db->quote($source_url.$deficon));
+						$query->set('value = ' . $db->quote($source_url . $deficon));
 					} elseif ($action == 'disable') {
 						$deficon = str_replace($source_url, '', $deficon);
 						$query->set('value = ' . $db->quote($deficon));
 					}
-					$query->where('varname = '.$db->quote('showdeficon'));
+					$query->where('varname = ' . $db->quote('showdeficon'));
 
 					$db->setQuery($query);
 					$db->execute();

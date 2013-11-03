@@ -52,10 +52,10 @@ class Jfusion_Joomla_Helper_Module extends Mage_Core_Helper_Abstract {
 		
 		/* Construct the url */
 		$url_params = '';
-		if(isset($title) && $title != '')	$url_params .= '&title='.$title;
-		if(isset($id) && $id != '')			$url_params .= '&id='.$id;
-		if(isset($style) && $style != '')	$url_params .= '&style='.$style;
-		if(isset($type) && $type != '')		$url_params .= "&modulename=".$type;
+		if(isset($title) && $title != '')	$url_params .= '&title=' . $title;
+		if(isset($id) && $id != '')			$url_params .= '&id=' . $id;
+		if(isset($style) && $style != '')	$url_params .= '&style=' . $style;
+		if(isset($type) && $type != '')		$url_params .= "&modulename=" . $type;
 		
 		$url = $configData->getJSecureBaseUrl() . 'index.php?option=com_jfusion&controller=connect&task=module&lang=' . $store_code . '&secret=' . $configData->getSecretKey() . $url_params;
 		
@@ -113,12 +113,12 @@ class Jfusion_Joomla_Helper_Module extends Mage_Core_Helper_Abstract {
     		$search = array(
     			'/\s(href=\"(index.php|images|templates))(\S+)/',
     			'/\s(src=\"(index.php|images|templates))(\S+)/',
-    			'/\s(src=\"'.$baseUrl.'(index.php|images|templates))(\S+)/'
+    			'/\s(src=\"' . $baseUrl . '(index.php|images|templates))(\S+)/'
     		);
     		$replace = array(
-    			' href="'.$configData->getJSecureBaseUrl().'\\2\\3',
-    			' src="'.$configData->getJSecureBaseUrl().'\\2\\3',
-    			' src="'.$configData->getJSecureBaseUrl().'\\2\\3'
+    			' href="' . $configData->getJSecureBaseUrl() . '\\2\\3',
+    			' src="' . $configData->getJSecureBaseUrl() . '\\2\\3',
+    			' src="' . $configData->getJSecureBaseUrl() . '\\2\\3'
     		);
     		return preg_replace($search, $replace, $data);
 		}

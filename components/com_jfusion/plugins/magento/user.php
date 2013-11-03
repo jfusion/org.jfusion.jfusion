@@ -384,7 +384,7 @@ class JFusionUser_magento extends JFusionUser {
 
 				$query = $db->getQuery(true)
 					->update('#__eav_entity_store')
-					->set('increment_last_id = '.$db->quote($increment_last_id))
+					->set('increment_last_id = ' . $db->quote($increment_last_id))
 					->where('entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer'))
 					->where('store_id = 0');
 
@@ -404,7 +404,7 @@ class JFusionUser_magento extends JFusionUser {
 			} else { // we are updating
 				$query = $db->getQuery(true)
 					->update('#__customer_entity')
-					->set('updated_at = '.$db->quote($sqlDateTime))
+					->set('updated_at = ' . $db->quote($sqlDateTime))
 					->where('entity_id = ' . (int)$entity_id);
 
 				$db->setQuery($query);
@@ -698,10 +698,10 @@ class JFusionUser_magento extends JFusionUser {
 
 					try {
 						$proxi->call('customer.delete', $user_id);
-						$status['debug'][] = 'Magento API: Delete user with id '.$user_id.' , email ' . $userinfo->email;
+						$status['debug'][] = 'Magento API: Delete user with id ' . $user_id . ' , email ' . $userinfo->email;
 					} catch (Soapfault $fault) {
 						/** @noinspection PhpUndefinedFieldInspection */
-						$status['error'][] = 'Magento API: Could not delete user with id '.$user_id.' , message: ' . $fault->faultstring;
+						$status['error'][] = 'Magento API: Could not delete user with id ' . $user_id . ' , message: ' . $fault->faultstring;
 					}
 
 					try {
@@ -741,7 +741,7 @@ class JFusionUser_magento extends JFusionUser {
 				$proxi->call('customer.update', array($user_id, $update));
 			} catch (Soapfault $fault) {
 				/** @noinspection PhpUndefinedFieldInspection */
-				$status['error'][] = 'Magento API: Could not update email of user with id '.$user_id.' , message: ' . $fault->faultstring;
+				$status['error'][] = 'Magento API: Could not update email of user with id ' . $user_id . ' , message: ' . $fault->faultstring;
 			}
 			try {
 				$proxi->endSession();

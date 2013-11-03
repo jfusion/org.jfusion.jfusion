@@ -33,7 +33,7 @@ class JFusionAuth_efront extends JFusionAuth
      */
     function generateEncryptedPassword($userinfo) {
         $md5_key = $this->params->get('md5_key');
-        return md5($userinfo->password_clear.$md5_key);
+        return md5($userinfo->password_clear . $md5_key);
     }
     /**
      * returns the name of this JFusion plugin

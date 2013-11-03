@@ -36,15 +36,15 @@ $output = '';
 $form_id = 'login-form';
 if ( $params->get('layout') == 'horizontal' ) {
     if ($type == 'logout') {
-         $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="'.$form_id.'" >';
+         $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')) . '" method="post" name="login" id="' . $form_id . '" >';
     	
         if (!empty($avatar)) {
             $maxheight = $params->get('avatar_height', 80);
             $maxwidth = $params->get('avatar_width', 60);
 
-            $output .= '<img src="' . $avatar .'" alt="' .$display_name . '" style="';
-            $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : "";
-            $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : "";
+            $output .= '<img src="' . $avatar .'" alt="' . $display_name . '" style="';
+            $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : '';
+            $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : '';
             $output .= '" />' . "\n";
         }
 
@@ -57,14 +57,14 @@ if ( $params->get('layout') == 'horizontal' ) {
         	
             //if (!empty($pmcount)) {
                 //$output .= '<br/>' . JText::_('PM_START');
-                //$output .= '<a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount["total"])."</a>";
+                //$output .= '<a href="' . $url_pm . '">' . JText::sprintf('PM_LINK', $pmcount["total"]) . "</a>";
                 //$output .= JText::sprintf('PM_END', $pmcount["unread"]);
             //}
         }
 
         if (!empty($pmcount)) {
             $output .= JText::_('PM_START').' ';
-            $output .= ' <a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount["total"]).'</a> ';
+            $output .= ' <a href="' . $url_pm . '">' . JText::sprintf('PM_LINK', $pmcount["total"]) . '</a> ';
             $output .= JText::sprintf('PM_END', $pmcount["unread"]).' ';
         }
 
@@ -74,7 +74,7 @@ if ( $params->get('layout') == 'horizontal' ) {
 
         $output .= '<input type="submit" name="Submit" class="button" value="' .JText::_('BUTTON_LOGOUT'). '" />';
         $output .= '<input type="hidden" name="silent" value="true" />';
-        $output .= '<input type="hidden" name="return" value="' .$return .'" />';
+        $output .= '<input type="hidden" name="return" value="' . $return . '" />';
 
 	    $output .= '<input type="hidden" name="task" value="user.logout" />';
 	    $output .= '<input type="hidden" name="option" value="com_users" />';
@@ -86,7 +86,7 @@ if ( $params->get('layout') == 'horizontal' ) {
             JHTML::_('script', 'openid.js');
         }
 
-        $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="'.$form_id.'" >';
+        $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="' . $form_id . '" >';
         $output .= $params->get('pretext');
         if ($params->get('show_labels',1)) {
         	$output .= '<label for="modlgn_username">'. JText::_('USERNAME') .'</label> ';
@@ -107,11 +107,11 @@ if ( $params->get('layout') == 'horizontal' ) {
 
             $output .= '<ul>';
             if ($params->get('lostpassword_show')) {
-                $output .= '<li><a href="' .$lostpassword_url . '">' . JText::_('FORGOT_YOUR_PASSWORD') . '</a></li>';
+                $output .= '<li><a href="' . $lostpassword_url . '">' . JText::_('FORGOT_YOUR_PASSWORD') . '</a></li>';
             }
 
             if ($params->get('lostusername_show')) {
-                $output .= '<li><a href="' .$lostusername_url . '">'. JText::_('FORGOT_YOUR_USERNAME') . '</a></li>';
+                $output .= '<li><a href="' . $lostusername_url . '">' . JText::_('FORGOT_YOUR_USERNAME') . '</a></li>';
             }
 
             $usersConfig = JComponentHelper::getParams('com_users');
@@ -126,20 +126,20 @@ if ( $params->get('layout') == 'horizontal' ) {
 	    $output .= '<input type="hidden" name="task" value="user.login" />';
 	    $output .= '<input type="hidden" name="option" value="com_users" />';
         $output .= '<input type="hidden" name="silent" value="true" />';
-        $output .= '<input type="hidden" name="return" value="' .$return . '" />';
+        $output .= '<input type="hidden" name="return" value="' . $return . '" />';
         $output .= JHTML::_('form.token') . '</form>';
     }
 } else {
     if ($type == 'logout') {
-        $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="'.$form_id.'" >';
+        $output .= '<form action="' . JRoute::_('index.php', true, $params->get('usesecure')) . '" method="post" name="login" id="' . $form_id . '" >';
     	
         if (!empty($avatar)) {
             $maxheight = $params->get('avatar_height', 80);
             $maxwidth = $params->get('avatar_width', 60);
 
-            $output .= '<div align="center"><img src="' . $avatar .'" alt="' .$display_name . '" style="';
-            $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : "";
-            $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : "";
+            $output .= '<div align="center"><img src="' . $avatar .'" alt="' . $display_name . '" style="';
+            $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : '';
+            $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : '';
             $output .= '" /></div>' . "\n";
         }
 
@@ -151,7 +151,7 @@ if ( $params->get('layout') == 'horizontal' ) {
             $output .= '<div align="center">' . JText::sprintf($custom_greeting, $display_name);
             //if (!empty($pmcount)) {
                 //$output .= '<br/>' . JText::_('PM_START');
-                //$output .= '<a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount["total"])."</a>";
+                //$output .= '<a href="' . $url_pm . '">' . JText::sprintf('PM_LINK', $pmcount["total"]) . "</a>";
                 //$output .= JText::sprintf('PM_END', $pmcount["unread"]);
             //}
             $output .= '</div>';
@@ -159,7 +159,7 @@ if ( $params->get('layout') == 'horizontal' ) {
 
         if (!empty($pmcount)) {
             $output .= '<div align="center">' . JText::_('PM_START');
-            $output .= ' <a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount["total"]).'</a>';
+            $output .= ' <a href="' . $url_pm . '">' . JText::sprintf('PM_LINK', $pmcount["total"]) . '</a>';
             $output .= JText::sprintf('PM_END', $pmcount["unread"]);
             $output .= '</div>';
         }
@@ -176,14 +176,14 @@ if ( $params->get('layout') == 'horizontal' ) {
 	    $output .= '<input type="hidden" name="option" value="com_users" />';
 
         $output .= '<input type="hidden" name="silent" value="true" />';
-        $output .= '<input type="hidden" name="return" value="' .$return .'" />';
+        $output .= '<input type="hidden" name="return" value="' . $return . '" />';
         $output .= JHTML::_('form.token');
         $output .= '</form>';
     } else {
         if (JPluginHelper::isEnabled('authentication', 'openid')) {
             JHTML::_('script', 'openid.js');
         }
-        $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="'.$form_id.'" >';
+        $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="' . $form_id . '" >';
         $output .= $params->get('pretext');
         $output .= '<p id="form-login-username">';
         if ($params->get('show_labels',1)) {
@@ -208,16 +208,16 @@ if ( $params->get('layout') == 'horizontal' ) {
 
             $output .= '<ul>';
             if ($params->get('lostpassword_show')) {
-                $output .= '<li><a href="' .$lostpassword_url . '">' . JText::_('FORGOT_YOUR_PASSWORD') . '</a></li>';
+                $output .= '<li><a href="' . $lostpassword_url . '">' . JText::_('FORGOT_YOUR_PASSWORD') . '</a></li>';
             }
 
             if ($params->get('lostusername_show')) {
-                $output .= '<li><a href="' .$lostusername_url . '">'. JText::_('FORGOT_YOUR_USERNAME') . '</a></li>';
+                $output .= '<li><a href="' . $lostusername_url . '">'. JText::_('FORGOT_YOUR_USERNAME') . '</a></li>';
             }
 
             $usersConfig = JComponentHelper::getParams('com_users');
             if ($params->get('register_show')) {
-                $output .= '<li><a href="' . $register_url .'">' . JText::_('REGISTER') . '</a> </li>';
+                $output .= '<li><a href="' . $register_url . '">' . JText::_('REGISTER') . '</a> </li>';
             }
             $output .= '</ul>';
         }
@@ -227,7 +227,7 @@ if ( $params->get('layout') == 'horizontal' ) {
 	    $output .= '<input type="hidden" name="task" value="user.login" />';
 	    $output .= '<input type="hidden" name="option" value="com_users" />';
         $output .= '<input type="hidden" name="silent" value="true" />';
-        $output .= '<input type="hidden" name="return" value="' .$return . '" />';
+        $output .= '<input type="hidden" name="return" value="' . $return . '" />';
         $output .= JHTML::_('form.token') . '</form>';
     }
 }

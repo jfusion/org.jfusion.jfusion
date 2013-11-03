@@ -263,7 +263,7 @@ class JFusionUser_moodle extends JFusionUser {
 					// did not find a session key, so perform a brute force logout
 					$status = $this->curlLogout($userinfo, $options);
 				} else {
-					$curl_options['post_url'] = $curl_options['post_url'].'?sesskey='.$sessionkey;
+					$curl_options['post_url'] = $curl_options['post_url'] . '?sesskey=' . $sessionkey;
 					$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
 				}
 			}
@@ -552,7 +552,7 @@ class JFusionUser_moodle extends JFusionUser {
 				$query = $db->getQuery(true)
 					->update('#__user')
 					->set('deleted = 0')
-					->where('id = '.$db->Quote($result->id));
+					->where('id = ' . $db->Quote($result->id));
 				$db->setQuery($query);
 				$db->execute();
 			} else {

@@ -221,7 +221,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    ->where($where)
 			    ->order('a.topic_last_post_time ' . $result_order);
 
-		    $query[LAT . '0'] = (string)$q.$limiter;
+		    $query[LAT . '0'] = (string)$q . $limiter;
 
 		    $q = $db->getQuery(true)
 			    ->select('a.topic_id AS threadid, a.topic_last_post_id AS postid, a.topic_last_poster_name AS name, CASE WHEN b.poster_id = 1 AND a.topic_last_poster_name != \'\' THEN a.topic_last_poster_name ELSE c.username_clean END as username, a.topic_last_poster_id AS userid, CASE WHEN a.topic_last_poster_id = 1 THEN 1 ELSE 0 END AS guest, a.topic_title AS subject, a.topic_last_post_time AS dateline, a.forum_id as forum_specific_id, a.topic_last_post_time as last_post_dateline')
@@ -231,7 +231,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    ->where($where)
 			    ->order('a.topic_last_post_time ' . $result_order);
 
-		    $query[LAT . '1'] = (string)$q.$limiter;
+		    $query[LAT . '1'] = (string)$q . $limiter;
 
 		    $q = $db->getQuery(true)
 			    ->select('a.topic_id AS threadid, a.topic_first_post_id AS postid, a.topic_first_poster_name AS name, CASE WHEN a.topic_poster = 1 AND a.topic_first_poster_name != \'\' THEN a.topic_first_poster_name ELSE c.username_clean END as username, a.topic_poster AS userid, CASE WHEN a.topic_poster = 1 THEN 1 ELSE 0 END AS guest, a.topic_title AS subject, b.post_text AS body, a.topic_time AS dateline, a.forum_id as forum_specific_id, a.topic_last_post_time as last_post_dateline')
@@ -241,7 +241,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    ->where($where)
 			    ->order('a.topic_time ' . $result_order);
 
-		    $query[LCT] = (string)$q.$limiter;
+		    $query[LCT] = (string)$q . $limiter;
 
 		    $q = $db->getQuery(true)
 			    ->select('b.topic_id AS threadid, b.post_id AS postid, CASE WHEN b.poster_id = 1 AND b.post_username != \'\' THEN b.post_username ELSE c.username END AS name, CASE WHEN b.poster_id = 1 AND b.post_username != \'\' THEN b.post_username ELSE c.username_clean END as username, b.poster_id AS userid, CASE WHEN b.poster_id = 1 THEN 1 ELSE 0 END AS guest, b.post_subject AS subject, b.post_text AS body, b.post_time AS dateline, b.post_time as last_post_dateline, b.forum_id as forum_specific_id')
@@ -251,7 +251,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    ->where($where)
 			    ->order('b.post_time ' . $result_order);
 
-		    $query[LCP] = (string)$q.$limiter;
+		    $query[LCP] = (string)$q . $limiter;
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
@@ -513,8 +513,8 @@ class JFusionForum_phpbb3 extends JFusionForum
 								    $query = $db->getQuery(true)
 									    ->select('auth_option_id, auth_setting')
 									    ->from('#__acl_roles_data')
-								        ->where('role_id = '.$r->auth_role_id)
-									    ->where('auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')');
+								        ->where('role_id = ' . $r->auth_role_id)
+									    ->where('auth_option_id IN (\'' . $global_id . '\', \'' . $read_id . '\')');
 
 								    $db->setQuery($query);
 								    $role_permissions = $db->loadObjectList('auth_option_id');
@@ -553,8 +553,8 @@ class JFusionForum_phpbb3 extends JFusionForum
 								    $query = $db->getQuery(true)
 									    ->select('auth_option_id, auth_setting')
 									    ->from('#__acl_roles_data')
-									    ->where('role_id = '.$r->auth_role_id)
-									    ->where('auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')');
+									    ->where('role_id = ' . $r->auth_role_id)
+									    ->where('auth_option_id IN (\'' . $global_id . '\', \'' . $read_id . '\')');
 
 								    $db->setQuery($query);
 								    $role_permissions = $db->loadObjectList('auth_option_id');
@@ -816,7 +816,7 @@ class JFusionForum_phpbb3 extends JFusionForum
      */
     function getReplyURL($forumid, $threadid)
     {
-        return 'posting.php?mode=reply&f='.$forumid.'&t='.$threadid;
+        return 'posting.php?mode=reply&f=' . $forumid . '&t=' . $threadid;
     }
 
 	 /**
@@ -972,7 +972,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 				$post_row->enable_magic_url	= 1;
 				$post_row->enable_sig		= 1;
 				$post_row->post_username	= $phpbbUser->username;
-				$post_row->post_subject		= 'Re: '.$topic->topic_title;
+				$post_row->post_subject		= 'Re: ' . $topic->topic_title;
 				$post_row->post_text		= $bbcode->text;
 				$post_row->post_checksum	= md5($bbcode->text);
 				$post_row->post_attachment	= 0;
@@ -995,7 +995,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 					$topic_row->topic_last_poster_id		= (int) $userid;
 					$topic_row->topic_last_poster_name		= $phpbbUser->username;
 					$topic_row->topic_last_poster_colour	= $phpbbUser->user_colour;
-					$topic_row->topic_last_post_subject     = 'Re: '.$topic->topic_title;
+					$topic_row->topic_last_post_subject     = 'Re: ' . $topic->topic_title;
 					$topic_row->topic_replies				= $topic->topic_replies + 1;
 					$topic_row->topic_replies_real 			= $topic->topic_replies_real + 1;
 					$topic_row->topic_id					= $ids->threadid;

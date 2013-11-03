@@ -194,7 +194,7 @@ function mageCoreErrorHandler($errno, $errstr, $errfile, $errline){
     }
 
     // PEAR specific message handling
-    if (stripos($errfile.$errstr, 'pear') !== false) {
+    if (stripos($errfile . $errstr, 'pear') !== false) {
          // ignore strict and deprecated notices
         if (($errno == E_STRICT) || ($errno == E_DEPRECATED)) {
             return true;
@@ -299,7 +299,7 @@ function mageSendErrorHeader()
         return;
     }
     $action = Mage::app()->getRequest()->getBasePath()."bugreport.php";
-    echo '<form id="error_report" method="post" style="display:none" action="'.$action.'"><textarea name="error">';
+    echo '<form id="error_report" method="post" style="display:none" action="' . $action . '"><textarea name="error">';
     */
 }
 
@@ -360,7 +360,7 @@ function mageParseCsv($string, $delimiter=",", $enclosure='"', $escape='\\')
             $qstr =& $elements[$i];
             $qstr = substr_replace($qstr, '', strpos($qstr, $enclosure), 1);
             $qstr = substr_replace($qstr, '', strrpos($qstr, $enclosure), 1);
-            $qstr = str_replace($enclosure.$enclosure, $enclosure, $qstr);
+            $qstr = str_replace($enclosure . $enclosure, $enclosure, $qstr);
         }
     }
     return $elements;

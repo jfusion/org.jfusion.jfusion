@@ -42,7 +42,7 @@ class JFusionForum_smf2 extends JFusionForum
      */
     function getPostURL($threadid, $postid)
     {
-        return  'index.php?topic=' . $threadid . '.msg'.$postid.'#msg' . $postid;
+        return  'index.php?topic=' . $threadid . '.msg' . $postid . '#msg' . $postid;
     }
 
     /**
@@ -52,7 +52,7 @@ class JFusionForum_smf2 extends JFusionForum
      */
     function getReplyURL($forumid, $threadid)
     {
-        return 'index.php?action=post;topic='.$threadid;
+        return 'index.php?action=post;topic=' . $threadid;
     }
 
     /**
@@ -62,7 +62,7 @@ class JFusionForum_smf2 extends JFusionForum
      */
     function getProfileURL($userid)
     {
-        return  'index.php?action=profile&u='.$userid;
+        return  'index.php?action=profile&u=' . $userid;
     }
 
     /**
@@ -236,7 +236,7 @@ class JFusionForum_smf2 extends JFusionForum
 				    $attachment = $db->loadObject();
 				    // See if the user has a specific attachment meant for an avatar
 				    if(!empty($attachment) && $attachment->id_thumb == 0 && $attachment->id_msg == 0 && empty($result->avatar)) {
-					    $url = $this->params->get('source_url').'index.php?action=dlattach;attach='.$attachment->id_attach.';type=avatar';
+					    $url = $this->params->get('source_url') . 'index.php?action=dlattach;attach=' . $attachment->id_attach . ';type=avatar';
 					    // If user didn't, check to see if the avatar specified in the first query is a url. If so use it.
 				    } else if(preg_match("/http(s?):\/\//",$result->avatar)){
 					    $url = $result->avatar;
@@ -251,10 +251,10 @@ class JFusionForum_smf2 extends JFusionForum
 					    $avatarurl = $db->loadObject();
 					    // Check for trailing slash. If there is one DON'T ADD ONE!
 					    if(substr($avatarurl->value, -1) == DIRECTORY_SEPARATOR){
-						    $url = $avatarurl->value.$result->avatar;
+						    $url = $avatarurl->value . $result->avatar;
 						    // I like redundancy. Recheck to see if there isn't a trailing slash. If there isn't one, add one.
 					    } else if(substr($avatarurl->value, -1) !== DIRECTORY_SEPARATOR){
-						    $url = $avatarurl->value.'/'.$result->avatar;
+						    $url = $avatarurl->value . '/' . $result->avatar;
 					    }
 				    }
 				    return $url;
@@ -390,11 +390,11 @@ class JFusionForum_smf2 extends JFusionForum
 			$db->updateObject('#__boards', $forum_stats, 'id_board' );
 
 			if ($updateLastPost) {
-				$query = 'REPLACE INTO #__log_topics SET id_member = '.$userid.', id_topic = '.$topicid.', id_msg = ' . ($postid + 1);
+				$query = 'REPLACE INTO #__log_topics SET id_member = ' . $userid . ', id_topic = ' . $topicid . ', id_msg = ' . ($postid + 1);
 				$db->setQuery($query);
 				$db->execute();
 
-				$query = 'REPLACE INTO #__log_boards SET id_member = '.$userid.', id_board = '.$forumid.', id_msg = '.$postid;
+				$query = 'REPLACE INTO #__log_boards SET id_member = ' . $userid . ', id_board = ' . $forumid . ', id_msg = ' . $postid;
 				$db->setQuery($query);
 				$db->execute();
 			}
@@ -493,7 +493,7 @@ class JFusionForum_smf2 extends JFusionForum
 HTML;
         }
         $quickReply = JFactory::getApplication()->input->post->get('quickReply', '');
-        $html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">'.$quickReply.'</textarea><br />';
+        $html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">' . $quickReply . '</textarea><br />';
         return $html;
 	}
 
@@ -580,7 +580,7 @@ HTML;
 				$post_row->id_topic 		= $ids->threadid;
 				$post_row->poster_time		= $timestamp;
 				$post_row->id_member		= $userid;
-				$post_row->subject			= 'Re: '.$topic->subject;
+				$post_row->subject			= 'Re: ' . $topic->subject;
 				$post_row->poster_name		= $smfUser->member_name;
 				$post_row->poster_email		= $smfUser->email_address;
 				$post_row->poster_ip		= $_SERVER["REMOTE_ADDR"];
@@ -628,11 +628,11 @@ HTML;
 					$db->updateObject('#__boards', $forum_stats, 'id_board' );
 
 		            //update stats for threadmarking purposes
-	                $query = 'REPLACE INTO #__log_topics SET id_member = '.$userid.', id_topic = '.$ids->threadid.', id_msg = ' . ($postid + 1);
+	                $query = 'REPLACE INTO #__log_topics SET id_member = ' . $userid . ', id_topic = ' . $ids->threadid . ', id_msg = ' . ($postid + 1);
 					$db->setQuery($query);
 					$db->execute();
 
-	                $query = 'REPLACE INTO #__log_boards SET id_member = '.$userid.', id_board = '.$ids->forumid.', id_msg = '.$postid;
+	                $query = 'REPLACE INTO #__log_boards SET id_member = ' . $userid . ', id_board = ' . $ids->forumid . ', id_msg = ' . $postid;
 					$db->setQuery($query);
 					$db->execute();
 				} else {
@@ -667,11 +667,11 @@ HTML;
 	{
 		try {
 			//set the query
-			$where = 'WHERE id_topic = '.$existingthread->threadid.' AND id_msg != '.$existingthread->postid.' AND approved = 1';
-	        $query = '(SELECT a.id_topic , a.id_msg, a.poster_name, b.real_name, a.id_member, 0 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.id_member = b.id_member '.$where.' AND a.id_member != 0)';
+			$where = 'WHERE id_topic = ' . $existingthread->threadid . ' AND id_msg != ' . $existingthread->postid . ' AND approved = 1';
+	        $query = '(SELECT a.id_topic , a.id_msg, a.poster_name, b.real_name, a.id_member, 0 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.id_member = b.id_member ' . $where . ' AND a.id_member != 0)';
 	        $query.= ' UNION ';
-	        $query.= '(SELECT a.id_topic , a.id_msg, a.poster_name, a.poster_name as real_name, a.id_member, 1 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a '.$where.' AND a.id_member = 0)';
-	        $query.= ' ORDER BY order_by_date '.$sort;
+	        $query.= '(SELECT a.id_topic , a.id_msg, a.poster_name, a.poster_name as real_name, a.id_member, 1 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a ' . $where . ' AND a.id_member = 0)';
+	        $query.= ' ORDER BY order_by_date ' . $sort;
 			$db = JFusionFactory::getDatabase($this->getJname());
 
 			$db->setQuery($query, $start, $limit);
@@ -819,15 +819,15 @@ HTML;
 			}
 		}
 
-        $where = (!empty($usedforums)) ? ' WHERE b.id_board IN (' . $usedforums .') AND a.id_board IN ('.implode(',',$list).')' : ' WHERE a.id_board IN ('.implode(',',$list).')';
-		$end = $result_order.' LIMIT 0,'.$result_limit;
+        $where = (!empty($usedforums)) ? ' WHERE b.id_board IN (' . $usedforums . ') AND a.id_board IN (' . implode(',', $list) . ')' : ' WHERE a.id_board IN (' . implode(',', $list). ' )';
+		$end = $result_order . ' LIMIT 0,' . $result_limit;
 
         $numargs = func_num_args();
         if ($numargs > 3) {
             $filters = func_get_args();
             for ($i = 3; $i < $numargs; $i++) {
                 if ($filters[$i][0] == 'userid') {
-                    $where.= ' HAVING userid = ' . $db->quote($filters[$i][1]);
+                    $where .= ' HAVING userid = ' . $db->quote($filters[$i][1]);
                 }
             }
         }

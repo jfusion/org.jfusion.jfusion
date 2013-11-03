@@ -83,7 +83,7 @@ class JFormFieldGalleries extends JFormField {
         foreach ($tree as $tItemID => $tItemArray) {
             $name = htmlspecialchars($titles[$tItemID], ENT_QUOTES);
             $ar[] = JHTML::_('select.option', $tItemID, ($sub ? $limiter : '') . $name);
-            $this->buildTree($tItemArray, $titles, $ar, '----'.$limiter, true);
+            $this->buildTree($tItemArray, $titles, $ar, '----' . $limiter, true);
         }
     }
 }

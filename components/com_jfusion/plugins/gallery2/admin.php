@@ -67,7 +67,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         //try to open the file
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
             //get the default parameters object
         } else {
@@ -331,7 +331,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         }
 	    $cname = $control_name . '[params][' . $name . ']';
 
-        $output = '<select name="' . $cname.'" id="'.$name.'">';
+        $output = '<select name="' . $cname.'" id="' . $name . '">';
 
         $output.= '<option value="" ></option>';
         foreach ($themes as $id => $status) {
@@ -340,7 +340,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
                 if ($id == $value) {
                     $selected = 'selected';
                 }
-                $output.= '<option value="'.$id.'" '.$selected.'>'.$id.'</option>';
+                $output.= '<option value="' . $id . '" ' . $selected . '>' . $id . '</option>';
             }
         }
         $output.= '</select>';

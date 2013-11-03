@@ -121,9 +121,9 @@ class JFusionUser_efront extends JFusionUser
 		        try {
 			        $db->insertObject('#__logs', $log, 'id');
 
-			        $status['debug'][] = 'Logged the logout action for user '.$userinfo->username;
+			        $status['debug'][] = 'Logged the logout action for user ' . $userinfo->username;
 		        } catch (Exception $e) {
-			        $status['debug'][] = 'Error Could not log the logout action for user '.$userinfo->username.': '.$e->getMessage();
+			        $status['debug'][] = 'Error Could not log the logout action for user ' . $userinfo->username . ': ' . $e->getMessage();
 		        }
 	        }
 	    } catch (Exception $e) {
@@ -211,7 +211,7 @@ class JFusionUser_efront extends JFusionUser
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    try {
 	        $md5_key = $this->params->get('md5_key');
-	        $existinguser->password = md5($userinfo->password_clear.$md5_key);
+	        $existinguser->password = md5($userinfo->password_clear . $md5_key);
 	        $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
@@ -427,7 +427,7 @@ class JFusionUser_efront extends JFusionUser
 	            $user->user_types_ID = $user_types_ID;
 	            if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
 	                $md5_key = $this->params->get('md5_key');
-	                $user->password = md5($userinfo->password_clear.$md5_key);
+	                $user->password = md5($userinfo->password_clear . $md5_key);
 	            } else {
 	                $user->password = $userinfo->password;
 	            }
@@ -454,7 +454,7 @@ class JFusionUser_efront extends JFusionUser
 
                 // we need to create the user directories. Can't use Joomla API because it uses the Joomla Root Path
                 $uploadpath = $this->params->get('uploadpath');
-                $user_dir = $uploadpath.$user->login.'/';
+                $user_dir = $uploadpath . $user->login . '/';
                 if (is_dir($user_dir)) {
 	                $this->helper->delete_directory($user_dir); //If the folder already exists, delete it first, including files
                 }
@@ -494,7 +494,7 @@ class JFusionUser_efront extends JFusionUser
                 $status['userinfo'] = $this->getUser($userinfo);
 	        }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ERROR_CREATE_USER') . ': ' .$e->getMessage();
+		    $status['error'][] = JText::_('ERROR_CREATE_USER') . ': ' . $e->getMessage();
 	    }
     }
 
@@ -532,16 +532,16 @@ class JFusionUser_efront extends JFusionUser
                         $token = $result->token;
                         // login
                         $curl_options['action']='login';
-                        $curl_options['parms'] = '&token='.$token.'&username='.$apiuser.'&password='.$apikey;
-                        $status = $this->helper->send_to_api($curl_options,$status);
+                        $curl_options['parms'] = '&token=' . $token . '&username=' . $apiuser . '&password=' . $apikey;
+                        $status = $this->helper->send_to_api($curl_options, $status);
                         if (!$status['error']){
                             $result = $status['result'][0];
                             if($result->status == 'ok'){
                                 // logged in (must logout later)
                                 // delete user
                                 $curl_options['action'] = 'remove_user';
-                                $curl_options['parms'] = '&token='.$token.'&login='.$login;
-                                $status = $this->helper->send_to_api($curl_options,$status);
+                                $curl_options['parms'] = '&token=' . $token . '&login=' . $login;
+                                $status = $this->helper->send_to_api($curl_options, $status);
                                 $errorstatus = $status;
                                 if ($status['error']){
                                     $status['debug'][] = $status['error'][0];
@@ -549,19 +549,19 @@ class JFusionUser_efront extends JFusionUser
                                 }
                                 $result = $status['result'][0];
                                 if($result->status != 'ok'){
-                                    $errorstatus['debug'][] = $jname.' eFront API--'.$result->message;
+                                    $errorstatus['debug'][] = $jname.' eFront API--' . $result->message;
                                 }
                                 // logout
-                                $curl_options['action']='logout';
-                                $curl_options['parms'] = '&token='.$token;
-                                $status = $this->helper->send_to_api($curl_options,$status);
+                                $curl_options['action'] = 'logout';
+                                $curl_options['parms'] = '&token=' . $token;
+                                $status = $this->helper->send_to_api($curl_options, $status);
                                 $result = $status['result'][0];
                                 if($result->status != 'ok'){
-                                    $errorstatus['error'][] = $jname.' eFront API--'.$result->message;
+                                    $errorstatus['error'][] = $jname . ' eFront API--' . $result->message;
                                     return $errorstatus;
                                 }
                             }
-                            $status['debug'][] = JText::_('DELETED').JTEXT::_(' USER: ' ).$login;
+                            $status['debug'][] = JText::_('DELETED') . ' ' . JTEXT::_('USER') . ' ' . $login;
                         }
                     }
                 }

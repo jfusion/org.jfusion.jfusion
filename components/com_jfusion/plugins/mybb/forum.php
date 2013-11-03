@@ -85,7 +85,7 @@ class JFusionForum_mybb extends JFusionForum {
 			    ->where($where)
 			    ->order('a.lastpost ' . $result_order);
 
-		    $query[LAT . '0'] = (string)$q.$limiter;
+		    $query[LAT . '0'] = (string)$q . $limiter;
 
 		    $q = $db->getQuery(true)
 			    ->select('a.tid AS threadid, b.pid AS postid, b.username, b.uid AS userid, a.subject, b.dateline')
@@ -94,7 +94,7 @@ class JFusionForum_mybb extends JFusionForum {
 			    ->where($where)
 			    ->order('a.lastpost ' . $result_order);
 
-		    $query[LAT . '1'] = (string)$q.$limiter;
+		    $query[LAT . '1'] = (string)$q . $limiter;
 
 		    $q = $db->getQuery(true)
 			    ->select('a.tid AS threadid, b.pid AS postid, b.username, b.uid AS userid, b.subject, b.dateline, b.message AS body')
@@ -103,7 +103,7 @@ class JFusionForum_mybb extends JFusionForum {
 			    ->where($where)
 			    ->order('a.dateline ' . $result_order);
 
-		    $query[LCT] = (string)$q.$limiter;
+		    $query[LCT] = (string)$q . $limiter;
 
 		    $q = $db->getQuery(true)
 			    ->select('a.tid AS threadid, a.pid AS postid, a.username, a.uid AS userid, a.subject, a.dateline, a.message AS body')
@@ -111,7 +111,7 @@ class JFusionForum_mybb extends JFusionForum {
 			    ->where($where)
 			    ->order('a.dateline ' . $result_order);
 
-		    $query[LCP] = (string)$q.$limiter;
+		    $query[LCP] = (string)$q . $limiter;
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
 	    }

@@ -62,8 +62,8 @@ class JFusionUsersync
             $mainframe = JFactory::getApplication();
             $client = JFactory::getApplication()->input->getWord( 'filter_client', 'site' );
             $option = JFactory::getApplication()->input->getCmd('option');
-            $sort = $mainframe->getUserStateFromRequest("$option.$client.filter_order", 'filter_order', 'id', 'cmd');
-            $dir = $mainframe->getUserStateFromRequest("$option.$client.filter_order_Dir", 'filter_order_Dir', '', 'word');
+            $sort = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order', 'filter_order', 'id', 'cmd');
+            $dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
             $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
             $limitstart = 0;
         }

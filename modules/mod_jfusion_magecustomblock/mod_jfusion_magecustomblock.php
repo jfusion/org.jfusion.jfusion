@@ -57,14 +57,14 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 				JFusionFunction::raiseNotice('MODULE_BAD_CONFIGURED: ' . $module->title );
 			}
 		}else{
-			$xml = '<block type="core/text_list" name="content">'.$xml_output.'</block>';
+			$xml = '<block type="core/text_list" name="content">' . $xml_output . '</block>';
 			$layout = Mage::getSingleton('core/layout');
 			$update = $layout->getUpdate();
 			$update->resetHandles();
 			$update->resetUpdates();
 			$update->addUpdate($xml);
 			$update->setCacheId('JOOMLAMOD_' . $module->id . md5($module->title));
-			$update->addHandle('JOOMLA_'.$module->id)->load();
+			$update->addHandle('JOOMLA_' . $module->id)->load();
 			$layout->generateXml()->generateBlocks();
 			$layout->addOutputBlock('content');
 			echo $layout->getOutput();

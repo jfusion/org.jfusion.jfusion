@@ -104,13 +104,13 @@ class plgContentJfusion extends JPlugin
 
 			//let's first check for customized files in Joomla template directory
 			$app = JFactory::getApplication();
-			$JoomlaTemplateOverride = JPATH_BASE . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR .$app->getTemplate() . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'plg_content_jfusion' . DIRECTORY_SEPARATOR;
+			$JoomlaTemplateOverride = JPATH_BASE . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR  . $app->getTemplate() . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'plg_content_jfusion' . DIRECTORY_SEPARATOR;
 			if (file_exists($JoomlaTemplateOverride)) {
 				define('DISCUSSION_TEMPLATE_PATH', $JoomlaTemplateOverride);
 				define('DISCUSSION_TEMPLATE_URL', JFusionFunction::getJoomlaURL() . 'templates/' . $app->getTemplate() . '/html/plg_content_jfusion/');
 			} else {
 				define('DISCUSSION_TEMPLATE_PATH', JPATH_BASE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'discussbot' . DIRECTORY_SEPARATOR . 'tmpl' . DIRECTORY_SEPARATOR . $this->template . DIRECTORY_SEPARATOR);
-				define('DISCUSSION_TEMPLATE_URL', JFusionFunction::getJoomlaURL().'plugins/content/jfusion/discussbot/tmpl/'.$this->template.'/');
+				define('DISCUSSION_TEMPLATE_URL', JFusionFunction::getJoomlaURL() . 'plugins/content/jfusion/discussbot/tmpl/' . $this->template . '/');
 			}
 		}
 
@@ -327,7 +327,7 @@ class plgContentJfusion extends JPlugin
 								$ajax->status = true;
 							} else if ($show_discussion !== '') {
 								$ajax->status = true;
-								JFusionFunction::raiseNotice('jfusion.discussion.visibility set to '.$show_discussion);
+								JFusionFunction::raiseNotice('jfusion.discussion.visibility set to ' . $show_discussion);
 							} else {
 								JFusionFunction::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
 							}
@@ -468,15 +468,14 @@ class plgContentJfusion extends JPlugin
 
 					$this->helper->debug('Thread info found.');
 					$content = $this->render();
-					$this->article->text = str_replace('{jfusion_discuss '.$id.'}', $content, $this->article->text);
+					$this->article->text = str_replace('{jfusion_discuss ' . $id . '}', $content, $this->article->text);
 				} else {
 					$this->helper->debug('Thread info not found!');
-					$this->article->text = str_replace('{jfusion_discuss '.$id.'}', JText::_('THREADID_NOT_FOUND'), $this->article->text);
+					$this->article->text = str_replace('{jfusion_discuss ' . $id . '}', JText::_('THREADID_NOT_FOUND'), $this->article->text);
 				}
-
 			} else {
 				$this->helper->debug('Removing plug for thread ' . $id);
-				$this->article->text = str_replace('{jfusion_discuss '.$id.'}', '', $this->article->text);
+				$this->article->text = str_replace('{jfusion_discuss ' . $id . '}', '', $this->article->text);
 			}
 		}
 
@@ -815,7 +814,7 @@ HTML;
 				$query = $db->getQuery(true)
 					->select('`introtext`, `fulltext`')
 					->from('#__content')
-					->where('id = '.$this->article->id);
+					->where('id = ' . $this->article->id);
 
 				$db->setQuery($query);
 				$texts = $db->loadObject();
@@ -907,7 +906,7 @@ HTML;
 				$JSession->set('jfusion.discussion.visibility', 1);
 			}
 
-			$content = '<div style="float:none; display:'.$display.';" id="discussion">';
+			$content = '<div style="float:none; display:' . $display . ';" id="discussion">';
 
 			if ($generate_guts) {
 				$content .= $this->renderDiscussionContent();
@@ -963,13 +962,13 @@ HTML;
 
 						$limitstart = JFactory::getApplication()->input->getInt('limitstart', 0);
 						if ($limitstart) {
-							$limitstart = '<input type="hidden" name="limitstart" value="'.$limitstart.'" />';
+							$limitstart = '<input type="hidden" name="limitstart" value="' . $limitstart . '" />';
 						} else {
 							$limitstart = '';
 						}
 						$showall = JFactory::getApplication()->input->getInt('showall', 0);
 						if ($showall) {
-							$showall = '<input type="hidden" name="limitstart" value="'.$showall.'" />';
+							$showall = '<input type="hidden" name="limitstart" value="' . $showall . '" />';
 						} else {
 							$showall = '';
 						}
@@ -1012,13 +1011,13 @@ HTML;
 
 					$limitstart = JFactory::getApplication()->input->getInt('limitstart', 0);
 					if ($limitstart) {
-						$limitstart = '<input type="hidden" name="limitstart" value="'.$limitstart.'" />';
+						$limitstart = '<input type="hidden" name="limitstart" value="' . $limitstart . '" />';
 					} else {
 						$limitstart = '';
 					}
 					$showall = JFactory::getApplication()->input->getInt('showall', 0);
 					if ($showall) {
-						$showall = '<input type="hidden" name="limitstart" value="'.$showall.'" />';
+						$showall = '<input type="hidden" name="limitstart" value="' . $showall . '" />';
 					} else {
 						$showall = '';
 					}
@@ -1066,13 +1065,13 @@ HTML;
 		$link_type= $this->params->get('link_type', 'text');
 		$link_mode= $this->params->get('link_mode', 'always');
 		$blog_link_mode= $this->params->get('blog_link_mode', 'forum');
-		$linkHTML = ($link_type == 'image') ? '<img style="border:0;" src="'.$link_text.'">' : $link_text;
+		$linkHTML = ($link_type == 'image') ? '<img style="border:0;" src="' . $link_text . '">' : $link_text;
 		if($this->params->get('show_reply_num')) {
 			$post = ($this->helper->replyCount == 1) ? 'REPLY' : 'REPLIES';
 			if ($linkHTML) {
 				$linkHTML .= ' ';
 			}
-			$linkHTML .= '['.$this->helper->replyCount.' '.JText::_($post).']';
+			$linkHTML .= '[' . $this->helper->replyCount . ' ' . JText::_($post) . ']';
 		}
 		$linkTarget = $this->params->get('link_target', '_parent');
 
@@ -1148,7 +1147,7 @@ HTML;
 					}
 				} else {
 					$return_url = base64_encode($this->helper->getArticleUrl());
-					$readmore_link = JRoute::_('index.php?option=com_users&view=login&return='.$return_url);
+					$readmore_link = JRoute::_('index.php?option=com_users&view=login&return=' . $return_url);
 					$readmore_text = JText::_('READ_MORE_REGISTER');
 				}
 
@@ -1193,18 +1192,18 @@ HTML;
 
 				$this->helper->output['buttons']['initiate']['href'] = 'javascript: void(0);';
 
-				$vars  = '&view_override='.$view;
-				$vars .= ($this->params->get('overwrite_readmore', 1)) ? '&readmore='.$readmore_catch.'&show_readmore='.$show_readmore : '';
+				$vars  = '&view_override=' . $view;
+				$vars .= ($this->params->get('overwrite_readmore', 1)) ? '&readmore=' . $readmore_catch . '&show_readmore=' . $show_readmore : '';
 
-				$this->helper->output['buttons']['initiate']['js']['onclick'] = 'JFusion.confirmThreadAction('.$this->article->id.',\''.$dbtask.'\', \''.$vars.'\');';
+				$this->helper->output['buttons']['initiate']['js']['onclick'] = 'JFusion.confirmThreadAction(' . $this->article->id . ',\'' . $dbtask . '\', \'' . $vars . '\');';
 				$this->helper->output['buttons']['initiate']['text'] = JText::_($text);
 				$this->helper->output['buttons']['initiate']['target'] = '_self';
 			}
 		}
 
-		if($view == $this->view() && $this->params->get('show_posts') && $this->params->get('show_refresh_link',1) && $threadinfo->published) {
+		if($view == $this->view() && $this->params->get('show_posts') && $this->params->get('show_refresh_link', 1) && $threadinfo->published) {
 			$this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
-			$this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts('.$this->article->id.');';
+			$this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts(' . $this->article->id . ');';
 			$this->helper->output['buttons']['refresh']['text'] = JText::_('REFRESH_POSTS');
 			$this->helper->output['buttons']['refresh']['target'] = $linkTarget;
 		}
@@ -1222,7 +1221,7 @@ HTML;
 
 						if ($this->params->get('enable_comment_in_forum_button', 0)) {
 							$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
-							$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="'.$commentLinkText.'">' : $commentLinkText;
+							$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText.'">' : $commentLinkText;
 							$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
 							$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
 							$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
@@ -1234,15 +1233,15 @@ HTML;
 						//see if there are any page breaks
 						$joomla_text = (isset($this->article->fulltext)) ? $this->article->fulltext : $this->article->text;
 						$pagebreaks = substr_count($joomla_text, 'system-pagebreak');
-						$query = ($pagebreaks) ? '&limitstart='.$pagebreaks : '';
+						$query = ($pagebreaks) ? '&limitstart=' . $pagebreaks : '';
 						if ($article_access) {
 							$discuss_link = $this->helper->getArticleUrl('discussion', $query);
 						} else {
 							$return_url = base64_encode($this->helper->getArticleUrl('discussion', $query));
-							$discuss_link = JRoute::_('index.php?option=com_user&view=login&return='.$return_url);
+							$discuss_link = JRoute::_('index.php?option=com_user&view=login&return=' . $return_url);
 						}
 						$this->helper->output['buttons']['discuss']['href'] = 'javascript: void(0);';
-						$this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility('.$this->article->id.', \''.$discuss_link.'\');';
+						$this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(' . $this->article->id . ', \'' . $discuss_link . '\');';
 						$this->helper->output['buttons']['discuss']['target'] = '_self';
 					} else {
 						$this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
@@ -1253,7 +1252,7 @@ HTML;
 
 					if ($this->params->get('enable_comment_in_forum_button', 0)) {
 						$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
-						$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="'.$commentLinkText.'">' : $commentLinkText;
+						$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText.'">' : $commentLinkText;
 						$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
 						$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
 						$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
@@ -1264,7 +1263,7 @@ HTML;
 			//show comments link
 			if ($view == $this->view() && $this->params->get('show_posts') && $this->params->get('show_toggle_posts_link', 1) && $threadinfo->published) {
 				$this->helper->output['buttons']['showreplies']['href'] = 'javascript: void(0);';
-				$this->helper->output['buttons']['showreplies']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility('.$this->article->id.');';
+				$this->helper->output['buttons']['showreplies']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(' . $this->article->id . ');';
 
 				$JSession = JFactory::getSession();
 				$show_replies = $JSession->get('jfusion.discussion.visibility', 0);
@@ -1396,7 +1395,7 @@ HTML;
 			if (!empty($posttitle)) {
 				$post_output[$i]->subject = $posttitle;
 			} elseif (!empty($threadtitle)) {
-				$post_output[$i]->subject = 'Re: '.$threadtitle;
+				$post_output[$i]->subject = 'Re: ' . $threadtitle;
 			} else {
 				$post_output[$i]->subject = JText::_('NO_SUBJECT');
 			}
@@ -1406,7 +1405,7 @@ HTML;
 				$post_output[$i]->username_url = '';
 				if ($userlink && empty($guest) && !empty($userlookup)) {
 					if ($link_software == 'custom' && !empty($userlink_custom)  && !empty($userlookup)) {
-						$post_output[$i]->username_url = $userlink_custom.$userlookup->id;
+						$post_output[$i]->username_url = $userlink_custom . $userlookup->id;
 					} else {
 						$post_output[$i]->username_url = JFusionFunction::routeURL($JFusionForum->getProfileURL($userid), $itemid);
 					}
@@ -1430,7 +1429,7 @@ HTML;
 			//post body
 			$post_output[$i]->text = $posttext;
 			$status = $JFusionPublic->prepareText($post_output[$i]->text, 'joomla', $this->params, $p);
-			$original_text = '[quote="'.$username.'"]'."\n".$posttext."\n".'[/quote]';
+			$original_text = '[quote="' . $username . '"]' . "\n" . $posttext . "\n" . '[/quote]';
 			$post_output[$i]->original_text = $original_text;
 			$JFusionPublic->prepareText($post_output[$i]->original_text, 'discuss', $this->params, $p);
 
@@ -1443,7 +1442,7 @@ HTML;
 			if ($this->params->get('enable_quickreply')){
 				$JoomlaUser = JFactory::getUser();
 				if ($this->params->get('quickreply_allow_guests', 0) || !$JoomlaUser->guest) {
-					$toolbar[] = '<a href="javascript:void(0);" onclick="JFusion.quote('.$postid.');">'.JText::_('QUOTE').'</a>';
+					$toolbar[] = '<a href="javascript:void(0);" onclick="JFusion.quote(' . $postid . ');">' . JText::_('QUOTE') . '</a>';
 				}
 			}
 
@@ -1474,7 +1473,7 @@ HTML;
 		if ($this->helper->replyCount && $this->helper->replyCount > 5) {
 			$pageNav = new JFusionPagination($this->helper->replyCount, $limitstart, $limit, $this->article->id, '_discuss');
 
-			$pagination = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
+			$pagination = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="' . $action_url . '">';
 			$pagination .= $pageNav->getListFooter();
 			$pagination .= '</form>';
 		} else {

@@ -163,10 +163,10 @@ class JFusionUser_joomla_int extends JFusionJoomlaUser {
 
 					        $query = $db->getQuery(true)
 						        ->update('#__session')
-						        ->set('guest = '.$db->quote($instance->get('guest')))
-						        ->set('username = '.$db->quote($instance->get('username')))
-						        ->set('userid = '.$db->quote($instance->get('id')))
-						        ->where('session_id = '.$db->quote($session->getId()));
+						        ->set('guest = ' . $db->quote($instance->get('guest')))
+						        ->set('username = ' . $db->quote($instance->get('username')))
+						        ->set('userid = ' . $db->quote($instance->get('id')))
+						        ->where('session_id = ' . $db->quote($session->getId()));
 
 					        $db->setQuery($query);
 					        $db->execute();

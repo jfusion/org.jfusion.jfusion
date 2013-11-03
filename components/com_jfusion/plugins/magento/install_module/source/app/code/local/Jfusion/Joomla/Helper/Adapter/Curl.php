@@ -66,7 +66,7 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
 			if (curl_error ( $this->_resource )) {
 				$this->error_message = curl_error ( $this->_resource );
 				$this->error_number = curl_errno ( $this->_resource );
-				Mage::log($this->error_number . ': ' .$this->error_message, 0, Mage::getStoreConfig('dev/log/exception_file'));
+				Mage::log($this->error_number . ': '  . $this->error_message, 0, Mage::getStoreConfig('dev/log/exception_file'));
 			}
 			
 			// Remove 100 and 101 responses headers

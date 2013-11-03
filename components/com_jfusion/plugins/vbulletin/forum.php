@@ -53,7 +53,7 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getReplyURL($forumid, $threadid)
     {
-        return 'newreply.php?do=newreply&t='.$threadid.'&noquote=1';
+        return 'newreply.php?do=newreply&t=' . $threadid . '&noquote=1';
     }
 
     /**
@@ -69,7 +69,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $query = $db->getQuery(true)
 			    ->select('threadid, forumid, firstpostid AS postid')
 			    ->from('#__thread')
-			    ->where('threadid = '.$threadid);
+			    ->where('threadid = ' . $threadid);
 
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
@@ -93,7 +93,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $query = $db->getQuery(true)
 			    ->select('open')
 			    ->from('#__thread')
-			    ->where('threadid = '.$threadid);
+			    ->where('threadid = ' . $threadid);
 
 		    $db->setQuery($query);
 		    $open = $db->loadResult();
@@ -172,7 +172,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			                ->set('lastthread = ' . $db->Quote($title))
 			                ->set('lasticonid = 0');
 	                }
-		            $query->where('forumid = '.$forumid);
+		            $query->where('forumid = ' . $forumid);
 		            $db->setQuery($query);
 
 		            $db->execute();
@@ -234,8 +234,8 @@ class JFusionForum_vbulletin extends JFusionForum
 					    $query = $db->getQuery(true)
 						    ->select('COUNT(*)')
 						    ->from('#__userfield')
-						    ->where('LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username)), 'OR')
-						    ->where('LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username)));
+						    ->where('LOWER(' . $name_field . ') = ' . strtolower($db->Quote($userinfo->username)), 'OR')
+						    ->where('LOWER(' . $name_field . ') = ' . strtolower($db->Quote($userinfo->username)));
 
 					    $db->setQuery($query);
 					    $result = $db->loadResult();
@@ -334,7 +334,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $query = $db->getQuery(true)
 			    ->select('if (visible = 2, 1, 0) AS isdeleted, thread.*')
 			    ->from('#__thread AS thread')
-			    ->where('thread.threadid = '.$threadid);
+			    ->where('thread.threadid = ' . $threadid);
 
 		    $db->setQuery($query);
 		    $threadinfo = $db->loadAssoc();
@@ -417,20 +417,20 @@ class JFusionForum_vbulletin extends JFusionForum
 				    ->select('a.postid , a.username, a.username as name, a.userid, CASE WHEN a.userid = 0 THEN 1 ELSE 0 END AS guest, a.title, a.dateline, a.pagetext, a.threadid, b.title AS threadtitle')
 				    ->from('#__post as a')
 			        ->innerJoin('#__thread` as b ON a.threadid = b.threadid')
-				    ->where('a.threadid = '.$existingthread->threadid)
-				    ->where('a.postid != '.$existingthread->postid)
+				    ->where('a.threadid = ' . $existingthread->threadid)
+				    ->where('a.postid != ' . $existingthread->postid)
 				    ->where('a.visible = 1')
-			        ->order('a.dateline '.$sort);
+			        ->order('a.dateline ' . $sort);
 		    } else {
 			    $name_field = $this->params->get('name_field');
 
 			    $q1 = $db->getQuery(true)
-				    ->select('a.postid , a.username, CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN a.username ELSE f.'.$name_field.' END AS name, a.userid, 0 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle')
+				    ->select('a.postid , a.username, CASE WHEN f.' . $name_field . ' IS NULL OR f.' . $name_field . ' = \'\' THEN a.username ELSE f.' . $name_field . ' END AS name, a.userid, 0 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle')
 				    ->from('#__post as a')
 				    ->innerJoin('#__thread as b ON a.threadid = b.threadid')
 				    ->innerJoin('#__userfield as f ON f.userid = a.userid')
-				    ->where('a.threadid = '.$existingthread->threadid)
-				    ->where('a.postid != '.$existingthread->postid)
+				    ->where('a.threadid = ' . $existingthread->threadid)
+				    ->where('a.postid != ' . $existingthread->postid)
 				    ->where('a.visible = 1')
 				    ->where('a.userid != 0');
 
@@ -438,12 +438,12 @@ class JFusionForum_vbulletin extends JFusionForum
 				    ->select('a.postid , a.username, a.username as name, a.userid, 1 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle')
 				    ->from('#__post as a')
 				    ->innerJoin('#__thread as b ON a.threadid = b.threadid')
-				    ->where('a.threadid = '.$existingthread->threadid)
-				    ->where('a.postid != '.$existingthread->postid)
+				    ->where('a.threadid = ' . $existingthread->threadid)
+				    ->where('a.postid != ' . $existingthread->postid)
 				    ->where('a.visible = 1')
 				    ->where('a.userid != 0');
 
-			    $query = '( '.(string)$q1.' ) UNION ( '.(string)$q2.' ) ORDER BY order_by_date '.$sort;
+			    $query = '( '. (string)$q1 . ' ) UNION ( ' . (string)$q2 . ' ) ORDER BY order_by_date ' . $sort;
 		    }
 
 		    $db->setQuery($query, $start, $limit);
@@ -469,7 +469,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $query = $db->getQuery(true)
 			    ->select('replycount')
 			    ->from('#__thread')
-			    ->where('threadid = '.$existingthread->threadid);
+			    ->where('threadid = ' . $existingthread->threadid);
 
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
@@ -621,7 +621,7 @@ class JFusionForum_vbulletin extends JFusionForum
 				    if ($usefileavatar && $avatarurl) {
 					    //avatars are saved to the filesystem
 					    $url = (strpos($avatarurl, 'http') === false) ? $this->params->get('source_url') . $avatarurl : $avatarurl;
-					    $url.= '/avatar'.$userid.'_'.$avatar->avatarrevision.'.gif';
+					    $url.= '/avatar' . $userid . '_' . $avatar->avatarrevision . '.gif';
 				    } else {
 					    //avatars are saved in the database
 					    $url = $this->params->get('source_url') . 'image.php?u=' . $userid . '&amp;dateline=' . $avatar->dateline;
@@ -668,40 +668,40 @@ class JFusionForum_vbulletin extends JFusionForum
         $query = array();
         if (empty($name_field)) {
             //Latest active topic with first post info
-            $query[LAT . '0'] = 'SELECT a.threadid, a.lastpostid AS postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' ORDER BY a.lastpost '.$end;
+            $query[LAT . '0'] = 'SELECT a.threadid, a.lastpostid AS postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid ' . $where . ' ORDER BY a.lastpost ' . $end;
 
             //Latest active topic with lastest post info
-            $query[LAT . '1'] = 'SELECT a.threadid, a.lastpostid AS postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.lastpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' ORDER BY a.lastpost '.$end;
+            $query[LAT . '1'] = 'SELECT a.threadid, a.lastpostid AS postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.lastpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid ' . $where . ' ORDER BY a.lastpost ' . $end;
 
             //Latest created topic
-            $query[LCT] = 'SELECT a.threadid, b.postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' ORDER BY a.dateline '.$end;
+            $query[LCT] = 'SELECT a.threadid, b.postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid ' . $where . ' ORDER BY a.dateline ' . $end;
 
             //Latest created post
-            $query[LCP] = 'SELECT b.threadid, b.postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, CASE WHEN b.title = \'\' THEN CONCAT("Re: ",a.title) ELSE b.title END AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` AS b ON a.threadid = b.threadid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' ORDER BY b.dateline '.$end;
+            $query[LCP] = 'SELECT b.threadid, b.postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, CASE WHEN b.title = \'\' THEN CONCAT("Re: ",a.title) ELSE b.title END AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` AS b ON a.threadid = b.threadid INNER JOIN #__forum as c ON a.forumid = c.forumid ' . $where . ' ORDER BY b.dateline ' . $end;
         } else {
             //Latest active topic with first post info
-            $query[LAT . '0'] = '(SELECT a.threadid, a.lastpostid AS postid, b.username, b.userid, 0 AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost, a.lastpost as order_by_date, CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN b.username ELSE f.'.$name_field.' END AS name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid INNER JOIN `#__userfield` as f ON f.userid = b.userid '.$where.' AND b.userid != 0)';
+            $query[LAT . '0'] = '(SELECT a.threadid, a.lastpostid AS postid, b.username, b.userid, 0 AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost, a.lastpost as order_by_date, CASE WHEN f.' . $name_field . ' IS NULL OR f.' . $name_field . ' = \'\' THEN b.username ELSE f.' . $name_field . ' END AS name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid INNER JOIN `#__userfield` as f ON f.userid = b.userid ' . $where . ' AND b.userid != 0)';
             $query[LAT . '0'].= ' UNION ';
-            $query[LAT . '0'].= '(SELECT a.threadid, a.lastpostid AS postid, b.username, b.userid, 1 AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost, a.lastpost as order_by_date, b.username as name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' AND b.userid = 0)';
-            $query[LAT . '0'].= ' ORDER BY order_by_date '.$end;
+            $query[LAT . '0'].= '(SELECT a.threadid, a.lastpostid AS postid, b.username, b.userid, 1 AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost, a.lastpost as order_by_date, b.username as name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid ' . $where . ' AND b.userid = 0)';
+            $query[LAT . '0'].= ' ORDER BY order_by_date ' . $end;
 
             //Latest active topic with lastest post info
-            $query[LAT . '1'] = '(SELECT a.threadid, a.lastpostid AS postid, b.username, b.userid, 0 AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost, a.lastpost as order_by_date, CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN b.username ELSE f.'.$name_field.' END AS name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.lastpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid INNER JOIN `#__userfield` as f ON f.userid = b.userid '.$where.' AND b.userid != 0)';
+            $query[LAT . '1'] = '(SELECT a.threadid, a.lastpostid AS postid, b.username, b.userid, 0 AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost, a.lastpost as order_by_date, CASE WHEN f.' . $name_field . ' IS NULL OR f.' . $name_field . ' = \'\' THEN b.username ELSE f.' . $name_field . ' END AS name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.lastpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid INNER JOIN `#__userfield` as f ON f.userid = b.userid ' . $where . ' AND b.userid != 0)';
             $query[LAT . '1'].= ' UNION ';
-            $query[LAT . '1'].= '(SELECT a.threadid, a.lastpostid AS postid, b.username, b.userid, 1 AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost, a.lastpost as order_by_date, b.username as name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.lastpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' AND b.userid = 0)';
-            $query[LAT . '1'].= ' ORDER BY order_by_date '.$end;
+            $query[LAT . '1'].= '(SELECT a.threadid, a.lastpostid AS postid, b.username, b.userid, 1 AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost, a.lastpost as order_by_date, b.username as name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.lastpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid ' . $where . ' AND b.userid = 0)';
+            $query[LAT . '1'].= ' ORDER BY order_by_date ' . $end;
 
             //Latest created topic
-            $query[LCT] = '(SELECT a.threadid, b.postid, b.username, b.userid, 0 AS guest, a.title AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost, a.dateline as order_by_date, CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN b.username ELSE f.'.$name_field.' END AS name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid INNER JOIN `#__userfield` as f ON f.userid = b.userid '.$where.' AND b.userid != 0)';
+            $query[LCT] = '(SELECT a.threadid, b.postid, b.username, b.userid, 0 AS guest, a.title AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost, a.dateline as order_by_date, CASE WHEN f.' . $name_field.' IS NULL OR f.' . $name_field . ' = \'\' THEN b.username ELSE f.' . $name_field . ' END AS name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid INNER JOIN `#__userfield` as f ON f.userid = b.userid ' . $where . ' AND b.userid != 0)';
             $query[LCT].= ' UNION ';
-            $query[LCT].= '(SELECT a.threadid, b.postid, b.username, b.userid, 1 AS guest, a.title AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost, a.dateline as order_by_date, b.username AS name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' and b.userid = 0)';
-            $query[LCT].= ' ORDER BY order_by_date '.$end;
+            $query[LCT].= '(SELECT a.threadid, b.postid, b.username, b.userid, 1 AS guest, a.title AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost, a.dateline as order_by_date, b.username AS name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid ' . $where . ' and b.userid = 0)';
+            $query[LCT].= ' ORDER BY order_by_date ' . $end;
 
             //Latest created post
-            $query[LCP] = '(SELECT b.threadid, b.postid, b.username, b.userid, 0 AS guest, CASE WHEN b.title = \'\' THEN CONCAT("Re: ",a.title) ELSE b.title END AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost, b.dateline as order_by_date, CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN b.username ELSE f.'.$name_field.' END AS name FROM `#__thread` as a INNER JOIN `#__post` AS b ON a.threadid = b.threadid INNER JOIN #__forum as c ON a.forumid = c.forumid INNER JOIN `#__userfield` as f ON f.userid = b.userid '.$where.' AND b.userid != 0)';
+            $query[LCP] = '(SELECT b.threadid, b.postid, b.username, b.userid, 0 AS guest, CASE WHEN b.title = \'\' THEN CONCAT("Re: ",a.title) ELSE b.title END AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost, b.dateline as order_by_date, CASE WHEN f.' . $name_field . ' IS NULL OR f.' . $name_field . ' = \'\' THEN b.username ELSE f.' . $name_field . ' END AS name FROM `#__thread` as a INNER JOIN `#__post` AS b ON a.threadid = b.threadid INNER JOIN #__forum as c ON a.forumid = c.forumid INNER JOIN `#__userfield` as f ON f.userid = b.userid ' . $where . ' AND b.userid != 0)';
             $query[LCP].= ' UNION ';
-            $query[LCP].= '(SELECT b.threadid, b.postid, b.username, b.userid, 1 AS guest, CASE WHEN b.title = \'\' THEN CONCAT("Re: ",a.title) ELSE b.title END AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost, b.dateline as order_by_date, b.username AS name FROM `#__thread` as a INNER JOIN `#__post` AS b ON a.threadid = b.threadid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' AND b.userid = 0)';
-            $query[LCP].= ' ORDER BY order_by_date '.$end;
+            $query[LCP].= '(SELECT b.threadid, b.postid, b.username, b.userid, 1 AS guest, CASE WHEN b.title = \'\' THEN CONCAT("Re: ",a.title) ELSE b.title END AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost, b.dateline as order_by_date, b.username AS name FROM `#__thread` as a INNER JOIN `#__post` AS b ON a.threadid = b.threadid INNER JOIN #__forum as c ON a.forumid = c.forumid ' . $where . ' AND b.userid = 0)';
+            $query[LCP].= ' ORDER BY order_by_date ' . $end;
         }
         return $query;
     }
@@ -725,7 +725,7 @@ class JFusionForum_vbulletin extends JFusionForum
 					    $query = $db->getQuery(true)
 						    ->select('threadid, readtime')
 						    ->from('#__threadread')
-						    ->where('userid = '.$userlookup->userid);
+						    ->where('userid = ' . $userlookup->userid);
 
 					    $db->setQuery($query);
 					    $marktimes['thread'] = $db->loadObjectList('threadid');
@@ -733,7 +733,7 @@ class JFusionForum_vbulletin extends JFusionForum
 					    $query = $db->getQuery(true)
 						    ->select('forumid, readtime')
 						    ->from('#__forumread')
-						    ->where('userid = '.$userlookup->userid);
+						    ->where('userid = ' . $userlookup->userid);
 
 					    $db->setQuery($query);
 					    $marktimes['forum'] = $db->loadObjectList('forumid');
@@ -741,7 +741,7 @@ class JFusionForum_vbulletin extends JFusionForum
 					    $query = $db->getQuery(true)
 						    ->select('lastvisit')
 						    ->from('#__user')
-						    ->where('userid = '.$userlookup->userid);
+						    ->where('userid = ' . $userlookup->userid);
 
 					    $db->setQuery($query);
 					    $marktimes['user'] = $db->loadResult();
@@ -842,12 +842,12 @@ class JFusionForum_vbulletin extends JFusionForum
 					    ->select('u.usergroupid AS gid, u.membergroupids, g.forumpermissions AS perms')
 					    ->from('#__user AS u')
 				        ->innerJoin('#__usergroup AS g ON u.usergroupid = g.usergroupid')
-					    ->where('u.userid = '.$userid);
+					    ->where('u.userid = ' . $userid);
 			    } else {
 				    $query = $db->getQuery(true)
 					    ->select('usergroupid AS gid, forumpermissions AS perms')
 					    ->from('#__usergroup')
-					    ->where('usergroupid = '.$db->quote('1'));
+					    ->where('usergroupid = ' . $db->quote('1'));
 			    }
 			    $db->setQuery($query);
 			    $usergroup = $db->loadObject();
@@ -859,7 +859,7 @@ class JFusionForum_vbulletin extends JFusionForum
 				    $query = $db->getQuery(true)
 					    ->select('forumpermissions')
 					    ->from('#__usergroup')
-					    ->where('usergroupid IN ('.$usergroup->membergroupids.')');
+					    ->where('usergroupid IN (' . $usergroup->membergroupids . ')');
 
 				    $db->setQuery($query);
 				    $perms = $db->loadObjectList();
@@ -875,7 +875,7 @@ class JFusionForum_vbulletin extends JFusionForum
 				    ->select('p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist')
 				    ->from('#__forumpermission AS p')
 			        ->innerJoin('#__forum AS f ON p.forumid = f.forumid')
-				    ->where('p.usergroupid = '.$usergroup->gid)
+				    ->where('p.usergroupid = ' . $usergroup->gid)
 			        ->order('p.forumid');
 
 			    $db->setQuery($query);
@@ -894,7 +894,7 @@ class JFusionForum_vbulletin extends JFusionForum
 					    ->select('p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist')
 					    ->from('#__forumpermission AS p')
 					    ->innerJoin('#__forum AS f ON p.forumid = f.forumid')
-					    ->where('p.usergroupid IN ('.$usergroup->membergroupids.')')
+					    ->where('p.usergroupid IN (' . $usergroup->membergroupids . ')')
 					    ->order('p.forumid');
 
 				    $db->setQuery($query);

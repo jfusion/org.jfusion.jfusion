@@ -72,7 +72,7 @@ class JFusionForum_smf extends JFusionForum
      */
     function getReplyURL($forumid, $threadid)
     {
-        return 'index.php?action=post;topic='.$threadid;
+        return 'index.php?action=post;topic=' . $threadid;
     }
 
     /**
@@ -553,11 +553,11 @@ class JFusionForum_smf extends JFusionForum
 		    $db->updateObject('#__boards', $forum_stats, 'ID_BOARD');
 
 		    if ($updateLastPost) {
-			    $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = '.$userid.', ID_TOPIC = '.$topicid.', ID_MSG = ' . ($postid + 1);
+			    $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = ' . $userid . ', ID_TOPIC = ' . $topicid . ', ID_MSG = ' . ($postid + 1);
 			    $db->setQuery($query);
 			    $db->execute();
 
-			    $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = '.$userid.', ID_BOARD = '.$forumid.', ID_MSG = '.$postid;
+			    $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = ' . $userid . ', ID_BOARD = ' . $forumid . ', ID_MSG = ' . $postid;
 			    $db->setQuery($query);
 			    $db->execute();
 		    }
@@ -657,7 +657,7 @@ class JFusionForum_smf extends JFusionForum
 HTML;
         }
         $quickReply = JFactory::getApplication()->input->post->get('quickReply', '');
-		$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">'.$quickReply.'</textarea><br />';
+		$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">' . $quickReply . '</textarea><br />';
         return $html;
     }
 
@@ -715,7 +715,7 @@ HTML;
 				    ->select('t.ID_FIRST_MSG , t.numReplies, m.subject')
 				    ->from('#__messages as m')
 			        ->innerJoin('#__topics as t ON t.ID_TOPIC = m.ID_TOPIC')
-				    ->where('t.ID_TOPIC = '.$ids->threadid)
+				    ->where('t.ID_TOPIC = ' . $ids->threadid)
 				    ->where('m.ID_MSG = t.ID_FIRST_MSG');
 
 			    $db->setQuery($query);
@@ -773,7 +773,7 @@ HTML;
 			    $query = $db->getQuery(true)
 				    ->select('numPosts')
 				    ->from('#__boards')
-			        ->where('ID_BOARD = '.$ids->forumid);
+			        ->where('ID_BOARD = ' . $ids->forumid);
 
 			    $db->setQuery($query);
 			    $num = $db->loadObject();
@@ -782,11 +782,11 @@ HTML;
 			    $db->updateObject('#__boards', $forum_stats, 'ID_BOARD');
 
 			    //update stats for threadmarking purposes
-			    $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = '.$userid.', ID_TOPIC = '.$ids->threadid.', ID_MSG = ' . ($postid + 1);
+			    $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = ' . $userid . ', ID_TOPIC = ' . $ids->threadid . ', ID_MSG = ' . ($postid + 1);
 			    $db->setQuery($query);
 			    $db->execute();
 
-			    $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = '.$userid.', ID_BOARD = '.$ids->forumid.', ID_MSG = '.$postid;
+			    $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = ' . $userid . ', ID_BOARD = ' . $ids->forumid . ', ID_MSG = ' . $postid;
 			    $db->setQuery($query);
 			    $db->execute();
 		    }
@@ -811,11 +811,11 @@ HTML;
     {
 	    try {
 		    //set the query
-		    $where = 'WHERE ID_TOPIC = '.$existingthread->threadid.' AND ID_MSG != '.$existingthread->postid;
-		    $query = '(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, b.realName, a.ID_MEMBER, 0 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.ID_MEMBER = b.ID_MEMBER '.$where.' AND a.ID_MEMBER != 0)';
+		    $where = 'WHERE ID_TOPIC = ' . $existingthread->threadid . ' AND ID_MSG != ' . $existingthread->postid;
+		    $query = '(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, b.realName, a.ID_MEMBER, 0 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.ID_MEMBER = b.ID_MEMBER ' . $where . ' AND a.ID_MEMBER != 0)';
 		    $query.= ' UNION ';
-		    $query.= '(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, a.posterName as realName, a.ID_MEMBER, 1 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a '.$where.' AND a.ID_MEMBER = 0)';
-		    $query.= ' ORDER BY order_by_date '.$sort;
+		    $query.= '(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, a.posterName as realName, a.ID_MEMBER, 1 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a ' . $where . ' AND a.ID_MEMBER = 0)';
+		    $query.= ' ORDER BY order_by_date ' . $sort;
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $db->setQuery($query, $start, $limit);

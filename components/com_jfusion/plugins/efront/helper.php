@@ -47,12 +47,12 @@ class JFusionHelper_efront extends JFusionPlugin {
         if ($handle) {
             while (false !== ($file = readdir($handle))){
                 if ($file != '.' && $file != '..'){
-                    if(is_dir($dir.$file)){
-                        if(!rmdir($dir.$file)){ // Empty directory? Remove it
-                            $this->delete_directory($dir.$file.'/'); // Not empty? Delete the files inside it
+                    if(is_dir($dir . $file)){
+                        if(!rmdir($dir . $file)){ // Empty directory? Remove it
+                            $this->delete_directory($dir . $file . '/'); // Not empty? Delete the files inside it
                         }
                     } else {
-                        unlink($dir.$file);
+                        unlink($dir . $file);
                     }
                 }
             }
@@ -109,7 +109,7 @@ class JFusionHelper_efront extends JFusionPlugin {
 
 			    $db->setQuery($query);
 			    $user_type = (array)$db->loadObject();
-			    return $user_type['name'].' ('.$user_type['basic_user_type'].')';
+			    return $user_type['name'] . ' (' . $user_type['basic_user_type'] . ')';
 		    }
 	    } catch (Exception $e) {
 			JFusionFunction::raiseError($e, $this->getJname());
@@ -169,7 +169,7 @@ class JFusionHelper_efront extends JFusionPlugin {
 	        foreach ($additional_types as $usertype){
 		        $user_types[$i] = new stdClass;
 				$user_types[$i]->id = $usertype->id+2;
-		        $user_types[$i]->name = $usertype->name.' ('.$usertype->basic_user_type.')';
+		        $user_types[$i]->name = $usertype->name . ' (' . $usertype->basic_user_type . ')';
 	            $i++;
 	        }
 	    } catch (Exception $e) {
@@ -196,9 +196,9 @@ class JFusionHelper_efront extends JFusionPlugin {
         }    
         //prevent user error by preventing a heading forward slash
         ltrim($source_url);
-        $apipath = $source_url.'api.php?action=';
-        $post_url = $apipath.$curl_options['action'].$curl_options['parms'];
- //       $status['debug'][] = JText::_('EFRONT_API_POST').' post url: '.$post_url;
+        $apipath = $source_url . 'api.php?action=';
+        $post_url = $apipath . $curl_options['action'] . $curl_options['parms'];
+ //       $status['debug'][] = JText::_('EFRONT_API_POST') . ' post url: ' . $post_url;
         
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);

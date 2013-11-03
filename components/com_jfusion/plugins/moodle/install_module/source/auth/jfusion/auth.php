@@ -279,7 +279,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		define('_JEXEC','Yeah_I_know');
 		require_once($params_joomlafullpath.'administrator/components/com_jfusion/models/model.curl.php');
 		$LoginLogout = new DualLogin();
-		$curl_options['post_url']          = $params_joomlabaseurl.$params_logoutpath;
+		$curl_options['post_url']          = $params_joomlabaseurl . $params_logoutpath;
 		$curl_options['postfields']        = $params_postfields;
 		$curl_options['formid']            = $params_formid;
 		$curl_options['integrationtype']   = 0;
@@ -420,7 +420,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
             $LoginLogout = new DualLogin();
             $curl_options['username']          = $username;
             $curl_options['password']          = $password;
-            $curl_options['post_url']          = $params_joomlabaseurl.$params_loginpath;
+            $curl_options['post_url']          = $params_joomlabaseurl . $params_loginpath;
             $curl_options['formid']            = $params_formid;
             $curl_options['integrationtype']   = 0;
             $curl_options['relpath']           = $params_relpath;

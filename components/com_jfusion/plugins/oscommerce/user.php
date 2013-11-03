@@ -175,9 +175,9 @@ class JFusionUser_oscommerce extends JFusionUser
 					    $db->setQuery($query);
 					    try {
 						    $db->execute();
-						    $status['debug'][] = 'Deleted sessionrecord with id '.$session_id;
+						    $status['debug'][] = 'Deleted sessionrecord with id ' . $session_id;
 					    } catch (Exception $e) {
-						    $status['error'][] = 'Error Could not delete session with sessionID '.$session_id.': '.$e->getMessage();
+						    $status['error'][] = 'Error Could not delete session with sessionID ' . $session_id . ': ' . $e->getMessage();
 					    }
 				    }
 				    break;
@@ -519,7 +519,7 @@ class JFusionUser_oscommerce extends JFusionUser
 		    if (isset($db)) {
 			    $db->transactionRollback();
 		    }
-		    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' .$e->getMessage();
+		    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $e->getMessage();
 	    }
     }
 
@@ -550,22 +550,22 @@ class JFusionUser_oscommerce extends JFusionUser
 			    $querys[] = $db->getQuery(true)
 				    ->delete('#__customers')
 				    ->where('customers_id = ' . $db->quote($user_id));
-			    $errors[] = 'Error Could not delete userrecord with userid '.$user_id;
-			    $debug[] = 'Deleted userrecord of user with id '.$user_id;
+			    $errors[] = 'Error Could not delete userrecord with userid ' . $user_id;
+			    $debug[] = 'Deleted userrecord of user with id ' . $user_id;
 
 			    // delete adressbook items osc2 & osc3 & osczen & oscxt & oscmax
 			    $querys[] = $db->getQuery(true)
 				    ->delete('#__address_book')
 				    ->where('customers_id = ' . $db->quote($user_id));
-			    $errors[] = 'Error Could not delete addressbookitems with userid '.$user_id;
-			    $debug[] = 'Deleted addressbook items of user with id '.$user_id;
+			    $errors[] = 'Error Could not delete addressbookitems with userid ' . $user_id;
+			    $debug[] = 'Deleted addressbook items of user with id ' . $user_id;
 
 			    // delete customer from who's on line osc2 & osc3 & osczen & oscxt & oscmax
 			    $querys[] = $db->getQuery(true)
 				    ->delete('#__whos_online')
 				    ->where('customers_id = ' . $db->quote($user_id));
-			    $errors[] = 'Error Could not delete customer on line with userid '.$user_id;
-			    $debug[] = 'Deleted customer online entry of user with id '.$user_id;
+			    $errors[] = 'Error Could not delete customer on line with userid ' . $user_id;
+			    $debug[] = 'Deleted customer online entry of user with id ' . $user_id;
 
 			    // delete review items osc2 & osc3 &  osczen & oscxt
 			    $delete_reviews = $this->params->get('delete_reviews');
@@ -589,16 +589,16 @@ class JFusionUser_oscommerce extends JFusionUser
 				    $querys[] = $db->getQuery(true)
 					    ->delete('#__reviews')
 					    ->where('customers_id = ' . (int)$user_id);
-				    $errors[] = 'Error Could not delete customer reviews with userid '.$user_id;
-				    $debug[] = 'Deleted customer rieviews of user with id '.$user_id;
+				    $errors[] = 'Error Could not delete customer reviews with userid ' . $user_id;
+				    $debug[] = 'Deleted customer rieviews of user with id ' . $user_id;
 			    } else {
 				    $querys[] = (string)$db->getQuery(true)
 					    ->update('#__reviews')
 					    ->set('customers_id = null')
 					    ->where('customers_id  = ' . $db->Quote((int)$user_id));
 
-				    $errors[] = 'Error Could not delete customer reviews with userid '.$user_id;
-				    $debug[] = 'Deleted customer rieviews of user with id '.$user_id;
+				    $errors[] = 'Error Could not delete customer reviews with userid ' . $user_id;
+				    $debug[] = 'Deleted customer rieviews of user with id ' . $user_id;
 			    }
 
 			    switch ($osCversion) {
@@ -607,26 +607,26 @@ class JFusionUser_oscommerce extends JFusionUser
 					    $querys[] = $db->getQuery(true)
 						    ->delete('#__products_notifications')
 						    ->where('customers_id = ' . $db->quote($user_id));
-					    $errors[] = 'Error Could not delete product notifications with userid '.$user_id;
-					    $debug[] = 'Deleted products notifications of user with id '.$user_id;
+					    $errors[] = 'Error Could not delete product notifications with userid ' . $user_id;
+					    $debug[] = 'Deleted products notifications of user with id ' . $user_id;
 
 					    $querys[] = $db->getQuery(true)
 						    ->delete('#__customers_customers_status_history')
 						    ->where('customers_id = ' . $db->quote($user_id));
-					    $errors[] = 'Error Could not delete customer history with userid '.$user_id;
-					    $debug[] = 'Deleted customer history of user with id '.$user_id;
+					    $errors[] = 'Error Could not delete customer history with userid ' . $user_id;
+					    $debug[] = 'Deleted customer history of user with id ' . $user_id;
 
 					    $querys[] = $db->getQuery(true)
 						    ->delete('#__customers_ip')
 						    ->where('customers_id = ' . $db->quote($user_id));
-					    $errors[] = 'Error Could not delete customer ip with userid '.$user_id;
-					    $debug[] = 'Deleted customer ip of user with id '.$user_id;
+					    $errors[] = 'Error Could not delete customer ip with userid ' . $user_id;
+					    $debug[] = 'Deleted customer ip of user with id ' . $user_id;
 
 					    $querys[] = $db->getQuery(true)
 						    ->delete('#__admin_access')
 						    ->where('customers_id = ' . $db->quote($user_id));
-					    $errors[] = 'Error Could not delete admin accessid '.$user_id;
-					    $debug[] = 'Deleted admin accessith id '.$user_id;
+					    $errors[] = 'Error Could not delete admin accessid ' . $user_id;
+					    $debug[] = 'Deleted admin accessith id ' . $user_id;
 					    break;
 				    case 'osc2':
 				    case 'osczen':
@@ -635,41 +635,41 @@ class JFusionUser_oscommerce extends JFusionUser
 					    $querys[] = $db->getQuery(true)
 						    ->delete('#__customers_info')
 						    ->where('customers_info_id = ' . $db->quote($user_id));
-					    $errors[] = 'Error Could not delete useinfo with userid '.$user_id;
-					    $debug[] = 'Deleted userinfo of user with id '.$user_id;
+					    $errors[] = 'Error Could not delete useinfo with userid ' . $user_id;
+					    $debug[] = 'Deleted userinfo of user with id ' . $user_id;
 
 				        // delete  customer basket osc2 & osczen
 					    $querys[] = $db->getQuery(true)
 						    ->delete('#__customers_basket')
 						    ->where('customers_id = ' . $db->quote($user_id));
-					    $errors[] = 'Error Could not delete customer basket with userid '.$user_id;
-					    $debug[] = 'Deleted customer basket items of user with id '.$user_id;
+					    $errors[] = 'Error Could not delete customer basket with userid ' . $user_id;
+					    $debug[] = 'Deleted customer basket items of user with id ' . $user_id;
 
 					    // delete  customer basket attributes osc2 & osczen
 					    $querys[] = $db->getQuery(true)
 						    ->delete('#__customers_basket_attributes')
 						    ->where('customers_id = ' . $db->quote($user_id));
-					    $errors[] = 'Error Could not delete customer basket attributes with userid '.$user_id;
-					    $debug[] = 'Deleted customer basket attributes items of user with id '.$user_id;
+					    $errors[] = 'Error Could not delete customer basket attributes with userid ' . $user_id;
+					    $debug[] = 'Deleted customer basket attributes items of user with id ' . $user_id;
 					    break;
 				    case 'osc3':
 					    $querys[] = $db->getQuery(true)
 						    ->delete('#__shopping_carts')
 						    ->where('customers_id = ' . $db->quote($user_id));
-					    $errors[] = 'Error Could not delete customer shopping cart with userid '.$user_id;
-					    $debug[] = 'Deleted customer shopping cart of user with id '.$user_id;
+					    $errors[] = 'Error Could not delete customer shopping cart with userid ' . $user_id;
+					    $debug[] = 'Deleted customer shopping cart of user with id ' . $user_id;
 
 					    $querys[] = $db->getQuery(true)
 						    ->delete('#__shopping_carts_custom_variants_values')
 						    ->where('customers_id = ' . $db->quote($user_id));
-					    $errors[] = 'Error Could not delete customer shopping cart variantswith userid '.$user_id;
-					    $debug[] = 'Deleted customer shopping cart variants of user with id '.$user_id;
+					    $errors[] = 'Error Could not delete customer shopping cart variantswith userid ' . $user_id;
+					    $debug[] = 'Deleted customer shopping cart variants of user with id ' . $user_id;
 
 					    $querys[] = $db->getQuery(true)
 						    ->delete('#__product_notifications')
 						    ->where('customers_id = ' . $db->quote($user_id));
-					    $errors[] = 'Error Could not delete customer product notifications with userid '.$user_id;
-					    $debug[] = 'Deleted customer product notifications of user with id '.$user_id;
+					    $errors[] = 'Error Could not delete customer product notifications with userid ' . $user_id;
+					    $debug[] = 'Deleted customer product notifications of user with id ' . $user_id;
 					    break;
 			    }
 
@@ -679,7 +679,7 @@ class JFusionUser_oscommerce extends JFusionUser
 					    $db->execute();
 					    $status['debug'][] = $debug[$key];
 				    } catch (Exception $e) {
-					    $status['error'][] = $errors[$key].': '.$e->getMessage();
+					    $status['error'][] = $errors[$key] . ': ' . $e->getMessage();
 						break;
 				    }
 			    }

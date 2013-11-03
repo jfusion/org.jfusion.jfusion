@@ -14,7 +14,7 @@ $factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIREC
 if(file_exists ( $factory_file )):
 	require_once $factory_file;
 else:
-	JFusionFunction::raiseWarning('MageLib: The file '.$factory_file.' doesn\'t exists. Please install JFusion component or update it.');
+	JFusionFunction::raiseWarning('MageLib: The file ' . $factory_file . ' doesn\'t exists. Please install JFusion component or update it.');
 endif;
 
 /**

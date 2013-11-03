@@ -78,7 +78,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				$query = $db->getQuery(true)
 					->select('title')
 					->from('#__usergroup')
-					->where('usergroupid = '.$result->group_id);
+					->where('usergroupid = ' . $result->group_id);
 
 				$db->setQuery($query);
 				$result->group_name = $db->loadResult();
@@ -87,7 +87,7 @@ class JFusionUser_vbulletin extends JFusionUser
 					$query = $db->getQuery(true)
 						->select($name_field)
 						->from('#__userfield')
-						->where('userid = '.$result->userid);
+						->where('userid = ' . $result->userid);
 
 					$db->setQuery($query);
 					$name = $db->loadResult();
@@ -99,7 +99,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				$query = $db->getQuery(true)
 					->select('userid')
 					->from('#__userban')
-					->where('userid = '.$result->userid);
+					->where('userid = ' . $result->userid);
 
 				$db->setQuery($query);
 				if ($db->loadObject() || ($this->params->get('block_coppa_users', 1) && (int) $result->group_id == 4)) {
@@ -310,7 +310,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				} else {
 					$expires_time = time() + ( 60 * $cookie_expires );
 				}
-				$passwordhash = md5($userinfo->password.$cookie_salt);
+				$passwordhash = md5($userinfo->password . $cookie_salt);
 
 				$query = $db->getQuery(true)
 					->select('sessionhash')
@@ -375,7 +375,7 @@ class JFusionUser_vbulletin extends JFusionUser
 		try {
 			jimport('joomla.user.helper');
 			$existinguser->password_salt = JUserHelper::genRandomPassword(3);
-			$existinguser->password = md5(md5($userinfo->password_clear).$existinguser->password_salt);
+			$existinguser->password = md5(md5($userinfo->password_clear) . $existinguser->password_salt);
 
 			$date = date('Y-m-d');
 

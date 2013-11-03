@@ -103,7 +103,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 
 			$query = $db->getQuery(true)
 				->select($field)
-				->from('#__'.$this->getTablename());
+				->from('#__' . $this->getTablename());
 
 			$db->setQuery($query, $limitstart, $limit);
 			$userlist = $db->loadObjectList();
@@ -125,7 +125,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 
 			$query = $db->getQuery(true)
 				->select('count(*)')
-				->from('#__'.$this->getTablename());
+				->from('#__' . $this->getTablename());
 
 			$db->setQuery($query);
 
@@ -168,7 +168,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 	 */
 	function user_auth($name, $value, $node, $control_name)
 	{
-		$output = '<textarea name="'.$control_name.'['.$name.']" rows="20" cols="55">'.$value.'</textarea>';
+		$output = '<textarea name="' . $control_name . '[' . $name . ']" rows="20" cols="55">' . $value . '</textarea>';
 		return $output;
 	}
 
@@ -227,7 +227,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 
 						$table->name = $table->id = substr($val, strlen($database_prefix));
 
-						$query = 'SHOW COLUMNS FROM '.$val;
+						$query = 'SHOW COLUMNS FROM ' . $val;
 						$db->setQuery($query);
 						$fieldslist = $db->loadObjectList();
 
@@ -248,7 +248,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 
 				$output .= '<table>';
 				$output .= '<tr><td>';
-				$output .= JHTML::_('select.genericlist', $tl, $control_name.'['.$name.']['.$type.'][table]', 'onchange="javascript: Joomla.submitbutton(\'applyconfig\')"',	'id', 'name', $value['table']);
+				$output .= JHTML::_('select.genericlist', $tl, $control_name . '[' . $name . '][' . $type . '][table]', 'onchange="javascript: Joomla.submitbutton(\'applyconfig\')"', 'id', 'name', $value['table']);
 				$output .= '</td></tr>';
 				$output .= '<tr><td>';
 				if (!empty($value['table']) ) {
@@ -256,12 +256,12 @@ class JFusionAdmin_universal extends JFusionAdmin
 					foreach ($mapuser as $val) {
 						$output .= '<tr><td>';
 						//object(stdClass)#245 (6) { ["Field"]=>  string(2) "id" ["Type"]=>  string(6) "int(5)" ["Null"]=>  string(0) "" ["Key"]=>  string(0) "" ["Default"]=>  string(1) "0" ["Extra"]=>  string(0) "" }
-						$output .= '<div>Name: '.$val->Field.'</div>';
-						$output .= '<div>Type: '.$val->Type.'</div>';
-						$output .= '<div>Default: "'.$val->Default.'" </div>';
-						$null = $val->Null?JText::_('YES'):JText::_('NO');
-						$output .= '<div>Null: '.$null.'</div>';
-						$output .= '<div>Extra: "'.$val->Extra.'" </div></td><td>';
+						$output .= '<div>Name: ' . $val->Field . '</div>';
+						$output .= '<div>Type: ' . $val->Type . '</div>';
+						$output .= '<div>Default: "' . $val->Default . '" </div>';
+						$null = $val->Null ? JText::_('YES') : JText::_('NO');
+						$output .= '<div>Null: ' . $null . '</div>';
+						$output .= '<div>Extra: "' . $val->Extra . '" </div></td><td>';
 						if ( isset($value['field'][$val->Field]) ) {
 							$mapuserfield = $value['field'][$val->Field];
 						} else {
@@ -286,39 +286,39 @@ class JFusionAdmin_universal extends JFusionAdmin
 							}
 						}
 
-						$onchange = 'size="8" multiple onchange="javascript: JFusion.Plugin.changeField(this,\''.$val->Field.'\',\''.$type.'\')"';
+						$onchange = 'size="8" multiple onchange="javascript: JFusion.Plugin.changeField(this,\'' . $val->Field . '\',\'' . $type . '\')"';
 						$output .= '<table>';
 						$output .= '<tr>';
 						$output .= '<td>';
-						$output .= JHTML::_('select.genericlist', $fieldtypes, $control_name.'['.$name.']['.$type.'][field]['.$val->Field.'][]', $onchange,	'id', 'name', $mapuserfield);
+						$output .= JHTML::_('select.genericlist', $fieldtypes, $control_name . '[' . $name . '][' . $type . '][field][' . $val->Field . '][]', $onchange, 'id', 'name', $mapuserfield);
 						$output .= '</td>';
 						$output .= '<td>';
-						$onchange = 'onchange="javascript: JFusion.Plugin.changeValue(this,\''.$val->Field.'\',\''.$type.'\')"';
-						$output .= '<div id="'.$type.$val->Field.'">';
+						$onchange = 'onchange="javascript: JFusion.Plugin.changeValue(this,\'' . $val->Field . '\',\'' . $type . '\')"';
+						$output .= '<div id="' . $type . $val->Field . '">';
 
 						if ( isset( $mapuserfield[0]) ) {
 							if ( isset( $fieldtypes[$mapuserfield[0]]) ) {
 								if ( isset( $fieldtypes[$mapuserfield[0]]->types) ) {
-									$output .= JHTML::_('select.genericlist', $fieldtypes[$mapuserfield[0]]->types, $control_name.'['.$name.']['.$type.'][type]['.$val->Field.']', $onchange, 'id', 'name', $fieldstype);
+									$output .= JHTML::_('select.genericlist', $fieldtypes[$mapuserfield[0]]->types, $control_name . '[' . $name . '][' . $type . '][type][' . $val->Field . ']', $onchange, 'id', 'name', $fieldstype);
 								}
 							}
 						}
 						$output .= '</div>';
 						$output .= '</td>';
 						$output .= '<td>';
-						$output .= '<div id="'.$type.$val->Field.'value">';
+						$output .= '<div id="' . $type . $val->Field . 'value">';
 						switch ($fieldstype) {
 							case 'CUSTOM':
-								$output .= '<textarea id="'.$control_name.$name.$type.'value'.$val->Field.'" name="'.$control_name.'['.$name.']['.$type.'][value]['.$val->Field.']" rows="8" cols="55">'.$fieldsvalue.'</textarea>';
+								$output .= '<textarea id="' . $control_name . $name . $type . 'value' . $val->Field . '" name="' . $control_name . '[' . $name . '][' . $type . '][value][' . $val->Field . ']" rows="8" cols="55">' . $fieldsvalue . '</textarea>';
 								break;
 							case 'DEFAULT':
 							case 'VALUE':
 							case 'DATE':
-								$output .= '<input type="text" id="'.$control_name.$name.$type.'value'.$val->Field.'" name="'.$control_name.'['.$name.']['.$type.'][value]['.$val->Field.']" value="'.$fieldsvalue.'" size="100" class="inputbox" />';
+								$output .= '<input type="text" id="' . $control_name . $name . $type . 'value' . $val->Field . '" name="' . $control_name . '[' . $name . '][' . $type . '][value][' . $val->Field . ']" value="' . $fieldsvalue . '" size="100" class="inputbox" />';
 								break;
 							case 'ONOFF':
 								foreach ($fieldsvaluearray as $key2 => $val2) {
-									$output .= '<input type="text" id="'.$control_name.$name.$type.'value'.$val->Field.$key2.'" name="'.$control_name.'['.$name.']['.$type.'][value]['.$val->Field.']['.$key2.']" value="'.$val2.'" size="40" class="inputbox" />';
+									$output .= '<input type="text" id="' . $control_name . $name . $type . 'value' . $val->Field . $key2 . '" name="' . $control_name . '[' . $name . '][' . $type . '][value][' . $val->Field . '][' . $key2 . ']" value="' . $val2 . '" size="40" class="inputbox" />';
 								}
 								break;
 						}
@@ -570,7 +570,7 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 			} else if (!$this->isValidItemID($joomla_itemid)) {
 				JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->getJname());
 			} else {
-				header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');
+				header('Content-disposition: attachment; filename=jfusion_' . $this->getJname() . '_redirectcode.txt');
 				header('Pragma: no-cache');
 				header('Expires: 0');
 				header ('content-type: text/html');
@@ -580,7 +580,7 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 			}
 		}
 
-		$output = ' <a href="index.php?option=com_jfusion&amp;task=plugineditor&amp;jname='.$this->getJname().'&amp;action=redirectcode">' . JText::_('MOD_ENABLE_MANUALLY') . '</a>';
+		$output = ' <a href="index.php?option=com_jfusion&amp;task=plugineditor&amp;jname=' . $this->getJname() . '&amp;action=redirectcode">' . JText::_('MOD_ENABLE_MANUALLY') . '</a>';
 		return $output;
 	}
 

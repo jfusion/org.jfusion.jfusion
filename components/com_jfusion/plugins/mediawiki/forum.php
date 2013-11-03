@@ -60,7 +60,7 @@ class JFusionForum_mediawiki extends JFusionForum
 		    }
 
 		    $query = $db->getQuery(true)
-			    ->select('p.page_id , p.page_title AS title, SUBSTRING(t.old_text,1,'.$display_limit.') as text,
+			    ->select('p.page_id , p.page_title AS title, SUBSTRING(t.old_text,1,' . $display_limit . ') as text,
 					STR_TO_DATE(r.rev_timestamp, "%Y%m%d%H%i%S") AS created,
 					p.page_title AS section,
 					r.rev_user_text as user')
@@ -119,16 +119,16 @@ class JFusionForum_mediawiki extends JFusionForum
 					    }
 					    if ( !empty( $o_avatar_source ) ) {
 						    $output .= '<li style="clear:left;">';
-						    $output .= '<img style="vertical-align:middle; float:left; margin:3px;" src="'.$o_avatar_source.'" height="'.$o_avatar_height.'" width="'.$o_avatar_width.'" alt="avatar" />';
+						    $output .= '<img style="vertical-align:middle; float:left; margin:3px;" src="' . $o_avatar_source . '" height="' . $o_avatar_height . '" width="' . $o_avatar_width . '" alt="avatar" />';
 					    } else {
 						    $output .= '<li>';
 					    }
-					    $url = JFusionFunction::routeURL('index.php?title='.$value->title, $itemid, $this->getJname());
+					    $url = JFusionFunction::routeURL('index.php?title=' . $value->title, $itemid, $this->getJname());
 					    if (JString::strlen($value->title) > $display_limit_subject) {
 						    //we need to shorten the subject
 						    $value->pagename = JString::substr($value->title,0,$display_limit_subject) . '...';
 					    }
-					    $output .= '<a href="'.$url.'" target="'.$new_window.'">'.$value->title.'</a> - ';
+					    $output .= '<a href="' . $url . '" target="' . $new_window . '">' . $value->title . '</a> - ';
 					    if ($showuser) {
 						    $output .= $value->user;
 					    }
@@ -138,13 +138,13 @@ class JFusionForum_mediawiki extends JFusionForum
 						    $JDate =  new JDate($value->created);
 						    $JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
 						    if (empty($custom_date)) {
-							    $output .= ' '.$JDate->format(_DATE_FORMAT_LC2,true);
+							    $output .= ' ' . $JDate->format(_DATE_FORMAT_LC2, true);
 						    } else {
-							    $output .= ' '.$JDate->format($custom_date,true);
+							    $output .= ' ' . $JDate->format($custom_date, true);
 						    }
 					    }
 					    if($display_body) {
-						    $output .= ' - ' .$value->text;
+						    $output .= ' - ' . $value->text;
 					    }
 					    $output .= '</li>';
 				    }

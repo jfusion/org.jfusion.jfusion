@@ -120,7 +120,7 @@ try {
 	            if (!empty($query)) {
 	                // load
 	                if($config['mode']==LAT) {
-	                    $db->setQuery($query[$config['mode'].$config['lat_mode']]);
+	                    $db->setQuery($query[$config['mode'] . $config['lat_mode']]);
 	                } else {
 	                    $db->setQuery($query[$config['mode']]);
 	                }
@@ -146,13 +146,13 @@ try {
 	                    $results = array_values($results);
 	                }
 	                if ($config['debug']) {
-	                    $queryMode = ($config['mode']==LAT) ? $config['mode'].$config['lat_mode'] : $config['mode'];
+	                    $queryMode = ($config['mode'] == LAT) ? $config['mode'] . $config['lat_mode'] : $config['mode'];
 	                    $debug  = 'Query mode: ' . $queryMode . '<br><br>';
-	                    $sqlQuery = ($config['mode']==LAT) ? $query[$config['mode'].$config['lat_mode']] : $query[$config['mode']];
+	                    $sqlQuery = ($config['mode'] == LAT) ? $query[$config['mode'] . $config['lat_mode']] : $query[$config['mode']];
 	                    $debug .= 'SQL Query: ' . $sqlQuery .'<br><br>';
 	                    $debug .= 'Error: ' . $error . '<br><br>';
-	                    $debug .= 'Results Before Filtering:<br><pre>'.print_r($resultBeforeFiltering,true).'</pre><br><br>';
-	                    $debug .= 'Results After Filtering:<br><pre>'.print_r($results,true).'</pre><br><br>';
+	                    $debug .= 'Results Before Filtering:<br><pre>' . print_r($resultBeforeFiltering, true) . '</pre><br><br>';
+	                    $debug .= 'Results After Filtering:<br><pre>' . print_r($results, true) . '</pre><br><br>';
 	                    die($debug);
 	                } else {
 	                    modjfusionActivityHelper::appendAutoOutput($results, $jname, $config, $params);
