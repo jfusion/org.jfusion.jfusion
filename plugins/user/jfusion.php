@@ -618,10 +618,14 @@ class plgUserJfusion extends JPlugin
             $storedUsername = $db->loadResult();
             if ($updateUsername) {
 	            try {
-		            //update the jfusion_user table with the new username
-		            $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . (int)$JoomlaUser->id . ', ' . $db->Quote($JoomlaUser->username) . ')';
-		            $db->setQuery($query);
-		            $db->execute();
+		            $update = new stdClass();
+		            $update->id = $JoomlaUser->id;
+		            $update->username = $JoomlaUser->username;
+		            if ($storedUsername) {
+			            $db->updateObject('#__jfusion_users', $update, 'id');
+		            } else {
+			            $db->insertObject('#__jfusion_users', $update);
+		            }
 	            } catch ( Exception $e ) {
 		            JFusionFunction::raiseError($e);
 	            }
