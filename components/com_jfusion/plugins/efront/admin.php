@@ -56,16 +56,13 @@ class JFusionAdmin_efront extends JFusionAdmin
     }
 
     /**
-     * @param string $forumPath
+     * @param string $softwarePath
+     *
      * @return array
      */
-    function setupFromPath($forumPath) {
-        //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
-            $myfile = $forumPath . 'libraries'. DIRECTORY_SEPARATOR. 'configuration.php';
-        } else {
-            $myfile = $forumPath . DIRECTORY_SEPARATOR .'libraries'. DIRECTORY_SEPARATOR .'configuration.php';
-        }
+    function setupFromPath($softwarePath) {
+	    $myfile = $softwarePath . 'libraries'. DIRECTORY_SEPARATOR. 'configuration.php';
+
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
@@ -81,12 +78,8 @@ class JFusionAdmin_efront extends JFusionAdmin
 		        }
 	        }
 
-            // need more defines from eFront
-            if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
-                $myfile = $forumPath . 'libraries'. DIRECTORY_SEPARATOR. 'globals.php';
-            } else {
-                $myfile = $forumPath . DIRECTORY_SEPARATOR .'libraries'. DIRECTORY_SEPARATOR .'globals.php';
-            }
+	        $myfile = $softwarePath . 'libraries'. DIRECTORY_SEPARATOR. 'globals.php';
+
 	        $lines = $this->readFile($myfile);
             if ($lines === false) {
                 JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
@@ -107,7 +100,7 @@ class JFusionAdmin_efront extends JFusionAdmin
                 $params['database_user'] = G_DBUSER;
                 $params['database_password'] = G_DBPASSWD;
                 $params['database_type'] = G_DBTYPE;
-                $params['source_path'] = $forumPath;
+                $params['source_path'] = $softwarePath;
                 $params['md5_key'] = G_MD5KEY;
                 $params['uploadpath'] = G_UPLOADPATH;
             }

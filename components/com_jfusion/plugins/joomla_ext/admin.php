@@ -48,22 +48,17 @@ class JFusionAdmin_joomla_ext extends JFusionJoomlaAdmin
 	/**
 	 * Function finds config file of integrated software and automatically configures the JFusion plugin
 	 *
-	 * @param string $path path to root of integrated software
+	 * @param string $softwarePath path to root of integrated software
 	 *
 	 * @return object JParam JParam objects with ne newly found configuration
 	 * Now Joomla 1.6+ compatible
 	 */
-	public function setupFromPath($path)
+	public function setupFromPath($softwarePath)
 	{
-		//check for trailing slash and generate file path
-		if (substr($path, -1) == DIRECTORY_SEPARATOR) {
-			$configfile = $path . 'configuration.php';
-			//joomla 1.6+ test
-			$test_version_file = $path . 'includes' . DIRECTORY_SEPARATOR . 'version.php';
-		} else {
-			$configfile = $path . DIRECTORY_SEPARATOR . 'configuration.php';
-			$test_version_file = $path . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'version.php';
-		}
+		$configfile = $softwarePath . 'configuration.php';
+		//joomla 1.6+ test
+		$test_version_file = $softwarePath . 'includes' . DIRECTORY_SEPARATOR . 'version.php';
+
 		$params = array();
 		$lines = $this->readFile($configfile);
 		if ($lines === false) {
@@ -96,7 +91,7 @@ class JFusionAdmin_joomla_ext extends JFusionJoomlaAdmin
 			$params['database_password'] = isset($config['password']) ? $config['password'] : '';
 			$params['database_prefix'] = isset($config['dbprefix']) ? $config['dbprefix'] : '';
 			$params['database_type'] = isset($config['dbtype']) ? $config['dbtype'] : '';
-			$params['source_path'] = $path;
+			$params['source_path'] = $softwarePath;
 
 			//determine if this is 1.5 or 1.6+
 			$params['joomlaversion'] = (file_exists($test_version_file)) ? '1.6' : '1.5';

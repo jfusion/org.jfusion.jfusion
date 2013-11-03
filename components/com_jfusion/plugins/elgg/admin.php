@@ -79,11 +79,12 @@ class JFusionAdmin_elgg extends JFusionAdmin
     }
 
     /**
-     * @param string $path
+     * @param string $softwarePath
+     *
      * @return array
      */
-    function setupFromPath($path) {
-        $config = JFusionAdmin_elgg::loadSetup($path);
+    function setupFromPath($softwarePath) {
+        $config = JFusionAdmin_elgg::loadSetup($softwarePath);
         $params = array();
         if (!empty($config)) {
             //save the parameters into array
@@ -94,7 +95,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
             $params['database_password'] = $config['dbpass'];
             $params['database_prefix'] = $config['dbprefix'];
             $params['database_type'] = 'mysql';
-            $params['source_path'] = $path;
+            $params['source_path'] = $softwarePath;
         }
         return $params;
     }

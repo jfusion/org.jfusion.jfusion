@@ -49,15 +49,12 @@ class JFusionAdmin_mybb extends JFusionAdmin
     }
 
     /**
-     * @param string $forumPath
+     * @param string $softwarePath
+     *
      * @return array
      */
-    function setupFromPath($forumPath) {
-        //check for trailing slash and generate config file path
-        if (substr($forumPath, -1) != DIRECTORY_SEPARATOR) {
-            $forumPath.= DIRECTORY_SEPARATOR;
-        }
-        $myfile = $forumPath . 'inc' . DIRECTORY_SEPARATOR . 'config.php';
+    function setupFromPath($softwarePath) {
+        $myfile = $softwarePath . 'inc' . DIRECTORY_SEPARATOR . 'config.php';
 
         $params = array();
         //include config file
@@ -73,7 +70,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
             $params['database_password'] = $config['database']['password'];
             $params['database_name'] = $config['database']['database'];
             $params['database_prefix'] = $config['database']['table_prefix'];
-            $params['source_path'] = $forumPath;
+            $params['source_path'] = $softwarePath;
             //find the source url to mybb
             $driver = $params['database_type'];
             $host = $params['database_host'];

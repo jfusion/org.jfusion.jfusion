@@ -34,17 +34,14 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
     }
 
     /**
-     * @param string $forumPath
+     * @param string $softwarePath
+     *
      * @return array
      */
-    function setupFromPath($forumPath)
+    function setupFromPath($softwarePath)
     {
-        //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
-            $myfile = $forumPath . 'Settings.php';
-        } else {
-            $myfile = $forumPath . DIRECTORY_SEPARATOR. 'Settings.php';
-        }
+	    $myfile = $softwarePath . 'Settings.php';
+
         //try to open the file
         $params = array();
 	    $lines = $this->readFile($myfile);
@@ -74,7 +71,7 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
             $params['database_prefix'] = isset($config['db_prefix']) ? $config['db_prefix'] : '';
             $params['source_url'] = isset($config['boardurl']) ? $config['boardurl'] : '';
             $params['cookie_name'] = isset($config['cookiename']) ? $config['cookiename'] : '';
-            $params['source_path'] = $forumPath;
+            $params['source_path'] = $softwarePath;
         }
         return $params;
     }

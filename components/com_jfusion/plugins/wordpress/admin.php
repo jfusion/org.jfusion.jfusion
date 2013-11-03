@@ -80,16 +80,13 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	}
 
     /**
-     * @param string $forumPath
+     * @param string $softwarePath
+     *
      * @return array|bool
      */
-    function setupFromPath($forumPath) {
-		//check for trailing slash and generate file path
-		if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
-			$myfile = $forumPath . 'wp-config.php';
-		} else {
-			$myfile = $forumPath . DIRECTORY_SEPARATOR . 'wp-config.php';
-		}
+    function setupFromPath($softwarePath) {
+	    $myfile = $softwarePath . 'wp-config.php';
+
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
@@ -115,7 +112,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$params['database_password'] = DB_PASSWORD;
 			$params['database_prefix'] = $table_prefix;
 			$params['database_type'] = 'mysql';
-			$params['source_path'] = $forumPath;
+			$params['source_path'] = $softwarePath;
 			$params['database_charset'] = DB_CHARSET;
 			$driver = 'mysql';
 			$options = array('driver' => $driver, 'host' => $params['database_host'], 'user' => $params['database_user'],

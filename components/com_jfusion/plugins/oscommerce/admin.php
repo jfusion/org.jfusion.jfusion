@@ -45,16 +45,13 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     }
 
     /**
-     * @param string $forumPath
+     * @param string $softwarePath
+     *
      * @return array|bool
      */
-    function setupFromPath($forumPath) {
-        //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
-            $myfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'configure.php';
-        } else {
-            $myfile = $forumPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'configure.php';
-        }
+    function setupFromPath($softwarePath) {
+	    $myfile = $softwarePath . 'includes' . DIRECTORY_SEPARATOR . 'configure.php';
+
         $params = array();
         if (!file_exists($myfile)) {
             JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile.' '. JText::_('WIZARD_MANUAL'), $this->getJname());
@@ -81,7 +78,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
             if (defined('DB_TYPE')) {
                 $params['database_type'] = DB_TYPE;
             }
-            $params['source_path'] = $forumPath;
+            $params['source_path'] = $softwarePath;
             // handle ssl enabling
             $enable_ssl = false;
             if (defined('ENABLE_SLL')) {

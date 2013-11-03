@@ -70,17 +70,17 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     /**
      * setup plugin from path
      *
-     * @param string $Path Source path user to find config files
+     * @param string $softwarePath Source path user to find config files
      *
      * @return array return array
      */
-    function setupFromPath($Path)
+    function setupFromPath($softwarePath)
     {
         //try to open the file
-        $config = $this->helper->getConf($Path);
+        $config = $this->helper->getConf($softwarePath);
         $params = array();
         if ($config === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $Path . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $softwarePath . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             if (isset($config['auth']['mysql']) && isset($config['authtype']) && $config['authtype'] == 'mysql') {

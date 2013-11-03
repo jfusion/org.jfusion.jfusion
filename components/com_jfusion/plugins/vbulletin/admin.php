@@ -61,19 +61,15 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	}
 
 	/**
-	 * @param string $forumPath
+	 * @param string $softwarePath
+	 *
 	 * @return array
 	 */
-	function setupFromPath($forumPath)
+	function setupFromPath($softwarePath)
 	{
-		//check for trailing slash and generate file path
-		if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
-			$myfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'config.php';
-			$funcfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'functions.php';
-		} else {
-			$myfile = $forumPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'config.php';
-			$funcfile = $forumPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'functions.php';
-		}
+		$myfile = $softwarePath . 'includes' . DIRECTORY_SEPARATOR . 'config.php';
+		$funcfile = $softwarePath . 'includes' . DIRECTORY_SEPARATOR . 'functions.php';
+
 		//try to open the file
 		$params = array();
 		$lines = $this->readFile($myfile);
@@ -105,7 +101,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 			$params['database_password'] = $config['MasterServer']['password'];
 			$params['database_prefix'] = $config['Database']['tableprefix'];
 			$params['cookie_prefix'] = $config['Misc']['cookieprefix'];
-			$params['source_path'] = $forumPath;
+			$params['source_path'] = $softwarePath;
 			//find the path to vbulletin, for this we need a database connection
 			$host = $config['MasterServer']['servername'];
 			$user = $config['MasterServer']['username'];

@@ -53,16 +53,13 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     }
 
     /**
-     * @param string $forumPath
+     * @param string $softwarePath
+     *
      * @return array
      */
-    function setupFromPath($forumPath) {
-        //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
-            $myfile = $forumPath . 'config.php';
-        } else {
-            $myfile = $forumPath . DIRECTORY_SEPARATOR . 'config.php';
-        }
+    function setupFromPath($softwarePath) {
+	    $myfile = $softwarePath . 'config.php';
+
         $params = array();
         $config = array();
         //try to open the file
@@ -95,7 +92,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
             $params['database_prefix'] = $config['tablePrefix'];
             $params['source_url'] = str_replace('main.php', '', $config['baseUri']);
             $params['cookie_name'] = '';
-            $params['source_path'] = $forumPath;
+            $params['source_path'] = $softwarePath;
             if (!in_array($params['database_type'], array('mysql', 'mysqli'))) {
                 if (!function_exists('mysqli_init') && !extension_loaded('mysqli')) {
                     $params['database_type'] = 'mysql';
