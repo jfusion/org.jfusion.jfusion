@@ -35,15 +35,15 @@ class plgSystemMagelib {
      *
      */
     function __construct() {
-		$plugin = JPluginHelper::getPlugin ( 'system', 'magelib' );
-		$this->params = new JRegistry ( $plugin->params );
+		$plugin = JPluginHelper::getPlugin('system', 'magelib');
+		$this->params = new JRegistry($plugin->params);
 		
-		$mage_plugin = $this->params->get ( 'mage_plugin', 'magento' );
-		$mage_path = JFusionFactory::getParams ( $mage_plugin )->get ( 'source_path', false );
-		$this->mage_url = JFusionFactory::getParams ( $mage_plugin )->get ( 'source_url', false );
+		$mage_plugin = $this->params->get('mage_plugin', 'magento');
+		$mage_path = JFusionFactory::getParams($mage_plugin )->get('source_path', false);
+		$this->mage_url = JFusionFactory::getParams($mage_plugin)->get('source_url', false);
 		
 		if (! $mage_path) {
-			$this->mage_path = $this->params->get ( 'mage_path' );
+			$this->mage_path = $this->params->get('mage_path');
 		} else {
 			$this->mage_path = $mage_path;
 		}		
@@ -59,11 +59,11 @@ class plgSystemMagelib {
 	 *
 	 */
 	function destroyTemporaryJoomlaSession() {
-		$this->_OldSessionId = session_id ();
-		$this->_OldSessionName = session_name ();
-		$this->_OldCookie = session_get_cookie_params ();
+		$this->_OldSessionId = session_id();
+		$this->_OldSessionName = session_name();
+		$this->_OldCookie = session_get_cookie_params();
 		$this->_OldSessionData = $_SESSION;
-		session_write_close ();
+		session_write_close();
 		// Necessary to unset $_SESSION to allow Magento core to set his own session
 		// $_SESSION must be restored after the Magento process
 		// @see plgSystemMagelib::restartJoomlaSession();
@@ -88,15 +88,15 @@ class plgSystemMagelib {
 			
 			$defaultStore = null;
 			
-            $mage_plugin = $this->params->get ( 'mage_plugin', 'magento' );
-            $language_store_view = JFusionFactory::getParams ( $mage_plugin )->get ( 'language_store_view', '' );
+            $mage_plugin = $this->params->get ('mage_plugin', 'magento');
+            $language_store_view = JFusionFactory::getParams($mage_plugin)->get('language_store_view', '');
 
-            if (strlen ( $language_store_view ) > 0) {
+            if (strlen($language_store_view ) > 0) {
                 // we define and set the default store (and language if set correctly by the administrator)
-                $JLang = JFactory::getLanguage ();
-                $langs = explode ( ";", $language_store_view );
-                foreach ( $langs as $lang ) {
-                    $codes = explode ( "=", $lang );
+                $JLang = JFactory::getLanguage();
+                $langs = explode(';', $language_store_view );
+                foreach($langs as $lang) {
+                    $codes = explode('=', $lang );
                     if ($codes [0] == $JLang->getTag()) {
                         $defaultStore = $codes [1];
                         break;
@@ -107,16 +107,16 @@ class plgSystemMagelib {
 			$bootstrap = $this->mage_path . 'app/Mage.php';
 			
 			if (! file_exists ( $bootstrap )) {
-				$error_message = JText::sprintf ( 'The file %s doesn\'t exists', $bootstrap );
+				$error_message = JText::sprintf('The file %s doesn\'t exists', $bootstrap);
 
-				$error_message = get_class ( $this ) . '::loadAndStartMagentoBootstrap - ' . $error_message;
+				$error_message = get_class($this).'::loadAndStartMagentoBootstrap - ' . $error_message;
 
 				JFusionFunction::raiseWarning($error_message);
 				return false;
 			}
 			
-			if (! isset ( $defaultStore )) {
-				$defaultStore = $this->params->get ( 'mage_store', '' );
+			if (!isset($defaultStore)) {
+				$defaultStore = $this->params->get('mage_store', '');
 			}
 			
 			/**
@@ -130,17 +130,17 @@ class plgSystemMagelib {
 			}
 			// Hack for Joomla to force it to use an autoload method via SPL
 			// Though need to comment in Magento the __autoload function (deprecated) at /app/code/Mage/Core/functions.php
-			spl_autoload_register ( '__autoload' );
+			spl_autoload_register('__autoload');
 			require_once $bootstrap;
 			// DO NOT DELETE - it registers the autoload of Magento when more than one times the magelib is called
-			Varien_Autoload::register ();
+			Varien_Autoload::register();
 			static $app = false;
 			if(!$app){
-				umask ( 0 );
-				$app = Mage::app ( $defaultStore );
+				umask(0);
+				$app = Mage::app($defaultStore);
 				// Necessary to load the correct language files in the store view. Maybe others loadAreaPart will be necessary to load in future
-				$app->loadAreaPart ( Mage_Core_Model_App_Area::AREA_FRONTEND, Mage_Core_Model_App_Area::PART_TRANSLATE );
-				$app->loadAreaPart ( Mage_Core_Model_App_Area::AREA_FRONTEND, Mage_Core_Model_App_Area::PART_EVENTS );
+				$app->loadAreaPart(Mage_Core_Model_App_Area::AREA_FRONTEND, Mage_Core_Model_App_Area::PART_TRANSLATE);
+				$app->loadAreaPart(Mage_Core_Model_App_Area::AREA_FRONTEND, Mage_Core_Model_App_Area::PART_EVENTS);
 			}
 			return $app;
 		} else {
@@ -156,19 +156,19 @@ class plgSystemMagelib {
 	 * @return void
 	 */
 	function startMagentoSession() {
-		ob_start ();
-		if (array_key_exists ( 'frontend', $_COOKIE )) {
-			session_id ( $_COOKIE ['frontend'] );
+		ob_start();
+		if (array_key_exists('frontend', $_COOKIE)) {
+			session_id($_COOKIE['frontend']);
 		} else {
 			$id = $this->createId();
-			$_COOKIE ['frontend'] = $id;
-			session_id ( $id );
+			$_COOKIE['frontend'] = $id;
+			session_id($id);
 		}
 		
 		//force to use the frontend session name because it seems not correctly defined when two instance use this plugin
-		session_name ( 'frontend' );
-		Mage::getSingleton ( 'core/session', array ('name' => 'frontend' ) );
-		ob_end_clean ();
+		session_name('frontend');
+		Mage::getSingleton('core/session', array('name' => 'frontend'));
+		ob_end_clean();
 	}
 
     /**
@@ -194,11 +194,11 @@ class plgSystemMagelib {
 	 * @return void
 	 */
 	function stopMagentoSession() {
-		ob_start ();
-		session_write_close ();
-		unset ( $_SESSION );
-		self::unregisterMagentoAutoload ();
-		ob_end_clean ();
+		ob_start();
+		session_write_close();
+		unset($_SESSION);
+		self::unregisterMagentoAutoload();
+		ob_end_clean();
 	}
 	
 	/**
@@ -219,13 +219,13 @@ class plgSystemMagelib {
 	 */
 	function restartJoomlaSession() {
 		// Restart Joomla session
-		session_id ( $this->_OldSessionId );
-		session_name ( $this->_OldSessionName );
-		ini_restore ( 'session.save_path' );
-		ini_set ( 'session.save_handler','files');
-		ini_set ( 'session.use_trans_sid', '0' );
-		session_set_cookie_params ( $this->_OldCookie ['lifetime'], $this->_OldCookie ['path'], $this->_OldCookie ['domain'], $this->_OldCookie ['secure'] );
-		session_start ();
+		session_id($this->_OldSessionId);
+		session_name($this->_OldSessionName);
+		ini_restore('session.save_path');
+		ini_set('session.save_handler','files');
+		ini_set('session.use_trans_sid', '0');
+		session_set_cookie_params($this->_OldCookie['lifetime'], $this->_OldCookie['path'], $this->_OldCookie['domain'], $this->_OldCookie['secure']);
+		session_start();
 		// reload the data created before the destruction of the session
 		$_SESSION = $this->_OldSessionData;
 	}

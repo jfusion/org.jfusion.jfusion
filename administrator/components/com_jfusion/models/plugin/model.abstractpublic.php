@@ -159,7 +159,7 @@ class JFusionPublic extends JFusionPlugin
 
         //parse relative popup links to full url links
         if(!empty($data->parse_popup)) {
-            $regex_body[] = "#window\.open\('(?!\w{0,10}://)(.*?)'\)#mS";
+            $regex_body[] = '#window\.open\(\'(?!\w{0,10}://)(.*?)\'\)#mS';
             $replace_body[]	= 'window.open(\''.$data->integratedURL.'$1\'';
             $callback_body[] = '';
         }

@@ -679,8 +679,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $replace_header[] = ''; //$this->fixRedirect("$1","' . $data->baseURL . '")';
             $callback_header[] = 'fixRedirect';
             //fix pm popup URL to be absolute for some phpBB templates
-            $regex_header[] = "#var url = '\.\/(.*?)';#mS";
-            $replace_header[] = "var url = '{$data->integratedURL}$1';";
+            $regex_header[] = '#var url = \'\.\/(.*?)\';#mS';
+            $replace_header[] = 'var url = \'{$data->integratedURL}$1\';';
             $callback_header[] = '';
             //convert relative popup links to full url links
             $regex_header[] = '#popup\(\'\.\/(.*?)\'#mS';

@@ -74,14 +74,14 @@ class JFusionParse
             }
 
             //first thing is to protect our code blocks
-            $text = preg_replace("#\[code\](.*?)\[\/code\]#si", "[code]<!-- CODE BLOCK -->$1<!-- END CODE BLOCK -->[/code]", $text, '-1', $code_count);
+            $text = preg_replace('#\[code\](.*?)\[\/code\]#si', '[code]<!-- CODE BLOCK -->$1<!-- END CODE BLOCK -->[/code]', $text, '-1', $code_count);
 
             $text = $bbcode->Parse($text);
             $text = $bbcode->UnHTMLEncode(strip_tags($text));
 
             //re-encode our code blocks
             if (!empty($code_count)) {
-				$text = preg_replace_callback("#<!-- CODE BLOCK -->(.*?)<!-- END CODE BLOCK -->#si",array($this, '__htmlspecialchars'), $text);
+				$text = preg_replace_callback('#<!-- CODE BLOCK -->(.*?)<!-- END CODE BLOCK -->#si', array($this, '__htmlspecialchars'), $text);
             }
 
             //catch newly unencoded tags
@@ -128,7 +128,7 @@ class JFusionParse
             //$bbcode->SetURLPattern('<a href="{$url/h}" target="_blank">{$text/h}</a>');
 
             //first thing is to protect our code blocks
-            $text = preg_replace("#\[code\](.*?)\[\/code\]#si", "[code]<!-- CODE BLOCK -->$1<!-- END CODE BLOCK -->[/code]", $text, '-1', $code_count);
+            $text = preg_replace('#\[code\](.*?)\[\/code\]#si', '[code]<!-- CODE BLOCK -->$1<!-- END CODE BLOCK -->[/code]', $text, '-1', $code_count);
 
             $text = $bbcode->Parse($text);
 
@@ -137,7 +137,7 @@ class JFusionParse
 
             //re-encode our code blocks
             if (!empty($code_count)) {
-                $text = preg_replace_callback("#<!-- CODE BLOCK -->(.*?)<!-- END CODE BLOCK -->#si",array($this, '__htmlspecialchars'), $text);
+                $text = preg_replace_callback('#<!-- CODE BLOCK -->(.*?)<!-- END CODE BLOCK -->#si', array($this, '__htmlspecialchars'), $text);
             }
         } elseif ($to == 'bbcode') {
             if (!isset($options['bbcode_patterns'])) {
@@ -153,34 +153,34 @@ class JFusionParse
             static $search, $replace;
             if (!is_array($search)) {
                 $search = $replace = array();
-                $search[] = "#<(blockquote|cite)[^>]*>(.*?)<\/\\1>#si";
-                $replace[] = "[quote]$2[/quote]";
-                $search[] = "#<ol[^>]*>(.*?)<\/ol>#si";
-                $replace[] = "[list=1]$1[/list]";
-                $search[] = "#<ul[^>]*>(.*?)<\/ul>#si";
-                $replace[] = "[list]$1[/list]";
-                $search[] = "#<li[^>]*>(.*?)<\/li>#si";
-                $replace[] = "[*]$1";
-                $search[] = "#<img [^>]*src=['|\"](?!\w{0,10}://)(.*?)['|\"][^>]*>#si";
+                $search[] = '#<(blockquote|cite)[^>]*>(.*?)<\/\\1>#si';
+                $replace[] = '[quote]$2[/quote]';
+                $search[] = '#<ol[^>]*>(.*?)<\/ol>#si';
+                $replace[] = '[list=1]$1[/list]';
+                $search[] = '#<ul[^>]*>(.*?)<\/ul>#si';
+                $replace[] = '[list]$1[/list]';
+                $search[] = '#<li[^>]*>(.*?)<\/li>#si';
+                $replace[] = '[*]$1';
+                $search[] = '#<img [^>]*src=[\|"](?!\w{0,10}://)(.*?)[\'|"][^>]*>#si';
                 $replace[] = array($this, '__parseTag_img');
-                $search[] = "#<img [^>]*src=['|\"](.*?)['|\"][^>]*>#sim";
-                $replace[] = "[img]$1[/img]";
-                $search[] = "#<a [^>]*href=['|\"]mailto:(.*?)['|\"][^>]*>(.*?)<\/a>#si";
-                $replace[] = "[email=$1]$2[/email]";
-                $search[] = "#<a [^>]*href=['|\"](?!\w{0,10}://|\#)(.*?)['|\"][^>]*>(.*?)</a>#si";
+                $search[] = '#<img [^>]*src=[\'|"](.*?)[\'|"][^>]*>#sim';
+                $replace[] = '[img]$1[/img]';
+                $search[] = '#<a [^>]*href=[\'|"]mailto:(.*?)[\'|"][^>]*>(.*?)<\/a>#si';
+                $replace[] = '[email=$1]$2[/email]';
+                $search[] = '#<a [^>]*href=[\'|"](?!\w{0,10}://|\#)(.*?)[\'|"][^>]*>(.*?)</a>#si';
                 $replace[] = array($this, '__url');
-                $search[] = "#<a [^>]*href=['|\"](.*?)['|\"][^>]*>(.*?)<\/a>#si";
-                $replace[] = "[url=$1]$2[/url]";
-                $search[] = "#<(b|i|u)>(.*?)<\/\\1>#si";
-                $replace[] = "[$1]$2[/$1]";
-                $search[] = "#<font [^>]*color=['|\"](.*?)['|\"][^>]*>(.*?)<\/font>#si";
-                $replace[] = "[color=$1]$2[/color]";
-                $search[] = "#<p>(.*?)<\/p>#si";
+                $search[] = '#<a [^>]*href=[\'|"](.*?)[\'|"][^>]*>(.*?)<\/a>#si';
+                $replace[] = '[url=$1]$2[/url]';
+                $search[] = '#<(b|i|u)>(.*?)<\/\\1>#si';
+                $replace[] = '[$1]$2[/$1]';
+                $search[] = '#<font [^>]*color=[\'|"](.*?)[\'|"][^>]*>(.*?)<\/font>#si';
+                $replace[] = '[color=$1]$2[/color]';
+                $search[] = '#<p>(.*?)<\/p>#si';
                 $replace[] = array($this, '__parseTag_p');
             }
             $searchNS = $replaceNS = array();
             //convert anything between code or pre tags to html entities to prevent conversion
-            $searchNS[] = "#<(code|pre)[^>]*>(.*?)<\/\\1>#si";
+            $searchNS[] = '#<(code|pre)[^>]*>(.*?)<\/\\1>#si';
             $replaceNS[] = array($this, '__code');
             $morePatterns = $options['bbcode_patterns'];
             if (is_array($morePatterns) && isset($morePatterns[0]) && isset($morePatterns[1])) {
@@ -205,7 +205,7 @@ class JFusionParse
 	        }
 
             //decode html entities that we converted for code and pre tags
-            $text = preg_replace_callback("#\[code\](.*?)\[\/code\]#si",array($this, '__code_decode'), $text);
+            $text = preg_replace_callback('#\[code\](.*?)\[\/code\]#si', array($this, '__code_decode'), $text);
 
 	        $text = preg_replace('/(?:(?:\r\n|\r|\n)\s*){2}/s', "\n\n", $text);
 

@@ -17,7 +17,7 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  */
 class JFormFieldJFusionCmsBlock extends JFormField {
 	
-    public $type = "JFusionCmsBlock";
+    public $type = 'JFusionCmsBlock';
 
     /**
      * Get an element
@@ -26,7 +26,7 @@ class JFormFieldJFusionCmsBlock extends JFormField {
      */
 	function getInput() {
 		
-		$output = "";
+		$output = '';
 		
 		//Query current selected Module Id
 		$id = JFactory::getApplication()->input->getInt('cid', 0);

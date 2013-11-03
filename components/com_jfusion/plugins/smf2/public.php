@@ -73,8 +73,8 @@ class JFusionPublic_smf2 extends JFusionPublic {
             if (!is_array($bbcode)) {
                 $bbcode = array();
                 //pattens to run in beginning
-                $bbcode[0][] = "#<a[^>]*href=['|\"](ftp://)(.*?)['|\"][^>]*>(.*?)</a>#si";
-                $bbcode[1][] = "[ftp=$1$2]$3[/ftp]";
+                $bbcode[0][] = '#<a[^>]*href=[\'|"](ftp://)(.*?)[\'|"][^>]*>(.*?)</a>#si';
+                $bbcode[1][] = '[ftp=$1$2]$3[/ftp]';
                 //pattens to run in end
                 $bbcode[2][] = '#<table[^>]*>(.*?)<\/table>#si';
                 $bbcode[3][] = '[table]$1[/table]';

@@ -16,7 +16,7 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR .'components'.DIRECTORY_S
  */
 class JFieldJFusionMagentoPlugins extends JFormFieldJFusionActivePlugins{
 	
-    public $type = "JFusionMagentoPlugins";
+    public $type = 'JFusionMagentoPlugins';
     /**
      * Get an element
      *

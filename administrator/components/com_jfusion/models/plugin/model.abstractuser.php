@@ -104,14 +104,14 @@ class JFusionUser extends JFusionPlugin
             case 3:
                 // username or email
                 if (!is_object($userinfo)) {
-                    $pattern = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i";
+                    $pattern = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i';
                     if (preg_match($pattern, $identifier)) {
                         $identifier_type = $email_col;
                     } else {
                         $identifier_type = $username_col;
                     }
                 } else {
-                    $pattern = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i";
+                    $pattern = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i';
                     if (preg_match($pattern, $userinfo->username)) {
                         $identifier_type = $email_col;
                         $identifier = $userinfo->email;
