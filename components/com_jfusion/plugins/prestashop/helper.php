@@ -78,6 +78,9 @@ class JFusionHelper_prestashop extends JFusionPlugin
 		$this->loadClass('Configuration');
 	}
 
+	/**
+	 * @param $class
+	 */
 	function loadClass($class) {
 		$params = JFusionFactory::getParams($this->getJname());
 		$source_path = $params->get('source_path');
@@ -88,6 +91,9 @@ class JFusionHelper_prestashop extends JFusionPlugin
 		}
 	}
 
+	/**
+	 * @return mixed
+	 */
 	function getDefaultLanguage() {
 		static $default_language;
 		if (!isset($default_language)) {
@@ -105,6 +111,11 @@ class JFusionHelper_prestashop extends JFusionPlugin
 		return $default_language;
 	}
 
+	/**
+	 * @param $id
+	 *
+	 * @return mixed
+	 */
 	function getGroupName($id) {
 		static $groupname;
 		if (!isset($groupname[$id])) {
