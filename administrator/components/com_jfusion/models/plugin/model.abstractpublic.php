@@ -345,7 +345,7 @@ JS;
         jimport('joomla.filesystem.file');
         jimport('joomla.filesystem.folder');
 
-        JFolder::create($sourcepath.'infile');
+        JFolder::create($sourcepath . 'infile');
         if (!$infile_only) {
             //Outputs: apearpearle pear
             if ($data->parse_css) {

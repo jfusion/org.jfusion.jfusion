@@ -92,7 +92,7 @@ class JFusionCurlFrameless {
 			}
 			$current = ltrim ( $current , '/' );
         } else {
-			$current = JFactory::getApplication()->input->get('jfile').'?';
+			$current = JFactory::getApplication()->input->get('jfile') . '?';
             $current .= $this->buildUrl('GET');
         }
 

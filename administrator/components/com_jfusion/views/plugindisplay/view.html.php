@@ -151,7 +151,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    $record->deletescript =  'javascript:void(0)';
 		    } else {
 			    $record->deleteimage = 'components/com_jfusion/images/delete_icon.png';
-			    $record->deletescript =  'javascript: JFusion.deletePlugin(\'' . $record->name .'\');';
+			    $record->deletescript =  'javascript: JFusion.deletePlugin(\'' . $record->name . '\');';
 		    }
 
 		    //set wizard options

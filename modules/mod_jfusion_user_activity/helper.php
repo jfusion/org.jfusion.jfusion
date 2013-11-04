@@ -52,7 +52,7 @@ class modjfusionUserActivityHelper {
 			}
 
 			if (empty($avatar)) {
-				$avatar = JFusionFunction::getJoomlaURL().'components/com_jfusion/images/noavatar.png';
+				$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 			}
 
 			$maxheight = $config['avatar_height'];

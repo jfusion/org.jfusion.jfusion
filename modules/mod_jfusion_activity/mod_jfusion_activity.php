@@ -149,7 +149,7 @@ try {
 	                    $queryMode = ($config['mode'] == LAT) ? $config['mode'] . $config['lat_mode'] : $config['mode'];
 	                    $debug  = 'Query mode: ' . $queryMode . '<br><br>';
 	                    $sqlQuery = ($config['mode'] == LAT) ? $query[$config['mode'] . $config['lat_mode']] : $query[$config['mode']];
-	                    $debug .= 'SQL Query: ' . $sqlQuery .'<br><br>';
+	                    $debug .= 'SQL Query: ' . $sqlQuery . '<br><br>';
 	                    $debug .= 'Error: ' . $error . '<br><br>';
 	                    $debug .= 'Results Before Filtering:<br><pre>' . print_r($resultBeforeFiltering, true) . '</pre><br><br>';
 	                    $debug .= 'Results After Filtering:<br><pre>' . print_r($results, true) . '</pre><br><br>';

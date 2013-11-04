@@ -406,7 +406,7 @@ HTML;
 				$db->transactionStart();
 				$db->setQuery($query);
 				$db->execute();
-				$status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
+				$status['message'] = $jname . ': ' . JText::_('INSTALL_MODULE_SUCCESS');
 			} else {
 				$status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $source_path);
 			}
@@ -466,7 +466,7 @@ HTML;
 			    $db->execute();
 		    }
 
-		    $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
+		    $status['message'] = $jname . ': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
 	    } catch (Exception $e) {
 		    if (isset($db)) {
 			    $db->transactionRollback();

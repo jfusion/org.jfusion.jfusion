@@ -99,49 +99,49 @@ class JFusionHelper_universal extends JFusionPlugin {
 				if ( in_array($t, $include) ) {
 					switch ($t) {
 						case 'LASTVISIT':
-							$query[] = $value->field.' as lastvisit';
+							$query[] = $value->field . ' as lastvisit';
 							break;
 						case 'GROUP':
-							$query[] = $value->field.' as group_id';
+							$query[] = $value->field . ' as group_id';
 							break;
 						case 'SALT':
-							$query[] = $value->field.' as password_salt';
+							$query[] = $value->field . ' as password_salt';
 							break;
 						case 'PASSWORD':
-							$query[] = $value->field.' as password';
+							$query[] = $value->field . ' as password';
 							break;
 						case 'REALNAME':
-							$query[] = $value->field.' as name';
+							$query[] = $value->field . ' as name';
 							break;
 						case 'FIRSTNAME':
-							$query[] = $value->field.' as firstname';
+							$query[] = $value->field . ' as firstname';
 							break;
 						case 'LASTNAME':
-							$query[] = $value->field.' as lastname';
+							$query[] = $value->field . ' as lastname';
 							break;
 						case 'USERID':
-							$query[] = $value->field.' as userid';
+							$query[] = $value->field . ' as userid';
 							break;
 						case 'USERNAME':
-							$query[] = $value->field.' as username';
+							$query[] = $value->field . ' as username';
 							break;
 						case 'EMAIL':
-							$query[] = $value->field.' as email';
+							$query[] = $value->field . ' as email';
 							break;
 						case 'ACTIVE':
-							$query[] = $value->field.' as active';
+							$query[] = $value->field . ' as active';
 							break;
 						case 'INACTIVE':
-							$query[] = $value->field.' as inactive';
+							$query[] = $value->field . ' as inactive';
 							break;
 						case 'ACTIVECODE':
-							$query[] = $value->field.' as activation';
+							$query[] = $value->field . ' as activation';
 							break;
 					}
 				}
 			}
 		}
-		$query = implode  ( ', ' , $query );
+		$query = implode(', ', $query);
 		return $query;
 	}
 
@@ -150,11 +150,11 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 * @param string $type
 	 * @return null|stdClass
 	 */
-	function getFieldType($field=null, $type='user') {
+	function getFieldType($field = null, $type = 'user') {
 		$maped = $this->getMap($type);
 		foreach ($maped as $value) {
 			foreach ($value->type as $t) {
-				if ( $field == $t ) {
+				if($field == $t) {
 					return $value;
 				}
 			}
@@ -166,7 +166,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 * @param null $t
 	 * @return array
 	 */
-	function getType($t=null) {
+	function getType($t = null) {
 		static $types = null;
 
 		if ( !is_array($types) ) {

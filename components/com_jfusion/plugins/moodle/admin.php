@@ -354,7 +354,7 @@ HTML;
 					 $db->setQuery($query);
 					 $db->execute();
 				 }
-				 $status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
+				 $status['message'] = $jname . ': ' . JText::_('INSTALL_MODULE_SUCCESS');
 			 } else {
 				 throw new RuntimeException(JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $source_path));
 			 }
@@ -475,7 +475,7 @@ HTML;
 			    $db->execute();
 		    }
 
-		    $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
+		    $status['message'] = $jname . ': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
 
 		    // remove jfusion as active plugin
 		    $query = $db->getQuery(true)

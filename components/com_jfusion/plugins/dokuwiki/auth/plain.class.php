@@ -148,7 +148,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 			}
 
 			if(!$this->saveFile($this->file, $userline, true)) {
-				$this->debug('There was an error modifying your user data. You should register again.',-1);
+				$this->debug('There was an error modifying your user data. You should register again.', -1);
 				return false;
 			}
 

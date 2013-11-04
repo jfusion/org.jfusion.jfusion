@@ -42,7 +42,7 @@ if ( $params->get('layout') == 'horizontal' ) {
             $maxheight = $params->get('avatar_height', 80);
             $maxwidth = $params->get('avatar_width', 60);
 
-            $output .= '<img src="' . $avatar .'" alt="' . $display_name . '" style="';
+            $output .= '<img src="' . $avatar . '" alt="' . $display_name . '" style="';
             $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : '';
             $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : '';
             $output .= '" />' . "\n";
@@ -63,9 +63,9 @@ if ( $params->get('layout') == 'horizontal' ) {
         }
 
         if (!empty($pmcount)) {
-            $output .= JText::_('PM_START').' ';
+            $output .= JText::_('PM_START') . ' ';
             $output .= ' <a href="' . $url_pm . '">' . JText::sprintf('PM_LINK', $pmcount["total"]) . '</a> ';
-            $output .= JText::sprintf('PM_END', $pmcount["unread"]).' ';
+            $output .= JText::sprintf('PM_END', $pmcount["unread"]) . ' ';
         }
 
         if (!empty($url_viewnewmessages)) {
@@ -116,7 +116,7 @@ if ( $params->get('layout') == 'horizontal' ) {
 
             $usersConfig = JComponentHelper::getParams('com_users');
             if ($params->get('register_show')) {
-                $output .= '<li><a href="' . $register_url .'">' . JText::_('REGISTER') . '</a> </li>';
+                $output .= '<li><a href="' . $register_url . '">' . JText::_('REGISTER') . '</a> </li>';
             }
             $output .= '</ul>';
         }
@@ -137,7 +137,7 @@ if ( $params->get('layout') == 'horizontal' ) {
             $maxheight = $params->get('avatar_height', 80);
             $maxwidth = $params->get('avatar_width', 60);
 
-            $output .= '<div align="center"><img src="' . $avatar .'" alt="' . $display_name . '" style="';
+            $output .= '<div align="center"><img src="' . $avatar . '" alt="' . $display_name . '" style="';
             $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : '';
             $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : '';
             $output .= '" /></div>' . "\n";
@@ -199,10 +199,10 @@ if ( $params->get('layout') == 'horizontal' ) {
 
         if ($params->get('show_rememberme')) {
             $output .= '<p id="form-login-remember">';
-            $output .= '<label for="modlgn_remember">' .JText::_('REMEMBER_ME') .'</label>';
+            $output .= '<label for="modlgn_remember">' . JText::_('REMEMBER_ME') . '</label>';
             $output .= '<input id="modlgn_remember" type="checkbox" name="remember" value="yes" alt="Remember Me" /></p>';
         }
-        $output .= '<input type="submit" name="Submit" class="button" value="' .JText::_('BUTTON_LOGIN').'" />';
+        $output .= '<input type="submit" name="Submit" class="button" value="' . JText::_('BUTTON_LOGIN') . '" />';
 
         if ($params->get('lostpassword_show') || $params->get('lostusername_show') || $params->get('register_show')) {
 

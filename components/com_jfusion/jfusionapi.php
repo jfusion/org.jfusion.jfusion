@@ -185,7 +185,7 @@ class JFusionAPI {
 	 */
 	public function getExecuteURL($class, $task, $return)
 	{
-		$url = $this->url.'?jftask=' . $task . '&jfclass=' . $class . '&jftype=execute&jfreturn=' . base64_encode($return);
+		$url = $this->url . '?jftask=' . $task . '&jfclass=' . $class . '&jftype=execute&jfreturn=' . base64_encode($return);
 		if ($this->sid) {
 			$url .= '&PHPSESSID=' . $this->sid;
 		}

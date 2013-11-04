@@ -42,7 +42,7 @@ $uri->setVar('task','advancedparamsubmit');
 						$fieldsets = $form->getFieldsets();
 						echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
 						foreach ($fieldsets as $fieldset):
-							echo JHtml::_('tabs.panel',JText::_($fieldset->name.'_jform_fieldset_label'), $fieldset->name.'_jform_fieldset_label');
+							echo JHtml::_('tabs.panel',JText::_($fieldset->name . '_jform_fieldset_label'), $fieldset->name . '_jform_fieldset_label');
 							echo '<fieldset class="jfusionform">';
 							$fields = $this->comp->getFieldset($fieldset->name);
 							foreach($fields as $field):

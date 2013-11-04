@@ -41,7 +41,7 @@ $uri->delVar('task');
 					echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
 					foreach ($this->comp as $key => $value) {
 						$jname = $key;
-						echo JHtml::_('tabs.panel',JText::_($jname), $jname.'_jform_fieldset_label');
+						echo JHtml::_('tabs.panel', JText::_($jname), $jname . '_jform_fieldset_label');
 
 						echo '<div align="right"><input type="button" name="remove" value="Remove" onclick="JFusion.removePlugin(this, \'' . $key . '\');" style="margin-left: 3px;" /></div>';
 						if (isset($value['form'])) {

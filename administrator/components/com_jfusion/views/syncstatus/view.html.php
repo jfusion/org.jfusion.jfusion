@@ -83,7 +83,7 @@ class jfusionViewsyncstatus extends JViewLegacy
         $filter_order = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order', 'filter_order', 'id', 'cmd');
         $filter_order_Dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
         $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int');
-        $limitstart = (int)$mainframe->getUserStateFromRequest($option.'.limitstart', 'limitstart', 0, 'int');
+        $limitstart = (int)$mainframe->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
         $syncdata['log'] = JFusionUsersync::getLogData($this->syncid, 'all', $limitstart, $limit, $filter_order, $filter_order_Dir);
 
         $db = JFactory::getDBO();

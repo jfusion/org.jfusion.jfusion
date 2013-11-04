@@ -665,7 +665,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['userinfo'] = $this->getUser($userinfo);
 			$status['debug'][] = JText::_('USER_CREATION');
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('USER_CREATION_ERROR').': ' . $e->getMessage();
+			$status['error'][] = JText::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
 		}
 	}
 

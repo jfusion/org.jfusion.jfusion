@@ -331,7 +331,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         }
 	    $cname = $control_name . '[params][' . $name . ']';
 
-        $output = '<select name="' . $cname.'" id="' . $name . '">';
+        $output = '<select name="' . $cname . '" id="' . $name . '">';
 
         $output.= '<option value="" ></option>';
         foreach ($themes as $id => $status) {

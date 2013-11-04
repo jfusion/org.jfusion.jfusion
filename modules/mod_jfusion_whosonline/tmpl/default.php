@@ -27,7 +27,7 @@ foreach($outputs as $output) {
 		echo $output->custom_output;
 	}else {
 		if($config['showmode'] != '1') {
-			echo JText::_('WE_HAVE').'&nbsp;';
+			echo JText::_('WE_HAVE') . '&nbsp;';
 			echo ($output->num_guests==0 || $output->num_guests>1) ? JText::sprintf('GUESTS', $output->num_guests) : JText::sprintf('GUEST', '1');
 			echo '&nbsp;' . JText::_('AND') . '&nbsp;';
 			echo ($output->num_members==0 || $output->num_members>1) ? JText::sprintf('MEMBERS', $output->num_members) : JText::sprintf('MEMBER', '1');

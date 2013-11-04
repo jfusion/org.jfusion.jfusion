@@ -109,7 +109,7 @@ class plgSystemMagelib {
 			if (! file_exists ( $bootstrap )) {
 				$error_message = JText::sprintf('The file %s doesn\'t exists', $bootstrap);
 
-				$error_message = get_class($this).'::loadAndStartMagentoBootstrap - ' . $error_message;
+				$error_message = get_class($this) . '::loadAndStartMagentoBootstrap - ' . $error_message;
 
 				JFusionFunction::raiseWarning($error_message);
 				return false;

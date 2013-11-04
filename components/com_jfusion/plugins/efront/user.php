@@ -117,7 +117,7 @@ class JFusionUser_efront extends JFusionUser
 	            $log->comments = 'logged out by jFusion';
 	            $log->lessons_ID =0;
 	            $ip = explode('.', $_SERVER['REMOTE_ADDR']);
-	            $log->session_ip = sprintf('%02x%02x%02x%02x',  $ip[0],  $ip[1],  $ip[2],  $ip[3]);
+	            $log->session_ip = sprintf('%02x%02x%02x%02x', $ip[0], $ip[1], $ip[2], $ip[3]);
 		        try {
 			        $db->insertObject('#__logs', $log, 'id');
 
@@ -463,11 +463,11 @@ class JFusionUser_efront extends JFusionUser
                 {
 	                //Now, the directory either gets created, or already exists (in case errors happened above). In both cases, we continue
 	                //Create personal messages attachments folders
-	                mkdir($user_dir.'message_attachments/', 0755);
-	                mkdir($user_dir.'message_attachments/Incoming/', 0755);
-	                mkdir($user_dir.'message_attachments/Sent/', 0755);
-	                mkdir($user_dir.'message_attachments/Drafts/', 0755);
-	                mkdir($user_dir.'avatars/', 0755);
+	                mkdir($user_dir . 'message_attachments/', 0755);
+	                mkdir($user_dir . 'message_attachments/Incoming/', 0755);
+	                mkdir($user_dir . 'message_attachments/Sent/', 0755);
+	                mkdir($user_dir . 'message_attachments/Drafts/', 0755);
+	                mkdir($user_dir . 'avatars/', 0755);
 
 	                //Create database representations for personal messages folders (it has nothing to do with filesystem database representation)
 	                $f_folder = new stdClass;
@@ -549,7 +549,7 @@ class JFusionUser_efront extends JFusionUser
                                 }
                                 $result = $status['result'][0];
                                 if($result->status != 'ok'){
-                                    $errorstatus['debug'][] = $jname.' eFront API--' . $result->message;
+                                    $errorstatus['debug'][] = $jname . ' eFront API--' . $result->message;
                                 }
                                 // logout
                                 $curl_options['action'] = 'logout';

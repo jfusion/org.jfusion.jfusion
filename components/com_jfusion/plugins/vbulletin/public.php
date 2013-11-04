@@ -646,7 +646,7 @@ JS;
 				    $db->setQuery($query);
 				    $username = $db->loadResult();
 				    $crumb = new stdClass();
-				    $crumb->title = $username.'\'s Profile';
+				    $crumb->title = $username . '\'s Profile';
 				    $crumb->url = 'member.php?u=' . $uid;
 				    $pathway[] = $crumb;
 			    }
@@ -1100,13 +1100,13 @@ JS;
                     die();
                 }
                 if ($sv == 'body' || $sv == 'html' || $sv == '*') {
-                    $selectors[$sk] = $sv.' #framelessVb';
+                    $selectors[$sk] = $sv . ' #framelessVb';
                 } elseif (strpos($sv, '@') === 0) {
                     $import = explode(';', $sv);
                     $import = $import[0] . ';';
                     $sv = substr($sv, strlen($import));
                     if ($sv == 'body' || $sv == 'html' || $sv == '*') {
-                        $selectors[$sk] = $sv.' #framelessVb';
+                        $selectors[$sk] = $sv . ' #framelessVb';
                     } else {
                         $selectors[$sk] = '#framelessVb ' . $sv;
                     }
@@ -1119,7 +1119,7 @@ JS;
             $elements[$k] = implode(', ', $selectors) . ' {' . $element[1] . '}';
         }
         //reconstruct the css
-        $css = '<style type="text/css" id="vbulletin' . $matches[1] . '">' . "\n" . implode("\n", $imports) . "\n" . implode("\n", $elements) . "\n".'</style>';
+        $css = '<style type="text/css" id="vbulletin' . $matches[1] . '">' . "\n" . implode("\n", $imports) . "\n" . implode("\n", $elements) . "\n" . '</style>';
         if (defined('_JFUSION_DEBUG')) {
             $debug['parsed'] = $css;
             $_SESSION['jfvbdebug'] = $debug;

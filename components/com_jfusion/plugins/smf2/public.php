@@ -282,7 +282,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		// Get the path
 		$source_path = $this->params->get('source_path');
 
-		$index_file = $source_path .'index.php';
+		$index_file = $source_path . 'index.php';
 
 		if ( ! is_file($index_file) ) {
 			JFusionFunction::raiseWarning('The path to the SMF index file set in the component preferences does not exist', $this->getJname());
@@ -311,7 +311,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             } else {
                 $this->callbackbypass = true;
             }
-            while( in_array( get_class($this).'::callback' , $h) ) {
+            while( in_array( get_class($this) . '::callback' , $h) ) {
                 $data->buffer .= ob_get_contents();
                 ob_end_clean();
                 $h = ob_list_handlers();
@@ -339,7 +339,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
     {	
         $buffer = JResponse::getBody();    	
     	
-        $base = JURI::base(true).'/';
+        $base = JURI::base(true) . '/';
 
         $regex_body  = '#src="' . preg_quote($base, '#') . '%#mSsi';
         $replace_body= 'src="%';
@@ -682,7 +682,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 					$path = new stdClass();
 					if ( JFactory::getApplication()->input->get('board') ) {
 						$path->title = 'Modify Toppic ( Start new topic )';
-						$path->url = 'index.php?action=post&board=' . $board_id .'.0';;
+						$path->url = 'index.php?action=post&board=' . $board_id . '.0';;
 					} else if ( $msg ) {
 						$path->title = 'Modify Toppic ( ' . $topic->subject . ' )';
 						$path->url = 'index.php?action=post&topic=' . $topic_id . '.msg' . $msg . '#msg' . $msg;
@@ -867,7 +867,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 					$sort = 'p.poster_time DESC';
 					break;
 			}
-			$where .= ' AND p.id_board IN ('.implode(',',$list).') ORDER BY ' . $sort;
+			$where .= ' AND p.id_board IN (' . implode(',', $list) . ') ORDER BY ' . $sort;
 		} catch (Exception $e) {
 			JFusionFunction::raiseError($e, $this->getJname());
 		}

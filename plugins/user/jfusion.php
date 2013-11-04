@@ -351,7 +351,7 @@ class plgUserJfusion extends JPlugin
 										$jfusionDebug[$master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DEBUG') ] = $MasterSession['debug'];
 										$jfusionDebug[$master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('ERROR') ] = $MasterSession['error'];
 										//report the error back
-										$this->raise('error', $MasterSession['error'], $master->name.': ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
+										$this->raise('error', $MasterSession['error'], $master->name . ': ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
 										if ($master->name == 'joomla_int') {
 											$success = -1;
 										}
@@ -394,7 +394,7 @@ class plgUserJfusion extends JPlugin
 												if (!empty($SlaveSession['error'])) {
 													$jfusionDebug[$slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DEBUG') ] = $SlaveSession['debug'];
 													$jfusionDebug[$slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('ERROR') ] = $SlaveSession['error'];
-													$this->raise('error', $SlaveSession['error'], $slave->name.': ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
+													$this->raise('error', $SlaveSession['error'], $slave->name . ': ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
 												} else {
 													$jfusionDebug[$slave->name . ' ' . JText::_('SESSION') ] = $SlaveSession['debug'];
 												}

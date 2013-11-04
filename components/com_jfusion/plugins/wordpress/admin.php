@@ -64,7 +64,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	    $query = $db->getQuery(true)
 		    ->select('option_value')
 		    ->from('#__options')
-		    ->where('option_name = ' . $db->quote($database_prefix.'user_roles'));
+		    ->where('option_name = ' . $db->quote($database_prefix . 'user_roles'));
 
 		$db->setQuery($query);
 		$roles_ser = $db->loadResult();

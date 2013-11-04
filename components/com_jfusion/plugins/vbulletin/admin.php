@@ -752,7 +752,7 @@ HTML;
 						$query = $db->getQuery(true)
 							->select('text')
 							->from('#__phrase')
-							->where('varname = ' . $db->quote($field.'_title'))
+							->where('varname = ' . $db->quote($field . '_title'))
 							->where('fieldname = ' . $db->quote('cprofilefield'));
 
 						$db->setQuery($query, 0, 1);

@@ -317,7 +317,7 @@ class JFusionPublic_smf extends JFusionPublic
         } else {
             $this->callbackbypass = true;
         }
-    	while( in_array( get_class($this).'::callback' , $h) ) {
+    	while(in_array(get_class($this) . '::callback' , $h) ) {
 			$data->buffer .= ob_get_contents();
 			ob_end_clean();
 			$h = ob_list_handlers();

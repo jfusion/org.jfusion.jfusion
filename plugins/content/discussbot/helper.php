@@ -550,8 +550,8 @@ JS;
 				'DISCUSSBOT_ERROR', 'HIDE_REPLIES', 'JYES', 'SHOW_REPLIES', 'SUBMITTING_QUICK_REPLY'));
 
 			//check for a custom js file
-			if (file_exists(DISCUSSION_TEMPLATE_PATH.'jfusion.js')) {
-				$document->addScript(DISCUSSION_TEMPLATE_URL.'jfusion.js');
+			if (file_exists(DISCUSSION_TEMPLATE_PATH . 'jfusion.js')) {
+				$document->addScript(DISCUSSION_TEMPLATE_URL . 'jfusion.js');
 			}
 
 			//Load quick reply includes if enabled
@@ -577,9 +577,9 @@ JS;
 			$document->addScriptDeclaration($js);
 
 			//add css
-			$css = DISCUSSION_TEMPLATE_PATH.'jfusion.css';
+			$css = DISCUSSION_TEMPLATE_PATH . 'jfusion.css';
 			if (file_exists($css)) {
-				$document->addStyleSheet(DISCUSSION_TEMPLATE_URL.'jfusion.css');
+				$document->addStyleSheet(DISCUSSION_TEMPLATE_URL . 'jfusion.css');
 			}
 			$scriptsLoaded = true;
 		}
@@ -799,7 +799,7 @@ class JFusionPagination extends JPagination {
 	{
 		// Initialize variables
 		$html = '<div class="list-footer">';
-		$html .= '<div class="limit">' . JText::_('JGLOBAL_DISPLAY_NUM') . $list['limitfield'].'</div>';
+		$html .= '<div class="limit">' . JText::_('JGLOBAL_DISPLAY_NUM') . $list['limitfield'] . '</div>';
 		$html .= '<p class="counter" style="font-weight: bold; margin: 8px 0;">' . $list['pagescounter'] . '</p>';
 		$html .= $list['pageslinks'];
 

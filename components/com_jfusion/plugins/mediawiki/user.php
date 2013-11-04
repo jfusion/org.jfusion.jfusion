@@ -521,7 +521,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $status['userinfo'] = $this->getUser($userinfo);
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR').': ' . $e->getMessage();
+		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
 	    }
     }
 }

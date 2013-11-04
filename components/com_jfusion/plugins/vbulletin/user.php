@@ -335,8 +335,8 @@ class JFusionUser_vbulletin extends JFusionUser
 					$httponly = $this->params->get('httponly', true);
 
 					$cookies = JFusionFactory::getCookies();
-					$status['debug'][] = $cookies->addCookie($cookie_prefix.'userid' , $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
-					$status['debug'][] = $cookies->addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
+					$status['debug'][] = $cookies->addCookie($cookie_prefix . 'userid' , $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
+					$status['debug'][] = $cookies->addCookie($cookie_prefix . 'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
 				} else {
 					$status['debug'][] = JText::_('VB_SESSION_ALREADY_ACTIVE');
 					/*
@@ -731,7 +731,7 @@ class JFusionUser_vbulletin extends JFusionUser
 							$db->setQuery($query);
 							$db->execute();
 						} catch (Exception $e) {
-							$status['debug'][] = JText::_('USER_CREATION_ERROR') .'. '. JText::_('USERID') . ' ' . $userdmid . ': '.JText::_('MASTER_PASSWORD_NOT_COPIED');
+							$status['debug'][] = JText::_('USER_CREATION_ERROR') . '. '. JText::_('USERID') . ' ' . $userdmid . ': ' . JText::_('MASTER_PASSWORD_NOT_COPIED');
 						}
 					}
 
@@ -744,7 +744,7 @@ class JFusionUser_vbulletin extends JFusionUser
 					}
 
 					//return the good news
-					$status['debug'][] = JText::_('USER_CREATION') .'. '. JText::_('USERID') . ' ' . $userdmid;
+					$status['debug'][] = JText::_('USER_CREATION') . '. '. JText::_('USERID') . ' ' . $userdmid;
 				} else {
 					foreach ($response['errors'] as $error) {
 						$status['error'][] = JText::_('USER_CREATION_ERROR') . ' ' . $error;
@@ -756,7 +756,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				}
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('ERROR_CREATE_USER'). ': ' . $e->getMessage();
+			$status['error'][] = JText::_('ERROR_CREATE_USER') . ': ' . $e->getMessage();
 		}
 	}
 

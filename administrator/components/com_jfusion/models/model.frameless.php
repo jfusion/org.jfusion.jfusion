@@ -264,7 +264,7 @@ class JFusionFrameless {
 				$JFusionPlugin->parseHeader ( $data );
 
 				if ($data->default_css) {
-					$document->addStyleSheet(JURI::base().'/components/com_jfusion/css/default.css');
+					$document->addStyleSheet(JURI::base() . '/components/com_jfusion/css/default.css');
 				}
 				if ($data->default_css_overflow) {
 					$style = 'style="overflow: ' . $data->default_css_overflow . ';"';

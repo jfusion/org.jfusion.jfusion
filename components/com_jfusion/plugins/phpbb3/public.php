@@ -465,8 +465,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    	
     	if ( strpos($q, './') === 0 ) {
 			$q = substr($q, 2);
-		} else if ( strpos($q, $this->data->integratedURL.'index.php') === 0 ) {
-			$q = substr($q, strlen($this->data->integratedURL.'index.php'));
+		} else if ( strpos($q, $this->data->integratedURL . 'index.php') === 0 ) {
+			$q = substr($q, strlen($this->data->integratedURL . 'index.php'));
 		} else {
 			return $matches[0];
 		}

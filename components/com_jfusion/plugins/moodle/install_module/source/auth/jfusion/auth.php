@@ -33,7 +33,7 @@ if (!defined('MOODLE_INTERNAL')) {
  * @ignore
  * @var $CFG object
  */
-require_once($CFG->libdir.'/authlib.php');
+require_once($CFG->libdir . '/authlib.php');
 
 
 /**
@@ -265,15 +265,15 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
 		#prevent user error by not supplying trailing forward slash
 		if (substr($params_logoutpath,-1) != '/') {
-			$params_logoutpath = $params_logoutpath.'/';
+			$params_logoutpath = $params_logoutpath . '/';
 		}
 		if (substr($params_joomlabaseurl,-1) != '/')
 		{
-			$params_joomlabaseurl = $params_joomlabaseurl.'/';
+			$params_joomlabaseurl = $params_joomlabaseurl . '/';
 		}
 		if (substr($params_joomlafullpath,-1) != '/')
 		{
-			$params_joomlafullpath = $params_joomlafullpath.'/';
+			$params_joomlafullpath = $params_joomlafullpath . '/';
 		}
 
 		define('_JEXEC','Yeah_I_know');
@@ -397,15 +397,15 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		ltrim($params_loginpath,'/');
 		#prevent user error by not supplying trailing forward slash
 		if (substr($params_loginpath,-1) != '/') {
-			$params_loginpath = $params_loginpath.'/';
+			$params_loginpath = $params_loginpath . '/';
 		}
 		if (substr($params_joomlabaseurl,-1) != '/')
 		{
-			$params_joomlabaseurl = $params_joomlabaseurl.'/';
+			$params_joomlabaseurl = $params_joomlabaseurl . '/';
 		}
 		if (substr($params_joomlafullpath,-1) != '/')
 		{
-			$params_joomlafullpath = $params_joomlafullpath.'/';
+			$params_joomlafullpath = $params_joomlafullpath . '/';
 		}
 
 		// abort the Joomla login routine if we have switched off the SSO routines
@@ -415,7 +415,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		if ($params_joomlaactive != '0')
 		{
             define('_JEXEC','Yeah_I_know');
-            require_once($params_joomlafullpath.'administrator/components/com_jfusion/models/model.curl.php');
+            require_once($params_joomlafullpath . 'administrator/components/com_jfusion/models/model.curl.php');
             //    require_once('DualLoginHelper.php');
             $LoginLogout = new DualLogin();
             $curl_options['username']          = $username;

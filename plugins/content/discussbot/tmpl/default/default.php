@@ -6,7 +6,7 @@ if($this->params->get('show_posts')) : ?>
     <div class="jfusionPostHeader"><?php echo $this->params->get('post_header'); ?></div>
 
     <div class="jfusionPostArea" id="jfusionPostArea">
-        <?php require(DISCUSSION_TEMPLATE_PATH.'default_posts.php'); ?>
+        <?php require(DISCUSSION_TEMPLATE_PATH . 'default_posts.php'); ?>
     </div>
 
     <div id="jfusionPostPagination" class="pagination">

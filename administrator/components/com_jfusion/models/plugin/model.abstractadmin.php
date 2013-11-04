@@ -153,10 +153,10 @@ class JFusionAdmin extends JFusionPlugin
 			    } else {
 				    //added check for missing files of copied plugins after upgrade
 				    $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
-				    if (!file_exists($path.'admin.php')) {
-					    throw new RuntimeException(JText::_('NO_FILES').' admin.php');
-				    } else if (!file_exists($path.'user.php')) {
-					    throw new RuntimeException(JText::_('NO_FILES').' user.php');
+				    if (!file_exists($path . 'admin.php')) {
+					    throw new RuntimeException(JText::_('NO_FILES') . ' admin.php');
+				    } else if (!file_exists($path . 'user.php')) {
+					    throw new RuntimeException(JText::_('NO_FILES') . ' user.php');
 				    } else {
 					    $cookie_domain = $this->params->get('cookie_domain');
 					    $jfc = JFusionFactory::getCookies();

@@ -48,7 +48,7 @@ class JFusionCookies {
     	}
     	
     	// Versions of PHP prior to 5.2 do not support HttpOnly cookies and IE is buggy when specifying a blank domain so set the cookie manually
-		$cookie = $cookie_name.'=' . urlencode($cookie_value);
+		$cookie = $cookie_name . '=' . urlencode($cookie_value);
 
 	    list ($url,$cookiedomain) = $this->getApiUrl($cookiedomain);
 

@@ -121,7 +121,7 @@ class JFusionController extends JControllerLegacy
             //perform the update
 	        $query = $db->getQuery(true)
 		        ->update('#__jfusion')
-		        ->set($field_name.' = ' . $db->Quote($field_value))
+		        ->set($field_name . ' = ' . $db->Quote($field_value))
 		        ->where('name = ' . $db->Quote($jname));
             $db->setQuery($query);
             $db->execute();
@@ -1000,7 +1000,7 @@ JS;
 		    $node->addAttribute('name', $key);
 	    }
 	    header('content-type: text/xml');
-	    header('Content-disposition: attachment; filename=jfusion_' . $jname.'_config.xml');
+	    header('Content-disposition: attachment; filename=jfusion_' . $jname . '_config.xml');
 	    header('Pragma: no-cache');
 	    header('Expires: 0');
 	    echo $xml->asXML();

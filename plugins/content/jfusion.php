@@ -558,11 +558,11 @@ class plgContentJfusion extends JPlugin
 				} else {
 					$valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
 					if (!$this->valid) {
-						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH.'images/x.png" style="margin-left:5px;"><br/>';
+						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/x.png" style="margin-left:5px;"><br/>';
 						$content .= JText::_('VALID') . ': ' . $valid . '<br />';
 						$content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
 					} else {
-						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
+						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
 						$content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
 						$content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
 						$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
@@ -1221,7 +1221,7 @@ HTML;
 
 						if ($this->params->get('enable_comment_in_forum_button', 0)) {
 							$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
-							$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText.'">' : $commentLinkText;
+							$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
 							$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
 							$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
 							$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
@@ -1252,7 +1252,7 @@ HTML;
 
 					if ($this->params->get('enable_comment_in_forum_button', 0)) {
 						$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
-						$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText.'">' : $commentLinkText;
+						$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
 						$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
 						$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
 						$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
@@ -1362,7 +1362,7 @@ HTML;
 				}
 
 				if (empty($post_output[$i]->avatar_src)) {
-					$post_output[$i]->avatar_src = JFusionFunction::getJoomlaURL().'components/com_jfusion/images/noavatar.png';
+					$post_output[$i]->avatar_src = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 				}
 
 				$size = ($resize_avatar) ? JFusionFunction::getImageSize($post_output[$i]->avatar_src) : false;

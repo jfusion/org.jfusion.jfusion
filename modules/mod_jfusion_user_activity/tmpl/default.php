@@ -33,7 +33,7 @@ if(!$joomlaUser->guest) :
 	if(!empty($output->pm_url)) {
 		echo "<div style='text-align:{$config['alignment']};'>";
 		echo JText::_('PM_START');
-		echo " <a href='{$output->pm_url}'>".JText::sprintf('PM_LINK', $output->pm_count['total']).'</a>';
+		echo " <a href='{$output->pm_url}'>".JText::sprintf('PM_LINK', $output->pm_count['total']) . '</a>';
 		echo JText::sprintf('PM_END', $output->pm_count['unread']);
 		echo '</div>';
 	}

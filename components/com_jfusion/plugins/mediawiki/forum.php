@@ -88,7 +88,7 @@ class JFusionForum_mediawiki extends JFusionForum
 							    $o_avatar = JFusionFunction::getAltAvatar($avatar_software, $userlookup->id);
 						    }
 						    if(empty($o_avatar)) {
-							    $o_avatar = JFusionFunction::getJoomlaURL().'components/com_jfusion/images/noavatar.png';
+							    $o_avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 						    }
 						    $maxheight = $avatar_height;
 						    $maxwidth = $avatar_width;

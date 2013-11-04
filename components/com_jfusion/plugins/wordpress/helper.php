@@ -48,7 +48,7 @@ class JFusionHelper_wordpress extends JFusionPlugin
 		    $query = $db->getQuery(true)
 			    ->select('option_value')
 			    ->from('#__options')
-			    ->where('option_name = ' . $db->quote($database_prefix.'user_roles'));
+			    ->where('option_name = ' . $db->quote($database_prefix . 'user_roles'));
 
 		    $db->setQuery($query);
 		    $roles_ser = $db->loadResult();
@@ -116,7 +116,7 @@ class JFusionHelper_wordpress extends JFusionPlugin
 				$query = $db->getQuery(true)
 					->select('option_value')
 					->from('#__options')
-					->where('option_name = ' . $db->quote($database_prefix.'user_roles'));
+					->where('option_name = ' . $db->quote($database_prefix . 'user_roles'));
 
 				$db->setQuery($query);
 				$roles_ser = $db->loadResult();

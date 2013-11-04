@@ -91,7 +91,7 @@ class JFusionUser_wordpress extends JFusionUser
 				    }
 			    }
 			    $jFusionUserObject = $this->convertUserobjectToJFusion($result);
-			    $jFusionUserObject->{$this->getJname().'_UserObject'} = $result;
+			    $jFusionUserObject->{$this->getJname() . '_UserObject'} = $result;
 			    $result = $jFusionUserObject;
 		    }
 	    } catch (Exception $e) {
@@ -124,7 +124,7 @@ class JFusionUser_wordpress extends JFusionUser
 		// unserialize. Gives an array with capabilities
 
 	    $database_prefix = $this->params->get('database_prefix');
-		$capabilities = $database_prefix.'capabilities';
+		$capabilities = $database_prefix . 'capabilities';
 		$capabilities = unserialize($user->$capabilities);
 		// make sure we only have activated capabilities
 		$x = array_keys($capabilities, '1');
@@ -510,8 +510,8 @@ class JFusionUser_wordpress extends JFusionUser
 			    $metadata['aim']              = '';
 			    $metadata['yim']              = '';
 			    $metadata['jabber']           = '';
-			    $metadata[$database_prefix.'capabilities']  = serialize($default_role);
-			    $metadata[$database_prefix.'user_level']    = sprintf('%u',$default_userlevel);
+			    $metadata[$database_prefix . 'capabilities']  = serialize($default_role);
+			    $metadata[$database_prefix . 'user_level']    = sprintf('%u', $default_userlevel);
 			    //		$metadata['default_password_nag'] = '0'; //no nag! can be omitted
 
 			    $meta = new stdClass;
@@ -683,7 +683,7 @@ class JFusionUser_wordpress extends JFusionUser
 			    $query = $db->getQuery(true)
 				    ->update('#__usermeta')
 				    ->set('meta_value = ' . $db->Quote($capsfield))
-				    ->where('meta_key = ' . $db->Quote($database_prefix.'capabilities'))
+				    ->where('meta_key = ' . $db->Quote($database_prefix . 'capabilities'))
 				    ->where('user_id = ' . (int)$existinguser->userid);
 
 			    $db->setQuery($query);

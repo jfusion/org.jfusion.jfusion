@@ -1083,7 +1083,7 @@ class JFusionCurl
 							$helpthem = 'I found';
 							do {
 								if (isset($result[$i]['form_data']['id'])) {
-									$helpthem = $helpthem.' -- Name=' . $result[$i]['form_data']['name'] . ' &ID=' . $result[$i]['form_data']['id'];
+									$helpthem = $helpthem . ' -- Name=' . $result[$i]['form_data']['name'] . ' &ID=' . $result[$i]['form_data']['id'];
 								}
 								$i +=1;
 							} while ($i<$frmcount);
@@ -1346,7 +1346,7 @@ class JFusionCurl
 			// make sure that when parameters are sent we do not add a backslash
 			if (strpos($this->options['post_url'], '?') === false) {
 				if (!(substr($this->options['post_url'], -1) == '/')) {
-					$this->options['post_url'] = $this->options['post_url'].'/';
+					$this->options['post_url'] = $this->options['post_url'] . '/';
 				}
 			}
 			$this->ch = curl_init();

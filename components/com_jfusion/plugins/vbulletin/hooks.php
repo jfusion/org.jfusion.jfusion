@@ -110,7 +110,7 @@ class executeJFusionHook
                 $query = $_SERVER['QUERY_STRING'];
                 if (defined('SEFENABLED') && SEFENABLED) {
                     if (defined('SEFMODE') && SEFMODE == 1) {
-                        $url = JOOMLABASEURL . $filename.'/';
+                        $url = JOOMLABASEURL . $filename . '/';
                         if (!empty($query)) {
                             $q = explode('&', $query);
                             foreach ($q as $k => $v) {

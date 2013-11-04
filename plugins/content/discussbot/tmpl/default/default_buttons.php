@@ -9,7 +9,7 @@ foreach ($this->output['buttons'] AS $name => $html) {
 	$extras = '';
 	if(isset($html['js'])) {
 		foreach($html['js'] AS $func => $js) {
-			$extras .= $func.' = "' . $js . '" ';
+			$extras .= $func . ' = "' . $js . '" ';
 		}
 	}
 
