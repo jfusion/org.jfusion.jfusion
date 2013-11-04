@@ -261,8 +261,8 @@ $pattern = \'#action=(login|admin|profile|featuresettings|news|packages|detailed
 			$redirect_code = '
 //JFUSION REDIRECT START
 //SET SOME VARS
-$joomla_url = \''. $url . '\';
-$joomla_itemid = ' . $itemid .';
+$joomla_url = \'' . $url . '\';
+$joomla_itemid = ' . $itemid . ';
 	';
 		    $redirect_code .= '
 if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === false && strpos($_SERVER[\'QUERY_STRING\'], \'verificationcode\') === false)';
@@ -324,7 +324,7 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
 					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->getJname(), $this->getJname());
+					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname(), $this->getJname());
 				} else if($error == 0) {
 					//get the joomla path from the file
 					jimport('joomla.filesystem.file');

@@ -125,7 +125,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 			        }
 		        }
 	        } catch (Exception $e) {
-		        JFusionFunction::raiseWarning(JText::_('NO_DATABASE') . ' '. $e->getMessage(), $this->getJname());
+		        JFusionFunction::raiseWarning(JText::_('NO_DATABASE') . ' ' . $e->getMessage(), $this->getJname());
 		        return false;
 	        }
         }
@@ -385,7 +385,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
 					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->getJname());
+					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
 				} else if ($error == 0) {
 					//get the joomla path from the file
 					jimport('joomla.filesystem.file');

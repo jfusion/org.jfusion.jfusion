@@ -483,7 +483,7 @@ HTML;
     {
 		$source_path = $this->params->get('source_path');
 		
-		$jfusion_mod_xml = $source_path .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
+		$jfusion_mod_xml = $source_path . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml';
 		
 		if(file_exists($jfusion_mod_xml)) {
 			$xml = JFusionFunction::getXml($jfusion_mod_xml);
@@ -529,14 +529,14 @@ HTML;
 		$activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
 
 		$source_path = $this->params->get('source_path');
-		$jfusion_mod_xml = $source_path .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
+		$jfusion_mod_xml = $source_path . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml';
 
 		$xml = JFusionFunction::getXml($jfusion_mod_xml);
 
 		unset($xml->modules->jfusion_joomla->active);
 		$xml->modules->jfusion_joomla->addChild('active',$activation);
 
-		$buffer = '<?xml version="1.0"?'.'>';
+		$buffer = '<?xml version="1.0"?>';
 		$buffer .= $xml->asXML();
 		JFile::write($jfusion_mod_xml, $buffer);
 	}

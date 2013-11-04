@@ -931,9 +931,9 @@ HTML;
 
 			foreach($results as $rkey => $result) {
 				foreach( $vulgar as $key => $value ) {
-					$results[$rkey]->subject = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->subject );
+					$results[$rkey]->subject = preg_replace  ( '#\b' . preg_quote($value,'#') . '\b#is' , $proper[$key]  , $result->subject );
 					if (isset($results[$rkey]->body)) {
-						$results[$rkey]->body = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->body );
+						$results[$rkey]->body = preg_replace  ( '#\b' . preg_quote($value,'#') . '\b#is' , $proper[$key]  , $result->body );
 					}
 				}
 			}

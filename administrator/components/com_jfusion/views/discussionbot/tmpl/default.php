@@ -40,7 +40,7 @@ defined('_JEXEC') or die('Restricted access');
 		}
 
 		if(!empty($this->joomlaSelectOptions) && !empty($this->forumSelectOptions)) {
-			echo '<input id="add_plugin" type=button class="button" style="margin-left:5px;" value="'.JText::_('ADD').'" onclick="if(this.value!=\'\') { $(\'adminForm\').submit(); }" /><br /><br />';
+			echo '<input id="add_plugin" type=button class="button" style="margin-left:5px;" value="' . JText::_('ADD') . '" onclick="if(this.value!=\'\') { $(\'adminForm\').submit(); }" /><br /><br />';
 		}
 		?>
 		<table class="jfusionlist" style="border-spacing:1px;">

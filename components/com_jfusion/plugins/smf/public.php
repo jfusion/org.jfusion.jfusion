@@ -350,7 +350,7 @@ class JFusionPublic_smf extends JFusionPublic
         $replace_body[] = '';
         $callback_body[] = 'fixAction';
         
-        $regex_body[] = '#(?<=href=["\'])'.preg_quote($data->integratedURL,'#').'(.*?)(?=["\'])#mSi';
+        $regex_body[] = '#(?<=href=["\'])' . preg_quote($data->integratedURL,'#') . '(.*?)(?=["\'])#mSi';
         $replace_body[] = '';
         $callback_body[] = 'fixURL';
         $regex_body[] = '#(?<=href=["\'])(\#.*?)(?=["\'])#mSi';
@@ -383,7 +383,7 @@ class JFusionPublic_smf extends JFusionPublic
         $callback_body[] = '';
         
         // Captcha fix
-        $regex_body[] = '#(?<=")'.preg_quote($data->integratedURL,'#').'(index.php\?action=verificationcode;rand=.*?)(?=")#si';
+        $regex_body[] = '#(?<=")' . preg_quote($data->integratedURL, '#') . '(index.php\?action=verificationcode;rand=.*?)(?=")#si';
         $replace_body[] = '';
         $callback_body[] = 'fixUrlNoAmp';
 /*
@@ -392,18 +392,18 @@ class JFusionPublic_smf extends JFusionPublic
         $callback_body[] = '';
 */
         //Fix auto member search
-        $regex_body[] = '#(?<=toComplete\.source = \")'.preg_quote($data->integratedURL,'#'). '(.*?)(?=\")#si';
+        $regex_body[] = '#(?<=toComplete\.source = \")' . preg_quote($data->integratedURL, '#') . '(.*?)(?=\")#si';
         $replace_body[] = '';
         $callback_body[] = 'fixUrlNoAmp';
         
-        $regex_body[] = '#(?<=bccComplete\.source = \")'.preg_quote($data->integratedURL,'#'). '(.*?)(?=\")#si';
+        $regex_body[] = '#(?<=bccComplete\.source = \")' . preg_quote($data->integratedURL, '#') . '(.*?)(?=\")#si';
         $replace_body[] = '';
         $callback_body[] = 'fixUrlNoAmp';
 
         foreach ($regex_body as $k => $v) {
         	//check if we need to use callback
         	if(!empty($callback_body[$k])){
-			    $data->body = preg_replace_callback($regex_body[$k],array( &$this,$callback_body[$k]), $data->body);             		
+			    $data->body = preg_replace_callback($regex_body[$k],array(&$this,$callback_body[$k]), $data->body);
         	} else {
         		$data->body = preg_replace($regex_body[$k], $replace_body[$k], $data->body);
         	}
@@ -638,9 +638,9 @@ class JFusionPublic_smf extends JFusionPublic
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    list ($board_id ) = explode( '.'  , JFactory::getApplication()->input->get('board'),1 );
-		    list ($topic_id ) = explode( '.'  , JFactory::getApplication()->input->get('topic'),1 );
-		    list ($action ) = explode( ';'  , JFactory::getApplication()->input->get('action'),1 );
+		    list ($board_id ) = explode( '.', JFactory::getApplication()->input->get('board'), 1);
+		    list ($topic_id ) = explode( '.', JFactory::getApplication()->input->get('topic'), 1);
+		    list ($action ) = explode( ';', JFactory::getApplication()->input->get('action'), 1);
 
 		    $msg = JFactory::getApplication()->input->get('msg');
 
@@ -898,8 +898,8 @@ class JFusionPublic_smf extends JFusionPublic
 
 		    foreach($results as $rkey => &$result) {
 			    foreach( $vulgar as $key => $value ) {
-				    $results[$rkey]->title = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->title );
-				    $results[$rkey]->text = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->text );
+				    $results[$rkey]->title = preg_replace('#\b' . preg_quote($value, '#') . '\b#is' , $proper[$key], $result->title);
+				    $results[$rkey]->text = preg_replace('#\b' . preg_quote($value, '#') . '\b#is' , $proper[$key], $result->text);
 			    }
 		    }
 	    } catch (Exception $e) {
@@ -1020,12 +1020,12 @@ class JFusionPublic_smf extends JFusionPublic
 		foreach ($headers_list as $value) {
         	$matches = array();
             if (stripos($value, 'location') === 0) {
-                if (preg_match('#'.preg_quote($data->integratedURL,'#').'(.*?)\z#Sis' , $value , $matches)) {
+                if (preg_match('#' . preg_quote($data->integratedURL, '#') . '(.*?)\z#Sis' , $value , $matches)) {
                     header('Location: ' . $this->fixUrlNoAmp($matches));
                     return $buffer;
                 }
             } else if (stripos($value, 'refresh') === 0) {
-                if (preg_match('#: (.*?) URL='.preg_quote($data->integratedURL,'#').'(.*?)\z#Sis' , $value , $matches)) {
+                if (preg_match('#: (.*?) URL=' . preg_quote($data->integratedURL, '#') . '(.*?)\z#Sis' , $value , $matches)) {
                 	$time = $matches[1];
                 	$matches[1] = $matches[2];
                     header('Refresh: ' . $time . ' URL=' . $this->fixUrlNoAmp($matches));

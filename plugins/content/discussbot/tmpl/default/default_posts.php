@@ -25,7 +25,7 @@ $p = $this->output['posts'][$i];
 <a href="<?php echo $p->username_url; ?>"><?php echo $p->username; ?></a>
 <?php
 elseif($p->guest) :
-echo $p->username . ' ('.JText::_('GUEST').')';
+echo $p->username . ' (' . JText::_('GUEST') . ')';
 else:
 echo $p->username;
 endif;
@@ -37,7 +37,7 @@ endif;
 <div class='jfusionPostDate'><?php echo $p->date; ?></div>
 <?php endif; ?>
 
-<div style="<?php if(!empty($p->avatar_src)) echo 'padding-left:'.($p->avatar_width+10).'px;'; ?>" class="jfusionPostText"><?php echo $p->text; ?></div>
+<div style="<?php if(!empty($p->avatar_src)) echo 'padding-left:' . ($p->avatar_width+10) . 'px;'; ?>" class="jfusionPostText"><?php echo $p->text; ?></div>
 <div class="jfusionToolbar jfusionclearfix"><span><?php echo $p->toolbar; ?></span></div>
 <div id="originalText<?php echo $p->postid;?>" style="display:none;"><?php echo $p->original_text; ?></div>
 </div>

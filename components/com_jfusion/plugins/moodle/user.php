@@ -690,7 +690,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$query = $db->getQuery(true)
 				->update('#__user')
 				->set('deleted = 1')
-				->where('id = '.(int)$userinfo->userid);
+				->where('id = ' . (int)$userinfo->userid);
 
 			$db->setQuery($query);
 			$db->execute();

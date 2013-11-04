@@ -287,7 +287,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 
 				    $record->usergrouptext = $usergroup;
 			    } else {
-				    $record->usergrouptext = '<img src="components/com_jfusion/images/cross.png" border="0" alt="'.JText::_('DISABLED').'" />' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP') ;
+				    $record->usergrouptext = '<img src="components/com_jfusion/images/cross.png" border="0" alt="' . JText::_('DISABLED') . '" />' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP') ;
 				    JFusionFunction::raiseWarning(JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP'), $record->name);
 			    }
 		    } else {

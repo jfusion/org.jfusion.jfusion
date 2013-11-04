@@ -443,7 +443,7 @@ class JFusionForum_vbulletin extends JFusionForum
 				    ->where('a.visible = 1')
 				    ->where('a.userid != 0');
 
-			    $query = '( '. (string)$q1 . ' ) UNION ( ' . (string)$q2 . ' ) ORDER BY order_by_date ' . $sort;
+			    $query = '( ' . (string)$q1 . ' ) UNION ( ' . (string)$q2 . ' ) ORDER BY order_by_date ' . $sort;
 		    }
 
 		    $db->setQuery($query, $start, $limit);
@@ -621,7 +621,7 @@ class JFusionForum_vbulletin extends JFusionForum
 				    if ($usefileavatar && $avatarurl) {
 					    //avatars are saved to the filesystem
 					    $url = (strpos($avatarurl, 'http') === false) ? $this->params->get('source_url') . $avatarurl : $avatarurl;
-					    $url.= '/avatar' . $userid . '_' . $avatar->avatarrevision . '.gif';
+					    $url .= '/avatar' . $userid . '_' . $avatar->avatarrevision . '.gif';
 				    } else {
 					    //avatars are saved in the database
 					    $url = $this->params->get('source_url') . 'image.php?u=' . $userid . '&amp;dateline=' . $avatar->dateline;

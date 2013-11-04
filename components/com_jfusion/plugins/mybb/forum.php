@@ -129,7 +129,7 @@ class JFusionForum_mybb extends JFusionForum {
 		    $query = $db->getQuery(true)
 			    ->select('tid AS threadid, fid AS forumid, firstpost AS postid')
 			    ->from('#__threads')
-		        ->where('tid = '. (int)$threadid);
+		        ->where('tid = ' . (int)$threadid);
 
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
@@ -151,7 +151,7 @@ class JFusionForum_mybb extends JFusionForum {
 		    $query = $db->getQuery(true)
 			    ->select('replies')
 			    ->from('#__threads')
-			    ->where('tid = '. (int)$existingthread->threadid);
+			    ->where('tid = ' . (int)$existingthread->threadid);
 
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
@@ -196,7 +196,7 @@ class JFusionForum_mybb extends JFusionForum {
 			    $query = $db->getQuery(true)
 				    ->select('totalpms, unreadpms')
 				    ->from('#__users')
-				    ->where('uid = '. (int)$userid);
+				    ->where('uid = ' . (int)$userid);
 			    // read unread count
 			    $db->setQuery($query);
 
@@ -236,7 +236,7 @@ class JFusionForum_mybb extends JFusionForum {
 		    $query = $db->getQuery(true)
 			    ->select('avatar')
 			    ->from('#__users')
-			    ->where('uid = '. (int)$userid);
+			    ->where('uid = ' . (int)$userid);
 
 		    $db->setQuery($query);
 		    $avatar = $db->loadResult();

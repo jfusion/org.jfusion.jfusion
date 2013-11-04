@@ -925,7 +925,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 						    $db->insertObject('#__banlist', $ban);
 					    } catch (Exception $e) {
-							throw new RuntimeException(JText::_('BLOCK_UPDATE_ERROR').': '. $e->getMessage());
+							throw new RuntimeException(JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage());
 					    }
 				    }
 				    //return the good news
@@ -934,7 +934,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    }
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ERROR_CREATE_USER').': '. $e->getMessage();
+		    $status['error'][] = JText::_('ERROR_CREATE_USER') . ': ' . $e->getMessage();
 	    }
     }
 

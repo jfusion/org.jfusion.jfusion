@@ -175,7 +175,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 
 			if(empty($deleted)) return 0;
 
-			$pattern = '/^('.join('|', $deleted).'):/';
+			$pattern = '/^(' . join('|', $deleted) . '):/';
 
 			if($this->deleteFromFile($this->file, $pattern, true)) {
 				foreach($deleted as $user) unset($this->users[$user]);
@@ -306,7 +306,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		protected function _constructPattern($filter) {
 			$this->_pattern = array();
 			foreach($filter as $item => $pattern) {
-				$this->_pattern[$item] = '/'.str_replace('/', '\/', $pattern).'/i'; // allow regex characters
+				$this->_pattern[$item] = '/' . str_replace('/', '\/', $pattern) . '/i'; // allow regex characters
 			}
 		}
 

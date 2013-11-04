@@ -167,7 +167,7 @@ class JFusionDiscussBotHelper {
 
 		$JFusionForum->checkThreadExists($this->params, $this->article, $threadinfo, $status);
 		if (!empty($status['error'])) {
-			JFusionFunction::raise('error', $status['error'], $this->jname. ' '. JText::_('FORUM') . ' ' .JText::_('UPDATE'));
+			JFusionFunction::raise('error', $status['error'], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
 		} else {
 			if ($status['action']!='unchanged') {
 				if ($status['action'] == 'created') {
@@ -220,7 +220,7 @@ class JFusionDiscussBotHelper {
 				require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
 			}
 			/** @noinspection PhpUndefinedClassInspection */
-			$url = urldecode(K2HelperRoute::getItemRoute($this->article->id.':'.urlencode($this->article->alias),$this->article->catid.':'.urlencode($this->article->category->alias)));
+			$url = urldecode(K2HelperRoute::getItemRoute($this->article->id . ':' . urlencode($this->article->alias),$this->article->catid . ':' . urlencode($this->article->category->alias)));
 		} else {
 			$url = '';
 		}

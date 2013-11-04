@@ -608,7 +608,7 @@ HTML;
 
 			    $query = $db->getQuery(true)
 				    ->update('#__config')
-				    ->set('value = '. $db->Quote($value))
+				    ->set('value = ' . $db->Quote($value))
 				    ->where('name = ' . $db->Quote('auth'));
 
 			    $db->setQuery($query);

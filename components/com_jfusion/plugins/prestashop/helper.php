@@ -85,9 +85,9 @@ class JFusionHelper_prestashop extends JFusionPlugin
 		$params = JFusionFactory::getParams($this->getJname());
 		$source_path = $params->get('source_path');
 
-		require_once($source_path . 'classes' . DIRECTORY_SEPARATOR . $class.'.php');
-		if (file_exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . $class.'.php')) {
-			require_once(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . $class.'.php');
+		require_once($source_path . 'classes' . DIRECTORY_SEPARATOR . $class . '.php');
+		if (file_exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . $class . '.php')) {
+			require_once(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . $class . '.php');
 		}
 	}
 

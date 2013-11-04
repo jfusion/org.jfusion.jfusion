@@ -83,14 +83,14 @@ class cssparser {
 		$key = strtolower($key);
 		$property = strtolower($property);
 
-		list($tag, $subtag) = explode(':',$key);
-		list($tag, $class) = explode('.',$tag);
-		list($tag, $id) = explode('#',$tag);
+		list($tag, $subtag) = explode(':', $key);
+		list($tag, $class) = explode('.', $tag);
+		list($tag, $id) = explode('#', $tag);
 		$result = '';
 		foreach($this->css as $_tag => $value) {
-			list($_tag, $_subtag) = explode(':',$_tag);
-			list($_tag, $_class) = explode('.',$_tag);
-			list($_tag, $_id) = explode('#',$_tag);
+			list($_tag, $_subtag) = explode(':', $_tag);
+			list($_tag, $_class) = explode('.', $_tag);
+			list($_tag, $_id) = explode('#', $_tag);
 
 			$tagmatch = (strcmp($tag, $_tag) == 0) | (strlen($_tag) == 0);
 			$subtagmatch = (strcmp($subtag, $_subtag) == 0) | (strlen($_subtag) == 0);
@@ -124,14 +124,14 @@ class cssparser {
     function GetSection($key) {
     	$key = strtolower($key);
 
-		list($tag, $subtag) = explode(':',$key);
-		list($tag, $class) = explode('.',$tag);
-		list($tag, $id) = explode('#',$tag);
+		list($tag, $subtag) = explode(':', $key);
+		list($tag, $class) = explode('.', $tag);
+		list($tag, $id) = explode('#', $tag);
 		$result = array();
 		foreach($this->css as $_tag => $value) {
-			list($_tag, $_subtag) = explode(':',$_tag);
-			list($_tag, $_class) = explode('.',$_tag);
-			list($_tag, $_id) = explode('#',$_tag);
+			list($_tag, $_subtag) = explode(':', $_tag);
+			list($_tag, $_class) = explode('.', $_tag);
+			list($_tag, $_id) = explode('#', $_tag);
 
 			$tagmatch = (strcmp($tag, $_tag) == 0) | (strlen($_tag) == 0);
 			$subtagmatch = (strcmp($subtag, $_subtag) == 0) | (strlen($_subtag) == 0);

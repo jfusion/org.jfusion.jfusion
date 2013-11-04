@@ -116,7 +116,7 @@ class JFusionUser_efront extends JFusionUser
 	            $log->action = 'logout';
 	            $log->comments = 'logged out by jFusion';
 	            $log->lessons_ID =0;
-	            $ip = explode('.',$_SERVER['REMOTE_ADDR']);
+	            $ip = explode('.', $_SERVER['REMOTE_ADDR']);
 	            $log->session_ip = sprintf('%02x%02x%02x%02x',  $ip[0],  $ip[1],  $ip[2],  $ip[3]);
 		        try {
 			        $db->insertObject('#__logs', $log, 'id');

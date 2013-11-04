@@ -280,7 +280,7 @@ class JFusionParse
      */
     public function __code($matches)
     {
-        return '[code]'.htmlspecialchars($matches[2], ENT_QUOTES, 'UTF-8').'[/code]';
+        return '[code]' . htmlspecialchars($matches[2], ENT_QUOTES, 'UTF-8') . '[/code]';
     }
 
     /**
@@ -290,7 +290,7 @@ class JFusionParse
      */
     public function __code_decode($matches)
     {
-        return '[code]'.htmlspecialchars_decode($matches[1], ENT_QUOTES).'[/code]';
+        return '[code]' . htmlspecialchars_decode($matches[1], ENT_QUOTES) . '[/code]';
     }
 
     /**

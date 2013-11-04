@@ -114,7 +114,7 @@ class JFormFieldjfusionsql extends JFormField
 					    $results = $db->loadObjectList();
 
 					    if(!empty($add_default)) {
-						    array_unshift($results, JHTML::_('select.option', '', '- '.JText::_('SELECT_ONE').' -', $key, $val));
+						    array_unshift($results, JHTML::_('select.option', '', '- ' . JText::_('SELECT_ONE'). '  -', $key, $val));
 					    }
 					    $output = JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" ' . $multiple, $key, $val, $this->value, $this->formControl . '_' . $this->group . '_' . $this->fieldname);
 				    }

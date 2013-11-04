@@ -94,7 +94,7 @@ class JFusionHelper_dokuwiki extends JFusionPlugin
             define('NOSESSION', 1);
         }
         if (!defined('DOKU_COOKIE')) {
-            define('DOKU_COOKIE', 'DW'.md5(DOKU_REL.(($conf['securecookie'])?$_SERVER['SERVER_PORT']:'')));
+            define('DOKU_COOKIE', 'DW' . md5(DOKU_REL . (($conf['securecookie']) ? $_SERVER['SERVER_PORT'] : '')));
         }
     }
 

@@ -521,7 +521,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 			$this->jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . (string)$xml->version . ' ';
 			$revision = $xml->revision;
 			if (!empty($revision)) {
-				$this->jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ].= '(Rev '.(string)$revision.') ';
+				$this->jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] .= '(Rev ' . (string)$revision . ') ';
 			}
 			unset($parser);
 		}

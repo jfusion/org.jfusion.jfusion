@@ -99,9 +99,9 @@ class JFusionPublic_gallery2 extends JFusionPublic
                 var_dump($match2);
                 echo '</pre>';
                 if (isset($match1['head']) && isset($match2['desc'])) {
-	                throw new RuntimeException( $match1['head'] .': '. $match2['desc'] );
+	                throw new RuntimeException($match1['head'] . ': ' . $match2['desc']);
                 } else {
-	                throw new RuntimeException( 'Gallery2 Internal Error' );
+	                throw new RuntimeException('Gallery2 Internal Error');
                 }
             } else {
                 print $output;

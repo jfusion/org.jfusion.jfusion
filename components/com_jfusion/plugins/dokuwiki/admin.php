@@ -293,7 +293,7 @@ if (!defined(\'_JEXEC\'))';
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
 					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->getJname());
+					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
 				} else {
 					if ($error == 0) {
 						//get the joomla path from the file

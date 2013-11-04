@@ -48,7 +48,7 @@ class JFusionCookies {
     	}
     	
     	// Versions of PHP prior to 5.2 do not support HttpOnly cookies and IE is buggy when specifying a blank domain so set the cookie manually
-		$cookie = $cookie_name.'='.urlencode($cookie_value);
+		$cookie = $cookie_name.'=' . urlencode($cookie_value);
 
 	    list ($url,$cookiedomain) = $this->getApiUrl($cookiedomain);
 
@@ -61,7 +61,7 @@ class JFusionCookies {
 	    }
 
 		if ($cookie_expires_time > 0) {
-			$cookie .= '; expires='.gmdate('D, d-M-Y H:i:s \\G\\M\\T', $cookie_expires_time);
+			$cookie .= '; expires=' . gmdate('D, d-M-Y H:i:s \\G\\M\\T', $cookie_expires_time);
 		}
 
 		if($cookie_secure == true) {
@@ -149,18 +149,18 @@ class JFusionCookies {
      */
     public function getApiUrl($cookiedomain) {
     	$url = null;
-		if (strpos($cookiedomain,'http://') === 0) {
+		if (strpos($cookiedomain, 'http://') === 0) {
 			$cookiedomain = str_replace('http://', '', $cookiedomain);
-			$url = 'http://'.ltrim($cookiedomain,'.');
-		} else if (strpos($cookiedomain,'https://') === 0) {
+			$url = 'http://' . ltrim($cookiedomain, '.');
+		} else if (strpos($cookiedomain, 'https://') === 0) {
 			$cookiedomain = str_replace('https://', '', $cookiedomain);
-			$url = 'https://'.ltrim($cookiedomain,'.');
+			$url = 'https://' . ltrim($cookiedomain, '.');
 		}
 		if ($url) {
-			$url = rtrim($url,'/');
-			$url = $url.'/jfusionapi.php';
+			$url = rtrim($url, '/');
+			$url = $url . '/jfusionapi.php';
 		}
-    	return array($url,$cookiedomain);
+    	return array($url, $cookiedomain);
     }
 
 	/**

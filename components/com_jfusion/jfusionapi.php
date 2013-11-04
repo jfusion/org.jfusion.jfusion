@@ -431,7 +431,7 @@ class JFusionAPI {
 			ob_end_clean();
 		}
 		if (!is_array($return)) {
-			$this->error[] = 'JfusionAPI: error output: '. $input;
+			$this->error[] = 'JfusionAPI: error output: ' . $input;
 			return false;
 		} else if (isset($return['PHPSESSID'])) {
 			$this->sid = $return['PHPSESSID'];
@@ -776,7 +776,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			// trick joomla into thinking we're running through joomla
 			define('_JEXEC', true);
 			define('DS', DIRECTORY_SEPARATOR);
-			define('JPATH_BASE', dirname(__FILE__). DIRECTORY_SEPARATOR . '..'. DIRECTORY_SEPARATOR . '..');
+			define('JPATH_BASE', dirname(__FILE__). DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
 
 			// load joomla libraries
 			require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'defines.php';

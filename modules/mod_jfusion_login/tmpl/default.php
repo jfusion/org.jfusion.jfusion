@@ -69,10 +69,10 @@ if ( $params->get('layout') == 'horizontal' ) {
         }
 
         if (!empty($url_viewnewmessages)) {
-            $output .= '<a href="'. $url_viewnewmessages .'">'.JText::_('VIEW_NEW_TOPICS').'</a> ';
+            $output .= '<a href="' . $url_viewnewmessages . '">' . JText::_('VIEW_NEW_TOPICS') . '</a> ';
         }
 
-        $output .= '<input type="submit" name="Submit" class="button" value="' .JText::_('BUTTON_LOGOUT'). '" />';
+        $output .= '<input type="submit" name="Submit" class="button" value="' . JText::_('BUTTON_LOGOUT'). '" />';
         $output .= '<input type="hidden" name="silent" value="true" />';
         $output .= '<input type="hidden" name="return" value="' . $return . '" />';
 
@@ -89,19 +89,19 @@ if ( $params->get('layout') == 'horizontal' ) {
         $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="' . $form_id . '" >';
         $output .= $params->get('pretext');
         if ($params->get('show_labels',1)) {
-        	$output .= '<label for="modlgn_username">'. JText::_('USERNAME') .'</label> ';
+        	$output .= '<label for="modlgn_username">' . JText::_('USERNAME') . '</label> ';
         }
-        $output .= '<input placeholder="'.JText::_('USERNAME').'" id="modlgn_username" type="text" name="username" class="inputbox" alt="username" size="18" /> ';
+        $output .= '<input placeholder="' . JText::_('USERNAME') . '" id="modlgn_username" type="text" name="username" class="inputbox" alt="username" size="18" /> ';
         if ($params->get('show_labels',1)) {
-        	$output .= '<label for="modlgn_passwd">'. JText::_('PASSWORD'). '</label> ';
+        	$output .= '<label for="modlgn_passwd">' . JText::_('PASSWORD') . '</label> ';
         }
-	    $output .= '<input placeholder="'.JText::_('PASSWORD').'" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /> ';
+	    $output .= '<input placeholder="' . JText::_('PASSWORD') . '" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /> ';
 
         if ($params->get('show_rememberme')) {
-            $output .= '<label for="modlgn_remember">' .JText::_('REMEMBER_ME') .'</label> ';
+            $output .= '<label for="modlgn_remember">' . JText::_('REMEMBER_ME') . '</label> ';
             $output .= '<input id="modlgn_remember" type="checkbox" name="remember" value="yes" alt="Remember Me" /> ';
         }
-        $output .= '<input type="submit" name="Submit" class="button" value="' .JText::_('BUTTON_LOGIN').'" /> ';
+        $output .= '<input type="submit" name="Submit" class="button" value="' . JText::_('BUTTON_LOGIN') . '" /> ';
 
         if ($params->get('lostpassword_show') || $params->get('lostusername_show') || $params->get('register_show')) {
 
@@ -165,11 +165,11 @@ if ( $params->get('layout') == 'horizontal' ) {
         }
 
         if (!empty($url_viewnewmessages)) {
-            $output .= '<div align="center"><a href="'. $url_viewnewmessages .'">'.JText::_('VIEW_NEW_TOPICS').'</a></div>';
+            $output .= '<div align="center"><a href="' . $url_viewnewmessages . '">' . JText::_('VIEW_NEW_TOPICS') . '</a></div>';
         }
 
         $output .= '<div align="center">';
-        $output .= '<input type="submit" name="Submit" class="button" value="' .JText::_('BUTTON_LOGOUT'). '" />';
+        $output .= '<input type="submit" name="Submit" class="button" value="' . JText::_('BUTTON_LOGOUT') . '" />';
         $output .= '</div>';
 
 	    $output .= '<input type="hidden" name="task" value="user.logout" />';
@@ -187,15 +187,15 @@ if ( $params->get('layout') == 'horizontal' ) {
         $output .= $params->get('pretext');
         $output .= '<p id="form-login-username">';
         if ($params->get('show_labels',1)) {
-        	$output .= '<label for="modlgn_username">'. JText::_('USERNAME') .'</label><br />';
+        	$output .= '<label for="modlgn_username">' . JText::_('USERNAME') . '</label><br />';
         }
-        $output .= '<input placeholder="'.JText::_('USERNAME').'" id="modlgn_username" type="text" name="username" class="inputbox" alt="username" size="18" />';
+        $output .= '<input placeholder="' . JText::_('USERNAME') . '" id="modlgn_username" type="text" name="username" class="inputbox" alt="username" size="18" />';
         $output .= '</p><p id="form-login-password">';
         
         if ($params->get('show_labels',1)) {
-        	$output .= '<label for="modlgn_passwd">'. JText::_('PASSWORD'). '</label><br />';
+        	$output .= '<label for="modlgn_passwd">' . JText::_('PASSWORD') . '</label><br />';
         }
-	    $output .= '<input placeholder="'.JText::_('PASSWORD').'" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /></p> ';
+	    $output .= '<input placeholder="' . JText::_('PASSWORD') . '" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /></p> ';
 
         if ($params->get('show_rememberme')) {
             $output .= '<p id="form-login-remember">';
@@ -212,7 +212,7 @@ if ( $params->get('layout') == 'horizontal' ) {
             }
 
             if ($params->get('lostusername_show')) {
-                $output .= '<li><a href="' . $lostusername_url . '">'. JText::_('FORGOT_YOUR_USERNAME') . '</a></li>';
+                $output .= '<li><a href="' . $lostusername_url . '">' . JText::_('FORGOT_YOUR_USERNAME') . '</a></li>';
             }
 
             $usersConfig = JComponentHelper::getParams('com_users');

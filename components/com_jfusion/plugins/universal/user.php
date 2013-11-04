@@ -118,7 +118,7 @@ class JFusionUser_universal extends JFusionUser
 		try {
 			$userid = $this->helper->getFieldType('USERID');
 			if (!$userid) {
-				$status['error'][] = JText::_('USER_DELETION_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+				$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' . JText::_('UNIVERSAL_NO_USERID_SET');
 			} else {
 				$db = JFusionFactory::getDatabase($this->getJname());
 
@@ -221,9 +221,9 @@ class JFusionUser_universal extends JFusionUser
 			$userid = $this->helper->getFieldType('USERID');
 			$password = $this->helper->getFieldType('PASSWORD');
 			if (!$userid) {
-				$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+				$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_USERID_SET');
 			} elseif (!$password) {
-				$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_PASSWORD_SET');
+				$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_PASSWORD_SET');
 			} else {
 
 				$query = $db->getQuery(true)
@@ -287,9 +287,9 @@ class JFusionUser_universal extends JFusionUser
 			$userid = $this->helper->getFieldType('USERID');
 			$email = $this->helper->getFieldType('EMAIL');
 			if (!$userid) {
-				$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+				$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_USERID_SET');
 			} else if (!$email) {
-				$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_EMAIL_SET');
+				$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_EMAIL_SET');
 			} else {
 				$db = JFusionFactory::getDatabase($this->getJname());
 
@@ -420,9 +420,9 @@ class JFusionUser_universal extends JFusionUser
 			$inactive = $this->helper->getFieldType('INACTIVE');
 
 			if (!$userid) {
-				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_USERID_SET');
 			} else if (!$active && !$inactive) {
-				$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
+				$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
 			} else {
 				$userStatus = null;
 				if ($userinfo->block) {
@@ -510,9 +510,9 @@ class JFusionUser_universal extends JFusionUser
 			$userid = $this->helper->getFieldType('USERID');
 			$activecode = $this->helper->getFieldType('ACTIVECODE');
 			if (!$userid) {
-				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_USERID_SET');
 			} else if (!$activecode) {
-				$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_ACTIVECODE_SET');
+				$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_ACTIVECODE_SET');
 			} else {
 				$db = JFusionFactory::getDatabase($this->getJname());
 

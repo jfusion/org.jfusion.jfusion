@@ -149,7 +149,7 @@ class JFusionAdmin extends JFusionPlugin
 			    if (!$db->connected()) {
 				    throw new RuntimeException(JText::_('NO_DATABASE'));
 			    } elseif (!$jdb->connected()) {
-				    throw new RuntimeException(' -> joomla_int '. JText::_('NO_DATABASE'));
+				    throw new RuntimeException(' -> joomla_int ' . JText::_('NO_DATABASE'));
 			    } else {
 				    //added check for missing files of copied plugins after upgrade
 				    $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;

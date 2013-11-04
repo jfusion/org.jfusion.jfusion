@@ -537,7 +537,7 @@ class JFusionController extends JControllerLegacy
 		    $db->setQuery($query);
 		    $exsist = $db->loadResult();
 		    if ($exsist) {
-			    throw new RuntimeException($new_jname. ' '. JText::_('ALREADY_IN_USE'));
+			    throw new RuntimeException($new_jname . ' ' . JText::_('ALREADY_IN_USE'));
 		    } else if ($jname && $new_jname && $record) {
 			    $JFusionPlugin = JFusionFactory::getAdmin($jname);
 			    if ($JFusionPlugin->multiInstance()) {
@@ -1044,9 +1044,9 @@ JS;
 			foreach ($plugin as $index => $group) {
 				if ($group === null) {
 					if ($index == 0) {
-						JFusionFunction::raiseError(JText::_('NO_DEFAULT_GROUP_FOR_PAIR').': '. ($index+1), $jname);
+						JFusionFunction::raiseError(JText::_('NO_DEFAULT_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
 					} else if (($master && $master->name == $jname) || (isset($updateusergroups[$jname]) && $updateusergroups[$jname])) {
-						JFusionFunction::raiseError(JText::_('NO_GROUP_FOR_PAIR').': '. ($index+1), $jname);
+						JFusionFunction::raiseError(JText::_('NO_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
 					}
 				}
 			}

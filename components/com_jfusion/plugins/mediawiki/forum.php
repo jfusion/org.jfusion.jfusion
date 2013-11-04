@@ -126,7 +126,7 @@ class JFusionForum_mediawiki extends JFusionForum
 					    $url = JFusionFunction::routeURL('index.php?title=' . $value->title, $itemid, $this->getJname());
 					    if (JString::strlen($value->title) > $display_limit_subject) {
 						    //we need to shorten the subject
-						    $value->pagename = JString::substr($value->title,0,$display_limit_subject) . '...';
+						    $value->pagename = JString::substr($value->title, 0, $display_limit_subject) . '...';
 					    }
 					    $output .= '<a href="' . $url . '" target="' . $new_window . '">' . $value->title . '</a> - ';
 					    if ($showuser) {

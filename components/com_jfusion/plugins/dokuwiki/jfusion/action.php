@@ -84,12 +84,12 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
                 $USERINFO = $auth->getUserData($user);
 
                 // set cookie
-                $cookie = base64_encode($user).'|'.((int) $sticky).'|'.base64_encode($pass);
+                $cookie = base64_encode($user) . '|' . ((int) $sticky) . '|' . base64_encode($pass);
                 $time = $sticky ? (time()+60*60*24*365) : 0; //one year
                 if (version_compare(PHP_VERSION, '5.2.0', '>')) {
-                    setcookie(DOKU_COOKIE,$cookie,$time,$conf['jfusion']['cookie_path'],$conf['jfusion']['cookie_domain'],($conf['securecookie'] && is_ssl()),true);
+                    setcookie(DOKU_COOKIE, $cookie, $time, $conf['jfusion']['cookie_path'], $conf['jfusion']['cookie_domain'], ($conf['securecookie'] && is_ssl()), true);
                 }else{
-                    setcookie(DOKU_COOKIE,$cookie,$time,$conf['jfusion']['cookie_path'],$conf['jfusion']['cookie_domain'],($conf['securecookie'] && is_ssl()));
+                    setcookie(DOKU_COOKIE, $cookie, $time, $conf['jfusion']['cookie_path'], $conf['jfusion']['cookie_domain'], ($conf['securecookie'] && is_ssl()));
                 }
                 // set session
                 $_SESSION[DOKU_COOKIE]['auth']['user'] = $user;

@@ -855,7 +855,7 @@ HTML;
 HTML;
 		echo $html;
 
-		$basedir = JPATH_ADMINISTRATOR. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_jfusion';
+		$basedir = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion';
 		if(!empty($restorePluginOutput)) {
 			echo $restorePluginOutput;
 		}
@@ -943,7 +943,7 @@ HTML;
     <a class="btn" href="index.php?option=com_jfusion">CPanel</a>
     <br/><br/>
 	<?php
-		$basedir = JPATH_ADMINISTRATOR. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_jfusion';
+		$basedir = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion';
 		//install the JFusion packages
 		jimport('joomla.installer.helper');
 		$packages = array();

@@ -237,7 +237,7 @@ class JFusionHelper_efront extends JFusionPlugin {
         }
         $remotedata = curl_exec($ch);
         if (curl_error($ch)) {
-            $status['error'][] = 'EFRONT_API_POST CURL_ERROR_MSG : '.curl_error($ch);
+            $status['error'][] = 'EFRONT_API_POST CURL_ERROR_MSG : ' . curl_error($ch);
         } else {
             $status['result'][] = simplexml_load_string($remotedata);
         }

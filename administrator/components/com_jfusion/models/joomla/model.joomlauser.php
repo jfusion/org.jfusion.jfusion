@@ -761,7 +761,7 @@ class JFusionJoomlaUser extends JFusionUser
 
 			    $query = $db->getQuery(true)
 				    ->delete('#__user_usergroup_map')
-				    ->where('user_id = '. $db->Quote($existinguser->userid));
+				    ->where('user_id = ' . $db->Quote($existinguser->userid));
 
 			    $db->setQuery($query);
 

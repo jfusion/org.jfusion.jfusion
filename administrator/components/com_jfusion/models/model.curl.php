@@ -977,14 +977,14 @@ class JFusionCurl
 			$remotedata = $this->curl_redir_exec();
 		}
 		if ($this->options['debug']) {
-			$this->status['cURL']['data'][]= $remotedata;
-			$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
+			$this->status['cURL']['data'][] = $remotedata;
+			$this->status['debug'][] = 'CURL_INFO: ' . print_r(curl_getinfo($this->ch), true);
 		}
 		if (curl_error($this->ch)) {
-			$this->status['error'][] = static::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+			$this->status['error'][] = static::_('CURL_ERROR_MSG') . ': ' . curl_error($this->ch);
 			curl_close($this->ch);
 			$remotedata =  null;
-		} else if ($this->options['integrationtype'] ==1) {
+		} else if ($this->options['integrationtype'] == 1) {
 			curl_close($this->ch);
 		}
 		return $remotedata;
@@ -1043,7 +1043,7 @@ class JFusionCurl
 			if (!extension_loaded('curl')) {
 				$this->status['error'][] = static::_('CURL_NOTINSTALLED');
 			} else {
-				$this->status['debug'][] = static::_('CURL_POST_URL_1') .' '. $this->options['post_url'];
+				$this->status['debug'][] = static::_('CURL_POST_URL_1') . ' ' . $this->options['post_url'];
 				$remotedata = $this->ReadPage(true);
 				if (empty($this->status['error'])) {
 					$this->status['debug'][] = static::_('CURL_PHASE_1');
@@ -1146,11 +1146,11 @@ class JFusionCurl
 								$tmpurl   = static::parseUrl($this->options['post_url']);
 								$pathinfo1  = pathinfo($form_action);
 								$pathinfo = pathinfo($tmpurl[6]);
-								//$this->status['debug'][] = 'post_url   : '.print_r($this->options['post_url'],true);
-								//$this->status['debug'][] = 'tmpurl     : '.print_r($tmpurl,true);
-								//$this->status['debug'][] = 'form_action: '.print_r($form_action,true);
-								//$this->status['debug'][] = 'pathinfo1  : '.print_r($pathinfo1,true);
-								//$this->status['debug'][] = 'pathinfo   : '.print_r($pathinfo,true);
+								//$this->status['debug'][] = 'post_url   : ' . print_r($this->options['post_url'], true);
+								//$this->status['debug'][] = 'tmpurl     : ' . print_r($tmpurl, true);
+								//$this->status['debug'][] = 'form_action: ' . print_r($form_action, true);
+								//$this->status['debug'][] = 'pathinfo1  : ' . print_r($pathinfo1, true);
+								//$this->status['debug'][] = 'pathinfo   : ' . print_r($pathinfo, true);
 								if ($pathinfo['dirname'] == $pathinfo1['dirname']) {
 									$pathinfo['dirname']='';
 								} //prevent double directory
@@ -1161,7 +1161,7 @@ class JFusionCurl
 								rtrim($pathinfo['dirname'], '/');
 								$port = !empty($tmpurl[5]) ? ':' . $tmpurl[5] : '';
 								$form_action = $ssl_string . $tmpurl[4] . $port . $pathinfo['dirname'] . $form_action;
-								//$this->status['debug'][] = 'form_action_final: '.print_r($form_action,true);
+								//$this->status['debug'][] = 'form_action_final: ' . print_r($form_action, true);
 								break;
 							case 1:
 								//add a / in front of form_action
@@ -1249,7 +1249,7 @@ class JFusionCurl
 
 						// extra post parameter to avoid endless loop when more then one jFusion is installed
 						if (isset($this->options['jnodeid'])) {
-							$strParameters .= '&jnodeid='.urlencode($this->options['jnodeid']);
+							$strParameters .= '&jnodeid=' . urlencode($this->options['jnodeid']);
 						}
 
 						// extra post parameter to signal a host calling
@@ -1295,10 +1295,10 @@ class JFusionCurl
 						$remotedata = curl_exec($this->ch);
 						if ($this->options['debug']) {
 							$this->status['cURL']['data'][]= $remotedata;
-							$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
+							$this->status['debug'][] = 'CURL_INFO: ' . print_r(curl_getinfo($this->ch), true);
 						}
 						if (curl_error($this->ch)) {
-							$this->status['error'][] = static::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+							$this->status['error'][] = static::_('CURL_ERROR_MSG') . ': ' . curl_error($this->ch);
 						} else {
 							//we have to set the cookies now
 
@@ -1391,11 +1391,11 @@ class JFusionCurl
 
 			$remotedata = curl_exec($this->ch);
 			if ($this->options['debug']) {
-				$this->status['cURL']['data'][]= $remotedata;
-				$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
+				$this->status['cURL']['data'][] = $remotedata;
+				$this->status['debug'][] = 'CURL_INFO: ' . print_r(curl_getinfo($this->ch), true);
 			}
 			if (curl_error($this->ch)) {
-				$this->status['error'][] = static::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+				$this->status['error'][] = static::_('CURL_ERROR_MSG') . ': ' . curl_error($this->ch);
 			} else {
 				//we have to delete the cookies now
 				$this->deleteCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['leavealone'], $this->options['secure'], $this->options['httponly']);
@@ -1497,12 +1497,12 @@ class JFusionCurl
 				$remotedata = $this->curl_redir_exec();
 			}
 			if ($this->options['debug']) {
-				$this->status['cURL']['data'][]= $remotedata;
-				$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
+				$this->status['cURL']['data'][] = $remotedata;
+				$this->status['debug'][] = 'CURL_INFO: ' . print_r(curl_getinfo($this->ch), true);
 			}
-			$this->status['debug'][]= static::_('CURL_LOGOUT_URL').': '.  $this->options['post_url'];
+			$this->status['debug'][] = static::_('CURL_LOGOUT_URL') . ': ' .  $this->options['post_url'];
 			if (curl_error($this->ch)) {
-				$this->status['error'][] = static::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+				$this->status['error'][] = static::_('CURL_ERROR_MSG') . ': ' . curl_error($this->ch);
 			} else {
 				$this->setCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
 			}

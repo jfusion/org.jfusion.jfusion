@@ -451,7 +451,7 @@ class JFusionUsersync
 
 	    $query = $db->getQuery(true)
 		    ->update('#__jfusion_sync')
-		    ->set('active = '.(int) $status)
+		    ->set('active = ' . (int) $status)
 		    ->where('syncid = ' . $db->Quote($syncid));
 
         $db->setQuery($query);

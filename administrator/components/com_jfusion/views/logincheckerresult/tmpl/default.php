@@ -170,7 +170,7 @@ global $jfusionDebug;
 			}
 		}
 		?>
-		<label for="debug"><?php echo JText::_('JFUSION').' '.JText::_('DEBUG'); ?></label>
+		<label for="debug"><?php echo JText::_('JFUSION') . ' ' . JText::_('DEBUG'); ?></label>
 	    <textarea id="debug" rows="25" class="dumparea"><?php echo $debug ?></textarea>
 	</div>
 </div>

@@ -139,7 +139,7 @@ JFusionFunctionAdmin::displayDonate();
 	            <?php
 	            echo $component->oldversion;
 	            if ($component->oldrev) {
-	                echo ' Rev ( '.substr($component->oldrev,0,8).'... )';
+	                echo ' Rev ( ' . substr($component->oldrev, 0, 8) . '... )';
 	            }
 	            ?>
 	        </td>
@@ -158,7 +158,7 @@ JFusionFunctionAdmin::displayDonate();
 	            <?php
 	            echo $component->version;
 	            if ($component->rev) {
-	                echo ' Rev ( '.substr($component->rev,0,8).'... )';
+	                echo ' Rev ( ' . substr($component->rev,0,8) . '... )';
 	            }
 	            ?>
 
@@ -234,7 +234,7 @@ JFusionFunctionAdmin::displayDonate();
 	            <?php
 	            echo $jfusion_plugin->oldversion;
 	            if ($jfusion_plugin->oldrev) {
-	                echo ' Rev ( '.substr($jfusion_plugin->oldrev,0,8).'... )';
+	                echo ' Rev ( ' . substr($jfusion_plugin->oldrev, 0, 8) . '... )';
 	            }
 	            ?>
 	        </td>
@@ -253,7 +253,7 @@ JFusionFunctionAdmin::displayDonate();
 	            <?php
 	            echo $jfusion_plugin->version;
 	            if ($jfusion_plugin->rev) {
-	                echo ' Rev ( '.substr($jfusion_plugin->rev,0,8).'... )';
+	                echo ' Rev ( ' . substr($jfusion_plugin->rev, 0, 8) . '... )';
 	            }
 	            ?>
 	            <?php

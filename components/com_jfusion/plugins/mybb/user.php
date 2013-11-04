@@ -121,7 +121,7 @@ class JFusionUser_mybb extends JFusionUser {
 		        $query = $db->getQuery(true)
 			        ->select('uid, loginkey')
 			        ->from('#__users')
-			        ->where('username = '. $db->Quote($userinfo->username));
+			        ->where('username = ' . $db->Quote($userinfo->username));
 
 		        $db->setQuery($query);
 		        $user = $db->loadObject();
@@ -213,7 +213,7 @@ class JFusionUser_mybb extends JFusionUser {
 		    $query = $db->getQuery(true)
 			    ->select('oldgroup')
 			    ->from('#__banned')
-			    ->where('uid = '. (int)$existinguser->userid);
+			    ->where('uid = ' . (int)$existinguser->userid);
 
 	        $db->setQuery($query);
 	        $oldgroup = $db->loadResult();
@@ -238,7 +238,7 @@ class JFusionUser_mybb extends JFusionUser {
 			    //restore the usergroup
 			    $query = $db->getQuery(true)
 				    ->update('#__users')
-				    ->set('usergroup = '.(int)$oldgroup)
+				    ->set('usergroup = ' . (int)$oldgroup)
 				    ->where('uid = ' . (int)$existinguser->userid);
 
 			    $db->setQuery($query);

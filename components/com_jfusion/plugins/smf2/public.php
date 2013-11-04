@@ -341,7 +341,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
     	
         $base = JURI::base(true).'/';
 
-        $regex_body  = '#src="'.preg_quote($base,'#').'%#mSsi';
+        $regex_body  = '#src="' . preg_quote($base, '#') . '%#mSsi';
         $replace_body= 'src="%';
         
         $buffer = preg_replace($regex_body, $replace_body, $buffer);
@@ -619,9 +619,9 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$pathway = array();
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
-			list ($board_id ) = explode( '.'  , JFactory::getApplication()->input->get('board'),1 );
-			list ($topic_id ) = explode( '.'  , JFactory::getApplication()->input->get('topic'),1 );
-			list ($action ) = explode( ';'  , JFactory::getApplication()->input->get('action'),1 );
+			list ($board_id ) = explode('.', JFactory::getApplication()->input->get('board'), 1);
+			list ($topic_id ) = explode('.', JFactory::getApplication()->input->get('topic'), 1);
+			list ($action ) = explode(';', JFactory::getApplication()->input->get('action'), 1);
 
 			$msg = JFactory::getApplication()->input->get('msg');
 
@@ -902,13 +902,13 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$db->setQuery($query);
 			$proper = $db->loadResult();
 
-			$vulgar = explode  ( ',' , $vulgar );
-			$proper = explode  ( ',' , $proper );
+			$vulgar = explode(',', $vulgar);
+			$proper = explode(',', $proper);
 
 			foreach($results as $rkey => $result) {
 				foreach( $vulgar as $key => $value ) {
-					$results[$rkey]->title = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->title );
-					$results[$rkey]->text = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->text );
+					$results[$rkey]->title = preg_replace('#\b' . preg_quote($value, '#') . '\b#is' , $proper[$key], $result->title);
+					$results[$rkey]->text = preg_replace('#\b' . preg_quote($value, '#') . '\b#is' , $proper[$key], $result->text);
 				}
 			}
 		} catch (Exception $e) {
@@ -1024,12 +1024,12 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		foreach ($headers_list as $value) {
         	$matches = array();
             if (stripos($value, 'location') === 0) {
-                if (preg_match('#'.preg_quote($data->integratedURL,'#').'(.*?)\z#Sis' , $value , $matches)) {
+                if (preg_match('#' . preg_quote($data->integratedURL, '#') . '(.*?)\z#Sis', $value, $matches)) {
                     header('Location: ' . $this->fixUrlNoAmp($matches));
                     return $buffer;
                 }
             } else if (stripos($value, 'refresh') === 0) {
-                if (preg_match('#: (.*?) URL='.preg_quote($data->integratedURL,'#').'(.*?)\z#Sis' , $value , $matches)) {
+                if (preg_match('#: (.*?) URL=' . preg_quote($data->integratedURL, '#') . '(.*?)\z#Sis', $value, $matches)) {
                 	$time = $matches[1];
                 	$matches[1] = $matches[2];
                     header('Refresh: ' . $time . ' URL=' . $this->fixUrlNoAmp($matches));

@@ -111,7 +111,7 @@ class JFusionCurlFrameless {
 							if ($name) {
 								$filepath[$key] = JPATH_ROOT . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $name;
 								rename($path, $filepath[$key]);
-								$post[$userfile . '['. $key . ']'] = '@' . $filepath[$key];
+								$post[$userfile . '[' . $key . ']'] = '@' . $filepath[$key];
 							}
 						}
 					} else {

@@ -56,7 +56,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
 
         $params = array();
         if (!file_exists($myfile)) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' '. JText::_('WIZARD_MANUAL'), $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             include_once ($myfile);

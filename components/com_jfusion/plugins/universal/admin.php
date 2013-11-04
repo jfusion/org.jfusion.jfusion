@@ -529,9 +529,9 @@ JS;
 
 		$redirect_code = '//JFUSION REDIRECT START
 //SET SOME VARS
-$joomla_url = \''. $url . '\';
-$universal_url \''. $universal_url . '\';
-$joomla_itemid = ' . $itemid .';
+$joomla_url = \'' . $url . '\';
+$universal_url \'' . $universal_url . '\';
+$joomla_itemid = ' . $itemid . ';
 	';
 		$redirect_code .= '
 if(!isset($_COOKIE[\'jfusionframeless\']))';
@@ -568,7 +568,7 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 			} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
 				JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
 			} else if (!$this->isValidItemID($joomla_itemid)) {
-				JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->getJname());
+				JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
 			} else {
 				header('Content-disposition: attachment; filename=jfusion_' . $this->getJname() . '_redirectcode.txt');
 				header('Pragma: no-cache');

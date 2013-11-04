@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 //display the paypal donation button
 ?>
 <div class="jfusion">
-	<h1><?php echo $this->jname.' '.JText::_('FEATURES'); ?></h1>
+	<h1><?php echo $this->jname . ' ' . JText::_('FEATURES'); ?></h1>
 	<table>
 		<?php foreach ($this->features as $cname => $category) { ?>
 			<?php foreach ($category as $name => $value) { ?>

@@ -52,7 +52,7 @@ class modjfusionWhosOnlineHelper {
 			$forum_links = JFusionFactory::getForum($link_jname);
 			$public_users = JFusionFactory::getPublic($jname);
 			if(!$public_users->isConfigured()) {
-				$output->error = $jname . ': '. JText::_('NOT_CONFIGURED');
+				$output->error = $jname . ': ' . JText::_('NOT_CONFIGURED');
 			} else {
 				//show the number of people online if set to do so
 				$output->num_guests = $public_users->getNumberOnlineGuests();

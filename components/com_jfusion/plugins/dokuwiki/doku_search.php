@@ -363,12 +363,12 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return int
          */
         function wordlen($w) {
-            defined('IDX_ASIAN2') OR define('IDX_ASIAN2','['.
-               '\x{2E80}-\x{3040}'.  // CJK -> Hangul
-               '\x{309D}-\x{30A0}'.
-               '\x{30FD}-\x{31EF}\x{3200}-\x{D7AF}'.
-               '\x{F900}-\x{FAFF}'.  // CJK Compatibility Ideographs
-               '\x{FE30}-\x{FE4F}'.  // CJK Compatibility Forms
+            defined('IDX_ASIAN2') OR define('IDX_ASIAN2','[' .
+               '\x{2E80}-\x{3040}' .  // CJK -> Hangul
+               '\x{309D}-\x{30A0}' .
+               '\x{30FD}-\x{31EF}\x{3200}-\x{D7AF}' .
+               '\x{F900}-\x{FAFF}' .  // CJK Compatibility Ideographs
+               '\x{FE30}-\x{FE4F}' .  // CJK Compatibility Forms
                ']');
 
             $l = strlen($w);
@@ -493,12 +493,12 @@ if ( !class_exists('DokuWikiSearch') ) {
                 if ($conf['compression']) {
                     //test for extensions here, we want to read both compressions
                     if (file_exists($fn . '.gz')) {
-                        $fn.= '.gz';
+                        $fn .= '.gz';
                     } else if (file_exists($fn . '.bz2')) {
-                        $fn.= '.bz2';
+                        $fn .= '.bz2';
                     } else {
                         //file doesn't exist yet, so we take the configured extension
-                        $fn.= '.' . $conf['compression'];
+                        $fn .= '.' . $conf['compression'];
                     }
                 }
             }

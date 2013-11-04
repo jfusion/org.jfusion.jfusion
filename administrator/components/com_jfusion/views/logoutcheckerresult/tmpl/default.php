@@ -30,7 +30,7 @@ JFusionFunctionAdmin::displayDonate();
 		$title = JText::_('LOGOUT') . ' ' . JText::_('DEBUG');
 	    debug::show($this->debug, $title);
 		?>
-		<label for="debug"><?php echo JText::_('JFUSION').' '.JText::_('DEBUG'); ?></label>
+		<label for="debug"><?php echo JText::_('JFUSION') . ' ' . JText::_('DEBUG'); ?></label>
 		<textarea id="debug" rows="25" class="dumparea"><?php echo debug::getText($this->debug, $title) ?></textarea>
 	</div>
 </div>

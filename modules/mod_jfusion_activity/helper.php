@@ -116,7 +116,7 @@ class modjfusionActivityHelper
                     if ($config['showdate']==2) {
                         list( $count,$name ) = static::timeSince($r->dateline);
                     
-                        $r->output->date = ($count == 1) ? '1 '.JText::_($name.'_AGO') : $count.' '.JText::_($name.'S_AGO');
+                        $r->output->date = ($count == 1) ? '1 ' . JText::_($name . '_AGO') : $count . ' ' . JText::_($name . 'S_AGO');
                     } else {
                     jimport('joomla.utilities.date');
                         $JDate =  new JDate($r->dateline);

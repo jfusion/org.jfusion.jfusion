@@ -28,10 +28,10 @@ foreach($outputs as $output) {
 	}else {
 		if($config['showmode'] != '1') {
 			echo JText::_('WE_HAVE').'&nbsp;';
-			echo ($output->num_guests==0 || $output->num_guests>1) ? JText::sprintf('GUESTS',$output->num_guests) : JText::sprintf('GUEST','1');
+			echo ($output->num_guests==0 || $output->num_guests>1) ? JText::sprintf('GUESTS', $output->num_guests) : JText::sprintf('GUEST', '1');
 			echo '&nbsp;' . JText::_('AND') . '&nbsp;';
-			echo ($output->num_members==0 || $output->num_members>1) ? JText::sprintf('MEMBERS',$output->num_members) : JText::sprintf('MEMBER','1');
-			echo '&nbsp;'.JText::_('ONLINE') . '<br />';
+			echo ($output->num_members==0 || $output->num_members>1) ? JText::sprintf('MEMBERS', $output->num_members) : JText::sprintf('MEMBER', '1');
+			echo '&nbsp;' . JText::_('ONLINE') . '<br />';
 		}
 
 		if(!is_array($output->online_users) && $config['showmode'] == '2') {
@@ -47,7 +47,7 @@ foreach($outputs as $output) {
 			 	}
 
 			 	if(!empty($user_output->user_url)) {
-			 		echo '<b><a href="'. $user_output->user_url . '">' . $user_output->display_name . '</a></b>';
+			 		echo '<b><a href="' . $user_output->user_url . '">' . $user_output->display_name . '</a></b>';
 			 	} else {
 			 		echo '<b>' . $user_output->display_name . '</b>';
 			 	}

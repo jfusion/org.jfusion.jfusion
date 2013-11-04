@@ -147,7 +147,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
                 $uri = str_replace('.html', '', $uri);
             }
             if (!strpos($uri, '?')) {
-                $uri.= '/';
+                $uri .= '/';
             }
         }
         return $uri;

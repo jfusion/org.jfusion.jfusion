@@ -306,7 +306,7 @@ if (!class_exists('Jfusion_PassHash')) {
 		 * @return string Hashed password
 		 */
 		public function hash_my411($clear) {
-			return '*'.sha1(pack("H*", sha1($clear)));
+			return '*' . sha1(pack("H*", sha1($clear)));
 		}
 
 		/**
@@ -358,8 +358,8 @@ if (!class_exists('Jfusion_PassHash')) {
 			$iter  = strpos($itoa64, $iterc);
 
 			if($iter > 30) {
-				throw new RuntimeException("Too high iteration count ($iter) in ".
-				__CLASS__.'::'.__FUNCTION__);
+				throw new RuntimeException("Too high iteration count ($iter) in " .
+				__CLASS__ . '::' . __FUNCTION__);
 			}
 
 			$iter = 1 << $iter;
@@ -457,7 +457,7 @@ if (!class_exists('Jfusion_PassHash')) {
 
 			if(is_null($salt)) {
 				if($compute < 4 || $compute > 31) $compute = 8;
-				$salt = '$2a$'.str_pad($compute, 2, '0', STR_PAD_LEFT).'$'.
+				$salt = '$2a$' . str_pad($compute, 2, '0', STR_PAD_LEFT) . '$' .
 					$this->gen_salt(22);
 			}
 
