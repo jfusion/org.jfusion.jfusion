@@ -22,9 +22,9 @@ JFusionFunctionAdmin::displayDonate();
 	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<input type="hidden" name="task" value="logincheckerresult" />
 
-	    <h1>
+	    <h3>
 	        <?php echo JText::_('LOGIN_CHECKER_TEXT'); ?>
-	    </h1>
+	    </h3>
 		<br/><br/>
 		<table class="jfusionlist" style="border-spacing:1px;">
 	        <thead>

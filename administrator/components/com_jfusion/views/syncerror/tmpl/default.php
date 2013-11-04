@@ -43,30 +43,30 @@ JFusionFunctionAdmin::displayDonate();
 		?>
 		<br/>
 		<br/>
-		<h1>
+		<h2>
 			<?php echo JText::_('CONFLICT_INSTRUCTION'); ?>
-		</h1>
+		</h2>
 		<br/>
 		<h3>
 			<?php echo JText::_('EMAIL') . ' ' . JText::_('CONFLICTS'); ?>
 		</h3>
-		<h1>
+		<h2>
 			<?php echo JText::_('CONFLICTS_EMAIL'); ?>
-		</h1>
+		</h2>
 		<br/>
 		<h3>
 			<?php echo JText::_('USERNAME') . ' ' . JText::_('CONFLICTS'); ?>
 		</h3>
-		<h1>
+		<h2>
 			<?php echo JText::_('CONFLICTS_USERNAME'); ?>
-		</h1>
+		</h2>
 		<br/>
 		<h3>
 			<?php echo JText::_('USERSYNC') . ' ' . JText::_('ERROR'); ?>
 		</h3>
-		<h1>
+		<h2>
 			<?php echo JText::_('CONFLICTS_ERROR'); ?>
-		</h1>
+		</h2>
 		<br/>
 		<br/>
 

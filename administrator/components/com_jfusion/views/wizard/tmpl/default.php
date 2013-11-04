@@ -21,11 +21,11 @@ JFusionFunctionAdmin::displayDonate();
 <div class="jfusion">
 	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<input type="hidden" name="task" value="wizardresult" />
-		<h1>
+		<h3>
 			<?php echo JText::_('WIZARD_INSTR'); ?>
-		</h1>
+		</h3>
 		<br><br><br>
-		<table style="width:100%;;border-spacing:1px;" class="paramlist jfusiontable">
+		<table style="width: 100%; border-spacing: 1px;" class="paramlist jfusiontable">
 			<tr>
 				<td class="paramlist_key">
 					<label for="paramssource_path"><?php echo JText::_('WIZARD_PATH'); ?></label>
@@ -36,9 +36,9 @@ JFusionFunctionAdmin::displayDonate();
 			</tr>
 		</table>
 		<br>
-		<h1>
+		<h3>
 			<?php echo JText::_('WIZARD_INSTR2'); ?>
-		</h1>
+		</h3>
 		<br>
 		<input type=hidden name=jname value="<?php echo $this->jname; ?>">
 	</form>
