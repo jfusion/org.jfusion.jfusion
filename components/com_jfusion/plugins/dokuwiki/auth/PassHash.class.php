@@ -414,7 +414,7 @@ if (!class_exists('Jfusion_PassHash')) {
 		 */
 		public function hash_djangosha1($clear, $salt = null) {
 			$this->init_salt($salt, 5);
-			return 'sha1$'.$salt.'$'.sha1($salt.$clear);
+			return 'sha1$' . $salt . '$' . sha1($salt . $clear);
 		}
 
 		/**
@@ -457,7 +457,7 @@ if (!class_exists('Jfusion_PassHash')) {
 
 			if(is_null($salt)) {
 				if($compute < 4 || $compute > 31) $compute = 8;
-				$salt = '$2a$'.str_pad($compute, 2, '0', STR_PAD_LEFT).'$'.
+				$salt = '$2a$' . str_pad($compute, 2, '0', STR_PAD_LEFT) . '$' .
 					$this->gen_salt(22);
 			}
 
@@ -480,7 +480,7 @@ if (!class_exists('Jfusion_PassHash')) {
 				throw new RuntimeException('This PHP installation has no SHA512 support');
 			}
 			$this->init_salt($salt, 8, false);
-			return crypt($clear, '$6$'.$salt.'$');
+			return crypt($clear, '$6$' . $salt . '$');
 		}
 
 		/**
@@ -496,7 +496,7 @@ if (!class_exists('Jfusion_PassHash')) {
 		 */
 		public function hash_mediawiki($clear, $salt = null) {
 			$this->init_salt($salt, 8, false);
-			return ':B:'.$salt.':'.md5($salt.'-'.md5($clear));
+			return ':B:' . $salt . ':' . md5($salt . '-' . md5($clear));
 		}
 	}
 }
