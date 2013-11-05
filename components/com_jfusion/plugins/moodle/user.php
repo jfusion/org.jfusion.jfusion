@@ -330,7 +330,7 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param object &$existinguser Object containing the old userinfo
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function updatePassword($userinfo, $existinguser, &$status) {
+	function updatePassword($userinfo, &$existinguser, &$status) {
 		try {
 			if ($this->params->get('passwordsaltmain')) {
 				$existinguser->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));

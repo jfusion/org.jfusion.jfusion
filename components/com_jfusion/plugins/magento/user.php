@@ -607,7 +607,7 @@ class JFusionUser_magento extends JFusionUser {
 	 *
 	 * @return void
 	 */
-	function updatePassword($userinfo, $existinguser, &$status) {
+	function updatePassword($userinfo, &$existinguser, &$status) {
 		$magentoVersion = $this->params->get('magento_version','1.7');
 
 		$magento_user = $this->getMagentoDataObjectRaw('customer');

@@ -293,7 +293,7 @@ class JFusionUser_wordpress extends JFusionUser
      *
      * @return void
      */
-    function updatePassword($userinfo, $existinguser, &$status) {
+    function updatePassword($userinfo, &$existinguser, &$status) {
 	    try {
 		    // get the encryption PHP file
 		    if (!class_exists('PasswordHashOrg')) {
