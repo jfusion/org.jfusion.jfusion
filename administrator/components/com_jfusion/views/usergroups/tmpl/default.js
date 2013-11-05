@@ -120,7 +120,7 @@ JFusion.renderDefault = function(index, plugin, pair) {
             'size': 5,
             'name': 'usergroups['+plugin.name+']['+index+'][]' };
     } else {
-        options = { 'name': 'usergroups['+plugin.name+']['+index+']'};
+        options = { 'name': 'usergroups['+plugin.name+']['+index+'][]'};
     }
     options.id = 'usergroups_'+plugin.name+index;
 
@@ -137,7 +137,7 @@ JFusion.renderDefault = function(index, plugin, pair) {
         var options = {'value': group.id,
             'html': group.name};
 
-        if (pair !== null && pair.contains(group.id)) {
+        if (pair !== null && (pair.contains(group.id) || pair.toString() === group.id.toString())) {
             options.selected = 'selected';
         }
         select.appendChild(new Element('option', options));
