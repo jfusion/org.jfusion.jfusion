@@ -110,15 +110,15 @@ class JFusionUser_wordpress extends JFusionUser
     function convertUserobjectToJFusion($user) {
 		$result = new stdClass;
 
-		$result->userid       = $user->ID;
+		$result->userid = $user->ID;
 		// have to figure out what to use a s the name. Guess display name will do.
 		//     $result->name         = $user->first_name;
 		//     if (user->last_name) { $result->name .= $user_last_name;}
-		$result->name         = $user->display_name;
-		$result->username     = $user->user_login;
-		$result->email        = $user->user_email;
-		$result->password     = $user->user_pass;
-		$result->password_salt= null;
+		$result->name = $user->display_name;
+		$result->username = $user->user_login;
+		$result->email = $user->user_email;
+		$result->password = $user->user_pass;
+		$result->password_salt = null;
 
 		// usergroup (actually role) is in a serialized field of the user metadata table
 		// unserialize. Gives an array with capabilities
@@ -176,7 +176,7 @@ class JFusionUser_wordpress extends JFusionUser
     function destroySession($userinfo, $options) {
 
     $status = array('error' => array(),'debug' => array());
-		$wpnonce=array();
+		$wpnonce = array();
 
 		$logout_url = $this->params->get('logout_url');
 
@@ -190,8 +190,8 @@ class JFusionUser_wordpress extends JFusionUser
 		$curl_options['httpauth'] = $this->params->get('httpauth');
 		$curl_options['httpauth_username'] = $this->params->get('curl_username');
 		$curl_options['httpauth_password'] = $this->params->get('curl_password');
-		$curl_options['integrationtype']=0;
-		$curl_options['debug'] =0;
+		$curl_options['integrationtype'] = 0;
+		$curl_options['debug'] = 0;
 
 		// to prevent endless loops on systems where there are multiple places where a user can login
 		// we post an unique ID for the initiating software so we can make a difference between
@@ -207,16 +207,16 @@ class JFusionUser_wordpress extends JFusionUser
 		
 		$remotedata = $curl->ReadPage();
 		if (!empty($curl->status['error'])) {
-			$curl->status['debug'][]= JText::_('CURL_COULD_NOT_READ_PAGE: '). $curl->options['post_url'];
+			$curl->status['debug'][] = JText::_('CURL_COULD_NOT_READ_PAGE: '). $curl->options['post_url'];
 		} else {
         // get _wpnonce security value
-        preg_match("/action=logout.+?_wpnonce=([\w\s-]*)[\"']/i",$remotedata,$wpnonce);
-        if (!empty($wpnonce[1])){
- 					$curl_options['post_url'] = $curl_options['post_url'] . '?action=logout&_wpnonce=' . $wpnonce[1];
-					$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
+        preg_match('/action=logout.+?_wpnonce=([\w\s-]*)["\']/i',$remotedata,$wpnonce);
+        if (!empty($wpnonce[1])) {
+			$curl_options['post_url'] = $curl_options['post_url'] . '?action=logout&_wpnonce=' . $wpnonce[1];
+			$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
         } else {
           // non wpnonce, we are probably not on the logout page. Just report
-          $status['debug'][]= JText::_('NO_WPNONCE_FOUND: ');
+          $status['debug'][] = JText::_('NO_WPNONCE_FOUND: ');
   
           //try to delete all cookies
           $cookie_name = $this->params->get('cookie_name');
@@ -266,23 +266,23 @@ class JFusionUser_wordpress extends JFusionUser
      */
     function filterUsername($username) {
 		// strip all tags
-		$username = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $username );
+		$username = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $username);
 		$username = strip_tags($username);
 		$username = preg_replace('/[\r\n\t ]+/', ' ', $username);
 		$username = trim($username);
 		// remove accents
-		$username = $this->helper->remove_accentsWP( $username );
+		$username = $this->helper->remove_accentsWP($username);
 		// Kill octets
-		$username = preg_replace( '|%([a-fA-F0-9][a-fA-F0-9])|', '', $username );
-		$username = preg_replace( '/&.+?;/', '', $username ); // Kill entities
+		$username = preg_replace('|%([a-fA-F0-9][a-fA-F0-9])|', '', $username);
+		$username = preg_replace('/&.+?;/', '', $username); // Kill entities
 
 		// If strict, reduce to ASCII for max portability.
 		$strict = true; // default behaviour of WP 3, can be moved to params if we need i to be choice
-		if ( $strict ){
-			$username = preg_replace( '|[^a-z0-9 _.\-@]|i', '', $username );
+		if ( $strict ) {
+			$username = preg_replace('|[^a-z0-9 _.\-@]|i', '', $username);
 		}
 		// Consolidate contiguous whitespace
-		$username = preg_replace( '|\s+|', ' ', $username );
+		$username = preg_replace('|\s+|', ' ', $username);
 		return $username;
 	}
 
@@ -446,7 +446,7 @@ class JFusionUser_wordpress extends JFusionUser
 			    $default_role_id = $usergroups[0];
 			    $default_role_name = strtolower($this->helper->getUsergroupNameWP($default_role_id));
 			    $default_role = array();
-			    $default_role[$default_role_name]=1;
+			    $default_role[$default_role_name] = 1;
 
 			    $default_userlevel = $this->helper->WP_userlevel_from_role(0, $default_role_name);
 			    if (isset($userinfo->password_clear)) {
@@ -468,16 +468,16 @@ class JFusionUser_wordpress extends JFusionUser
 
 			    //prepare the variables
 			    $user = new stdClass;
-			    $user->ID                 = null;
-			    $user->user_login         = $this->filterUsername($userinfo->username);
-			    $user->user_pass          = $user_password;
-			    $user->user_nicename      = strtolower($userinfo->username);
-			    $user->user_email         = strtolower($userinfo->email);
-			    $user->user_url           = '';
-			    $user->user_registered    = date('Y-m-d H:i:s', time()); // seems WP has a switch to use GMT. Could not find that
-			    $user->user_activation_key= $user_activation_key;
-			    $user->user_status        = 0;
-			    $user->display_name       = $userinfo->username;
+			    $user->ID = null;
+			    $user->user_login = $this->filterUsername($userinfo->username);
+			    $user->user_pass = $user_password;
+			    $user->user_nicename = strtolower($userinfo->username);
+			    $user->user_email = strtolower($userinfo->email);
+			    $user->user_url = '';
+			    $user->user_registered = date('Y-m-d H:i:s', time()); // seems WP has a switch to use GMT. Could not find that
+			    $user->user_activation_key = $user_activation_key;
+			    $user->user_status = 0;
+			    $user->display_name = $userinfo->username;
 			    //now append the new user data
 			    $db->insertObject('#__users', $user, 'ID');
 
@@ -485,7 +485,7 @@ class JFusionUser_wordpress extends JFusionUser
 			    $user_id = $db->insertid();
 
 			    // have to set user metadata
-			    $metadata=array();
+			    $metadata = array();
 
 			    $parts = explode(' ', $userinfo->name);
 			    $metadata['first_name'] = trim($parts[0]);
@@ -501,17 +501,17 @@ class JFusionUser_wordpress extends JFusionUser
 
 			    $database_prefix = $this->params->get('database_prefix');
 
-			    $metadata['nickname']         = $userinfo->username;
-			    $metadata['description']      = '';
-			    $metadata['rich_editing']     = 'true';
-			    $metadata['comment_shortcuts']= 'false';
-			    $metadata['admin_color']      = 'fresh';
-			    $metadata['use_ssl']          = '0';
-			    $metadata['aim']              = '';
-			    $metadata['yim']              = '';
-			    $metadata['jabber']           = '';
-			    $metadata[$database_prefix . 'capabilities']  = serialize($default_role);
-			    $metadata[$database_prefix . 'user_level']    = sprintf('%u', $default_userlevel);
+			    $metadata['nickname'] = $userinfo->username;
+			    $metadata['description'] = '';
+			    $metadata['rich_editing'] = 'true';
+			    $metadata['comment_shortcuts'] = 'false';
+			    $metadata['admin_color'] = 'fresh';
+			    $metadata['use_ssl'] = '0';
+			    $metadata['aim'] = '';
+			    $metadata['yim'] = '';
+			    $metadata['jabber'] = '';
+			    $metadata[$database_prefix . 'capabilities'] = serialize($default_role);
+			    $metadata[$database_prefix . 'user_level'] = sprintf('%u', $default_userlevel);
 			    //		$metadata['default_password_nag'] = '0'; //no nag! can be omitted
 
 			    $meta = new stdClass;

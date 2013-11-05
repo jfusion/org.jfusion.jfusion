@@ -215,9 +215,12 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
-	    if ($usergroup !== null) {
-		    $group =  $this->helper->getUsergroupNameWP($usergroup);
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    if ($usergroups !== null) {
+		    $group = array();
+		    foreach ($usergroups as $usergroup) {
+			    $group[] =  $this->helper->getUsergroupNameWP($usergroup);
+		    }
 	    } else {
 		    $group = '';
 	    }

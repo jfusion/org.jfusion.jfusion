@@ -40,30 +40,31 @@ class JFusionHelper_wordpress extends JFusionPlugin
      * @return array
      */
     function getUsergroupListWP() {
-	    $usergroups=array();
-	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $database_prefix = $this->params->get('database_prefix');
+		static $usergroups;
+	    if (!isset($usergroups)) {
+		    $usergroups = array();
 
-		    $query = $db->getQuery(true)
-			    ->select('option_value')
-			    ->from('#__options')
-			    ->where('option_name = ' . $db->quote($database_prefix . 'user_roles'));
+		    try {
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $database_prefix = $this->params->get('database_prefix');
 
-		    $db->setQuery($query);
-		    $roles_ser = $db->loadResult();
-		    $roles = unserialize($roles_ser);
-		    $keys = array_keys($roles);
+			    $query = $db->getQuery(true)
+				    ->select('option_value')
+				    ->from('#__options')
+				    ->where('option_name = ' . $db->quote($database_prefix . 'user_roles'));
 
-		    $count= count($keys);
-		    for($i=0;$i < $count;$i++) {
-			    $group = new stdClass;
-			    $group->id = $i;
-			    $group->name = $keys[$i];
-			    $usergroups[$i] = $group;
+			    $db->setQuery($query);
+
+			    $roles = array_keys(unserialize($db->loadResult()));
+
+			    foreach ($roles as $role) {
+				    $group = new stdClass;
+				    $group->name = $group->id = $role;
+				    $usergroups[] = $group;
+			    }
+		    } catch (Exception $e) {
+			    JFusionFunction::raiseError($e, $this->getJname());
 		    }
-	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
 	    }
 		return $usergroups;
 	}
@@ -73,11 +74,11 @@ class JFusionHelper_wordpress extends JFusionPlugin
      * @param $usergroup_id
      * @return string
      */
-    function getUsergroupNameWP($usergroup_id){
+    function getUsergroupNameWP($usergroup_id) {
 		$userGroupName = '';
 		$userGroupList = $this->getUsergroupListWP();
 		foreach ($userGroupList as $usergroup) {
-			if($usergroup->id == $usergroup_id){
+			if($usergroup->id == $usergroup_id) {
 				$userGroupName = $usergroup->name;
 				break;
 			}
@@ -87,13 +88,14 @@ class JFusionHelper_wordpress extends JFusionPlugin
 
     /**
      * @param $usergroup_name
+     *
      * @return int
      */
-    function getUsergroupIdWP($usergroup_name){
+    function getUsergroupIdWP($usergroup_name) {
 		$userGroupList = $this->getUsergroupListWP();
 		$groupid = -1;
 		foreach ($userGroupList as $usergroup) {
-			if(strtolower($usergroup->name)== strtolower($usergroup_name)){
+			if(strtolower($usergroup->name) == strtolower($usergroup_name)){
 				$groupid = $usergroup->id;
 				break;
 			}
@@ -106,7 +108,7 @@ class JFusionHelper_wordpress extends JFusionPlugin
      * @param $role
      * @return mixed
      */
-    function WP_userlevel_from_role( $max, $role ) {
+    function WP_userlevel_from_role($max, $role) {
 		static $allroles;
 		if (!isset($allroles)) {
 			try {
@@ -127,11 +129,11 @@ class JFusionHelper_wordpress extends JFusionPlugin
 			}
 		}
 
-		$item=implode(array_keys($allroles[$role]['capabilities']));
+		$item = implode(array_keys($allroles[$role]['capabilities']));
 
-		if ( preg_match( '/level_(10|[0-9])/',$item, $matches )) {
-			$level = intval( $matches[1] );
-			return max( $max, $level );
+		if (preg_match('/level_(10|[0-9])/',$item, $matches)) {
+			$level = intval($matches[1]);
+			return max($max, $level);
 		} else {
 			return $max;
 		}
@@ -142,7 +144,7 @@ class JFusionHelper_wordpress extends JFusionPlugin
      * @return mixed
      */
     function WP_user_level_from_roles($userroles) {
-		return array_reduce(  $userroles , array($this, 'WP_userlevel_from_role') , 0 );
+		return array_reduce($userroles, array($this, 'WP_userlevel_from_role'), 0);
 	}
 
     /**
@@ -151,7 +153,7 @@ class JFusionHelper_wordpress extends JFusionPlugin
      * @return mixed|string
      */
     function remove_accentsWP($string) {
-		if ( !preg_match('/[\x80-\xff]/', $string) )
+		if (!preg_match('/[\x80-\xff]/', $string))
 		return $string;
 
 		if ($this->seems_utf8($string)) {
