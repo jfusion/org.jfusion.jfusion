@@ -55,7 +55,7 @@ class jfusionViewusergroups extends JViewLegacy {
     {
 	    JHtml::_('Formbehavior.chosen');
 
-	    $plugins = JFusionFactory::getPlugins('both', true);
+	    $plugins = JFusionFactory::getPlugins('all', true);
 
         if (!empty($plugins)) {
             //pass the data onto the view
