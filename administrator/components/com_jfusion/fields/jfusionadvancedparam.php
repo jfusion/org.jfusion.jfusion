@@ -89,7 +89,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 			$del = '';
 			foreach ($params as $param) {
 				if (isset($param['jfusionplugin'])) {
-					$title.= $del . $param['jfusionplugin'];
+					$title .= $del . $param['jfusionplugin'];
 					$del = '; ';
 				}
 			}

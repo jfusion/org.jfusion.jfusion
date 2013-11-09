@@ -40,7 +40,7 @@ class JFormFieldjfusionsql extends JFormField
     {
     	global $jname;
 
-    	$override_jname =  (string) $this->element['jname'];
+    	$override_jname = (string) $this->element['jname'];
     	$jname = (!empty($override_jname)) ? $override_jname : $jname;
 		$multiple = ($this->element['multiple']) ? ' MULTIPLE ' : '';
 		$add_default = $this->element['add_default'];
@@ -99,7 +99,7 @@ class JFormFieldjfusionsql extends JFormField
 					    if(count($items)) {
 						    foreach ($items as $v) {
 							    $pt = $v->parent;
-							    $list = (isset($children[$pt]) && $children[$pt]) ? $children[$pt] : array ();
+							    $list = (isset($children[$pt]) && $children[$pt]) ? $children[$pt] : array();
 							    array_push($list, $v);
 							    $children[$pt] = $list;
 						    }
