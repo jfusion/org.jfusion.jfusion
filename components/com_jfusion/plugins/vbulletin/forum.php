@@ -144,7 +144,7 @@ class JFusionForum_vbulletin extends JFusionForum
         );
         $response = $this->helper->apiCall('createThread', $apidata);
 
-        if (empty($response['errors'])) {
+        if ($response['success']) {
             $threadid = $response['new_id'];
             $postid = $response['firstpostid'];
 
@@ -185,15 +185,13 @@ class JFusionForum_vbulletin extends JFusionForum
 			$status['threadinfo']->forumid = $forumid;
 			$status['threadinfo']->threadid = $threadid;
 			$status['threadinfo']->postid = $postid;
-		} else {
-            foreach ($response['errors'] as $error) {
-                $status['error'][] = $error;
-            }
 		}
-
-        if (!empty($response['debug'])) {
-		    $status['debug']['api_call'] = $response['debug'];
-		}
+	    foreach ($response['errors'] as $error) {
+		    $status['error'][] = $error;
+	    }
+	    foreach ($response['debug'] as $debug) {
+		    $status['debug'][] = $debug;
+	    }
     }
 
     /**
@@ -266,21 +264,21 @@ class JFusionForum_vbulletin extends JFusionForum
 			    );
 			    $response = $this->helper->apiCall('createPost', $apidata);
 
-			    if (!empty($response['errors'])) {
-				    $status['error'] = array_merge($status['error'], $response['errors']);
-			    } else {
-				    $id = $response['new_id'];;
+			    if ($response['success']) {
+				    $id = $response['new_id'];
 
 				    //store post id
 				    $status['postid'] = $id;
 			    }
+			    foreach ($response['errors'] as $error) {
+				    $status['error'][] = $error;
+			    }
+			    foreach ($response['debug'] as $debug) {
+				    $status['debug'][] = $debug;
+			    }
 
 			    //update moderation status to tell discussion bot to notify user
 			    $status['post_moderated'] = ($post_approved) ? 0 : 1;
-		    }
-
-		    if (!empty($response['debug'])) {
-			    $status['debug'][] = $response['debug'];
 		    }
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('USERNAME_IN_USE');
@@ -309,14 +307,12 @@ class JFusionForum_vbulletin extends JFusionForum
             'text' => $text
         );
         $response = $this->helper->apiCall('updateThread', $apidata);
-
-        if (!empty($response['errors'])) {
-            $status['error'] = array_merge($status['error'], $response['errors']);
-        }
-
-        if (!empty($response['debug'])) {
-		    $status['debug']['api_call'] = $response['debug'];
-		}
+	    foreach ($response['errors'] as $error) {
+		    $status['error'][] =  $error;
+	    }
+	    foreach ($response['debug'] as $debug) {
+		    $status['debug'][] = $debug;
+	    }
     }
 
     /**

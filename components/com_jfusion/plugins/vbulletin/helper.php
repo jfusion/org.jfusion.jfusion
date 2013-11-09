@@ -58,7 +58,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
      * @return array|mixed
      */
     function apiCall($task, $data) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('success' => 0, 'errors' => array(), 'debug' => array());
         if (!function_exists('mcrypt_encrypt')) {
             $status['errors'][] = 'mcrypt_encrypt Missing';
         } elseif (!function_exists('curl_init')) {
@@ -88,52 +88,44 @@ class JFusionHelper_vbulletin extends JFusionPlugin
             $curl_response = @curl_exec($ch);
             //detect errors
             if (curl_errno($ch)) {
-                $status['errors'][] = curl_errno($ch) . " " . curl_error($ch);
+                $status['errors'][] = curl_errno($ch) . ' ' . curl_error($ch);
             } else {
                 //detect redirects as the post data gets lots
-                $curlinfo = curl_getinfo( $ch );
+                $curlinfo = curl_getinfo($ch);
                 if ($curlinfo['url'] != $url) {
-                    $status['errors'][] = JText::_('VB_API_REDIRECT'). ': ' . $url . '->' . $curlinfo['url'];
+                    $status['errors'][] = JText::_('VB_API_REDIRECT') . ': ' . $url . '->' . $curlinfo['url'];
                 } else {
                     $curl_response = trim($curl_response);
-                    if (strpos($curl_response, '<?xml') !== 0) {
+                    if (strpos($curl_response, '{') !== 0) {
                         if (strpos($curl_response, '<!DOCTYPE') !== false) {
                             //the page was rendered rather than the hook catching
                             $status['errors'][] = JText::_('VB_API_HOOK_NOT_INSTALLED');
+	                        $status['debug'][] = htmlspecialchars($curl_response);
                         } else {
                             //there is probably a php error or warning
-                            if (($pos = strpos($curl_response, '<?xml')) !== false) {
-                                $extra_string = strip_tags(substr($curl_response, 0, $pos));
-                                $xml_string = substr($curl_response, $pos);
-
-                                $xml = simplexml_load_string($xml_string);
-                                $json = json_encode($xml);
-                                $status = json_decode($json,true);
-                                if (!is_array($status)) {
+                            if (($pos = strpos($curl_response, '{')) !== false) {
+	                            $response = $this->decode(substr($curl_response, $pos));
+                                if ($response === null) {
                                     $status['errors'][] = 'Data corrupted!';
+                                } else {
+	                                $status = $response;
                                 }
-
-                                $status['debug'][] = $extra_string;
+	                            $status['debug'][] = htmlspecialchars(substr($curl_response, 0, $pos));
                             } else {
+	                            $status['debug'][] = htmlspecialchars($curl_response);
                                 if (empty($curl_response)) {
                                     $curl_response = JText::_('VB_API_HOOK_NOT_INSTALLED');
                                 }
-
                                 $status['errors'][] = $curl_response;
                             }
                         }
                     } else {
-                        $xml = simplexml_load_string($curl_response);
-                        $json = json_encode($xml);
-                        $status = json_decode($json,true);
-                        if (!is_array($status)) {
-                            $status['errors'][] = 'Data corrupted!';
-                        } else {
-                            if (!empty($status['errors']) && $status['errors'][0] == 'API Errors') {
-                                //just get rid of this - it was needed to make the array function correctly
-                                unset($status['errors'][0]);
-                            }
-                        }
+	                    $response = $this->decode($curl_response);
+	                    if ($response === null) {
+		                    $status['errors'][] = 'Data corrupted!';
+	                    } else {
+		                    $status = $response;
+	                    }
                     }
                 }
             }
@@ -141,6 +133,14 @@ class JFusionHelper_vbulletin extends JFusionPlugin
         }
         return $status;
     }
+
+	/**
+	 *
+	 */
+	function decode($data) {
+		return json_decode($data, true);
+	}
+
 
     /**
      * Initializes the vBulletin framework

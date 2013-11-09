@@ -717,6 +717,11 @@ HTML;
 			$db->setQuery($query);
 			if ($db->loadResult() == 0) {
 				JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
+			} else {
+				$response = $this->helper->apiCall('ping', array('ping' => 1));
+				if (!$response['success']) {
+					JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
+				}
 			}
 		} catch (Exception $e) {
 			JFusionFunction::raiseError($e, $this->getJname());

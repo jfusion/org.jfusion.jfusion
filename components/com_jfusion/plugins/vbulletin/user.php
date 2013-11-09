@@ -156,16 +156,15 @@ class JFusionUser_vbulletin extends JFusionUser
 		$apidata = array('userinfo' => $userinfo);
 		$response = $this->helper->apiCall('deleteUser', $apidata);
 
-		if (!empty($response['errors'])) {
-			foreach ($response['errors'] as $error) {
-				$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $error;
-			}
-		} else {
-			$status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->userid;
-		}
+		if ($response['success']) {
+			$status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->userid;
 
-		if (!empty($response['debug'])) {
-			$status['debug']['api_call'] = $response['debug'];
+		}
+		foreach ($response['errors'] as $error) {
+			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $error;
+		}
+		foreach ($response['debug'] as $debug) {
+			$status['debug'][] = $debug;
 		}
 		return $status;
 	}
@@ -409,16 +408,14 @@ class JFusionUser_vbulletin extends JFusionUser
 		$apidata = array('userinfo' => $userinfo, 'existinguser' => $existinguser);
 		$response = $this->helper->apiCall('updateEmail', $apidata);
 
-		if(!empty($response['errors'])) {
-			foreach ($response['errors'] as $error) {
-				$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ' ' . $error;
-			}
-		} else {
-			$status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+		if($response['success']) {
+			$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 		}
-
-		if (!empty($response['debug'])) {
-			$status['debug']['api_call'] = $response['debug'];
+		foreach ($response['errors'] as $error) {
+			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ' ' . $error;
+		}
+		foreach ($response['debug'] as $debug) {
+			$status['debug'][] = $debug;
 		}
 	}
 
@@ -544,16 +541,14 @@ class JFusionUser_vbulletin extends JFusionUser
 				$db->execute();
 			}
 
-			if (empty($response['errors'])) {
-				$status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-			} else {
-				foreach ($response['errors'] as $error) {
-					$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $error;
-				}
+			if ($response['success']) {
+				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 			}
-
-			if (!empty($response['debug'])) {
-				$status['debug']['api_call'] = $response['debug'];
+			foreach ($response['errors'] as $error) {
+				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $error;
+			}
+			foreach ($response['debug'] as $debug) {
+				$status['debug'][] = $debug;
 			}
 		} catch (Exception $e) {
 			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
@@ -648,19 +643,17 @@ class JFusionUser_vbulletin extends JFusionUser
 
 				$apidata = array('existinguser' => $existinguser);
 				$response = $this->helper->apiCall('inactivateUser', $apidata);
-				if (empty($response['errors'])) {
-					$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-				} else {
-					foreach ($response['errors'] as $error) {
-						$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $error;
-					}
+				if ($response['success']) {
+					$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+				}
+				foreach ($response['errors'] as $error) {
+					$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $error;
+				}
+				foreach ($response['debug'] as $debug) {
+					$status['debug'][] = $debug;
 				}
 			} else {
-				$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-			}
-
-			if (!empty($response['debug'])) {
-				$status['debug']['api_call'] = $response['debug'];
+				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 			}
 		} catch (Exception $e) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
@@ -709,14 +702,14 @@ class JFusionUser_vbulletin extends JFusionUser
 				//set the timezone
 				if (!isset($userinfo->timezone)) {
 					$config = JFactory::getConfig();
-					$userinfo->timezone = $config->get('offset',0);
+					$userinfo->timezone = $config->get('offset', 0);
 				}
 
 				$apidata['userinfo'] = $userinfo;
 
 				//performs some final VB checks before saving
 				$response = $this->helper->apiCall('createUser', $apidata);
-				if (empty($response['errors'])) {
+				if ($response['success']) {
 					$userdmid = $response['new_id'];
 					//if we set a temp password, we need to move the hashed password over
 					if (!isset($userinfo->password_clear)) {
@@ -745,14 +738,12 @@ class JFusionUser_vbulletin extends JFusionUser
 
 					//return the good news
 					$status['debug'][] = JText::_('USER_CREATION') . '. '. JText::_('USERID') . ' ' . $userdmid;
-				} else {
-					foreach ($response['errors'] as $error) {
-						$status['error'][] = JText::_('USER_CREATION_ERROR') . ' ' . $error;
-					}
 				}
-
-				if (!empty($response['debug'])) {
-					$status['debug']['api_call'] = $response['debug'];
+				foreach ($response['errors'] as $error) {
+					$status['error'][] = JText::_('USER_CREATION_ERROR') . ' ' . $error;
+				}
+				foreach ($response['debug'] as $debug) {
+					$status['debug'][] = $debug;
 				}
 			}
 		} catch (Exception $e) {
@@ -832,16 +823,14 @@ class JFusionUser_vbulletin extends JFusionUser
 			);
 			$response = $this->helper->apiCall('updateUsergroup', $apidata);
 
-			if (empty($response['errors'])) {
-				$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $usergroup->defaultgroup;;
-			} else {
-				foreach ($response['errors'] AS $error) {
-					$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
-				}
+			if ($response['success']) {
+				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup->defaultgroup;;
 			}
-
-			if (!empty($response['debug'])) {
-				$status['debug']['api_call'] = $response['debug'];
+			foreach ($response['errors'] AS $error) {
+				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+			}
+			foreach ($response['debug'] as $debug) {
+				$status['debug'][] = $debug;
 			}
 		}
 	}
@@ -1122,20 +1111,22 @@ class JFusionUser_vbulletin extends JFusionUser
 				$usertitle = $this->getDefaultUserTitle($settings['vb_expiration_groupid']);
 
 				$apidata = array(
-					"userinfo" => $userinfo,
-					"existinguser" => $existinguser,
-					"aec" => 1,
-					"aecgroupid" => $settings['vb_expiration_groupid'],
-					"usertitle" => $usertitle
+					'userinfo' => $userinfo,
+					'existinguser' => $existinguser,
+					'aec' => 1,
+					'aecgroupid' => $settings['vb_expiration_groupid'],
+					'usertitle' => $usertitle
 				);
 				$response = $this->helper->apiCall('unblockUser', $apidata);
 
-				if (empty($response['errors'])) {
-					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $settings['vb_expiration_groupid'];
-				} else {
-					foreach ($response['errors'] AS $error) {
-						$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
-					}
+				if ($response['success']) {
+					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $settings['vb_expiration_groupid'];
+				}
+				foreach ($response['errors'] AS $error) {
+					$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+				}
+				foreach ($response['debug'] as $debug) {
+					$status['debug'][] = $debug;
 				}
 			} else {
 				$this->updateUser($userinfo, 0);
@@ -1166,20 +1157,22 @@ class JFusionUser_vbulletin extends JFusionUser
 				$usertitle = $this->getDefaultUserTitle($settings['vb_subscription_groupid']);
 
 				$apidata = array(
-					"userinfo" => $userinfo,
-					"existinguser" => $existinguser,
-					"aec" => 1,
-					"aecgroupid" => $settings['vb_subscription_groupid'],
-					"usertitle" => $usertitle
+					'userinfo' => $userinfo,
+					'existinguser' => $existinguser,
+					'aec' => 1,
+					'aecgroupid' => $settings['vb_subscription_groupid'],
+					'usertitle' => $usertitle
 				);
 				$response = $this->helper->apiCall('unblockUser', $apidata);
 
-				if (empty($response['errors'])) {
-					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $settings['vb_subscription_groupid'];
-				} else {
-					foreach ($response['errors'] AS $error) {
-						$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
-					}
+				if ($response['success']) {
+					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $settings['vb_subscription_groupid'];
+				}
+				foreach ($response['errors'] AS $error) {
+					$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+				}
+				foreach ($response['debug'] as $debug) {
+					$status['debug'][] = $debug;
 				}
 			} else {
 				$this->updateUser($userinfo, 0);
