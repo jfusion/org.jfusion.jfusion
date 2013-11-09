@@ -42,7 +42,7 @@ switch($task)
 
 		$db->setQuery($query);
 		$name = $db->loadResult();
-		JToolBarHelper::title($name. ' ' . JText::_('PLUGIN_EDITOR'), 'controlpanel.png');
+		JToolBarHelper::title($name . ' ' . JText::_('PLUGIN_EDITOR'), 'controlpanel.png');
 		JToolBarHelper::save('joomlasave');
 		JToolBarHelper::apply('joomlaapply');
 		JToolBarHelper::cancel('joomladisplay');

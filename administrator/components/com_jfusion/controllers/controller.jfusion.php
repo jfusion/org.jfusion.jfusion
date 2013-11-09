@@ -885,7 +885,7 @@ JS;
 							    $att = $val->attributes();
 							    $attName = (string)$att['name'];
 							    $conf[$attName] = htmlspecialchars_decode((string)$val);
-							    if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
+							    if (strpos($conf[$attName], 'a:') === 0) $conf[$attName] = unserialize($conf[$attName]);
 						    }
 
 						    $database_type = JFactory::getApplication()->input->get('database_type');
@@ -949,7 +949,7 @@ JS;
 
         $arr = array();
         foreach ($params as $key => $val) {
-            if( !$dbinfo && substr($key, 0, 8) == 'database' && substr($key, 0, 13) != 'database_type' ) {
+            if(!$dbinfo && substr($key, 0, 8) == 'database' && substr($key, 0, 13) != 'database_type') {
                 continue;
             }
             $arr[$key] = $val;
@@ -961,8 +961,8 @@ JS;
 
         list($VersionCurrent, $RevisionCurrent) = JFusionFunctionAdmin::currentVersion(true);
 
-        $info->addAttribute  ('jfusionversion',  $VersionCurrent);
-        $info->addAttribute  ('jfusionrevision',  $RevisionCurrent);
+        $info->addAttribute('jfusionversion', $VersionCurrent);
+        $info->addAttribute('jfusionrevision', $RevisionCurrent);
 
         //get the current JFusion version number
         $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
@@ -977,7 +977,7 @@ JS;
 
         $info->addAttribute('date', date('F j, Y, H:i:s'));
 
-        $info->addAttribute  ('jname', $jname);
+        $info->addAttribute('jname', $jname);
 
         $db = JFactory::getDBO();
 
@@ -991,7 +991,7 @@ JS;
 
 	    $original_name = $original_name ? $original_name : $jname;
 
-        $info->addAttribute  ('original_name', $original_name);
+        $info->addAttribute('original_name', $original_name);
 
 	    $config = $xml->addChild('config');
 	    foreach ($arr as $key => $val) {

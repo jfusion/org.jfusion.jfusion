@@ -27,133 +27,106 @@ class com_jfusionInstallerScript
 		$table_list = $db->getTableList();
 		$table_prefix = $db->getPrefix();
 
-		if (array_search($table_prefix . 'jfusion_users', $table_list) == false) {
-			$query = 'CREATE TABLE #__jfusion_users (
-			      id int(11) NOT null,
-			      username varchar(50),
-			      PRIMARY KEY (id)
-			    ) DEFAULT CHARACTER SET utf8;';
-			$db->setQuery($query);
-			try {
+		try {
+			if (array_search($table_prefix . 'jfusion_users', $table_list) == false) {
+				$query = 'CREATE TABLE #__jfusion_users (
+				      id int(11) NOT null,
+				      username varchar(50),
+				      PRIMARY KEY (id)
+				    ) DEFAULT CHARACTER SET utf8;';
+				$db->setQuery($query);
 				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
 			}
-		}
-		//create the jfusion_user_plugin table if it does not exist already
-		if (array_search($table_prefix . 'jfusion_users_plugin', $table_list) == false) {
-			$query = 'CREATE TABLE #__jfusion_users_plugin (
-			      autoid int(11) NOT null auto_increment,
-			      id int(11) NOT null,
-			      username varchar(50),
-			      userid varchar(50) NOT null,
-			      jname varchar(50) NOT null,
-			      PRIMARY KEY (autoid),
-			      UNIQUE `lookup` (id,jname)
-			    ) DEFAULT CHARACTER SET utf8;';
-			$db->setQuery($query);
-			try {
+			//create the jfusion_user_plugin table if it does not exist already
+			if (array_search($table_prefix . 'jfusion_users_plugin', $table_list) == false) {
+				$query = 'CREATE TABLE #__jfusion_users_plugin (
+				      autoid int(11) NOT null auto_increment,
+				      id int(11) NOT null,
+				      username varchar(50),
+				      userid varchar(50) NOT null,
+				      jname varchar(50) NOT null,
+				      PRIMARY KEY (autoid),
+				      UNIQUE `lookup` (id,jname)
+				    ) DEFAULT CHARACTER SET utf8;';
+				$db->setQuery($query);
 				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
 			}
-		}
-		//create the jfusion_discussion_bot table if it does not exist already
-		if (array_search($table_prefix . 'jfusion_discussion_bot', $table_list) == false) {
-			$query = 'CREATE TABLE IF NOT EXISTS #__jfusion_discussion_bot (
-			        contentid int(11) NOT NULL,
-			        component varchar(255) NOT NULL,
-			        forumid int(11) NOT NULL,
-			        threadid int(11) NOT NULL,
-			        postid int(11) NOT NULL,
-			        jname varchar(255) NOT NULL,
-			        modified int(11) NOT NULL default 0,
-			        published INT( 1 ) NOT NULL default 1,
-			        manual INT( 1 ) NOT NULL DEFAULT 0,
-			        UNIQUE `lookup` (contentid,jname)
-			    ) CHARSET=utf8;';
-			$db->setQuery($query);
-			try {
+			//create the jfusion_discussion_bot table if it does not exist already
+			if (array_search($table_prefix . 'jfusion_discussion_bot', $table_list) == false) {
+				$query = 'CREATE TABLE IF NOT EXISTS #__jfusion_discussion_bot (
+				        contentid int(11) NOT NULL,
+				        component varchar(255) NOT NULL,
+				        forumid int(11) NOT NULL,
+				        threadid int(11) NOT NULL,
+				        postid int(11) NOT NULL,
+				        jname varchar(255) NOT NULL,
+				        modified int(11) NOT NULL default 0,
+				        published INT( 1 ) NOT NULL default 1,
+				        manual INT( 1 ) NOT NULL DEFAULT 0,
+				        UNIQUE `lookup` (contentid,jname)
+				    ) CHARSET=utf8;';
+				$db->setQuery($query);
 				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
 			}
-		}
-		//create the jfusion_sync table if it does not exist already
-		if (array_search($table_prefix . 'jfusion_sync', $table_list) == false) {
-			$query = 'CREATE TABLE #__jfusion_sync (
-			      syncid varchar(10),
-			      action varchar(255),
-			      active int(1) NOT NULL DEFAULT 0,
-			      syncdata longblob,
-			      time_start int(8),
-			      time_end int(8),
-			      PRIMARY KEY  (syncid)
-			    );';
-			$db->setQuery($query);
-			try {
+			//create the jfusion_sync table if it does not exist already
+			if (array_search($table_prefix . 'jfusion_sync', $table_list) == false) {
+				$query = 'CREATE TABLE #__jfusion_sync (
+				      syncid varchar(10),
+				      action varchar(255),
+				      active int(1) NOT NULL DEFAULT 0,
+				      syncdata longblob,
+				      time_start int(8),
+				      time_end int(8),
+				      PRIMARY KEY  (syncid)
+				    );';
+				$db->setQuery($query);
 				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
 			}
-		}
-		//create the jfusion_sync_log table if it does not exist already
-		if (array_search($table_prefix . 'jfusion_sync_details', $table_list) == false) {
-			$query = 'CREATE TABLE #__jfusion_sync_details (
-			      id int(11) NOT NULL auto_increment,
-			      syncid varchar(10),
-			      jname varchar(255),
-			      username varchar(255),
-			      email varchar(255),
-			      action varchar(255),
-			      `message` text,
-			      data longblob,
-			      PRIMARY KEY  (id)
-			    );';
-			$db->setQuery($query);
-			try {
+			//create the jfusion_sync_log table if it does not exist already
+			if (array_search($table_prefix . 'jfusion_sync_details', $table_list) == false) {
+				$query = 'CREATE TABLE #__jfusion_sync_details (
+				      id int(11) NOT NULL auto_increment,
+				      syncid varchar(10),
+				      jname varchar(255),
+				      username varchar(255),
+				      email varchar(255),
+				      action varchar(255),
+				      `message` text,
+				      data longblob,
+				      PRIMARY KEY  (id)
+				    );';
+				$db->setQuery($query);
 				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
-			}
-		}
-
-		if (array_search($table_prefix . 'jfusion', $table_list) == false) {
-			$this->jfusionupgrade = JText::_('JFUSION') . ' ' . JText::_('INSTALL') . ' ' .JText::_('SUCCESS');
-
-			$query = 'CREATE TABLE #__jfusion (
-			        id int(11) NOT null auto_increment,
-			        name varchar(50) NOT null,
-			        params text,
-			        master tinyint(4) NOT null,
-			        slave tinyint(4) NOT null,
-			        status tinyint(4) NOT null,
-			        dual_login tinyint(4) NOT null,
-			        check_encryption tinyint(4) NOT null,
-			        original_name varchar(50) null,
-			        ordering tinyint(4),
-			        PRIMARY KEY  (id)
-			      );';
-
-			$db->setQuery($query);
-			try {
-				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
 			}
 
-			JFolder::create(JFUSION_PLUGIN_PATH);
-		}
+			if (array_search($table_prefix . 'jfusion', $table_list) == false) {
+				$this->jfusionupgrade = JText::_('JFUSION') . ' ' . JText::_('INSTALL') . ' ' . JText::_('SUCCESS');
 
-		// $parent is the class calling this method
-	//	$parent->getParent()->setRedirectURL('index.php?option=com_helloworld');
-		$this->display();
+				$query = 'CREATE TABLE #__jfusion (
+				        id int(11) NOT null auto_increment,
+				        name varchar(50) NOT null,
+				        params text,
+				        master tinyint(4) NOT null,
+				        slave tinyint(4) NOT null,
+				        status tinyint(4) NOT null,
+				        dual_login tinyint(4) NOT null,
+				        check_encryption tinyint(4) NOT null,
+				        original_name varchar(50) null,
+				        ordering tinyint(4),
+				        PRIMARY KEY  (id)
+				      );';
+
+				$db->setQuery($query);
+				$db->execute();
+
+				JFolder::create(JFUSION_PLUGIN_PATH);
+			}
+			$this->display();
+			// $parent is the class calling this method
+			//	$parent->getParent()->setRedirectURL('index.php?option=com_helloworld');
+		} catch (Exception $e ) {
+			echo $e->getMessage() . '<br />';
+		}
 	}
 
 
@@ -168,73 +141,58 @@ class com_jfusionInstallerScript
 	{
 		$this->init();
 		//this is an upgrade
-		$this->jfusionupgrade = JText::_('JFUSION') . ' ' . JText::_('UPDATE') . ' ' .JText::_('SUCCESS');
+		$this->jfusionupgrade = JText::_('JFUSION') . ' ' . JText::_('UPDATE') . ' ' . JText::_('SUCCESS');
 
 		$db = JFactory::getDBO();
 		$table_list = $db->getTableList();
 		$table_prefix = $db->getPrefix();
 
-		/***
-		 * UPGRADES FOR 1.1.0 Patch 2
-		 ***/
-		//see if the columns exists
-		$query = 'SHOW COLUMNS FROM #__jfusion';
-		$db->setQuery($query);
-		$columns = $db->loadColumn();
+		try {
+			/***
+			 * UPGRADES FOR 1.1.0 Patch 2
+			 ***/
+			//see if the columns exists
+			$query = 'SHOW COLUMNS FROM #__jfusion';
+			$db->setQuery($query);
+			$columns = $db->loadColumn();
 
-		//check to see if the description column exists, if it does remove all pre 1.1.0 Beta Patch 2 columns
-		if (in_array('description', $columns)) {
-			$query = 'ALTER TABLE #__jfusion DROP COLUMN version, DROP COLUMN description, DROP COLUMN date, DROP COLUMN author, DROP COLUMN support';
-			$db->setQuery($query);
-			try {
+			//check to see if the description column exists, if it does remove all pre 1.1.0 Beta Patch 2 columns
+			if (in_array('description', $columns)) {
+				$query = 'ALTER TABLE #__jfusion DROP COLUMN version, DROP COLUMN description, DROP COLUMN date, DROP COLUMN author, DROP COLUMN support';
+				$db->setQuery($query);
 				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
 			}
-		}
-		/***
-		 * UPGRADES FOR 1.1.1 Beta
-		 ***/
-		if (!in_array('original_name', $columns)) {
-			//add the column
-			$query = 'ALTER TABLE #__jfusion ADD COLUMN original_name varchar(50) null';
-			$db->setQuery($query);
-			try {
+			/***
+			 * UPGRADES FOR 1.1.1 Beta
+			 ***/
+			if (!in_array('original_name', $columns)) {
+				//add the column
+				$query = 'ALTER TABLE #__jfusion ADD COLUMN original_name varchar(50) null';
+				$db->setQuery($query);
 				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
 			}
-		}
 
-		/***
-		 * UPGRADES FOR 1.1.2 Beta
-		 ***/
-		//add the search and discussion columns
-		if (!in_array('search', $columns)) {
-			$query = 'ALTER TABLE #__jfusion
-              ADD COLUMN search tinyint(4) NOT null DEFAULT 0,
-                ADD COLUMN discussion tinyint(4) NOT null DEFAULT 0';
-			$db->setQuery($query);
-			try {
+			/***
+			 * UPGRADES FOR 1.1.2 Beta
+			 ***/
+			//add the search and discussion columns
+			if (!in_array('search', $columns)) {
+				$query = 'ALTER TABLE #__jfusion
+					ADD COLUMN search tinyint(4) NOT null DEFAULT 0,
+					ADD COLUMN discussion tinyint(4) NOT null DEFAULT 0';
+				$db->setQuery($query);
 				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
 			}
-		}
 
-		$query = 'SHOW INDEX FROM #__jfusion_users_plugin';
-		$db->setQuery($query);
-		$indexes = $db->loadObjectList('Key_name');
-		if (!array_key_exists('lookup', $indexes)) {
-			//we need to make sure that old jfusion_users_plugin table doesn't have duplicates
-			//in prep of adding an unique index
-			$query = 'CREATE TABLE #__jfusion_users_plugin_backup AS
-              SELECT * FROM  #__jfusion_users_plugin WHERE 1 GROUP BY id, jname';
+			$query = 'SHOW INDEX FROM #__jfusion_users_plugin';
 			$db->setQuery($query);
-			try {
+			$indexes = $db->loadObjectList('Key_name');
+			if (!array_key_exists('lookup', $indexes)) {
+				//we need to make sure that old jfusion_users_plugin table doesn't have duplicates
+				//in prep of adding an unique index
+				$query = 'CREATE TABLE #__jfusion_users_plugin_backup AS
+					SELECT * FROM  #__jfusion_users_plugin WHERE 1 GROUP BY id, jname';
+				$db->setQuery($query);
 				$db->execute();
 
 				$query = 'DROP TABLE #__jfusion_users_plugin';
@@ -244,214 +202,180 @@ class com_jfusionInstallerScript
 				$query = 'RENAME TABLE #__jfusion_users_plugin_backup TO #__jfusion_users_plugin';
 				$db->setQuery($query);
 				$db->execute();
-			} catch (Exception $e) {
-				echo $e->getMessage() . '<br />';
-				return;
-			}
 
-			//in addition the unique indexes we need to change the userid column to accept text as
-			//plugins such as dokuwiki does not use int userids
-			$query = 'ALTER TABLE #__jfusion_users_plugin
-              ADD UNIQUE `lookup` (id,jname),
-              ADD PRIMARY KEY ( `autoid` ),
-              CHANGE `autoid` `autoid` INT( 11 ) NOT null AUTO_INCREMENT,
-              CHANGE `userid` `userid` VARCHAR(50) NOT null';
-			$db->setQuery($query);
-			try {
+				//in addition the unique indexes we need to change the userid column to accept text as
+				//plugins such as dokuwiki does not use int userids
+				$query = 'ALTER TABLE #__jfusion_users_plugin
+					ADD UNIQUE `lookup` (id,jname),
+					ADD PRIMARY KEY ( `autoid` ),
+					CHANGE `autoid` `autoid` INT( 11 ) NOT null AUTO_INCREMENT,
+					CHANGE `userid` `userid` VARCHAR(50) NOT null';
+				$db->setQuery($query);
 				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
 			}
-		}
-		//make sure that the slave and dual_login capabilties of the joomla_ext plugin is enabled
-		$query = $db->getQuery(true)
-			->update('#__jfusion')
-			->set('slave = 0')
-			->where('name = ' . $db->Quote('joomla_ext'))
-			->where('slave = 3');
+			//make sure that the slave and dual_login capabilties of the joomla_ext plugin is enabled
+			$query = $db->getQuery(true)
+				->update('#__jfusion')
+				->set('slave = 0')
+				->where('name = ' . $db->Quote('joomla_ext'))
+				->where('slave = 3');
 
-		$db->setQuery($query);
-		$db->execute();
-
-		$query = $db->getQuery(true)
-			->update('#__jfusion')
-			->set('dual_login = 0')
-			->where('name = ' . $db->Quote('joomla_ext'))
-			->where('dual_login = 3');
-		$db->setQuery($query);
-		$db->execute();
-
-		//we need to remove a couple parameter files if they exists to prevent duplicates from showing up, and other unused files.
-		$files2delete = array(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'config.xml',
-			JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'com_jfusion.xml',
-			JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php',
-			JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php',
-			JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractauth.php',
-			JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractuser.php',
-			JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractforum.php',
-			JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php',
-			JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mysql.php',
-			JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mysql.reconnect.php',
-			JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mysqli.php');
-
-		foreach ($files2delete as $f) {
-			if (file_exists($f)) {
-				if (!JFile::delete($f)) {
-					JFusionFunction::raiseWarning(JText::sprintf('UPGRADE_UNABLE_TO_REMOVE_FILE', $f));
-				}
-			}
-		}
-
-		/***
-		 * UPGRADES FOR 1.1.4/1.2
-		 */
-		$query = 'ALTER TABLE `#__jfusion_sync` CHANGE `syncdata` `syncdata` LONGBLOB null DEFAULT null';
-		$db->setQuery($query);
-		try {
+			$db->setQuery($query);
 			$db->execute();
-		} catch (Exception $e ) {
-			echo $e->getMessage() . '<br />';
-			return;
-		}
-		/***
-		 * UPGRADES FOR 1.1.2 Stable
-		 ***/
-		//make id the primary key so that the username will be updated
-		$query = 'ALTER TABLE `#__jfusion_users` DROP PRIMARY KEY, ADD PRIMARY KEY ( `id` )';
-		$db->setQuery($query);
-		try {
+
+			$query = $db->getQuery(true)
+				->update('#__jfusion')
+				->set('dual_login = 0')
+				->where('name = ' . $db->Quote('joomla_ext'))
+				->where('dual_login = 3');
+			$db->setQuery($query);
 			$db->execute();
-		} catch (Exception $e ) {
-			echo $e->getMessage() . '<br />';
-			return;
-		}
-		/**
-		 * UPGRADES FOR 1.5
-		 */
-		//add a active column for user sync
-		$query = 'SHOW COLUMNS FROM #__jfusion_sync';
-		$db->setQuery($query);
-		$columns = $db->loadColumn();
-		if (!in_array('active', $columns)) {
-			$query = 'ALTER TABLE #__jfusion_sync
-              ADD COLUMN active int(1) NOT null DEFAULT 0';
-			$db->setQuery($query);
-			try {
-				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
-			}
-		}
 
-		/**
-		 * UPGRADES FOR 1.6
-		 */
+			//we need to remove a couple parameter files if they exists to prevent duplicates from showing up, and other unused files.
+			$files2delete = array(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'config.xml',
+				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'com_jfusion.xml',
+				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php',
+				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php',
+				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractauth.php',
+				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractuser.php',
+				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractforum.php',
+				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php',
+				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mysql.php',
+				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mysql.reconnect.php',
+				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mysqli.php');
 
-		//add a active column for user sync
-		$query = 'SHOW COLUMNS FROM #__jfusion';
-		$db->setQuery($query);
-		$columns = $db->loadColumn();
-		if (!in_array('ordering', $columns)) {
-			$query = 'ALTER TABLE #__jfusion
-              ADD COLUMN ordering int(4)';
-			$db->setQuery($query);
-			try {
-				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
-			}
-		}
-
-		/**
-		 * UPGRADES FOR 1.8
-		 */
-		$dir = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'plugins';
-		if (JFolder::exists($dir)) {
-			$folders = JFolder::folders($dir);
-			$results = true;
-			foreach ($folders as $folder) {
-				if (!JFolder::exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $folder) ) {
-					$r = JFolder::copy($dir . DIRECTORY_SEPARATOR . $folder, JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $folder);
-					if ($results === true) {
-						$results = $r;
+			foreach ($files2delete as $f) {
+				if (file_exists($f)) {
+					if (!JFile::delete($f)) {
+						JFusionFunction::raiseWarning(JText::sprintf('UPGRADE_UNABLE_TO_REMOVE_FILE', $f));
 					}
 				}
 			}
-			if ($results === true) {
-				JFolder::delete($dir);
-			}
-		}
 
-		//remove columns
-		if (in_array('activity', $columns)) {
-			$query = 'ALTER TABLE #__jfusion DROP column activity';
+			/***
+			 * UPGRADES FOR 1.1.4/1.2
+			 */
+			$query = 'ALTER TABLE `#__jfusion_sync` CHANGE `syncdata` `syncdata` LONGBLOB null DEFAULT null';
 			$db->setQuery($query);
-			try {
-				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-			}
-		}
-		if (in_array('search', $columns)) {
-			$query = 'ALTER TABLE #__jfusion DROP column search';
-			$db->setQuery($query);
-			try {
-				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-			}
-		}
-		if (in_array('discussion', $columns)) {
-			$query = 'ALTER TABLE #__jfusion DROP column discussion';
-			$db->setQuery($query);
-			try {
-				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-			}
-		}
+			$db->execute();
 
-		//migrate from #__jfusion_forum_plugin to #__jfusion_discussion_bot
-		//check to see if #__jfusion_forum_plugin exists indicating that #__jfusion_discussion_bot has not been populated
-		if(array_search($table_prefix . 'jfusion_forum_plugin', $table_list)) {
-			$query = $db->getQuery(true)
-				->select('*')
-				->from('#__jfusion_forum_plugin');
-
+			/***
+			 * UPGRADES FOR 1.1.2 Stable
+			 ***/
+			//make id the primary key so that the username will be updated
+			$query = 'ALTER TABLE `#__jfusion_users` DROP PRIMARY KEY, ADD PRIMARY KEY ( `id` )';
 			$db->setQuery($query);
-			$results = $db->loadObjectList();
+			$db->execute();
 
-			$query = 'SHOW COLUMNS FROM #__jfusion_forum_plugin';
+			/**
+			 * UPGRADES FOR 1.5
+			 */
+			//add a active column for user sync
+			$query = 'SHOW COLUMNS FROM #__jfusion_sync';
 			$db->setQuery($query);
 			$columns = $db->loadColumn();
-
-			$row_inserts = array();
-			foreach($results as $result) {
-				$col_inserts = array();
-				foreach($columns as $column) {
-					$col_inserts[] = $db->Quote($result->$column);
-				}
-				$row_inserts[] = '(' . implode(', ', $col_inserts) . ')';
+			if (!in_array('active', $columns)) {
+				$query = 'ALTER TABLE #__jfusion_sync
+					ADD COLUMN active int(1) NOT null DEFAULT 0';
+				$db->setQuery($query);
+				$db->execute();
 			}
 
-			if(!empty($row_inserts)) {
-				$query = 'REPLACE INTO #__jfusion_discussion_bot (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $row_inserts);
+			/**
+			 * UPGRADES FOR 1.6
+			 */
+
+			//add a active column for user sync
+			$query = 'SHOW COLUMNS FROM #__jfusion';
+			$db->setQuery($query);
+			$columns = $db->loadColumn();
+			if (!in_array('ordering', $columns)) {
+				$query = 'ALTER TABLE #__jfusion
+            		ADD COLUMN ordering int(4)';
+				$db->setQuery($query);
+				$db->execute();
+			}
+
+			/**
+			 * UPGRADES FOR 1.8
+			 */
+			$dir = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'plugins';
+			if (JFolder::exists($dir)) {
+				$folders = JFolder::folders($dir);
+				$results = true;
+				foreach ($folders as $folder) {
+					if (!JFolder::exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $folder) ) {
+						$r = JFolder::copy($dir . DIRECTORY_SEPARATOR . $folder, JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $folder);
+						if ($results === true) {
+							$results = $r;
+						}
+					}
+				}
+				if ($results === true) {
+					JFolder::delete($dir);
+				}
+			}
+
+			//remove columns
+			if (in_array('activity', $columns)) {
+				$query = 'ALTER TABLE #__jfusion DROP column activity';
 				$db->setQuery($query);
 				try {
 					$db->execute();
-					$migrate_success = true;
-				} catch (Exception $e) {
+				} catch (Exception $e ) {
 					echo $e->getMessage() . '<br />';
-					$migrate_success = false;
 				}
-			} else {
-				$migrate_success = true;
+			}
+			if (in_array('search', $columns)) {
+				$query = 'ALTER TABLE #__jfusion DROP column search';
+				$db->setQuery($query);
+				try {
+					$db->execute();
+				} catch (Exception $e ) {
+					echo $e->getMessage() . '<br />';
+				}
+			}
+			if (in_array('discussion', $columns)) {
+				$query = 'ALTER TABLE #__jfusion DROP column discussion';
+				$db->setQuery($query);
+				try {
+					$db->execute();
+				} catch (Exception $e ) {
+					echo $e->getMessage() . '<br />';
+				}
 			}
 
-			if($migrate_success) {
+			//migrate from #__jfusion_forum_plugin to #__jfusion_discussion_bot
+			//check to see if #__jfusion_forum_plugin exists indicating that #__jfusion_discussion_bot has not been populated
+			if(array_search($table_prefix . 'jfusion_forum_plugin', $table_list)) {
+				$query = $db->getQuery(true)
+					->select('*')
+					->from('#__jfusion_forum_plugin');
+
+				$db->setQuery($query);
+				$results = $db->loadObjectList();
+
+				$query = 'SHOW COLUMNS FROM #__jfusion_forum_plugin';
+				$db->setQuery($query);
+				$columns = $db->loadColumn();
+
+				$row_inserts = array();
+				foreach($results as $result) {
+					$col_inserts = array();
+					foreach($columns as $column) {
+						$col_inserts[] = $db->Quote($result->$column);
+					}
+					$row_inserts[] = '(' . implode(', ', $col_inserts) . ')';
+				}
+
+				if(!empty($row_inserts)) {
+					$query = 'REPLACE INTO #__jfusion_discussion_bot (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $row_inserts);
+					$db->setQuery($query);
+					$db->execute();
+				} else {
+					$migrate_success = true;
+				}
+
 				//add com_content to components column
 				$query = $db->getQuery(true)
 					->update('#__jfusion_discussion_bot')
@@ -465,121 +389,111 @@ class com_jfusionInstallerScript
 
 				$query = 'DROP TABLE #__jfusion_forum_plugin';
 				$db->setQuery($query);
-				try {
-					$db->execute();
-				} catch (Exception $e ) {
-					echo $e->getMessage() . '<br />';
-					return;
-				}
+				$db->execute();
 			} else {
-				return;
-			}
-		} else {
-			//check to make sure there is a components column in the discussion_bot table
-			$query = 'SHOW COLUMNS FROM #__jfusion_discussion_bot';
-			$db->setQuery($query);
-			$columns = $db->loadColumn();
-
-			if (!in_array('component', $columns)) {
-				$query = 'ALTER TABLE #__jfusion_discussion_bot ADD COLUMN component varchar(255) NOT NULL';
+				//check to make sure there is a components column in the discussion_bot table
+				$query = 'SHOW COLUMNS FROM #__jfusion_discussion_bot';
 				$db->setQuery($query);
+				$columns = $db->loadColumn();
 
-				try {
-					$db->execute();
-
-					$query = $db->getQuery(true)
-						->update('#__jfusion_discussion_bot')
-						->set('component = ' . $db->Quote('com_content'));
-
+				if (!in_array('component', $columns)) {
+					$query = 'ALTER TABLE #__jfusion_discussion_bot ADD COLUMN component varchar(255) NOT NULL';
 					$db->setQuery($query);
-					$db->execute();
-				} catch (Exception $e ) {
-					echo $e->getMessage() . '<br />';
+
+					try {
+						$db->execute();
+
+						$query = $db->getQuery(true)
+							->update('#__jfusion_discussion_bot')
+							->set('component = ' . $db->Quote('com_content'));
+
+						$db->setQuery($query);
+						$db->execute();
+					} catch (Exception $e ) {
+						echo $e->getMessage() . '<br />';
+					}
 				}
 			}
-		}
 
-		/**
-		 * for 2.0
-		 */
-		try {
-			$query = 'ALTER TABLE  #__jfusion_sync_details CHANGE  `message`  `message` TEXT';
-			$db->setQuery($query);
-			$db->execute();
-		} catch (Exception $e ) {
-			echo $e->getMessage() . '<br />';
-		}
-
-		$query = 'SHOW COLUMNS FROM #__jfusion';
-		$db->setQuery($query);
-		$columns = $db->loadColumn();
-
-		//remove the plugin_files if it exists
-		if (in_array('plugin_files', $columns)) {
-			//remove the column
-			$query = 'ALTER TABLE #__jfusion DROP column plugin_files';
-			$db->setQuery($query);
+			/**
+			 * for 2.0
+			 */
 			try {
+				$query = 'ALTER TABLE  #__jfusion_sync_details CHANGE  `message`  `message` TEXT';
+				$db->setQuery($query);
 				$db->execute();
 			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
-				return;
 			}
-		}
 
-		// let's update to json
-		$query = $db->getQuery(true)
-			->select('params, id')
-			->from('#__jfusion');
+			$query = 'SHOW COLUMNS FROM #__jfusion';
+			$db->setQuery($query);
+			$columns = $db->loadColumn();
 
-		$db->setQuery($query);
-		$rows = $db->loadObjectList();
-		if(!empty($rows)) {
-			foreach ($rows as $row) {
-				if ($row->params) {
-					$params = base64_decode($row->params);
-					if (strpos($params, 'a:') === 0) {
-						ob_start();
-						$params = unserialize($params);
-						ob_end_clean();
-						if (is_array($params)) {
-							$params = new JRegistry($params);
-							$row->params  = $params->toString();
-							$db->updateObject('#__jfusion', $row, 'id');
+			//remove the plugin_files if it exists
+			if (in_array('plugin_files', $columns)) {
+				//remove the column
+				$query = 'ALTER TABLE #__jfusion DROP column plugin_files';
+				$db->setQuery($query);
+				$db->execute();
+			}
+
+			// let's update to json
+			$query = $db->getQuery(true)
+				->select('params, id')
+				->from('#__jfusion');
+
+			$db->setQuery($query);
+			$rows = $db->loadObjectList();
+			if(!empty($rows)) {
+				foreach ($rows as $row) {
+					if ($row->params) {
+						$params = base64_decode($row->params);
+						if (strpos($params, 'a:') === 0) {
+							ob_start();
+							$params = unserialize($params);
+							ob_end_clean();
+							if (is_array($params)) {
+								$params = new JRegistry($params);
+								$row->params  = $params->toString();
+								$db->updateObject('#__jfusion', $row, 'id');
+							}
 						}
 					}
 				}
 			}
-		}
 
-		//cleanup unused plugins
-		$query = $db->getQuery(true)
-			->select('name')
-			->from('#__jfusion')
-			->where('(params IS NULL OR params = ' . $db->quote('') . ' OR params = ' . $db->quote('0') . ')')
-			->where('status = 0')
-			->where('master = 0')
-			->where('slave = 0')
-			->where('name NOT LIKE ' . $db->quote('joomla_int'));
+			//cleanup unused plugins
+			$query = $db->getQuery(true)
+				->select('name')
+				->from('#__jfusion')
+				->where('(params IS NULL OR params = ' . $db->quote('') . ' OR params = ' . $db->quote('0') . ')')
+				->where('status = 0')
+				->where('master = 0')
+				->where('slave = 0')
+				->where('name NOT LIKE ' . $db->quote('joomla_int'));
 
-		$db->setQuery($query);
-		$rows = $db->loadObjectList();
-		if(!empty($rows)) {
-			foreach ($rows as $row) {
-				$query = $db->getQuery(true)
-					->select('count(*)')
-					->from('#__jfusion')
-					->where('original_name LIKE ' . $db->Quote($row->name));
+			$db->setQuery($query);
+			$rows = $db->loadObjectList();
+			if(!empty($rows)) {
+				foreach ($rows as $row) {
+					$query = $db->getQuery(true)
+						->select('count(*)')
+						->from('#__jfusion')
+						->where('original_name LIKE ' . $db->Quote($row->name));
 
-				$db->setQuery($query);
-				$copys = $db->loadResult();
-				if (!$copys) {
-					$model = new JFusionModelInstaller();
-					$model->uninstall($row->name);
+					$db->setQuery($query);
+					$copys = $db->loadResult();
+					if (!$copys) {
+						$model = new JFusionModelInstaller();
+						$model->uninstall($row->name);
+					}
 				}
 			}
+			$this->display();
+		} catch (Exception $e ) {
+			echo $e->getMessage() . '<br />';
 		}
-		$this->display();
 	}
 
 	/**
