@@ -70,7 +70,7 @@ class JFusionHelper
 		JHtmlSidebar::addEntry(
 			JText::_('LOGIN_CHECKER'),
 			'index.php?option=com_jfusion&task=loginchecker',
-			($vName == 'loginchecker'||$vName == 'logincheckerresult'||$vName == 'logoutcheckerresult')
+			($vName == 'loginchecker' || $vName == 'logincheckerresult' || $vName == 'logoutcheckerresult')
 		);
 
 		JHtmlSidebar::addEntry(
