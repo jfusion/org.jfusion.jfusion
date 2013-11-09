@@ -96,7 +96,7 @@ class modjfusionActivityHelper
                 //process user info
                 $r->output->display_name = ($config['display_name'] && !empty($r->name)) ? $r->name : $r->username;
                 if (empty($r->guest) && $config['userlink']) {
-                    if ($config['userlink_software']=='custom' && !empty($config['userlink_custom'])  && !empty($userlookup)) {
+                    if ($config['userlink_software'] == 'custom' && !empty($config['userlink_custom'])  && !empty($userlookup)) {
                         $user_url = $config['userlink_custom'] . $userlookup->id;
                     } else {
                         $user_url = JFusionFunction::routeURL($forum->getProfileURL($r->userid), $config['itemid'], $jname);
@@ -113,8 +113,8 @@ class modjfusionActivityHelper
 
                 //process date info
                 if ($config['showdate']) {
-                    if ($config['showdate']==2) {
-                        list( $count,$name ) = static::timeSince($r->dateline);
+                    if ($config['showdate'] == 2) {
+                        list($count, $name) = static::timeSince($r->dateline);
                     
                         $r->output->date = ($count == 1) ? '1 ' . JText::_($name . '_AGO') : $count . ' ' . JText::_($name . 'S_AGO');
                     } else {
@@ -221,6 +221,6 @@ class modjfusionActivityHelper
                 break;
             }
         }
-        return array($count,$name);
+        return array($count, $name);
     }    
 }

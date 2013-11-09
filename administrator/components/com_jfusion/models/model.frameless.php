@@ -181,7 +181,7 @@ class JFusionFrameless {
 		$session->set('session.token', $token);
 
 		//clear the page title
-		if (! empty ( $data->buffer )) {
+		if (!empty($data->buffer)) {
 			$document->setTitle('');
 		}
 
@@ -199,8 +199,8 @@ class JFusionFrameless {
 		$data->buffer = static::parseEncoding($data->buffer);
 
 		//we set the backtrack_limit to twice the buffer length just in case!
-		$backtrack_limit = ini_get ( 'pcre.backtrack_limit' );
-		ini_set ( 'pcre.backtrack_limit', strlen($data->buffer) * 2 );
+		$backtrack_limit = ini_get ('pcre.backtrack_limit');
+		ini_set('pcre.backtrack_limit', strlen($data->buffer) * 2);
 
 		$JFusionPlugin->parseBuffer($data);
 
@@ -212,7 +212,7 @@ class JFusionFrameless {
 			} else {
 				unset($data->buffer);
 				//no output returned
-				throw new RuntimeException(JText::_ ( 'NO_HTML' ));
+				throw new RuntimeException(JText::_ ('NO_HTML'));
 			}
 		}
 		else {
@@ -224,21 +224,21 @@ class JFusionFrameless {
 
 				//change the page title
 				$pattern = '#<title>(.*?)<\/title>#si';
-				preg_match ( $pattern, $data->header, $page_title );
+				preg_match($pattern, $data->header, $page_title);
 
-				$document->setTitle(html_entity_decode( $page_title [1], ENT_QUOTES, "utf-8" ));
+				$document->setTitle(html_entity_decode($page_title [1], ENT_QUOTES, 'utf-8'));
 
 				$regex_header [] = $pattern;
 				$replace_header [] = '';
 
 				//set meta data to that of software
-				$meta = array ('keywords', 'description', 'robots' );
+				$meta = array('keywords', 'description', 'robots');
 
-				foreach ( $meta as $m ) {
+				foreach ($meta as $m) {
 					$pattern = '#<meta name=["|\']' . $m . '["|\'](.*?)content=["|\'](.*?)["|\'](.*?)>#Si';
-					if (preg_match ( $pattern, $data->header, $page_meta )) {
+					if (preg_match($pattern, $data->header, $page_meta)) {
 						if ($page_meta [2]) {
-							$document->setMetaData ( $m, $page_meta [2] );
+							$document->setMetaData($m, $page_meta[2]);
 						}
 						$regex_header [] = $pattern;
 						$replace_header [] = '';
@@ -246,7 +246,7 @@ class JFusionFrameless {
 				}
 
 				$pattern = '#<meta name=["|\']generator["|\'](.*?)content=["|\'](.*?)["|\'](.*?)>#Si';
-				if (preg_match ( $pattern, $data->header, $page_generator )) {
+				if (preg_match($pattern, $data->header, $page_generator)) {
 					if ($page_generator [2]) {
 						$document->setGenerator($document->getGenerator () . ', ' . $page_generator[2]);
 					}
@@ -259,9 +259,9 @@ class JFusionFrameless {
 				$replace_header [] = '';
 
 				//remove above set meta data from software's header
-				$data->header = preg_replace ( $regex_header, $replace_header, $data->header );
+				$data->header = preg_replace($regex_header, $replace_header, $data->header);
 
-				$JFusionPlugin->parseHeader ( $data );
+				$JFusionPlugin->parseHeader($data);
 
 				if ($data->default_css) {
 					$document->addStyleSheet(JURI::base() . '/components/com_jfusion/css/default.css');
@@ -273,7 +273,7 @@ class JFusionFrameless {
 					$data->style = '';
 				}
 
-				$JFusionPlugin->parseCSS($data,$data->header);
+				$JFusionPlugin->parseCSS($data, $data->header);
 
 				$document->addCustomTag($data->header );
 
@@ -287,13 +287,13 @@ class JFusionFrameless {
 			}
 
 			// Output the body
-			if (isset ( $data->body )) {
+			if (isset($data->body)) {
 				$JFusionPlugin->parseCSS($data, $data->body, true);
 
 				static::parseBody($data);
 
 				// parse the URL's'
-				$JFusionPlugin->parseBody ( $data );
+				$JFusionPlugin->parseBody($data);
 			}
 
 			//set the base href (commented out by mariusvr as this caused errors for people using IE)
@@ -301,7 +301,7 @@ class JFusionFrameless {
 
 
 			//restore the backtrack_limit
-			ini_set ( 'pcre.backtrack_limit', $backtrack_limit );
+			ini_set('pcre.backtrack_limit', $backtrack_limit);
 		}
 		return true;
 	}
@@ -311,11 +311,11 @@ class JFusionFrameless {
 	 * @return string
 	 */
 	function parseEncoding($buffer) {
-		if ( preg_match  ( '#<meta.*?content="(.*?); charset=(.*?)".*?/>#isS'  , $buffer , $matches)) {
-			if ( stripos  ( $matches[1] , 'text/html' ) !== false && stripos( $matches[2] , 'utf-8' ) === false ) {
+		if (preg_match('#<meta.*?content="(.*?); charset=(.*?)".*?/>#isS', $buffer, $matches)) {
+			if (stripos($matches[1], 'text/html') !== false && stripos($matches[2], 'utf-8') === false ) {
 				foreach(mb_list_encodings() as $chr) {
-					if (stripos( $matches[2] , $chr ) !== false) {
-						$buffer = mb_convert_encoding( $buffer , 'UTF-8', $matches[2] );
+					if (stripos($matches[2], $chr) !== false) {
+						$buffer = mb_convert_encoding($buffer, 'UTF-8', $matches[2]);
 					}
 				}
 			}
@@ -333,12 +333,12 @@ class JFusionFrameless {
 			require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'simple_html_dom.php');
 			$html = str_get_html($data->body);
 
-			if ( !empty($data->bodyremove) ) {
+			if (!empty($data->bodyremove)) {
 				$extract = explode(';' , $data->bodyremove);
-				foreach ( $extract as $value ) {
+				foreach ($extract as $value) {
 					$elements = $html->find(trim($value));
-					if ( $elements ) {
-						foreach ( $elements as $element ) {
+					if ($elements) {
+						foreach ($elements as $element) {
 							$element->outertext = '';
 						}
 					}
@@ -347,10 +347,10 @@ class JFusionFrameless {
 			if ( !empty($data->bodyextract) ) {
 				$extract = explode(';' , $data->bodyextract);
 
-				foreach ( $extract as $value ) {
+				foreach ($extract as $value) {
 					$elements = $html->find(trim($value));
-					if ( $elements ) {
-						foreach( $elements as $element ) {
+					if ($elements) {
+						foreach($elements as $element) {
 							$data->body = $element->outertext();
 							return;
 						}

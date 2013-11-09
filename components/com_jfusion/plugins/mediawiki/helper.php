@@ -94,7 +94,7 @@ class JFusionHelper_mediawiki extends JFusionPlugin
      * @param $getVar
      * @return mixed
      */
-    function getConfig( $getVar ) {
+    function getConfig($getVar) {
         static $config = array();
 
         if (isset($config[$getVar])) {
@@ -127,7 +127,7 @@ class JFusionHelper_mediawiki extends JFusionPlugin
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'IP.php';
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'WebRequest.php';
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'SiteConfiguration.php';
-        defined ('MEDIAWIKI') or define( 'MEDIAWIKI',TRUE );
+        defined ('MEDIAWIKI') or define('MEDIAWIKI', TRUE);
         defined ('MW_INSTALL_PATH') or define('MW_INSTALL_PATH', $source_path);
         foreach($paths as $path) {
             include_once($path);

@@ -79,10 +79,10 @@ JFusion.submitForm = function (type) {
         noCache: true,
         format: 'json',
         onRequest: function () {
-            $('spinner'+type).set('html','<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
+            $('spinner'+type).set('html', '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
         },
         onSuccess: function(JSONobject) {
-            $('spinner'+type).set('html','');
+            $('spinner'+type).set('html', '');
             JFusion.OnMessages(JSONobject.messages);
 
             JFusion.updateList(JSONobject.pluginlist);
@@ -178,7 +178,7 @@ window.addEvent('domready',function() {
                 installtype : 'upload'},
             images: ['install_package'],
             onComplete: function (result) {
-                $('spinnerZIP').set('html','');
+                $('spinnerZIP').set('html', '');
                 if (JSON.validate(result)) {
                     var JSONobject = JSON.decode(result);
                     JFusion.OnMessages(JSONobject.messages);

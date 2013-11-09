@@ -514,7 +514,7 @@ class plgContentJfusion extends JPlugin
 			$threadinfo = $this->helper->getThreadInfo();
 
 			//create the thread if this article has been validated
-			if ($this->mode=='auto') {
+			if ($this->mode == 'auto') {
 				$this->helper->debug('In auto mode');
 				if ($this->valid) {
 					if ($threadinfo->valid || $this->creationMode == 'load' || ($this->creationMode == 'view' && JFactory::getApplication()->input->get('view') == $this->view()) ) {
@@ -1121,7 +1121,7 @@ HTML;
 		//let's overwrite the read more link with our own
 		//needed as in the case of updating the buttons via ajax which calls the article view
 		$view = ($override = JFactory::getApplication()->input->get('view_override')) ? $override : JFactory::getApplication()->input->get('view');
-		if ($view != $this->view() && $this->params->get('overwrite_readmore',1)) {
+		if ($view != $this->view() && $this->params->get('overwrite_readmore', 1)) {
 			//make sure the read more link is enabled for this article
 
 			if (!empty($show_readmore) && !empty($readmore_catch)) {
@@ -1315,7 +1315,7 @@ HTML;
 		$this->helper->debug('Preparing posts output');
 
 		//get required params
-		defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
+		defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2', 'Y M d h:i:s A');
 		$date_format = $this->params->get('custom_date', _DATE_FORMAT_LC2);
 		$showdate = intval($this->params->get('show_date'));
 		$showuser = intval($this->params->get('show_user'));

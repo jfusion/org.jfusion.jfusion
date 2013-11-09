@@ -213,7 +213,7 @@ class JFusionJoomlaUser extends JFusionUser
     {
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-		    jimport( 'joomla.user.helper' );
+		    jimport('joomla.user.helper');
 	        $userinfo->password_salt = JUserHelper::genRandomPassword(32);
 	        $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
 	        $new_password = $userinfo->password . ':' . $userinfo->password_salt;
@@ -482,7 +482,7 @@ class JFusionJoomlaUser extends JFusionUser
 				    $status['debug'][] = JText::_('USERNAME') . ':' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
 				    //create a Joomla password hash if password_clear is available
 				    if (!empty($userinfo->password_clear)) {
-					    jimport( 'joomla.user.helper' );
+					    jimport('joomla.user.helper');
 					    $userinfo->password_salt = JUserHelper::genRandomPassword(32);
 					    $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
 					    $password = $userinfo->password . ':' . $userinfo->password_salt;
@@ -600,7 +600,7 @@ class JFusionJoomlaUser extends JFusionUser
      */
     public function updateUser($userinfo, $overwrite = 0)
     {
-	    $status = array('error' => array(),'debug' => array());
+	    $status = array('error' => array(), 'debug' => array());
 	    try {
 		    // Initialise some variables
 		    $update_block = $this->params->get('update_block');
@@ -685,7 +685,7 @@ class JFusionJoomlaUser extends JFusionUser
 				    if (!$userinfo->block && empty($userinfo->activation)) {
 					    if (JFusionFunction::updateUsergroups($this->getJname())) {
 						    $usergroups = $this->getCorrectUserGroups($userinfo);
-						    if (!$this->compareUserGroups($existinguser,$usergroups)) {
+						    if (!$this->compareUserGroups($existinguser, $usergroups)) {
 							    $this->updateUsergroup($userinfo, $existinguser, $status);
 							    $changed = true;
 						    } else {

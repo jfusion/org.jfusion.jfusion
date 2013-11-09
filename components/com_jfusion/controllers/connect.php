@@ -8,10 +8,10 @@
  */
 
 // no direct access
-defined ( '_JEXEC' ) or die ( 'Restricted access' );
+defined('_JEXEC') or die('Restricted access');
 
-jimport ( 'joomla.application.component.controller' );
-jimport ( 'joomla.application.module.helper' );
+jimport('joomla.application.component.controller');
+jimport('joomla.application.module.helper');
 require_once (JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'helper.php');
 /**
  * JFusionControllerConnect class
@@ -32,19 +32,19 @@ class JFusionControllerConnect extends JControllerLegacy {
 		if ($Itemid == 0) {
 			/* unset the ItemId to allow the display of every modules as whished from external software */
 			/* Could be a problem in future if we need of this value later in the code */
-			unset ( $GLOBALS['Itemid'] );
+			unset($GLOBALS['Itemid']);
 		}
 		
 		//perform a secret key check
-		$secret = JFactory::getApplication()->input->get( 'secret' );
-		$params = JFusionFactory::getParams( 'joomla_int' );
+		$secret = JFactory::getApplication()->input->get('secret');
+		$params = JFusionFactory::getParams('joomla_int');
 		$module = new stdClass();
 		
-		if (! $params->get ( 'allow_connections', 0 )) {
-			die(JText::_('Connections are not allowed' ));
+		if (! $params->get('allow_connections', 0)) {
+			die(JText::_('Connections are not allowed'));
 		}
 		
-		$correct_secret = $params->get ( 'secret' );
+		$correct_secret = $params->get('secret');
 		if ($secret != $correct_secret) {
 			die(JText::_('Incorrect secret key' ));
 		}
@@ -52,32 +52,32 @@ class JFusionControllerConnect extends JControllerLegacy {
 		/* Maybe don't need htmlspecialchars and strip_tags functions, JRequest may do the filter */
 		/* Priority to the id of a module - More precise to retreive the module informations */
 		if (isset($_REQUEST ['id'])) {
-			$id = htmlspecialchars ( strip_tags ( JFactory::getApplication()->input->get( 'id' ) ) );
-			$module = JFusionHelper::getModuleById ( $id );
+			$id = htmlspecialchars (strip_tags(JFactory::getApplication()->input->get('id')));
+			$module = JFusionHelper::getModuleById($id);
 		} else if (isset($_REQUEST ['title'])) {
-			$module->title = htmlspecialchars ( strip_tags ( JFactory::getApplication()->input->get( 'title' ) ) );
+			$module->title = htmlspecialchars(strip_tags(JFactory::getApplication()->input->get('title')));
 			$module = JFusionHelper::getModuleByTitle($module->title);
 		}
 
 		if (isset($_REQUEST ['modulename']) && empty($module->name)) {
-			$module->name = htmlspecialchars ( strip_tags ( JFactory::getApplication()->input->get( 'modulename' ) ) );
+			$module->name = htmlspecialchars(strip_tags(JFactory::getApplication()->input->get('modulename')));
 		}
 		
-		if (empty ( $module )) {
-			echo JText::_ ( 'No module found!' );
+		if (empty($module)) {
+			echo JText::_('No module found!');
 			exit(0);
 		}
 
 		if (isset($_REQUEST ['style'])) {
-			$module->style = htmlspecialchars ( strip_tags ( JFactory::getApplication()->input->get( 'style' ) ) );
+			$module->style = htmlspecialchars(strip_tags(JFactory::getApplication()->input->get('style')));
 		}else{
 			$module->style = 'none';
 		}
 		
-		echo JModuleHelper::renderModule ( JModuleHelper::getModule ( $module->name, $module->title ), array ('style' => $module->style ) );
+		echo JModuleHelper::renderModule(JModuleHelper::getModule($module->name, $module->title ), array('style' => $module->style));
 		
 		// To update language of integrated software automatically (maybe could be improved in an other way)
-		if (JPluginHelper::importPlugin ( 'system', 'jfusion' )) {
+		if (JPluginHelper::importPlugin('system', 'jfusion')) {
 			plgSystemJfusion::setLanguagePluginsFrontend();
 		}
 		

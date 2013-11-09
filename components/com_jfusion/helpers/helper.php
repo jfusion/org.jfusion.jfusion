@@ -96,7 +96,7 @@ class JFusionHelper {
 				    break;
 		    }
 
-		    $db->setQuery ( $query );
+		    $db->setQuery($query);
 
 		    $modules = $db->loadObjectList($type);
 
@@ -106,10 +106,10 @@ class JFusionHelper {
 
 		    //determine if this is a custom module
 		    $file = $modules [$identifier]->module;
-		    $custom = substr ( $file, 0, 4 ) == 'mod_' ? 0 : 1;
+		    $custom = substr($file, 0, 4) == 'mod_' ? 0 : 1;
 		    $modules [$identifier]->user = $custom;
 		    // CHECK: custom module name is given by the title field, otherwise it's just 'om' ??
-		    $modules [$identifier]->name = $custom ? $modules [$identifier]->title : substr ( $file, 4 );
+		    $modules [$identifier]->name = $custom ? $modules [$identifier]->title : substr($file, 4);
 
 		    return $modules [$identifier];
 	    } catch (Exception $e) {

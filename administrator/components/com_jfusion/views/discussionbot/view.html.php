@@ -110,7 +110,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 		        $db->setQuery($query);
 		        $this->joomlaoptions = $db->loadObjectList('id');
 		        foreach ($this->joomlaoptions as &$item) {
-			        $repeat = ( $item->level - 1 >= 0 ) ? $item->level - 1 : 0;
+			        $repeat = ($item->level - 1 >= 0) ? $item->level - 1 : 0;
 			        $item->name = str_repeat('- ', $repeat) . $item->name;
 		        }
 
@@ -158,7 +158,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 			//recode pairs to be added as hidden var to make sure none are lost on submitting another pair
 			$encoded_pairs = base64_encode(serialize($this->pairs));
 			$session->set($this->hash, $encoded_pairs);
-		} elseif (JFactory::getApplication()->input->getInt('joomlaid',0)) {
+		} elseif (JFactory::getApplication()->input->getInt('joomlaid', 0)) {
 			//add submitted pair
 			$joomlaid = JFactory::getApplication()->input->getInt('joomlaid');
 			$forumid = JFactory::getApplication()->input->getInt('forumid');

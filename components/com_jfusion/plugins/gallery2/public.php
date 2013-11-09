@@ -128,7 +128,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
      */
     function parseBody(&$data) {
         //fix for form actions    	
-        $data->body = preg_replace_callback('#action="(.*?)"(.*?)>#m',array( &$this,'fixAction'), $data->body);
+        $data->body = preg_replace_callback('#action="(.*?)"(.*?)>#m', array(&$this, 'fixAction'), $data->body);
     }
 
     /**
@@ -251,7 +251,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
 
                     $config['itemid'] = $itemid;
                     $config['debug'] = true;
-                    $pluginParam->set('g2_itemId',$array['itemId']);
+                    $pluginParam->set('g2_itemId', $array['itemId']);
 
 	                /**
 	                 * @ignore
@@ -372,7 +372,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
             $jfile = 'index.php';
         }
 
-        unset($query['option'], $query['jfile'], $query['Itemid'], $query['jFusion_Route'], $query['view'],$query['layout'], $query['controller'], $query['lang'], $query['task']);
+        unset($query['option'], $query['jfile'], $query['Itemid'], $query['jFusion_Route'], $query['view'], $query['layout'], $query['controller'], $query['lang'], $query['task']);
 
         $queries = array();
 

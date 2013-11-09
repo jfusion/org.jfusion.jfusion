@@ -156,14 +156,14 @@ class JFusionUser_oscommerce extends JFusionUser
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
 		    $userinfo->username = $userinfo->email;
 		    $osCversion = $this->params->get('osCversion');
 
 		    switch ($osCversion) {
 			    case 'osc3':
-				    $session_id=$_COOKIE['osCsid'];
+				    $session_id = $_COOKIE['osCsid'];
 				    if ($session_id == '') {
 					    $status['error'][] = 'Error Could find session cookie make sure COOKIE PATH IS SET TO / in both osC and JFusion plugin settings';
 				    } else {
@@ -427,7 +427,7 @@ class JFusionUser_oscommerce extends JFusionUser
 				    $user->number_of_logons = 0;
 				    // $user->customers_ip_address = null;
 				    $user->date_account_created = date('Y-m-d H:i:s', time());
-				    // $user->date_account_last_modified = date ( 'Y-m-d H:i:s', time ());
+				    // $user->date_account_last_modified = date('Y-m-d H:i:s', time());
 				    $user->global_product_notifications = 0;
 				    break;
 			    case 'osczen':
@@ -528,7 +528,7 @@ class JFusionUser_oscommerce extends JFusionUser
      * @return array|bool
      */
     function deleteUser($userinfo) {
-	    $status = array('error' => array(),'debug' => array());
+	    $status = array('error' => array(), 'debug' => array());
 	    try {
 		    $osCversion = $this->params->get('osCversion');
 		    $db = JFusionFactory::getDatabase($this->getJname());

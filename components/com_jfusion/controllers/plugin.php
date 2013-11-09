@@ -53,7 +53,7 @@ class JFusionControllerPlugin extends JControllerLegacy
 			//load custom plugin parameter
 			$JFusionPluginParam = $item->params->get('JFusionPluginParam');
 			if(empty($JFusionPluginParam)){
-				throw new RuntimeException( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
+				throw new RuntimeException(JText::_('ERROR_PLUGIN_CONFIG'));
 			}
 
 			//load custom plugin parameter
@@ -74,10 +74,10 @@ class JFusionControllerPlugin extends JControllerLegacy
 
                 if ($db->loadResult() != 1) {
                     //die gracefully as the plugin is not configured properly
-	                throw new RuntimeException( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
+	                throw new RuntimeException(JText::_('ERROR_PLUGIN_CONFIG'));
                 }
             } else {
-	            throw new RuntimeException( JText::_ ( 'NO_VIEW_SELECTED' ) );
+	            throw new RuntimeException(JText::_('NO_VIEW_SELECTED'));
             }
 
             //load the view

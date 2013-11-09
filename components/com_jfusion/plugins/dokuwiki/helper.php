@@ -117,8 +117,8 @@ class JFusionHelper_dokuwiki extends JFusionPlugin
             jimport('joomla.filesystem.file');
             $dokuwiki_cookie_salt = file_get_contents($saltfile);
             if(empty($dokuwiki_cookie_salt)){
-                $dokuwiki_cookie_salt = uniqid(rand(),true);
-                JFile::write($saltfile,$dokuwiki_cookie_salt);
+                $dokuwiki_cookie_salt = uniqid(rand(), true);
+                JFile::write($saltfile, $dokuwiki_cookie_salt);
             }
         }
         return $dokuwiki_cookie_salt;
@@ -132,7 +132,7 @@ class JFusionHelper_dokuwiki extends JFusionPlugin
      * @return string   version
      */
 
-    function getVersion($v='version') {
+    function getVersion($v = 'version') {
         static $dokuwiki_version;
 
         if (empty($dokuwiki_version)) {

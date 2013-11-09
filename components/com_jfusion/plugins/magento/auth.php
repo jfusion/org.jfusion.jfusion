@@ -55,9 +55,9 @@ class JFusionAuth_magento extends JFusionAuth
 
 		} else {
 			if ($userinfo->password_salt) {
-				$hash = hash('sha256',$userinfo->password_salt . $userinfo->password_clear);
+				$hash = hash('sha256', $userinfo->password_salt . $userinfo->password_clear);
 			} else {
-				$hash = hash('sha256',$userinfo->password_clear);
+				$hash = hash('sha256', $userinfo->password_clear);
 			}
 
 		}

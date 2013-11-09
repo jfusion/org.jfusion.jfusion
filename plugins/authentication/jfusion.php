@@ -165,7 +165,7 @@ class plgAuthenticationjfusion extends JPlugin
                         $response->error_message = '';
                         $response->userinfo = $userinfo;
                         //update the password format to what the master expects
-                        $status = array('error' => array(),'debug' => array());
+                        $status = array('error' => array(), 'debug' => array());
                         $JFusionMaster = JFusionFactory::getUser($master->name);
                         //make sure that the password_clear is not already hashed which may be the case for some dual login plugins
                         if (strlen($userinfo->password_clear) != 32) {

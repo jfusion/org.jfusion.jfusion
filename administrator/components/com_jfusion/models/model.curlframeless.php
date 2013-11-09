@@ -50,7 +50,7 @@ class JFusionCurlFrameless {
             $string = trim(substr($string, 11, -1));
 			$parts = explode(';', $string);
 
-            list($name,$value) = explode('=', $parts[0]);
+            list($name, $value) = explode('=', $parts[0]);
 
             $cookie = new stdClass;
             $cookie->name = trim($name);
@@ -58,7 +58,7 @@ class JFusionCurlFrameless {
             $cookie->expires = 0;
 
             if (isset($parts[1])) {
-                list($name,$value) = explode('=', $parts[1]);
+                list($name, $value) = explode('=', $parts[1]);
                 if ($name == 'expires') {
                     $cookie->expires = strtotime($value);
                 }
@@ -73,7 +73,7 @@ class JFusionCurlFrameless {
      * @return array
      */
     function display(&$data) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 
 		$url = $data->source_url;
 
@@ -81,16 +81,16 @@ class JFusionCurlFrameless {
         $sefenabled = $config->get('sef');
         if(!empty($sefenabled)) {
 			$uri = JURI::getInstance();
-			$current = $uri->toString( array( 'path', 'query'));
+			$current = $uri->toString(array('path', 'query'));
 
 	        $menu = JMenu::getInstance('site');
         	$item = $menu->getActive();
 			$index = '/' . $item->route;
 			$pos = strpos($current, $index);
-			if ( $pos !== false ) {
+			if ($pos !== false) {
 				$current = substr($current, $pos+strlen($index));
 			}
-			$current = ltrim ( $current , '/' );
+			$current = ltrim($current , '/');
         } else {
 			$current = JFactory::getApplication()->input->get('jfile') . '?';
             $current .= $this->buildUrl('GET');
@@ -106,8 +106,8 @@ class JFusionCurlFrameless {
 				if (is_array($file)) {
 					if(is_array($file['name'])) {
 						foreach ($file['name'] as $key => $value) {
-							$name=$file['name'][$key];
-							$path=$file['tmp_name'][$key];
+							$name = $file['name'][$key];
+							$path = $file['tmp_name'][$key];
 							if ($name) {
 								$filepath[$key] = JPATH_ROOT . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $name;
 								rename($path, $filepath[$key]);
@@ -116,7 +116,7 @@ class JFusionCurlFrameless {
 						}
 					} else {
 						$path = $file['tmp_name'];
-						$name=$file['name'];
+						$name = $file['name'];
 						$key = $path;
 						$filepath[$key] = JPATH_ROOT . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $name;
 						rename($path, $filepath[$key]);
@@ -135,7 +135,7 @@ class JFusionCurlFrameless {
 		}
 
 		if(!empty($data->httpauth) ) {
-			curl_setopt($this->ch,CURLOPT_USERPWD,$data->httpauth_username . ':' . $data->httpauth_password);
+			curl_setopt($this->ch,CURLOPT_USERPWD, $data->httpauth_username . ':' . $data->httpauth_password);
 
 			switch ($data->httpauth) {
 				case "basic":
@@ -158,7 +158,7 @@ class JFusionCurlFrameless {
 					$data->httpauth = CURLAUTH_ANY;
 			}
 
-			curl_setopt($this->ch,CURLOPT_HTTPAUTH,$data->httpauth);
+			curl_setopt($this->ch,CURLOPT_HTTPAUTH, $data->httpauth);
 		}
 
 		curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
@@ -169,10 +169,10 @@ class JFusionCurlFrameless {
 		curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
 
 		curl_setopt($this->ch, CURLOPT_TIMEOUT, 30);
-		curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+		curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
 		curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, 0);
-		curl_setopt($this->ch, CURLOPT_FAILONERROR,0);
+		curl_setopt($this->ch, CURLOPT_FAILONERROR, 0);
 		curl_setopt($this->ch, CURLOPT_MAXREDIRS, 2 );
 		curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 		$data->verifyhost = isset($data->verifyhost) ? $data->verifyhost : 2;
@@ -186,7 +186,7 @@ class JFusionCurlFrameless {
 
 		$data->buffer = curl_exec($this->ch);
 
-		if ( $this->location ) {
+		if ($this->location) {
 			$data->location = $this->location;
 		}
 
@@ -218,14 +218,14 @@ class JFusionCurlFrameless {
      * @param string $type
      * @return mixed|string
      */
-    function buildUrl($type='GET') {
+    function buildUrl($type = 'GET') {
 	    if ($type == 'POST') {
 		    $var = $_POST;
 	    } else {
 		    $var = $_GET;
 	    }
-		unset($var['Itemid'],$var['option'],$var['view'],$var['jFusion_Route'],$var['jfile']);
-		if ($type=='POST') return $var;
+		unset($var['Itemid'], $var['option'], $var['view'], $var['jFusion_Route'], $var['jfile']);
+		if ($type == 'POST') return $var;
 		return http_build_query($var);
 	}
 }

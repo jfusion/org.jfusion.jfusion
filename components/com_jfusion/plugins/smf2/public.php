@@ -207,7 +207,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
         		if (stripos($value, 'action') === 0) {
 	        		list ($k, $v) = explode (',' , $value);
 	        		if ($k == 'action') {
-				        JFactory::getApplication()->input->set('action',$v);
+				        JFactory::getApplication()->input->set('action', $v);
 	        		}
         		}
         	}
@@ -261,7 +261,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
         }
 		if ($action == 'verificationcode') {
-			JFactory::getApplication()->input->set('format',null);
+			JFactory::getApplication()->input->set('format', null);
 		}
 
 		// We're going to want a few globals... these are all set later.
@@ -270,11 +270,11 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		global $db_connection, $db_server, $db_name, $db_user, $db_prefix, $db_persist, $db_error_send, $db_last_error;
 		global $modSettings, $context, $sc, $user_info, $topic, $board, $txt;
 		global $scripturl, $ID_MEMBER, $func;
-	    global $settings, $options, $board_info, $attachments, $messages_request ,$memberContext, $db_character_set;
+	    global $settings, $options, $board_info, $attachments, $messages_request, $memberContext, $db_character_set;
 		global $db_cache, $db_count, $db_show_debug;
 
 		// new in smf 2
-		global $smcFunc, $mysql_set_mode,$cachedir,$db_passwd,$db_type, $ssi_db_user, $ssi_db_passwd,$board_info, $options;
+		global $smcFunc, $mysql_set_mode, $cachedir, $db_passwd, $db_type, $ssi_db_user, $ssi_db_passwd, $board_info, $options;
 
 		// Required to avoid a warning about a license violation even though this is not the case
 		global $forum_version;
@@ -306,7 +306,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $h = ob_list_handlers();
             $rs = include_once($index_file);
             // die if popup
-            if ( $action == 'findmember' || $action == 'helpadmin' || $action == 'spellcheck' || $action == 'requestmembers' || strpos($action ,'xml') !== false ) {
+            if ($action == 'findmember' || $action == 'helpadmin' || $action == 'spellcheck' || $action == 'requestmembers' || strpos($action , 'xml') !== false ) {
                 exit();
             } else {
                 $this->callbackbypass = true;
@@ -318,7 +318,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             }
 
             // needed to ensure option is defined after using smf frameless. bug/conflict with System - Highlight plugin
-			JFactory::getApplication()->input->set('option','com_jfusion');
+			JFactory::getApplication()->input->set('option', 'com_jfusion');
 
             //change the current directory back to Joomla.
             chdir(JPATH_SITE);
@@ -405,7 +405,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		foreach ($regex_body as $k => $v) {
         	//check if we need to use callback
         	if(!empty($callback_body[$k])){
-			    $data->body = preg_replace_callback($regex_body[$k],array( &$this,$callback_body[$k]), $data->body);             		
+			    $data->body = preg_replace_callback($regex_body[$k], array(&$this, $callback_body[$k]), $data->body);
         	} else {
         		$data->body = preg_replace($regex_body[$k], $replace_body[$k], $data->body);
         	}
@@ -661,7 +661,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 				$cat_id = 0;
 				foreach($boards as $board) {
 					$path = new stdClass();
-					if ( $board->id_cat != $cat_id ) {
+					if ($board->id_cat != $cat_id) {
 						$cat_id = $board->id_cat;
 						$path->title = $board->catname;
 						$path->url = 'index.php#' . $board->id_cat;
@@ -683,7 +683,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 					if ( JFactory::getApplication()->input->get('board') ) {
 						$path->title = 'Modify Toppic ( Start new topic )';
 						$path->url = 'index.php?action=post&board=' . $board_id . '.0';;
-					} else if ( $msg ) {
+					} else if ($msg) {
 						$path->title = 'Modify Toppic ( ' . $topic->subject . ' )';
 						$path->url = 'index.php?action=post&topic=' . $topic_id . '.msg' . $msg . '#msg' . $msg;
 					} else {
@@ -699,23 +699,23 @@ class JFusionPublic_smf2 extends JFusionPublic {
 					$pathway[] = $path;
 
 					$path = new stdClass();
-					if ( JFactory::getApplication()->input->get('sa')=='send' ) {
+					if ( JFactory::getApplication()->input->get('sa') == 'send' ) {
 						$path->title = 'New Message';
 						$path->url = 'index.php?action=pm&sa=send';
 						$pathway[] = $path;
-					} elseif ( JFactory::getApplication()->input->get('sa')=='search' ) {
+					} elseif ( JFactory::getApplication()->input->get('sa') == 'search' ) {
 						$path->title = 'Search Messages';
 						$path->url = 'index.php?action=pm&sa=search';
 						$pathway[] = $path;
-					} elseif ( JFactory::getApplication()->input->get('sa')=='prune' ) {
+					} elseif ( JFactory::getApplication()->input->get('sa') == 'prune' ) {
 						$path->title = 'Prune Messages';
 						$path->url = 'index.php?action=pm&sa=prune';
 						$pathway[] = $path;
-					} elseif ( JFactory::getApplication()->input->get('sa')=='manlabels' ) {
+					} elseif ( JFactory::getApplication()->input->get('sa') == 'manlabels' ) {
 						$path->title = 'Manage Labels';
 						$path->url = 'index.php?action=pm&sa=manlabels';
 						$pathway[] = $path;
-					} elseif ( JFactory::getApplication()->input->get('f')=='outbox' ) {
+					} elseif ( JFactory::getApplication()->input->get('f') == 'outbox' ) {
 						$path->title = 'Outbox';
 						$path->url = 'index.php?action=pm&f=outbox';
 						$pathway[] = $path;
@@ -754,7 +754,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 					$pathway[] = $path;
 					break;
 				default:
-					if ( $topic_id ) {
+					if ($topic_id) {
 						$path = new stdClass();
 						$path->title = $topic->subject;
 						$path->url = 'index.php?topic=' . $topic_id;
@@ -821,7 +821,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$userid = $user->get('id');
 
 			if ($userid) {
-				$userlookup = JFusionFunction::lookupUser($this->getJname(),$userid,true);
+				$userlookup = JFusionFunction::lookupUser($this->getJname(), $userid, true);
 				$existinguser = $userPlugin->getUser($userlookup);
 				$group_id = $existinguser->group_id;
 			} else {
@@ -842,9 +842,9 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$boards = $db->loadObjectList();
 
 			$list = array();
-			foreach( $boards as $value ) {
-				$member_groups = explode( ',' , $value->member_groups );
-				if ( in_array($group_id, $member_groups) || $group_id == 1) {
+			foreach($boards as $value) {
+				$member_groups = explode(',' , $value->member_groups);
+				if (in_array($group_id, $member_groups) || $group_id == 1) {
 					$list[] =  $value->id_board;
 				}
 			}
@@ -906,7 +906,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$proper = explode(',', $proper);
 
 			foreach($results as $rkey => $result) {
-				foreach( $vulgar as $key => $value ) {
+				foreach($vulgar as $key => $value) {
 					$results[$rkey]->title = preg_replace('#\b' . preg_quote($value, '#') . '\b#is' , $proper[$key], $result->title);
 					$results[$rkey]->text = preg_replace('#\b' . preg_quote($value, '#') . '\b#is' , $proper[$key], $result->text);
 				}
@@ -924,7 +924,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
     function getSearchResultLink($post)
 	{
 		$forum = JFusionFactory::getForum($this->getJname());
-		return $forum->getPostURL($post->id_topic,$post->id_msg);
+		return $forum->getPostURL($post->id_topic, $post->id_msg);
 	}
 
     /************************************************
@@ -1037,12 +1037,12 @@ class JFusionPublic_smf2 extends JFusionPublic {
                 }
             }
         }
-		if ( $this->callbackbypass ) return $buffer;
+		if ($this->callbackbypass) return $buffer;
 		global $context;
 
-		if ( isset($context['get_data']) ) {
-			if ( $context['get_data'] && strpos( $context['get_data']  , 'jFusion_Route' ) ) {
-				$buffer = str_replace ($context['get_data'],'?action=admin',$buffer);
+		if (isset($context['get_data'])) {
+			if ($context['get_data'] && strpos($context['get_data'], 'jFusion_Route')) {
+				$buffer = str_replace ($context['get_data'], '?action=admin', $buffer);
 			}
 		}
 

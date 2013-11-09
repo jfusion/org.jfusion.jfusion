@@ -175,7 +175,7 @@ class JFusionUser_wordpress extends JFusionUser
      */
     function destroySession($userinfo, $options) {
 
-    $status = array('error' => array(),'debug' => array());
+    $status = array('error' => array(), 'debug' => array());
 		$wpnonce = array();
 
 		$logout_url = $this->params->get('logout_url');
@@ -200,17 +200,17 @@ class JFusionUser_wordpress extends JFusionUser
 		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
 
 
-		$my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST).parse_url(JURI::root(), PHP_URL_PATH), '/');
+		$my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST) . parse_url(JURI::root(), PHP_URL_PATH), '/');
 		$curl_options['jnodeid'] = $my_ID;
 		
 		$curl = new JFusionCurl($curl_options);
 		
 		$remotedata = $curl->ReadPage();
 		if (!empty($curl->status['error'])) {
-			$curl->status['debug'][] = JText::_('CURL_COULD_NOT_READ_PAGE: '). $curl->options['post_url'];
+			$curl->status['debug'][] = JText::_('CURL_COULD_NOT_READ_PAGE: ') . $curl->options['post_url'];
 		} else {
         // get _wpnonce security value
-        preg_match('/action=logout.+?_wpnonce=([\w\s-]*)["\']/i',$remotedata,$wpnonce);
+        preg_match('/action=logout.+?_wpnonce=([\w\s-]*)["\']/i', $remotedata, $wpnonce);
         if (!empty($wpnonce[1])) {
 			$curl_options['post_url'] = $curl_options['post_url'] . '?action=logout&_wpnonce=' . $wpnonce[1];
 			$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
@@ -249,7 +249,7 @@ class JFusionUser_wordpress extends JFusionUser
      * @return array|string
      */
     function createSession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
@@ -278,7 +278,7 @@ class JFusionUser_wordpress extends JFusionUser
 
 		// If strict, reduce to ASCII for max portability.
 		$strict = true; // default behaviour of WP 3, can be moved to params if we need i to be choice
-		if ( $strict ) {
+		if ($strict) {
 			$username = preg_replace('|[^a-z0-9 _.\-@]|i', '', $username);
 		}
 		// Consolidate contiguous whitespace
@@ -540,7 +540,7 @@ class JFusionUser_wordpress extends JFusionUser
      */
     function deleteUser($userinfo) {
 		//setup status array to hold debug info and errors
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
 		    if (!is_object($userinfo)) {
 			    throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
@@ -549,7 +549,7 @@ class JFusionUser_wordpress extends JFusionUser
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $reassign = $this->params->get('reassign_blogs');
 		    $reassign_to = $this->params->get('reassign_username');
-		    $user_id=$userinfo->userid;
+		    $user_id = $userinfo->userid;
 
 		    // decide if we need to reassign
 		    if (($reassign == '1') && (trim($reassign_to))){

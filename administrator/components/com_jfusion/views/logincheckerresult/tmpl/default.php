@@ -129,7 +129,7 @@ global $jfusionDebug;
 						$textOutput[] = debug::getText($auth_result->debug, $title);
 					}
 				}
-				JToolBarHelper::custom( 'logoutcheckerresult', 'forward.png', 'forward.png', JText::_('Check Logout'), false, false);
+				JToolBarHelper::custom('logoutcheckerresult', 'forward.png', 'forward.png', JText::_('Check Logout'), false, false);
 			} else {
 				$title = JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR');
 				?>

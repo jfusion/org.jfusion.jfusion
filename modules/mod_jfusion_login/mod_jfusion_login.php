@@ -133,7 +133,7 @@ if (file_exists($factory_file)) {
 $public = JFusionFactory::getPublic('joomla_int');
 //use the Joomla default if JFusion specified none
 if (empty($lostpassword_url)) {
-    $lostpassword_url = JRoute::_( $public->getLostPasswordURL());
+    $lostpassword_url = JRoute::_($public->getLostPasswordURL());
 }
 if (empty($lostusername_url)) {
     $lostusername_url = JRoute::_($public->getLostUsernameURL());

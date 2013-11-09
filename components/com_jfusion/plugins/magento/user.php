@@ -57,8 +57,8 @@ class JFusionUser_magento extends JFusionUser {
 	 */
 	function connectToApi(&$status) {
 		$apipath = $this->params->get('source_url') . 'index.php/api/?wsdl';
-		$apiuser = $this->params->get('apiuser','');
-		$apikey = $this->params->get('apikey','');
+		$apiuser = $this->params->get('apiuser', '');
+		$apikey = $this->params->get('apikey', '');
 		if (!$apiuser || !$apikey) {
 			throw new RuntimeException('Could not login to Magento API (empty apiuser and/or apikey)');
 		} else {
@@ -312,7 +312,7 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return array
 	 */
 	function destroySession($userinfo, $options) {
-		return $this->curlLogout($userinfo, $options,$this->params->get('logout_type'));
+		return $this->curlLogout($userinfo, $options, $this->params->get('logout_type'));
 	}
 
 	/**
@@ -322,7 +322,7 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return array|string
 	 */
 	function createSession($userinfo, $options) {
-		$status = array('error' => array(),'debug' => array());
+		$status = array('error' => array(), 'debug' => array());
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
 			$status['error'][] = JText::_('FUSION_BLOCKED_USER');
 		} else {
@@ -498,7 +498,7 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return void
 	 */
 	function createUser($userinfo, &$status) {
-		$magentoVersion = $this->params->get('magento_version','1.7');
+		$magentoVersion = $this->params->get('magento_version', '1.7');
 
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
@@ -556,7 +556,7 @@ class JFusionUser_magento extends JFusionUser {
 				$this->fillMagentouser($magento_user, 'middlename', $middlename);
 			}
 
-			if (version_compare($magentoVersion,'1.8','<')) {
+			if (version_compare($magentoVersion, '1.8', '<')) {
 				if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
 					$password_salt = $this->getRandomString(2);
 					$this->fillMagentouser($magento_user, 'password_hash', md5($password_salt . $userinfo->password_clear) . ':' . $password_salt);
@@ -570,7 +570,7 @@ class JFusionUser_magento extends JFusionUser {
 			} else {
 				if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
 					$password_salt = $this->getRandomString(32);
-					$this->fillMagentouser($magento_user, 'password_hash', hash('sha256',$password_salt . $userinfo->password_clear) . ':' . $password_salt);
+					$this->fillMagentouser($magento_user, 'password_hash', hash('sha256', $password_salt . $userinfo->password_clear) . ':' . $password_salt);
 				} else {
 					if (!empty($userinfo->password_salt)) {
 						$this->fillMagentouser($magento_user, 'password_hash', $userinfo->password . ':' . $userinfo->password_salt);
@@ -581,9 +581,9 @@ class JFusionUser_magento extends JFusionUser {
 				
 			}
 
-			/*     $this->fillMagentouser($magento_user,'prefix','');
-			 $this->fillMagentouser($magento_user,'suffix','');
-			$this->fillMagentouser($magento_user,'taxvat','');
+			/*     $this->fillMagentouser($magento_user, 'prefix', '');
+			 $this->fillMagentouser($magento_user, 'suffix', '');
+			$this->fillMagentouser($magento_user, 'taxvat', '');
 			*/
 			$this->fillMagentouser($magento_user, 'group_id', $usergroup);
 			$this->fillMagentouser($magento_user, 'store_id', $default_store_id);
@@ -608,15 +608,15 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return void
 	 */
 	function updatePassword($userinfo, &$existinguser, &$status) {
-		$magentoVersion = $this->params->get('magento_version','1.7');
+		$magentoVersion = $this->params->get('magento_version', '1.7');
 
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
-		if (version_compare($magentoVersion,'1.8','<')) {
+		if (version_compare($magentoVersion, '1.8', '<')) {
 			$password_salt = $this->getRandomString(2);
 			$this->fillMagentouser($magento_user, 'password_hash', md5($password_salt . $userinfo->password_clear) . ':' . $password_salt);
 		} else {
 			$password_salt = $this->getRandomString(32);
-			$this->fillMagentouser($magento_user, 'password_hash', hash('sha256',$password_salt . $userinfo->password_clear) . ':' . $password_salt);
+			$this->fillMagentouser($magento_user, 'password_hash', hash('sha256', $password_salt . $userinfo->password_clear) . ':' . $password_salt);
 		}
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
 		if ($errors) {
@@ -681,7 +681,7 @@ class JFusionUser_magento extends JFusionUser {
 	 */
 	function deleteUser($userinfo) {
 		//setup status array to hold debug info and errors
-		$status = array('error' => array(),'debug' => array());
+		$status = array('error' => array(), 'debug' => array());
 		//set the userid
 		//check to see if a valid $userinfo object was passed on
 		if (!is_object($userinfo)) {

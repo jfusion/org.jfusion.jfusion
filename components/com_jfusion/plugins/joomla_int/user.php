@@ -53,7 +53,7 @@ class JFusionUser_joomla_int extends JFusionJoomlaUser {
         //get the database ready
         $db = JFactory::getDBO();
         //setup status array to hold debug info and errors
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         $username = $userinfo->username;
         //since the jfusion_user table will be updated to the user's email if they use it as an identifier, we must check for both the username and email
 
@@ -121,7 +121,7 @@ class JFusionUser_joomla_int extends JFusionJoomlaUser {
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
         } else {

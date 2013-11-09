@@ -50,7 +50,7 @@ class JFusionCookies {
     	// Versions of PHP prior to 5.2 do not support HttpOnly cookies and IE is buggy when specifying a blank domain so set the cookie manually
 		$cookie = $cookie_name . '=' . urlencode($cookie_value);
 
-	    list ($url,$cookiedomain) = $this->getApiUrl($cookiedomain);
+	    list ($url, $cookiedomain) = $this->getApiUrl($cookiedomain);
 
 	    if (!empty($cookiedomain)) {
 		    $cookie .= '; domain=' . $cookiedomain;
@@ -90,9 +90,9 @@ class JFusionCookies {
             $debug[JText::_('COOKIE')][JText::_('VALUE')] = $cookie_value;
         }
         if (($cookie_expires_time) == 0) {
-            $cookie_expires_time='Session_cookie';
+            $cookie_expires_time = 'Session_cookie';
         } else {
-            $cookie_expires_time=date('d-m-Y H:i:s', $cookie_expires_time);
+            $cookie_expires_time = date('d-m-Y H:i:s', $cookie_expires_time);
         }
         $debug[JText::_('COOKIE')][JText::_('COOKIE_EXPIRES')] = $cookie_expires_time;
         $debug[JText::_('COOKIE')][JText::_('COOKIE_PATH')] = $cookiepath;
@@ -114,8 +114,8 @@ class JFusionCookies {
 	    		if (empty($return)) {
                     $return = JFactory::getApplication()->input->getBase64('return', '');
 	    			if ($return) {
-	    				$return = base64_decode ( $return );
-	    				if( stripos($return,'http://') === false && stripos($return, 'https://') === false ) {
+	    				$return = base64_decode($return);
+	    				if( stripos($return, 'http://') === false && stripos($return, 'https://') === false ) {
 	    					$return = ltrim($return, '/');
 	    					$return = $source_url . $return;
 	    				}
@@ -126,7 +126,7 @@ class JFusionCookies {
 
                 $api = null;
                 $data = array();
-		    	foreach( $this->_cookies as $key => $cookies ) {
+		    	foreach($this->_cookies as $key => $cookies) {
 		    		$api = new JFusionAPI($key, $this->secret);
 		    		if ($api->set('Cookie', 'Cookies', $cookies)) {
 		    			$data['url'][$api->url] = $api->sid;
@@ -169,14 +169,14 @@ class JFusionCookies {
 	 * @param string $type
 	 * @return string or array
 	 */
-	public static function buildCookie($type = 'string'){
+	public static function buildCookie($type = 'string') {
 		switch ($type) {
 			case 'array':
 				return $_COOKIE;
 				break;
 			case 'string':
 			default:
-				return static::implodeCookies( $_COOKIE, ';' );
+				return static::implodeCookies($_COOKIE, ';');
 			break;
 		}
 	}
@@ -199,8 +199,8 @@ class JFusionCookies {
 	 */
 	public static function implodeCookies($array, $delimeter, $keyssofar = '') {
 		$output = '';
-		foreach ( $array as $key => $value ) {
-			if (! is_array ( $value )) {
+		foreach ($array as $key => $value) {
+			if (! is_array($value)) {
 				if ($keyssofar) $pair = $keyssofar . '[' . $key . ']=' . urlencode($value) . $delimeter;
 				else $pair = $key . '=' . urlencode($value) . $delimeter;
 				if ($output != '') $output .= ' ';
@@ -208,7 +208,7 @@ class JFusionCookies {
 			}
 			else {
 				if ($output != '') $output .= ' ';
-				$output .= self::implodeCookies ( $value, $delimeter, $key . $keyssofar );
+				$output .= self::implodeCookies($value, $delimeter, $key . $keyssofar);
 			}
 		}
 		return $output;

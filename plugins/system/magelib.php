@@ -8,10 +8,10 @@
 */
 
 // no direct access
-defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
+defined('_JEXEC') or trigger_error('Restricted access');
 
 $factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
-if(file_exists ( $factory_file )):
+if(file_exists($factory_file)):
 	require_once $factory_file;
 else:
 	JFusionFunction::raiseWarning('MageLib: The file ' . $factory_file . ' doesn\'t exists. Please install JFusion component or update it.');
@@ -67,7 +67,7 @@ class plgSystemMagelib {
 		// Necessary to unset $_SESSION to allow Magento core to set his own session
 		// $_SESSION must be restored after the Magento process
 		// @see plgSystemMagelib::restartJoomlaSession();
-		unset ( $_SESSION );
+		unset($_SESSION);
 	}
 	
 	/**
@@ -84,7 +84,7 @@ class plgSystemMagelib {
 		//@todo perform for a plugin name different of 'magento' in the getPluginNodeId()
 
 
-		if (JFactory::getApplication()->input->get('jnodeid', null) != JFusionFactory::getPluginNodeId ( 'magento' )) {
+		if (JFactory::getApplication()->input->get('jnodeid', null) != JFusionFactory::getPluginNodeId('magento')) {
 			
 			$defaultStore = null;
 			
@@ -106,7 +106,7 @@ class plgSystemMagelib {
 			
 			$bootstrap = $this->mage_path . 'app/Mage.php';
 			
-			if (! file_exists ( $bootstrap )) {
+			if (!file_exists($bootstrap)) {
 				$error_message = JText::sprintf('The file %s doesn\'t exists', $bootstrap);
 
 				$error_message = get_class($this) . '::loadAndStartMagentoBootstrap - ' . $error_message;
@@ -222,7 +222,7 @@ class plgSystemMagelib {
 		session_id($this->_OldSessionId);
 		session_name($this->_OldSessionName);
 		ini_restore('session.save_path');
-		ini_set('session.save_handler','files');
+		ini_set('session.save_handler', 'files');
 		ini_set('session.use_trans_sid', '0');
 		session_set_cookie_params($this->_OldCookie['lifetime'], $this->_OldCookie['path'], $this->_OldCookie['domain'], $this->_OldCookie['secure']);
 		session_start();

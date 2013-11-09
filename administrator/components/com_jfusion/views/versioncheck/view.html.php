@@ -73,7 +73,7 @@ class jfusionViewversioncheck extends JViewLegacy
 		$document = JFactory::getDocument();
 		$document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
-		JFusionFunction::loadJavascriptLanguage( array('UPGRADE_CONFIRM_PLUGIN', 'UPGRADE_CONFIRM_BUILD', 'UPGRADE_CONFIRM_GIT', 'UPGRADE_CONFIRM_RELEASE','UPGRADE'));
+		JFusionFunction::loadJavascriptLanguage(array('UPGRADE_CONFIRM_PLUGIN', 'UPGRADE_CONFIRM_BUILD', 'UPGRADE_CONFIRM_GIT', 'UPGRADE_CONFIRM_RELEASE', 'UPGRADE'));
 
 		$db = JFactory::getDBO();
 
@@ -97,7 +97,7 @@ class jfusionViewversioncheck extends JViewLegacy
 				$update = $xml->update;
 				if ($update) {
 					$u = trim((string)$update);
-					if (strpos($u,'?') === false) {
+					if (strpos($u, '?') === false) {
 						$u .= '?version=' . $jversion->getShortVersion();
 					} else {
 						$u .= '&version=' . $jversion->getShortVersion();
@@ -120,9 +120,9 @@ class jfusionViewversioncheck extends JViewLegacy
 
 		foreach ($urls as &$url) {
 			$url->data = JFusionFunctionAdmin::getFileData($url->url);
-			$xml = JFusionFunction::getXml($url->data,false);
+			$xml = JFusionFunction::getXml($url->data, false);
 			if ($xml) {
-				if ( $url->url == $jfusionurl->url) {
+				if ($url->url == $jfusionurl->url) {
 					$php = new stdClass;
 					$php->oldversion = phpversion();
 					$php->version = (string)$xml->system->php;
@@ -188,7 +188,7 @@ class jfusionViewversioncheck extends JViewLegacy
 				}
 
 				foreach ($plugins as $key => $plugin) {
-					if (in_array($plugin->name,$url->jnames)) {
+					if (in_array($plugin->name, $url->jnames)) {
 						$this->jfusion_plugins[] = $this->getVersionNumber(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name . DIRECTORY_SEPARATOR . 'jfusion.xml', $plugin->name, $xml->plugins->{$plugin->name});
 						unset($plugins[$key]);
 					}

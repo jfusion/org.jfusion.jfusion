@@ -135,7 +135,7 @@ class JFusionPublic_mybb extends JFusionPublic {
         foreach ($regex_body as $k => $v) {
             //check if we need to use callback
             if(!empty($callback_body[$k])){
-                $data->body = preg_replace_callback($regex_body[$k],array( &$this,$callback_body[$k]), $data->body);
+                $data->body = preg_replace_callback($regex_body[$k], array(&$this, $callback_body[$k]), $data->body);
             } else {
                 $data->body = preg_replace($regex_body[$k], $replace_body[$k], $data->body);
             }
@@ -162,8 +162,8 @@ class JFusionPublic_mybb extends JFusionPublic {
         }
         foreach ($regex_header as $k => $v) {
             //check if we need to use callback
-            if(!empty($callback_header[$k])){
-                $data->header = preg_replace_callback($regex_header[$k],array( &$this,$callback_header[$k]), $data->header);
+            if(!empty($callback_header[$k])) {
+                $data->header = preg_replace_callback($regex_header[$k], array(&$this, $callback_header[$k]), $data->header);
             } else {
                 $data->header = preg_replace($regex_header[$k], $replace_header[$k], $data->header);
             }

@@ -335,7 +335,7 @@ class JFusionFactory
             $user = $params->get('database_user');
             $password = $params->get('database_password');
             $database = $params->get('database_name');
-            $prefix = $params->get('database_prefix','');
+            $prefix = $params->get('database_prefix', '');
             $driver = $params->get('database_type');
             $charset = $params->get('database_charset', 'utf8');
             //added extra code to prevent error when $driver is incorrect

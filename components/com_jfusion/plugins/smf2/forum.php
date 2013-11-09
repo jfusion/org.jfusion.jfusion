@@ -238,7 +238,7 @@ class JFusionForum_smf2 extends JFusionForum
 				    if(!empty($attachment) && $attachment->id_thumb == 0 && $attachment->id_msg == 0 && empty($result->avatar)) {
 					    $url = $this->params->get('source_url') . 'index.php?action=dlattach;attach=' . $attachment->id_attach . ';type=avatar';
 					    // If user didn't, check to see if the avatar specified in the first query is a url. If so use it.
-				    } else if(preg_match("/http(s?):\/\//",$result->avatar)){
+				    } else if(preg_match('/http(s?):\/\//', $result->avatar)) {
 					    $url = $result->avatar;
 				    } else if($result->avatar) {
 					    // If the avatar specified in the first query is not a url but is a file name. Make it one
@@ -250,10 +250,10 @@ class JFusionForum_smf2 extends JFusionForum
 					    $db->setQuery($query);
 					    $avatarurl = $db->loadObject();
 					    // Check for trailing slash. If there is one DON'T ADD ONE!
-					    if(substr($avatarurl->value, -1) == DIRECTORY_SEPARATOR){
+					    if(substr($avatarurl->value, -1) == DIRECTORY_SEPARATOR) {
 						    $url = $avatarurl->value . $result->avatar;
 						    // I like redundancy. Recheck to see if there isn't a trailing slash. If there isn't one, add one.
-					    } else if(substr($avatarurl->value, -1) !== DIRECTORY_SEPARATOR){
+					    } else if(substr($avatarurl->value, -1) !== DIRECTORY_SEPARATOR) {
 						    $url = $avatarurl->value . '/' . $result->avatar;
 					    }
 				    }
@@ -281,7 +281,7 @@ class JFusionForum_smf2 extends JFusionForum
 	{
 		try {
 			//setup some variables
-			$userid = $this->getThreadAuthor($dbparams,$contentitem);
+			$userid = $this->getThreadAuthor($dbparams, $contentitem);
 			$db = JFusionFactory::getDatabase($this->getJname());
 			$subject = trim(strip_tags($contentitem->title));
 
@@ -365,7 +365,7 @@ class JFusionForum_smf2 extends JFusionForum
 
 			$db->setQuery($query);
 			$lastPostTime = (int) $db->loadResult();
-			if($dbparams->get('use_content_created_date',false)) {
+			if($dbparams->get('use_content_created_date', false)) {
 				//only update the last post for the board if it really is newer
 				$updateLastPost = ($timestamp > $lastPostTime) ? true : false;
 			} else {
@@ -460,7 +460,7 @@ class JFusionForum_smf2 extends JFusionForum
 	 * @param boolean $showGuestInputs toggles whether to show guest inputs or not
 	 * @return string of html
 	 */
-	function createQuickReply(&$dbparams,$showGuestInputs)
+	function createQuickReply(&$dbparams, $showGuestInputs)
 	{
         $html = '';
         if ($showGuestInputs) {
@@ -510,7 +510,7 @@ HTML;
 	 */
 	function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
 	{
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 		try {
 			if($userinfo->guest) {
 				$userinfo->username = $postinfo->username;
@@ -521,7 +521,7 @@ HTML;
 				} else {
 					//check to see if user exists to prevent user hijacking
 					$JFusionUser = JFusionFactory::getUser($this->getJname());
-					define('OVERRIDE_IDENTIFIER',3);
+					define('OVERRIDE_IDENTIFIER', 3);
 					$existinguser = $JFusionUser->getUser($userinfo->username);
 					if(!empty($existinguser)) {
 						throw new RuntimeException(JText::_('USERNAME_IN_USE'));
@@ -573,7 +573,7 @@ HTML;
 
 	            $timestamp = time();
 
-				$post_approved = ($userinfo->guest && $params->get('moderate_guests',1)) ? 0 : 1;
+				$post_approved = ($userinfo->guest && $params->get('moderate_guests', 1)) ? 0 : 1;
 
 				$post_row = new stdClass();
 				$post_row->id_board			= $ids->forumid;
@@ -797,7 +797,7 @@ HTML;
 		$userid = $user->get('id');
 
 		if ($userid) {
-			$userlookup = JFusionFunction::lookupUser($this->getJname(),$userid,true);
+			$userlookup = JFusionFunction::lookupUser($this->getJname(), $userid, true);
 			$existinguser = $userPlugin->getUser($userlookup);
 			$group_id = $existinguser->group_id;
 		} else {
@@ -813,13 +813,13 @@ HTML;
 
 		$list = array();
 		foreach($boards as $value) {
-			$member_groups = explode( ',' , $value->member_groups );
+			$member_groups = explode(',' , $value->member_groups);
 			if ( in_array($group_id, $member_groups) || $group_id == 1) {
 				$list[] =  $value->id_board;
 			}
 		}
 
-        $where = (!empty($usedforums)) ? ' WHERE b.id_board IN (' . $usedforums . ') AND a.id_board IN (' . implode(',', $list) . ')' : ' WHERE a.id_board IN (' . implode(',', $list). ' )';
+        $where = (!empty($usedforums)) ? ' WHERE b.id_board IN (' . $usedforums . ') AND a.id_board IN (' . implode(',', $list) . ')' : ' WHERE a.id_board IN (' . implode(',', $list) . ' )';
 		$end = $result_order . ' LIMIT 0,' . $result_limit;
 
         $numargs = func_num_args();
@@ -926,14 +926,14 @@ HTML;
 			$db->setQuery($query);
 			$proper = $db->loadResult();
 
-			$vulgar = explode  ( ',' , $vulgar );
-			$proper = explode  ( ',' , $proper );
+			$vulgar = explode(',' , $vulgar);
+			$proper = explode(',' , $proper);
 
 			foreach($results as $rkey => $result) {
-				foreach( $vulgar as $key => $value ) {
-					$results[$rkey]->subject = preg_replace  ( '#\b' . preg_quote($value,'#') . '\b#is' , $proper[$key]  , $result->subject );
+				foreach($vulgar as $key => $value) {
+					$results[$rkey]->subject = preg_replace('#\b' . preg_quote($value,'#') . '\b#is', $proper[$key], $result->subject);
 					if (isset($results[$rkey]->body)) {
-						$results[$rkey]->body = preg_replace  ( '#\b' . preg_quote($value,'#') . '\b#is' , $proper[$key]  , $result->body );
+						$results[$rkey]->body = preg_replace('#\b' . preg_quote($value,'#') . '\b#is', $proper[$key], $result->body);
 					}
 				}
 			}

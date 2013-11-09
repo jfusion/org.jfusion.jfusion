@@ -38,7 +38,7 @@ $uri->delVar('task');
 					 * @var $form JForm
 					 */
 					global $jname;
-					echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
+					echo JHtml::_('tabs.start', 'tabs', array('startOffset' => 2));
 					foreach ($this->comp as $key => $value) {
 						$jname = $key;
 						echo JHtml::_('tabs.panel', JText::_($jname), $jname . '_jform_fieldset_label');

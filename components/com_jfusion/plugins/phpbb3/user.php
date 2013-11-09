@@ -131,14 +131,14 @@ class JFusionUser_phpbb3 extends JFusionUser
      */
     function destroySession($userinfo, $options)
     {
-	    $status = array('error' => array(),'debug' => array());
+	    $status = array('error' => array(), 'debug' => array());
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
 	        //get the cookie parameters
 	        $phpbb_cookie_name = $this->params->get('cookie_prefix');
 	        $phpbb_cookie_path = $this->params->get('cookie_path');
-	        $secure = $this->params->get('secure',false);
-	        $httponly = $this->params->get('httponly',true);
+	        $secure = $this->params->get('secure', false);
+	        $httponly = $this->params->get('httponly', true);
 	        //baltie cookie domain fix
 	        $phpbb_cookie_domain = $this->params->get('cookie_domain');
 	        if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
@@ -193,7 +193,7 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
 		    //do not create sessions for blocked users
 		    if (!empty($userinfo->block) || !empty($userinfo->activation)) {
@@ -322,8 +322,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    } else {
 							    $expires = 31536000;
 						    }
-						    $secure = $this->params->get('secure',false);
-						    $httponly = $this->params->get('httponly',true);
+						    $secure = $this->params->get('secure', false);
+						    $httponly = $this->params->get('httponly', true);
 						    $session_start = time();
 						    //Insert the session into sessions table
 						    $session_obj = new stdClass;
@@ -350,7 +350,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 						    // Remember me option?
 						    if ($jautologin > 0 && $create_persistant_cookie) {
-							    $key_id = substr(md5($session_key . microtime()),4,16);
+							    $key_id = substr(md5($session_key . microtime()), 4, 16);
 							    //Insert the session key into sessions_key table
 							    $session_key_ins = new stdClass;
 							    $session_key_ins->key_id = md5($key_id);
@@ -944,7 +944,7 @@ class JFusionUser_phpbb3 extends JFusionUser
      */
     function deleteUser($userinfo) {
 	    //setup status array to hold debug info and errors
-	    $status = array('error' => array(),'debug' => array());
+	    $status = array('error' => array(), 'debug' => array());
 	    try {
 		    //retreive the database object
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -1302,7 +1302,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $db->execute();
 			    }
 		    }
-		    $status['debug'][] = JText::_('USER_DELETION'). ' ' . $user_id;
+		    $status['debug'][] = JText::_('USER_DELETION') . ' ' . $user_id;
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('USER_DELETION_ERROR') . $e->getMessage();
 	    }
@@ -1336,7 +1336,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $persistant_cookie = ($phpbb_allow_autologin) ? JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_k', '') : '';
 			    //joomla variables
 			    $JUser = JFactory::getUser();
-			    if (JPluginHelper::isEnabled ( 'system', 'remember' )) {
+			    if (JPluginHelper::isEnabled ('system', 'remember')) {
 				    jimport('joomla.utilities.utility');
 				    $hash = JApplication::getHash('JLOGIN_REMEMBER');
 				    $joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '', 'raw');

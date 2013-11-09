@@ -228,7 +228,7 @@ class plgUserJfusion extends JPlugin
 					        $autoregister = $params->get('autoregister', 0);
 					        if ($autoregister == 1) {
 						        $jfusionDebug['init'][] = JText::_('CREATING_MASTER_USER');
-						        $status = array('error' => array(),'debug' => array());
+						        $status = array('error' => array(), 'debug' => array());
 						        //try to create a Master user
 						        $JFusionMaster->createUser($auth_userinfo, $status);
 						        if (empty($status['error'])) {
@@ -256,7 +256,7 @@ class plgUserJfusion extends JPlugin
 			        }
 		        }
 
-		        if ( $success === 0 ) {
+		        if ($success === 0) {
 			        //apply the clear text password to the user object
 			        $userinfo->password_clear = $user['password'];
 
@@ -341,7 +341,7 @@ class plgUserJfusion extends JPlugin
 								//joomla already setup, we can copy its details from the master
 								$JoomlaUser = array('userinfo' => $userinfo, 'error' => '');
 							}
-							if ( $success === 0 ) {
+							if ($success === 0) {
 								//setup the master session if
 								//a) The master is not joomla_int and the user is logging into Joomla frontend only
 								//b) The master is joomla_int and the user is logging into either Joomla frontend or backend
@@ -359,7 +359,7 @@ class plgUserJfusion extends JPlugin
 										$jfusionDebug[$master->name . ' ' . JText::_('SESSION') ] = $MasterSession['debug'];
 									}
 								}
-								if ( $success === 0 ) {
+								if ($success === 0) {
 									//allow for joomlaid retrieval in the loginchecker
 									$jfusionDebug['joomlaid'] = $JoomlaUser['userinfo']->userid;
 									if ($master->name != 'joomla_int') {
@@ -430,9 +430,9 @@ class plgUserJfusion extends JPlugin
 				$source_url = $params->get('source_url', '');
 				ob_end_clean();
 				$jfc = JFusionFactory::getCookies();
-				if ( $allow_redirect_login && !empty($redirecturl_login)) // only redirect if we are in the frontend and allowed and have an URL
-				{
-					$jfc->executeRedirect($source_url,$redirecturl_login);
+				if ($allow_redirect_login && !empty($redirecturl_login)) {
+					// only redirect if we are in the frontend and allowed and have an URL
+					$jfc->executeRedirect($source_url, $redirecturl_login);
 				} else {
 					$jfc->executeRedirect($source_url);
 				}
@@ -532,9 +532,9 @@ class plgUserJfusion extends JPlugin
         $source_url = $params->get('source_url', '');
         ob_end_clean();
         $jfc = JFusionFactory::getCookies();
-        if ( $allow_redirect_logout && !empty($redirecturl_logout)) // only redirect if we are in the frontend and allowed and have an URL
+        if ($allow_redirect_logout && !empty($redirecturl_logout)) // only redirect if we are in the frontend and allowed and have an URL
         {
-        	$jfc->executeRedirect($source_url,$redirecturl_logout);
+        	$jfc->executeRedirect($source_url, $redirecturl_logout);
         } else {
         	$jfc->executeRedirect($source_url);
         }
@@ -792,7 +792,7 @@ class plgUserJfusion extends JPlugin
      * @return bool
      */
     public function onUserAfterSave($user, $isnew, $success, $msg) {
-        if (!JPluginHelper::isEnabled('user','joomla')) {
+        if (!JPluginHelper::isEnabled('user', 'joomla')) {
 	        $master = JFusionFunction::getMaster();
 	        if ($master->name == 'joomla_int') {
 		        $userInfo = JFactory::getUser();
@@ -807,7 +807,7 @@ class plgUserJfusion extends JPlugin
 			        ->where('folder =' . $db->Quote('user'))
 			        ->where('access IN (' . $levels . ')');
 
-		        $plugin = $db->setQuery($query,0,1)->loadObject();
+		        $plugin = $db->setQuery($query, 0, 1)->loadObject();
 
 		        $params = new JRegistry;
 		        $params->loadString($plugin->params);
@@ -888,7 +888,7 @@ class plgUserJfusion extends JPlugin
 	 *
 	 * @return string nothing
 	 */
-	public function raise($type, $message, $jname='') {
+	public function raise($type, $message, $jname = '') {
 		global $JFusionLoginCheckActive;
 		if (!$JFusionLoginCheckActive) {
 			JFusionFunction::raise($type, $message, $jname);

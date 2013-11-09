@@ -229,7 +229,7 @@ class JFusionPublic_smf extends JFusionPublic
         		if (stripos($value, 'action') === 0) {
 	        		list ($key, $value) = explode (',' , $value);
 	        		if ($key == 'action') {
-				        JFactory::getApplication()->input->set('action',$value);
+				        JFactory::getApplication()->input->set('action', $value);
 	        		}
         		}
         	}
@@ -282,7 +282,7 @@ class JFusionPublic_smf extends JFusionPublic
             //}
         }
 		if ($action == 'verificationcode') {
-			JFactory::getApplication()->input->set('format',null);
+			JFactory::getApplication()->input->set('format', null);
 		}
         
         // We're going to want a few globals... these are all set later.
@@ -290,7 +290,7 @@ class JFusionPublic_smf extends JFusionPublic
         global $boardurl, $boarddir, $sourcedir, $webmaster_email, $cookiename;
         global $db_connection, $db_server, $db_name, $db_user, $db_prefix, $db_persist, $db_error_send, $db_last_error;
         global $modSettings, $context, $sc, $user_info, $topic, $board, $txt;
-        global $scripturl, $ID_MEMBER, $func,$newpassemail,$user_profile, $validationCode;
+        global $scripturl, $ID_MEMBER, $func, $newpassemail, $user_profile, $validationCode;
         global $settings, $options, $board_info, $attachments, $messages_request, $memberContext, $db_character_set;
 	    global $db_cache, $db_count, $db_show_debug;
         // Required to avoid a warning about a license violation even though this is not the case
@@ -329,7 +329,7 @@ class JFusionPublic_smf extends JFusionPublic
             JFusionFunction::raiseWarning('Could not find SMF in the specified directory', $this->getJname());
         }
         $document = JFactory::getDocument();
-        $document->addScript(JFusionFunction::getJoomlaURL().JFUSION_PLUGIN_DIR_URL . $this->getJname() . '/js/script.js');
+        $document->addScript(JFusionFunction::getJoomlaURL() . JFUSION_PLUGIN_DIR_URL . $this->getJname() . '/js/script.js');
     }
 
     /**
@@ -403,7 +403,7 @@ class JFusionPublic_smf extends JFusionPublic
         foreach ($regex_body as $k => $v) {
         	//check if we need to use callback
         	if(!empty($callback_body[$k])){
-			    $data->body = preg_replace_callback($regex_body[$k],array(&$this,$callback_body[$k]), $data->body);
+			    $data->body = preg_replace_callback($regex_body[$k], array(&$this, $callback_body[$k]), $data->body);
         	} else {
         		$data->body = preg_replace($regex_body[$k], $replace_body[$k], $data->body);
         	}
@@ -638,9 +638,9 @@ class JFusionPublic_smf extends JFusionPublic
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    list ($board_id ) = explode( '.', JFactory::getApplication()->input->get('board'), 1);
-		    list ($topic_id ) = explode( '.', JFactory::getApplication()->input->get('topic'), 1);
-		    list ($action ) = explode( ';', JFactory::getApplication()->input->get('action'), 1);
+		    list ($board_id) = explode('.', JFactory::getApplication()->input->get('board'), 1);
+		    list ($topic_id) = explode('.', JFactory::getApplication()->input->get('topic'), 1);
+		    list ($action) = explode(';', JFactory::getApplication()->input->get('action'), 1);
 
 		    $msg = JFactory::getApplication()->input->get('msg');
 
@@ -680,7 +680,7 @@ class JFusionPublic_smf extends JFusionPublic
 			    $cat_id = 0;
 			    foreach ($boards as $board) {
 				    $path = new stdClass();
-				    if ( $board->ID_CAT != $cat_id ) {
+				    if ($board->ID_CAT != $cat_id) {
 					    $cat_id = $board->ID_CAT;
 					    $path->title = $board->catname;
 					    $path->url = 'index.php#' . $board->ID_CAT;
@@ -702,7 +702,7 @@ class JFusionPublic_smf extends JFusionPublic
 				    if ( JFactory::getApplication()->input->get('board')) {
 					    $path->title = 'Modify Toppic ( Start new topic )';
 					    $path->url = 'index.php?action=post&board=' . $board_id . '.0';;
-				    } else if ( $msg ) {
+				    } else if ($msg) {
 					    $path->title = 'Modify Toppic ( ' . $topic->subject . ' )';
 					    $path->url = 'index.php?action=post&topic=' . $topic_id . '.msg' . $msg . '#msg' . $msg;
 				    } else {
@@ -718,23 +718,23 @@ class JFusionPublic_smf extends JFusionPublic
 				    $pathway[] = $path;
 
 				    $path = new stdClass();
-				    if ( JFactory::getApplication()->input->get('sa')=='send' ) {
+				    if ( JFactory::getApplication()->input->get('sa') == 'send' ) {
 					    $path->title = 'New Message';
 					    $path->url = 'index.php?action=pm&sa=send';
 					    $pathway[] = $path;
-				    } elseif ( JFactory::getApplication()->input->get('sa')=='search' ) {
+				    } elseif ( JFactory::getApplication()->input->get('sa') == 'search' ) {
 					    $path->title = 'Search Messages';
 					    $path->url = 'index.php?action=pm&sa=search';
 					    $pathway[] = $path;
-				    } elseif ( JFactory::getApplication()->input->get('sa')=='prune' ) {
+				    } elseif ( JFactory::getApplication()->input->get('sa') == 'prune' ) {
 					    $path->title = 'Prune Messages';
 					    $path->url = 'index.php?action=pm&sa=prune';
 					    $pathway[] = $path;
-				    } elseif ( JFactory::getApplication()->input->get('sa')=='manlabels' ) {
+				    } elseif ( JFactory::getApplication()->input->get('sa') == 'manlabels' ) {
 					    $path->title = 'Manage Labels';
 					    $path->url = 'index.php?action=pm&sa=manlabels';
 					    $pathway[] = $path;
-				    } elseif ( JFactory::getApplication()->input->get('f')=='outbox' ) {
+				    } elseif ( JFactory::getApplication()->input->get('f') == 'outbox' ) {
 					    $path->title = 'Outbox';
 					    $path->url = 'index.php?action=pm&f=outbox';
 					    $pathway[] = $path;
@@ -773,7 +773,7 @@ class JFusionPublic_smf extends JFusionPublic
 				    $pathway[] = $path;
 				    break;
 			    default:
-				    if ( $topic_id ) {
+				    if ($topic_id) {
 					    $path = new stdClass();
 					    $path->title = $topic->subject;
 					    $path->url = 'index.php?topic=' . $topic_id;
@@ -893,11 +893,11 @@ class JFusionPublic_smf extends JFusionPublic
 		    $db->setQuery($query);
 		    $proper = $db->loadResult();
 
-		    $vulgar = explode  ( ',' , $vulgar );
-		    $proper = explode  ( ',' , $proper );
+		    $vulgar = explode(',', $vulgar);
+		    $proper = explode(',', $proper);
 
 		    foreach($results as $rkey => &$result) {
-			    foreach( $vulgar as $key => $value ) {
+			    foreach($vulgar as $key => $value) {
 				    $results[$rkey]->title = preg_replace('#\b' . preg_quote($value, '#') . '\b#is' , $proper[$key], $result->title);
 				    $results[$rkey]->text = preg_replace('#\b' . preg_quote($value, '#') . '\b#is' , $proper[$key], $result->text);
 			    }

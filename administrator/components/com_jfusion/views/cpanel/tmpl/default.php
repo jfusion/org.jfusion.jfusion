@@ -185,7 +185,7 @@ JFusionFunctionAdmin::displayDonate();
 				}
 				jimport('joomla.html.pane');
 	            if ($this->JFusionCpanel) {
-		            echo JHtml::_('tabs.start','pane', array('startOffset'=>2));
+		            echo JHtml::_('tabs.start', 'pane', array('startOffset' => 2));
 	                foreach ($this->JFusionCpanel->item as $item) {
 		                echo JHtml::_('tabs.panel', (string)$item->title[0], $item->title[0]);
 	                    echo (string)$item->body[0];

@@ -32,8 +32,8 @@ class Jfusion_Customer_Model_Entity_Customer extends Mage_Customer_Model_Entity_
             ->from($this->getEntityTable(), array($this->getEntityIdField()))
             ->joinNatural('customer_entity_varchar')
             ->joinNatural('eav_attribute')
-            ->where('eav_attribute.attribute_code=\'username\' AND customer_entity_varchar.value=?',$username);
-            //->where('username=?',$username);
+            ->where('eav_attribute.attribute_code=\'username\' AND customer_entity_varchar.value=?', $username);
+            //->where('username=?', $username);
         if ($customer->getSharingConfig()->isWebsiteScope()) {
             if (!$customer->hasData('website_id')) {
                 Mage::throwException(Mage::helper('customer')->__('Customer website ID must be specified when using the website scope.'));

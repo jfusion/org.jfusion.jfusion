@@ -7,7 +7,7 @@
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
 */
 
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die('Restricted access');
 /**
  * @ignore
  * @var $task string
@@ -69,7 +69,7 @@ switch($task)
 		break;
 	case 'synchistory':
 		JToolBarHelper::title(JText::_('SYNC_HISTORY'), 'synchistory.png');
-		JToolBarHelper::custom('deletehistory', 'delete.png','delete.png', 'Delete Record', false);
+		JToolBarHelper::custom('deletehistory', 'delete.png', 'delete.png', 'Delete Record', false);
 		JToolBarHelper::cancel('cpanel');
 		break;
 	case 'extensions':

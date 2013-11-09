@@ -131,7 +131,7 @@ class JFusionHelper_wordpress extends JFusionPlugin
 
 		$item = implode(array_keys($allroles[$role]['capabilities']));
 
-		if (preg_match('/level_(10|[0-9])/',$item, $matches)) {
+		if (preg_match('/level_(10|[0-9])/', $item, $matches)) {
 			$level = intval($matches[1]);
 			return max($max, $level);
 		} else {

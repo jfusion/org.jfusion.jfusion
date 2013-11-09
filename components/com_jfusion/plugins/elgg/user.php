@@ -121,7 +121,7 @@ class JFusionUser_elgg extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $option) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         /*
         NOTE:
         !Can not include elgg engine and use core elgg logout functions since it conflicts with Community Builder Logout function!
@@ -142,8 +142,8 @@ class JFusionUser_elgg extends JFusionUser {
      */
     function createSession($userinfo, $options, $framework = true) {
         //destroy a cookie if it exists already, this will prevent the person logging in from having to refresh twice to appear as logged in
-        $this->destroySession(null,null);
-        $status = array('error' => array(),'debug' => array());
+        $this->destroySession(null, null);
+        $status = array('error' => array(), 'debug' => array());
 
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
@@ -230,7 +230,7 @@ class JFusionUser_elgg extends JFusionUser {
 	        $db->setQuery($query);
 
 		    $db->execute();
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
 	    }
@@ -308,7 +308,7 @@ class JFusionUser_elgg extends JFusionUser {
 			        $status['debug'][] = JText::_('USER_CREATION');
 			        $status['userinfo'] = $this->getUser($userinfo);
 			        //notify_user($new_user->guid, $CONFIG->site->guid, elgg_echo('useradd:subject'), sprintf(elgg_echo('useradd:body'), $name, $CONFIG->site->name, $CONFIG->site->url, $username, $password));
-			        //system_message(sprintf(elgg_echo('adduser:ok'),$CONFIG->sitename));
+			        //system_message(sprintf(elgg_echo('adduser:ok'), $CONFIG->sitename));
 
 		        } else {
 			        //register_error(elgg_echo('adduser:bad'));
@@ -424,7 +424,7 @@ class JFusionUser_elgg extends JFusionUser {
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
         if($user) {
-        	if (elgg_set_user_validation_status($user->guid,1,'validated:jfusion')) {
+        	if (elgg_set_user_validation_status($user->guid, 1, 'validated:jfusion')) {
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         	} else {
         		$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
@@ -450,7 +450,7 @@ class JFusionUser_elgg extends JFusionUser {
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
         if($user) {
-        	if (elgg_set_user_validation_status($user->guid,0)) {
+        	if (elgg_set_user_validation_status($user->guid, 0)) {
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         	} else {
         		$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');

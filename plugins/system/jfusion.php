@@ -147,7 +147,7 @@ class plgSystemJfusion extends JPlugin
                 $backup['post'] = $_POST;
                 $backup['request'] = $_REQUEST;
                 $backup['files'] = $_FILES;
-                $session->set('JFusionVarBackup',$backup);
+                $session->set('JFusionVarBackup', $backup);
                 if ($debug) {
                     JFusionFunction::raiseNotice('Refresh is true');
                 }
@@ -187,8 +187,8 @@ class plgSystemJfusion extends JPlugin
 			$slaves = JFusionFunction::getSlaves();
 			foreach($slaves as $slave) {
 				$JFusionSlavePublic = JFusionFactory::getPublic($slave->name);
-				if (method_exists( $JFusionSlavePublic, 'setLanguageFrontEnd' )) {
-					$status = $JFusionSlavePublic->setLanguageFrontEnd ( $userinfo );
+				if (method_exists($JFusionSlavePublic, 'setLanguageFrontEnd')) {
+					$status = $JFusionSlavePublic->setLanguageFrontEnd($userinfo);
 					if (!empty($status['error'])) {
 						//could not set the language
 						JFusionFunction::raise('error', $status['error'], $slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));

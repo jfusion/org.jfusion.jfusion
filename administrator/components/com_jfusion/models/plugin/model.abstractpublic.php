@@ -64,7 +64,7 @@ class JFusionPublic extends JFusionPlugin
             $mainframe->redirect($location);
         }
         if ( isset($status['error']) ) {
-            foreach ( $status['error'] as $value ) {
+            foreach ($status['error'] as $value) {
                 JFusionFunction::raiseWarning($value, $this->getJname());
             }
         }
@@ -92,7 +92,7 @@ class JFusionPublic extends JFusionPlugin
 
         if(!empty($data->parse_abs_path)) {
             $path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is' , '$3' , $data->integratedURL);
-            $path = preg_replace('#//+#','/',"/$path/");
+            $path = preg_replace('#//+#', '/', '/' . $path . '/');
 
             $regex_body[]	= '#(action="|href="|src="|background="|url\(\'?)' . $path . '(.*?)("|\'?\))#mS';
             $replace_body[]	= '$1' . $data->integratedURL . '$2$3';
@@ -169,11 +169,11 @@ class JFusionPublic extends JFusionPlugin
 	    if(is_array($value)) {
 		    foreach ($value['value'] as $key => $val) {
 			    $regex = html_entity_decode($value['value'][$key]);
-//			    $regex = rtrim($regex,';');
+//			    $regex = rtrim($regex, ';');
 //			    $regex = eval("return '$regex';");
 
 			    $replace = html_entity_decode($value['name'][$key]);
-//			    $replace = rtrim($replace,';');
+//			    $replace = rtrim($replace, ';');
 //			    $replace = eval("return '$replace';");
 
 			    if ($regex && $replace) {
@@ -216,8 +216,8 @@ class JFusionPublic extends JFusionPlugin
         $callback_header = array();
 
         //convert relative links into absolute links
-        $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
-        $path = preg_replace('#//+#','/',"/$path/");
+        $path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $data->integratedURL);
+        $path = preg_replace('#//+#', '/', '/' . $path . '/');
 
 	    $regex_header[]	= '#(href|src)=(?<quote>["\'])' . $path . '(.*?)(\k<quote>)#Si';
 	    $replace_header[] = '$1=$2' . $data->integratedURL . '$3$4';
@@ -329,7 +329,7 @@ JS;
      * @param string &$html data to parse
      * @param bool $infile_only parse only infile (body)
      */
-    function parseCSS(&$data,&$html,$infile_only=false)
+    function parseCSS(&$data, &$html, $infile_only = false)
     {
         $jname = $this->getJname();
 
@@ -349,15 +349,15 @@ JS;
         if (!$infile_only) {
             //Outputs: apearpearle pear
             if ($data->parse_css) {
-                if (preg_match_all( '#<link(.*?type=[\'|"]text\/css[\'|"][^>]*)>#Si', $html, $css )) {
+                if (preg_match_all('#<link(.*?type=[\'|"]text\/css[\'|"][^>]*)>#Si', $html, $css)) {
                     require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'css.php');
 
                     jimport('joomla.filesystem.file');
                     foreach ($css[1] as $values) {
-	                    if( preg_match( '#href=[\'|"](.*?)[\'|"]#Si', $values, $cssUrl )) {
+	                    if( preg_match('#href=[\'|"](.*?)[\'|"]#Si', $values, $cssUrl)) {
 		                    $cssUrlRaw = $cssUrl[1];
 
-		                    if (strpos($cssUrlRaw,'/') === 0) {
+		                    if (strpos($cssUrlRaw, '/') === 0) {
 			                    $uri = new JURI($data->integratedURL);
 
 			                    $cssUrlRaw = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port')) . $cssUrlRaw;
@@ -383,13 +383,13 @@ JS;
             }
         }
         if ($data->parse_infile_css) {
-            if (preg_match_all( '#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', $html, $css )) {
+            if (preg_match_all('#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', $html, $css)) {
                 require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'css.php');
                 foreach ($css[1] as $key => $values) {
                     $filename = md5($values) . '.css';
                     $filenamesource = $sourcepath . 'infile' . DIRECTORY_SEPARATOR . $filename;
 
-                    if ( preg_match( '#media=[\'|"](.*?)[\'|"]#Si', $css[0][$key], $cssMedia ) ) {
+                    if ( preg_match('#media=[\'|"](.*?)[\'|"]#Si', $css[0][$key], $cssMedia)) {
                         $cssMedia = $cssMedia[1];
                     } else {
                         $cssMedia = '';
@@ -403,10 +403,10 @@ JS;
                         JFile::write($filenamesource, $content);
                     }
                     if ( JFile::exists($filenamesource) ) {
-                        $document->addStyleSheet($urlpath . 'infile/' . $filename,'text/css', $cssMedia);
+                        $document->addStyleSheet($urlpath . 'infile/' . $filename, 'text/css', $cssMedia);
                     }
                 }
-                $html = preg_replace ( '#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', '', $html );
+                $html = preg_replace('#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', '', $html);
             }
         }
     }
@@ -421,7 +421,7 @@ JS;
 		$filename = $uri->toString(array('path', 'query'));
 		$filename = trim($filename, '/');
 
-		$filename = str_replace(array('.css','\\', '/', '|', '*', ':', ';', '?', '"', '<', '>', '=', '&'),
+		$filename = str_replace(array('.css', '\\', '/', '|', '*', ':', ';', '?', '"', '<', '>', '=', '&'),
 		                        array('', '', '-', '', '', '', '', '', '', '', '', ',', '_'),
 		                        $filename);
 		$filename .= '.css';
@@ -773,8 +773,8 @@ HTML;
     function fixRedirect($matches) {
         $baseURL = $this->data->baseURL;
 
-        preg_match ( '#(.*?;url=)(.*)#mi' , $matches[1] , $matches2 );
-        list(,$timeout , $url) = $matches2;
+        preg_match('#(.*?;url=)(.*)#mi', $matches[1], $matches2);
+        list(, $timeout , $url) = $matches2;
 
         $uri = new JURI($url);
         $jfile = basename($uri->getPath());
@@ -995,7 +995,7 @@ HTML;
      */
     function setLanguageFrontEnd($userinfo = null)
     {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         $status['debug'] = JText::_('METHOD_NOT_IMPLEMENTED');
         return $status;
     }
@@ -1037,7 +1037,7 @@ HTML;
 
 	    $jfile = JFactory::getApplication()->input->get('jfile', 'index.php', 'raw');
 
-        unset($query['option'], $query['jfile'], $query['Itemid'], $query['jFusion_Route'], $query['view'],$query['layout'], $query['controller'], $query['lang'], $query['task']);
+        unset($query['option'], $query['jfile'], $query['Itemid'], $query['jFusion_Route'], $query['view'], $query['layout'], $query['controller'], $query['lang'], $query['task']);
 
         $queries = array();
 

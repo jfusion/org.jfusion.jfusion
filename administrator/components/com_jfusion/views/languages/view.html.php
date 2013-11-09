@@ -49,13 +49,13 @@ class jfusionViewlanguages extends JViewLegacy
 
 	    $document = JFactory::getDocument();
 	    $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
-	    JFusionFunction::loadJavascriptLanguage(array('INSTALL_UPGRADE_LANGUAGE_PACKAGE','INSTALL'));
+	    JFusionFunction::loadJavascriptLanguage(array('INSTALL_UPGRADE_LANGUAGE_PACKAGE', 'INSTALL'));
 
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
         $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/jfusion/joomla/?version=' . $jversion->getShortVersion());
 
-	    $xml = JFusionFunction::getXml($data,false);
+	    $xml = JFusionFunction::getXml($data, false);
         if ($xml) {
 	        if ($xml->languages) {
 		        $languages = $xml->languages->children();
@@ -100,7 +100,7 @@ class jfusionViewlanguages extends JViewLegacy
 				    $this->lang_repo[$result->element]->currentdate = $cache->creationDate;
 				    $this->lang_repo[$result->element]->extension_id = $result->extension_id;
 
-				    if ( $this->lang_repo[$result->element]->currentdate == $this->lang_repo[$result->element]->date ) {
+				    if ($this->lang_repo[$result->element]->currentdate == $this->lang_repo[$result->element]->date) {
 					    $this->lang_repo[$result->element]->class = 'good';
 				    } else {
 					    $this->lang_repo[$result->element]->class = 'bad';

@@ -27,20 +27,20 @@ class JFusion_Helper_Mageselectblock {
 			 * @var $store Mage_Cms_Model_Page
 			 */
 
-			$model = Mage::getModel ( 'cms/block' );
-			$store = $model->setStoreId ( Mage::app ()->getStore ()->getId () );
+			$model = Mage::getModel('cms/block');
+			$store = $model->setStoreId(Mage::app ()->getStore()->getId());
 
-            $block = $store->load ( $blockId );
+            $block = $store->load($blockId);
 			if ($block->getIsActive()) {
-				$content = $block->getContent ();
+				$content = $block->getContent();
 
 				/**
 				 * @ignore
 				 * @var $processor Mage_Core_Model_Email_Template_Filter
 				 */
 
-				$processor = Mage::getModel ( 'core/email_template_filter' );
-				$html = $processor->filter ( $content );
+				$processor = Mage::getModel('core/email_template_filter');
+				$html = $processor->filter($content);
 			}
 		}
 		return $html;

@@ -8,12 +8,12 @@
  */
 
 // no direct access
-defined ( '_JEXEC' ) or die ( 'Restricted access' );
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * load the JFusion framework
  */
-jimport ( 'joomla.application.component.view' );
+jimport('joomla.application.component.view');
 require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.frameless.php');
 
 /**
@@ -58,7 +58,7 @@ class jfusionViewPlugin extends JViewLegacy {
 		$result = JFusionFrameless::displayContent($data);
 		if (!$result) return false;
 	    $this->data = $data;
-		parent::display ( $tpl );
+		parent::display($tpl);
         return true;
 	}
 

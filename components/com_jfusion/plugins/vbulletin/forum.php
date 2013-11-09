@@ -205,7 +205,7 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
     {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
 		    if ($userinfo->guest) {
 			    $userinfo->username = $postinfo->username;
@@ -249,7 +249,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    if (!empty($text)) {
 			    $foruminfo = $this->getForumInfo($ids->forumid);
 			    $threadinfo = $this->getThreadInfo($ids->threadid, $params);
-			    $post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $params->get('moderate_guests',1))) ? 0 : 1;
+			    $post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $params->get('moderate_guests', 1))) ? 0 : 1;
 			    $title = 'Re: ' . $threadinfo['title'];
 			    $public = JFusionFactory::getPublic($this->getJname());
 			    $public->prepareText($title);

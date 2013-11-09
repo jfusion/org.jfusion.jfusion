@@ -152,7 +152,7 @@ class JFusionAdmin_efront extends JFusionAdmin
 		    // when configuring the eFront plugin
 		    // Also we need an indication that the module initialisation needs to be performed for this user
 		    // because we cannot run this from outside eFront (unless we load the whole framework on top of Joomla)
-		    $tableFields = $db->getTableColumns('users',false);
+		    $tableFields = $db->getTableColumns('users', false);
 		    if ($tableFields) {
 			    if (!array_key_exists('id', $tableFields)) {
 				    $query = 'ALTER TABLE users ADD id int(11) NOT null AUTO_INCREMENT FIRST, ADD UNIQUE (id)';

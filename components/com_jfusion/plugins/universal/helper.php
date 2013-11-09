@@ -32,7 +32,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 * @param string $type
 	 * @return mixed
 	 */
-	function getTable($type='user') {
+	function getTable($type = 'user') {
 		$maped = $this->getMapRaw($type);
 		return $maped['table'];
 	}
@@ -41,7 +41,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 * @param string $type
 	 * @return bool
 	 */
-	function getMapRaw($type='user') {
+	function getMapRaw($type = 'user') {
 		if( !is_array($this->mapraw) ) {
 			$map = $this->params->get('map', array());
 			if(is_array($map)) {
@@ -60,7 +60,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 * @param string $type
 	 * @return array
 	 */
-	function getMap($type='user') {
+	function getMap($type = 'user') {
 		if( !isset($this->map[$type]) ) {
 			$map = $this->getMapRaw($type);
 			if(is_array($map) && isset($map['field'])) {
@@ -90,7 +90,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 * @param string $type
 	 * @return array|string
 	 */
-	function getQuery($include=array(),$type='user') {
+	function getQuery($include = array(), $type = 'user') {
 // a.validation_code as activation, a.is_activated, NULL as reason, a.lastLogin as lastvisit '.
 		$query = array();
 		$map = $this->getMap($type);
@@ -208,7 +208,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 			$types[$type->id] = $type;
 		}
 
-		if ( $t ) {
+		if ($t) {
 			return $types[$t];
 		}
 		return $types;
@@ -218,7 +218,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 * @param null $field
 	 * @return array
 	 */
-	function getField($field=null) {
+	function getField($field = null) {
 		static $fields;
 
 		if ( !is_array($fields) ) {
@@ -304,7 +304,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 			$type->types[] = $this->getType('VALUE');
 			$fields[$type->id] = $type;
 		}
-		if ( $field ) {
+		if ($field) {
 			return $fields[$field];
 		}
 		return $fields;
@@ -317,7 +317,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 *
 	 * @return int|null|string
 	 */
-	function getValue($type, $value, $userinfo=null ) {
+	function getValue($type, $value, $userinfo = null ) {
 		$out = '';
 		$value = html_entity_decode($value);
 		switch ($type) {
@@ -345,11 +345,11 @@ class JFusionHelper_universal extends JFusionPlugin {
 				break;
 			case 'SALT':
 				$len = 4;
-				$base='ABCDEFGHKLMNOPQRSTWXYZabcdefghjkmnpqrstwxyz123456789';
-				$max=strlen($base)-1;
-				$activatecode='';
+				$base ='ABCDEFGHKLMNOPQRSTWXYZabcdefghjkmnpqrstwxyz123456789';
+				$max = strlen($base)-1;
+				$activatecode = '';
 				mt_srand((double)microtime()*1000000);
-				while (strlen($activatecode)<$len+1) $out.=$base{mt_rand(0,$max)};
+				while (strlen($activatecode)<$len+1) $out .= $base{mt_rand(0, $max)};
 				break;
 			case 'MD5':
 				$out = md5($value);

@@ -59,14 +59,14 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 		//Create Link
 		$link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;ename=' . $ename;
 		if (!is_null($feature)) {
-			$link.= '&amp;feature=' . $feature;
+			$link .= '&amp;feature=' . $feature;
 		}
 		if (!is_null($multiselect)) {
-			$link.= '&amp;multiselect=1';
+			$link .= '&amp;multiselect=1';
 		}
 
-		jimport( 'joomla.user.helper' );
-		$hash = JApplication::getHash( $this->name.JUserHelper::genRandomPassword());
+		jimport('joomla.user.helper');
+		$hash = JApplication::getHash($this->name . JUserHelper::genRandomPassword());
 		$session = JFactory::getSession();
 		$session->set($hash, $this->value);
 

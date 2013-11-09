@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
 		<?php
 		if(!empty($this->joomlaSelectOptions)) {
 			echo JHTML::_('select.genericlist', $this->joomlaSelectOptions, 'joomlaid', 'class="inputbox" style="margin-right:15px;"', 'id', 'name', '');
-		} elseif($this->ename=='pair_sections') {
+		} elseif($this->ename == 'pair_sections') {
 			echo JText::_('NO_SECTIONS');
 		} else {
 			echo JText::_('NO_CATEGORIES');
@@ -48,8 +48,8 @@ defined('_JEXEC') or die('Restricted access');
 				<tr>
 					<th class="title">
 						<?php
-						if($this->ename=='pair_sections') echo JText::_('SECTION');
-						elseif($this->ename=='pair_categories') echo JText::_('CATEGORY');
+						if($this->ename == 'pair_sections') echo JText::_('SECTION');
+						elseif($this->ename == 'pair_categories') echo JText::_('CATEGORY');
 						?>
 					</th>
 					<th class="title">
@@ -67,8 +67,8 @@ defined('_JEXEC') or die('Restricted access');
 						<td>
 							<?php
 							if(isset($this->joomlaoptions[$joomlaid])) echo $this->joomlaoptions[$joomlaid]->name;
-							elseif($this->ename=='pair_sections') echo JText::_('SECTION_NOT_EXIST');
-							elseif($this->ename=='pair_categories') echo JText::_('CATEGORY_NOT_EXIST');
+							elseif($this->ename == 'pair_sections') echo JText::_('SECTION_NOT_EXIST');
+							elseif($this->ename == 'pair_categories') echo JText::_('CATEGORY_NOT_EXIST');
 							?>
 							<img src="components/com_jfusion/images/delete_icon.png" onclick="JFusion.removePair('<?php echo $joomlaid; ?>');"/>
 						</td>

@@ -60,13 +60,13 @@ class JFusionUser_mediawiki extends JFusionUser {
 				    ->from('#__user_groups')
 				    ->where('ug_user = ' . $db->Quote($result->userid));
 
-			    $db->setQuery( $query );
+			    $db->setQuery($query);
 			    $grouplist = $db->loadObjectList();
 			    $groups = array();
 			    foreach($grouplist as $group) {
 				    $groups[] = $group->ug_group;
 			    }
-			    $result->group_id = implode( ',' , $groups );
+			    $result->group_id = implode(',' , $groups);
 			    $result->groups = $groups;
 
 			    $query = $db->getQuery(true)
@@ -111,7 +111,7 @@ class JFusionUser_mediawiki extends JFusionUser {
     function deleteUser($userinfo) {
 	    try {
 	        //setup status array to hold debug info and errors
-	        $status = array('error' => array(),'debug' => array());
+	        $status = array('error' => array(), 'debug' => array());
 
 	        $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -129,7 +129,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->username;
+		    $status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' .  $e->getMessage();
 	    }
@@ -173,7 +173,7 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @return array
      */
     function createSession($userinfo, $options){
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
@@ -224,7 +224,7 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    try {
-	        $existinguser->password = ':A:' . md5( $userinfo->password_clear);
+	        $existinguser->password = ':A:' . md5($userinfo->password_clear);
 	        $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
@@ -235,7 +235,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 	        $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
 	    }
@@ -273,7 +273,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
 	    }
@@ -311,7 +311,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 
 					$db->insertObject('#__user_groups', $ug, 'ug_user' );
 
-					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
 				}
 			}
 		} catch (Exception $e) {
@@ -338,7 +338,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    $ban->ipb_by_text = $existinguser->username;
 
 		    $ban->ipb_reason = 'You have been banned from this software. Please contact your site admin for more details';
-		    $ban->ipb_timestamp = gmdate( 'YmdHis', time() );
+		    $ban->ipb_timestamp = gmdate('YmdHis', time());
 
 		    $ban->ipb_auto = 0;
 		    $ban->ipb_anon_only = 0;
@@ -354,9 +354,9 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    //now append the new user data
 		    $db->insertObject('#__ipblocks', $ban, 'ipb_id' );
 
-		    $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR'). ': ' . $e->getMessage();
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
 	    }
     }
 
@@ -379,9 +379,9 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR'). ': ' . $e->getMessage();
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
 	    }
     }
 /*
@@ -397,9 +397,9 @@ class JFusionUser_mediawiki extends JFusionUser {
 
 	        $db->setQuery($query);
 			$db->execute():
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		} catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR'). ': ' . $e->getMessage();
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
 	    }
     }
 
@@ -416,9 +416,9 @@ class JFusionUser_mediawiki extends JFusionUser {
 
 	        $db->setQuery($query);
 			$db->execute();
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		} catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR'). ': ' . $e->getMessage();
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
 	    }
     }
 */
@@ -449,7 +449,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $user->user_email_token = '';
 
 			    if (isset($userinfo->password_clear)) {
-				    $user->user_password = ':A:' . md5( $userinfo->password_clear);
+				    $user->user_password = ':A:' . md5($userinfo->password_clear);
 			    } else {
 				    $user->user_password = ':A:' . $userinfo->password;
 			    }
@@ -462,7 +462,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 				    $user->user_options = ' ';
 			    }
 
-			    $user->user_email_authenticated = $user->user_registration = $user->user_touched = gmdate( 'YmdHis', time() );
+			    $user->user_email_authenticated = $user->user_registration = $user->user_touched = gmdate('YmdHis', time());
 			    $user->user_editcount = 0;
 			    /*
 					if ($userinfo->activation){
@@ -479,7 +479,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $wgDBprefix = $this->params->get('database_prefix');
 			    $wgDBname = $this->params->get('database_name');
 
-			    if ( $wgDBprefix ) {
+			    if ($wgDBprefix) {
 				    $wfWikiID = $wgDBname . '-' . $wgDBprefix;
 			    } else {
 				    $wfWikiID = $wgDBname;
@@ -488,15 +488,15 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $wgSecretKey = $this->helper->getConfig('wgSecretKey');
 			    $wgProxyKey = $this->helper->getConfig('wgProxyKey');
 
-			    if ( $wgSecretKey ) {
+			    if ($wgSecretKey) {
 				    $key = $wgSecretKey;
-			    } elseif ( $wgProxyKey ) {
+			    } elseif ($wgProxyKey) {
 				    $key = $wgProxyKey;
 			    } else {
 				    $key = microtime();
 			    }
 			    //update the stats
-			    $mToken = md5( $key . mt_rand( 0, 0x7fffffff ) . $wfWikiID . $user->user_id );
+			    $mToken = md5($key . mt_rand(0, 0x7fffffff) . $wfWikiID . $user->user_id);
 
 			    $query = $db->getQuery(true)
 				    ->update('#__user')

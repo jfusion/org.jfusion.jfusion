@@ -258,7 +258,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
     function restoreJoomla()
     {
         //restore Joomla autoload function
-	    spl_autoload_register(array('JLoader','load'));
+	    spl_autoload_register(array('JLoader', 'load'));
 
         if (isset($this->backup['globals'])) {
             $GLOBALS = $this->backup['globals'];

@@ -167,7 +167,7 @@ if (!class_exists('Jfusion_PassHash')) {
 		 */
 		public function hash_lsmd5($clear, $salt = null) {
 			$this->init_salt($salt, 8);
-			return "{SMD5}".base64_encode(md5($clear.$salt, true).$salt);
+			return '{SMD5}' . base64_encode(md5($clear.$salt, true) .  $salt);
 		}
 
 		/**
@@ -188,21 +188,21 @@ if (!class_exists('Jfusion_PassHash')) {
 			$this->init_salt($salt, 8);
 
 			$len  = strlen($clear);
-			$text = $clear.'$'.$magic.'$'.$salt;
-			$bin  = pack("H32", md5($clear.$salt.$clear));
+			$text = $clear . '$' . $magic . '$' . $salt;
+			$bin  = pack('H32', md5($clear.$salt.$clear));
 			for($i = $len; $i > 0; $i -= 16) {
 				$text .= substr($bin, 0, min(16, $i));
 			}
 			for($i = $len; $i > 0; $i >>= 1) {
 				$text .= ($i & 1) ? chr(0) : $clear{0};
 			}
-			$bin = pack("H32", md5($text));
+			$bin = pack('H32', md5($text));
 			for($i = 0; $i < 1000; $i++) {
 				$new = ($i & 1) ? $clear : $bin;
 				if($i % 3) $new .= $salt;
 				if($i % 7) $new .= $clear;
 				$new .= ($i & 1) ? $bin : $clear;
-				$bin = pack("H32", md5($new));
+				$bin = pack('H32', md5($new));
 			}
 			$tmp = '';
 			for($i = 0; $i < 5; $i++) {
@@ -211,13 +211,13 @@ if (!class_exists('Jfusion_PassHash')) {
 				if($j == 16) $j = 5;
 				$tmp = $bin[$i].$bin[$k].$bin[$j].$tmp;
 			}
-			$tmp = chr(0).chr(0).$bin[11].$tmp;
+			$tmp = chr(0) . chr(0) . $bin[11] . $tmp;
 			$tmp = strtr(
 				strrev(substr(base64_encode($tmp), 2)),
-				"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
-				"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+				'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
+				'./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 			);
-			return '$'.$magic.'$'.$salt.'$'.$tmp;
+			return '$' . $magic . '$' . $salt . '$' . $tmp;
 		}
 
 		/**
@@ -255,7 +255,7 @@ if (!class_exists('Jfusion_PassHash')) {
 		 */
 		public function hash_ssha($clear, $salt = null) {
 			$this->init_salt($salt, 4);
-			return '{SSHA}'.base64_encode(pack("H*", sha1($clear.$salt)).$salt);
+			return '{SSHA}' . base64_encode(pack("H*", sha1($clear.$salt)) . $salt);
 		}
 
 		/**
@@ -326,7 +326,7 @@ if (!class_exists('Jfusion_PassHash')) {
 
 			$key   = substr($salt, 16, 2);
 			$hash1 = strtolower(md5($key.md5($clear)));
-			$hash2 = substr($hash1, 0, 16).$key.substr($hash1, 16);
+			$hash2 = substr($hash1, 0, 16) . $key . substr($hash1, 16);
 			return $hash2;
 		}
 

@@ -195,7 +195,7 @@ class JFusionController extends JControllerLegacy
 	     * @ignore
 	     * @var $view jfusionViewplugindisplay
 	     */
-	    $view = $this->getView('plugindisplay','html');
+	    $view = $this->getView('plugindisplay', 'html');
 	    $plugins = $view->getPlugins();
 	    $result['pluginlist'] = $view->generateListHTML($plugins);
 
@@ -460,7 +460,7 @@ class JFusionController extends JControllerLegacy
 	         * @ignore
 	         * @var $view jfusionViewplugindisplay
 	         */
-	        $view = $this->getView('plugindisplay','html');
+	        $view = $this->getView('plugindisplay', 'html');
 	        $plugins = $view->getPlugins();
 	        $result['pluginlist'] = $view->generateListHTML($plugins);
 
@@ -563,7 +563,7 @@ class JFusionController extends JControllerLegacy
 	     * @ignore
 	     * @var $view jfusionViewplugindisplay
 	     */
-	    $view = $this->getView('plugindisplay','html');
+	    $view = $this->getView('plugindisplay', 'html');
 	    $plugins = $view->getPlugins();
 	    $result['pluginlist'] = $view->generateListHTML($plugins);
 
@@ -626,10 +626,10 @@ class JFusionController extends JControllerLegacy
 
         $db->setQuery($query);
         if ($db->loadResult()) {
-            JFusionFunctionAdmin::changePluginStatus('joomla','authentication',0);
-            JFusionFunctionAdmin::changePluginStatus('joomla','user',0);
-            JFusionFunctionAdmin::changePluginStatus('jfusion','authentication',1);
-            JFusionFunctionAdmin::changePluginStatus('jfusion','user',1);
+            JFusionFunctionAdmin::changePluginStatus('joomla', 'authentication', 0);
+            JFusionFunctionAdmin::changePluginStatus('joomla', 'user', 0);
+            JFusionFunctionAdmin::changePluginStatus('jfusion', 'authentication', 1);
+            JFusionFunctionAdmin::changePluginStatus('jfusion', 'user', 1);
         } else {
             JFusionFunction::raiseWarning(JText::_('NO_MASTER_WARNING'));
         }
@@ -644,10 +644,10 @@ class JFusionController extends JControllerLegacy
     function disableplugins()
     {
         //restore the normal login behaviour
-        JFusionFunctionAdmin::changePluginStatus('joomla','authentication',1);
-        JFusionFunctionAdmin::changePluginStatus('joomla','user',1);
-        JFusionFunctionAdmin::changePluginStatus('jfusion','authentication',0);
-        JFusionFunctionAdmin::changePluginStatus('jfusion','user',0);
+        JFusionFunctionAdmin::changePluginStatus('joomla', 'authentication', 1);
+        JFusionFunctionAdmin::changePluginStatus('joomla', 'user', 1);
+        JFusionFunctionAdmin::changePluginStatus('jfusion', 'authentication', 0);
+        JFusionFunctionAdmin::changePluginStatus('jfusion', 'user', 0);
         $this->setRedirect('index.php?option=com_jfusion&task=cpanel');
     }
 
@@ -696,7 +696,7 @@ class JFusionController extends JControllerLegacy
         } else {
             foreach ($syncid as $key => $value) {
                 //output the sync errors to the user
-	            $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid=',$key);
+	            $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid=', $key);
                 break;
             }
         }
@@ -755,7 +755,7 @@ JS;
     {
         //split the value of the sort action
         $sort_order = JFactory::getApplication()->input->getString('sort_order');
-        $ids = explode('|',$sort_order);
+        $ids = explode('|', $sort_order);
         $db = JFactory::getDBO();
 
         $result = array('status' => true, 'messages' => '');
@@ -782,7 +782,7 @@ JS;
 	     * @ignore
 	     * @var $view jfusionViewplugindisplay
 	     */
-	    $view = $this->getView('plugindisplay','html');
+	    $view = $this->getView('plugindisplay', 'html');
 	    $plugins = $view->getPlugins();
 	    $result['pluginlist'] = $view->generateListHTML($plugins);
 
@@ -806,9 +806,9 @@ JS;
 			    $filename = base64_decode($filename);
 			    $ConfigFile = JFusionFunctionAdmin::getFileData($filename);
 			    if (!empty($ConfigFile)) {
-				    $xml = JFusionFunction::getXml($ConfigFile,false);
+				    $xml = JFusionFunction::getXml($ConfigFile, false);
 			    }
-		    } else if( $file['error'] > 0 ) {
+		    } else if($file['error'] > 0) {
 			    switch ($file['error']) {
 				    case UPLOAD_ERR_INI_SIZE:
 					    $error = JText::_('UPLOAD_ERR_INI_SIZE');
@@ -949,17 +949,17 @@ JS;
 
         $arr = array();
         foreach ($params as $key => $val) {
-            if( !$dbinfo && substr($key,0,8) == 'database' && substr($key,0,13) != 'database_type' ) {
+            if( !$dbinfo && substr($key, 0, 8) == 'database' && substr($key, 0, 13) != 'database_type' ) {
                 continue;
             }
             $arr[$key] = $val;
         }
 
-	    $xml = JFusionFunction::getXml('<jfusionconfig></jfusionconfig>',false);
+	    $xml = JFusionFunction::getXml('<jfusionconfig></jfusionconfig>', false);
 
         $info = $xml->addChild('info');
 
-        list($VersionCurrent,$RevisionCurrent) = JFusionFunctionAdmin::currentVersion(true);
+        list($VersionCurrent, $RevisionCurrent) = JFusionFunctionAdmin::currentVersion(true);
 
         $info->addAttribute  ('jfusionversion',  $VersionCurrent);
         $info->addAttribute  ('jfusionrevision',  $RevisionCurrent);
@@ -1056,14 +1056,14 @@ JS;
 		$jfusion = JComponentHelper::getComponent('com_jfusion');
 
 		$table = JTable::getInstance('extension');
-		$table->load( $jfusion->id ); // pass your component id
+		$table->load($jfusion->id); // pass your component id
 
 		$jfusion->params->set('usergroups', $groups);
 		$jfusion->params->set('updateusergroups', $updateusergroups);
 
 		$post = array();
 		$post['params'] = (string)$jfusion->params;
-		$table->bind( $post );
+		$table->bind($post);
 		// pre-save checks
 		if (!$table->check()) {
 			JFusionFunction::raiseWarning($table->getError());

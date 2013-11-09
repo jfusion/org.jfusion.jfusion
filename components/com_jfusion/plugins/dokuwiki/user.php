@@ -45,7 +45,7 @@ class JFusionUser_dokuwiki extends JFusionUser
         // Initialise some variables
         $userinfo->username = $this->filterUsername($userinfo->username);
         $update_email = $this->params->get('update_email');
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         //check to see if a valid $userinfo object was passed on
 	    try {
 		    if (!is_object($userinfo)) {
@@ -182,7 +182,7 @@ class JFusionUser_dokuwiki extends JFusionUser
      */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         $username = $this->filterUsername($userinfo->username);
         $user[$username] = $username;
 
@@ -201,7 +201,7 @@ class JFusionUser_dokuwiki extends JFusionUser
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 
         $cookie_path = $this->params->get('cookie_path', '/');
         $cookie_domain = $this->params->get('cookie_domain');
@@ -229,7 +229,7 @@ class JFusionUser_dokuwiki extends JFusionUser
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 
         if(!empty($userinfo->password_clear)){
             //set login cookie
@@ -242,7 +242,7 @@ class JFusionUser_dokuwiki extends JFusionUser
             //setup Dokuwiki constants
 	        $this->helper->defineConstants();
             $salt = $this->helper->getCookieSalt();
-            $pass = JFusion_PMA_blowfish_encrypt($userinfo->password_clear,$salt);
+            $pass = JFusion_PMA_blowfish_encrypt($userinfo->password_clear, $salt);
 //            $sticky = (!empty($options['remember'])) ? 1 : 0;
             $sticky = 1;
         	$version = $this->helper->getVersion();

@@ -46,7 +46,7 @@ class JFusionUser_vbulletin extends JFusionUser
 		try {
 			if($identifier_type == 'auto') {
 				//get the identifier
-				list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,'u.username','u.email');
+				list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'u.username', 'u.email');
 				if ($identifier_type == 'u.username') {
 					//lower the username for case insensitivity purposes
 					$identifier_type = 'LOWER(u.username)';
@@ -188,8 +188,8 @@ class JFusionUser_vbulletin extends JFusionUser
 			$cookie_domain = $this->params->get('cookie_domain');
 			$cookie_path = $this->params->get('cookie_path');
 			$cookie_expires = $this->params->get('cookie_expires', '15') * 60;
-			$secure = $this->params->get('secure',false);
-			$httponly = $this->params->get('httponly',true);
+			$secure = $this->params->get('secure', false);
+			$httponly = $this->params->get('httponly', true);
 			$timenow = time();
 
 			$session_user = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
@@ -255,7 +255,7 @@ class JFusionUser_vbulletin extends JFusionUser
 	 */
 	function createSession($userinfo, $options)
 	{
-		$status = array('error' => array(),'debug' => array());
+		$status = array('error' => array(), 'debug' => array());
 		try {
 			//do not create sessions for blocked users
 			if (!empty($userinfo->block) || !empty($userinfo->activation)) {
@@ -389,7 +389,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 		} catch (Exception $e) {
 			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
 		}
@@ -471,11 +471,11 @@ class JFusionUser_vbulletin extends JFusionUser
 				$db->insertObject('#__userban', $ban, 'userid');
 			}
 
-			$status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+			$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 
 			//note that blockUser has been called
 			if (empty($status['aec'])) {
-				define('VBULLETIN_BLOCKUSER_CALLED',1);
+				define('VBULLETIN_BLOCKUSER_CALLED', 1);
 			}
 		} catch (Exception $e) {
 			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
@@ -587,7 +587,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		} catch (Exception $e) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
 		}
@@ -806,7 +806,7 @@ class JFusionUser_vbulletin extends JFusionUser
 		//check to see if we have a group_id in the $userinfo, if not return
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ': ' . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
 		} else {
 			$usergroup = $usergroups[0];
 			$defaultgroup = $usergroup->defaultgroup;
@@ -896,7 +896,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			$cookie_userid = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
 			$cookie_password = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'password', '');
 			$JUser = JFactory::getUser();
-			if (JPluginHelper::isEnabled ( 'system', 'remember' )) {
+			if (JPluginHelper::isEnabled('system', 'remember')) {
 				jimport('joomla.utilities.utility');
 				$hash = JApplication::getHash('JLOGIN_REMEMBER');
 

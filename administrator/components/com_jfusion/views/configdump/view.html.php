@@ -155,8 +155,8 @@ class jfusionViewconfigdump extends JViewLegacy {
 		foreach($rows as $row) {
 			$new = $this->loadParams($row);
 
-			$this->clearParameters($new,'joomla_plugin', $row->type);
-			$this->addMissingParameters($new,'joomla_plugin', $row->type);
+			$this->clearParameters($new, 'joomla_plugin', $row->type);
+			$this->addMissingParameters($new, 'joomla_plugin', $row->type);
 
 			$this->joomla_plugin[$row->type] = $new;
 		}
@@ -173,8 +173,8 @@ class jfusionViewconfigdump extends JViewLegacy {
 			foreach($rows as $row) {
 				$new = $this->loadParams($row);
 
-				$this->clearParameters($new,'jfusion_module', $row->module);
-				$this->addMissingParameters($new,'jfusion_module', $row->module);
+				$this->clearParameters($new, 'jfusion_module', $row->module);
+				$this->addMissingParameters($new, 'jfusion_module', $row->module);
 
 				$name = !empty($row->title) ? $row->module . ' ' . $row->title : $row->module;
 				$this->jfusion_module[$name] = $new;
@@ -355,22 +355,22 @@ class jfusionViewconfigdump extends JViewLegacy {
 	function check($type, $key, $value, $name = null) {
 		$check = null;
 
-		if ( $name != null && isset($this->checkvalue[$type][$name]['*'][$key]) ) {
+		if ($name != null && isset($this->checkvalue[$type][$name]['*'][$key])) {
 			$check = $this->checkvalue[$type][$name]['*'][$key];
-		} else if ( $name != null && isset($this->checkvalue[$type][$name][$key]) ) {
+		} else if ($name != null && isset($this->checkvalue[$type][$name][$key])) {
 			$check = $this->checkvalue[$type][$name][$key];
-		} else if ( isset($this->checkvalue[$type][$key]) ) {
+		} else if (isset($this->checkvalue[$type][$key])) {
 			$check = $this->checkvalue[$type][$key];
-		} else if ( isset($this->checkvalue[$type]['*'][$key]) ) {
+		} else if (isset($this->checkvalue[$type]['*'][$key])) {
 			$check = $this->checkvalue[$type]['*'][$key];
 		}
 
-		if( $check ) {
-			$checks = explode( '|' , $check );
+		if($check) {
+			$checks = explode('|' , $check);
 
 			$valid = 0;
 			foreach($checks as $check) {
-				switch ( $check ) {
+				switch ($check) {
 					case 'is_validusergrouparray';
 						if (is_array($value) && !empty($value)) {
 							$valid = 1;
@@ -403,7 +403,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 						if (is_numeric($value)) $valid = 1;
 						break;
 					case 'is_url':
-						if (preg_match("#^((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+$,A-Za-z0-9])+)([).!';/?:,][[:blank:]])?$#i", $value, $matches))  $valid = 1;
+						if (preg_match('#^((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~* \';/?:@&=+$,A-Za-z0-9])+)([).!\';/?:,][[:blank:]])?$#i', $value, $matches))  $valid = 1;
 						break;
 					case 'is_cookie_domain':
 						if (strlen($value)) {

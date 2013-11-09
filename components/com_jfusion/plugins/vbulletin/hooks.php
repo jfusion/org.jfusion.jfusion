@@ -59,7 +59,7 @@ class executeJFusionHook
         $this->vars =& $vars;
         $this->key = $key;
         eval('$success = $this->' . $hook . '();');
-        //if ($success) die('<pre>'.print_r($GLOBALS['vbulletin']->pluginlist,true).'</pre>');
+        //if ($success) die('<pre>'.print_r($GLOBALS['vbulletin']->pluginlist, true).'</pre>');
 
     }
     function init_startup()
@@ -765,7 +765,7 @@ class JFvBulletinTask {
 
         $userdm->set('usergroupid', $defaultgroup);
         $userdm->set('membergroupids', $membergroups);
-        $userdm->set('usertitle',$this->data['usertitle']);
+        $userdm->set('usertitle', $this->data['usertitle']);
 
         //performs some final VB checks before saving
         $userdm->pre_save();
@@ -828,7 +828,7 @@ class JFvBulletinTask {
         if (!empty($this->data['result'])) {
             $result =& $this->data['result'];
             //set the user title
-            if ($result->customtitle && $result->usertitle!=$result->bantitle) {
+            if ($result->customtitle && $result->usertitle != $result->bantitle) {
                 $usertitle = $result->usertitle;
             } else if (!empty($result->usertitle)) {
                 $usertitle = $result->usertitle;

@@ -59,7 +59,7 @@ try {
 
 			$view = $pluginParam->get('view', 'auto');
 
-			defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
+			defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2', 'Y M d h:i:s A');
 			defined('LAT') or define('LAT', 0);
 			defined('LCT') or define('LCT', 1);
 			defined('LCP') or define('LCP', 2);
@@ -161,7 +161,7 @@ try {
 	            }
 			} else {
 				if ($forum->methodDefined('renderActivityModule')) {
-					$output = $forum->renderActivityModule($config,$view, $pluginParam);
+					$output = $forum->renderActivityModule($config, $view, $pluginParam);
 					echo $output;
 				} else {
 					throw new RuntimeException(JText::_('NOT_IMPLEMENTED_YET'));

@@ -8,32 +8,32 @@
  */
 
 // no direct access
-defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
+defined('_JEXEC') or trigger_error('Restricted access');
 
 require_once 'helper/default.php';
 
-if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
+if (JPluginHelper::importPlugin('system', 'magelib')) {
     /**
      * @ignore
      * @var $params JRegistry
      */
-	$plgMageLib = new plgSystemMagelib ( );
-	$plgMageLib->destroyTemporaryJoomlaSession ();
-	if ($plgMageLib->loadAndStartMagentoBootstrap ()) :
-		$plgMageLib->startMagentoSession ();
+	$plgMageLib = new plgSystemMagelib();
+	$plgMageLib->destroyTemporaryJoomlaSession();
+	if ($plgMageLib->loadAndStartMagentoBootstrap()) :
+		$plgMageLib->startMagentoSession();
 		
 		/* Content of Magento logic, blocks or else */
 		
 		$html = '';
-		$blockId = $params->get ( 'block_id', '' );
-		echo JFusion_Helper_Mageselectblock::callblock ( $blockId );
+		$blockId = $params->get('block_id', '');
+		echo JFusion_Helper_Mageselectblock::callblock($blockId);
 		
 		/* EOF */
 		
-		$plgMageLib->stopMagentoSession ();
+		$plgMageLib->stopMagentoSession();
 
 	endif;
-	$plgMageLib->restartJoomlaSession ();
+	$plgMageLib->restartJoomlaSession();
 } else {
-	JFusionFunction::raiseWarning (JText::_ ( 'Plugin system magelib not installed or activated!' ) );
+	JFusionFunction::raiseWarning(JText::_('Plugin system magelib not installed or activated!'));
 }

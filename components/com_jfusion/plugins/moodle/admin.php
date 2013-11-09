@@ -252,7 +252,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $jname = $this->getJname ();
 	    try {
 		    try {
-			    JFusionFactory::getDatabase ( $jname );
+			    JFusionFactory::getDatabase($jname);
 		    } catch (Exception $e) {
 				throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
 		    }
@@ -270,11 +270,11 @@ class JFusionAdmin_moodle extends JFusionAdmin
 		    if ($mod_exists) {
 			    $src = 'components/com_jfusion/images/tick.png';
 			    $mod = 'uninstallModule';
-			    $text = JText::_ ( 'MODULE_UNINSTALL_BUTTON' );
+			    $text = JText::_('MODULE_UNINSTALL_BUTTON');
 		    } else {
 			    $src = 'components/com_jfusion/images/cross.png';
 			    $mod = 'installModule';
-			    $text = JText::_ ( 'MODULE_INSTALL_BUTTON' );
+			    $text = JText::_('MODULE_INSTALL_BUTTON');
 		    }
 
 		    $html = <<<HTML
@@ -297,13 +297,13 @@ HTML;
      */
     public function installModule()
     {
-	    $status = array('error' => array(),'debug' => array());
+	    $status = array('error' => array(), 'debug' => array());
 	    $jname = $this->getJname ();
 		try {
 			 $db = JFusionFactory::getDatabase($jname);
 			 $source_path = $this->params->get('source_path');
-			 jimport ( 'joomla.filesystem.archive' );
-			 jimport ( 'joomla.filesystem.file' );
+			 jimport('joomla.filesystem.archive');
+			 jimport('joomla.filesystem.file');
 
 			 $pear_path = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'pear';
 			 require_once $pear_path . DIRECTORY_SEPARATOR . 'PEAR.php';
@@ -369,14 +369,14 @@ HTML;
      */
     public function uninstallModule()
     {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
-		    jimport ( 'joomla.filesystem.file' );
-		    jimport ( 'joomla.filesystem.folder' );
+		    jimport('joomla.filesystem.file');
+		    jimport('joomla.filesystem.folder');
 
 		    $jname =  $this->getJname ();
 		    $db = JFusionFactory::getDatabase($jname);
-		    $source_path = $this->params->get ( 'source_path' );
+		    $source_path = $this->params->get ('source_path');
 		    $xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
 		    $listfiles = JFusionFunction::getXml($xmlfile);
@@ -485,11 +485,11 @@ HTML;
 
 		    $db->setQuery($query);
 		    $value = $db->loadResult();
-		    $auths = explode(',',$value);
-		    $key = array_search('jfusion',$auths);
+		    $auths = explode(',', $value);
+		    $key = array_search('jfusion', $auths);
 		    if ($key !== false){
 			    $authstr = $auths[0];
-			    for ($i=1; $i <= (count($auths)-1);$i++){
+			    for ($i = 1; $i <= (count($auths)-1); $i++){
 				    if ($auths[$i] != 'jfusion'){
 					    $authstr .= ',' . $auths[$i];
 				    }
@@ -523,7 +523,7 @@ HTML;
 
 			    $db->setQuery($query);
 			    $value = $db->loadResult();
-			    if (stripos($value,'jfusion')!== false ){
+			    if (stripos($value, 'jfusion') !== false ){
 				    // now find out if we have enabled the plugin
 				    $query = $db->getQuery(true)
 					    ->select('value')
@@ -544,10 +544,10 @@ HTML;
 
 			    if ($activated) {
 				    $src = 'components/com_jfusion/images/tick.png';
-				    $text = JText::_ ( 'MODULE_DEACTIVATION_BUTTON' );
+				    $text = JText::_('MODULE_DEACTIVATION_BUTTON');
 			    } else {
 				    $src = 'components/com_jfusion/images/cross.png';
-				    $text = JText::_ ( 'MODULE_ACTIVATION_BUTTON' );
+				    $text = JText::_('MODULE_ACTIVATION_BUTTON');
 			    }
 
 			    $html = <<<HTML
@@ -596,9 +596,9 @@ HTML;
 			    $db->setQuery($query);
 
 			    $value = $db->loadResult();
-			    $auths = explode(',',$value);
+			    $auths = explode(',', $value);
 
-			    $key = array_search('jfusion',$auths);
+			    $key = array_search('jfusion', $auths);
 
 			    if ($key !== false) {
 					// already enabled ?!
@@ -631,11 +631,11 @@ HTML;
 
 			    $db->setQuery($query);
 			    $value = $db->loadResult();
-			    $auths = explode(',',$value);
-			    $key = array_search('jfusion',$auths);
+			    $auths = explode(',', $value);
+			    $key = array_search('jfusion', $auths);
 			    if ($key !== false){
 				    $authstr = $auths[0];
-				    for ($i=1; $i <= (count($auths)-1);$i++){
+				    for ($i=1; $i <= (count($auths)-1); $i++){
 					    if ($auths[$i] != 'jfusion'){
 						    $authstr .= ',' . $auths[$i];
 					    }

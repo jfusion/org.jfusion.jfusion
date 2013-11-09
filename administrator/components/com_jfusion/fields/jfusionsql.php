@@ -69,7 +69,7 @@ class JFormFieldjfusionsql extends JFormField
 					    $db->setQuery($query);
 					    $items = $db->loadObjectList();
 					    foreach ($items as &$item) {
-						    $repeat = ( $item->level - 1 >= 0 ) ? $item->level - 1 : 0;
+						    $repeat = ($item->level - 1 >= 0) ? $item->level - 1 : 0;
 						    $item->name = str_repeat('- ', $repeat) . $item->name;
 					    }
 					    $output = JHTML::_('select.genericlist',  $items, $param_name, 'class="inputbox" ' . $multiple, $key, $val, $this->value, $this->formControl . '_' . $this->group . '_' . $this->fieldname);
@@ -81,7 +81,7 @@ class JFormFieldjfusionsql extends JFormField
 						    ->from('#__extensions')
 						    ->where('element = ' . $db->Quote('com_k2'));
 
-					    $db->setQuery( $query );
+					    $db->setQuery($query);
 					    $enabled = $db->loadResult();
 					    if (empty($enabled)) {
 						    throw new RuntimeException(JText::_('K2_NOT_AVAILABLE'));
@@ -114,7 +114,7 @@ class JFormFieldjfusionsql extends JFormField
 					    $results = $db->loadObjectList();
 
 					    if(!empty($add_default)) {
-						    array_unshift($results, JHTML::_('select.option', '', '- ' . JText::_('SELECT_ONE'). '  -', $key, $val));
+						    array_unshift($results, JHTML::_('select.option', '', '- ' . JText::_('SELECT_ONE') . '  -', $key, $val));
 					    }
 					    $output = JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" ' . $multiple, $key, $val, $this->value, $this->formControl . '_' . $this->group . '_' . $this->fieldname);
 				    }

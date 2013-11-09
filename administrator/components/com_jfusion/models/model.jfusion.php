@@ -648,7 +648,7 @@ class JFusionFunction
 	    require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.parse.php');
 
 	    $parser = new JFusionParse();
-	    return $parser->parseCode($text, $to,$options);
+	    return $parser->parseCode($text, $to, $options);
     }
 
     /**
@@ -679,7 +679,7 @@ class JFusionFunction
             $juri = new JURI($joomla_url);
             $path = $juri->getPath();
             if ($path != '/'){
-                $matches = str_replace($path,'',$matches);
+                $matches = str_replace($path, '', $matches);
             }
             $url = JRoute::_($joomla_url . $matches);
             $return = $url;
@@ -701,7 +701,7 @@ class JFusionFunction
         $conf = JFactory::getConfig();
         $database = $conf->get('db');
         $connected = true;
-        if (!method_exists($db,'connected')){
+        if (!method_exists($db, 'connected')){
             $connected = false;	
         } elseif (!$db->connected()){
             $connected = false;
@@ -1467,7 +1467,7 @@ JS;
 						}
 						break;
 					case 'bmp':
-						$header = unpack('H*',$rawdata);
+						$header = unpack('H*', $rawdata);
 						// Process the header
 						// Structure: http://www.fastgraph.com/help/bmp_header_format.html
 						// Cut it in parts of 2 bytes

@@ -31,11 +31,11 @@ class JFusionControllerWeb extends JControllerLegacy
          * @var $menu JMenu
         */
 	    $menu = JMenu::getInstance('site');
-        $item = $menu->getActive ();
+        $item = $menu->getActive();
         if ($item) {
-            $params = $menu->getParams ( $item->id );
+            $params = $menu->getParams($item->id);
         } else {
-            $params = $menu->getParams ( null );
+            $params = $menu->getParams(null);
         }
 
         // Set the default view name from the Request
@@ -43,7 +43,7 @@ class JFusionControllerWeb extends JControllerLegacy
          * @ignore
          * @var $view jfusionViewWeb
          */
-        $view = $this->getView ( 'web', 'html' );
+        $view = $this->getView('web', 'html');
 	    $view->params = $params;
         $view->display ();
     }

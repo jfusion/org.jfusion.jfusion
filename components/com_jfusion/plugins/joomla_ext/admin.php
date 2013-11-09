@@ -73,7 +73,7 @@ class JFusionAdmin_joomla_ext extends JFusionJoomlaAdmin
 					//extract the name and value, it was coded to avoid the use of eval() function
 					// because from Joomla 1.6 the configuration items are declared public in tead of var
 					// we just convert public to var
-					$line = str_replace('public $','var $',$line);
+					$line = str_replace('public $', 'var $', $line);
 					$vars = explode("'", $line);
 					$names = explode('var', $vars[0]);
 					if (isset($vars[1]) && isset($names[1])) {

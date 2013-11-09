@@ -16,20 +16,20 @@ class Jfusion_Joomla_Block_Backend extends Mage_Core_Block_Template {
      *
      */
     public function __construct() {
-		$this->setTemplate ( 'joomla/backend.phtml' );
+		$this->setTemplate('joomla/backend.phtml');
 	}
 
     /**
      * @return mixed
      */
     public function getCustomAdminUrl() {
-		return Mage::helper('joomla')->getData ( 'custom_adminurl' );
+		return Mage::helper('joomla')->getData('custom_adminurl');
 	}
 
     /**
      * @return mixed
      */
     public function getJoomlaBaseUrl() {
-		return Mage::helper('joomla')->getData ( 'baseurl' );
+		return Mage::helper('joomla')->getData('baseurl');
 	}
 }

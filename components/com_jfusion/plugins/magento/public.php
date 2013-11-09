@@ -64,7 +64,7 @@ class JFusionPublic_magento extends JFusionPublic {
      * @return array|string
      */
     function setLanguageFrontEnd($userinfo = null) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         // The language is selected by the library magelib when the magento framework is started
         /*if (JPluginHelper::isEnabled('system', 'magelib')) {
             $status['debug'] = JText::_('STEP_SKIPPED_MAGELIB_INSTALLED');
@@ -92,7 +92,7 @@ class JFusionPublic_magento extends JFusionPublic {
                 $joomla_code = $codes[0];
                 $store_code = $codes[1];
                 if ($joomla_code == JFactory::getLanguage()->getTag()) {
-                    $cookies_to_set[0] = array("store=$store_code");
+                    $cookies_to_set[0] = array('store=' . $store_code);
                     break;
                 }
             }

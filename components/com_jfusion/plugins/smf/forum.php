@@ -231,11 +231,11 @@ class JFusionForum_smf extends JFusionForum
 		    $proper = $db->loadResult();
 
 
-		    $vulgar = explode  ( ',' , $vulgar );
-		    $proper = explode  ( ',' , $proper );
+		    $vulgar = explode(',', $vulgar);
+		    $proper = explode(',', $proper);
 
 		    foreach($results as $rkey => $result) {
-			    foreach( $vulgar as $key => $value ) {
+			    foreach($vulgar as $key => $value) {
 				    $results[$rkey]->subject = preg_replace('#\b' . preg_quote($value,'#') . '\b#is', $proper[$key], $result->subject);
 				    if (isset($results[$rkey]->body)) {
 					    $results[$rkey]->body = preg_replace('#\b' . preg_quote($value,'#') . '\b#is', $proper[$key], $result->body);
@@ -674,7 +674,7 @@ HTML;
      */
     function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
     {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    if ($userinfo->guest) {

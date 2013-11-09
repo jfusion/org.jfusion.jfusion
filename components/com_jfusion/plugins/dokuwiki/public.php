@@ -135,7 +135,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic
             }
 
             //restore the __autoload handler
-	        spl_autoload_register(array('JLoader','load'));
+	        spl_autoload_register(array('JLoader', 'load'));
 
             //change the current directory back to Joomla. 5*60
             chdir(JPATH_SITE);
@@ -157,13 +157,13 @@ class JFusionPublic_dokuwiki extends JFusionPublic
         $callback_body = array();
         $source_url = $this->params->get('source_url');
         $doku_path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
-        $doku_path = preg_replace('#//+#', '/', "/$doku_path/");
+        $doku_path = preg_replace('#//+#', '/', '/' . $doku_path . '/');
         
-        $regex_body[] = '#(href|action|src)=["\']' . preg_quote($data->integratedURL,'#') . '(.*?)["\']#mS';
+        $regex_body[] = '#(href|action|src)=["\']' . preg_quote($data->integratedURL, '#') . '(.*?)["\']#mS';
         $replace_body[] = '$1="/$2"';
         $callback_body[] = '';
         
-        $regex_body[] = '#(href|action|src)=["\']' . preg_quote($doku_path,'#') . '(.*?)["\']#mS';
+        $regex_body[] = '#(href|action|src)=["\']' . preg_quote($doku_path, '#') . '(.*?)["\']#mS';
         $replace_body[] = '$1="/$2"';
         $callback_body[] = '';
         
@@ -194,7 +194,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic
         foreach ($regex_body as $k => $v) {
         	//check if we need to use callback
         	if(!empty($callback_body[$k])){
-			    $data->body = preg_replace_callback($regex_body[$k],array( &$this,$callback_body[$k]), $data->body);             		
+			    $data->body = preg_replace_callback($regex_body[$k], array(&$this, $callback_body[$k]), $data->body);
         	} else {
         		$data->body = preg_replace($regex_body[$k], $replace_body[$k], $data->body);
         	}
@@ -217,12 +217,12 @@ class JFusionPublic_dokuwiki extends JFusionPublic
             /*
             $source_url = $this->params->get('source_url');
 
-            $doku_path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $source_url );
-            $doku_path = preg_replace('#//+#','/',"/$doku_path/");
+            $doku_path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
+            $doku_path = preg_replace('#//+#', '/', '/' . $doku_path . '/');
 
-            $regex_header[]    = '#(href|src)=["\']'.preg_quote($data->integratedURL,'#').'(.*?)["\']#mS';
+            $regex_header[]    = '#(href|src)=["\']'.preg_quote($data->integratedURL, '#').'(.*?)["\']#mS';
             $replace_header[]    = '$1="/$2"';
-            $regex_header[]    = '#(href|src)=["\']'.preg_quote($doku_path,'#').'(.*?)["\']#mS';
+            $regex_header[]    = '#(href|src)=["\']'.preg_quote($doku_path, '#').'(.*?)["\']#mS';
             $replace_header[]    = '$1="/$2"';
 
             //convert relative links into absolute links

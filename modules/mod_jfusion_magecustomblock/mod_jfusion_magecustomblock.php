@@ -8,13 +8,13 @@
  */
 
 // no direct access
-defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
+defined('_JEXEC') or trigger_error('Restricted access');
 /**
  * @ignore
  * @var $params JRegistry
  * @var $module object
  */
-if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
+if (JPluginHelper::importPlugin('system', 'magelib')) {
 	
 	$plgMageLib = new plgSystemMagelib ( );
 	$plgMageLib->destroyTemporaryJoomlaSession ();
@@ -24,13 +24,13 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 		
 		/* Content of Magento logic, blocks or else */
 			
-		if($params->get ( 'enable_scriptaculous', 0 )){
+		if($params->get('enable_scriptaculous', 0)){
 			/*@todo - find a way to allow compatibility between Mootools and Prototype */
 			$document = JFactory::getDocument();
 			$document->addScript($plgMageLib->getMageUrl() . "/js/index.php?c=auto&amp;f=,prototype/prototype.js,prototype/validation.js,scriptaculous/builder.js,scriptaculous/effects.js,scriptaculous/dragdrop.js,scriptaculous/controls.js,scriptaculous/slider.js,varien/js.js,varien/form.js,varien/menu.js,mage/translate.js,mage/cookies.js");
 		}
 		
-		$xml_output = $params->get ( 'xml_output', '' );
+		$xml_output = $params->get('xml_output', '');
 
 		/**
 		 * @ignore
@@ -38,23 +38,23 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 		 * @var $block Mage_Core_Block_Template
 		 */
 
-		if(strlen($xml_output) <= 0){
-		$block_type = $params->get ( 'block_type', '' );
-		$block_name = $params->get ( 'block_name', '' );
-		$mage_template_path = $params->get ( 'mage_template_path', '' );
+		if(strlen($xml_output) <= 0) {
+		$block_type = $params->get('block_type', '');
+		$block_name = $params->get('block_name', '');
+		$mage_template_path = $params->get('mage_template_path', '');
 		
-			if ($block_type != '' && $block_name != '' ) {
-				$layout = Mage::getSingleton ( 'core/layout' );
-				$block = $layout->createBlock ( $block_type, $block_name );
+			if ($block_type != '' && $block_name != '') {
+				$layout = Mage::getSingleton('core/layout');
+				$block = $layout->createBlock($block_type, $block_name);
 				if($mage_template_path){
-				    $block->setTemplate ( $mage_template_path );
-				    $output = $block->RenderView ();
+				    $block->setTemplate($mage_template_path);
+				    $output = $block->RenderView();
 				}else{
 				    $output = $block->toHtml();    
 				}
 				echo $output;
 			} else {
-				JFusionFunction::raiseNotice('MODULE_BAD_CONFIGURED: ' . $module->title );
+				JFusionFunction::raiseNotice('MODULE_BAD_CONFIGURED: ' . $module->title);
 			}
 		}else{
 			$xml = '<block type="core/text_list" name="content">' . $xml_output . '</block>';
@@ -76,5 +76,5 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 		endif;
 	$plgMageLib->restartJoomlaSession ();
 } else {
-	JFusionFunction::raiseWarning(JText::_ ( 'Plugin system magelib not installed or activated!' ) );
+	JFusionFunction::raiseWarning(JText::_('Plugin system magelib not installed or activated!'));
 }

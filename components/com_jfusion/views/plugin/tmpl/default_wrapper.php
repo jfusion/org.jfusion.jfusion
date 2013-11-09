@@ -13,14 +13,14 @@
 defined('_JEXEC') or die('Restricted access');
 
 $wrapper_scroll = $this->params->get('wrapper_scroll', 'auto');
-if ($wrapper_scroll=='hidden') {
+if ($wrapper_scroll == 'hidden') {
 	$scroll = 'no';
-} elseif ($wrapper_scroll=='scroll') {
+} elseif ($wrapper_scroll ==' scroll') {
 	$scroll = 'yes';
 } else {
 	$scroll = 'auto';
 }
-$pageclass_sfx = $this->params->get('pageclass_sfx','');
+$pageclass_sfx = $this->params->get('pageclass_sfx', '');
 
 if($this->params->get('wrapper_autoheight', 1)) {
 	$onload = 'JFusion.adjustMyFrameHeight();';

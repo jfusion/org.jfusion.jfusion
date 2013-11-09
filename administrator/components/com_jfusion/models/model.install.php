@@ -63,15 +63,15 @@ class JFusionModelInstaller extends InstallerModelInstall
 	 *
 	 * @return mixed
 	 */
-	function raise($type, $msg, $jname='') {
+	function raise($type, $msg, $jname = '') {
 		$this->setState('message', $msg);
 		if ($this->raise) {
 			switch($type) {
 				case 'message':
-					JFusionFunction::raiseMessage($msg,$jname);
+					JFusionFunction::raiseMessage($msg, $jname);
 					break;
 				case 'error':
-					JFusionFunction::raiseError($msg,$jname);
+					JFusionFunction::raiseError($msg, $jname);
 					break;
 			}
 		}
@@ -125,11 +125,11 @@ class JFusionModelInstaller extends InstallerModelInstall
 				    $config = JFactory::getConfig();
 				    $package['packagefile'] = $config->get('tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
 			    }
-			    if ( $result['status'] && is_file($package['packagefile']) ) {
+			    if ($result['status'] && is_file($package['packagefile'])) {
 				    //save a copy of the plugin for safe keeping
 				    $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . basename($package['packagefile']);
-				    if ( $package['packagefile'] != $dest) {
-					    JFile::copy($package['packagefile'],$dest);
+				    if ($package['packagefile'] != $dest) {
+					    JFile::copy($package['packagefile'], $dest);
 				    }
 			    }
 
@@ -300,7 +300,7 @@ class JFusionPluginInstaller extends JObject
 		            $jfusionxml = false;
 	            }
 
-	            $version = $this->getAttribute($this->manifest,'version');
+	            $version = $this->getAttribute($this->manifest, 'version');
 
 	            /**
 	             * ---------------------------------------------------------------------------------------------
@@ -361,7 +361,7 @@ class JFusionPluginInstaller extends JObject
 			            if (JFolder::exists($languageFolder)) {
 				            $files = JFolder::files($languageFolder);
 				            foreach ($files as $file) {
-					            $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file,0,5);
+					            $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file, 0, 5);
 					            JFolder::create($dest);
 					            JFile::copy($languageFolder . DIRECTORY_SEPARATOR . $file, $dest . DIRECTORY_SEPARATOR . $file);
 				            }
@@ -483,7 +483,7 @@ class JFusionPluginInstaller extends JObject
 			    if (is_array($result)) {
 				    $success = $result[0];
 				    if (is_array($result[1])) {
-					    $reason = implode('</li><li>' . $jname . ': ',$result[1]);
+					    $reason = implode('</li><li>' . $jname . ': ', $result[1]);
 				    } elseif (!empty($result[1])) {
 					    $reason = $result[1];
 				    }
@@ -547,9 +547,9 @@ class JFusionPluginInstaller extends JObject
 				    if ($removeLanguage) {
 					    $languageFolder = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language';
 					    if (JFolder::exists($languageFolder)) {
-						    $files = JFolder::files(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language',  'com_jfusion.plg_' . $jname . '.ini',true);
+						    $files = JFolder::files(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language',  'com_jfusion.plg_' . $jname . '.ini', true);
 						    foreach ($files as $file) {
-							    $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file, 0, 5). DIRECTORY_SEPARATOR . $file;
+							    $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file, 0, 5) . DIRECTORY_SEPARATOR . $file;
 							    JFile::delete($file);
 						    }
 					    }
@@ -702,9 +702,9 @@ class JFusionPluginInstaller extends JObject
             /**
              * Check that the plugin is an actual JFusion plugin
              */
-            $type = $this->getAttribute($xml,'type');
+            $type = $this->getAttribute($xml, 'type');
 
-            if ($type!=='jfusion') {
+            if ($type !== 'jfusion') {
                 //Free up xml parser memory and return null
                 unset ($xml);
                 $xml = null;

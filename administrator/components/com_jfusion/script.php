@@ -61,7 +61,7 @@ class com_jfusionInstallerScript
 			}
 		}
 		//create the jfusion_discussion_bot table if it does not exist already
-		if (array_search($table_prefix . 'jfusion_discussion_bot',$table_list) == false) {
+		if (array_search($table_prefix . 'jfusion_discussion_bot', $table_list) == false) {
 			$query = 'CREATE TABLE IF NOT EXISTS #__jfusion_discussion_bot (
 			        contentid int(11) NOT NULL,
 			        component varchar(255) NOT NULL,
@@ -102,7 +102,7 @@ class com_jfusionInstallerScript
 			}
 		}
 		//create the jfusion_sync_log table if it does not exist already
-		if (array_search($table_prefix . 'jfusion_sync_details',$table_list) == false) {
+		if (array_search($table_prefix . 'jfusion_sync_details', $table_list) == false) {
 			$query = 'CREATE TABLE #__jfusion_sync_details (
 			      id int(11) NOT NULL auto_increment,
 			      syncid varchar(10),
@@ -636,7 +636,7 @@ class com_jfusionInstallerScript
 		$this->_uninstallPlugin('module', 'mod_jfusion_whosonline', '', 'JFusion Whos Online Module');
 
 		//see if any mods from jfusion plugins need to be removed
-		$plugins = JFusionFactory::getPlugins('all',true,false);
+		$plugins = JFusionFactory::getPlugins('all', true, false);
 		foreach($plugins as $plugin) {
 			$model = new JFusionModelInstaller();
 			$result = $model->uninstall($plugin->name);

@@ -198,7 +198,7 @@ class JFusionParse
 			foreach ($searchNS as $k => $v) {
 	            //check if we need to use callback
 	            if(is_array($replaceNS[$k])) {
-	                $text = preg_replace_callback($searchNS[$k],$replaceNS[$k], $text);
+	                $text = preg_replace_callback($searchNS[$k], $replaceNS[$k], $text);
 	            } else {
 	                $text = preg_replace($searchNS[$k], $replaceNS[$k], $text);
 	            }
@@ -255,7 +255,7 @@ class JFusionParse
             $juri = new JURI($joomla_url);
             $path = $juri->getPath();
             if ($path != '/'){
-                $matches = str_replace($path,'',$matches);
+                $matches = str_replace($path, '', $matches);
             }
             $url = JRoute::_($joomla_url . $matches);
             $return = $url;

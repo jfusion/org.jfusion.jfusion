@@ -21,8 +21,8 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
      */
     function __construct() {
 		// check if curl extension is loaded
-		if (! extension_loaded ( 'curl' )) {
-			return Mage::helper('jfusion')->__( 'CURL_LIBRARY_NOT_INSTALLED' );
+		if (! extension_loaded('curl')) {
+			return Mage::helper('jfusion')->__('CURL_LIBRARY_NOT_INSTALLED');
 		}
         return true;
 	}
@@ -71,8 +71,8 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
 			
 			// Remove 100 and 101 responses headers
 			if (Zend_Http_Response::extractCode ( $this->data ) == 100 || Zend_Http_Response::extractCode ( $this->data ) == 101) {
-				$this->data = preg_split ( '/^\r?$/m', $this->data, 2 );
-				$this->data = trim ( $this->data [1] );
+				$this->data = preg_split('/^\r?$/m', $this->data, 2);
+				$this->data = trim($this->data[1]);
 			}
 			
 			return $this->data;

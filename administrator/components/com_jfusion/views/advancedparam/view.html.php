@@ -171,7 +171,7 @@ HTML;
 		$rows = $db->loadObjectList();
 
 		foreach ($rows as $key => &$row) {
-			if (!JFusionFunction::hasFeature($row->name,$feature)) {
+			if (!JFusionFunction::hasFeature($row->name, $feature)) {
 				unset($rows[$key]);
 			}
 		}
@@ -249,7 +249,7 @@ HTML;
 		$rows = $db->loadObjectList();
 
 		foreach ($rows as $key => &$row) {
-			if (!JFusionFunction::hasFeature($row->name,$feature)) {
+			if (!JFusionFunction::hasFeature($row->name, $feature)) {
 				unset($rows[$key]);
 			}
 		}

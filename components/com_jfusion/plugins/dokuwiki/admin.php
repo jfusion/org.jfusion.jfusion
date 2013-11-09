@@ -167,7 +167,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getUsergroupList()
     {
-		$usergroupmap = $this->params->get('usergroupmap','user,admin');
+		$usergroupmap = $this->params->get('usergroupmap', 'user,admin');
 		
 		$usergroupmap = explode (',', $usergroupmap);
         $usergrouplist = array();
@@ -234,13 +234,13 @@ $joomla_itemid = ' . $itemid . ';
 if (!defined(\'_JEXEC\'))';
         $redirect_code.= '
 {
-    $QUERY_STRING = array_merge( $_GET,$_POST );
+    $QUERY_STRING = array_merge($_GET, $_POST);
     if (!isset($QUERY_STRING[\'id\'])) $QUERY_STRING[\'id\'] = $ID;
     $QUERY_STRING = http_build_query($QUERY_STRING);
     $order = array(\'%3A\', \':\', \'/\');
-    $QUERY_STRING = str_replace($order,\';\',$QUERY_STRING);
+    $QUERY_STRING = str_replace($order,\';\', $QUERY_STRING);
     $pattern = \'#do=(admin|login|logout)#\';
-    if ( !preg_match( $pattern , $QUERY_STRING )) {
+    if (!preg_match($pattern , $QUERY_STRING)) {
         $file = $_SERVER["SCRIPT_NAME"];
         $break = explode(\'/\', $file);
         $pfile = $break[count($break) - 1];
@@ -299,7 +299,7 @@ if (!defined(\'_JEXEC\'))';
 						//get the joomla path from the file
 						jimport('joomla.filesystem.file');
 						$file_data = file_get_contents($mod_file);
-						$redirect_code = $this->generateRedirectCode($joomla_url,$joomla_itemid);
+						$redirect_code = $this->generateRedirectCode($joomla_url, $joomla_itemid);
 
 						$search = '/\<\?php/si';
 						$replace = '<?php' . $redirect_code;

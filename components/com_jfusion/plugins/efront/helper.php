@@ -141,17 +141,20 @@ class JFusionHelper_efront extends JFusionPlugin {
         // should make note so duplicate groups in efront is not a jFusion bug.
 
         $user_types = array();
-	    $user_types[0] = new stdClass;
-        $user_types[0]->id ='0';
-        $user_types[0]->name ='student';
+	    $group = new stdClass;
+	    $group->id = '0';
+	    $group->name = 'student';
+	    $user_types[] = $group;
 
-	    $user_types[1] = new stdClass;
-	    $user_types[1]->id ='1';
-	    $user_types[1]->name ='professor';
+	    $group = new stdClass;
+	    $group->id = '1';
+	    $group->name = 'professor';
+	    $user_types[] = $group;
 
-	    $user_types[2] = new stdClass;
-	    $user_types[2]->id ='2';
-	    $user_types[3]->name ='administrator';
+	    $group = new stdClass;
+	    $group->id = '2';
+	    $group->name = 'administrator';
+	    $user_types[] = $group;
 
 		try {
 	        //get the connection to the db
@@ -165,12 +168,11 @@ class JFusionHelper_efront extends JFusionPlugin {
 	        //getting the results
 	        $additional_types = $db->loadObjectList();
 	        // construct the array
-	        $i = 3;
 	        foreach ($additional_types as $usertype){
-		        $user_types[$i] = new stdClass;
-				$user_types[$i]->id = $usertype->id+2;
-		        $user_types[$i]->name = $usertype->name . ' (' . $usertype->basic_user_type . ')';
-	            $i++;
+		        $group = new stdClass;
+		        $group->id = $usertype->id+2;
+		        $group->name = $usertype->name . ' (' . $usertype->basic_user_type . ')';
+		        $user_types[] = $group;
 	        }
 	    } catch (Exception $e) {
 			JFusionFunction::raiseError($e, $this->getJname());
@@ -186,13 +188,13 @@ class JFusionHelper_efront extends JFusionPlugin {
      *
      * @return array
      */
-    function send_to_api($curl_options,$status) {
-        $status = array('error' => array(),'debug' => array());
+    function send_to_api($curl_options, $status) {
+        $status = array('error' => array(), 'debug' => array());
 
         $source_url = JFusionFactory::getParams($this->getJname())->get('source_url');
         // prevent user error by not supplying trailing backslash.
         if (!(substr($source_url, -1) == '/')) {
-            $source_url = $source_url.'/';
+            $source_url = $source_url . '/';
         }    
         //prevent user error by preventing a heading forward slash
         ltrim($source_url);
@@ -202,7 +204,7 @@ class JFusionHelper_efront extends JFusionPlugin {
         
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-        curl_setopt($ch, CURLOPT_REFERER, "");
+        curl_setopt($ch, CURLOPT_REFERER, '');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_FAILONERROR, 1);

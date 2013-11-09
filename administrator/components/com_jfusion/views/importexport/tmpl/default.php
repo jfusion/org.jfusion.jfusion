@@ -24,8 +24,8 @@ jimport('joomla.html.pane');
 <div class="jfusion">
 	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<?php
-		echo JHtml::_('tabs.start','jfusion_import_export', array('startOffset'=>2));
-		echo JHtml::_('tabs.panel',JText::_('IMPORT'), 'IMPORT');
+		echo JHtml::_('tabs.start', 'jfusion_import_export', array('startOffset' => 2));
+		echo JHtml::_('tabs.panel', JText::_('IMPORT'), 'IMPORT');
 		?>
 	    <input type="hidden" name="task" value="" />
 	    <input type="hidden" name="action" value="" />

@@ -158,7 +158,7 @@ JFusionFunctionAdmin::displayDonate();
 	            <?php
 	            echo $component->version;
 	            if ($component->rev) {
-	                echo ' Rev ( ' . substr($component->rev,0,8) . '... )';
+	                echo ' Rev ( ' . substr($component->rev, 0, 8) . '... )';
 	            }
 	            ?>
 

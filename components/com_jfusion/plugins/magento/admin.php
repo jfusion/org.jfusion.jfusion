@@ -58,7 +58,7 @@ class JFusionAdmin_magento extends JFusionAdmin
     	/// 1.9 Beta 2 should be read 1.9 , not 1.9.2
     	/// we can discard everything after the first space
     	$version = trim($version);
-    	$versionarr = explode(' ',$version);
+    	$versionarr = explode(' ', $version);
     	if (!empty($versionarr)) {
     		$version = $versionarr[0];
     	}
@@ -260,10 +260,10 @@ class JFusionAdmin_magento extends JFusionAdmin
 				    $api_salt = $hashArr[1];
 				    if ($api_salt) {
 					    $params_hash_md5 = md5($api_salt . $apikey);
-					    $params_hash_sha256 = hash('sha256',$api_salt . $apikey);
+					    $params_hash_sha256 = hash('sha256', $api_salt . $apikey);
 				    } else {
 					    $params_hash_md5 = md5($apikey);
-					    $params_hash_sha256 = hash('sha256',$apikey);
+					    $params_hash_sha256 = hash('sha256', $apikey);
 				    }
 				    if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
 					    JFusionFunction::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
@@ -330,11 +330,11 @@ class JFusionAdmin_magento extends JFusionAdmin
 			    if ($mod_exists) {
 				    $src = 'components/com_jfusion/images/tick.png';
 				    $mod = 'uninstallModule';
-				    $text = JText::_ ( 'MODULE_UNINSTALL_BUTTON' );
+				    $text = JText::_('MODULE_UNINSTALL_BUTTON');
 			    } else {
 				    $src = 'components/com_jfusion/images/cross.png';
 				    $mod = 'installModule';
-				    $text = JText::_ ( 'MODULE_INSTALL_BUTTON' );
+				    $text = JText::_('MODULE_INSTALL_BUTTON');
 			    }
 
 			    $html = <<<HTML
@@ -359,13 +359,13 @@ HTML;
      */
     public function installModule()
     {
-	    $status = array('error' => array(),'debug' => array());
+	    $status = array('error' => array(), 'debug' => array());
 		try {
 			$jname =  $this->getJname ();
 			$db = JFusionFactory::getDatabase($jname);
 			$source_path = $this->params->get('source_path');
-			jimport ( 'joomla.filesystem.archive' );
-			jimport ( 'joomla.filesystem.file' );
+			jimport('joomla.filesystem.archive');
+			jimport('joomla.filesystem.file');
 			$pear_path = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'pear';
 			require_once $pear_path . DIRECTORY_SEPARATOR . 'PEAR.php';
 			$pear_archive_path = $pear_path . DIRECTORY_SEPARATOR . 'archive_tar' . DIRECTORY_SEPARATOR . 'Archive_Tar.php';
@@ -378,9 +378,9 @@ HTML;
 
 			// Create an archive to facilitate the installation into the Magento installation while extracting
 			chdir($src_code);
-			$tar = new Archive_Tar( $archive_filename, 'gz' );
+			$tar = new Archive_Tar($archive_filename, 'gz');
 			$tar->setErrorHandling(PEAR_ERROR_PRINT);
-			$tar->createModify( 'app' , '', '' );
+			$tar->createModify('app' , '', '');
 			chdir($old_chdir);
 
 			$ret = JArchive::extract($src_code . DIRECTORY_SEPARATOR . $archive_filename, $source_path);
@@ -424,10 +424,10 @@ HTML;
      */
     public function uninstallModule()
     {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
-		    jimport ( 'joomla.filesystem.file' );
-		    jimport ( 'joomla.filesystem.folder' );
+		    jimport('joomla.filesystem.file');
+		    jimport('joomla.filesystem.folder');
 
 		    $jname =  $this->getJname ();
 		    $db = JFusionFactory::getDatabase($jname);
@@ -499,10 +499,10 @@ HTML;
 
             if ($activated) {
                 $src = 'components/com_jfusion/images/tick.png';
-                $text = JText::_ ( 'MODULE_DEACTIVATION_BUTTON' );
+                $text = JText::_('MODULE_DEACTIVATION_BUTTON');
             } else {
                 $src = 'components/com_jfusion/images/cross.png';
-                $text = JText::_ ( 'MODULE_ACTIVATION_BUTTON' );
+                $text = JText::_('MODULE_ACTIVATION_BUTTON');
             }
 
             $html = <<<HTML
@@ -516,15 +516,14 @@ HTML;
 			    <img src="{$src}" style="margin-left:10px;"/>
 HTML;
 		} else {
-			$html =  JText::_ ( 'MAGE_CONFIG_FIRST' );
+			$html =  JText::_('MAGE_CONFIG_FIRST');
 		}
         return $html;
 	}
 	
 	public function activateModule()
 	{
-		
-		jimport ( 'joomla.filesystem.file' );
+		jimport('joomla.filesystem.file');
 		
 		$activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
 
@@ -534,7 +533,7 @@ HTML;
 		$xml = JFusionFunction::getXml($jfusion_mod_xml);
 
 		unset($xml->modules->jfusion_joomla->active);
-		$xml->modules->jfusion_joomla->addChild('active',$activation);
+		$xml->modules->jfusion_joomla->addChild('active', $activation);
 
 		$buffer = '<?xml version="1.0"?>';
 		$buffer .= $xml->asXML();

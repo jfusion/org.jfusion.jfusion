@@ -33,6 +33,6 @@ class JFusionAuth_mediawiki extends JFusionAuth
      */
     function generateEncryptedPassword($userinfo)
     {
-        return ':A:' . md5( $userinfo->password_clear);
+        return ':A:' . md5($userinfo->password_clear);
     }
 }

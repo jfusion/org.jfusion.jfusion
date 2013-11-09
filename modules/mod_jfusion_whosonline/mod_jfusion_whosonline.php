@@ -57,7 +57,7 @@ try {
 						$config['showmode'] = intval($pluginParam->get('showmode'));
 						$config['member_limit'] = (int)$pluginParam->get('member_limit', 0);
 
-						$config['group_limit'] = $pluginParam->get('group_limit','');
+						$config['group_limit'] = $pluginParam->get('group_limit', '');
 						$config['group_limit_mode'] = $pluginParam->get('group_limit_mode', '');
 
 						//overwrite the group limit if the mode is set to display all

@@ -77,7 +77,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      */
     function prepareText(&$text, $for = 'forum', $params = null, $object = null)
     {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         if ($for == 'forum') {
             //first thing is to remove all joomla plugins
             preg_match_all('/\{(.*)\}/U', $text, $matches);
@@ -89,7 +89,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $text = JFusionFunction::parseCode($text, 'bbcode');
         } elseif ($for == 'joomla' || ($for == 'activity' && $params->get('parse_text') == 'html')) {
             //remove phpbb bbcode uids
-            $text = preg_replace("#\[(.*?):(.*?)]#si", "[$1]", $text);
+            $text = preg_replace('#\[(.*?):(.*?)]#si', '[$1]', $text);
             //encode &nbsp; prior to decoding as somehow it is getting added into phpBB without getting encoded
             $text = str_replace('&nbsp;', '&amp;nbsp;', $text);
             //decode html entities
@@ -238,7 +238,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $backup['post'] = $_POST;
             $backup['request'] = $_REQUEST;
             $backup['files'] = $_FILES;
-            $session->set('JFusionVarBackup',$backup);
+            $session->set('JFusionVarBackup', $backup);
 
     		//refresh the page to avoid phpbb3 error
     		//this happens as the phpbb3 config file can not be loaded twice
@@ -406,7 +406,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         foreach ($regex_body as $k => $v) {
         	//check if we need to use callback
         	if(!empty($callback_function[$k])){
-			    $data->body = preg_replace_callback($regex_body[$k],array( &$this,$callback_function[$k]), $data->body);             		
+			    $data->body = preg_replace_callback($regex_body[$k], array(&$this, $callback_function[$k]), $data->body);
         	} else {
         		$data->body = preg_replace($regex_body[$k], $replace_body[$k], $data->body);
         	}
@@ -690,7 +690,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         foreach ($regex_header as $k => $v) {
         	//check if we need to use callback
         	if(!empty($callback_header[$k])){
-			    $data->header = preg_replace_callback($regex_header[$k],array( &$this,$callback_header[$k]), $data->header);             		
+			    $data->header = preg_replace_callback($regex_header[$k], array(&$this, $callback_header[$k]), $data->header);
         	} else {
         		$data->header = preg_replace($regex_header[$k], $replace_header[$k], $data->header);
         	}

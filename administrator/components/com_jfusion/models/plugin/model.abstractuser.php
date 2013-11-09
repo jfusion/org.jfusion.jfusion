@@ -193,7 +193,7 @@ class JFusionUser extends JFusionPlugin
         $update_block = $this->params->get('update_block');
         $update_activation = $this->params->get('update_activation');
         $update_email = $this->params->get('update_email');
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
 		    //check to see if a valid $userinfo object was passed on
 		    if (!is_object($userinfo)) {
@@ -496,7 +496,7 @@ class JFusionUser extends JFusionPlugin
     function deleteUser($userinfo)
     {
         //setup status array to hold debug info and errors
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         $status['error'][] = JText::_('DELETE_FUNCTION_MISSING');
         return $status;
     }
@@ -615,7 +615,7 @@ class JFusionUser extends JFusionPlugin
 	{
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 		$curl_options = array();
-		$status = array('error' => array(),'debug' => array());
+		$status = array('error' => array(), 'debug' => array());
 		$source_url = $this->params->get('source_url');
 		$login_url = $this->params->get('login_url');
 		//prevent user error by not supplying trailing forward slash
@@ -716,7 +716,7 @@ class JFusionUser extends JFusionPlugin
 		// extra lines for passing curl options to other routines, like ambrasubs payment processor
 		// we are using the super global $_SESSION to pass data in $_SESSION[$var]
 		$var = 'curl_options';
-		if(!array_key_exists($var,$_SESSION)) $_SESSION[$var] = '';
+		if(!array_key_exists($var, $_SESSION)) $_SESSION[$var] = '';
 		$_SESSION[$var] = $curl_options;
 		$GLOBALS[$var] = &$_SESSION[$var];
 		// end extra lines
@@ -753,7 +753,7 @@ class JFusionUser extends JFusionPlugin
 	{
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 		$curl_options = array();
-		$status = array('error' => array(),'debug' => array());
+		$status = array('error' => array(), 'debug' => array());
 
 		$source_url = $this->params->get('source_url');
 		$logout_url = $this->params->get('logout_url');
@@ -769,7 +769,7 @@ class JFusionUser extends JFusionPlugin
 		$curl_options['username'] = $userinfo->username;
 //        $curl_options['password'] = $userinfo->password_clear;
 		$integrationtype1 = $this->params->get('integrationtype');
-		$curl_options['relpath'] = $this->params->get('relpathl', $this->params->get('relpath',0));
+		$curl_options['relpath'] = $this->params->get('relpathl', $this->params->get('relpath', 0));
 		$curl_options['hidden'] = '1';
 		$curl_options['buttons'] = '1';
 		$curl_options['override'] = '';

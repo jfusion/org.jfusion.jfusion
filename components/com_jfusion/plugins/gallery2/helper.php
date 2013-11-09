@@ -128,12 +128,12 @@ class JFusionHelper_gallery2 extends JFusionPlugin
         //Create Gallery Embed Path
         $path = 'index.php?option=com_jfusion';
         if ($id > 0) {
-            $path.= '&Itemid=' . $id;
+            $path .= '&Itemid=' . $id;
         } else if ($this->getJname() == $itemId) {
             $source_url = $this->params->get('source_url');
             return $source_url;
         } else {
-            $path.= '&view=frameless&jname=' . $this->getJname();
+            $path .= '&view=frameless&jname=' . $this->getJname();
         }
 
         //added check to prevent fatal error when creating session from outside joomla

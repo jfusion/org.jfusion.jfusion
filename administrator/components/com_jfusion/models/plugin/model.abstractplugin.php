@@ -103,7 +103,7 @@ class JFusionPlugin
 			try {
 				$m = new ReflectionMethod($this, $method);
 				$classname = $m->getDeclaringClass()->getName();
-				if ( $classname == $name || !in_array($classname, $abstractClassNames)) {
+				if ($classname == $name || !in_array($classname, $abstractClassNames)) {
 					$return = true;
 				}
 			} catch (Exception $e) {

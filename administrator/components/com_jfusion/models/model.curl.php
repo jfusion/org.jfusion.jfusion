@@ -249,7 +249,7 @@ class JFusionCurlHtmlFormParser
 
 				# form elements: input type = --not defined--
 				if ( preg_match_all("/<input[^<>]+name=[\"'](.*)[\"'][^<>]*>/iU", $form, $inputs)) {
-					foreach ( $inputs[0] as $input ) {
+					foreach ($inputs[0] as $input) {
 						if ( !preg_match("/type=(\"([^\"]*)\"|'([^']*)'|[^>\s]*)([^>]*)?>/is", $input) ) {
 							if ( !isset($this->_return[$this->_counter]['form_elements'][$this->_getName($input)]) ) {
 								$this->_return[$this->_counter]['form_elements'][$this->_getName($input)] =
@@ -430,7 +430,7 @@ class JFusionCurl
 		$this->status['error'] = array();
 		$this->status['debug'] = array();
 		$this->status['cURL']=array();
-		$this->status['cURL']['moodle']='';
+		$this->status['cURL']['moodle'] = '';
 		$this->status['cURL']['data']= array();
 	}
 
@@ -637,7 +637,7 @@ class JFusionCurl
 				$cinfo = explode('=', $data);
 				$cinfo[0] = trim($cinfo[0]);
 				if (!isset($cinfo[1])) {
-					$cinfo[1]='';
+					$cinfo[1] = '';
 				}
 				if (strcasecmp($cinfo[0], 'expires') == 0) {
 					$cinfo[1] = strtotime($cinfo[1]);
@@ -673,9 +673,9 @@ class JFusionCurl
 	 *
 	 * @return array nothing
 	 */
-	public static function addCookie($name, $value='', $expires=0, $cookiepath='', $cookiedomain='', $secure=0, $httponly=0)
+	public static function addCookie($name, $value = '', $expires = 0, $cookiepath = '', $cookiedomain = '', $secure = 0, $httponly  = 0)
 	{
-		if (strpos($cookiedomain,'http://') === 0 || strpos($cookiedomain,'https://') === 0) {
+		if (strpos($cookiedomain, 'http://') === 0 || strpos($cookiedomain, 'https://') === 0) {
 			$jc = JFusionFactory::getCookies();
 			$now = time();
 			if ($expires) {
@@ -702,9 +702,9 @@ class JFusionCurl
 			$debug[static::_('COOKIE')][static::_('NAME')] = $name;
 			$debug[static::_('COOKIE')][static::_('VALUE')] = $value;
 			if (($expires) == 0) {
-				$expires='Session_cookie';
+				$expires = 'Session_cookie';
 			} else {
-				$expires=date('d-m-Y H:i:s', $expires);
+				$expires = date('d-m-Y H:i:s', $expires);
 			}
 			$debug[static::_('COOKIE')][static::_('COOKIE_EXPIRES')] = $expires;
 			$debug[static::_('COOKIE')][static::_('COOKIE_PATH')] = $cookiepath;
@@ -727,34 +727,34 @@ class JFusionCurl
 	{
 		$cookies = $this->parsecookies($this->cookies);
 		foreach ($cookies as $cookie) {
-			$name='';
-			$value='';
+			$name = '';
+			$value = '';
 			if ($expires == 0) {
-				$expires_time=0;
+				$expires_time = 0;
 			} else {
-				$expires_time=time()+$expires;
+				$expires_time = time()+$expires;
 			}
 			if (isset($cookie['value']['key'])) {
-				$name= $cookie['value']['key'];
+				$name = $cookie['value']['key'];
 			}
 			if (isset($cookie['value']['value'])) {
-				$value=$cookie['value']['value'];
+				$value = $cookie['value']['value'];
 			}
 			if (isset($cookie['expires'])) {
-				$expires_time=$cookie['expires'];
+				$expires_time = $cookie['expires'];
 			}
 			if (!$cookiepath) {
 				if (isset($cookie['path'])) {
-					$cookiepath=$cookie['path'];
+					$cookiepath = $cookie['path'];
 				}
 			}
 			if (!$cookiedomain) {
 				if (isset($cookie['domain'])) {
-					$cookiedomain=$cookie['domain'];
+					$cookiedomain = $cookie['domain'];
 				}
 			}
 			$this->status['debug'][] = $this->addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
-			if ($name=='MOODLEID_') {
+			if ($name == 'MOODLEID_') {
 				$this->status['cURL']['moodle'] = urldecode($value);
 			}
 		}
@@ -837,7 +837,7 @@ class JFusionCurl
 			if ($leavealone) {
 				for ($i=0;$i<count($leavealonearr);$i++) {
 					if (isset($cookie['value']['key'])) {
-						if (($cookie['value']['key']== $leavealonearr[$i]['name']) || ($leavealonearr[$i]['name']=='0')) {
+						if (($cookie['value']['key'] == $leavealonearr[$i]['name']) || ($leavealonearr[$i]['name'] == '0')) {
 							if (($leavealonearr[$i]['value'] == '0')||($cookie['expires'] > time())) {
 								$leaveit = true;
 							}
@@ -845,31 +845,31 @@ class JFusionCurl
 					}
 				}
 			}
-			$name='';
+			$name = '';
 			if (isset($cookie['value']['key'])) {
 				$name= $cookie['value']['key'];
 			}
 			if (isset($cookie['expires'])) {
-				$expires_time=$cookie['expires'];
+				$expires_time = $cookie['expires'];
 			} else {
 				$expires_time = 0;
 			}
 			if (!$cookiepath) {
 				if (isset($cookie['path'])) {
-					$cookiepath=$cookie['path'];
+					$cookiepath = $cookie['path'];
 				}
 			}
 			if (!$cookiedomain) {
 				if (isset($cookie['domain'])) {
-					$cookiedomain=$cookie['domain'];
+					$cookiedomain = $cookie['domain'];
 				}
 			}
-			if ($name=='MOODLEID_') {
+			if ($name == 'MOODLEID_') {
 				$this->status['cURL']['moodle'] = urldecode($cookie['value']['value']);
 			}
 
 			if (!$leaveit) {
-				$expires_time=time()-30*60;
+				$expires_time = time()-30*60;
 				$this->status['debug'][] = $this->addCookie($name, urldecode(''), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 			} else {
 				$this->status['debug'][] = $this->addCookie($name, urldecode($cookie['value']['value']), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
@@ -939,7 +939,7 @@ class JFusionCurl
 			curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, 1);
 		}
 		curl_setopt($this->ch, CURLOPT_MAXREDIRS, 2);
-		curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+		curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
 		if (empty($this->options['brute_force'])) {
 			curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
 		}
@@ -1022,9 +1022,9 @@ class JFusionCurl
 		// we are using the super global $_SESSION to pass data in $_SESSION[$var]
 		if (isset($this->options['usesessvar'])) {
 			$var = 'curl_options';
-			if(!array_key_exists($var,$_SESSION)) $_SESSION[$var]='';
-			$_SESSION[$var]=$this->options;
-			$GLOBALS[$var]=&$_SESSION[$var];
+			if(!array_key_exists($var, $_SESSION)) $_SESSION[$var] = '';
+			$_SESSION[$var] = $this->options;
+			$GLOBALS[$var] = &$_SESSION[$var];
 		}
 		// end extra lines
 		$overridearr = array();
@@ -1056,19 +1056,19 @@ class JFusionCurl
 					$i = 0;
 					do {
 						if (isset($result[$i]['form_data']['name'])) {
-							if ($result[$i]['form_data']['name']==$this->options['formid']) {
+							if ($result[$i]['form_data']['name'] == $this->options['formid']) {
 								$myfrm = $i;
 								break;
 							}
 						}
 						if (isset($result[$i]['form_data']['id'])) {
-							if ($result[$i]['form_data']['id']==$this->options['formid']) {
+							if ($result[$i]['form_data']['id'] == $this->options['formid']) {
 								$myfrm = $i;
 								break;
 							}
 						}
 						if (isset($result[$i]['form_data']['action'])) {
-							if (htmlspecialchars_decode($result[$i]['form_data']['action'])==$this->options['formid']) {
+							if (htmlspecialchars_decode($result[$i]['form_data']['action']) == $this->options['formid']) {
 								$myfrm = $i;
 								break;
 							}
@@ -1128,7 +1128,7 @@ class JFusionCurl
 						// case 3 form_action is a full url, eg http..... and relpath = 1 special case
 
 						$rel = (int)($this->options['relpath']);
-						//      if (substr($form_action,0,strlen($ssl_string))== $ssl_string) $hashttp = 2; else $hashttp = 0;
+						//      if (substr($form_action, 0, strlen($ssl_string))== $ssl_string) $hashttp = 2; else $hashttp = 0;
 						if (substr($form_action, 0, strlen('http'))== 'http') {
 							$hashttp = 2;
 						} else {
@@ -1152,7 +1152,7 @@ class JFusionCurl
 								//$this->status['debug'][] = 'pathinfo1  : ' . print_r($pathinfo1, true);
 								//$this->status['debug'][] = 'pathinfo   : ' . print_r($pathinfo, true);
 								if ($pathinfo['dirname'] == $pathinfo1['dirname']) {
-									$pathinfo['dirname']='';
+									$pathinfo['dirname'] = '';
 								} //prevent double directory
 
 								// replace windows DIRECTORY_SEPARATOR bt unix DIRECTORY_SEPARATOR
@@ -1179,22 +1179,22 @@ class JFusionCurl
 								break;
 						}
 
-						$input_username_name='';
+						$input_username_name = '';
 						$input_password_name = '';
 						if (empty($this->options['logout'])) {
 							for ($i = 0; $i <= $elements_count-1; $i++) {
 								if ($this->options['input_username_id']) {
 									if (strtolower($elements_keys[$i]) == strtolower($this->options['input_username_id'])) {
-										$input_username_name=$elements_keys[$i];
+										$input_username_name = $elements_keys[$i];
 										break;
 									}
 								}
 								if ($input_username_name == '') {
-									if (strpos(strtolower($elements_keys[$i]), 'user')!==false) {
-										$input_username_name=$elements_keys[$i];
+									if (strpos(strtolower($elements_keys[$i]), 'user') !== false) {
+										$input_username_name = $elements_keys[$i];
 									}
-									if (strpos(strtolower($elements_keys[$i]), 'name')!==false) {
-										$input_username_name=$elements_keys[$i];
+									if (strpos(strtolower($elements_keys[$i]), 'name') !== false) {
+										$input_username_name = $elements_keys[$i];
 									}
 								}
 							}
@@ -1208,16 +1208,16 @@ class JFusionCurl
 							for ($i = 0; $i <= $elements_count-1; $i++) {
 								if ($this->options['input_password_id']) {
 									if (strtolower($elements_keys[$i]) == strtolower($this->options['input_password_id'])) {
-										$input_password_name=$elements_keys[$i];
+										$input_password_name = $elements_keys[$i];
 										break;
 									}
 								}
 								if (strpos(strtolower($elements_keys[$i]), 'pass')!==false) {
-									$input_password_name=$elements_keys[$i];
+									$input_password_name = $elements_keys[$i];
 								}
 							}
 
-							if ($input_password_name=='') {
+							if ($input_password_name == '') {
 								$this->status['error'][] = static::_('CURL_NO_PASSWORDFIELD');
 								return $this->status;
 							}
@@ -1225,7 +1225,7 @@ class JFusionCurl
 						}
 						// we now set the submit parameters. These are:
 						// all form_elements name=value combinations with value != '' and type hidden
-						$strParameters='';
+						$strParameters = '';
 						if ($this->options['hidden']) {
 							for ($i = 0; $i <= $elements_count-1; $i++) {
 								if (($elements_values[$i] ['value'] != '')&& ($elements_values[$i]['type'] == 'hidden')) {
@@ -1237,7 +1237,7 @@ class JFusionCurl
 						// code for buttons submitted by Daniel Baur
 						if ($this->options['buttons']) {
 							if (isset($result[$myfrm] ['buttons'][0]['type'])) {
-								if ($result[$myfrm] ['buttons'][0]['type'] =='submit') {
+								if ($result[$myfrm] ['buttons'][0]['type'] == 'submit') {
 									if ($result[$myfrm]['buttons'][0]['name']) {
 										$strParameters .= '&' . $result[$myfrm]['buttons'][0]['name'] . '=' . urlencode($result[$myfrm]['buttons'][0]['value']);
 									} else {
@@ -1276,7 +1276,7 @@ class JFusionCurl
 							curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 							curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
 							curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
-							curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+							curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
 							if (empty($this->options['brute_force'])) {
 								curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
 							}
@@ -1357,7 +1357,7 @@ class JFusionCurl
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
 			curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
-			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
 			curl_setopt($this->ch, CURLOPT_URL, $this->options['post_url']);
 			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($this->ch, CURLOPT_VERBOSE, $this->options['debug']); // Display communication with server
@@ -1439,7 +1439,7 @@ class JFusionCurl
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
 			curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
-			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
 			curl_setopt($this->ch, CURLOPT_URL, $this->options['post_url']);
 			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
@@ -1461,7 +1461,7 @@ class JFusionCurl
 				curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->options['postfields']);
 			}
 			curl_setopt($this->ch, CURLOPT_MAXREDIRS, 2);
-			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
 			curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
 
 			if (!empty($this->options['httpauth'])) {

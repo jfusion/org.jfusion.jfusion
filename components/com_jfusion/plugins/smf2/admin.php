@@ -270,7 +270,7 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 		    $redirect_code .= '
 {
 	$pattern = \'#action=(login|logout)#\';
-	if ( !preg_match( $pattern , $_SERVER[\'QUERY_STRING\'] ) ) {
+	if (!preg_match($pattern , $_SERVER[\'QUERY_STRING\'])) {
 		$file = $_SERVER["SCRIPT_NAME"];
 		$break = explode(\'/\', $file);
 		$pfile = $break[count($break) - 1];
@@ -359,7 +359,7 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 			//get the joomla path from the file
 			jimport('joomla.filesystem.file');
 			$file_data = file_get_contents($mod_file);
-	      	preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms',$file_data,$matches);
+	      	preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms', $file_data, $matches);
 
 			//compare it with our joomla path
 			if(empty($matches[1][0])){
@@ -435,7 +435,7 @@ HTML;
 	{
 		$jname = $this->getJname();
 
-		JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS','POSTGROUP'));
+		JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS', 'POSTGROUP'));
 
 		$postgroups = json_encode($this->getUserpostgroupList());
 

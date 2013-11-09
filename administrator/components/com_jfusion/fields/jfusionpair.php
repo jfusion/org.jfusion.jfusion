@@ -116,7 +116,7 @@ JS;
 						</tbody>
 					</table>
 					<div>
-						<a href="javascript:JFusion.addPair('{$this->name}','{$this->id}',50);">{$add}</a>
+						<a href="javascript:JFusion.addPair('{$this->name}', '{$this->id}', 50);">{$add}</a>
 					</div>
 	    		</div>
 			</div>

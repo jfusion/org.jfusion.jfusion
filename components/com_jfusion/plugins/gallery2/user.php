@@ -125,7 +125,7 @@ class JFusionUser_gallery2 extends JFusionUser
         GalleryInitSecondPass();
         GalleryEmbed::logout();
         GalleryEmbed::done();
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         return $status;        
     }
 
@@ -136,7 +136,7 @@ class JFusionUser_gallery2 extends JFusionUser
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 
         if (!isset($options['noframework'])) {
 	        $this->helper->loadGallery2Api(false);
@@ -221,7 +221,7 @@ class JFusionUser_gallery2 extends JFusionUser
      */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         $username = $userinfo->username;
 	    /**
 	     * @ignore
@@ -278,11 +278,11 @@ class JFusionUser_gallery2 extends JFusionUser
                 $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $userinfo->username;
             } else {
                 if (!isset($user)) {
-                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname(). ' : ' . $userinfo->username;
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
                 }
                 $ret = $user->create($userinfo->username);
                 if ($ret) {
-                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname(). ' : ' . $userinfo->username;
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
                 } else {
                     $testcrypt = $userinfo->password;
                     if (isset($userinfo->password_clear)) {

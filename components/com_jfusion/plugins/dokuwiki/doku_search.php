@@ -81,7 +81,7 @@ if ( !class_exists('DokuWikiSearch') ) {
             }
             if (!count($docs)) return array();
             // create a list of hidden pages in the result
-            $hidden = array_filter(array_keys($docs), array($this,'isHiddenPage'));
+            $hidden = array_filter(array_keys($docs), array($this, 'isHiddenPage'));
             $not = array_merge($not, $hidden);
             // filter unmatched namespaces
             if (!empty($q['ns'])) {
@@ -363,7 +363,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return int
          */
         function wordlen($w) {
-            defined('IDX_ASIAN2') OR define('IDX_ASIAN2','[' .
+            defined('IDX_ASIAN2') OR define('IDX_ASIAN2', '[' .
                '\x{2E80}-\x{3040}' .  // CJK -> Hangul
                '\x{309D}-\x{30A0}' .
                '\x{30FD}-\x{31EF}\x{3200}-\x{D7AF}' .
@@ -549,7 +549,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          *
          * @return string
          */
-        function cleanID($raw_id,$ascii=false,$media=false) {
+        function cleanID($raw_id, $ascii = false, $media = false) {
             $conf = $this->conf;
             static $sepcharpat = null;
 
@@ -569,27 +569,27 @@ if ( !class_exists('DokuWikiSearch') ) {
             $id = utf8_strtolower($id);
 
             //alternative namespace separator
-            $id = strtr($id,';',':');
+            $id = strtr($id, ';', ':');
             if($conf['useslash']) {
-                $id = strtr($id,'/',':');
+                $id = strtr($id, '/', ':');
             } else {
-                $id = strtr($id,'/',$sepchar);
+                $id = strtr($id, '/', $sepchar);
             }
 /* commented becuase it is unused
             if($conf['deaccent'] == 2 || $ascii) $id = utf8_romanize($id);
             if($conf['deaccent'] || $ascii) $id = utf8_deaccent($id,-1);
 
             //remove specials
-            $id = utf8_stripspecials($id,$sepchar,'\*');
+            $id = utf8_stripspecials($id, $sepchar, '\*');
 
             if($ascii) $id = utf8_strip($id);
 */
             //clean up
-            $id = preg_replace($sepcharpat,$sepchar,$id);
-            $id = preg_replace('#:+#',':',$id);
-            $id = ($media ? trim($id,':.-') : trim($id,':._-'));
-            $id = preg_replace('#:[:\._\-]+#',':',$id);
-            $id = preg_replace('#[:\._\-]+:#',':',$id);
+            $id = preg_replace($sepcharpat, $sepchar, $id);
+            $id = preg_replace('#:+#', ':', $id);
+            $id = ($media ? trim($id, ':.-') : trim($id, ':._-'));
+            $id = preg_replace('#:[:\._\-]+#', ':', $id);
+            $id = preg_replace('#[:\._\-]+:#', ':', $id);
 
             $cache[(string)$raw_id] = $id;
             return ($id);

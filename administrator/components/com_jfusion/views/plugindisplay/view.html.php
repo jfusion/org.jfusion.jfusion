@@ -63,7 +63,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {
-		        $xml = JFusionFunction::getXml($VersionDataRaw,false);
+		        $xml = JFusionFunction::getXml($VersionDataRaw, false);
 	            if ($xml) {
 		            if ($xml->plugins) {
 			            $VersionData = $xml->plugins->children();
@@ -94,7 +94,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
      *
      * @return null|\stdClass
      */
-    function initRecord($jname,$record=null) {
+    function initRecord($jname, $record = null) {
 	    $db = JFactory::getDBO();
 	    if (!$record) {
 		    $query = $db->getQuery(true)
@@ -155,7 +155,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    }
 
 		    //set wizard options
-		    $record->wizard = JFusionFunction::hasFeature($record->name,'wizard');
+		    $record->wizard = JFusionFunction::hasFeature($record->name, 'wizard');
 		    if($record->wizard) {
 			    $record->wizardimage = 'components/com_jfusion/images/wizard_icon.png';
 			    $record->wizardscript =  'index.php?option=com_jfusion&task=wizard&jname=' . $record->name;
@@ -373,7 +373,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 
 				$record = $this->initRecord($record->name, $record);
 
-				$plugins[]=$record;
+				$plugins[] = $record;
 			}
 		}
 		return $plugins;

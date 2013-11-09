@@ -139,7 +139,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 				            //if using the option tag, replace vb option tag with one nbbc will understand
 				            $template = str_replace('%2$s', '{$_default}', $template);
 			            }
-			            $vb_bbcodes[$bb->bbcodetag] = array( 'mode' => 4, 'template' => $template, 'class' => 'inline', 'allow_in' => array('block', 'inline', 'link', 'list', 'listitem', 'columns', 'image'));
+			            $vb_bbcodes[$bb->bbcodetag] = array('mode' => 4, 'template' => $template, 'class' => 'inline', 'allow_in' => array('block', 'inline', 'link', 'list', 'listitem', 'columns', 'image'));
 		            }
 	            } catch (Exception $e) {
 		            JFusionFunction::raiseError($e, $this->getJname());
@@ -302,7 +302,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         //frameless integration is only supported for 3.x
         $version = $this->helper->getVersion();
         if ((int) substr($version, 0, 1) > 3) {
-            JFusionFunction::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version), $this->getJname());
+            JFusionFunction::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED', $version), $this->getJname());
         } else {
 
 	        try {
@@ -439,20 +439,20 @@ class JFusionPublic_vbulletin extends JFusionPublic
         //cannot use preg_replace here because it adds unneeded slashes which messes up JS
         $action_search = '#action="(?!http)(.*?)"(.*?)>#mS';
 
-        $data->body = preg_replace_callback($action_search, array(&$this,'fixAction'), $data->body);
+        $data->body = preg_replace_callback($action_search, array(&$this, 'fixAction'), $data->body);
         //fix for the rest of the urls
         $url_search = '#href="(?!http)(.*?)"(.*?)>#mSs';
-        $data->body = preg_replace_callback($url_search, array(&$this,'fixURL'), $data->body);
+        $data->body = preg_replace_callback($url_search, array(&$this, 'fixURL'), $data->body);
         //$url_search = '#<link="(?!http)(.*?)"(.*?)>#mS';
-        //$data->body = preg_replace_callback($url_search, array(&$this,'fixURL'),$data->body);
+        //$data->body = preg_replace_callback($url_search, array(&$this, 'fixURL'), $data->body);
         //convert relative urls in JS links
         $url_search = '#window.location=\'(?!http)(.*?)\'#mS';
 
-        $data->body = preg_replace_callback($url_search, array(&$this,'fixJS'), $data->body);
+        $data->body = preg_replace_callback($url_search, array(&$this, 'fixJS'), $data->body);
         //convert relative links from images and js files into absolute links
         $include_search = "#(src=\"|background=\"|url\('|open_window\(\\\\'|window.open\('|window.open\(\"?)(?!http)(.*?)(\\\\',|',|\"|'\)|')#mS";
 
-        $data->body = preg_replace_callback($include_search, array(&$this,'fixInclude'), $data->body);
+        $data->body = preg_replace_callback($include_search, array(&$this, 'fixInclude'), $data->body);
         //we need to fix the cron.php file
         $data->body = preg_replace('#src="(.*)cron.php(.*)>#mS', 'src="' . $integratedURL . 'cron.php$2>', $data->body);
         //if we have custom register and lost password urls and vBulletin uses an absolute URL, fixURL will not catch it
@@ -500,10 +500,10 @@ JS;
         $data->header = preg_replace('#\<script type="text\/javascript" src="(.*?)(connection-min.js|connection.js)\?v=(.*?)"\>#mS', "$js <script type=\"text/javascript\" src=\"$yuiURL/yui/connection/connection.js?v=$3\">", $data->header);
         //convert relative links into absolute links
         $url_search = '#(src="|background="|href="|url\("|url\(\'?)(?!http)(.*?)("\)|\'\)|"?)#mS';
-        $data->header = preg_replace_callback($url_search, array(&$this,'fixInclude'), $data->header);
+        $data->header = preg_replace_callback($url_search, array(&$this, 'fixInclude'), $data->header);
         if ($this->params->get('parseCSS', false)) {
             $css_search = '#<style type="text/css" id="vbulletin(.*?)">(.*?)</style>#ms';
-            $data->header = preg_replace_callback($css_search, array(&$this,'fixCSS'), $data->header);
+            $data->header = preg_replace_callback($css_search, array(&$this, 'fixCSS'), $data->header);
         }
     }
 

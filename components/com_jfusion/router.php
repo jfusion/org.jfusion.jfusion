@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 
 
 //load params class
-jimport( 'joomla.html.parameter');
+jimport('joomla.html.parameter');
 
 /**
  * build the SEF URL
@@ -122,7 +122,7 @@ function jfusionParseRoute($segments)
 	if ($vars['view'] == 'plugin') {
 	    $JFusionPluginParam = $item->params->get('JFusionPluginParam');
 	    if (empty($JFusionPluginParam)) {
-		    throw new RuntimeException( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
+		    throw new RuntimeException(JText::_('ERROR_PLUGIN_CONFIG'));
 	    } else {
 	        //load custom plugin parameter
 	        $jPluginParam = new JRegistry('');

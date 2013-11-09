@@ -157,7 +157,7 @@ class JFusionDiscussBotHelper {
 			$manually_created = (empty($threadinfo->manual)) ? 0 : 1;
 		}
 
-		$status = array('error' => array(),'debug' => array());
+		$status = array('error' => array(), 'debug' => array());
 		$status['action'] = 'unchanged';
 		if ($threadinfo) {
 			$status['threadinfo'] = $threadinfo;
@@ -169,7 +169,7 @@ class JFusionDiscussBotHelper {
 		if (!empty($status['error'])) {
 			JFusionFunction::raise('error', $status['error'], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
 		} else {
-			if ($status['action']!='unchanged') {
+			if ($status['action'] != 'unchanged') {
 				if ($status['action'] == 'created') {
 					$threadinfo = $status['threadinfo'];
 				}
@@ -220,7 +220,7 @@ class JFusionDiscussBotHelper {
 				require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
 			}
 			/** @noinspection PhpUndefinedClassInspection */
-			$url = urldecode(K2HelperRoute::getItemRoute($this->article->id . ':' . urlencode($this->article->alias),$this->article->catid . ':' . urlencode($this->article->category->alias)));
+			$url = urldecode(K2HelperRoute::getItemRoute($this->article->id . ':' . urlencode($this->article->alias), $this->article->catid . ':' . urlencode($this->article->category->alias)));
 		} else {
 			$url = '';
 		}
@@ -286,7 +286,7 @@ class JFusionDiscussBotHelper {
 			}
 
 			//make sure there is a default user set
-			if ($this->params->get('default_userid',false)===false) {
+			if ($this->params->get('default_userid', false) === false) {
 				$responce = array(0, JText::_('REASON_NO_DEFAULT_USER'));
 			} else {
 				$JFusionForum = JFusionFactory::getForum($this->jname);
@@ -318,7 +318,7 @@ class JFusionDiscussBotHelper {
 							$publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
 							$now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
 
-							$creationMode = $this->params->get('create_thread','load');
+							$creationMode = $this->params->get('create_thread', 'load');
 							if ($now < $publish_up && $creationMode != 'new') {
 								$responce = array(0, JText::_('REASON_PUBLISHED_IN_FUTURE'));
 							} else {
@@ -360,13 +360,13 @@ class JFusionDiscussBotHelper {
 									if (!empty($includedCategories)) {
 										//there are category stipulations on what articles to include
 										//check to see if this article is not in the selected categories
-										$valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
+										$valid = (!in_array($catid, $includedCategories)) ? 0 : 1;
 										if (!$valid) {
 											//check to see if this article is in any included parents
 											$parent_id = $cat->getParent()->id;
 											if ($parent_id !== 'root') {
 												while (true) {
-													$valid = (!in_array($parent_id,$includedCategories)) ? 0 : 1;
+													$valid = (!in_array($parent_id, $includedCategories)) ? 0 : 1;
 													//keep going up
 													if (!$valid) {
 														//get the parent's parent id
@@ -408,7 +408,7 @@ class JFusionDiscussBotHelper {
 											if ($parent_id !== 'root') {
 												while (true) {
 													//keep going up
-													if (!in_array($parent_id,$excludedCategories)) {
+													if (!in_array($parent_id, $excludedCategories)) {
 														//get the parent's parent id
 														$parent = $JCat->get($parent_id);
 														$parent_id = $parent->getParent()->id;
@@ -630,7 +630,7 @@ JS;
 /**
  *
  */
-jimport( 'joomla.html.pagination' );
+jimport('joomla.html.pagination');
 /**
  * Class JFusionPagination
  */
@@ -779,7 +779,7 @@ class JFusionPagination extends JPagination {
 		$html .= $list['start']['data'];
 		$html .= ' &lt; ';
 		$html .= $list['previous']['data'];
-		foreach( $list['pages'] as $page ) {
+		foreach($list['pages'] as $page) {
 			$html .= ' ' . $page['data'];
 		}
 		$html .= ' '. $list['next']['data'];

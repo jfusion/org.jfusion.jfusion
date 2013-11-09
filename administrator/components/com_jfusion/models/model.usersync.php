@@ -60,11 +60,11 @@ class JFusionUsersync
 
         if (empty($limit)) {
             $mainframe = JFactory::getApplication();
-            $client = JFactory::getApplication()->input->getWord( 'filter_client', 'site' );
+            $client = JFactory::getApplication()->input->getWord('filter_client', 'site');
             $option = JFactory::getApplication()->input->getCmd('option');
             $sort = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order', 'filter_order', 'id', 'cmd');
             $dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
-            $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
+            $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int');
             $limitstart = 0;
         }
 
@@ -199,7 +199,7 @@ class JFusionUsersync
 
 				    $status = JFusionFactory::getUser($data['user']['jname'])->updateUser($userinfo, 1);
 				    if (!empty($status['error'])) {
-					    JFusionFunction::raise('error',$status['error'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
+					    JFusionFunction::raise('error', $status['error'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
 				    } else {
 					    JFusionFunction::raiseMessage(JText::_('USER') . ' ' . $userinfo->username . ' ' . JText::_('UPDATE'), $data['user']['jname']);
 					    static::markResolved($id);
@@ -210,7 +210,7 @@ class JFusionUsersync
 
 				    $status = JFusionFactory::getUser($data['conflict']['jname'])->updateUser($userinfo, 1);
 				    if (!empty($status['error'])) {
-					    JFusionFunction::raise('error',$status['error'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
+					    JFusionFunction::raise('error', $status['error'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
 				    } else {
 					    JFusionFunction::raiseMessage(JText::_('USER') . ' ' . $userinfo->username . ' ' . JText::_('UPDATE'), $data['conflict']['jname']);
 					    static::markResolved($id);
@@ -223,7 +223,7 @@ class JFusionUsersync
 				    $JFusionActive = 1;
 				    $status = JFusionFactory::getUser($error['user_jname'])->deleteUser($data['user']['userinfo']);
 				    if (!empty($status['error'])) {
-					    JFusionFunction::raise('error',$status['error'], $error['user_jname'] . ' ' . JText::_('ERROR') . ' ' .  JText::_('DELETING') . ' ' . JText::_('USER') . ' ' . $error['user_username']);
+					    JFusionFunction::raise('error', $status['error'], $error['user_jname'] . ' ' . JText::_('ERROR') . ' ' .  JText::_('DELETING') . ' ' . JText::_('USER') . ' ' . $error['user_username']);
 				    } else {
 					    static::markResolved($id);
 					    JFusionFunction::raiseMessage(JText::_('SUCCESS') . ' ' . JText::_('DELETING') . ' ' . JText::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
@@ -236,7 +236,7 @@ class JFusionUsersync
 				    $JFusionActive = 1;
 				    $status = JFusionFactory::getUser($error['conflict_jname'])->deleteUser($data['conflict']['userinfo']);
 				    if (!empty($status['error'])) {
-					    JFusionFunction::raise('error',$status['error'], $error['conflict_jname'] . ' ' . JText::_('ERROR') . ' ' . JText::_('DELETING') . ' ' .  JText::_('USER') . ' ' . $error['conflict_username']);
+					    JFusionFunction::raise('error', $status['error'], $error['conflict_jname'] . ' ' . JText::_('ERROR') . ' ' . JText::_('DELETING') . ' ' .  JText::_('USER') . ' ' . $error['conflict_username']);
 				    } else {
 					    static::markResolved($id);
 					    JFusionFunction::raiseMessage(JText::_('SUCCESS') . ' ' . JText::_('DELETING') . ' ' . JText::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);
@@ -347,7 +347,7 @@ class JFusionUsersync
 									    $status['action'] = 'error';
 									    $sync_log->username = $userinfo->username;
 									    $sync_log->email = $userinfo->email;
-									    $sync_log->message = (is_array($status['error'])) ? implode('; ',$status['error']) : $status['error'];
+									    $sync_log->message = (is_array($status['error'])) ? implode('; ', $status['error']) : $status['error'];
 									    $sync_error = array();
 									    $sync_error['conflict']['userinfo'] = $status['userinfo'];
 									    $sync_error['conflict']['error'] = $status['error'];

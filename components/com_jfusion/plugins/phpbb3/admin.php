@@ -390,7 +390,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
 					//get the joomla path from the file
 					jimport('joomla.filesystem.file');
 					$file_data = file_get_contents($mod_file);
-					$redirect_code = $this->generateRedirectCode($joomla_url,$joomla_itemid);
+					$redirect_code = $this->generateRedirectCode($joomla_url, $joomla_itemid);
 					$search = '/\<\?php/si';
 					$replace = '<?php' . $redirect_code;
 

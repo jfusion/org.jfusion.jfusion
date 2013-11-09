@@ -48,24 +48,24 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 		
 		$curl_obj = self::instance ($ch);
 		
-		$length = strlen ( $string );
-		if (! strncmp ( $string, "Set-Cookie:", 11 )) {
-			header ( $string, false );
-			$cookiestr = trim ( substr ( $string, 11, - 1 ) );
-			$cookie = explode ( ';', $cookiestr );
-			$curl_obj->cookies_to_set [$curl_obj->cookies_to_set_index] = $cookie;
+		$length = strlen($string);
+		if (! strncmp($string, "Set-Cookie:", 11)) {
+			header($string, false);
+			$cookiestr = trim(substr($string, 11, - 1));
+			$cookie = explode(';', $cookiestr);
+			$curl_obj->cookies_to_set[$curl_obj->cookies_to_set_index] = $cookie;
 			$curl_obj->cookies_to_set_index ++;
-			$cookie = explode ( '=', $cookie [0] );
-			$cookiename = trim ( array_shift ( $cookie ) );
-			$curl_obj->cookiearr [$cookiename] = trim ( implode ( '=', $cookie ) );
+			$cookie = explode('=', $cookie[0]);
+			$cookiename = trim(array_shift($cookie));
+			$curl_obj->cookiearr[$cookiename] = trim(implode('=', $cookie));
 		}
 		
 		$cookie = "";
-		if (! empty ( $curl_obj->cookiearr ) && (trim ( $string ) == "")) {
-			foreach ( $curl_obj->cookiearr as $key => $value ) {
+		if (!empty($curl_obj->cookiearr) && (trim($string) == "")) {
+			foreach ($curl_obj->cookiearr as $key => $value) {
 				$cookie .= "$key=$value; ";
 			}
-			curl_setopt ( $curl_obj->ch, CURLOPT_COOKIE, $cookie );
+			curl_setopt($curl_obj->ch, CURLOPT_COOKIE, $cookie);
 		}
 		return $length;
 	}
@@ -85,7 +85,7 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 		// Versions of PHP prior to 5.2 do not support HttpOnly cookies and IE is buggy when specifying a blank domain so set the cookie manually
 		$cookie = "Set-Cookie: {$name}=" . urlencode ( $value );
 		if ($expires > 0) {
-			$cookie .= "; expires=" . gmdate ( 'D, d-M-Y H:i:s \\G\\M\\T', $expires );
+			$cookie .= "; expires=" . gmdate('D, d-M-Y H:i:s \\G\\M\\T', $expires);
 		}
 		if (! empty ( $cookiepath )) {
 			$cookie .= "; path={$cookiepath}";
@@ -111,24 +111,24 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 	function parsecookies($cookielines) {
 		$line = array ();
 		$cookies = array ();
-		foreach ( $cookielines as $line ) {
-			$cdata = array ();
-			$data = array ();
-			foreach ( $line as $data ) {
-				$cinfo = explode ( '=', $data );
-				$cinfo [0] = trim ( $cinfo [0] );
-				if (! isset ( $cinfo [1] )) {
+		foreach ($cookielines as $line) {
+			$cdata = array();
+			$data = array();
+			foreach ($line as $data) {
+				$cinfo = explode('=', $data);
+				$cinfo [0] = trim($cinfo[0]);
+				if (!isset($cinfo[1])) {
 					$cinfo [1] = '';
 				}
-				if (strcasecmp ( $cinfo [0], 'expires' ) == 0) $cinfo [1] = strtotime ( $cinfo [1] );
-				if (strcasecmp ( $cinfo [0], 'secure' ) == 0) $cinfo [1] = "true";
-				if (strcasecmp ( $cinfo [0], 'httponly' ) == 0) $cinfo [1] = "true";
-				if (in_array ( strtolower ( $cinfo [0] ), array ('domain', 'expires', 'path', 'secure', 'comment', 'httponly' ) )) {
-					$cdata [trim ( $cinfo [0] )] = $cinfo [1];
+				if (strcasecmp($cinfo[0], 'expires') == 0) $cinfo[1] = strtotime($cinfo[1]);
+				if (strcasecmp($cinfo[0], 'secure') == 0) $cinfo[1] = "true";
+				if (strcasecmp($cinfo[0], 'httponly') == 0) $cinfo[1] = "true";
+				if (in_array(strtolower($cinfo[0]), array('domain', 'expires', 'path', 'secure', 'comment', 'httponly'))) {
+					$cdata[trim($cinfo[0])] = $cinfo[1];
 				}
 				else {
-					$cdata ['value'] ['key'] = $cinfo [0];
-					$cdata ['value'] ['value'] = $cinfo [1];
+					$cdata['value']['key'] = $cinfo[0];
+					$cdata['value']['value'] = $cinfo[1];
 				}
 			}
 			$cookies [] = $cdata;
@@ -148,8 +148,8 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 	 */
 	public function setCookies($mycookies_to_set, $cookiedomain = null, $cookiepath = null, $expires = 0, $secure = 0, $httponly = 1) {
 		$cookies = array ();
-		$cookies = self::parsecookies ( $mycookies_to_set );
-		foreach ( $cookies as $cookie ) {
+		$cookies = self::parsecookies($mycookies_to_set);
+		foreach ($cookies as $cookie) {
 			$name = "";
 			$value = "";
 			if ($expires == 0) {
@@ -158,33 +158,32 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 			else {
 				$expires_time = time () + $expires;
 			}
-			if (isset ( $cookie ['value'] ['key'] )) {
-				$name = $cookie ['value'] ['key'];
+			if (isset($cookie['value']['key'])) {
+				$name = $cookie['value']['key'];
 			}
-			if (isset ( $cookie ['value'] ['value'] )) {
-				$value = $cookie ['value'] ['value'];
+			if (isset($cookie['value']['value'])) {
+				$value = $cookie['value']['value'];
 			}
-			if (isset ( $cookie ['expires'] )) {
-				$expires_time = $cookie ['expires'];
+			if (isset($cookie['expires'])) {
+				$expires_time = $cookie['expires'];
 			}
 			if (! $cookiepath) {
-				if (isset ( $cookie ['path'] )) {
-					$cookiepath = $cookie ['path'];
+				if (isset($cookie['path'])) {
+					$cookiepath = $cookie['path'];
 				}
 			}
 			if (! $cookiedomain) {
-				if (isset ( $cookie ['domain'] )) {
+				if (isset($cookie['domain'])) {
 					$cookiedomain = $cookie ['domain'];
 				}
 			}
-			self::addCookie ( $name, urldecode ( $value ), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly );
+			self::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 			if (($expires_time) == 0) {
 				$expires_time = 'Session_cookie';
+			} else {
+				$expires_time = date('d-m-Y H:i:s', $expires_time);
 			}
-			else {
-				$expires_time = date ( 'd-m-Y H:i:s', $expires_time );
-			}
-			//$status ['debug'] [] = JText::_ ( 'CREATED' ) . ' ' . JText::_ ( 'COOKIE' ) . ': ' . JText::_ ( 'NAME' ) . '=' . $name . ', ' . JText::_ ( 'VALUE' ) . '=' . urldecode ( $value ) . ', ' . JText::_ ( 'EXPIRES' ) . '=' . $expires_time . ', ' . JText::_ ( 'COOKIE_PATH' ) . '=' . $cookiepath . ', ' . JText::_ ( 'COOKIE_DOMAIN' ) . '=' . $cookiedomain . ', ' . JText::_ ( 'COOKIE_SECURE' ) . '=' . $secure . ', ' . JText::_ ( 'COOKIE_HTTPONLY' ) . '=' . $httponly;
+			//$status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . urldecode($value) . ', ' . JText::_('EXPIRES') . '=' . $expires_time . ', ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain . ', ' . JText::_('COOKIE_SECURE') . '=' . $secure . ', ' . JText::_('COOKIE_HTTPONLY') . '=' . $httponly;
 		}
 		return;
 	}

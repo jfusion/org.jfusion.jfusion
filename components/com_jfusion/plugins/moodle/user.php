@@ -189,9 +189,9 @@ class JFusionUser_moodle extends JFusionUser {
 	function destroySession($userinfo, $options) {
 		$status = array('debug' => array(), 'error' => array());
 
-		$status['cURL']=array();
-		$status['cURL']['moodle']='';
-		$status['cURL']['data']= array();
+		$status['cURL'] = array();
+		$status['cURL']['moodle'] = '';
+		$status['cURL']['data'] = array();
 
 		// check if curl extension is loaded
 		if (!extension_loaded('curl')) {
@@ -228,7 +228,7 @@ class JFusionUser_moodle extends JFusionUser {
 		
 		$remotedata = $curl->ReadPage();
 		if (!empty($curl->status['error'])) {
-			$curl->status['debug'][]= JText::_('CURL_COULD_NOT_READ_PAGE: '). $curl->options['post_url'];
+			$curl->status['debug'][] = JText::_('CURL_COULD_NOT_READ_PAGE: ') . $curl->options['post_url'];
 		} else {
 			// get the form with no name and id!
 			$parser = new JFusionCurlHtmlFormParser($remotedata);
@@ -238,7 +238,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$i = 0;
 			do {
 				$form_action = htmlspecialchars_decode($result[$i]['form_data']['action']);
-				if (strpos($curl_options['post_url'],$form_action) !==false){
+				if (strpos($curl_options['post_url'], $form_action) !== false){
 					$myfrm = $i;
 					break;
 				}
@@ -255,7 +255,7 @@ class JFusionUser_moodle extends JFusionUser {
 				$sessionkey = '';
 				for ($i = 0; $i <= $elements_count-1; $i++) {
 					if (strtolower($elements_keys[$i]) == 'sesskey') {
-						$sessionkey=$elements_values[$i]['value'];
+						$sessionkey = $elements_values[$i]['value'];
 						break;
 					}
 				}
@@ -286,13 +286,13 @@ class JFusionUser_moodle extends JFusionUser {
 		// Also we want to disable the remember me effects, we are going to login anyway
 		// we find out by reading the MOODLEID_ cookie and brute force login if MOODLE_ID is not nobody
 		$curl_options = array();
-		$curl_options['hidden']='0';
+		$curl_options['hidden'] = '0';
 		$logintype = $this->params->get('brute_force');
 		if (isset($_COOKIE['MOODLEID_'])){
 			$loggedin_user = $this->rc4decrypt($_COOKIE['MOODLEID_']);
 			if ($loggedin_user == 'nobody') {
 				$logintype = 'standard';
-				$curl_options['hidden']='1' ;
+				$curl_options['hidden'] = '1' ;
 			}
 		}
 		$status = $this->curlLogin($userinfo, $options, $logintype, $curl_options);
@@ -347,7 +347,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 		} catch (Exception $e) {
 			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
 		}
@@ -519,7 +519,7 @@ class JFusionUser_moodle extends JFusionUser {
 
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR'). ': ' . $e->getMessage();
+			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
 		}
 	}
 
@@ -542,7 +542,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$query = $db->getQuery(true)
 				->select('*')
 				->from('#__user')
-				->where( $identifier_type . ' = ' . $db->Quote($identifier));
+				->where($identifier_type . ' = ' . $db->Quote($identifier));
 
 			$db->setQuery($query);
 			$result = $db->loadObject();
@@ -697,7 +697,7 @@ class JFusionUser_moodle extends JFusionUser {
 
 			$status['debug'][] = JText::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR'). ': ' . $e->getMessage();
+			$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' . $e->getMessage();
 		}
 		return $status;
 	}

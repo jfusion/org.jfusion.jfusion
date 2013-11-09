@@ -117,7 +117,7 @@ class JFusionForum_mediawiki extends JFusionForum
 					    } else {
 						    $o_avatar = '';
 					    }
-					    if ( !empty( $o_avatar_source ) ) {
+					    if (!empty($o_avatar_source)) {
 						    $output .= '<li style="clear:left;">';
 						    $output .= '<img style="vertical-align:middle; float:left; margin:3px;" src="' . $o_avatar_source . '" height="' . $o_avatar_height . '" width="' . $o_avatar_width . '" alt="avatar" />';
 					    } else {

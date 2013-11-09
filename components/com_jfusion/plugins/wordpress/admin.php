@@ -244,7 +244,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		    $db->setQuery($query);
 		    $auths = $db->loadResult();
 
-		    $result = ($auths=='1');
+		    $result = ($auths == '1');
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
 	    }

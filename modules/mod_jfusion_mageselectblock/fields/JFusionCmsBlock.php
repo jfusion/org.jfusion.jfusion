@@ -7,7 +7,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 // Check to ensure this file is included in Joomla!
-defined ( '_JEXEC' ) or die ();
+defined('_JEXEC') or die ();
 
 require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
 
@@ -46,7 +46,7 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 		$params = $db->loadResult ();
 		$parametersInstance = new JRegistry ( $params, '' );
 		
-		$jname = $parametersInstance->get ( 'magento_plugin', '' );
+		$jname = $parametersInstance->get('magento_plugin', '');
 		if (! empty ( $jname )) {
 			$user = JFusionFactory::getUser($jname);
 			if ($user->isConfigured()) {
@@ -62,16 +62,16 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 
 				$db->setQuery ( $query );
 				$rows = $db->loadObjectList ();
-				if (! empty ( $rows )) {
-					$output .= JHTML::_ ( 'select.genericlist', $rows, $this->getFieldName(null) . '[' .  $this->getName(null) . ']', 'size="1" class="inputbox"', 'value', 'name', $this->value );
+				if (!empty($rows)) {
+					$output .= JHTML::_('select.genericlist', $rows, $this->getFieldName(null) . '[' .  $this->getName(null) . ']', 'size="1" class="inputbox"', 'value', 'name', $this->value);
 				} else {
 					$output .= $jname . ': ' . JText::_('No list');
 				}
 			} else {
-				$output .= $jname . ': ' . JText::_ ( 'No valid plugin' ) . '<br />';
+				$output .= $jname . ': ' . JText::_('No valid plugin') . '<br />';
 			}
 		} else {
-			$output .= JText::_ ( 'No plugin selected' );
+			$output .= JText::_('No plugin selected');
 		}
 		
 		return $output;

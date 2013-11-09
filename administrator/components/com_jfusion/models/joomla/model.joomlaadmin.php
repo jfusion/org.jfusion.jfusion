@@ -149,7 +149,7 @@ class JFusionJoomlaAdmin extends JFusionAdmin
 	 *
 	 * @return string Default usergroup name
 	 */
-	function getUsergroupName($jname,$gid)
+	function getUsergroupName($jname, $gid)
 	{
 		try {
 			$db = JFusionFactory::getDatabase($jname);

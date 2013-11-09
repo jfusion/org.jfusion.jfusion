@@ -604,7 +604,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
 		 */
 		protected function _updateUserInfo($changes, $uid) {
-			$sql = $this->getConf('updateUser')." ";
+			$sql = $this->getConf('updateUser') . ' ';
 			$cnt = 0;
 			$err = 0;
 
@@ -615,26 +615,26 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 							$err = 1; /* new username already exists */
 							break; /* abort update */
 						}
-						if($cnt++ > 0) $sql .= ", ";
+						if($cnt++ > 0) $sql .= ', ';
 						$sql .= str_replace('%{user}', $value, $this->getConf('UpdateLogin'));
 					} else if($item == 'name') {
-						if($cnt++ > 0) $sql .= ", ";
+						if($cnt++ > 0) $sql .= ', ';
 						$sql .= str_replace('%{name}', $value, $this->getConf('UpdateName'));
 					} else if($item == 'pass') {
 						if(!$this->getConf('forwardClearPass'))
 							$value = $this->cryptPassword($value);
-						if($cnt++ > 0) $sql .= ", ";
+						if($cnt++ > 0) $sql .= ', ';
 						$sql .= str_replace('%{pass}', $value, $this->getConf('UpdatePass'));
 					} else if($item == 'mail') {
-						if($cnt++ > 0) $sql .= ", ";
+						if($cnt++ > 0) $sql .= ', ';
 						$sql .= str_replace('%{email}', $value, $this->getConf('UpdateEmail'));
 					}
 				}
 
 				if($err == 0) {
 					if($cnt > 0) {
-						$sql .= " ".str_replace('%{uid}', $uid, $this->getConf('UpdateTarget'));
-						if(get_class($this) == 'auth_mysql') $sql .= " LIMIT 1"; //some PgSQL inheritance comp.
+						$sql .= ' ' . str_replace('%{uid}', $uid, $this->getConf('UpdateTarget'));
+						if(get_class($this) == 'auth_mysql') $sql .= ' LIMIT 1'; //some PgSQL inheritance comp.
 						$this->_modifyDB($sql);
 					}
 					return true;

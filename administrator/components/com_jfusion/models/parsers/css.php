@@ -52,15 +52,15 @@ class cssparser {
 		if(!isset($this->css[$key])) {
 			$this->css[$key] = array();
 		}
-		if( strpos($key,'@') !== false ) {
+		if( strpos($key, '@') !== false ) {
 			$this->media[$key] = $codestr;
 		} else {
-            $codes = explode(';',$codestr);
+            $codes = explode(';', $codestr);
             if(count($codes) > 0) {
                 foreach($codes as $code) {
                     $code = trim($code);
                     if(strlen($code)) {
-                        $code = explode(':',$code,2);
+                        $code = explode(':', $code, 2);
                         if (count($code) == 2) {
                             list($codekey, $codevalue) = $code;
                             $codevalue = trim($codevalue);
@@ -175,44 +175,44 @@ class cssparser {
 			$count = -1;
 
 			while(true) {
-				if ( $str[$pos] == '{' ) {
-					if ( $count == -1 ) {
-						$media = substr  ( $str , $start , ($pos-$start) );
+				if ($str[$pos] == '{') {
+					if ($count == -1) {
+						$media = substr($str, $start, ($pos-$start));
 						$count = 0;
 					}
 					$count++;
 				}
-				if ( $str[$pos] == '}' ) $count--;
+				if ($str[$pos] == '}') $count--;
 
-				if ( $count == 0) {
+				if ($count == 0) {
 					$end = $pos;
 
-					$fullmedia = substr  ( $str , $start , ($end-$start)+1 );
+					$fullmedia = substr($str, $start, ($end-$start)+1);
 
-					$subparse = substr($fullmedia , strpos($fullmedia, '{')+1 );
+					$subparse = substr($fullmedia, strpos($fullmedia, '{')+1);
 
-					$subparse = substr($subparse , 0,-1);
+					$subparse = substr($subparse, 0, -1);
 
 					$cssparser = new cssparser($this->prefix);
 					$cssparser->SetUrl($this->thisUrl);
 					$cssparser->ParseStr($subparse);
 					$codestr = $cssparser->GetCSS();
 
-					$str = str_replace($fullmedia,'',$str);
+					$str = str_replace($fullmedia, '', $str);
 					$this->Add($media, $codestr);
 					$pos = 0;
 					break;
 				}
 				$pos++;
-				if ( $pos == strlen($str) ) break;
+				if ($pos == strlen($str)) break;
 			}
-			$pos = strpos($str, '@',$pos);
+			$pos = strpos($str, '@', $pos);
 		}
 
-		if (preg_match_all( '#([^}]*){([^}]*)}#Sis', $str, $parts)) {
+		if (preg_match_all('#([^}]*){([^}]*)}#Sis', $str, $parts)) {
 			foreach($parts[1] as $key => $keystr) {
 				$codestr = trim($parts[2][$key]);
-				$keys = explode(',',trim($keystr));
+				$keys = explode(',', trim($keystr));
 				if(count($keys)) {
 					foreach($keys as $value) {
 						$value = trim($value);
@@ -324,7 +324,7 @@ class cssparser {
 
 		while(count($sorcepath)) {
 			$temp = $sorcepathoriginal;
-			$path ='';
+			$path = '';
 			foreach($sorcepath as $values) {
 				$path .= '\.\.\/';
 				array_pop($temp);
@@ -358,7 +358,7 @@ class cssparser {
 
 		$content = preg_replace($regexall, $replaceall, $content);
 
-		if (preg_match_all( '#@import.*?[\'"]([^\'"]*)[\'"].*?;#Sis', $content, $imports)) {
+		if (preg_match_all('#@import.*?[\'"]([^\'"]*)[\'"].*?;#Sis', $content, $imports)) {
 			foreach ($imports[1] as $key => $import) {
 				$cssparser = new cssparser($this->prefix);
 				$cssparser->ParseUrl($import);

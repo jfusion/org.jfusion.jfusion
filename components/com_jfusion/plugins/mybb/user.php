@@ -77,7 +77,7 @@ class JFusionUser_mybb extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         $cookiedomain = $this->params->get('cookie_domain');
         $cookiepath = $this->params->get('cookie_path', '/');
         //Set cookie values
@@ -105,7 +105,7 @@ class JFusionUser_mybb extends JFusionUser {
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         //do not create sessions for blocked users
 	    try {
 	        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
@@ -143,7 +143,7 @@ class JFusionUser_mybb extends JFusionUser {
 		        }
 		        $cookiepath = str_replace(array("\n", "\r"), '', $cookiepath);
 		        $cookiedomain = str_replace(array("\n", "\r"), '', $cookiedomain);
-		        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly ,true);
+		        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly , true);
 	        }
 	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
@@ -273,7 +273,7 @@ class JFusionUser_mybb extends JFusionUser {
 	        $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
 	    }

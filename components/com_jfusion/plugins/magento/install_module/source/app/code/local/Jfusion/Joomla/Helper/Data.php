@@ -14,7 +14,7 @@ class Jfusion_Joomla_Helper_Data extends Mage_Core_Helper_Data {
      *
      */
     function __construct() {
-		$this->_data = Mage::getStoreConfig ( 'joomla/joomlaconfig' );
+		$this->_data = Mage::getStoreConfig('joomla/joomlaconfig');
 	}
 
     /**

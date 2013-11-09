@@ -38,7 +38,7 @@ class JFusionFunctionAdmin
      *
      * @return object master details
      */
-	public static function changePluginStatus($element,$folder,$status) {
+	public static function changePluginStatus($element, $folder, $status) {
 		//get joomla specs
         $db = JFactory::getDBO();
 
@@ -170,7 +170,7 @@ HTML;
         if (function_exists('curl_init')) {
             //curl is the preferred function
             $crl = curl_init();
-            curl_setopt($crl, CURLOPT_URL,$url);
+            curl_setopt($crl, CURLOPT_URL, $url);
             curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, 5);
 	        curl_setopt($crl, CURLOPT_TIMEOUT, 20);

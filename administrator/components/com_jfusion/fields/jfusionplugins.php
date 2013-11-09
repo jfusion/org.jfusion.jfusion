@@ -49,7 +49,7 @@ class JFormFieldJFusionPlugins extends JFormField
 			    throw new RuntimeException(JText::_('NO_VALID_PLUGINS'));
 		    }
 	    } catch (Exception $e) {
-		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage(). '</span>';
+		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage() . '</span>';
 	    }
 	    return $output;
     }

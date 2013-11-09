@@ -16,7 +16,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 $uri = JURI::getInstance();
-$uri->setVar('task','advancedparamsubmit');
+$uri->setVar('task', 'advancedparamsubmit');
 ?>
 <div class="jfusion">
 	<?php echo $this->toolbar; ?>
@@ -40,7 +40,7 @@ $uri->setVar('task','advancedparamsubmit');
 					if (!empty($this->comp) && !empty($this->comp['form'])):
 						$form = $this->comp['form'];
 						$fieldsets = $form->getFieldsets();
-						echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
+						echo JHtml::_('tabs.start', 'tabs', array('startOffset' => 2));
 						foreach ($fieldsets as $fieldset):
 							echo JHtml::_('tabs.panel',JText::_($fieldset->name . '_jform_fieldset_label'), $fieldset->name . '_jform_fieldset_label');
 							echo '<fieldset class="jfusionform">';

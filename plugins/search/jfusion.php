@@ -83,7 +83,7 @@ class plgSearchJfusion extends JPlugin
 	 *
 	 * @return array
 	 */
-	function onContentSearch($text, $phrase='', $ordering='', $areas=null)
+	function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
 	{
 		//no text to search
 		if (!$text) {

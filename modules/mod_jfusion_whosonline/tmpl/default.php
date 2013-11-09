@@ -28,9 +28,9 @@ foreach($outputs as $output) {
 	}else {
 		if($config['showmode'] != '1') {
 			echo JText::_('WE_HAVE') . '&nbsp;';
-			echo ($output->num_guests==0 || $output->num_guests>1) ? JText::sprintf('GUESTS', $output->num_guests) : JText::sprintf('GUEST', '1');
+			echo ($output->num_guests == 0 || $output->num_guests > 1) ? JText::sprintf('GUESTS', $output->num_guests) : JText::sprintf('GUEST', '1');
 			echo '&nbsp;' . JText::_('AND') . '&nbsp;';
-			echo ($output->num_members==0 || $output->num_members>1) ? JText::sprintf('MEMBERS', $output->num_members) : JText::sprintf('MEMBER', '1');
+			echo ($output->num_members == 0 || $output->num_members > 1) ? JText::sprintf('MEMBERS', $output->num_members) : JText::sprintf('MEMBER', '1');
 			echo '&nbsp;' . JText::_('ONLINE') . '<br />';
 		}
 
@@ -43,7 +43,7 @@ foreach($outputs as $output) {
 			 	$user_output = $u->output;
 				echo '<li>';
 			 	if(!empty($user_output->avatar_source)) {
-			 		echo "<img style='vertical-align:middle; margin:3px; max-width: {$user_output->avatar_width}px; max-height: {$user_output->avatar_height}px;' src='{$user_output->avatar_source}' alt='avatar' />";
+			 		echo '<img style="vertical-align:middle; margin:3px; max-width: ' . $user_output->avatar_width . 'px; max-height: ' . $user_output->avatar_height . 'px;" src="' . $user_output->avatar_source . '" alt="avatar" />';
 			 	}
 
 			 	if(!empty($user_output->user_url)) {

@@ -62,7 +62,7 @@ JFusionFunctionAdmin::displayDonate();
 		<?php $row_count = 0;
 		$scale = 1;
 		foreach ($this->lang_repo as $lang => $data) {
-			$percent = str_replace('%','',$data->progress); ?>
+			$percent = str_replace('%', '', $data->progress); ?>
 			<tr class="<?php echo $data->class.($row_count % 2); ?>">
 				<td style="width:50px;">
 					<?php echo $lang; ?>

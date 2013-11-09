@@ -374,7 +374,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 
         //determine if this user has permission to view the forum
         if (is_array($forumids)) {
-	        foreach( $forumids as $k => $f) {
+	        foreach($forumids as $k => $f) {
 	            if (!$phpbb_acl[$f]) {
 	                unset($forumids[$k]);
 	            }
@@ -599,7 +599,7 @@ class JFusionForum_phpbb3 extends JFusionForum
      *
      * @return void
      */
-    function setPremission(&$old,$new) {
+    function setPremission(&$old, $new) {
         switch ($old) {
             case 0:
                 break;
@@ -663,7 +663,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 	{
 		try {
 			//setup some variables
-			$userid = $this->getThreadAuthor($dbparams,$contentitem);
+			$userid = $this->getThreadAuthor($dbparams, $contentitem);
 			$db = JFusionFactory::getDatabase($this->getJname());
 			$subject = trim(strip_tags($contentitem->title));
 
@@ -757,7 +757,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 
 			$forum_stats = new stdClass();
 
-			if ($dbparams->get('use_content_created_date',false)) {
+			if ($dbparams->get('use_content_created_date', false)) {
 				//only update the last post for the topic if it really is newer
 				$updateLastPost = ($timestamp > $num->forum_last_post_time) ? true : false;
 			} else {
@@ -892,7 +892,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 	 */
 	function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
 	{
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
 			if($userinfo->guest) {
@@ -957,7 +957,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 
 				$timestamp = time();
 
-				$post_approved = ($userinfo->guest && $params->get('moderate_guests',1)) ? 0 : 1;
+				$post_approved = ($userinfo->guest && $params->get('moderate_guests', 1)) ? 0 : 1;
 
 				$post_row = new stdClass();
 				$post_row->forum_id			= $ids->forumid;

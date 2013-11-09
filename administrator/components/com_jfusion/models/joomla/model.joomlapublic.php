@@ -144,7 +144,7 @@ class JFusionJoomlaPublic extends JFusionPublic
 	 */
 	public function setLanguageFrontEnd($userinfo = null)
 	{
-		$status = array('error' => array(),'debug' => array());
+		$status = array('error' => array(), 'debug' => array());
 		$user = JFusionFactory::getUser($this->getJname());
 		$existinguser = (isset($userinfo)) ? $user->getUser($userinfo) : null;
 		// If the user is connected we change his account parameter in function of the language front end

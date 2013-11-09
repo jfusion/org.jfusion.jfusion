@@ -52,7 +52,7 @@ class JFusionHelper
 		JHtmlSidebar::addEntry(
 			JText::_('CONFIGURATION'),
 			'index.php?option=com_jfusion&task=plugindisplay',
-			$vName == 'plugindisplay' || ( $vName == 'plugineditor' && $jname != 'joomla_int' )
+			$vName == 'plugindisplay' || ($vName == 'plugineditor' && $jname != 'joomla_int')
 		);
 
 		JHtmlSidebar::addEntry(

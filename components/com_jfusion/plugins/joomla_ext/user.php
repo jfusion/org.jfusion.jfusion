@@ -52,7 +52,7 @@ class JFusionUser_joomla_ext extends JFusionJoomlaUser {
 	        //get the database ready
 	        $db = JFusionFactory::getDatabase($this->getJname());
 	        //setup status array to hold debug info and errors
-	        $status = array('error' => array(),'debug' => array());
+	        $status = array('error' => array(), 'debug' => array());
 	        $userid = $userinfo->userid;
 
 		    $query = $db->getQuery(true)
@@ -101,7 +101,7 @@ class JFusionUser_joomla_ext extends JFusionJoomlaUser {
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
         } else {

@@ -105,7 +105,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 
 			// prepare user line
 			$groups   = join(',', $grps);
-			$userline = join(':', array($user, $pass, $name, $mail, $groups))."\n";
+			$userline = join(':', array($user, $pass, $name, $mail, $groups)) . "\n";
 
 			if($this->saveFile($this->file, $userline, true)) {
 				$this->users[$user] = compact('pass', 'name', 'mail', 'grps');
@@ -140,7 +140,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 			}
 
 			$groups   = join(',', $userinfo['grps']);
-			$userline = join(':', array($newuser, $userinfo['pass'], $userinfo['name'], $userinfo['mail'], $groups))."\n";
+			$userline = join(':', array($newuser, $userinfo['pass'], $userinfo['name'], $userinfo['mail'], $groups)) . "\n";
 
 			if(!$this->deleteUsers(array($user))) {
 				$this->debug('Unable to modify user data. Please inform the Wiki-Admin',-1);

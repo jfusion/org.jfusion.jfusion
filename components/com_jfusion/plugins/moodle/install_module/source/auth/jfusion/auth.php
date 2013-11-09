@@ -261,7 +261,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		$curl_options=array();
 
 		#prevent user error by preventing a heading forward slash
-		ltrim($params_logoutpath,'/');
+		ltrim($params_logoutpath, '/');
 
 		#prevent user error by not supplying trailing forward slash
 		if (substr($params_logoutpath,-1) != '/') {
@@ -276,7 +276,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 			$params_joomlafullpath = $params_joomlafullpath . '/';
 		}
 
-		define('_JEXEC','Yeah_I_know');
+		define('_JEXEC', 'Yeah_I_know');
 		require_once($params_joomlafullpath.'administrator/components/com_jfusion/models/model.curl.php');
 		$LoginLogout = new DualLogin();
 		$curl_options['post_url']          = $params_joomlabaseurl . $params_logoutpath;
@@ -304,7 +304,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
 		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
 		$Host_source_url = $CFG->wwwroot;
-		$my_ID = rtrim(parse_url($Host_source_url,PHP_URL_HOST).parse_url($Host_source_url,PHP_URL_PATH),'/');
+		$my_ID = rtrim(parse_url($Host_source_url, PHP_URL_HOST) . parse_url($Host_source_url,PHP_URL_PATH), '/');
 		$curl_options['jnodeid'] = $my_ID;
 		$curl_options['logout'] = '1';
 		$status = $LoginLogout->login($curl_options);  // form logout
@@ -313,7 +313,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		unset($LoginLogout);
 		if (!empty($status['error']))
 		{
-			$message= 'Fatal JFusion Dual logout Error : statusdump: ' . print_r($status, true) ;
+			$message = 'Fatal JFusion Dual logout Error : statusdump: ' . print_r($status, true) ;
 			return false;
 		}
         return true;
@@ -394,16 +394,16 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		$curl_options=array();
 
 		#prevent user error by preventing a heading forward slash
-		ltrim($params_loginpath,'/');
+		ltrim($params_loginpath, '/');
 		#prevent user error by not supplying trailing forward slash
-		if (substr($params_loginpath,-1) != '/') {
+		if (substr($params_loginpath, -1) != '/') {
 			$params_loginpath = $params_loginpath . '/';
 		}
-		if (substr($params_joomlabaseurl,-1) != '/')
+		if (substr($params_joomlabaseurl, -1) != '/')
 		{
 			$params_joomlabaseurl = $params_joomlabaseurl . '/';
 		}
-		if (substr($params_joomlafullpath,-1) != '/')
+		if (substr($params_joomlafullpath, -1) != '/')
 		{
 			$params_joomlafullpath = $params_joomlafullpath . '/';
 		}
@@ -414,7 +414,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
 		if ($params_joomlaactive != '0')
 		{
-            define('_JEXEC','Yeah_I_know');
+            define('_JEXEC', 'Yeah_I_know');
             require_once($params_joomlafullpath . 'administrator/components/com_jfusion/models/model.curl.php');
             //    require_once('DualLoginHelper.php');
             $LoginLogout = new DualLogin();
@@ -445,7 +445,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
             // plugin. This is totally transparent for the the webmaster. No additional setup is needed
             if ($jnodeid){
                 $Host_source_url = $CFG->wwwroot;
-                $my_ID = rtrim(parse_url($Host_source_url,PHP_URL_HOST).parse_url($Host_source_url,PHP_URL_PATH),'/');
+                $my_ID = rtrim(parse_url($Host_source_url, PHP_URL_HOST) . parse_url($Host_source_url,PHP_URL_PATH), '/');
                 $curl_options['jnodeid'] = $my_ID;
             }
             $status = $LoginLogout->login($curl_options);

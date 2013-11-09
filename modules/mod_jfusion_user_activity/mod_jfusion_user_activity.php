@@ -37,25 +37,25 @@ if (file_exists($factory_file)) {
     $pluginParamValue = unserialize(base64_decode($pluginParamValue));
     $jname = $pluginParamValue['jfusionplugin'];
 
-	$view = $params->get('view','auto');
+	$view = $params->get('view', 'auto');
 
 	$public = JFusionFactory::getPublic($jname);
 	if($public->isConfigured()) {
 		if($view == 'auto') {
 			//configuration
 			$config['itemid'] = $params->get('itemid');
-			$config['avatar'] = $params->get('avatar',false);
+			$config['avatar'] = $params->get('avatar', false);
 			$config['avatar_software'] = $params->get('avatar_software', 'jfusion');
-			$config['avatar_height'] = $params->get('avatar_height',40);
-			$config['avatar_width'] = $params->get('avatar_width',30);
-			$config['avatar_location'] = $params->get('avatar_location','top');
-			$config['pmcount'] = $params->get('pmcount',false);
-			$config['viewnewmessages'] = $params->get('viewnewmessages',false);
+			$config['avatar_height'] = $params->get('avatar_height', 40);
+			$config['avatar_width'] = $params->get('avatar_width', 30);
+			$config['avatar_location'] = $params->get('avatar_location', 'top');
+			$config['pmcount'] = $params->get('pmcount', false);
+			$config['viewnewmessages'] = $params->get('viewnewmessages', false);
 			$config['login_msg'] = $params->get('login_msg');
-			$config['alignment'] = $params->get('alignment','center');
-			$config['avatar_keep_proportional'] = $params->get('avatar_keep_proportional',false);
+			$config['alignment'] = $params->get('alignment', 'center');
+			$config['avatar_keep_proportional'] = $params->get('avatar_keep_proportional', false);
 
-			if ($params->get('new_window',false)) {
+			if ($params->get('new_window', false)) {
 				$config['new_window'] = '_blank';
 			} else {
 			    $config['new_window'] = '_self';

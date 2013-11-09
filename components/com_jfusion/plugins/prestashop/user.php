@@ -142,7 +142,7 @@ class JFusionUser_prestashop extends JFusionUser
 	 * @return array
 	 */
 	function destroySession($userinfo, $options) {
-		$status = array('error' => array(),'debug' => array());
+		$status = array('error' => array(), 'debug' => array());
 		$params = JFusionFactory::getParams($this->getJname());
 
 		$status = $this->curlLogout($userinfo, $options, $params->get('logout_type'));
@@ -429,7 +429,7 @@ class JFusionUser_prestashop extends JFusionUser
 				    $group->id_group = $value;
 				    $db->insertObject('#__customer_group', $group);
 			    }
-			    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
+			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
 		    }
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();

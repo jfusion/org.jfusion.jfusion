@@ -95,7 +95,7 @@ class JFusionAPI {
 	{
 		$data = null;
 		if (isset($_REQUEST[$read])) {
-			$data = (string) preg_replace( '/[^A-Z_]/i', '', $_REQUEST[$read]);
+			$data = (string) preg_replace('/[^A-Z_]/i', '', $_REQUEST[$read]);
 		}
 		return $data;
 	}
@@ -201,7 +201,7 @@ class JFusionAPI {
 	 */
 	public function set($class, $task, $payload = array())
 	{
-		return $this->raw('set',$class, $task, $payload);
+		return $this->raw('set', $class, $task, $payload);
 	}
 
 	/**
@@ -213,7 +213,7 @@ class JFusionAPI {
 	 */
 	public function get($class, $task, $payload = array())
 	{
-		return $this->raw('get',$class, $task, $payload);
+		return $this->raw('get', $class, $task, $payload);
 	}
 
 	/**
@@ -242,7 +242,7 @@ class JFusionAPI {
 
 	 * @return mixed
 	 */
-	private function raw($type, $class, $task, $payload=array())
+	private function raw($type, $class, $task, $payload = array())
 	{
 		$key = true;
 		$c = $this->createClass($class);
@@ -250,7 +250,7 @@ class JFusionAPI {
 			$key = $this->retrieveKey();
 		}
 		if ($key) {
-			$result = $this->post($class,$type,$task,$payload);
+			$result = $this->post($class, $type, $task, $payload);
 
 			$result = $this->getOutput($result);
 			if (empty($this->error)) {
@@ -269,7 +269,7 @@ class JFusionAPI {
 	 *
 	 * @return mixed
 	 */
-	static function getSession($class,$delete=false)
+	static function getSession($class, $delete = false)
 	{
 		$return = null;
 		if (isset($_SESSION['JFusionAPI'])) {
@@ -288,7 +288,7 @@ class JFusionAPI {
 	 * @param string $class
 	 * @param mixed $value
 	 */
-	static function setSession($class,$value)
+	static function setSession($class, $value)
 	{
 		$_SESSION['JFusionAPI'][$class] = $value;
 	}
@@ -351,7 +351,7 @@ class JFusionAPI {
 	 *
 	 * @return string|bool
 	 */
-	private function post($class,$type,$task,$payload=array())
+	private function post($class, $type, $task, $payload = array())
 	{
 		$this->error = array();
 		$this->debug = array();
@@ -371,11 +371,11 @@ class JFusionAPI {
 			$post['jftask'] = $task;
 
 			if (!empty($payload)) {
-				$post['jfpayload'] = JFusionAPI::encrypt($this->createkey(),$payload);
+				$post['jfpayload'] = JFusionAPI::encrypt($this->createkey(), $payload);
 			}
 
 			$crl = curl_init();
-			curl_setopt($crl, CURLOPT_URL,$this->url);
+			curl_setopt($crl, CURLOPT_URL, $this->url);
 			curl_setopt($crl, CURLOPT_HEADER, 0);
 			curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, 5);
@@ -398,7 +398,7 @@ class JFusionAPI {
 	 *
 	 * @return void
 	 */
-	private function doOutput($output,$encrypt=false)
+	private function doOutput($output, $encrypt = false)
 	{
 		$output['PHPSESSID'] = $this->sid;
 		$output['error'] = $this->error;
@@ -511,7 +511,7 @@ class JFusionAPIBase {
 			$url = base64_decode($_GET['jfreturn']);
 		}
 
-		if ( $url ) {
+		if ($url) {
 			header('Location: ' . $url);
 		}
 		exit();
@@ -537,10 +537,10 @@ class JFusionAPI_Status extends JFusionAPIBase {
 		$seed = hexdec(substr(md5(microtime()), -8)) & 0x7fffffff;
 		mt_srand($seed);
 		for($i = 0; $i < 32; $i++) {
-			$iv .= chr(mt_rand(0,255));
+			$iv .= chr(mt_rand(0, 255));
 		}
 
-		JFusionAPI::setSession('hash',$iv);
+		JFusionAPI::setSession('hash', $iv);
 		return $iv;
 	}
 
@@ -576,7 +576,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 	{
 		if(!empty($this->payload['username']) && !empty($this->payload['password'])) {
 			$session['login'] = $this->payload;
-			JFusionAPI::setSession('user',$session);
+			JFusionAPI::setSession('user', $session);
 			return true;
 		} else {
 			return false;
@@ -588,7 +588,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 	 */
 	public function executeLogin()
 	{
-		$session = JFusionAPI::getSession('user',true);
+		$session = JFusionAPI::getSession('user', true);
 		if (isset($session['login'])) {
 			$userinfo = $session['login'];
 			if (is_array($userinfo)) {
@@ -597,7 +597,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 				if (isset($userinfo['plugin'])) {
 					$joomla->setActivePlugin($userinfo['plugin']);
 				}
-				$joomla->login($userinfo['username'],$userinfo['password']);
+				$joomla->login($userinfo['username'], $userinfo['password']);
 			}
 		}
 		$this->doExit();
@@ -626,8 +626,8 @@ class JFusionAPI_User extends JFusionAPIBase {
 	 */
 	public function executeRegister()
 	{
-		if ( $this->payload ) {
-			if ( isset($this->payload['userinfo']) && get_class($this->payload['userinfo']) == 'stdClass') {
+		if ($this->payload) {
+			if (isset($this->payload['userinfo']) && get_class($this->payload['userinfo']) == 'stdClass') {
 
 				$joomla = new JFusionAPIInternal();
 
@@ -641,7 +641,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 					$overwrite = 0;
 				}
 
-				$joomla->register($this->payload['userinfo'],$overwrite);
+				$joomla->register($this->payload['userinfo'], $overwrite);
 
 				$this->error = $joomla->error;
 				$this->debug = $joomla->debug;
@@ -658,7 +658,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 	 */
 	public function executeUpdate()
 	{
-		if ( $this->payload ) {
+		if ($this->payload) {
 			if ( isset($this->payload['userinfo']) && is_array($this->payload['userinfo'])) {
 				$joomla = new JFusionAPIInternal();
 
@@ -668,7 +668,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 					$overwrite = 0;
 				}
 
-				$joomla->update($this->payload['userinfo'],$overwrite);
+				$joomla->update($this->payload['userinfo'], $overwrite);
 
 				$this->error = $joomla->error;
 				$this->debug = $joomla->debug;
@@ -685,8 +685,8 @@ class JFusionAPI_User extends JFusionAPIBase {
 	 */
 	public function executeDelete()
 	{
-		if ( $this->payload ) {
-			if ( isset($this->payload['userid']) ) {
+		if ($this->payload) {
+			if (isset($this->payload['userid'])) {
 				$joomla = new JFusionAPIInternal();
 
 				$joomla->delete($this->payload['userid']);
@@ -713,7 +713,7 @@ class JFusionAPI_Cookie extends JFusionAPIBase {
 	{
 		if (is_array($this->payload)) {
 			$session['cookies'] = $this->payload;
-			JFusionAPI::setSession('cookie',$session);
+			JFusionAPI::setSession('cookie', $session);
 			return true;
 		} else {
 			return false;
@@ -726,7 +726,7 @@ class JFusionAPI_Cookie extends JFusionAPIBase {
 	public function executeCookies()
 	{
 		if ($this->readPayload(false)) {
-			$session = JFusionAPI::getSession('cookie',true);
+			$session = JFusionAPI::getSession('cookie', true);
 
 			if ( isset($session['cookies']) && count($session['cookies']) && is_array($session['cookies']) ) {
 				foreach($session['cookies'] as $value ) {
@@ -776,7 +776,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			// trick joomla into thinking we're running through joomla
 			define('_JEXEC', true);
 			define('DS', DIRECTORY_SEPARATOR);
-			define('JPATH_BASE', dirname(__FILE__). DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
+			define('JPATH_BASE', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
 
 			// load joomla libraries
 			require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'defines.php';
@@ -847,7 +847,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 *
 	 * @return void
 	 */
-	public function login($username,$password,$remember = 1)
+	public function login($username, $password, $remember = 1)
 	{
 		$mainframe = $this->startJoomla();
 
@@ -911,7 +911,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$user = new stdClass;
 		if ($username) {
 			if ($this->activePlugin) {
-				$lookupUser = JFusionFunction::lookupUser($this->activePlugin,null,false,$username);
+				$lookupUser = JFusionFunction::lookupUser($this->activePlugin, null, false, $username);
 				if (!empty($lookupUser)) {
 					$user = JFactory::getUser($lookupUser->id);
 				}
@@ -942,7 +942,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$plugins = JFusionFunction::getSlaves();
 		$plugins[] = JFusionFunction::getMaster();
 
-		if ( $this->activePlugin ) {
+		if ($this->activePlugin) {
 			foreach ($plugins as $key => $plugin) {
 				if ($plugin->name == $this->activePlugin) {
 					unset($plugins[$key]);
@@ -956,8 +956,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			$existinguser = $PluginUserUpdate->getUser($userinfo);
 
 			if(!$existinguser) {
-				$status = array('error' => array(),'debug' => array());
-				$PluginUserUpdate->createUser($userinfo,$status);
+				$status = array('error' => array(), 'debug' => array());
+				$PluginUserUpdate->createUser($userinfo, $status);
 
 				foreach ($status['error'] as $error) {
 					$this->error[][$plugin->name] = $error;
@@ -977,7 +977,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 *
 	 * @return void
 	 */
-	public function update($userinfo,$overwrite)
+	public function update($userinfo, $overwrite)
 	{
 		$this->startJoomla();
 
@@ -985,7 +985,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$plugins[] = JFusionFunction::getMaster();
 
 		foreach ($plugins as $key => $plugin) {
-			if (!array_key_exists($plugin->name,$userinfo)) {
+			if (!array_key_exists($plugin->name, $userinfo)) {
 				unset($plugins[$key]);
 			}
 		}
@@ -994,14 +994,14 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			$updateinfo = $userinfo[$plugin->name];
 
 			if (get_class($updateinfo) == 'stdClass') {
-				$lookupUser = JFusionFunction::lookupUser($plugin->name,'',false,$updateinfo->username);
+				$lookupUser = JFusionFunction::lookupUser($plugin->name, '', false, $updateinfo->username);
 
 				if($lookupUser) {
 					$existinguser = $PluginUserUpdate->getUser($updateinfo->username);
 
 					foreach ($updateinfo as $key => $value) {
 						if ($key != 'userid' && isset($existinguser->$key)) {
-							if ( $existinguser->$key != $updateinfo->$key ) {
+							if ($existinguser->$key != $updateinfo->$key) {
 								$existinguser->$key = $updateinfo->$key;
 							}
 						}

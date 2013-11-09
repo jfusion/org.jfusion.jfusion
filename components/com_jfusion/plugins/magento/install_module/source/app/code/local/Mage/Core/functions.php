@@ -441,7 +441,7 @@ function getStoreForLanguage()
         $stores = Mage::app()->getStores(false, true);
         // iterate through languages found in the accept-language header
         foreach ($langs as $lang) {
-            $lang = substr($lang,0,2);
+            $lang = substr($lang, 0, 2);
             if (isset($stores[$lang]) && $stores[$lang]->getIsActive()) return $stores[$lang];
         }
     }

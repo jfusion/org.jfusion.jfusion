@@ -90,7 +90,7 @@ class JFusionUser_efront extends JFusionUser
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         if (isset($options['remember'])) {
             if ($options['remember']) {
                  return $status;
@@ -98,7 +98,7 @@ class JFusionUser_efront extends JFusionUser
         }
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $status = $this->curlLogout($userinfo, $options,$this->params->get('logout_type'));
+	        $status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'));
 
 		    $query = $db->getQuery(true)
 			    ->select('action')
@@ -138,7 +138,7 @@ class JFusionUser_efront extends JFusionUser
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
 	        //do not create sessions for blocked users
 	        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
@@ -222,7 +222,7 @@ class JFusionUser_efront extends JFusionUser
 	        $db->setQuery($query);
 
 		    $db->execute();
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
 	    }
@@ -373,7 +373,7 @@ class JFusionUser_efront extends JFusionUser
        /**
         * NOTE: eFront does a character check on the user credentials. I think we are ok (HW): if (preg_match("/^.*[$\/\'\"]+.*$/", $parameter))
         */
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
 	        //prepare the variables
@@ -511,7 +511,7 @@ class JFusionUser_efront extends JFusionUser
         // modules without loading the complete website. 
         
     	// check apiuser existence
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');
         } else {
@@ -525,13 +525,13 @@ class JFusionUser_efront extends JFusionUser
                     $status['error'][] = JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION');
                 } else {
                     // get token
-                    $curl_options['action'] ='token';
-                    $status = $this->helper->send_to_api($curl_options,$status);
+                    $curl_options['action'] = 'token';
+                    $status = $this->helper->send_to_api($curl_options, $status);
                     if (!$status['error']) {
                         $result = $status['result'][0];
                         $token = $result->token;
                         // login
-                        $curl_options['action']='login';
+                        $curl_options['action'] = 'login';
                         $curl_options['parms'] = '&token=' . $token . '&username=' . $apiuser . '&password=' . $apikey;
                         $status = $this->helper->send_to_api($curl_options, $status);
                         if (!$status['error']){

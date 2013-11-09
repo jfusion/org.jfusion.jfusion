@@ -8,7 +8,7 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die( 'Restricted access' );
+defined('_JEXEC') or die('Restricted access');
 
 /**
 * Require the Jfusion plugin factory
@@ -64,7 +64,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 					->from('#__extensions')
 					->where('element = ' . $db->quote('com_k2'));
 
-				$db->setQuery( $query );
+				$db->setQuery($query);
 				$enabled = $db->loadResult();
 				if (empty($enabled)) {
 					throw new RuntimeException(JText::_('K2_NOT_AVAILABLE'));
@@ -76,8 +76,8 @@ class JFormFieldDiscussionbotparam extends JFormField
 			} else {
 				JFusionFunction::initJavaScript();
 
-				jimport( 'joomla.user.helper' );
-				$hash = JApplication::getHash( $name.JUserHelper::genRandomPassword());
+				jimport('joomla.user.helper');
+				$hash = JApplication::getHash($name . JUserHelper::genRandomPassword());
 				$session = JFactory::getSession();
 				$session->set($hash, $value);
 

@@ -204,8 +204,8 @@ class JFusionForum extends JFusionPlugin
 				$contentModified = JFactory::getDate($contentitem->modified)->toUnix();
 
 				$status['debug'][] = 'Thread exists...comparing dates';
-				$status['debug'][] = 'Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified). ')';
-				$status['debug'][] = 'Thread Modification Date: ' . $postModified . '  (' . date('Y-m-d H:i:s', $postModified). ')';
+				$status['debug'][] = 'Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified) . ')';
+				$status['debug'][] = 'Thread Modification Date: ' . $postModified . '  (' . date('Y-m-d H:i:s', $postModified) . ')';
 				$status['debug'][] = 'Is ' . $contentModified . ' > ' . $postModified . '?';
 				if($contentModified > $postModified) {
 					$status['debug'][] = 'Yes...attempting to update thread';
@@ -365,9 +365,9 @@ class JFusionForum extends JFusionPlugin
      */
 	function getThreadAuthor(&$dbparams, &$contentitem)
 	{
-		if($dbparams->get('use_article_userid',1)) {
+		if($dbparams->get('use_article_userid', 1)) {
 			//find this user in the forum
-			$userinfo = JFusionFunction::lookupUser($this->getJname(),$contentitem->created_by);
+			$userinfo = JFusionFunction::lookupUser($this->getJname(), $contentitem->created_by);
 
 			if(empty($userinfo->userid)) {
 				$id = $dbparams->get('default_userid');
@@ -437,22 +437,22 @@ class JFusionForum extends JFusionPlugin
 	function prepareFirstPostBody(&$dbparams, $contentitem)
 	{
 		//set what should be posted as the first post
-		$post_body = $dbparams->get('first_post_text','intro');
+		$post_body = $dbparams->get('first_post_text', 'intro');
 
 		$text = '';
 
-		if($post_body=='intro') {
+		if($post_body == 'intro') {
 			//prepare the text for posting
 			$text .= $contentitem->introtext;
-		} elseif($post_body=='full') {
+		} elseif($post_body == 'full') {
 			//prepare the text for posting
 			$text .= $contentitem->introtext . $contentitem->fulltext;
 		}
 
 		//create link
-		$show_link = $dbparams->get('first_post_link',1);
+		$show_link = $dbparams->get('first_post_link', 1);
 		//add a link to the article; force a link if text body is set to none so something is returned
-		if($show_link || $post_body=='none') {
+		if($show_link || $post_body == 'none') {
 			$link_text = $dbparams->get('first_post_link_text');
 			if(empty($link_text)) {
 				$link_text = JText::_('DEFAULT_ARTICLE_LINK_TEXT');
@@ -463,7 +463,7 @@ class JFusionForum extends JFusionPlugin
 			}
 
 			$text .= (!empty($text)) ? '<br /><br />' : '';
-			$text .= JFusionFunction::createJoomlaArticleURL($contentitem,$link_text);
+			$text .= JFusionFunction::createJoomlaArticleURL($contentitem, $link_text);
 		}
 
 		//prepare the content
@@ -538,7 +538,7 @@ JS;
 	{
 		$html = '';
 		if($showGuestInputs) {
-			$username = JFactory::getApplication()->input->post->get('guest_username','');
+			$username = JFactory::getApplication()->input->post->get('guest_username', '');
             $jusername = JText::_('USERNAME');
             $html = <<<HTML
             <table>
@@ -556,7 +556,7 @@ JS;
 HTML;
 
 		}
-		$quickReply = JFactory::getApplication()->input->post->get('quickReply','');
+		$quickReply = JFactory::getApplication()->input->post->get('quickReply', '');
 	   	$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">' . $quickReply . '</textarea><br />';
 	   	return $html;
 	}
@@ -571,7 +571,7 @@ HTML;
 	function createCaptcha($dbparams)
 	{
 		$html = '';
-		$captcha_mode = $dbparams->get('captcha_mode','disabled');
+		$captcha_mode = $dbparams->get('captcha_mode', 'disabled');
 
 		switch($captcha_mode) {
 			case 'question':
@@ -584,10 +584,10 @@ HTML;
 			case 'joomla15captcha':
 				//using joomla15captcha (http://code.google.com/p/joomla15captcha)
 				$dispatcher = JEventDispatcher::getInstance();
-				$results = $dispatcher->trigger( 'onCaptchaRequired', array( 'jfusion.discussion' ) );
+				$results = $dispatcher->trigger('onCaptchaRequired', array('jfusion.discussion'));
 				if ($results[0])
 					ob_start();
-					$dispatcher->trigger( 'onCaptchaView', array( 'jfusion.discussion', 0, '<tr><td colspan=2><br />', '<br /></td></tr>' ) );
+					$dispatcher->trigger('onCaptchaView', array('jfusion.discussion', 0, '<tr><td colspan=2><br />', '<br /></td></tr>'));
 					$html .= ob_get_contents();
 					ob_end_clean();
 				break;
@@ -595,8 +595,8 @@ HTML;
 				//using reCAPTCHA (http://recaptcha.net)
 				$recaptchalib = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'recaptchalib.php';
 				if(file_exists($recaptchalib)) {
-					$theme = $dbparams->get('recaptcha_theme','red');
-					$lang = $dbparams->get('recaptcha_lang','en');
+					$theme = $dbparams->get('recaptcha_theme', 'red');
+					$lang = $dbparams->get('recaptcha_lang', 'en');
 
                     /**
                      * @ignore
@@ -659,7 +659,7 @@ JS;
 	function verifyCaptcha(&$dbparams)
 	{
 		//let's check for captcha
-		$captcha_mode = $dbparams->get('captcha_mode','disabled');
+		$captcha_mode = $dbparams->get('captcha_mode', 'disabled');
 		$captcha_verification = false;
 
 		switch($captcha_mode) {
@@ -673,13 +673,13 @@ JS;
 			case "joomla15captcha":
 				//using joomla15captcha (http://code.google.com/p/joomla15captcha)
 				$dispatcher = JEventDispatcher::getInstance();
-				$results = $dispatcher->trigger( 'onCaptchaRequired', array( 'jfusion.discussion' ) );
-				if ( $results[0] ) {
-					$captchaparams = array(JFactory::getApplication()->input->post->get( 'captchacode', '' )
-						, JFactory::getApplication()->input->post->get( 'captchasuffix', '' )
-						, JFactory::getApplication()->input->post->get( 'captchasessionid', '' ));
-					$results = $dispatcher->trigger( 'onCaptchaVerify', $captchaparams );
-					if ( $results[0] ) {
+				$results = $dispatcher->trigger('onCaptchaRequired', array('jfusion.discussion'));
+				if ($results[0]) {
+					$captchaparams = array(JFactory::getApplication()->input->post->get('captchacode', '')
+						, JFactory::getApplication()->input->post->get('captchasuffix', '')
+						, JFactory::getApplication()->input->post->get('captchasessionid', ''));
+					$results = $dispatcher->trigger('onCaptchaVerify', $captchaparams);
+					if ($results[0]) {
 						$captcha_verification = true;
 					}
 				}
@@ -742,7 +742,7 @@ JS;
 	 */
 	function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
 	{
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
         $status['debug'] = JText::_('METHOD_NOT_IMPLEMENTED');
 		return $status;
 	}

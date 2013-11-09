@@ -111,7 +111,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
             }
         }else{
             // read cookie information
-            list($user,$sticky,$pass) = auth_getCookie();
+            list($user, $sticky, $pass) = auth_getCookie();
 
             // get session info
             $session = $_SESSION[DOKU_COOKIE]['auth'];
@@ -132,8 +132,8 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
                     return true;
                 }
                 // no we don't trust it yet - recheck pass but silent
-                $pass = PMA_blowfish_decrypt($pass,auth_cookiesalt());
-                return $this->loginDokuwiki($user,$pass,$sticky,true);
+                $pass = PMA_blowfish_decrypt($pass, auth_cookiesalt());
+                return $this->loginDokuwiki($user, $pass, $sticky, true);
             }
         }
         //just to be sure
@@ -165,7 +165,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
 
             // rebuild info array
             $INFO = pageinfo();
-            act_redirect($ID,'login');
+            act_redirect($ID, 'login');
         }
     }
 
@@ -193,9 +193,9 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
         $USERINFO=null;
 
         if (version_compare(PHP_VERSION, '5.2.0', '>')) {
-            setcookie(DOKU_COOKIE,'',time()-600000,$conf['jfusion']['cookie_path'],$conf['jfusion']['cookie_domain'],($conf['securecookie'] && is_ssl()),true);
+            setcookie(DOKU_COOKIE, '', time()-600000, $conf['jfusion']['cookie_path'], $conf['jfusion']['cookie_domain'], ($conf['securecookie'] && is_ssl()), true);
         }else{
-            setcookie(DOKU_COOKIE,'',time()-600000,$conf['jfusion']['cookie_path'],$conf['jfusion']['cookie_domain'],($conf['securecookie'] && is_ssl()));
+            setcookie(DOKU_COOKIE, '', time()-600000, $conf['jfusion']['cookie_path'], $conf['jfusion']['cookie_domain'], ($conf['securecookie'] && is_ssl()));
         }
 
         if($auth && $auth->canDo('logout')){
@@ -235,7 +235,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
         } else {
             session_set_cookie_params(0, DOKU_REL, '', ($conf['securecookie'] && is_ssl()));
         }
-        ini_set('session.save_handler',$this->session_save_handler);
+        ini_set('session.save_handler', $this->session_save_handler);
     }
 
     /**

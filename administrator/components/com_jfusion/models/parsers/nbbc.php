@@ -500,10 +500,10 @@ class BBCodeLibrary {
         foreach($fonts as $font) {
             $font = trim($font);
             if (isset($special_fonts[$font])) {
-                if (strlen($result) > 0) $result.= ",";
+                if (strlen($result) > 0) $result .= ",";
                 $result.= $special_fonts[$font];
             } else if (strlen($font) > 0) {
-                if (strlen($result) > 0) $result.= ",";
+                if (strlen($result) > 0) $result .= ",";
                 $result.= "'$font'";
             }
         }

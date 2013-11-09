@@ -44,9 +44,9 @@ class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
 	public function getModule() {
 		$out = '';
 		try{
-    		if (is_array ( $this->_data ['modules'] )) {
-    			foreach ( $this->_data ['modules'] as $module ) {
-    				$out .= $this->helper ( 'joomla/module' )->getJoomlaModule ( $module ['type'], $module ['title'], $module ['id'], $module['style'], $module['debug'] );
+    		if (is_array($this->_data['modules'])) {
+    			foreach ($this->_data ['modules'] as $module ) {
+    				$out .= $this->helper('joomla/module')->getJoomlaModule($module['type'], $module['title'], $module['id'], $module['style'], $module['debug']);
     			}
     		}
 		}catch (Mage_Core_Exception $e){
@@ -55,11 +55,11 @@ class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
 		}
 		
 		if ($this->getPrepareLayoutMenu() == '1' && strlen($out) > 0) {
-			if (strpos ( $out, '<ul' ) == 0) {
-				$pos = strpos ( $out, '>' );
+			if (strpos($out, '<ul') == 0) {
+				$pos = strpos($out, '>');
 				 //remove first tag <ul> and </ul>
-				$out = substr ( $out, $pos + 1 );
-				$out = substr ( $out, 0, (strlen ( $out ) - 5) );
+				$out = substr($out, $pos + 1);
+				$out = substr($out, 0, (strlen($out) - 5));
 			}
 		}
 		return $out;

@@ -34,9 +34,9 @@ defined('_JEXEC') or die('Restricted access');
 
 $output = '';
 $form_id = 'login-form';
-if ( $params->get('layout') == 'horizontal' ) {
+if ($params->get('layout') == 'horizontal') {
     if ($type == 'logout') {
-         $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')) . '" method="post" name="login" id="' . $form_id . '" >';
+         $output .= '<form action="' . JRoute::_('index.php', true, $params->get('usesecure')) . '" method="post" name="login" id="' . $form_id . '" >';
     	
         if (!empty($avatar)) {
             $maxheight = $params->get('avatar_height', 80);
@@ -72,7 +72,7 @@ if ( $params->get('layout') == 'horizontal' ) {
             $output .= '<a href="' . $url_viewnewmessages . '">' . JText::_('VIEW_NEW_TOPICS') . '</a> ';
         }
 
-        $output .= '<input type="submit" name="Submit" class="button" value="' . JText::_('BUTTON_LOGOUT'). '" />';
+        $output .= '<input type="submit" name="Submit" class="button" value="' . JText::_('BUTTON_LOGOUT') . '" />';
         $output .= '<input type="hidden" name="silent" value="true" />';
         $output .= '<input type="hidden" name="return" value="' . $return . '" />';
 
@@ -86,13 +86,13 @@ if ( $params->get('layout') == 'horizontal' ) {
             JHTML::_('script', 'openid.js');
         }
 
-        $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="' . $form_id . '" >';
+        $output .= '<form action="' . JRoute::_('index.php', true, $params->get('usesecure')) . '" method="post" name="login" id="' . $form_id . '" >';
         $output .= $params->get('pretext');
-        if ($params->get('show_labels',1)) {
+        if ($params->get('show_labels', 1)) {
         	$output .= '<label for="modlgn_username">' . JText::_('USERNAME') . '</label> ';
         }
         $output .= '<input placeholder="' . JText::_('USERNAME') . '" id="modlgn_username" type="text" name="username" class="inputbox" alt="username" size="18" /> ';
-        if ($params->get('show_labels',1)) {
+        if ($params->get('show_labels', 1)) {
         	$output .= '<label for="modlgn_passwd">' . JText::_('PASSWORD') . '</label> ';
         }
 	    $output .= '<input placeholder="' . JText::_('PASSWORD') . '" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /> ';
@@ -183,16 +183,16 @@ if ( $params->get('layout') == 'horizontal' ) {
         if (JPluginHelper::isEnabled('authentication', 'openid')) {
             JHTML::_('script', 'openid.js');
         }
-        $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="' . $form_id . '" >';
+        $output .= '<form action="' . JRoute::_('index.php', true, $params->get('usesecure')) . '" method="post" name="login" id="' . $form_id . '" >';
         $output .= $params->get('pretext');
         $output .= '<p id="form-login-username">';
-        if ($params->get('show_labels',1)) {
+        if ($params->get('show_labels', 1)) {
         	$output .= '<label for="modlgn_username">' . JText::_('USERNAME') . '</label><br />';
         }
         $output .= '<input placeholder="' . JText::_('USERNAME') . '" id="modlgn_username" type="text" name="username" class="inputbox" alt="username" size="18" />';
         $output .= '</p><p id="form-login-password">';
         
-        if ($params->get('show_labels',1)) {
+        if ($params->get('show_labels', 1)) {
         	$output .= '<label for="modlgn_passwd">' . JText::_('PASSWORD') . '</label><br />';
         }
 	    $output .= '<input placeholder="' . JText::_('PASSWORD') . '" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /></p> ';

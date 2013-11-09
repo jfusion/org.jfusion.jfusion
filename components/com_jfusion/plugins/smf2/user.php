@@ -26,7 +26,7 @@ class JFusionUser_smf2 extends JFusionUser {
     {
 	    try {
 		    //get the identifier
-		    list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo, 'a.member_name', 'a.email_address');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.member_name', 'a.email_address');
 
 		    // initialise some objects
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -115,7 +115,7 @@ class JFusionUser_smf2 extends JFusionUser {
     {
 	    try {
 	        //setup status array to hold debug info and errors
-	        $status = array('error' => array(),'debug' => array());
+	        $status = array('error' => array(), 'debug' => array());
 	        $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
@@ -160,7 +160,7 @@ class JFusionUser_smf2 extends JFusionUser {
 				    $db->setQuery($query);
 				    $db->execute();
 
-				    $status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->username;
+				    $status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
 			    }
 		    }
 	    } catch (Exception $e) {
@@ -177,7 +177,7 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function destroySession($userinfo, $options)
     {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 	    try {
 	        $status['debug'][] = $this->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 
@@ -203,7 +203,7 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function createSession($userinfo, $options)
     {
-        $status = array('error' => array(),'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
@@ -248,7 +248,7 @@ class JFusionUser_smf2 extends JFusionUser {
 	        $db->setQuery($query);
 
 		    $db->execute();
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
 	    }
@@ -287,7 +287,7 @@ class JFusionUser_smf2 extends JFusionUser {
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
 	    }
@@ -329,7 +329,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			        $query->set('id_post_group = ' . $db->quote($usergroup->postgroup));
 		        }
 		        if ($this->params->get('compare_membergroups', true) ) {
-			        $query->set('additional_groups = ' . $db->quote(join(',',$usergroup->groups)));
+			        $query->set('additional_groups = ' . $db->quote(join(',', $usergroup->groups)));
 		        }
 		        $query->where('id_member = ' . (int)$existinguser->userid);
 
@@ -424,7 +424,7 @@ class JFusionUser_smf2 extends JFusionUser {
 		    $ban_item->id_ban_group = $ban->id_ban_group;
 		    $ban_item->id_member = $existinguser->userid;
 		    $db->insertObject('#__ban_items', $ban_item, 'id_ban' );
-		    $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
 	    }
@@ -456,7 +456,7 @@ class JFusionUser_smf2 extends JFusionUser {
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
 	    }
@@ -483,7 +483,7 @@ class JFusionUser_smf2 extends JFusionUser {
 	        $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
 	    }
@@ -510,7 +510,7 @@ class JFusionUser_smf2 extends JFusionUser {
 	        $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
 	    }

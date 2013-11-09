@@ -156,7 +156,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 	{
 		$value = $this->helper->getMapRaw('user');
 
-		return $this->map('map', $value, $node, $control_name,'user');
+		return $this->map('map', $value, $node, $control_name, 'user');
 	}
 
 	/**
@@ -182,7 +182,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 	function mapgroup($name, $value, $node, $control_name)
 	{
 		$value = $this->helper->getMapRaw('group');
-		return $this->map('map', $value, $node, $control_name,'group');
+		return $this->map('map', $value, $node, $control_name, 'group');
 	}
 
 	/**
@@ -193,7 +193,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 	 * @param $type
 	 * @return string
 	 */
-	function map($name, $value, $node, $control_name,$type)
+	function map($name, $value, $node, $control_name, $type)
 	{
 		$output = '';
 		try {
@@ -222,7 +222,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 
 				$firstTable = null;
 				foreach ($tabelslist as $val) {
-					if( strpos( $val, $database_prefix ) === 0 || $database_prefix == '' ) {
+					if(strpos($val, $database_prefix) === 0 || $database_prefix == '') {
 						$table = new stdClass;
 
 						$table->name = $table->id = substr($val, strlen($database_prefix));
@@ -238,7 +238,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 				}
 
 				$mapuser = array();
-				if ( $value['table'] ) {
+				if ($value['table']) {
 					$mapuser = $fl[$value['table']];
 				} else {
 					if ($firstTable) $mapuser = $fl[$firstTable];
@@ -296,9 +296,9 @@ class JFusionAdmin_universal extends JFusionAdmin
 						$onchange = 'onchange="javascript: JFusion.Plugin.changeValue(this,\'' . $val->Field . '\',\'' . $type . '\')"';
 						$output .= '<div id="' . $type . $val->Field . '">';
 
-						if ( isset( $mapuserfield[0]) ) {
-							if ( isset( $fieldtypes[$mapuserfield[0]]) ) {
-								if ( isset( $fieldtypes[$mapuserfield[0]]->types) ) {
+						if (isset($mapuserfield[0])) {
+							if (isset($fieldtypes[$mapuserfield[0]])) {
+								if (isset($fieldtypes[$mapuserfield[0]]->types)) {
 									$output .= JHTML::_('select.genericlist', $fieldtypes[$mapuserfield[0]]->types, $control_name . '[' . $name . '][' . $type . '][type][' . $val->Field . ']', $onchange, 'id', 'name', $fieldstype);
 								}
 							}
@@ -538,8 +538,8 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 
 		$redirect_code .= '
 {
-	$list = explode  (  \'/\' ,  $universal_url ,4);
-	$jfile = ltrim (str_replace  (  $list[3] ,  \'\'  ,  $_SERVER[\'PHP_SELF\'] ), \'/\');
+	$list = explode(\'/\', $universal_url, 4);
+	$jfile = ltrim (str_replace($list[3], \'\', $_SERVER[\'PHP_SELF\'] ), \'/\');
 	$jfusion_url = $joomla_url . \'index.php?option=com_jfusion&Itemid=\' . $joomla_itemid . \'&jfile=\'.$jfile. \'&\' . $_SERVER[\'QUERY_STRING\'];
 	header(\'Location: \' . $jfusion_url);
 	exit;
@@ -591,8 +591,8 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 	 */
 	function isMultiGroup()
 	{
-		$userid = $this->helper->getFieldType('USERID','group');
-		if ( $userid ) {
+		$userid = $this->helper->getFieldType('USERID', 'group');
+		if ($userid) {
 			return true;
 		} else {
 			return false;
@@ -628,8 +628,8 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 			}
 			$grouptable = $this->helper->getTable('group');
 			if ($grouptable) {
-				$group_userid = $this->helper->getFieldType('USERID','group');
-				$group_group = $this->helper->getFieldType('GROUP','group');
+				$group_userid = $this->helper->getFieldType('USERID', 'group');
+				$group_group = $this->helper->getFieldType('GROUP', 'group');
 
 				if ( !$group_userid ) {
 					JFusionFunction::raiseWarning(JText::_('NO_GROUP_USERID_DEFINED'), $this->getJname());
