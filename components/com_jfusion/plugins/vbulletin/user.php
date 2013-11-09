@@ -158,7 +158,6 @@ class JFusionUser_vbulletin extends JFusionUser
 
 		if ($response['success']) {
 			$status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->userid;
-
 		}
 		foreach ($response['errors'] as $error) {
 			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $error;
@@ -307,7 +306,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				if ($cookie_expires == 0) {
 					$expires_time = time() + (60 * 60 * 24 * 365);
 				} else {
-					$expires_time = time() + ( 60 * $cookie_expires );
+					$expires_time = time() + (60 * $cookie_expires);
 				}
 				$passwordhash = md5($userinfo->password . $cookie_salt);
 
@@ -901,7 +900,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				jimport('joomla.utilities.utility');
 				$hash = JApplication::getHash('JLOGIN_REMEMBER');
 
-				$joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '','raw');
+				$joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '', 'raw');
 			} else {
 				$joomla_persistant_cookie = '';
 			}
