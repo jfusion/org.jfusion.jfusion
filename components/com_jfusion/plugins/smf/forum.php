@@ -410,7 +410,7 @@ class JFusionForum_smf extends JFusionForum
 					    $url = $this->params->get('source_url') . 'index.php?action=dlattach;attach=' . $attachment->ID_ATTACH . ';type=avatar';
 					    // If user didn't, check to see if the avatar specified in the first query is a url. If so use it.
 
-				    } else if (preg_match("/http(s?):\/\//", $result->avatar)) {
+				    } else if (preg_match('/http(s?):\/\//', $result->avatar)) {
 					    $url = $result->avatar;
 				    } else if ($result->avatar) {
 					    // If the avatar specified in the first query is not a url but is a file name. Make it one

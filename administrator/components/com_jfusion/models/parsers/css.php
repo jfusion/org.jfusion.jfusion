@@ -303,7 +303,7 @@ class cssparser {
      */
     function modifyContent(&$content) {
     	//Remove comments
-		$content = preg_replace("#\/\*(?!\*\/)(.*?)\*\/#si", '', $content);
+		$content = preg_replace('#\/\*(?!\*\/)(.*?)\*\/#si', '', $content);
 		$content = str_replace('<!--', '', $content);
 		$content = str_replace('-->', '', $content);
 		$content = trim($content);
@@ -351,7 +351,7 @@ class cssparser {
 		$this->replace[] = 'url("' . $sorceurl . '$1")';
 
 		$this->regex[] = '#url\(["\'](?!\w{0,10}://)([^"\']*)["\']\)#Sis';
-		$this->replace[] = 'url("' . $sorceurl . implode("/", $sorcepathoriginal) . '/$1")';
+		$this->replace[] = 'url("' . $sorceurl . implode('/', $sorcepathoriginal) . '/$1")';
 
 		$regexall = $this->regex;
 		$replaceall = $this->replace;

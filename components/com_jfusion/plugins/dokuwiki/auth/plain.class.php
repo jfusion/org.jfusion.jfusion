@@ -266,8 +266,8 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 				$line = trim($line);
 				if(empty($line)) continue;
 
-				$row    = explode(":", $line, 5);
-				$groups = array_values(array_filter(explode(",", $row[4])));
+				$row    = explode(':', $line, 5);
+				$groups = array_values(array_filter(explode(',', $row[4])));
 
 				$this->users[$row[0]]['pass'] = $row[1];
 				$this->users[$row[0]]['name'] = urldecode($row[2]);
@@ -557,16 +557,16 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		function mkdir_ftp($dir) {
 			$conf = $this->helper->getConf();
 			if (!function_exists('ftp_connect')) {
-				$this->debug("FTP support not found - safemode workaround not usable",-1);
+				$this->debug('FTP support not found - safemode workaround not usable',-1);
 				return false;
 			}
 			$conn = @ftp_connect($conf['ftp']['host'], $conf['ftp']['port'], 10);
 			if (!$conn) {
-				$this->debug("FTP connection failed",-1);
+				$this->debug('FTP connection failed',-1);
 				return false;
 			}
 			if (!@ftp_login($conn, $conf['ftp']['user'], $conf['ftp']['pass'])) {
-				$this->debug("FTP login failed",-1);
+				$this->debug('FTP login failed',-1);
 				return false;
 			}
 			//create directory

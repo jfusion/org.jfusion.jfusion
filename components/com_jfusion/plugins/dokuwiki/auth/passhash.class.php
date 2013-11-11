@@ -255,7 +255,7 @@ if (!class_exists('Jfusion_PassHash')) {
 		 */
 		public function hash_ssha($clear, $salt = null) {
 			$this->init_salt($salt, 4);
-			return '{SSHA}' . base64_encode(pack("H*", sha1($clear.$salt)) . $salt);
+			return '{SSHA}' . base64_encode(pack('H*', sha1($clear . $salt)) . $salt);
 		}
 
 		/**

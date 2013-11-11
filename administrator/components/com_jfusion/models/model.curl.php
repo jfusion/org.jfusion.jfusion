@@ -64,34 +64,34 @@ class JFusionCurlHtmlFormParser
 	 */
 	function parseForms()
 	{
-      preg_match_all("/<form.*>.+<\/form>/isU", $this->html_data, $forms);
+      preg_match_all('/<form.*>.+<\/form>/isU', $this->html_data, $forms);
 			foreach ($forms[0] as $form) {
 				$this->button_counter = 0;
 
 				//form details
-				preg_match("/<form.*?name=[\"']?([\w\s-]*)[\"']?[\s>]/i", $form, $form_name);
+				preg_match('/<form.*?name=["\']?([\w\s-]*)["\']?[\s>]/i', $form, $form_name);
 				if ($form_name) {
-					$this->_return[$this->_counter]['form_data']['name'] = preg_replace("/[\"'<>]/", "", $form_name[1]);
+					$this->_return[$this->_counter]['form_data']['name'] = preg_replace('/["\'<>]/', '', $form_name[1]);
 				}
-				preg_match("/<form.*?action=(\"([^\"]*)\"|'([^']*)'|[^>\s]*)([^>]*)?>/i", $form, $action);
+				preg_match('/<form.*?action=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/i', $form, $action);
 				if ($action) {
-					$this->_return[$this->_counter]['form_data']['action'] = preg_replace("/[\"'<>]/", "", $action[1]);
+					$this->_return[$this->_counter]['form_data']['action'] = preg_replace('/["\'<>]/', '', $action[1]);
 				}
-				preg_match("/<form.*?method=[\"']?([\w\s]*)[\"']?[\s>]/i", $form, $method);
+				preg_match('/<form.*?method=["\']?([\w\s]*)["\']?[\s>]/i', $form, $method);
 				if ($method) {
-					$this->_return[$this->_counter]['form_data']['method'] = preg_replace("/[\"'<>]/", "", $method[1]);
+					$this->_return[$this->_counter]['form_data']['method'] = preg_replace('/["\'<>]/', '', $method[1]);
 				}
-				preg_match("/<form.*?enctype=(\"([^\"]*)\"|'([^']*)'|[^>\s]*)([^>]*)?>/i", $form, $enctype);
+				preg_match('/<form.*?enctype=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/i', $form, $enctype);
 				if ($enctype) {
-					$this->_return[$this->_counter]['form_data']['enctype'] = preg_replace("/[\"'<>]/", "", $enctype[1]);
+					$this->_return[$this->_counter]['form_data']['enctype'] = preg_replace('/["\'<>]/', '', $enctype[1]);
 				}
-				preg_match("/<form.*?id=[\"']?([\w\s-]*)[\"']?[\s>]/i", $form, $id);
+				preg_match('/<form.*?id=["\']?([\w\s-]*)["\']?[\s>]/i', $form, $id);
 				if ($id) {
-					$this->_return[$this->_counter]['form_data']['id'] = preg_replace("/[\"'<>]/", "", $id[1]);
+					$this->_return[$this->_counter]['form_data']['id'] = preg_replace('/["\'<>]/', '', $id[1]);
 				}
 
 				// form elements: input type = hidden
-				if (preg_match_all("/<input[^<>]+type=[\"']hidden[\"'][^<>]*>/iU", $form, $hiddens)) {
+				if (preg_match_all('/<input[^<>]+type=["\']hidden["\'][^<>]*>/iU', $form, $hiddens)) {
 					foreach ($hiddens[0] as $hidden) {
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($hidden)] = array(
 							'type'  =>  'hidden',
@@ -101,7 +101,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = text
-				if (preg_match_all("/<input[^<>]+type=[\"']text[\"'][^<>]*>/iU", $form, $texts)) {
+				if (preg_match_all('/<input[^<>]+type=["\']text["\'][^<>]*>/iU', $form, $texts)) {
 					foreach ($texts[0] as $text) {
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($text)] = array(
 							'type'  => 'text',
@@ -113,7 +113,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = password
-				if (preg_match_all("/<input[^<>]+type=[\"']password[\"'][^<>]*>/iU", $form, $passwords)) {
+				if (preg_match_all('/<input[^<>]+type=["\']password["\'][^<>]*>/iU', $form, $passwords)) {
 					foreach ($passwords[0] as $password) {
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($password)] = array(
 							'type'  =>  'password',
@@ -123,9 +123,9 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: textarea
-				if (preg_match_all("/<textarea.*>.*<\/textarea>/isU", $form, $textareas)) {
+				if (preg_match_all('/<textarea.*>.*<\/textarea>/isU', $form, $textareas)) {
 					foreach ($textareas[0] as $textarea) {
-						preg_match("/<textarea.*>(.*)<\/textarea>/isU", $textarea, $textarea_value);
+						preg_match('/<textarea.*>(.*)<\/textarea>/isU', $textarea, $textarea_value);
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($textarea)] = array(
 							'type'  =>  'textarea',
 							'value'  =>  $textarea_value[1]
@@ -134,9 +134,9 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = checkbox
-				if (preg_match_all("/<input[^<>]+type=[\"']checkbox[\"'][^<>]*>/iU", $form, $checkboxes)) {
+				if (preg_match_all('/<input[^<>]+type=["\']checkbox["\'][^<>]*>/iU', $form, $checkboxes)) {
 					foreach ($checkboxes[0] as $checkbox) {
-						if (preg_match("/checked/i", $checkbox)) {
+						if (preg_match('/checked/i', $checkbox)) {
 							$this->_return[$this->_counter]['form_elements'][$this->_getName($checkbox)] = array(
 								'type'  =>  'checkbox',
 								'value'  =>  'on'
@@ -151,9 +151,9 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = radio
-				if (preg_match_all("/<input[^<>]+type=[\"']radio[\"'][^<>]*>/iU", $form, $radios)) {
+				if (preg_match_all('/<input[^<>]+type=["\']radio["\'][^<>]*>/iU', $form, $radios)) {
 					foreach ($radios[0] as $radio) {
-						if (preg_match("/checked/i", $radio)) {
+						if (preg_match('/checked/i', $radio)) {
 							$this->_return[$this->_counter]['form_elements'][$this->_getName($radio)] = array(
 								'type'  =>  'radio',
 								'value'  =>  $this->_getValue($radio)
@@ -163,7 +163,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = submit
-				if (preg_match_all("/<input[^<>]+type=[\"']submit[\"'][^<>]*>/iU", $form, $submits)) {
+				if (preg_match_all('/<input[^<>]+type=["\']submit["\'][^<>]*>/iU', $form, $submits)) {
 					foreach ($submits[0] as $submit) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
 							'type'  => 'submit',
@@ -175,7 +175,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = button
-				if (preg_match_all("/<input[^<>]+type=[\"']button[\"'][^<>]*>/iU", $form, $buttons)) {
+				if (preg_match_all('/<input[^<>]+type=["\']button["\'][^<>]*>/iU', $form, $buttons)) {
 					foreach ($buttons[0] as $button) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
 							'type'  => 'button',
@@ -187,7 +187,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = reset
-				if (preg_match_all("/<input[^<>]+type=[\"']reset[\"'][^<>]*>/iU", $form, $resets)) {
+				if (preg_match_all('/<input[^<>]+type=["\']reset["\'][^<>]*>/iU', $form, $resets)) {
 					foreach ($resets[0] as $reset) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
 							'type'  => 'reset',
@@ -199,7 +199,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = image
-				if (preg_match_all("/<input[^<>]+type=[\"']image[\"'][^<>]*>/iU", $form, $images)) {
+				if (preg_match_all('/<input[^<>]+type=["\']image["\'][^<>]*>/iU', $form, $images)) {
 					foreach ($images[0] as $image) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
 							'type'  => 'image',
@@ -213,27 +213,27 @@ class JFusionCurlHtmlFormParser
 				// input type=select entries
 				// Here I have to go on step around to grep at first all select names and then
 				// the content. Seems not to work in an other way
-				if (preg_match_all("/<select.*>.+<\/select>/isU", $form, $selects)) {
+				if (preg_match_all('/<select.*>.+<\/select>/isU', $form, $selects)) {
 					foreach ($selects[0] as $select) {
-						if (preg_match_all("/<option.*>.+<\/option>/isU", $select, $all_options)) {
+						if (preg_match_all('/<option.*>.+<\/option>/isU', $select, $all_options)) {
 							$option_value = '';
 							foreach ($all_options[0] as $option) {
-								if (preg_match("/selected/i", $option)) {
-									if (preg_match("/value=[\"'](.*)[\"']\s/iU", $option, $option_value)) {
+								if (preg_match('/selected/i', $option)) {
+									if (preg_match('/value=["\'](.*)["\']\s/iU', $option, $option_value)) {
 										$option_value = $option_value[1];
 										$found_selected = 1;
 									} else {
-										preg_match("/<option.*>(.*)<\/option>/isU", $option, $option_value);
+										preg_match('/<option.*>(.*)<\/option>/isU', $option, $option_value);
 										$option_value = $option_value[1];
 										$found_selected = 1;
 									}
 								}
 							}
 							if (!isset($found_selected)) {
-								if (preg_match("/value=[\"'](.*)[\"']/iU", $all_options[0][0], $option_value)) {
+								if (preg_match('/value=["\'](.*)["\']/iU', $all_options[0][0], $option_value)) {
 									$option_value = $option_value[1];
 								} else {
-									preg_match("/<option>(.*)<\/option>/iU", $all_options[0][0], $option_value);
+									preg_match('/<option>(.*)<\/option>/iU', $all_options[0][0], $option_value);
 									$option_value = $option_value[1];
 								}
 							} else {
@@ -248,9 +248,9 @@ class JFusionCurlHtmlFormParser
 				}
 
 				# form elements: input type = --not defined--
-				if ( preg_match_all("/<input[^<>]+name=[\"'](.*)[\"'][^<>]*>/iU", $form, $inputs)) {
+				if ( preg_match_all('/<input[^<>]+name=["\'](.*)["\'][^<>]*>/iU', $form, $inputs)) {
 					foreach ($inputs[0] as $input) {
-						if ( !preg_match("/type=(\"([^\"]*)\"|'([^']*)'|[^>\s]*)([^>]*)?>/is", $input) ) {
+						if ( !preg_match('/type=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/is', $input) ) {
 							if ( !isset($this->_return[$this->_counter]['form_elements'][$this->_getName($input)]) ) {
 								$this->_return[$this->_counter]['form_elements'][$this->_getName($input)] =
 									array(
@@ -281,10 +281,10 @@ class JFusionCurlHtmlFormParser
 	 */
 	function _getName($string)
 	{
-		if (preg_match("/name=(\"([^\"]*)\"|'([^']*)'|[^>\s]*)([^>]*)?>/is", $string, $match)) {
-			//preg_match("/name=[\"']?([\w\s]*)[\"']?[\s>]/i", $string, $match)) { -- did not work as expected
+		if (preg_match('/name=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/is', $string, $match)) {
+			//preg_match('/name=["\']?([\w\s]*)["\']?[\s>]/i', $string, $match)) { -- did not work as expected
 			$val_match = trim($match[1]);
-			$val_match = trim($val_match, "\"\'");
+			$val_match = trim($val_match, '"\'');
 			unset($string);
 			return trim($val_match, '"');
 		}
@@ -300,9 +300,9 @@ class JFusionCurlHtmlFormParser
 	 */
 	function _getValue($string)
 	{
-		if (preg_match("/value=(\"([^\"]*)\"|'([^']*)'|[^>\s]*)([^>]*)?>/is", $string, $match)) {
+		if (preg_match('/value=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/is', $string, $match)) {
 			$val_match = trim($match[1]);
-			$val_match = trim($val_match, "\"\'");
+			$val_match = trim($val_match, '"\'');
 			unset($string);
 			return $val_match;
 		}
@@ -318,10 +318,10 @@ class JFusionCurlHtmlFormParser
 	 */
 	function _getId($string)
 	{
-		if (preg_match("/id=(\"([^\"]*)\"|'([^']*)'|[^>\s]*)([^>]*)?>/is", $string, $match)) {
-			//preg_match("/name=[\"']?([\w\s]*)[\"']?[\s>]/i", $string, $match)) { -- did not work as expected
+		if (preg_match('/id=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/is', $string, $match)) {
+			//preg_match('/name=["\']?([\w\s]*)["\']?[\s>]/i', $string, $match)) { -- did not work as expected
 			$val_match = trim($match[1]);
-			$val_match = trim($val_match, "\"\'");
+			$val_match = trim($val_match, '"\'');
 			unset($string);
 			return $val_match;
 		}
@@ -337,9 +337,9 @@ class JFusionCurlHtmlFormParser
 	 */
 	function _getClass($string)
 	{
-		if (preg_match("/class=(\"([^\"]*)\"|'([^']*)'|[^>\s]*)([^>]*)?>/is", $string, $match)) {
+		if (preg_match('/class=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/is', $string, $match)) {
 			$val_match = trim($match[1]);
-			$val_match = trim($val_match, "\"\'");
+			$val_match = trim($val_match, '"\'');
 			unset($string);
 			return $val_match;
 		}
@@ -690,7 +690,7 @@ class JFusionCurl
 			// Versions of PHP prior to 5.2 do not support HttpOnly cookies
 			// IE is buggy when specifying a blank domain so set the cookie manually
 			// solve the empty cookiedomain IE problem by specifying a domain in the plugins parameters. <------
-			if (version_compare(phpversion(), "5.2.0", ">=")) {
+			if (version_compare(phpversion(), '5.2.0', '>=')) {
 				setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 			} else {
 				setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure);
@@ -1129,7 +1129,7 @@ class JFusionCurl
 
 						$rel = (int)($this->options['relpath']);
 						//      if (substr($form_action, 0, strlen($ssl_string))== $ssl_string) $hashttp = 2; else $hashttp = 0;
-						if (substr($form_action, 0, strlen('http'))== 'http') {
+						if (substr($form_action, 0, strlen('http')) == 'http') {
 							$hashttp = 2;
 						} else {
 							$hashttp = 0;
@@ -1168,7 +1168,7 @@ class JFusionCurl
 								if (substr($form_action, 0, 1) != '/') {
 									$form_action = '/' . $form_action;
 								}
-								$this->options['post_url']=rtrim($this->options['post_url'], '/');
+								$this->options['post_url'] = rtrim($this->options['post_url'], '/');
 								$form_action = $this->options['post_url'] . $form_action;
 								break;
 							case 2:
@@ -1212,7 +1212,7 @@ class JFusionCurl
 										break;
 									}
 								}
-								if (strpos(strtolower($elements_keys[$i]), 'pass')!==false) {
+								if (strpos(strtolower($elements_keys[$i]), 'pass') !== false) {
 									$input_password_name = $elements_keys[$i];
 								}
 							}
@@ -1228,7 +1228,7 @@ class JFusionCurl
 						$strParameters = '';
 						if ($this->options['hidden']) {
 							for ($i = 0; $i <= $elements_count-1; $i++) {
-								if (($elements_values[$i] ['value'] != '')&& ($elements_values[$i]['type'] == 'hidden')) {
+								if (($elements_values[$i] ['value'] != '') && ($elements_values[$i]['type'] == 'hidden')) {
 									$strParameters .= '&' . $elements_keys[$i] . '=' . urlencode($elements_values[$i]['value']);
 								}
 							}
@@ -1272,7 +1272,7 @@ class JFusionCurl
 							$ip = $_SERVER['REMOTE_ADDR'];
 							curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: ' . $ip, 'X_FORWARDED_FOR: ' . $ip));
 							curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-							curl_setopt($this->ch, CURLOPT_REFERER, "");
+							curl_setopt($this->ch, CURLOPT_REFERER, '');
 							curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 							curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
 							curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
@@ -1294,7 +1294,7 @@ class JFusionCurl
 
 						$remotedata = curl_exec($this->ch);
 						if ($this->options['debug']) {
-							$this->status['cURL']['data'][]= $remotedata;
+							$this->status['cURL']['data'][] = $remotedata;
 							$this->status['debug'][] = 'CURL_INFO: ' . print_r(curl_getinfo($this->ch), true);
 						}
 						if (curl_error($this->ch)) {
@@ -1340,7 +1340,7 @@ class JFusionCurl
 	{
 		// check parameters and set defaults
 		if (!isset($this->options['post_url'])) {
-			$this->status['error'][]= 'Fatal programming error : no post_url!';
+			$this->status['error'][] = 'Fatal programming error : no post_url!';
 		} else {
 			// prevent user error by not supplying trailing backslash.
 			// make sure that when parameters are sent we do not add a backslash
@@ -1353,7 +1353,7 @@ class JFusionCurl
 			$ip = $_SERVER['REMOTE_ADDR'];
 			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: ' . $ip, 'X_FORWARDED_FOR: ' . $ip));
 			curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-			curl_setopt($this->ch, CURLOPT_REFERER, "");
+			curl_setopt($this->ch, CURLOPT_REFERER, '');
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
 			curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
@@ -1429,13 +1429,13 @@ class JFusionCurl
 
 		// check parameters and set defaults
 		if (!isset($this->options['post_url'])) {
-			$status['error'][]= 'Fatal programming error : no post_url!';
+			$status['error'][] = 'Fatal programming error : no post_url!';
 		} else {
 			$this->ch = curl_init();
 			$ip = $_SERVER['REMOTE_ADDR'];
 			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: ' . $ip, 'X_FORWARDED_FOR: ' . $ip));
 			curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-			curl_setopt($this->ch, CURLOPT_REFERER, "");
+			curl_setopt($this->ch, CURLOPT_REFERER, '');
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
 			curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);

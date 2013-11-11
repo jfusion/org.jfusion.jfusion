@@ -55,7 +55,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 * @return  bool
 		 */
 		public function checkPass($user, $pass) {
-			$this->debug("no valid authorisation system in use", -1);
+			$this->debug('no valid authorisation system in use', -1);
 			return false;
 		}
 
@@ -86,7 +86,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 * @return  array containing user data or false
 		 */
 		public function getUserData($user) {
-			$this->debug("no valid authorisation system in use", -1);
+			$this->debug('no valid authorisation system in use', -1);
 			return false;
 		}
 
@@ -111,7 +111,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 * @return bool|null
 		 */
 		public function createUser($user, $pass, $name, $mail, $grps) {
-			$this->debug("authorisation method does not allow creation of new users", -1);
+			$this->debug('authorisation method does not allow creation of new users', -1);
 			return null;
 		}
 
@@ -126,7 +126,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 * @return  bool
 		 */
 		public function modifyUser($user, $changes) {
-			$this->debug("authorisation method does not allow modifying of user data", -1);
+			$this->debug('authorisation method does not allow modifying of user data', -1);
 			return false;
 		}
 
@@ -140,7 +140,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 * @return  int    number of users deleted
 		 */
 		public function deleteUsers($users) {
-			$this->debug("authorisation method does not allow deleting of users", -1);
+			$this->debug('authorisation method does not allow deleting of users', -1);
 			return false;
 		}
 
@@ -155,7 +155,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 * @return int
 		 */
 		public function getUserCount($filter = array()) {
-			$this->debug("authorisation method does not provide user counts", -1);
+			$this->debug('authorisation method does not provide user counts', -1);
 			return 0;
 		}
 
@@ -171,7 +171,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 * @return  array list of userinfo (refer getUserData for internal userinfo details)
 		 */
 		public function retrieveUsers($start = 0, $limit = -1, $filter = null) {
-			$this->debug("authorisation method does not support mass retrieval of user data", -1);
+			$this->debug('authorisation method does not support mass retrieval of user data', -1);
 			return array();
 		}
 
@@ -185,7 +185,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 * @return  bool
 		 */
 		public function addGroup($group) {
-			$this->debug("authorisation method does not support independent group creation", -1);
+			$this->debug('authorisation method does not support independent group creationvs', -1);
 			return false;
 		}
 
@@ -200,7 +200,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 * @return  array
 		 */
 		public function retrieveGroups($start = 0, $limit = 0) {
-			$this->debug("authorisation method does not support group list retrieval", -1);
+			$this->debug('authorisation method does not support group list retrieval', -1);
 			return array();
 		}
 

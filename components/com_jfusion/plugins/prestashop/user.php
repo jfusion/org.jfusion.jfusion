@@ -253,7 +253,7 @@ class JFusionUser_prestashop extends JFusionUser
 				    $ps_customer->secure_key = md5(uniqid(rand(), true));
 				    $ps_customer->email = $userinfo->email;
 				    $ps_customer->passwd = $password;
-				    $ps_customer->last_passwd_gen = date('Y-m-d h:m:s', strtotime("-6 hours"));
+				    $ps_customer->last_passwd_gen = date('Y-m-d h:m:s', strtotime('-6 hours'));
 				    $ps_customer->birthday = date('Y-m-d', mktime(0, 0, 0, '01', '01', '2000'));
 				    $ps_customer->lastname = $lastname;
 				    $ps_customer->newsletter = 0;
@@ -291,7 +291,6 @@ class JFusionUser_prestashop extends JFusionUser
 				    $ps_address->date_upd = $now;
 				    $ps_address->active = 1;
 				    $ps_address->deleted = 0;
-
 
 				    $usergroups = $this->getCorrectUserGroups($userinfo);
 

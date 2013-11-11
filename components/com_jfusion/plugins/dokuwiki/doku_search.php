@@ -189,7 +189,7 @@ if ( !class_exists('DokuWikiSearch') ) {
             // strip namespace from query
             if (preg_match('/([^@]*)@(.*)/', $query, $match)) {
                 $query = $match[1];
-                $q['ns'] = explode('@', preg_replace("/ /", '', $match[2]));
+                $q['ns'] = explode('@', preg_replace('/ /', '', $match[2]));
             }
             // handle phrase searches
             while (preg_match('/"(.*?)"/', $query, $match)) {

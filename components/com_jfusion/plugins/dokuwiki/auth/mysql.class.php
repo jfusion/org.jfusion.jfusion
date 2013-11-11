@@ -46,7 +46,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		public function __construct($helper) {
 			parent::__construct($helper);
 			if(!function_exists('mysql_connect')) {
-				$this->debug("MySQL err: PHP MySQL extension not found.", -1, __LINE__, __FILE__);
+				$this->debug('MySQL err: PHP MySQL extension not found.', -1, __LINE__, __FILE__);
 				$this->success = false;
 				return;
 			}
@@ -122,7 +122,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 */
 		public function getUserData($user) {
 			if($this->_openDB()) {
-				$this->_lockTables("READ");
+				$this->_lockTables('READ');
 				$info = $this->_getUserInfo($user);
 				$this->_unlockTables();
 				$this->_closeDB();
@@ -157,7 +157,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 
 				// set defaultgroup if no groups were given
 
-				$this->_lockTables("WRITE");
+				$this->_lockTables('WRITE');
 				$pwd = $this->getConf('forwardClearPass') ? $pwd : $this->cryptPassword($pwd);
 				$rc  = $this->_addUser($user, $pwd, $name, $mail, $grps);
 				$this->_unlockTables();
@@ -201,7 +201,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 				return true; // nothing to change
 
 			if($this->_openDB()) {
-				$this->_lockTables("WRITE");
+				$this->_lockTables('WRITE');
 
 				if(($uid = $this->_getUserID($user))) {
 					$rc = $this->_updateUserInfo($changes, $uid);
@@ -243,7 +243,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 
 			if($this->_openDB()) {
 				if(is_array($users) && count($users)) {
-					$this->_lockTables("WRITE");
+					$this->_lockTables('WRITE');
 					foreach($users as $user) {
 						if($this->_delUser($user))
 							$count++;
@@ -271,9 +271,9 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 
 				if($this->dbver >= 4) {
 					$sql = substr($sql, 6); /* remove 'SELECT' or 'select' */
-					$sql = "SELECT SQL_CALC_FOUND_ROWS" . $sql . " LIMIT 1";
+					$sql = 'SELECT SQL_CALC_FOUND_ROWS' . $sql . ' LIMIT 1';
 					$this->_queryDB($sql);
-					$result = $this->_queryDB("SELECT FOUND_ROWS()");
+					$result = $this->_queryDB('SELECT FOUND_ROWS()');
 					$rc     = $result[0]['FOUND_ROWS()'];
 				} else if(($result = $this->_queryDB($sql)))
 					$rc = count($result);
@@ -297,7 +297,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 			$out = array();
 
 			if($this->_openDB()) {
-				$this->_lockTables("READ");
+				$this->_lockTables('READ');
 				$sql = $this->_createSQLFilter($this->getConf('getUsers'), $filter);
 				$sql .= ' ' . $this->getConf('SortOrder') . " LIMIT $first, $limit";
 				$result = $this->_queryDB($sql);
@@ -327,7 +327,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 			$rc = false;
 
 			if($this->_openDB()) {
-				$this->_lockTables("WRITE");
+				$this->_lockTables('WRITE');
 				$rc = $this->_addUserToGroup($user, $group);
 				$this->_unlockTables();
 				$this->_closeDB();
@@ -348,7 +348,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 			$rc = false;
 
 			if($this->_openDB()) {
-				$this->_lockTables("WRITE");
+				$this->_lockTables('WRITE');
 				$rc  = $this->_delUserFromGroup($user, $group);
 				$this->_unlockTables();
 				$this->_closeDB();
@@ -820,7 +820,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 */
 		protected function _unlockTables() {
 			if($this->dbcon) {
-				$this->_modifyDB("UNLOCK TABLES");
+				$this->_modifyDB('UNLOCK TABLES');
 				return true;
 			}
 			return false;
