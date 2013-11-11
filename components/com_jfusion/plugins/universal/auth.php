@@ -35,7 +35,7 @@ class JFusionAuth_universal extends JFusionAuth {
 
 		$user_auth = rtrim(trim($user_auth),';');
     	ob_start();
-		$testcrypt = eval("return $user_auth;");
+		$testcrypt = eval('return '. $user_auth . ';');
 		$error = ob_get_contents();
 		ob_end_clean();
 		if ($testcrypt===false && strlen($error)) {

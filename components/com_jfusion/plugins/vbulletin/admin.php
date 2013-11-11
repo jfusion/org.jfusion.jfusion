@@ -82,7 +82,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 
 			foreach ($lines as $line) {
 				if (strpos($line, '$config') === 0) {
-					$vars = explode("'", $line);
+					$vars = explode('\'', $line);
 					if (isset($vars[5])) {
 						$name1 = trim($vars[1], ' $=');
 						$name2 = trim($vars[3], ' $=');
@@ -131,7 +131,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 				$cookie_salt = '';
 				foreach ($lines as $line) {
 					if (strpos($line, 'COOKIE_SALT') !== false) {
-						$vars = explode("'", $line);
+						$vars = explode('\'', $line);
 						if (isset($vars[3])) {
 							$cookie_salt = $vars[3];
 						}

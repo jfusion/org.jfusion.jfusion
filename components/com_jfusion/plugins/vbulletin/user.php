@@ -937,9 +937,9 @@ class JFusionUser_vbulletin extends JFusionUser
 					if ((!empty($keepalive) || !empty($joomla_persistant_cookie))) {
 						if ($debug) {
 							JFusionFunction::raiseNotice('vbulletin guest', $this->getJname());
-							JFusionFunction::raiseNotice("cookie_sessionhash = $cookie_sessionhash", $this->getJname());
-							JFusionFunction::raiseNotice("session_userid = $session_userid", $this->getJname());
-							JFusionFunction::raiseNotice("vb_userid = $vb_userid", $this->getJname());
+							JFusionFunction::raiseNotice('cookie_sessionhash = '. $cookie_sessionhash, $this->getJname());
+							JFusionFunction::raiseNotice('session_userid = '. $session_userid, $this->getJname());
+							JFusionFunction::raiseNotice('vb_userid = ' . $vb_userid, $this->getJname());
 						}
 						//enable remember me as this is a keep alive function anyway
 						$options['remember'] = 1;

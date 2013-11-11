@@ -74,7 +74,7 @@ class JFusionAdmin_smf extends JFusionAdmin
             $config = array();
 	        foreach ($lines as $line) {
 		        if (strpos($line, '$') === 0) {
-			        $vars = explode("'", $line);
+			        $vars = explode('\'', $line);
 			        if (isset($vars[1]) && isset($vars[0])) {
 				        $name = trim($vars[0], ' $=');
 				        $value = trim($vars[1], ' $=');

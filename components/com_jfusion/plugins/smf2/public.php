@@ -448,7 +448,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
 	        //fix for URL redirects
         	$regex_body[] = '#(?<=")' . $data->integratedURL . '(index.php\?action=verificationcode;rand=.*?)(?=")#si';
-        	$replace_body[] = '';//\'"\' . $this->fixUrl("index.php?$2$3","' . $data->baseURL . '","' . $data->fullURL . '") . \'"\'';
+        	$replace_body[] = ''; //\'"\' . $this->fixUrl('index.php?$2$3',"' . $data->baseURL . '","' . $data->fullURL . '") . \'"\'';
         	$callback_body[] = 'fixRedirect';
 		}
 		$data->header = preg_replace($regex_header, $replace_header, $data->header);

@@ -121,7 +121,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
             $text = JFusionFunction::parseCode($text, 'html', $options);
         } elseif ($for == 'activity' || $for == 'search') {
-            $text = preg_replace("#\[(.*?):(.*?)]#si", "[$1]", $text);
+            $text = preg_replace('#\[(.*?):(.*?)]#si', '[$1]', $text);
             $text = html_entity_decode($text);
             if ($for == 'activity') {
                 if ($params->get('parse_text') == 'plaintext') {
@@ -373,7 +373,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $callback_function[] = '';               
             //fix for form actions
             $regex_body[] = '#action="(.*?)"(.*?)>#m';
-            $replace_body[] = ''; //$this->fixAction("$1","$2","' . $data->baseURL . '")';
+            $replace_body[] = ''; //$this->fixAction('$1', '$2', "' . $data->baseURL . '")';
             $callback_function[] = 'fixAction';   
             //convert relative popup links to full url links
             $regex_body[] = '#popup\(\'\.\/(.*?)\'#mS';

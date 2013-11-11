@@ -53,7 +53,7 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
 	        //parse the file line by line to get only the config variables
 	        foreach ($lines as $line) {
 		        if (strpos($line, '$') === 0) {
-			        $vars = explode("'", $line);
+			        $vars = explode('\'', $line);
 			        if(isset($vars[1]) && isset($vars[0])){
 				        $name = trim($vars[0], ' $=');
 				        $value = trim($vars[1], ' $=');
