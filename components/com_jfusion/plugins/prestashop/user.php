@@ -274,7 +274,6 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $ps_customer->ip_registration_newsletter = date('Y-m-d h:m:s');
 		    $ps_customer->optin = $user_variables['optin'];
 		    $ps_customer->firstname = $user_variables['firstname'];
-		    $ps_customer->dni = $user_variables['dni'];
 		    $ps_customer->active = 1;
 		    $ps_customer->deleted = 0;
 		    $ps_customer->date_add = date('Y-m-d h:m:s');
