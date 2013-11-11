@@ -69,7 +69,7 @@ class JFusionPublic_mybb extends JFusionPublic {
         // Get the path
         $source_path = $this->params->get('source_path');
         //get the filename
-        $jfile = JFactory::getApplication()->input->get('jfile' , 'index.php');
+        $jfile = JFactory::getApplication()->input->get('jfile', 'index.php');
         if (!$jfile) {
             $jfile = 'index.php';
         }

@@ -427,7 +427,7 @@ class JFusionUser_prestashop extends JFusionUser
 				    $group->id_group = $value;
 				    $db->insertObject('#__customer_group', $group);
 			    }
-			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
+			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
 		    }
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();

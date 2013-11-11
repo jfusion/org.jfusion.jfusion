@@ -334,7 +334,7 @@ class JFusionFrameless {
 			$html = str_get_html($data->body);
 
 			if (!empty($data->bodyremove)) {
-				$extract = explode(';' , $data->bodyremove);
+				$extract = explode(';', $data->bodyremove);
 				foreach ($extract as $value) {
 					$elements = $html->find(trim($value));
 					if ($elements) {
@@ -345,7 +345,7 @@ class JFusionFrameless {
 				}
 			}
 			if ( !empty($data->bodyextract) ) {
-				$extract = explode(';' , $data->bodyextract);
+				$extract = explode(';', $data->bodyextract);
 
 				foreach ($extract as $value) {
 					$elements = $html->find(trim($value));

@@ -156,7 +156,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
             $text = JFusionFunction::parseCode($text, 'html', $options);
 
             //remove the post id from any quote heads
-            $text = preg_replace('#<div class="bbcode_quote_head">(.*?);(.*?) (.*?):</div>#' , '<div class="bbcode_quote_head">$1 $3:</div>', $text);
+            $text = preg_replace('#<div class="bbcode_quote_head">(.*?);(.*?) (.*?):</div>#', '<div class="bbcode_quote_head">$1 $3:</div>', $text);
         } elseif ($for == 'activity' || $for == 'search') {
             static $vb_bbcodes_plain;
             $options = array();

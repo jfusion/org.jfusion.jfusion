@@ -330,7 +330,7 @@ class JFusionUser_gallery2 extends JFusionUser
                 if (!in_array($group, $usergroups, true)) {
                     $ret = GalleryCoreApi::removeUserFromGroup($existinguser->userid, (int)$group);
                     if ($ret) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
                         return;
                     }
                 }
@@ -339,12 +339,12 @@ class JFusionUser_gallery2 extends JFusionUser
                 if (!in_array($group, $existinguser->groups, true)) {
                     $ret = GalleryCoreApi::addUserToGroup($existinguser->userid, (int)($group));
                     if ($ret) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
                         return;
                     }
                 }
             }
-            $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
+            $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
         }
         GalleryEmbed::done();
     }

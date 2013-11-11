@@ -813,7 +813,7 @@ HTML;
 
 		$list = array();
 		foreach($boards as $value) {
-			$member_groups = explode(',' , $value->member_groups);
+			$member_groups = explode(',', $value->member_groups);
 			if ( in_array($group_id, $member_groups) || $group_id == 1) {
 				$list[] =  $value->id_board;
 			}
@@ -926,8 +926,8 @@ HTML;
 			$db->setQuery($query);
 			$proper = $db->loadResult();
 
-			$vulgar = explode(',' , $vulgar);
-			$proper = explode(',' , $proper);
+			$vulgar = explode(',', $vulgar);
+			$proper = explode(',', $proper);
 
 			foreach($results as $rkey => $result) {
 				foreach($vulgar as $key => $value) {

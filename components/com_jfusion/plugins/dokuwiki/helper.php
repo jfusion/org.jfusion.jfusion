@@ -141,7 +141,7 @@ class JFusionHelper_dokuwiki extends JFusionPlugin
             jimport('joomla.filesystem.file');
             $file_version = file_get_contents($source_path . 'VERSION');
             $matches = array();
-            if (preg_match('#([a-z]*)([0-9]*-[0-9]*-[0-9]*)([a-z]*)#is' , $file_version, $matches)) {
+            if (preg_match('#([a-z]*)([0-9]*-[0-9]*-[0-9]*)([a-z]*)#is', $file_version, $matches)) {
 	            list($fullversion, $rc, $version, $sub) = $matches;
 	            $dokuwiki_version['full'] = $fullversion;
 	            $dokuwiki_version['version'] = $version . $rc . $sub;

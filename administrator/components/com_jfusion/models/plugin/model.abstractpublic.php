@@ -91,7 +91,7 @@ class JFusionPublic extends JFusionPlugin
         $path = '';
 
         if(!empty($data->parse_abs_path)) {
-            $path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is' , '$3' , $data->integratedURL);
+            $path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $data->integratedURL);
             $path = preg_replace('#//+#', '/', '/' . $path . '/');
 
             $regex_body[]	= '#(action="|href="|src="|background="|url\(\'?)' . $path . '(.*?)("|\'?\))#mS';

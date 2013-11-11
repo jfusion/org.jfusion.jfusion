@@ -205,7 +205,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
         	$jFusion_Route = unserialize ($jFusion_Route);
         	foreach ($jFusion_Route as $value) {
         		if (stripos($value, 'action') === 0) {
-	        		list ($k, $v) = explode (',' , $value);
+	        		list ($k, $v) = explode(',', $value);
 	        		if ($k == 'action') {
 				        JFactory::getApplication()->input->set('action', $v);
 	        		}
@@ -311,7 +311,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             } else {
                 $this->callbackbypass = true;
             }
-            while( in_array( get_class($this) . '::callback' , $h) ) {
+            while( in_array( get_class($this) . '::callback', $h) ) {
                 $data->buffer .= ob_get_contents();
                 ob_end_clean();
                 $h = ob_list_handlers();
@@ -843,7 +843,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
 			$list = array();
 			foreach($boards as $value) {
-				$member_groups = explode(',' , $value->member_groups);
+				$member_groups = explode(',', $value->member_groups);
 				if (in_array($group_id, $member_groups) || $group_id == 1) {
 					$list[] =  $value->id_board;
 				}
@@ -907,8 +907,8 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
 			foreach($results as $rkey => $result) {
 				foreach($vulgar as $key => $value) {
-					$results[$rkey]->title = preg_replace('#\b' . preg_quote($value, '#') . '\b#is' , $proper[$key], $result->title);
-					$results[$rkey]->text = preg_replace('#\b' . preg_quote($value, '#') . '\b#is' , $proper[$key], $result->text);
+					$results[$rkey]->title = preg_replace('#\b' . preg_quote($value, '#') . '\b#is', $proper[$key], $result->title);
+					$results[$rkey]->text = preg_replace('#\b' . preg_quote($value, '#') . '\b#is', $proper[$key], $result->text);
 				}
 			}
 		} catch (Exception $e) {

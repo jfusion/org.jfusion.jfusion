@@ -366,7 +366,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 		}
 
 		if($check) {
-			$checks = explode('|' , $check);
+			$checks = explode('|', $check);
 
 			$valid = 0;
 			foreach($checks as $check) {

@@ -66,7 +66,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    foreach($grouplist as $group) {
 				    $groups[] = $group->ug_group;
 			    }
-			    $result->group_id = implode(',' , $groups);
+			    $result->group_id = implode(',', $groups);
 			    $result->groups = $groups;
 
 			    $query = $db->getQuery(true)
@@ -311,7 +311,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 
 					$db->insertObject('#__user_groups', $ug, 'ug_user' );
 
-					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 				}
 			}
 		} catch (Exception $e) {

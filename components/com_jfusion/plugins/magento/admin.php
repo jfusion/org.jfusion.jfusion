@@ -380,7 +380,7 @@ HTML;
 			chdir($src_code);
 			$tar = new Archive_Tar($archive_filename, 'gz');
 			$tar->setErrorHandling(PEAR_ERROR_PRINT);
-			$tar->createModify('app' , '', '');
+			$tar->createModify('app', '', '');
 			chdir($old_chdir);
 
 			$ret = JArchive::extract($src_code . DIRECTORY_SEPARATOR . $archive_filename, $source_path);

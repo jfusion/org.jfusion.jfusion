@@ -586,7 +586,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    }
 			    }
 			    //log the group change success
-			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroup->groups);
+			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroup->groups);
 		    }
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();

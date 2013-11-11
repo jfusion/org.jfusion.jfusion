@@ -369,7 +369,7 @@ class JFusionFactory
      *
      * @return array plugin details
      */
-    public static function getPlugins($criteria = 'both' , $joomla = false, $active = true)
+    public static function getPlugins($criteria = 'both', $joomla = false, $active = true)
     {
         static $plugins;
 	    $db = JFactory::getDBO();

@@ -718,7 +718,7 @@ class JFusionUser_oscommerce extends JFusionUser
 					    $db->setQuery($query);
 					    $db->execute();
 
-					    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+					    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 					    break;
 				    case 'oscmax':
 					    //set the usergroup in the user table
@@ -730,13 +730,13 @@ class JFusionUser_oscommerce extends JFusionUser
 					    $db->setQuery($query);
 					    $db->execute();
 
-					    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+					    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 
 					    //set the usergroup name  in the user table
 					    $query = $db->getQuery(true)
 						    ->select('customers_group_name')
 						    ->from('#__customers_groups')
-						    ->where('customers_group_id = ' . implode (' , ', $existinguser->groups))
+						    ->where('customers_group_id = ' . implode(' , ', $existinguser->groups))
 					        ->where('language_id = ' . $existinguser->language);
 
 					    $db->setQuery($query);
@@ -750,7 +750,7 @@ class JFusionUser_oscommerce extends JFusionUser
 					    $db->setQuery($query);
 					    $db->execute();
 
-					    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+					    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 					    break;
 				    case 'oscxt':
 				    case 'oscseo':
@@ -762,7 +762,7 @@ class JFusionUser_oscommerce extends JFusionUser
 					    $db->setQuery($query);
 				        $db->execute();
 
-				        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+				        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 					    break;
 			    }
 		    }

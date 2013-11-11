@@ -72,7 +72,7 @@ if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
 	    <?php
 	    $row_count = 0;
 	    foreach ($this->syncdata['slave_data'] as $slave) {
-	        ?><tr class="row<?php echo ($row_count % 2);?>"><?php
+	        ?><tr class="row<?php echo ($row_count % 2); ?>"><?php
 	        $row_count++;
 	        ?>
 	        <td><?php echo $slave['jname']; ?></td>
@@ -88,19 +88,19 @@ if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
     </table>
 
     <?php
-    echo '<br/><h2>' . JText::_('SYNC_LOG') . '</h2><br/>';?>
+    echo '<br/><h2>' . JText::_('SYNC_LOG') . '</h2><br/>'; ?>
 
     <form action="index.php?option=com_jfusion" method="post" name="adminForm" id="adminForm">
         <table class="jfusionlist">
             <thead>
                 <tr>
-                    <th width="20"><?php echo '#';?></th>
-                    <th><?php echo JHTML::_('grid.sort',   JText::_('PLUGIN') , 'jname', $this->filter['dir'], $this->filter['order'], 'syncstatus' );?></th>
-                    <th><?php echo JHTML::_('grid.sort',   JText::_('USERNAME') , 'username', $this->filter['dir'], $this->filter['order'], 'syncstatus' );?></th>
-                    <th><?php echo JHTML::_('grid.sort',   JText::_('EMAIL') , 'email', $this->filter['dir'], $this->filter['order'], 'syncstatus' );?></th>
-                    <th><?php echo JHTML::_('grid.sort',   JText::_('ACTION') , 'action', $this->filter['dir'], $this->filter['order'], 'syncstatus' );?></th>
-                    <th><?php echo JText::_('MESSAGE');?></th>
-                    <th><?php echo JHTML::_('grid.sort',   'ID' , 'id', $this->filter['dir'], $this->filter['order'], 'syncstatus' );?></th>
+                    <th width="20"><?php echo '#'; ?></th>
+                    <th><?php echo JHTML::_('grid.sort',   JText::_('PLUGIN') , 'jname', $this->filter['dir'], $this->filter['order'], 'syncstatus'); ?></th>
+                    <th><?php echo JHTML::_('grid.sort',   JText::_('USERNAME') , 'username', $this->filter['dir'], $this->filter['order'], 'syncstatus'); ?></th>
+                    <th><?php echo JHTML::_('grid.sort',   JText::_('EMAIL') , 'email', $this->filter['dir'], $this->filter['order'], 'syncstatus'); ?></th>
+                    <th><?php echo JHTML::_('grid.sort',   JText::_('ACTION') , 'action', $this->filter['dir'], $this->filter['order'], 'syncstatus'); ?></th>
+                    <th><?php echo JText::_('MESSAGE'); ?></th>
+                    <th><?php echo JHTML::_('grid.sort', 'ID', 'id', $this->filter['dir'], $this->filter['order'], 'syncstatus'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -112,12 +112,12 @@ if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
                     ?>
                     <tr class="<?php echo 'row' . $k; ?>">
                         <td><?php echo $this->pageNav->getRowOffset($i);?></td>
-                        <td><?php echo $details->jname;?></td>
-                        <td><?php echo $details->username;?></td>
-                        <td><?php echo $details->email;?></td>
-                        <td><img width="16" height="16" src="components/com_jfusion/images/<?php echo $details->action; ?>.png" style="margin-right:5px;"><?php echo JText::_($details->action);?></td>
-                        <td><?php echo $details->message;?></td>
-                        <td><?php echo $details->id;?></td>
+                        <td><?php echo $details->jname; ?></td>
+                        <td><?php echo $details->username; ?></td>
+                        <td><?php echo $details->email; ?></td>
+                        <td><img width="16" height="16" src="components/com_jfusion/images/<?php echo $details->action; ?>.png" style="margin-right:5px;"><?php echo JText::_($details->action); ?></td>
+                        <td><?php echo $details->message; ?></td>
+                        <td><?php echo $details->id; ?></td>
                     </tr>
                     <?php
                     $k = 1 - $k;

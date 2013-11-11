@@ -382,7 +382,7 @@ class JFusionUser_smf extends JFusionUser
 			    $existinggroups = $existinguser->groups;
 			    $existinggroups[] = $existinguser->group_id;
 
-			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinggroups) . ' -> ' . implode (' , ', $groups);
+			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinggroups) . ' -> ' . implode(' , ', $groups);
 		    }
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();

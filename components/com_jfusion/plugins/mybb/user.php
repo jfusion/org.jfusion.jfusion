@@ -305,7 +305,7 @@ class JFusionUser_mybb extends JFusionUser {
 				$db->setQuery($query);
 				$db->execute();
 
-				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 			}
 		} catch (Exception $e) {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
