@@ -260,7 +260,6 @@ class JFusionUser_prestashop extends JFusionUser
 				    $ps_customer->ip_registration_newsletter = $_SERVER['REMOTE_ADDR'];
 				    $ps_customer->optin = 0;
 				    $ps_customer->firstname = $firstname;
-				    $ps_customer->dni = '';
 				    $ps_customer->active = 1;
 				    $ps_customer->deleted = 0;
 				    $ps_customer->date_add = $now;
