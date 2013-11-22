@@ -37,8 +37,40 @@ class JFusionJoomlaAuth extends JFusionAuth
      */
     public function generateEncryptedPassword($userinfo)
     {
-        jimport('joomla.user.helper');
-        $crypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
-        return $crypt;
+	    if (substr($userinfo->password, 0, 4) == '$2y$') {
+		    // BCrypt passwords are always 60 characters, but it is possible that salt is appended although non standard.
+		    $password60 = substr($userinfo->password, 0, 60);
+
+		    if (JCrypt::hasStrongPasswordSupport()) {
+			    $testcrypt = password_verify($userinfo->password_clear, $password60);
+		    } else {
+			    $testcrypt = null;
+		    }
+	    } elseif (substr($userinfo->password, 0, 8) == '{SHA256}') {
+		    jimport('joomla.user.helper');
+		    // Check the password
+		    $parts	= explode(':', $userinfo->password);
+		    $crypt	= $parts[0];
+		    if (isset($parts[1])) {
+			    $salt	= $parts[1];
+		    } else {
+			    $salt = null;
+		    }
+
+		    $testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'sha256', false);
+	    } else {
+		    jimport('joomla.user.helper');
+		    // Check the password
+		    $parts	= explode(':', $userinfo->password);
+		    $crypt	= $parts[0];
+		    if (isset($parts[1])) {
+			    $salt	= $parts[1];
+		    } else {
+			    $salt = null;
+		    }
+
+		    $testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'md5-hex', false);
+	    }
+	    return $testcrypt;
     }
 }
