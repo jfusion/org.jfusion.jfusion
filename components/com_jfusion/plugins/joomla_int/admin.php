@@ -52,4 +52,16 @@ class JFusionAdmin_joomla_int extends JFusionJoomlaAdmin {
 	{
 		return false;
 	}
+
+	/**
+	 * Checks if the software allows new users to register
+	 *
+	 * @return boolean True if new user registration is allowed, otherwise returns false
+	 */
+	public function allowRegistration()
+	{
+		$params = JComponentHelper::getParams('com_users');
+		// Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
+		return ($params->get('allowUserRegistration', false) ? true : false);
+	}
 }

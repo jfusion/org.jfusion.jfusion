@@ -98,4 +98,32 @@ class JFusionAdmin_joomla_ext extends JFusionJoomlaAdmin
 		}
 		return $params;
 	}
+
+	/**
+	 * Checks if the software allows new users to register
+	 *
+	 * @return boolean True if new user registration is allowed, otherwise returns false
+	 */
+	public function allowRegistration()
+	{
+		try {
+			$db = JFusionFactory::getDatabase($this->getJname());
+
+			//we want to output the usergroup name
+			$query = $db->getQuery(true)
+				->select('params')
+				->from('#__extensions')
+				->where('element = ' . $db->quote('com_users'));
+
+			$db->setQuery($query);
+			$params = $db->loadResult();
+
+			$params = new JRegistry($params);
+			// Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
+			return ($params->get('allowUserRegistration', false) ? true : false);
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e, $this->getJname());
+			return false;
+		}
+	}
 }
