@@ -47,8 +47,10 @@ class modjfusionUserActivityHelper {
 			//retrieve avatar
 			if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion') {
 				$avatar = JFusionFunction::getAltAvatar($config['avatar_software'], $joomlaUser->id);
-			} else {
+			} else if ($userinfo) {
 				$avatar = $forum->getAvatar($userinfo->userid);
+			} else {
+				$avatar = '';
 			}
 
 			if (empty($avatar)) {
@@ -85,7 +87,7 @@ class modjfusionUserActivityHelper {
 		}
 
 		//get the PM count of the logged in user
-		if($config['pmcount']) {
+		if($userinfo && $config['pmcount'] ) {
 			$output->pm_url = JFusionFunction::routeURL($forum->getPrivateMessageURL(), $config['itemid'], $jname);
 			$output->pm_count = $forum->getPrivateMessageCounts($userinfo->userid);
 		} else {
