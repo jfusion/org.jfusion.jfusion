@@ -272,7 +272,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 
 						$db->setQuery($query);
 					}
-					$status['debug'][] = JText::_('USERNAME') . ':' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
+					$status['debug'][] = JText::_('USERNAME') . ': ' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ': ' . $username_clean;
 					//create a Joomla password hash if password_clear is available
 					if (!empty($userinfo->password_clear)) {
 						jimport('joomla.user.helper');

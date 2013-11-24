@@ -32,6 +32,11 @@ defined('_JEXEC') or die('Restricted access');
 
 class JFusionAdmin_joomla_ext extends JFusionAdmin
 {
+	/**
+	 * @var $helper JFusionHelper_joomla_ext
+	 */
+	var $helper;
+
     /**
      * @return string
      */

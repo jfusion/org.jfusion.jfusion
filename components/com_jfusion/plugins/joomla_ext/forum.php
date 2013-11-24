@@ -31,6 +31,11 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionForum_joomla_ext extends JFusionForum
 {
 	/**
+	 * @var $helper JFusionHelper_joomla_ext
+	 */
+	var $helper;
+
+	/**
 	 * returns the name of this JFusion plugin
 	 *
 	 * @return string name of current JFusion plugin

@@ -17,7 +17,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * JFusion Helper Class for Dokuwiki
+ * JFusion Helper Class for joomla_ext
  *
  * @category   JFusion
  * @package    JFusionPlugins

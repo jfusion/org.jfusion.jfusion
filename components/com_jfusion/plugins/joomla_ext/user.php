@@ -30,7 +30,13 @@ jimport('joomla.user.helper');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_joomla_ext extends JFusionUser {
+class JFusionUser_joomla_ext extends JFusionUser
+{
+	/**
+	 * @var $helper JFusionHelper_joomla_ext
+	 */
+	var $helper;
+
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -224,12 +230,13 @@ class JFusionUser_joomla_ext extends JFusionUser {
 
 						$db->setQuery($query);
 					}
-					$status['debug'][] = JText::_('USERNAME') . ':' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
+					$status['debug'][] = JText::_('USERNAME') . ': ' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ': ' . $username_clean;
 					//create a Joomla password hash if password_clear is available
 					if (!empty($userinfo->password_clear)) {
 						jimport('joomla.user.helper');
 						$userinfo->password_salt = JUserHelper::genRandomPassword(32);
-						$userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
+						$userinfo->password = $this->helper->getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
+
 						$password = $userinfo->password . ':' . $userinfo->password_salt;
 					} else {
 						//if password_clear is not available, store hashed password as is and also store the salt if present
@@ -444,7 +451,7 @@ class JFusionUser_joomla_ext extends JFusionUser {
 			$db = JFusionFactory::getDatabase($this->getJname());
 			jimport('joomla.user.helper');
 			$userinfo->password_salt = JUserHelper::genRandomPassword(32);
-			$userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
+			$userinfo->password = $this->helper->getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
 			$new_password = $userinfo->password . ':' . $userinfo->password_salt;
 
 			$query = $db->getQuery(true)

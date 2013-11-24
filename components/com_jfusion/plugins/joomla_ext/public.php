@@ -28,7 +28,13 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_joomla_ext extends JFusionPublic {
+class JFusionPublic_joomla_ext extends JFusionPublic
+{
+	/**
+	 * @var $helper JFusionHelper_joomla_ext
+	 */
+	var $helper;
+
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
