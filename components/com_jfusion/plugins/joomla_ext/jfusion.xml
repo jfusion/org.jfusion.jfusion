@@ -56,6 +56,10 @@
             </fieldset>
 
             <fieldset name="USER_OPTIONS">
+                <field name="strong_passwords" type="radio" class="btn-group" default="1" description="STRONG_PASSWORDS_DESC" label="STRONG_PASSWORDS_LABEL">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
                 <field name="username_filter" type="JFusionPlugins" label="USERNAME_FILTER" default="" description="USERNAME_FILTER_DESCR" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="update_activation" type="radio" class="btn-group" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
