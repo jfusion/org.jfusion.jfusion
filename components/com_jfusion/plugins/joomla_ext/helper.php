@@ -235,22 +235,24 @@ class JFusionHelper_joomla_ext extends JFusionPlugin
 		static $pass = null;
 
 		if (is_null($pass)) {
-			// Check to see whether crypt() is supported.
-			if (version_compare(PHP_VERSION, '5.3.7', '>=') === true) {
-				// We have safe PHP version.
-				$pass = true;
+			if ($this->params->get('strong_passwords', true)) {
+				// Check to see whether crypt() is supported.
+				if (version_compare(PHP_VERSION, '5.3.7', '>=') === true) {
+					// We have safe PHP version.
+					$pass = true;
+				} else {
+					$hash = '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG';
+					$test = crypt("password", $hash);
+					$pass = $test == $hash;
+				}
+				if ($pass && !defined('PASSWORD_DEFAULT')) {
+					// Always make sure that the password hashing API has been defined.
+					require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'password.php';
+				}
 			} else {
-				$hash = '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG';
-				$test = crypt("password", $hash);
-				$pass = $test == $hash;
-			}
-			$pass = $this->params->get('strong_passwords', true) == $pass;
-			if ($pass && !defined('PASSWORD_DEFAULT')) {
-				// Always make sure that the password hashing API has been defined.
-				require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'password.php';
+				$pass = false;
 			}
 		}
-
 		return $pass;
 	}
 }
