@@ -314,9 +314,9 @@ class JFusionDiscussBotHelper {
 							$responce = array(0, JText::_('REASON_ARTICLE_NOT_PUBLISHED'));
 						} else {
 							//make sure the article is set to be published
-							$mainframe = JFactory::getApplication();
 							$publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
-							$now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
+
+							$now = JFactory::getDate('now', JFactory::getConfig()->get('offset'))->toUnix();
 
 							$creationMode = $this->params->get('create_thread', 'load');
 							if ($now < $publish_up && $creationMode != 'new') {

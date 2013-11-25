@@ -416,12 +416,17 @@ class plgUserJfusion extends JPlugin
 		    //Clean up the joomla session table
 		    $conf = JFactory::getConfig();
 		    $expire = ($conf->get('lifetime')) ? $conf->get('lifetime') * 60 : 900;
-		    /**
-		     * @ignore
-		     * @var $session JTableSession
-		     */
-		    $session = JTable::getInstance('session');
-		    $session->purge($expire);
+
+		    try {
+			    $db =  JFactory::getDbo();
+			    $query = $db->getQuery(true)
+				    ->delete('#__session')
+					->where('time < ' . (int) (time() - $expire));
+			    $db->setQuery($query);
+
+			    $db->execute();
+		    } catch (Exception $e) {
+		    }
 
 			if (!$mainframe->isAdmin()) {
 				$params = JFusionFactory::getParams('joomla_int');

@@ -916,8 +916,7 @@ class JFusionFunction
     {
         static $timezone;
         if (!isset($timezone)) {
-            $mainframe = JFactory::getApplication();
-            $timezone = $mainframe->getCfg('offset');
+            $timezone = JFactory::getConfig()->get('offset');
 
             $JUser = JFactory::getUser();
             if (!$JUser->guest) {

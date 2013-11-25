@@ -143,7 +143,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
             $uri = $path;
         }
         if ($router->getMode() == JROUTER_MODE_SEF) {
-            if ($mainframe->getCfg('sef_suffix')) {
+            if (JFactory::getConfig()->get('sef_suffix')) {
                 $uri = str_replace('.html', '', $uri);
             }
             if (!strpos($uri, '?')) {

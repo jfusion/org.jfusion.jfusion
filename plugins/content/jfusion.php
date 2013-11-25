@@ -170,9 +170,8 @@ class plgContentJfusion extends JPlugin
 					} elseif ($this->creationMode == 'new' && $isNew) {
 						$this->helper->debug('Failed validity test but creationMode is set to new and this is a new article');
 
-						$mainframe = JFactory::getApplication();
 						$publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
-						$now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
+						$now = JFactory::getDate('now', JFactory::getConfig()->get('offset'))->toUnix();
 						if ($now < $publish_up || !$this->article->state) {
 							$this->helper->debug('Article set to be published in the future or is unpublished thus creating an entry in the database so that the thread is created when appropriate.');
 
