@@ -34,7 +34,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 */
 	function getTable($type = 'user') {
 		$maped = $this->getMapRaw($type);
-		return $maped['table'];
+		return $maped->table;
 	}
 
 	/**
@@ -43,14 +43,15 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 */
 	function getMapRaw($type = 'user') {
 		if( !is_array($this->mapraw) ) {
-			$map = $this->params->get('map', array());
-			if(is_array($map)) {
+			$map = $this->params->get('map', false);
+			if(is_object($map)) {
 				$this->mapraw = $map;
 			}
 		}
-		if( is_array($this->mapraw) ) {
-			if( isset($this->mapraw[$type]) && is_array($this->mapraw[$type]) ) {
-				return $this->mapraw[$type];
+
+		if(is_object($this->mapraw) ) {
+			if(isset($this->mapraw->$type) && is_object($this->mapraw->$type) ) {
+				return $this->mapraw->$type;
 			}
 		}
 		return false;
@@ -63,17 +64,18 @@ class JFusionHelper_universal extends JFusionPlugin {
 	function getMap($type = 'user') {
 		if( !isset($this->map[$type]) ) {
 			$map = $this->getMapRaw($type);
-			if(is_array($map) && isset($map['field'])) {
-				foreach ($map['field'] as $key => $value) {
+
+			if(is_object($map) && isset($map->field)) {
+				foreach ($map->field as $key => $value) {
 					$obj = new stdClass;
-					$obj->table = $map['table'];
+					$obj->table = $map->table;
 					$obj->field = $key;
 					$obj->type = $value;
-					if (isset($map['value'][$key])) {
-						$obj->value = $map['value'][$key];
+					if (isset($map->value->$key)) {
+						$obj->value = $map->value->$key;
 					}
-					if (isset($map['type'][$key])) {
-						$obj->fieldtype = $map['type'][$key];
+					if (isset($map->type->$key)) {
+						$obj->fieldtype = $map->type->$key;
 					}
 					$this->map[$type][$key] = $obj;
 				}

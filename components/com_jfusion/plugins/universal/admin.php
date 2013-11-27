@@ -43,15 +43,15 @@ class JFusionAdmin_universal extends JFusionAdmin
 	 */
 	function getUsergroupList()
 	{
-		$usergroupmap = $this->params->get('usergroupmap', array());
+		$usergroupmap = $this->params->get('usergroupmap', false);
 		$usergrouplist = array();
-		if ( is_array($usergroupmap) && isset($usergroupmap['name']) ) {
-			foreach ($usergroupmap['name'] as $key => $value) {
-				if ($value && isset($usergroupmap['value'][$key]) ) {
+		if(is_object($usergroupmap) && isset($usergroupmap->name)) {
+			foreach ($usergroupmap->name as $key => $value) {
+				if ($value && isset($usergroupmap->value[$key])) {
 					//append the default usergroup
 					$default_group = new stdClass;
 					$value = html_entity_decode($value);
-					$default_group->id = base64_encode($usergroupmap['value'][$key]);
+					$default_group->id = base64_encode($usergroupmap->value[$key]);
 					$default_group->name = $value;
 					$usergrouplist[] = $default_group;
 				}
@@ -191,6 +191,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 	 * @param $node
 	 * @param $control_name
 	 * @param $type
+	 *
 	 * @return string
 	 */
 	function map($name, $value, $node, $control_name, $type)
@@ -205,7 +206,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 			try {
 				$db = JFusionFactory::getDatabase($jname);
 			} catch (Exception $e) {
-				throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
+				throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
 			}
 
 			$tabelslist = $db->getTableList();
@@ -238,8 +239,8 @@ class JFusionAdmin_universal extends JFusionAdmin
 				}
 
 				$mapuser = array();
-				if ($value['table']) {
-					$mapuser = $fl[$value['table']];
+				if ($value->table) {
+					$mapuser = $fl[$value->table];
 				} else {
 					if ($firstTable) $mapuser = $fl[$firstTable];
 				}
@@ -248,10 +249,10 @@ class JFusionAdmin_universal extends JFusionAdmin
 
 				$output .= '<table>';
 				$output .= '<tr><td>';
-				$output .= JHTML::_('select.genericlist', $tl, $control_name . '[' . $name . '][' . $type . '][table]', 'onchange="javascript: Joomla.submitbutton(\'applyconfig\')"', 'id', 'name', $value['table']);
+				$output .= JHTML::_('select.genericlist', $tl, $control_name . '[' . $name . '][' . $type . '][table]', 'onchange="javascript: Joomla.submitbutton(\'applyconfig\')"', 'id', 'name', $value->table);
 				$output .= '</td></tr>';
 				$output .= '<tr><td>';
-				if (!empty($value['table']) ) {
+				if (!empty($value->table) ) {
 					$output .= '<table>';
 					foreach ($mapuser as $val) {
 						$output .= '<tr><td>';
@@ -262,20 +263,20 @@ class JFusionAdmin_universal extends JFusionAdmin
 						$null = $val->Null ? JText::_('YES') : JText::_('NO');
 						$output .= '<div>Null: ' . $null . '</div>';
 						$output .= '<div>Extra: "' . $val->Extra . '" </div></td><td>';
-						if ( isset($value['field'][$val->Field]) ) {
-							$mapuserfield = $value['field'][$val->Field];
+						if ( isset($value->field->{$val->Field}) ) {
+							$mapuserfield = $value->field->{$val->Field};
 						} else {
 							$mapuserfield = '';
 						}
-						if ( isset($value['type'][$val->Field]) ) {
-							$fieldstype = $value['type'][$val->Field];
+						if ( isset($value->type->{$val->Field}) ) {
+							$fieldstype = $value->type->{$val->Field};
 						} else {
 							$fieldstype = '';
 						}
 						$fieldsvaluearray = array();
 						$fieldsvalue = '';
-						if ( isset($value['value'][$val->Field]) ) {
-							$fieldsvalue = $value['value'][$val->Field];
+						if ( isset($value->value->{$val->Field}) ) {
+							$fieldsvalue = $value->value->{$val->Field};
 							if (is_array($fieldsvalue)) {
 								$fieldsvaluearray = (array)$fieldsvalue;
 								foreach ($fieldsvaluearray as &$val2) {
@@ -333,7 +334,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 				$output .= '</td></tr>';
 				$output .= '</table>';
 			} else {
-				throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
+				throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
 			}
 		} catch (Exception $e) {
 			$output = $e->getMessage();
@@ -430,9 +431,10 @@ class JFusionAdmin_universal extends JFusionAdmin
 			JFusion.Plugin.update();
 			var value = ref.get('value');
             if ( value && JFusion.Plugin.TypeAry[value].types !== undefined ) {
+            	var valueid = 'paramsmap'+parmtype+'type'+name;
 	            var select = new Element('select', {
 					'type': 'option',
-					'id': 'paramsmap'+parmtype+'type'+name,
+					'id': valueid,
 					'name': 'params[map][user][type]['+name+']',
 					'events': {
 			            'change': function () {
