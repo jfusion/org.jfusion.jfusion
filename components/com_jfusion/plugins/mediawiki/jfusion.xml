@@ -29,7 +29,7 @@
     <form>
         <fields name="params">
             <fieldset name="PLUGIN_GENERAL_DETAILS">
-                <field name="description" type="text" size="60" default="mediawiki" description="DESCRIPTION_DESC" label="DESCRIPTION_DESC"/>
+                <field name="description" type="text" size="60" default="mediawiki" description="DESCRIPTION_DESC" label="DESCRIPTION"/>
                 <field name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/mediawiki/" description="SOURCE_URL_DESC" />
                 <field name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
             </fieldset>
