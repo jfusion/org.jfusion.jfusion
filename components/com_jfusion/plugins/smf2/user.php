@@ -73,7 +73,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			    $query = $db->getQuery(true)
 				    ->select('id_ban_group, expire_time')
 				    ->from('#__ban_groups')
-				    ->where('name = ' . $result->username);
+				    ->where('name = "' . $result->username . '"');
 
 			    $db->setQuery($query);
 			    $expire_time = $db->loadObject();
