@@ -39,7 +39,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 
 	/**
 	 * @param string $type
-	 * @return bool
+	 * @return bool|stdClass
 	 */
 	function getMapRaw($type = 'user') {
 		if( !is_array($this->mapraw) ) {
