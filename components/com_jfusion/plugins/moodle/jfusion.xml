@@ -27,7 +27,7 @@
     <form>
         <fields name="params">
             <fieldset name="PLUGIN_GENERAL_DETAILS">
-                <field name="description" type="text" size="60" default="Moodle Elearning site" description="DESCRIPTION_DESC" label="DESCRIPTION_DESC"/>
+                <field name="description" type="text" size="60" default="Moodle Elearning site" description="DESCRIPTION_DESC" label="DESCRIPTION"/>
                 <field name="source_url" type="text" size="60" default="http://www.yourdomain.com/yourdir/" description="SOURCE_URL" label="SOURCE_URL"/>
                 <field name="source_path" type="text" size="60" default="" description="SOURCE_PATH" label="SOURCE_PATH"/>
                 <field name="@spacer" type="spacer" default="" label="" description="" />

@@ -28,7 +28,7 @@
     <form>
         <fields name="params">
             <fieldset name="PLUGIN_GENERAL_DETAILS">
-                <field name="description" type="text" size="60" default="put a description" description="DESCRIPTION" label="DESCRIPTION"/>
+                <field name="description" type="text" size="60" default="put a description" description="DESCRIPTION_DESC" label="DESCRIPTION"/>
                 <field name="source_url" type="text" size="60" default="http://site.com/" description="SOURCE_URL" label="SOURCE_URL"/>
                 <field name="cookie_domain" type="text" size="60" default="" description="CURL_COOKIE_DOMAIN_DESC" label="CURL_COOKIE_DOMAIN"/>
                 <field name="cookie_path" type="text" size="20" default="/" description="CURL_COOKIE_PATH_DESC" label="CURL_COOKIE_PATH"/>
