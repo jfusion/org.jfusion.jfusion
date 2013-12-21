@@ -825,8 +825,8 @@ HTML;
 				if (!empty($fullTextCount) || !empty($introTextCount)) {
 					$query = $db->getQuery(true)
 						->update('#__content')
-						->set('`fulltext` = ' . $db->Quote($fulltext))
-						->set('`introtext` = ' . $db->Quote($introtext))
+						->set('`fulltext` = ' . $db->quote($fulltext))
+						->set('`introtext` = ' . $db->quote($introtext))
 						->where('id = ' . (int) $this->article->id);
 					$db->setQuery($query);
 					$db->execute();

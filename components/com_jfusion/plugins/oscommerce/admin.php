@@ -232,7 +232,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
 			        $query = $db->getQuery(true)
 				        ->select('languages_id')
 				        ->from('#__languages')
-				        ->where('code = ' . $db->Quote($default_language));
+				        ->where('code = ' . $db->quote($default_language));
 
 	                $db->setQuery($query);
 	                $default_language_id = $db->loadResult();
@@ -308,7 +308,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
 					    $query = $db->getQuery(true)
 						    ->select('languages_id')
 						    ->from('#__languages')
-						    ->where('code = ' . $db->Quote($default_language));
+						    ->where('code = ' . $db->quote($default_language));
 
 					    $db->setQuery($query);
 					    $default_language_id = $db->loadResult();

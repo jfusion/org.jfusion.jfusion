@@ -581,8 +581,8 @@ HTML;
 			    $query = $db->getQuery(true)
 				    ->update('#__config_plugins')
 				    ->set('value = 1')
-				    ->where('plugin = ' . $db->Quote('auth/jfusion'))
-				    ->where('name = ' . $db->Quote('jf_enabled'));
+				    ->where('plugin = ' . $db->quote('auth/jfusion'))
+				    ->where('name = ' . $db->quote('jf_enabled'));
 
 			    $db->setQuery($query);
 			    $db->execute();
@@ -608,8 +608,8 @@ HTML;
 
 			    $query = $db->getQuery(true)
 				    ->update('#__config')
-				    ->set('value = ' . $db->Quote($value))
-				    ->where('name = ' . $db->Quote('auth'));
+				    ->set('value = ' . $db->quote($value))
+				    ->where('name = ' . $db->quote('auth'));
 
 			    $db->setQuery($query);
 			    $db->execute();
@@ -617,8 +617,8 @@ HTML;
 			    $query = $db->getQuery(true)
 				    ->update('#__config_plugins')
 				    ->set('value = 0')
-				    ->where('plugin = ' . $db->Quote('auth/jfusion'))
-				    ->where('name = ' . $db->Quote('jf_enabled'));
+				    ->where('plugin = ' . $db->quote('auth/jfusion'))
+				    ->where('name = ' . $db->quote('jf_enabled'));
 
 			    $db->setQuery($query);
 			    $db->execute();
@@ -643,8 +643,8 @@ HTML;
 
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
-					    ->set('value = ' . $db->Quote($authstr))
-					    ->where('name = ' . $db->Quote('auth'));
+					    ->set('value = ' . $db->quote($authstr))
+					    ->where('name = ' . $db->quote('auth'));
 
 				    $db->setQuery($query);
 				    $db->execute();

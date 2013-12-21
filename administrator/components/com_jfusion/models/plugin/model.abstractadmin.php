@@ -221,7 +221,7 @@ class JFusionAdmin extends JFusionPlugin
 		    $query = $db->getQuery(true)
 			    ->select('*')
 			    ->from('#__jfusion')
-			    ->where('name = ' . $db->Quote($jname));
+			    ->where('name = ' . $db->quote($jname));
 
 		    $db->setQuery($query);
 		    $plugin = $db->loadObject();
@@ -474,7 +474,7 @@ JS;
 				$query = $db->getQuery(true)
 					->select('params')
 					->from('#__jfusion')
-					->where('name = ' . $db->Quote($jname));
+					->where('name = ' . $db->quote($jname));
 
 				$db->setQuery($query);
 				$params = $db->loadResult();
@@ -491,8 +491,8 @@ JS;
 
 			$query = $db->getQuery(true)
 				->update('#__jfusion')
-				->set('params = ' . $db->Quote($data->toString()))
-				->where('name = ' . $db->Quote($jname));
+				->set('params = ' . $db->quote($data->toString()))
+				->where('name = ' . $db->quote($jname));
 
 			$db->setQuery($query);
 			try {

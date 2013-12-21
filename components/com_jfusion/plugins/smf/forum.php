@@ -686,12 +686,12 @@ HTML;
 				    $query = $db->getQuery(true)
 					    ->select('COUNT(*)')
 					    ->from('#__members')
-					    ->where('memberName = ' . $db->Quote($userinfo->username), 'OR')
-					    ->where('memberName = ' . $db->Quote($userinfo->email))
-					    ->where('realName = ' . $db->Quote($userinfo->username))
-					    ->where('realName = ' . $db->Quote($userinfo->email))
-					    ->where('LOWER(emailAddress) = ' . $db->Quote($userinfo->username))
-					    ->where('LOWER(emailAddress) = ' . $db->Quote($userinfo->email));
+					    ->where('memberName = ' . $db->quote($userinfo->username), 'OR')
+					    ->where('memberName = ' . $db->quote($userinfo->email))
+					    ->where('realName = ' . $db->quote($userinfo->username))
+					    ->where('realName = ' . $db->quote($userinfo->email))
+					    ->where('LOWER(emailAddress) = ' . $db->quote($userinfo->username))
+					    ->where('LOWER(emailAddress) = ' . $db->quote($userinfo->email));
 
 				    $db->setQuery($query);
 				    $result = $db->loadResult();

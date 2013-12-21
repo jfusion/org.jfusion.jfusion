@@ -251,7 +251,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 				    $query = $db->getQuery(true)
 					    ->select('api_key')
 					    ->from('#__api_user')
-						->where('username = ' . $db->Quote($apiuser));
+						->where('username = ' . $db->quote($apiuser));
 
 				    $db->setQuery($query);
 				    $api_key = $db->loadResult();
@@ -275,7 +275,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 			    $query = $db->getQuery(true)
 				    ->select('value')
 				    ->from('#__core_config_data')
-				    ->where('path = ' . $db->Quote('web/session/use_remote_addr'));
+				    ->where('path = ' . $db->quote('web/session/use_remote_addr'));
 
 			    $db->setQuery($query);
 			    $value = $db->loadResult();
@@ -459,7 +459,7 @@ HTML;
 		    foreach($paths as $path) {
 			    $query = $db->getQuery(true)
 				    ->delete('#__core_config_data')
-				    ->where('path = ' .  $db->Quote($path));
+				    ->where('path = ' .  $db->quote($path));
 
 			    $db->transactionStart();
 			    $db->setQuery($query);

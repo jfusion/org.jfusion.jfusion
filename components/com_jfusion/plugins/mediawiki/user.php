@@ -49,7 +49,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    $query = $db->getQuery(true)
 			    ->select('user_id as userid, user_name as username, user_token, user_real_name as name, user_email as email, user_password as password, NULL as password_salt, NULL as activation, TRUE as is_activated, NULL as reason, user_touched as lastvisit')
 			    ->from('#__user')
-		        ->where('user_name = ' . $db->Quote($username));
+		        ->where('user_name = ' . $db->quote($username));
 
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
@@ -58,7 +58,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $query = $db->getQuery(true)
 				    ->select('ug_group')
 				    ->from('#__user_groups')
-				    ->where('ug_user = ' . $db->Quote($result->userid));
+				    ->where('ug_user = ' . $db->quote($result->userid));
 
 			    $db->setQuery($query);
 			    $grouplist = $db->loadObjectList();
@@ -72,7 +72,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $query = $db->getQuery(true)
 				    ->select('ipb_user, ipb_expiry')
 				    ->from('#__ipblocks')
-				    ->where('ipb_user = ' . $db->Quote($result->userid));
+				    ->where('ipb_user = ' . $db->quote($result->userid));
 
 			    $db->setQuery($query);
 			    $block = $db->loadObject();
@@ -502,7 +502,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 				    ->update('#__user')
 				    ->set('is_activated = 0')
 				    ->set('user_token = ' . $db->quote($mToken))
-				    ->where('user_id = ' . $db->Quote($user->user_id));
+				    ->where('user_id = ' . $db->quote($user->user_id));
 
 			    $db->setQuery($query);
 			    $db->execute();

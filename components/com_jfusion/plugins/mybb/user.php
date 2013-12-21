@@ -42,7 +42,7 @@ class JFusionUser_mybb extends JFusionUser {
 			    ->select('a.uid as userid, a.username, a.usergroup as group_id, a.username as name, a.email, a.password, a.salt as password_salt, a.usergroup as activation, b.isbannedgroup as block')
 			    ->from('#__users as a')
 			    ->join('LEFT OUTER', '#__usergroups as b ON a.usergroup = b.gid')
-			    ->where($identifier_type . ' = ' . $db->Quote($identifier));
+			    ->where($identifier_type . ' = ' . $db->quote($identifier));
 
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
@@ -121,7 +121,7 @@ class JFusionUser_mybb extends JFusionUser {
 		        $query = $db->getQuery(true)
 			        ->select('uid, loginkey')
 			        ->from('#__users')
-			        ->where('username = ' . $db->Quote($userinfo->username));
+			        ->where('username = ' . $db->quote($userinfo->username));
 
 		        $db->setQuery($query);
 		        $user = $db->loadObject();
@@ -266,8 +266,8 @@ class JFusionUser_mybb extends JFusionUser {
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('password = ' . $db->Quote($existinguser->password))
-			    ->set('salt = ' . $db->Quote($existinguser->password_salt))
+			    ->set('password = ' . $db->quote($existinguser->password))
+			    ->set('salt = ' . $db->quote($existinguser->password_salt))
 			    ->where('uid = ' . (int)$existinguser->userid);
 
 	        $db->setQuery($query);
@@ -381,7 +381,7 @@ class JFusionUser_mybb extends JFusionUser {
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('email = ' . $db->Quote($userinfo->email))
+			    ->set('email = ' . $db->quote($userinfo->email))
 			    ->where('uid = ' . (int)$existinguser->userid);
 
 		    $db->setQuery($query);

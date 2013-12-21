@@ -102,7 +102,7 @@ class JFusionHelper_prestashop extends JFusionPlugin
 			$query = $db->getQuery(true)
 				->select('value')
 				->from('#__configuration')
-				->where('name IN (' . $db->Quote('PS_LANG_DEFAULT') . ')');
+				->where('name IN (' . $db->quote('PS_LANG_DEFAULT') . ')');
 
 			$db->setQuery($query);
 			//getting the default language to load groups
@@ -123,8 +123,8 @@ class JFusionHelper_prestashop extends JFusionPlugin
 			$query = $db->getQuery(true)
 				->select('name')
 				->from('#__group_lang')
-				->where('id_lang =' . $db->Quote($this->getDefaultLanguage()))
-				->where('id_group =' . $db->Quote($id));
+				->where('id_lang =' . $db->quote($this->getDefaultLanguage()))
+				->where('id_group =' . $db->quote($id));
 
 			$db->setQuery($query);
 

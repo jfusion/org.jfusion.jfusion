@@ -34,7 +34,7 @@ class JFusionUser_smf2 extends JFusionUser {
 		    $query = $db->getQuery(true)
 			    ->select('a.id_member as userid, a.member_name as username, a.real_name as name, a.email_address as email, a.passwd as password, a.password_salt as password_salt, a.validation_code as activation, a.is_activated, NULL as reason, a.last_login as lastvisit, a.id_group as group_id, a.id_post_group as postgroup, a.additional_groups')
 			    ->from('#__members as a')
-		        ->where($identifier_type . ' = ' . $db->Quote($identifier));
+		        ->where($identifier_type . ' = ' . $db->quote($identifier));
 
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
@@ -73,7 +73,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			    $query = $db->getQuery(true)
 				    ->select('id_ban_group, expire_time')
 				    ->from('#__ban_groups')
-				    ->where('name = ' . $db->Quote($result->username));
+				    ->where('name = ' . $db->quote($result->username));
 
 			    $db->setQuery($query);
 			    $expire_time = $db->loadObject();

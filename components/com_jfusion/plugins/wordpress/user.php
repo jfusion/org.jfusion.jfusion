@@ -72,7 +72,7 @@ class JFusionUser_wordpress extends JFusionUser
 		    $query = $db->getQuery(true)
 			    ->select('*')
 			    ->from('#__users')
-			    ->where($identifier_type . ' = ' . $db->Quote($identifier));
+			    ->where($identifier_type . ' = ' . $db->quote($identifier));
 
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
@@ -81,7 +81,7 @@ class JFusionUser_wordpress extends JFusionUser
 			    $query = $db->getQuery(true)
 				    ->select('*')
 				    ->from('#__usermeta')
-				    ->where('user_id = ' . $db->Quote($result->ID));
+				    ->where('user_id = ' . $db->quote($result->ID));
 
 			    $db->setQuery($query);
 			    $result1 = $db->loadObjectList();
@@ -306,7 +306,7 @@ class JFusionUser_wordpress extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('user_pass = ' . $db->Quote($existinguser->password))
+			    ->set('user_pass = ' . $db->quote($existinguser->password))
 			    ->where('ID = ' . (int)$existinguser->userid);
 
 		    $db->setQuery($query);
@@ -343,7 +343,7 @@ class JFusionUser_wordpress extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('user_email = ' . $db->Quote($userinfo->email))
+			    ->set('user_email = ' . $db->quote($userinfo->email))
 			    ->where('ID = ' . (int)$existinguser->userid);
 
 		    $db->setQuery($query);
@@ -391,7 +391,7 @@ class JFusionUser_wordpress extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('user_activation_key = ' . $db->Quote(''))
+			    ->set('user_activation_key = ' . $db->quote(''))
 			    ->where('ID = ' . (int)$existinguser->userid);
 
 		    $db->setQuery($query);
@@ -416,7 +416,7 @@ class JFusionUser_wordpress extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('user_activation_key = ' . $db->Quote($userinfo->activation))
+			    ->set('user_activation_key = ' . $db->quote($userinfo->activation))
 			    ->where('ID = ' . (int)$existinguser->userid);
 
 			$db->setQuery($query);
@@ -557,7 +557,7 @@ class JFusionUser_wordpress extends JFusionUser
 			    $query = $db->getQuery(true)
 				    ->select('*')
 				    ->from('#__users')
-				    ->where('user_login = ' . $db->Quote($reassign_to));
+				    ->where('user_login = ' . $db->quote($reassign_to));
 
 			    $db->setQuery($query);
 			    $result = $db->loadObject();
@@ -682,8 +682,8 @@ class JFusionUser_wordpress extends JFusionUser
 
 			    $query = $db->getQuery(true)
 				    ->update('#__usermeta')
-				    ->set('meta_value = ' . $db->Quote($capsfield))
-				    ->where('meta_key = ' . $db->Quote($database_prefix . 'capabilities'))
+				    ->set('meta_value = ' . $db->quote($capsfield))
+				    ->where('meta_key = ' . $db->quote($database_prefix . 'capabilities'))
 				    ->where('user_id = ' . (int)$existinguser->userid);
 
 			    $db->setQuery($query);

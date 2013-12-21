@@ -224,7 +224,7 @@ class JFusionUser_magento extends JFusionUser {
 		$query = $db->getQuery(true)
 			->select('entity_id')
 			->from('#__customer_entity')
-			->where('email = ' . $db->Quote($identifier));
+			->where('email = ' . $db->quote($identifier));
 
 		$db->setQuery($query);
 		$entity = (int)$db->loadResult();
@@ -238,7 +238,7 @@ class JFusionUser_magento extends JFusionUser {
 				$query = $db->getQuery(true)
 					->select('email, group_id, created_at, updated_at, is_active')
 					->from('#__customer_entity')
-					->where('entity_id = ' . $db->Quote($entity));
+					->where('entity_id = ' . $db->quote($entity));
 
 				$db->setQuery($query);
 				$result = $db->loadObject();
@@ -416,7 +416,7 @@ class JFusionUser_magento extends JFusionUser {
 					if (isset($user[$i]['value'])) {
 						$query = $db->getQuery(true)
 							->update('#__customer_entity')
-							->set($user[$i]['attribute_code']. ' = ' . $db->Quote($user[$i]['value']))
+							->set($user[$i]['attribute_code']. ' = ' . $db->quote($user[$i]['value']))
 							->where('entity_id = ' . (int)$entity_id);
 
 						$db->setQuery($query);
@@ -446,7 +446,7 @@ class JFusionUser_magento extends JFusionUser {
 							} else {
 								$query = $db->getQuery(true)
 									->update('#__customer_entity'. '_' . $user[$i]['backend_type'])
-									->set('value = ' . $db->Quote($user[$i]['value']))
+									->set('value = ' . $db->quote($user[$i]['value']))
 									->where('entity_id = ' . (int)$entity_id)
 									->where('entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer'))
 									->where('attribute_id = ' . (int)$user[$i]['attribute_id']);

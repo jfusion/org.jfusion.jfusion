@@ -91,7 +91,7 @@ class jfusionViewsyncstatus extends JViewLegacy
 	    $query = $db->getQuery(true)
 		    ->select('COUNT(*)')
 		    ->from('#__jfusion_sync_details')
-		    ->where('syncid = ' . $db->Quote($this->syncid));
+		    ->where('syncid = ' . $db->quote($this->syncid));
 
         $db->setQuery($query);
         $total = $db->loadResult();

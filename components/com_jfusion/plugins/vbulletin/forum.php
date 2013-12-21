@@ -167,8 +167,8 @@ class JFusionForum_vbulletin extends JFusionForum
 		                $query->set('lastpost = ' . $timestamp)
 			                ->set('lastpostid = ' . $postid)
 			                ->set('lastthreadid = ' . $threadid)
-			                ->set('lastposter = ' . $db->Quote($userinfo->username))
-			                ->set('lastthread = ' . $db->Quote($title))
+			                ->set('lastposter = ' . $db->quote($userinfo->username))
+			                ->set('lastthread = ' . $db->quote($title))
 			                ->set('lasticonid = 0');
 	                }
 		            $query->where('forumid = ' . $forumid);
@@ -217,8 +217,8 @@ class JFusionForum_vbulletin extends JFusionForum
 				    $query = $db->getQuery(true)
 					    ->select('COUNT(*)')
 					    ->from('#__user')
-					    ->where('LOWER(username) = ' . $db->Quote(strtolower($userinfo->username)), 'OR')
-					    ->where('LOWER(email) = ' . $db->Quote(strtolower($userinfo->username)));
+					    ->where('LOWER(username) = ' . $db->quote(strtolower($userinfo->username)), 'OR')
+					    ->where('LOWER(email) = ' . $db->quote(strtolower($userinfo->username)));
 
 				    $db->setQuery($query);
 				    $result = $db->loadResult();
@@ -231,8 +231,8 @@ class JFusionForum_vbulletin extends JFusionForum
 					    $query = $db->getQuery(true)
 						    ->select('COUNT(*)')
 						    ->from('#__userfield')
-						    ->where('LOWER(' . $name_field . ') = ' . strtolower($db->Quote($userinfo->username)), 'OR')
-						    ->where('LOWER(' . $name_field . ') = ' . strtolower($db->Quote($userinfo->username)));
+						    ->where('LOWER(' . $name_field . ') = ' . strtolower($db->quote($userinfo->username)), 'OR')
+						    ->where('LOWER(' . $name_field . ') = ' . strtolower($db->quote($userinfo->username)));
 
 					    $db->setQuery($query);
 					    $result = $db->loadResult();

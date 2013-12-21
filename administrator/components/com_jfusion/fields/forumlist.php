@@ -48,8 +48,8 @@ class JFormFieldForumlist extends JFormField
 			$query = $db->getQuery(true)
 				->select('params')
 				->from('#__modules')
-				->where('module = ' . $db->Quote('mod_jfusion_activity'))
-				->where('id = ' . $db->Quote($cid[0]));
+				->where('module = ' . $db->quote('mod_jfusion_activity'))
+				->where('id = ' . $db->quote($cid[0]));
 
 			$db->setQuery($query);
 			$params = $db->loadResult();

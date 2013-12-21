@@ -100,7 +100,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    $query = $db->getQuery(true)
 			    ->select('*')
 			    ->from('#__jfusion')
-			    ->where('name = ' . $db->Quote($jname));
+			    ->where('name = ' . $db->quote($jname));
 
 		    $db->setQuery($query);
 		    $record = $db->loadObject();
@@ -118,8 +118,8 @@ class jfusionViewplugindisplay extends JViewLegacy {
 
 				    $query = $db->getQuery(true)
 					    ->update('#__jfusion')
-					    ->set('status = ' . $db->Quote($status['config']))
-					    ->where('name = ' . $db->Quote($record->name));
+					    ->set('status = ' . $db->quote($status['config']))
+					    ->where('name = ' . $db->quote($record->name));
 				    $db->setQuery($query);
 				    $db->execute();
 				    //update the record status for the resExecute of the code
@@ -141,7 +141,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
 			    ->from('#__jfusion')
-			    ->where('original_name = ' . $db->Quote($record->name));
+			    ->where('original_name = ' . $db->quote($record->name));
 
 		    $db->setQuery($query);
 		    $copys = $db->loadResult();
@@ -237,7 +237,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    $query = $db->getQuery(true)
 			    ->select('*')
 			    ->from('#__jfusion')
-			    ->where('original_name = ' . $db->Quote($record->name));
+			    ->where('original_name = ' . $db->quote($record->name));
 
 		    $db->setQuery($query);
 		    $record->copies = $db->loadObjectList('name');
@@ -309,7 +309,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		$query = $db->getQuery(true)
 			->select('*')
 			->from('#__jfusion')
-			->where('ordering = ' . $db->Quote(''), 'OR')
+			->where('ordering = ' . $db->quote(''), 'OR')
 			->where('ordering IS NULL');
 
 		$db->setQuery($query);
@@ -327,7 +327,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				$query = $db->getQuery(true)
 					->update('#__jfusion')
 					->set('ordering = ' . $ordering)
-					->where('name = ' . $db->Quote($row->name));
+					->where('name = ' . $db->quote($row->name));
 
 				$db->setQuery($query);
 				$db->execute();

@@ -82,7 +82,7 @@ class JFusionController extends JControllerLegacy
 				    $query = $db->getQuery(true)
 					    ->update('#__jfusion')
 					    ->set('status = ' . $config_status['config'])
-					    ->where('name = ' . $db->Quote($jname));
+					    ->where('name = ' . $db->quote($jname));
 
 				    $db->setQuery($query);
 				    $db->execute();
@@ -121,8 +121,8 @@ class JFusionController extends JControllerLegacy
             //perform the update
 	        $query = $db->getQuery(true)
 		        ->update('#__jfusion')
-		        ->set($field_name . ' = ' . $db->Quote($field_value))
-		        ->where('name = ' . $db->Quote($jname));
+		        ->set($field_name . ' = ' . $db->quote($field_value))
+		        ->where('name = ' . $db->quote($jname));
             $db->setQuery($query);
             $db->execute();
 
@@ -130,7 +130,7 @@ class JFusionController extends JControllerLegacy
 	        $query = $db->getQuery(true)
 		        ->select('*')
 		        ->from('#__jfusion')
-		        ->where('name = ' . $db->Quote($jname));
+		        ->where('name = ' . $db->quote($jname));
             $db->setQuery($query);
             $result = $db->loadObject();
             //disable a slave when it is turned into a master
@@ -138,7 +138,7 @@ class JFusionController extends JControllerLegacy
 	            $query = $db->getQuery(true)
 		            ->update('#__jfusion')
 		            ->set('slave = 0')
-		            ->where('name = ' . $db->Quote($jname));
+		            ->where('name = ' . $db->quote($jname));
                 $db->setQuery($query);
                 $db->execute();
             }
@@ -147,7 +147,7 @@ class JFusionController extends JControllerLegacy
 	            $query = $db->getQuery(true)
 		            ->update('#__jfusion')
 		            ->set('master = 0')
-		            ->where('name = ' . $db->Quote($jname));
+		            ->where('name = ' . $db->quote($jname));
                 $db->setQuery($query);
                 $db->execute();
             }
@@ -156,7 +156,7 @@ class JFusionController extends JControllerLegacy
 	            $query = $db->getQuery(true)
 		            ->select('dual_login')
 		            ->from('#__jfusion')
-		            ->where('name = ' . $db->Quote($jname));
+		            ->where('name = ' . $db->quote($jname));
                 $db->setQuery($query);
                 $dual_login = $db->loadResult();
                 if ($dual_login > 1) {
@@ -164,7 +164,7 @@ class JFusionController extends JControllerLegacy
 	                $query = $db->getQuery(true)
 		                ->update('#__jfusion')
 		                ->set('check_encryption = 1')
-		                ->where('name = ' . $db->Quote($jname));
+		                ->where('name = ' . $db->quote($jname));
                     $db->setQuery($query);
                     $db->execute();
                 } else {
@@ -172,7 +172,7 @@ class JFusionController extends JControllerLegacy
 		                ->update('#__jfusion')
 		                ->set('dual_login = 1')
 		                ->set('check_encryption = 1')
-		                ->where('name = ' . $db->Quote($jname));
+		                ->where('name = ' . $db->quote($jname));
                     $db->setQuery($query);
                     $db->execute();
                 }
@@ -184,7 +184,7 @@ class JFusionController extends JControllerLegacy
 		            ->update('#__jfusion')
 		            ->set('dual_login = 0')
 		            ->set('check_encryption = 0')
-		            ->where('name = ' . $db->Quote($jname));
+		            ->where('name = ' . $db->quote($jname));
                 $db->setQuery($query);
                 $db->execute();
             }
@@ -232,7 +232,7 @@ class JFusionController extends JControllerLegacy
 			    $query = $db->getQuery(true)
 				    ->update('#__jfusion')
 				    ->set('status = ' . $config_status['config'])
-				    ->where('name = ' . $db->Quote($jname));
+				    ->where('name = ' . $db->quote($jname));
 
 			    $db->setQuery($query);
 			    $db->execute();
@@ -277,7 +277,7 @@ class JFusionController extends JControllerLegacy
 	    $query = $db->getQuery(true)
 		    ->select('syncid')
 		    ->from('#__jfusion_sync')
-		    ->where('syncid =' . $db->Quote($syncid));
+		    ->where('syncid =' . $db->quote($syncid));
 
         $db->setQuery($query);
 
@@ -385,7 +385,7 @@ class JFusionController extends JControllerLegacy
 		    $query = $db->getQuery(true)
 			    ->select('syncid')
 			    ->from('#__jfusion_sync')
-			    ->where('syncid =' . $db->Quote($syncid));
+			    ->where('syncid =' . $db->quote($syncid));
 
 		    $db->setQuery($query);
 		    if (!$db->loadResult()) {
@@ -524,7 +524,7 @@ class JFusionController extends JControllerLegacy
 			    ->select('count(*)')
 			    ->from('#__jfusion')
 			    ->where('original_name IS NULL')
-		        ->where('name LIKE ' . $db->Quote($jname));
+		        ->where('name LIKE ' . $db->quote($jname));
 
 		    $db->setQuery($query);
 		    $record = $db->loadResult();
@@ -532,7 +532,7 @@ class JFusionController extends JControllerLegacy
 		    $query = $db->getQuery(true)
 			    ->select('id')
 			    ->from('#__jfusion')
-			    ->where('name = ' . $db->Quote($new_jname));
+			    ->where('name = ' . $db->quote($new_jname));
 
 		    $db->setQuery($query);
 		    $exsist = $db->loadResult();
@@ -587,7 +587,7 @@ class JFusionController extends JControllerLegacy
 	    $query = $db->getQuery(true)
 		    ->select('count(*)')
 		    ->from('#__jfusion')
-		    ->where('original_name LIKE ' . $db->Quote($jname));
+		    ->where('original_name LIKE ' . $db->quote($jname));
 
         $db->setQuery($query);
         $copys = $db->loadResult();
@@ -666,14 +666,14 @@ class JFusionController extends JControllerLegacy
             foreach ($syncid as $key => $value) {
 	            $query = $db->getQuery(true)
 		            ->delete('#__jfusion_sync')
-		            ->where('syncid = ' . $db->Quote($key));
+		            ->where('syncid = ' . $db->quote($key));
 
                 $db->setQuery($query);
                 $db->execute();
 
 	            $query = $db->getQuery(true)
 		            ->delete('#__jfusion_sync_details')
-		            ->where('syncid = ' . $db->Quote($key));
+		            ->where('syncid = ' . $db->quote($key));
 
 	            $db->setQuery($query);
                 $db->execute();
@@ -766,7 +766,7 @@ JS;
 	            $query = $db->getQuery(true)
 		            ->update('#__jfusion')
 	                ->set('ordering = ' .(int) $index)
-		            ->where('name = ' . $db->Quote($id));
+		            ->where('name = ' . $db->quote($id));
 
 	            $db->setQuery($query);
 
@@ -868,7 +868,7 @@ JS;
 				    $query = $db->getQuery(true)
 					    ->select('name , original_name')
 					    ->from('#__jfusion')
-					    ->where('name = ' . $db->Quote($jname));
+					    ->where('name = ' . $db->quote($jname));
 
 				    $db->setQuery($query);
 				    $plugin = $db->loadObject();
@@ -914,7 +914,7 @@ JS;
 							    $query = $db->getQuery(true)
 								    ->update('#__jfusion')
 								    ->set('status = ' . $config_status['config'])
-								    ->where('name = ' . $db->Quote($jname));
+								    ->where('name = ' . $db->quote($jname));
 
 							    $db->setQuery($query);
 							    $db->execute();
@@ -984,7 +984,7 @@ JS;
 	    $query = $db->getQuery(true)
 		    ->select('original_name')
 		    ->from('#__jfusion')
-		    ->where('name = ' . $db->Quote($jname));
+		    ->where('name = ' . $db->quote($jname));
 
         $db->setQuery($query);
         $original_name = $db->loadResult();

@@ -82,7 +82,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 	        $query = $db->getQuery(true)
 		        ->select('syncid')
 		        ->from('#__jfusion_sync')
-		        ->where('syncid = ' . $db->Quote($syncid));
+		        ->where('syncid = ' . $db->quote($syncid));
 
             $db->setQuery($query);
             if ($db->loadResult()) {

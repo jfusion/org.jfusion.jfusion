@@ -751,7 +751,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 			    $query = $db->getQuery(true)
 				    ->select('topic_title')
 				    ->from('#__topics')
-				    ->where('topic_id = ' . $db->Quote($topic_id));
+				    ->where('topic_id = ' . $db->quote($topic_id));
 
 			    $db->setQuery($query);
 			    $topic_title = $db->loadObject();

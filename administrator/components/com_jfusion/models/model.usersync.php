@@ -71,14 +71,14 @@ class JFusionUsersync
 	    $query = $db->getQuery(true)
 		    ->select('*')
 		    ->from('#__jfusion_sync_details')
-		    ->where('syncid = ' . $db->Quote($syncid));
+		    ->where('syncid = ' . $db->quote($syncid));
 
 	    if (!empty($sort)) {
 		    $query->order($sort . ' ' . $dir);
 	    }
 
         if ($type != 'all') {
-	        $query->where('action = ' . $db->Quote($type));
+	        $query->where('action = ' . $db->quote($type));
         }
         $db->setQuery($query, $limitstart, $limit);
         $results = $db->loadObjectList('id');
@@ -101,10 +101,10 @@ class JFusionUsersync
 	    $query = $db->getQuery(true)
 		    ->select('COUNT(*)')
 		    ->from('#__jfusion_sync_details')
-		    ->where('syncid = ' . $db->Quote($syncid));
+		    ->where('syncid = ' . $db->quote($syncid));
 
         if ($type != 'all') {
-	        $query->where('action = ' . $db->Quote($type));
+	        $query->where('action = ' . $db->quote($type));
         }
         $db->setQuery($query);
         return $db->loadResult();
@@ -148,8 +148,8 @@ class JFusionUsersync
 
 	    $query = $db->getQuery(true)
 		    ->update('#__jfusion_sync')
-		    ->set('syncdata = ' . $db->Quote($serialized))
-		    ->where('syncid = ' . $db->Quote($syncdata['syncid']));
+		    ->set('syncdata = ' . $db->quote($serialized))
+		    ->where('syncid = ' . $db->quote($syncdata['syncid']));
 
         $db->setQuery($query);
         $db->execute();
@@ -169,7 +169,7 @@ class JFusionUsersync
 	    $query = $db->getQuery(true)
 		    ->select('syncdata')
 		    ->from('#__jfusion_sync')
-		    ->where('syncid = ' . $db->Quote($syncid));
+		    ->where('syncid = ' . $db->quote($syncid));
 
         $db->setQuery($query);
         $serialized = $db->loadResult();
@@ -256,8 +256,8 @@ class JFusionUsersync
 
 		$query = $db->getQuery(true)
 			->update('#__jfusion_sync_details')
-			->set('action = ' . $db->Quote('resolved'))
-			->where('id = ' . $db->Quote($id));
+			->set('action = ' . $db->quote('resolved'))
+			->where('id = ' . $db->quote($id));
 
         $db->setQuery($query);
         $db->execute();
@@ -426,8 +426,8 @@ class JFusionUsersync
 
 					    $query = $db->getQuery(true)
 						    ->update('#__jfusion_sync')
-						    ->set('time_end = ' . $db->Quote(time()))
-						    ->where('syncid = ' . $db->Quote($syncdata['syncid']));
+						    ->set('time_end = ' . $db->quote(time()))
+						    ->where('syncid = ' . $db->quote($syncdata['syncid']));
 
 					    $db->setQuery($query);
 					    $db->execute();
@@ -452,7 +452,7 @@ class JFusionUsersync
 	    $query = $db->getQuery(true)
 		    ->update('#__jfusion_sync')
 		    ->set('active = ' . (int) $status)
-		    ->where('syncid = ' . $db->Quote($syncid));
+		    ->where('syncid = ' . $db->quote($syncid));
 
         $db->setQuery($query);
         $db->execute();
@@ -470,7 +470,7 @@ class JFusionUsersync
 	        $query = $db->getQuery(true)
 		        ->select('active')
 		        ->from('#__jfusion_sync')
-		        ->where('syncid = ' . $db->Quote($syncid));
+		        ->where('syncid = ' . $db->quote($syncid));
 
             $db->setQuery($query);
             $status = $db->loadResult();

@@ -217,7 +217,7 @@ class com_jfusionInstallerScript
 			$query = $db->getQuery(true)
 				->update('#__jfusion')
 				->set('slave = 0')
-				->where('name = ' . $db->Quote('joomla_ext'))
+				->where('name = ' . $db->quote('joomla_ext'))
 				->where('slave = 3');
 
 			$db->setQuery($query);
@@ -226,7 +226,7 @@ class com_jfusionInstallerScript
 			$query = $db->getQuery(true)
 				->update('#__jfusion')
 				->set('dual_login = 0')
-				->where('name = ' . $db->Quote('joomla_ext'))
+				->where('name = ' . $db->quote('joomla_ext'))
 				->where('dual_login = 3');
 			$db->setQuery($query);
 			$db->execute();
@@ -363,7 +363,7 @@ class com_jfusionInstallerScript
 				foreach($results as $result) {
 					$col_inserts = array();
 					foreach($columns as $column) {
-						$col_inserts[] = $db->Quote($result->$column);
+						$col_inserts[] = $db->quote($result->$column);
 					}
 					$row_inserts[] = '(' . implode(', ', $col_inserts) . ')';
 				}
@@ -379,7 +379,7 @@ class com_jfusionInstallerScript
 				//add com_content to components column
 				$query = $db->getQuery(true)
 					->update('#__jfusion_discussion_bot')
-					->set('component = ' . $db->Quote('com_content'));
+					->set('component = ' . $db->quote('com_content'));
 				$db->setQuery($query);
 				try {
 					$db->execute();
@@ -405,7 +405,7 @@ class com_jfusionInstallerScript
 
 						$query = $db->getQuery(true)
 							->update('#__jfusion_discussion_bot')
-							->set('component = ' . $db->Quote('com_content'));
+							->set('component = ' . $db->quote('com_content'));
 
 						$db->setQuery($query);
 						$db->execute();
@@ -480,7 +480,7 @@ class com_jfusionInstallerScript
 					$query = $db->getQuery(true)
 						->select('count(*)')
 						->from('#__jfusion')
-						->where('original_name LIKE ' . $db->Quote($row->name));
+						->where('original_name LIKE ' . $db->quote($row->name));
 
 					$db->setQuery($query);
 					$copys = $db->loadResult();

@@ -39,7 +39,7 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 		$query = $db->getQuery(true)
 			->select('params')
 			->from('#__modules')
-			->where('module = ' . $db->Quote('mod_jfusion_mageselectblock'))
+			->where('module = ' . $db->quote('mod_jfusion_mageselectblock'))
 			->where('id = ' . $db->Quote ( $cid [0] ));
 
 		$db->setQuery ( $query );

@@ -188,7 +188,7 @@ class JFusionModelInstaller extends InstallerModelInstall
 	    $query = $db->getQuery(true)
 		    ->select('id')
 		    ->from('#__jfusion')
-		    ->where('name = ' . $db->Quote($jname));
+		    ->where('name = ' . $db->quote($jname));
 
         $db->setQuery($query);
         $myId = $db->loadResult();
@@ -219,7 +219,7 @@ class JFusionModelInstaller extends InstallerModelInstall
 	    $query = $db->getQuery(true)
 		    ->select('id')
 		    ->from('#__jfusion')
-		    ->where('name = ' . $db->Quote($jname));
+		    ->where('name = ' . $db->quote($jname));
 
         $db->setQuery($query);
         $myId = $db->loadResult();
@@ -391,7 +391,7 @@ class JFusionPluginInstaller extends JObject
 			            $query = $db->getQuery(true)
 				            ->select('id, ' . implode(', ', $features))
 				            ->from('#__jfusion')
-				            ->where('name = ' . $db->Quote($name));
+				            ->where('name = ' . $db->quote($name));
 
 			            $db->setQuery($query);
 
@@ -437,7 +437,7 @@ class JFusionPluginInstaller extends JObject
 			            $query = $db->getQuery(true)
 				            ->select('name')
 				            ->from('#__jfusion')
-				            ->where('original_name = ' . $db->Quote($name));
+				            ->where('original_name = ' . $db->quote($name));
 
 			            $db->setQuery($query);
 			            $copiedPlugins = $db->loadObjectList();
@@ -499,7 +499,7 @@ class JFusionPluginInstaller extends JObject
 		    $query = $db->getQuery(true)
 			    ->select('name , original_name')
 			    ->from('#__jfusion')
-			    ->where('name = ' . $db->Quote($jname));
+			    ->where('name = ' . $db->quote($jname));
 
 		    $db->setQuery($query);
 		    $plugin = $db->loadObject();
@@ -512,19 +512,19 @@ class JFusionPluginInstaller extends JObject
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__jfusion')
-			    ->where('name = ' . $db->Quote($jname));
+			    ->where('name = ' . $db->quote($jname));
 		    $db->setQuery($query);
 		    $db->execute();
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__jfusion_discussion_bot')
-			    ->where('jname = ' . $db->Quote($jname));
+			    ->where('jname = ' . $db->quote($jname));
 		    $db->setQuery($query);
 		    $db->execute();
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__jfusion_users_plugin')
-			    ->where('jname = ' . $db->Quote($jname));
+			    ->where('jname = ' . $db->quote($jname));
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -641,7 +641,7 @@ class JFusionPluginInstaller extends JObject
 	                $query = $db->getQuery(true)
 		                ->select('*')
 		                ->from('#__jfusion')
-		                ->where('name = ' . $db->Quote($jname));
+		                ->where('name = ' . $db->quote($jname));
 
                     $db->setQuery($query);
                     $plugin_entry = $db->loadObject();

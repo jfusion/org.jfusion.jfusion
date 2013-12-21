@@ -628,7 +628,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$query = $db->getQuery(true)
 				->select('id_topic, id_board, subject')
 				->from('#__members')
-				->where('id_topic = ' . $db->Quote($topic_id));
+				->where('id_topic = ' . $db->quote($topic_id));
 
 			$db->setQuery($query);
 			$topic = $db->loadObject();
@@ -646,7 +646,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 						->select('b.id_parent , b.id_board, b.id_cat, b.name , c.name as catname')
 						->from('#__boards AS b')
 						->innerJoin('#__categories AS c ON b.id_cat = c.id_cat')
-						->where('id_board = ' . $db->Quote($board_id));
+						->where('id_board = ' . $db->quote($board_id));
 
 					$db->setQuery($query);
 					$result = $db->loadObject();

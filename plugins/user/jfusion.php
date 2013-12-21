@@ -120,7 +120,7 @@ class plgUserJfusion extends JPlugin
 
 	        $query = $db->getQuery(true)
 		        ->delete('#__session')
-		        ->where('userid = ' . $db->Quote($user['id']));
+		        ->where('userid = ' . $db->quote($user['id']));
 
 	        $db->setQuery($query);
             $db->execute();
@@ -807,9 +807,9 @@ class plgUserJfusion extends JPlugin
 		        $query = $db->getQuery(true)
 			        ->select('folder, type, element, params')
 			        ->from('#__extensions')
-			        ->where('type =' . $db->Quote('plugin'))
-			        ->where('element =' . $db->Quote('joomla'))
-			        ->where('folder =' . $db->Quote('user'))
+			        ->where('type =' . $db->quote('plugin'))
+			        ->where('element =' . $db->quote('joomla'))
+			        ->where('folder =' . $db->quote('user'))
 			        ->where('access IN (' . $levels . ')');
 
 		        $plugin = $db->setQuery($query, 0, 1)->loadObject();

@@ -37,8 +37,8 @@ switch($task)
 		$query = $db->getQuery(true)
 			->select('name')
 			->from('#__plugins')
-			->where('folder = ' . $db->Quote($folder))
-			->where('element = ' . $db->Quote($element));
+			->where('folder = ' . $db->quote($folder))
+			->where('element = ' . $db->quote($element));
 
 		$db->setQuery($query);
 		$name = $db->loadResult();

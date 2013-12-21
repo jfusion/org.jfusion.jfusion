@@ -560,7 +560,7 @@ JS;
 				    ->select('t.title AS thread, f.title AS forum, f.forumid, f.parentid, f.parentlist')
 				    ->from('#__thread AS t')
 			        ->join('', '#__forum AS f ON t.forumid = f.forumid')
-				    ->where('t.threadid = ' . $db->Quote($tid));
+				    ->where('t.threadid = ' . $db->quote($tid));
 
 			    $db->setQuery($query);
 			    $result = $db->loadObject();
@@ -598,7 +598,7 @@ JS;
 				    ->select('t.title AS thread, t.threadid, f.title AS forum, f.forumid, f.parentid, f.parentlist')
 				    ->from('#__thread AS t')
 			        ->join('', '#__post AS p ON t.forumid = f.forumid AND t.threadid = p.threadid')
-				    ->where('p.postid = ' . $db->Quote($pid));
+				    ->where('p.postid = ' . $db->quote($pid));
 
 			    $db->setQuery($query);
 			    $result = $db->loadObject();
@@ -641,7 +641,7 @@ JS;
 				    $query = $db->getQuery(true)
 					    ->select('username')
 					    ->from('#__user')
-					    ->where('userid = ' . $db->Quote($uid));
+					    ->where('userid = ' . $db->quote($uid));
 
 				    $db->setQuery($query);
 				    $username = $db->loadResult();

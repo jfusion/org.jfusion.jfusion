@@ -56,8 +56,8 @@ class JFusionForum_joomla_int extends JFusionForum
 				$query = $db->getQuery(true)
 					->select('id')
 					->from('#__menu')
-					->where('type = ' . $db->Quote('component'))
-					->where('link LIKE ' . $db->Quote('%com_comprofiler%'));
+					->where('type = ' . $db->quote('component'))
+					->where('link LIKE ' . $db->quote('%com_comprofiler%'));
 				$db->setQuery($query, 0, 1);
 				$itemid = $db->loadResult();
 				if ($itemid) {
@@ -66,8 +66,8 @@ class JFusionForum_joomla_int extends JFusionForum
 					$query = $db->getQuery(true)
 						->select('id')
 						->from('#__menu')
-						->where('type = ' . $db->Quote('component'))
-						->where('link LIKE ' . $db->Quote('%com_community%'));
+						->where('type = ' . $db->quote('component'))
+						->where('link LIKE ' . $db->quote('%com_community%'));
 					$db->setQuery($query, 0, 1);
 					$itemid = $db->loadResult();
 					if ($itemid) {
@@ -76,8 +76,8 @@ class JFusionForum_joomla_int extends JFusionForum
 						$query = $db->getQuery(true)
 							->select('id')
 							->from('#__menu')
-							->where('type = ' . $db->Quote('component'))
-							->where('link LIKE ' . $db->Quote('%com_joomunity%'));
+							->where('type = ' . $db->quote('component'))
+							->where('link LIKE ' . $db->quote('%com_joomunity%'));
 						$db->setQuery($query, 0, 1);
 						$itemid = $db->loadResult();
 						if ($itemid) {
