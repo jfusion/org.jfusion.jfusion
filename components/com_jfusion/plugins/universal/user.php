@@ -233,11 +233,7 @@ class JFusionUser_universal extends JFusionUser
 					foreach ($value->type as $type) {
 						switch ($type) {
 							case 'PASSWORD':
-								if ( isset($userinfo->password_clear) ) {
-									$query->set($value->field . ' = ' . $db->quote($this->helper->getValue($value->fieldtype, $userinfo->password_clear, $userinfo)));
-								} else {
-									$query->set($value->field . ' = ' . $db->quote($userinfo->password));
-								}
+								$query->set($value->field . ' = ' . $db->quote($this->helper->getHashedPassword($value->fieldtype, $value->value, $userinfo)));
 								break;
 							case 'SALT':
 								if (!isset($userinfo->password_salt)) {
@@ -657,11 +653,7 @@ class JFusionUser_universal extends JFusionUser
 											}
 											break;
 										case 'PASSWORD':
-											if ( isset($userinfo->password_clear) ) {
-												$user->$field = $this->helper->getValue($value->fieldtype, $userinfo->password_clear, $userinfo);
-											} else {
-												$user->$field = $userinfo->password;
-											}
+											$user->$field = $this->helper->getHashedPassword($value->fieldtype, $value->value, $userinfo);
 											break;
 										case 'SALT':
 											if (!isset($userinfo->password_salt)) {
