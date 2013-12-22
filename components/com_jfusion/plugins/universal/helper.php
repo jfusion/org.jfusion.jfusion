@@ -382,7 +382,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 	/**
 	 * @param $type
 	 * @param $value
-	 * @param null $userinfo
+	 * @param stdClass $userinfo
 	 *
 	 * @return int|null|string
 	 */
