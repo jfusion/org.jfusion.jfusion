@@ -373,12 +373,41 @@ class JFusionHelper_universal {
 				mt_srand((double)microtime()*1000000);
 				while (strlen($activatecode)<$len+1) $out.=$base{mt_rand(0,$max)};
 				break;
-			case 'MD5':
-				$out = md5($value);
-				break;
 			case 'NULL':
 				$out = null;
 				break;
+		}
+		return $out;
+	}
+
+	/**
+	 * @param $type
+	 * @param $value
+	 * @param stdClass $userinfo
+	 *
+	 * @return int|null|string
+	 */
+	function getHashedPassword($type, $value, $userinfo) {
+		if (!isset($userinfo->password_clear)) {
+			$out = $userinfo->password;
+		} else if ($type == 'CUSTOM') {
+			$out = $this->getValue($type, $value, $userinfo);
+		} else {
+			$out = '';
+			$value = html_entity_decode($value);
+			$password = $userinfo->password_clear;
+			switch ($type) {
+				case 'MD5_SALT':
+					$password .= $userinfo->password_salt;
+				case 'MD5':
+					$out = md5($password);
+					break;
+				case 'SHA1_SALT':
+					$password .= $userinfo->password_salt;
+				case 'SHA1':
+					$out = sha1($password);
+					break;
+			}
 		}
 		return $out;
 	}

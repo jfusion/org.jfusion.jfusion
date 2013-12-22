@@ -244,17 +244,13 @@ class JFusionUser_universal extends JFusionUser {
 				foreach ($value->type as $type) {
 					switch ($type) {
 						case 'PASSWORD':
-							if ( isset($userinfo->password_clear) ) {
-								$qset[] = $value->field.' = '.$db->quote($helper->getValue($value->fieldtype,$userinfo->password_clear,$userinfo));
-							} else {
-								$qset[] = $value->field.' = '.$db->quote($userinfo->password);
-							}
+							$qset[] = $value->field . ' = ' . $db->quote($helper->getHashedPassword($value->fieldtype, $value->value, $userinfo));
 							break;
 						case 'SALT':
 							if (!isset($userinfo->password_salt)) {
-								$qset[] = $value->field.' = '.$db->quote($helper->getValue($value->fieldtype,$value->value,$userinfo));
+								$qset[] = $value->field . ' = ' . $db->quote($helper->getValue($value->fieldtype, $value->value, $userinfo));
 							} else {
-								$qset[] = $value->field.' = '.$db->quote($existinguser->password_salt);
+								$qset[] = $value->field . ' = ' . $db->quote($existinguser->password_salt);
 							}
 							break;
 					}
@@ -677,11 +673,7 @@ class JFusionUser_universal extends JFusionUser {
 										}
 										break;
 									case 'PASSWORD':
-										if ( isset($userinfo->password_clear) ) {
-											$user->$field = $helper->getValue($value->fieldtype,$userinfo->password_clear,$userinfo);
-										} else {
-											$user->$field = $userinfo->password;
-										}
+										$user->$field = $helper->getHashedPassword($value->fieldtype, $value->value, $userinfo);
 										break;
 									case 'SALT':
 										if (!isset($userinfo->password_salt)) {
