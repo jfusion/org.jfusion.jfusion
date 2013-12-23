@@ -621,7 +621,7 @@ class JFusionUser_magento extends JFusionUser {
 		if ($errors) {
 			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR');
 		} else {
-			$status['debug'][] = JText::_('PASSWORD_UPDATE') . $existinguser->password;
+			$status['debug'][] = JText::_('PASSWORD_UPDATE');
 		}
 	}
 
@@ -651,7 +651,7 @@ class JFusionUser_magento extends JFusionUser {
 		if ($errors) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
 		} else {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$status['debug'][] = JText::_('ACTIVATION_UPDATE') ;
 		}
 	}
 
@@ -669,7 +669,7 @@ class JFusionUser_magento extends JFusionUser {
 		if ($errors) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
 		} else {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$status['debug'][] = JText::_('ACTIVATION_UPDATE') ;
 		}
 	}
 
