@@ -173,34 +173,6 @@ class JFusionAdmin_moodle extends JFusionAdmin
 		    return array();
 	    }
     }
-    /**
-     * @return string|array
-     */
-    function getDefaultUsergroup()
-    {
-	    try {
-		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
-
-		    if ($usergroups !== null) {
-			    //we want to output the usergroup name
-			    $db = JFusionFactory::getDatabase($this->getJname());
-
-			    $query = $db->getQuery(true)
-				    ->select('name')
-				    ->from('#__role')
-				    ->where('id = ' . (int)$usergroups);
-
-			    $db->setQuery($query);
-			    $group = $db->loadResult();
-		    } else {
-			    $group = '';
-		    }
-	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
-		    $group = '';
-	    }
-	    return $group;
-    }
 
     /**
      * @return bool

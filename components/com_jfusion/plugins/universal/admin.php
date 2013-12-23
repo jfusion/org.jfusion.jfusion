@@ -60,29 +60,6 @@ class JFusionAdmin_universal extends JFusionAdmin
 		return $usergrouplist;
 	}
 
-	/**
-	 * @return string|array
-	 */
-	function getDefaultUsergroup()
-	{
-		$usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
-
-		$groups = array();
-		if ($usergroups !== null) {
-			if (!$this->isMultiGroup()) {
-				$usergroups = array($usergroups);
-			}
-
-
-			$list = $this->getUsergroupList();
-			foreach ($list as $group) {
-				if(in_array($group ->id, $usergroups)){
-					$groups[] = $group->name;
-				}
-			}
-		}
-		return $groups;
-	}
 
 	/**
 	 * Returns the a list of users of the integrated software

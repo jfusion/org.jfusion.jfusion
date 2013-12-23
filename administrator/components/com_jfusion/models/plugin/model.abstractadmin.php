@@ -70,8 +70,20 @@ class JFusionAdmin extends JFusionPlugin
      */
     function getUsergroupList()
     {
-        return array();
-    }
+            $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+
+            $groups = array();
+            if ($usergroups !== null) {
+                $list = $this->getUsergroupList();
+                foreach ($list as $group) {
+                    if(in_array($group ->id, $usergroups)){
+                        $groups[] = $group->name;
+                    }
+                }
+            }
+            return $groups;
+        }
+
 
     /**
      * Function used to display the default usergroup in the JFusion plugin overview
@@ -80,7 +92,18 @@ class JFusionAdmin extends JFusionPlugin
      */
     function getDefaultUsergroup()
     {
-        return '';
+        $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+
+        $groups = array();
+        if ($usergroups !== null) {
+            $list = $this->getUsergroupList();
+            foreach ($list as $group) {
+                if(in_array($group ->id, $usergroups)){
+                    $groups[] = $group->name;
+                }
+            }
+        }
+        return $groups;
     }
 
     /**

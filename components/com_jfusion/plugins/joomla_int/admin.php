@@ -98,28 +98,6 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 		}
 	}
 
-	/**
-	 * Returns the a list of usersgroups of the integrated software
-	 *
-	 * @return array List of usergroups
-	 */
-	public function getUsergroupList()
-	{
-		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
-
-			$query = $db->getQuery(true)
-				->select('id, title as name')
-				->from('#__usergroups');
-
-			$db->setQuery($query);
-			//getting the results
-			return $db->loadObjectList();
-		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-			return array();
-		}
-	}
 
 	/**
 	 * Function used to display the default usergroup in the JFusion plugin overview
