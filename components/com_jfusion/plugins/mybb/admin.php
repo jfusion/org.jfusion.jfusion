@@ -86,7 +86,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	        $query = $db->getQuery(true)
 		        ->select('value')
 		        ->from('#__settings')
-		        ->where('name = ' . $db->Quote('bburl'));
+		        ->where('name = ' . $db->quote('bburl'));
 
 	        $db->setQuery($query);
             $bb_url = $db->loadResult();
@@ -98,7 +98,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	        $query = $db->getQuery(true)
 		        ->select('value')
 		        ->from('#__settings')
-		        ->where('name = ' . $db->Quote('cookiedomain'));
+		        ->where('name = ' . $db->quote('cookiedomain'));
 
 	        $db->setQuery($query);
             $cookiedomain = $db->loadResult();
@@ -107,7 +107,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	        $query = $db->getQuery(true)
 		        ->select('value')
 		        ->from('#__settings')
-		        ->where('name = ' . $db->Quote('cookiepath'));
+		        ->where('name = ' . $db->quote('cookiepath'));
 
 	        $db->setQuery($query);
             $cookiepath = $db->loadResult();
@@ -226,7 +226,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 		    $query = $db->getQuery(true)
 			    ->select('value')
 			    ->from('#__settings')
-			    ->where('name = ' . $db->Quote('disableregs'));
+			    ->where('name = ' . $db->quote('disableregs'));
 
 	        $db->setQuery($query);
 	        $disableregs = $db->loadResult();

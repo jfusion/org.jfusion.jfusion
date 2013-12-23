@@ -54,7 +54,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    ->select('a.user_id as userid, a.username as name, a.username_clean as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type')
 			    ->from('#__users as a')
 		        ->join('LEFT OUTER', '#__groups as b ON a.group_id = b.group_id')
-		        ->where($identifier_type . ' = ' . $db->Quote($identifier));
+		        ->where($identifier_type . ' = ' . $db->quote($identifier));
 
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
@@ -67,7 +67,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    ->select('ug.group_id as group_id, g.group_name')
 					    ->from('#__user_group as ug')
 					    ->join('LEFT OUTER', '#__groups as g ON ug.group_id = g.group_id')
-					    ->where('ug.user_id = ' . $db->Quote($result->userid));
+					    ->where('ug.user_id = ' . $db->quote($result->userid));
 
 				    $db->setQuery($query);
 				    $groups = $db->loadObjectList();
@@ -294,7 +294,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 								    $query = $jdb->getQuery(true)
 									    ->select('user_id')
 									    ->from('#__sessions_keys')
-									    ->where('key_id = ' . $jdb->Quote(md5($persistant_cookie)));
+									    ->where('key_id = ' . $jdb->quote(md5($persistant_cookie)));
 
 								    $jdb->setQuery($query);
 								    $persistant_cookie_userid = $jdb->loadResult();
@@ -406,7 +406,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('user_password = ' . $db->Quote($existinguser->password))
+			    ->set('user_password = ' . $db->quote($existinguser->password))
 			    ->set('user_pass_convert = 0')
 			    ->where('user_id = ' . (int)$existinguser->userid);
 
@@ -444,7 +444,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('user_email = ' . $db->Quote($userinfo->email))
+			    ->set('user_email = ' . $db->quote($userinfo->email))
 			    ->where('user_id = ' . (int)$existinguser->userid);
 
 		    $db->setQuery($query);
@@ -531,7 +531,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    //update correct group colors where applicable
 				    $query = $db->getQuery(true)
 					    ->update('#__forums')
-					    ->set('forum_last_poster_colour = ' . $db->Quote($user->user_colour))
+					    ->set('forum_last_poster_colour = ' . $db->quote($user->user_colour))
 					    ->where('forum_last_poster_id = ' . (int)$existinguser->userid);
 
 				    $db->setQuery($query);
@@ -544,7 +544,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    //update correct group colors where applicable
 				    $query = $db->getQuery(true)
 					    ->update('#__topics')
-					    ->set('topic_first_poster_colour = ' . $db->Quote($user->user_colour))
+					    ->set('topic_first_poster_colour = ' . $db->quote($user->user_colour))
 					    ->where('topic_poster = ' . (int)$existinguser->userid);
 
 				    $db->setQuery($query);
@@ -556,7 +556,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    try {
 				    $query = $db->getQuery(true)
 					    ->update('#__topics')
-					    ->set('topic_last_poster_colour = ' . $db->Quote($user->user_colour))
+					    ->set('topic_last_poster_colour = ' . $db->quote($user->user_colour))
 					    ->where('topic_last_poster_id = ' . (int)$existinguser->userid);
 
 				    $db->setQuery($query);
@@ -576,8 +576,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    try {
 					    $query = $db->getQuery(true)
 						    ->update('#__config')
-						    ->set('config_value = ' . $db->Quote($user->user_colour))
-						    ->where('config_name = ' . $db->Quote('newest_user_id'));
+						    ->set('config_value = ' . $db->quote($user->user_colour))
+						    ->where('config_name = ' . $db->quote('newest_user_id'));
 
 					    $db->setQuery($query);
 						$db->execute();
@@ -696,7 +696,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    ->update('#__users')
 			    ->set('user_type = 0')
 			    ->set('user_inactive_reason = 0')
-			    ->set('user_actkey = ' . $db->Quote(''))
+			    ->set('user_actkey = ' . $db->quote(''))
 			    ->where('user_id = ' . (int)$existinguser->userid);
 
 		    $db->setQuery($query);
@@ -724,7 +724,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    ->update('#__users')
 			    ->set('user_type = 1')
 			    ->set('user_inactive_reason = 1')
-			    ->set('user_actkey = ' . $db->Quote($userinfo->activation))
+			    ->set('user_actkey = ' . $db->quote($userinfo->activation))
 			    ->where('user_id = ' . (int)$existinguser->userid);
 
 		    $db->setQuery($query);
@@ -883,7 +883,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
 					    ->set('config_value = config_value + 1')
-					    ->where('config_name = ' . $db->Quote('num_users'));
+					    ->where('config_name = ' . $db->quote('num_users'));
 
 				    $db->setQuery($query);
 				    $db->execute();
@@ -891,8 +891,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    //update the newest username
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
-					    ->set('config_value = ' . $db->Quote($userinfo->username))
-					    ->where('config_name = ' . $db->Quote('newest_username'));
+					    ->set('config_value = ' . $db->quote($userinfo->username))
+					    ->where('config_name = ' . $db->quote('newest_username'));
 
 				    $db->setQuery($query);
 				    $db->execute();
@@ -901,7 +901,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
 					    ->set('config_value = ' . (int)$user->user_id )
-					    ->where('config_name = ' . $db->Quote('newest_user_id'));
+					    ->where('config_name = ' . $db->quote('newest_user_id'));
 
 				    $db->setQuery($query);
 				    $db->execute();
@@ -911,8 +911,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    //set the correct new username color
 					    $query = $db->getQuery(true)
 						    ->update('#__config')
-						    ->set('config_value = ' . $db->Quote($user->user_colour))
-						    ->where('config_name = ' . $db->Quote('newest_user_colour'));
+						    ->set('config_value = ' . $db->quote($user->user_colour))
+						    ->where('config_name = ' . $db->quote('newest_user_colour'));
 
 					    $db->setQuery($query);
 					    $db->execute();
@@ -1049,8 +1049,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $query = $db->getQuery(true)
 				    ->update('#__forums')
 				    ->set('forum_last_poster_id = 1')
-				    ->set('forum_last_poster_name = ' . $db->Quote($post_username))
-				    ->set('forum_last_poster_colour = ' . $db->Quote(''))
+				    ->set('forum_last_poster_name = ' . $db->quote($post_username))
+				    ->set('forum_last_poster_colour = ' . $db->quote(''))
 				    ->where('forum_last_poster_id = ' . $user_id);
 
 			    $db->setQuery($query);
@@ -1063,7 +1063,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $query = $db->getQuery(true)
 				    ->update('#__posts')
 				    ->set('poster_id = 1')
-				    ->set('post_username = ' . $db->Quote($post_username))
+				    ->set('post_username = ' . $db->quote($post_username))
 				    ->where('poster_id = ' . $user_id);
 
 			    $db->setQuery($query);
@@ -1088,8 +1088,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $query = $db->getQuery(true)
 				    ->update('#__topics')
 				    ->set('topic_poster = 1')
-				    ->set('topic_first_poster_name = ' . $db->Quote($post_username))
-				    ->set('topic_first_poster_colour = ' . $db->Quote(''))
+				    ->set('topic_first_poster_name = ' . $db->quote($post_username))
+				    ->set('topic_first_poster_colour = ' . $db->quote(''))
 				    ->where('topic_poster = ' . $user_id);
 
 			    $db->setQuery($query);
@@ -1102,8 +1102,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $query = $db->getQuery(true)
 				    ->update('#__topics')
 				    ->set('topic_last_poster_id = 1')
-				    ->set('topic_last_poster_name = ' . $db->Quote($post_username))
-				    ->set('topic_last_poster_colour = ' . $db->Quote(''))
+				    ->set('topic_last_poster_name = ' . $db->quote($post_username))
+				    ->set('topic_last_poster_colour = ' . $db->quote(''))
 				    ->where('topic_last_poster_id = ' . $user_id);
 
 			    $db->setQuery($query);
@@ -1251,7 +1251,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $query = $db->getQuery(true)
 			    ->update('#__config')
 			    ->set('config_value = config_value - 1')
-			    ->where('config_name = ' . $db->Quote('num_users'));
+			    ->where('config_name = ' . $db->quote('num_users'));
 
 		    $db->setQuery($query);
 		    $db->execute();
@@ -1277,8 +1277,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    //update the newest username
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
-					    ->set('config_value = ' . $db->Quote($newest_user->username))
-					    ->where('config_name = ' . $db->Quote('newest_username'));
+					    ->set('config_value = ' . $db->quote($newest_user->username))
+					    ->where('config_name = ' . $db->quote('newest_username'));
 
 				    $db->setQuery($query);
 				    $db->execute();
@@ -1287,7 +1287,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
 					    ->set('config_value = ' . $newest_user->user_id)
-					    ->where('config_name = ' . $db->Quote('newest_user_id'));
+					    ->where('config_name = ' . $db->quote('newest_user_id'));
 
 				    $db->setQuery($query);
 				    $db->execute();
@@ -1295,8 +1295,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    //set the correct new username color
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
-					    ->set('config_value = ' . $db->Quote($newest_user->user_colour))
-					    ->where('config_name = ' . $db->Quote('newest_user_colour'));
+					    ->set('config_value = ' . $db->quote($newest_user->user_colour))
+					    ->where('config_name = ' . $db->quote('newest_user_colour'));
 
 				    $db->setQuery($query);
 				    $db->execute();
@@ -1429,7 +1429,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    ->select('b.group_name')
 					    ->from('#__users as a')
 					    ->join('LEFT OUTER', '#__groups as b ON a.group_id = b.group_id')
-					    ->where('a.user_id = ' . $db->Quote($userid_cookie_value));
+					    ->where('a.user_id = ' . $db->quote($userid_cookie_value));
 
 				    $db->setQuery($query);
 				    $group_name = $db->loadresult();
@@ -1466,7 +1466,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $query = $db->getQuery(true)
 								    ->select('user_id')
 								    ->from('#__sessions_keys')
-								    ->where('key_id = ' . $db->Quote(md5($persistant_cookie)));
+								    ->where('key_id = ' . $db->quote(md5($persistant_cookie)));
 
 							    if ($debug) {
 								    JFusionFunction::raiseNotice('Using phpBB persistant cookie to find user', $this->getJname());
@@ -1475,7 +1475,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $query = $db->getQuery(true)
 								    ->select('session_user_id')
 								    ->from('#__sessions')
-								    ->where('session_id = ' . $db->Quote($sid_cookie_value));
+								    ->where('session_id = ' . $db->quote($sid_cookie_value));
 
 							    if ($debug) {
 								    JFusionFunction::raiseNotice('Using phpBB sid cookie to find user', $this->getJname());

@@ -129,7 +129,7 @@ class JFusionPlugin
 				$query = $db->getQuery(true)
 					->select('status')
 					->from('#__jfusion')
-					->where('name = ' . $db->Quote($jname));
+					->where('name = ' . $db->quote($jname));
 
 				$db->setQuery($query);
 				$result = $db->loadResult();

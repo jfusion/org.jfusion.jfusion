@@ -45,8 +45,8 @@ class JFormFieldForumListSearchPlugin extends JFormField
 		    $query = $db->getQuery(true)
 			    ->select('params')
 			    ->from('#__extensions')
-			    ->where('element = ' . $db->Quote('jfusion'))
-			    ->where('folder = ' . $db->Quote('search'));
+			    ->where('element = ' . $db->quote('jfusion'))
+			    ->where('folder = ' . $db->quote('search'));
 
 	        $db->setQuery($query);
 	        $params = $db->loadResult();

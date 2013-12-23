@@ -39,7 +39,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 
 	/**
 	 * @param string $type
-	 * @return bool
+	 * @return bool|stdClass
 	 */
 	function getMapRaw($type = 'user') {
 		if( !is_array($this->mapraw) ) {
@@ -73,9 +73,13 @@ class JFusionHelper_universal extends JFusionPlugin {
 					$obj->type = $value;
 					if (isset($map->value->$key)) {
 						$obj->value = $map->value->$key;
+					} else {
+						$obj->value = null;
 					}
 					if (isset($map->type->$key)) {
 						$obj->fieldtype = $map->type->$key;
+					} else {
+						$obj->fieldtype = null;
 					}
 					$this->map[$type][$key] = $obj;
 				}
@@ -174,7 +178,19 @@ class JFusionHelper_universal extends JFusionPlugin {
 		if ( !is_array($types) ) {
 			$types = array();
 			$type = new stdClass;
+			$type->name = $type->id = 'MD5_SALT';
+			$types[$type->id] = $type;
+
+			$type = new stdClass;
 			$type->name = $type->id = 'MD5';
+			$types[$type->id] = $type;
+
+			$type = new stdClass;
+			$type->name = $type->id = 'SHA1_SALT';
+			$types[$type->id] = $type;
+
+			$type = new stdClass;
+			$type->name = $type->id = 'SHA1';
 			$types[$type->id] = $type;
 
 			$type = new stdClass;
@@ -285,6 +301,9 @@ class JFusionHelper_universal extends JFusionPlugin {
 			$type->name = $type->id = 'PASSWORD';
 			$type->types[] = $defaulttype;
 			$type->types[] = $this->getType('MD5');
+			$type->types[] = $this->getType('MD5_SALT');
+			$type->types[] = $this->getType('SHA1');
+			$type->types[] = $this->getType('SHA1_SALT');
 			$type->types[] = $this->getType('CUSTOM');
 			$fields[$type->id] = $type;
 
@@ -353,12 +372,41 @@ class JFusionHelper_universal extends JFusionPlugin {
 				mt_srand((double)microtime()*1000000);
 				while (strlen($activatecode)<$len+1) $out .= $base{mt_rand(0, $max)};
 				break;
-			case 'MD5':
-				$out = md5($value);
-				break;
 			case 'NULL':
 				$out = null;
 				break;
+		}
+		return $out;
+	}
+
+	/**
+	 * @param $type
+	 * @param $value
+	 * @param stdClass $userinfo
+	 *
+	 * @return int|null|string
+	 */
+	function getHashedPassword($type, $value, $userinfo) {
+		if (!isset($userinfo->password_clear)) {
+			$out = $userinfo->password;
+		} else if ($type == 'CUSTOM') {
+			$out = $this->getValue($type, $value, $userinfo);
+		} else {
+			$out = '';
+			$value = html_entity_decode($value);
+			$password = $userinfo->password_clear;
+			switch ($type) {
+				case 'MD5_SALT':
+					$password .= $userinfo->password_salt;
+				case 'MD5':
+					$out = md5($password);
+					break;
+				case 'SHA1_SALT':
+					$password .= $userinfo->password_salt;
+				case 'SHA1':
+					$out = sha1($password);
+					break;
+			}
 		}
 		return $out;
 	}

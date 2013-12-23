@@ -48,7 +48,7 @@ class JFusionUser_elgg extends JFusionUser {
 		    $query = $db->getQuery(true)
 			    ->select('guid as userid, username, name, name as lastname, email, password, salt as password_salt,banned as block')
 			    ->from('#__users_entity')
-		        ->where('username = ' . $db->Quote($identifier));
+		        ->where('username = ' . $db->quote($identifier));
 
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
@@ -299,7 +299,7 @@ class JFusionUser_elgg extends JFusionUser {
 					        ->update('#__users_entity')
 					        ->set('password = ' . $db->quote($userinfo->password))
 					        ->set('salt = ' . $db->quote($userinfo->password_salt))
-					        ->where('username = ' . $db->Quote($username));
+					        ->where('username = ' . $db->quote($username));
 
 				        $db->setQuery($query);
 				        $db->execute();

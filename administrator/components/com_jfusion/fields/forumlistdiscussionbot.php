@@ -44,8 +44,8 @@ class JFormFieldForumListDiscussionbot extends JFormField
 		    $query = $db->getQuery(true)
 			    ->select('params')
 			    ->from('#__extensions')
-			    ->where('element = ' . $db->Quote('jfusion'))
-			    ->where('folder = ' . $db->Quote('content'));
+			    ->where('element = ' . $db->quote('jfusion'))
+			    ->where('folder = ' . $db->quote('content'));
 
 		    $db->setQuery($query);
 		    $params = $db->loadResult();

@@ -110,7 +110,7 @@ jimport('joomla.html.pane');
 				$query = $db->getQuery(true)
 					->select('name , original_name')
 					->from('#__jfusion')
-					->where('name = ' . $db->Quote($this->jname));
+					->where('name = ' . $db->quote($this->jname));
 
 		        $db->setQuery($query);
 		        $plugin = $db->loadObject();

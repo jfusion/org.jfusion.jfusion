@@ -99,8 +99,8 @@ class JFusionFunctionAdmin
 	    $query = $db->getQuery(true)
 		    ->select('enabled')
 		    ->from('#__extensions')
-		    ->where('element = ' . $db->Quote($element))
-		    ->where('folder = ' . $db->Quote($folder));
+		    ->where('element = ' . $db->quote($element))
+		    ->where('folder = ' . $db->quote($folder));
 
         $db->setQuery($query);
         $result = $db->loadResult();

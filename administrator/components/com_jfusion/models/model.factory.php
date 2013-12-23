@@ -296,7 +296,7 @@ class JFusionFactory
 	    $query = $db->getQuery(true)
 		    ->select('params')
 		    ->from('#__jfusion')
-		    ->where('name = ' . $db->Quote($jname));
+		    ->where('name = ' . $db->quote($jname));
 
         $db->setQuery($query);
         $params = $db->loadResult();

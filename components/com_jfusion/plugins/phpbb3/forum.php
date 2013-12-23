@@ -206,7 +206,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    $filters = func_get_args();
 			    for ($i = 3; $i < $numargs; $i++) {
 				    if ($filters[$i][0] == 'userid') {
-					    $where.= ' HAVING userid = ' . $db->Quote($filters[$i][1]);
+					    $where.= ' HAVING userid = ' . $db->quote($filters[$i][1]);
 				    }
 			    }
 		    }
@@ -765,7 +765,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 
 			if($updateLastPost) {
 				$forum_stats->forum_last_post_id 		=  $postid;
-				$forum_stats->forum_last_post_subject	= $db->Quote($subject);
+				$forum_stats->forum_last_post_subject	= $db->quote($subject);
 				$forum_stats->forum_last_post_time 		=  $timestamp;
 				$forum_stats->forum_last_poster_id 		=  (int) $userid;
 				$forum_stats->forum_last_poster_name 	=  $phpbbUser->username;
@@ -868,7 +868,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			//update the thread title
 			$query = $db->getQuery(true)
 				->update('#__topics')
-				->set('topic_title = ' . $db->Quote($subject))
+				->set('topic_title = ' . $db->quote($subject))
 				->where('topic_id = ' . (int) $threadid);
 
 			$db->setQuery($query);
@@ -907,11 +907,11 @@ class JFusionForum_phpbb3 extends JFusionForum
 					$query = $db->getQuery(true)
 						->select('COUNT(*)')
 						->from('#__users')
-						->where('username = ' . $db->Quote($userinfo->username))
-						->where('username = ' . $db->Quote($username_clean))
-						->where('username_clean = ' . $db->Quote($userinfo->username))
-						->where('username_clean = ' . $db->Quote($username_clean))
-						->where('LOWER(user_email) = ' . $db->Quote(strtolower($userinfo->username)));
+						->where('username = ' . $db->quote($userinfo->username))
+						->where('username = ' . $db->quote($username_clean))
+						->where('username_clean = ' . $db->quote($userinfo->username))
+						->where('username_clean = ' . $db->quote($username_clean))
+						->where('LOWER(user_email) = ' . $db->quote(strtolower($userinfo->username)));
 
 					$db->setQuery($query);
 					$result = $db->loadResult();

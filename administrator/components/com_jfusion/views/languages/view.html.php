@@ -86,8 +86,8 @@ class jfusionViewlanguages extends JViewLegacy
 	    $query = $db->getQuery(true)
 		    ->select('element, manifest_cache, extension_id')
 		    ->from('#__extensions')
-		    ->where('name LIKE ' . $db->Quote('jfusion %'))
-	        ->where('type LIKE ' . $db->Quote('file'))
+		    ->where('name LIKE ' . $db->quote('jfusion %'))
+	        ->where('type LIKE ' . $db->quote('file'))
 		    ->where('client_id = 0');
 
 	    $db->setQuery($query);

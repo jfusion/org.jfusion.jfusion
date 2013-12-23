@@ -62,7 +62,7 @@ class JFusionUser_joomla_ext extends JFusionUser
 			$query = $db->getQuery(true)
 				->select('id as userid, activation, username, name, password, email, block, params')
 				->from('#__users')
-				->where($identifier_type . ' = ' . $db->Quote($identifier));
+				->where($identifier_type . ' = ' . $db->quote($identifier));
 			$db->setQuery($query);
 
 			$result = $db->loadObject();
@@ -72,7 +72,7 @@ class JFusionUser_joomla_ext extends JFusionUser
 					->select('a.group_id, b.title as name')
 					->from('#__user_usergroup_map as a')
 					->innerJoin('#__usergroups as b ON a.group_id = b.id')
-					->where('a.user_id = ' . $db->Quote($result->userid));
+					->where('a.user_id = ' . $db->quote($result->userid));
 
 				$db->setQuery($query);
 				$groupList = $db->loadObjectList();
@@ -206,7 +206,7 @@ class JFusionUser_joomla_ext extends JFusionUser
 				$query = $db->getQuery(true)
 					->select('id as userid, username, email')
 					->from('#__users')
-					->where('email = ' . $db->Quote($userinfo->email));
+					->where('email = ' . $db->quote($userinfo->email));
 
 				$db->setQuery($query);
 				$existinguser = $db->loadObject();
@@ -218,7 +218,7 @@ class JFusionUser_joomla_ext extends JFusionUser
 					$query = $db->getQuery(true)
 						->select('id')
 						->from('#__users')
-						->where('username=' . $db->Quote($username_clean));
+						->where('username=' . $db->quote($username_clean));
 
 					$db->setQuery($query);
 					while ($db->loadResult()) {
@@ -226,7 +226,7 @@ class JFusionUser_joomla_ext extends JFusionUser
 						$query = $db->getQuery(true)
 							->select('id')
 							->from('#__users')
-							->where('username=' . $db->Quote($username_clean));
+							->where('username=' . $db->quote($username_clean));
 
 						$db->setQuery($query);
 					}
@@ -388,7 +388,7 @@ class JFusionUser_joomla_ext extends JFusionUser
 
 				$query = $db->getQuery(true)
 					->delete('#__user_usergroup_map')
-					->where('user_id = ' . $db->Quote($existinguser->userid));
+					->where('user_id = ' . $db->quote($existinguser->userid));
 				$db->setQuery($query);
 
 				$db->execute();

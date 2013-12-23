@@ -252,12 +252,12 @@ class executeJFusionHook
 				        $query = 'INSERT IGNORE INTO #__session
                             ( sessionhash, userid, host, idhash, lastactivity, location, styleid, languageid, loggedin, inforum, inthread, incalendar, badlocation, useragent, bypass, profileupdate )
                             VALUES ( ' .
-					            $vdb->Quote($vars['dbsessionhash']) .
+					            $vdb->quote($vars['dbsessionhash']) .
 					            ' ,' . $vars['userid'] .
-					            ' ,' . $vdb->Quote($vars['host']) .
-					            ' ,' . $vdb->Quote($vars['idhash']) .
+					            ' ,' . $vdb->quote($vars['host']) .
+					            ' ,' . $vdb->quote($vars['idhash']) .
 					            ' ,' . $vars['lastactivity'] .
-					            ' ,' . $vdb->Quote($vars['location']) .
+					            ' ,' . $vdb->quote($vars['location']) .
 					            ' ,' . $vars['styleid'] .
 					            ' ,' . $vars['languageid'] .
 					            ' ,' . $vars['loggedin'] .
@@ -265,7 +265,7 @@ class executeJFusionHook
 					            ' ,' . $vars['inthread'] .
 					            ' ,' . $vars['incalendar'] .
 					            ' ,' . $vars['badlocation'] .
-					            ' ,' . $vdb->Quote($vars['useragent']) .
+					            ' ,' . $vdb->quote($vars['useragent']) .
 					            ' ,' . $bypass .
 					            ' ,' . $vars['profileupdate'] .
 					        ' )';

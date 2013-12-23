@@ -79,7 +79,7 @@ class JFormFieldjfusionsql extends JFormField
 					    $query = $db->getQuery(true)
 						    ->select('enabled')
 						    ->from('#__extensions')
-						    ->where('element = ' . $db->Quote('com_k2'));
+						    ->where('element = ' . $db->quote('com_k2'));
 
 					    $db->setQuery($query);
 					    $enabled = $db->loadResult();

@@ -192,7 +192,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 		    $query = $db->getQuery(true)
 			    ->select('id_group as id, name as name')
 			    ->from('#__group_lang')
-			    ->where('id_lang IN (' . $db->Quote($this->helper->getDefaultLanguage()) . ')');
+			    ->where('id_lang IN (' . $db->quote($this->helper->getDefaultLanguage()) . ')');
 
 		    $db->setQuery($query);
 		    //getting the results

@@ -129,7 +129,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$query = $db->getQuery(true)
 				->select('*')
 				->from('#__user')
-				->where($identifier_type . ' = ' . $db->Quote($identifier));
+				->where($identifier_type . ' = ' . $db->quote($identifier));
 
 			$db->setQuery($query);
 			$result = $db->loadObject();
@@ -148,7 +148,7 @@ class JFusionUser_moodle extends JFusionUser {
 					$query = $db->getQuery(true)
 						->select('value')
 						->from('#__config')
-						->where('name = ' . $db->Quote('sitepolicy'));
+						->where('name = ' . $db->quote('sitepolicy'));
 
 					$db->setQuery($query);
 					$sitepolicy = $db->loadResult();
@@ -341,7 +341,7 @@ class JFusionUser_moodle extends JFusionUser {
 
 			$query = $db->getQuery(true)
 				->update('#__user')
-				->set('password = ' . $db->Quote($existinguser->password))
+				->set('password = ' . $db->quote($existinguser->password))
 				->where('id = ' . $existinguser->userid);
 
 			$db->setQuery($query);
@@ -383,7 +383,7 @@ class JFusionUser_moodle extends JFusionUser {
 
 			$query = $db->getQuery(true)
 				->update('#__user')
-				->set('email = ' . $db->Quote($userinfo->email))
+				->set('email = ' . $db->quote($userinfo->email))
 				->where('id = ' . (int)$existinguser->userid);
 
 			$db->setQuery($query);
@@ -410,7 +410,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$query = $db->getQuery(true)
 				->select('value')
 				->from('#__config')
-				->where('name = ' . $db->Quote('sitepolicy'));
+				->where('name = ' . $db->quote('sitepolicy'));
 			$db->setQuery($query);
 			$sitepolicy = $db->loadObject();
 			if ($sitepolicy->value) {
@@ -446,7 +446,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$query = $db->getQuery(true)
 				->select('value')
 				->from('#__config')
-				->where('name = ' . $db->Quote('sitepolicy'));
+				->where('name = ' . $db->quote('sitepolicy'));
 			$db->setQuery($query);
 			$sitepolicy = $db->loadObject();
 			if ($sitepolicy->value) {
@@ -542,7 +542,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$query = $db->getQuery(true)
 				->select('*')
 				->from('#__user')
-				->where($identifier_type . ' = ' . $db->Quote($identifier));
+				->where($identifier_type . ' = ' . $db->quote($identifier));
 
 			$db->setQuery($query);
 			$result = $db->loadObject();
@@ -552,7 +552,7 @@ class JFusionUser_moodle extends JFusionUser {
 				$query = $db->getQuery(true)
 					->update('#__user')
 					->set('deleted = 0')
-					->where('id = ' . $db->Quote($result->id));
+					->where('id = ' . $db->quote($result->id));
 				$db->setQuery($query);
 				$db->execute();
 			} else {
@@ -567,7 +567,7 @@ class JFusionUser_moodle extends JFusionUser {
 					$query = $db->getQuery(true)
 						->select('value')
 						->from('#__config')
-						->where('name = ' . $db->Quote('mnet_localhost_id'));
+						->where('name = ' . $db->quote('mnet_localhost_id'));
 
 					$db->setQuery($query);
 					$mnet_localhost_id = $db->loadResult();
@@ -575,7 +575,7 @@ class JFusionUser_moodle extends JFusionUser {
 					$query = $db->getQuery(true)
 						->select('value')
 						->from('#__config')
-						->where('name = ' . $db->Quote('lang'));
+						->where('name = ' . $db->quote('lang'));
 
 					$db->setQuery($query);
 					$lang = $db->loadResult();
@@ -583,7 +583,7 @@ class JFusionUser_moodle extends JFusionUser {
 					$query = $db->getQuery(true)
 						->select('value')
 						->from('#__config')
-						->where('name = ' . $db->Quote('country'));
+						->where('name = ' . $db->quote('country'));
 
 					$db->setQuery($query);
 					$country = $db->loadResult();

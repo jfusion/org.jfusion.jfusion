@@ -60,9 +60,9 @@ class JFusionUser_joomla_int extends JFusionUser {
 					->innerJoin('#__jfusion_users as a ON a.id = b.id');
 
 				if ($this->params->get('case_insensitive')) {
-					$query->where('LOWER(a.' . $identifier_type . ') = ' . $db->Quote(strtolower($identifier)));
+					$query->where('LOWER(a.' . $identifier_type . ') = ' . $db->quote(strtolower($identifier)));
 				} else {
-					$query->where('a.' . $identifier_type . ' = ' . $db->Quote($identifier));
+					$query->where('a.' . $identifier_type . ' = ' . $db->quote($identifier));
 				}
 				//first check the JFusion user table if the identifier_type = username
 				$db->setQuery($query);
@@ -74,9 +74,9 @@ class JFusionUser_joomla_int extends JFusionUser {
 						->from('#__users');
 
 					if ($this->params->get('case_insensitive')) {
-						$query->where('LOWER(' . $identifier_type . ') = ' . $db->Quote(strtolower($identifier)));
+						$query->where('LOWER(' . $identifier_type . ') = ' . $db->quote(strtolower($identifier)));
 					} else {
-						$query->where($identifier_type . ' = ' . $db->Quote($identifier));
+						$query->where($identifier_type . ' = ' . $db->quote($identifier));
 					}
 					//check directly in the joomla user table
 					$db->setQuery($query);
@@ -84,7 +84,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 					$result = $db->loadObject();
 					if ($result) {
 						//update the lookup table so that we don't have to do a double query next time
-						$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $result->userid . ', ' . $db->Quote($identifier) . ')';
+						$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $result->userid . ', ' . $db->quote($identifier) . ')';
 						$db->setQuery($query);
 						try {
 							$db->execute();
@@ -97,7 +97,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 				$query = $db->getQuery(true)
 					->select('id as userid, activation, username, name, password, email, block, params')
 					->from('#__users')
-					->where($identifier_type . ' = ' . $db->Quote($identifier));
+					->where($identifier_type . ' = ' . $db->quote($identifier));
 
 				$db->setQuery($query);
 				$result = $db->loadObject();
@@ -107,7 +107,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 					->select('a.group_id, b.title as name')
 					->from('#__user_usergroup_map as a')
 					->innerJoin('#__usergroups as b ON a.group_id = b.id')
-					->where('a.user_id = ' . $db->Quote($result->userid));
+					->where('a.user_id = ' . $db->quote($result->userid));
 
 				$db->setQuery($query);
 				$groupList = $db->loadObjectList();
@@ -215,7 +215,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 			}
 
 			//update the lookup table
-			$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $existinguser->userid . ', ' . $db->Quote($userinfo->username) . ')';
+			$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $existinguser->userid . ', ' . $db->quote($userinfo->username) . ')';
 			$db->setQuery($query);
 			$db->execute();
 
@@ -248,7 +248,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 				$query = $db->getQuery(true)
 					->select('id as userid, username, email')
 					->from('#__users')
-					->where('email = ' . $db->Quote($userinfo->email));
+					->where('email = ' . $db->quote($userinfo->email));
 
 				$db->setQuery($query);
 				$existinguser = $db->loadObject();
@@ -260,7 +260,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 					$query = $db->getQuery(true)
 						->select('id')
 						->from('#__users')
-						->where('username=' . $db->Quote($username_clean));
+						->where('username=' . $db->quote($username_clean));
 
 					$db->setQuery($query);
 					while ($db->loadResult()) {
@@ -268,7 +268,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 						$query = $db->getQuery(true)
 							->select('id')
 							->from('#__users')
-							->where('username=' . $db->Quote($username_clean));
+							->where('username=' . $db->quote($username_clean));
 
 						$db->setQuery($query);
 					}
@@ -329,7 +329,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 					//create a new entry in the lookup table
 					//if the credentialed username is available (from the auth plugin), store it; otherwise store the $userinfo username
 					$username = (!empty($userinfo->credentialed_username)) ? $userinfo->credentialed_username : $userinfo->username;
-					$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->Quote($username) . ')';
+					$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->quote($username) . ')';
 					$db->setQuery($query);
 					try {
 						$db->execute();
@@ -375,8 +375,8 @@ class JFusionUser_joomla_int extends JFusionUser {
 	    $query = $db->getQuery(true)
 		    ->select('id')
 		    ->from('#__jfusion_users')
-		    ->where('username = ' . $db->Quote($username), 'OR')
-		    ->where('LOWER(username) = ' . $db->Quote(strtolower($userinfo->email)));
+		    ->where('username = ' . $db->quote($username), 'OR')
+		    ->where('LOWER(username) = ' . $db->quote(strtolower($userinfo->email)));
 
         $db->setQuery($query);
         $userid = $db->loadResult();
@@ -405,7 +405,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 	        $query = $db->getQuery(true)
 		        ->select('id')
 		        ->from('#__users')
-		        ->where('username  = ' . $db->Quote($username));
+		        ->where('username  = ' . $db->quote($username));
 
             $db->setQuery($query);
             $userid = $db->loadResult();
@@ -570,7 +570,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 
 				$query = $db->getQuery(true)
 					->delete('#__user_usergroup_map')
-					->where('user_id = ' . $db->Quote($existinguser->userid));
+					->where('user_id = ' . $db->quote($existinguser->userid));
 
 				$db->setQuery($query);
 

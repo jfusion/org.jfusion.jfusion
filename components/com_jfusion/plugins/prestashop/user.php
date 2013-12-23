@@ -57,7 +57,7 @@ class JFusionUser_prestashop extends JFusionUser
 		    $query = $db->getQuery(true)
 			    ->select('id_customer as userid, email, email as username, passwd as password, firstname, lastname, active')
 			    ->from('#__customer')
-			    ->where('email =' . $db->Quote($identifier));
+			    ->where('email =' . $db->quote($identifier));
 
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
@@ -66,7 +66,7 @@ class JFusionUser_prestashop extends JFusionUser
 			    $query = $db->getQuery(true)
 				    ->select('id_group')
 				    ->from('#__customer_group')
-				    ->where('id_customer =' . $db->Quote($result->userid));
+				    ->where('id_customer =' . $db->quote($result->userid));
 
 			    $db->setQuery($query);
 			    $groups = $db->loadObjectList();
@@ -124,7 +124,7 @@ class JFusionUser_prestashop extends JFusionUser
 		    $query = $db->getQuery(true)
 			    ->update('#__customer')
 			    ->set('deleted = 1')
-			    ->where('id_customer = ' . $db->Quote($identifier));
+			    ->where('id_customer = ' . $db->quote($identifier));
 
 		    $db->setQuery($query);
 		    $status['debug'][] = 'Deleted user';
@@ -191,8 +191,8 @@ class JFusionUser_prestashop extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__customer')
-			    ->set('passwd = ' . $db->Quote($existinguser->password))
-			    ->where('id_customer = ' . $db->Quote((int)$existinguser->userid));
+			    ->set('passwd = ' . $db->quote($existinguser->password))
+			    ->where('id_customer = ' . $db->quote((int)$existinguser->userid));
 
 	        $db->setQuery($query);
 
@@ -326,8 +326,8 @@ class JFusionUser_prestashop extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__customer')
-			    ->set('email = ' . $db->Quote($userinfo->email))
-			    ->where('id_customer = ' . $db->Quote((int)$existinguser->userid));
+			    ->set('email = ' . $db->quote($userinfo->email))
+			    ->where('id_customer = ' . $db->quote((int)$existinguser->userid));
 
 		    $db->setQuery($query);
 		    $db->execute();
@@ -415,7 +415,7 @@ class JFusionUser_prestashop extends JFusionUser
 
 			    $query = $db->getQuery(true)
 				    ->update('#__customer')
-				    ->set('id_default_group = ' . $db->Quote($usergroups[0]))
+				    ->set('id_default_group = ' . $db->quote($usergroups[0]))
 				    ->where('id_customer = ' . (int)$existinguser->userid);
 
 			    $db->setQuery($query);

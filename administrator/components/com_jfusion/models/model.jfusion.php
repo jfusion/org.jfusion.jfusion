@@ -89,8 +89,8 @@ class JFusionFunction
 		$query = $db->getQuery(true)
 			->select('published')
 			->from('#__extensions')
-			->where('element = ' . $db->Quote($element))
-			->where('folder = ' . $db->Quote($folder));
+			->where('element = ' . $db->quote($element))
+			->where('folder = ' . $db->quote($folder));
 
         $db->setQuery($query);
         $result = $db->loadResult();
@@ -240,8 +240,8 @@ class JFusionFunction
 				    $query = $db->getQuery(true)
 					    ->delete('#__jfusion_users')
 					    ->where('id =' . $joomla_id, 'OR')
-					    ->where('username = ' . $db->Quote($userinfo->username))
-					    ->where('LOWER(username) = ' . strtolower($db->Quote($userinfo->email)));
+					    ->where('username = ' . $db->quote($userinfo->username))
+					    ->where('LOWER(username) = ' . strtolower($db->quote($userinfo->email)));
 
 				    $db->setQuery($query);
 				    try {
@@ -254,8 +254,8 @@ class JFusionFunction
 				    $query = $db->getQuery(true)
 					    ->delete('#__jfusion_users_plugin')
 					    ->where('id =' . $joomla_id, 'OR')
-					    ->where('username = ' . $db->Quote($userinfo->username))
-					    ->where('LOWER(username) = ' . strtolower($db->Quote($userinfo->email)));
+					    ->where('username = ' . $db->quote($userinfo->username))
+					    ->where('LOWER(username) = ' . strtolower($db->quote($userinfo->email)));
 				    $db->setQuery($query);
 				    try {
 					    $db->execute();
@@ -269,7 +269,7 @@ class JFusionFunction
 				    $query = $db->getQuery(true)
 					    ->select('id')
 					    ->from('#__users')
-					    ->where('username = ' . $db->Quote($userinfo->username));
+					    ->where('username = ' . $db->quote($userinfo->username));
 
 				    $db->setQuery($query);
 				    $joomla_id = $db->loadResult();
@@ -294,9 +294,9 @@ class JFusionFunction
 						    $user = JFusionFactory::getUser($jname->name);
 						    $puserinfo = $user->getUser($userinfo);
 						    if ($delete) {
-							    $queries[] = '(id = ' . $joomla_id . ' AND jname = ' . $db->Quote($jname->name) . ')';
+							    $queries[] = '(id = ' . $joomla_id . ' AND jname = ' . $db->quote($jname->name) . ')';
 						    } else {
-							    $queries[] = '(' . $db->Quote($puserinfo->userid) . ',' . $db->Quote($puserinfo->username) . ', ' . $joomla_id . ', ' . $db->Quote($jname->name) . ')';
+							    $queries[] = '(' . $db->quote($puserinfo->userid) . ',' . $db->quote($puserinfo->username) . ', ' . $joomla_id . ', ' . $db->quote($jname->name) . ')';
 						    }
 						    unset($user);
 						    unset($puserinfo);
@@ -324,9 +324,9 @@ class JFusionFunction
 					    $query = $db->getQuery(true)
 						    ->delete('#__jfusion_users_plugin')
 					        ->where('id = ' . $joomla_id)
-						    ->where('jname = ' . $db->Quote($jname));
+						    ->where('jname = ' . $db->quote($jname));
 				    } else {
-					    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (' . $db->Quote($userinfo->userid) . ' ,' . $db->Quote($userinfo->username) . ' ,' . $joomla_id . ' , ' . $db->Quote($jname) . ' )';
+					    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (' . $db->quote($userinfo->userid) . ' ,' . $db->quote($userinfo->username) . ' ,' . $joomla_id . ' , ' . $db->quote($jname) . ' )';
 				    }
 				    $db->setQuery($query);
 				    try {
@@ -362,8 +362,8 @@ class JFusionFunction
 		        ->select('a.*, b.email')
 		        ->from('#__jfusion_users_plugin AS a')
 		        ->innerJoin('#__users AS b ON a.id = b.id')
-		        ->where($column . ' = ' . $db->Quote($userid))
-	            ->where('a.jname = ' . $db->Quote($jname));
+		        ->where($column . ' = ' . $db->quote($userid))
+	            ->where('a.jname = ' . $db->quote($jname));
 
             $db->setQuery($query);
             $result = $db->loadObject();
@@ -388,7 +388,7 @@ class JFusionFunction
 		            ->select('a.id, a.email')
 		            ->from('#__users AS a')
 		            ->innerJoin('#__jfusion_users as b ON a.id = b.id')
-		            ->where('b.username = ' . $db->Quote($username));
+		            ->where('b.username = ' . $db->quote($username));
 
                 $db->setQuery($query);
                 $result = $db->loadObject();
@@ -397,7 +397,7 @@ class JFusionFunction
 	                $query = $db->getQuery(true)
 		                ->select('id, email')
 		                ->from('#__users')
-		                ->where('username = ' . $db->Quote($username));
+		                ->where('username = ' . $db->quote($username));
 
                     $db->setQuery($query);
                     $result = $db->loadObject();
@@ -450,8 +450,8 @@ class JFusionFunction
 	    $query = $db->getQuery(true)
 		    ->delete('#__jfusion_users')
 		    ->where('id = ' . $userinfo->id, 'OR')
-	        ->where('username =' . $db->Quote($userinfo->username))
-		    ->where('LOWER(username) = ' . strtolower($db->Quote($userinfo->email)));
+	        ->where('username =' . $db->quote($userinfo->username))
+		    ->where('LOWER(username) = ' . strtolower($db->quote($userinfo->email)));
 
         $db->setQuery($query);
 	    try {
@@ -525,12 +525,12 @@ class JFusionFunction
 
 		$query = 'REPLACE INTO #__jfusion_discussion_bot SET
 					contentid = ' . $contentid . ',
-					component = ' . $fdb->Quote($option) . ',
+					component = ' . $fdb->quote($option) . ',
 					forumid = ' . $threadinfo->forumid . ',
 					threadid = ' . $threadinfo->threadid . ',
 					postid = ' . $threadinfo->postid . ',
-					modified = ' . $fdb->Quote($modified) . ',
-					jname = ' . $fdb->Quote($jname) . ',
+					modified = ' . $fdb->quote($modified) . ',
+					jname = ' . $fdb->quote($jname) . ',
 					published = ' . $published . ',
 					manual = ' . $manual;
 		$fdb->setQuery($query);
@@ -1219,9 +1219,9 @@ class JFusionFunction
 		$query = $db->getQuery(true)
 			->select('folder, type, element AS name, params')
 			->from('#__extensions')
-			->where('element = ' . $db->Quote('joomla'))
-			->where('type =' . $db->Quote('plugin'))
-			->where('folder =' . $db->Quote('authentication'));
+			->where('element = ' . $db->quote('joomla'))
+			->where('type =' . $db->quote('plugin'))
+			->where('folder =' . $db->quote('authentication'));
 
 		$plugin = $db->setQuery($query)->loadObject();
 		$plugin->type = $plugin->folder;

@@ -50,7 +50,7 @@ class JFusionUser_efront extends JFusionUser
 		    $query = $db->getQuery(true)
 			    ->select('*')
 			    ->from('#__users')
-			    ->where($identifier_type . ' = ' . $db->Quote($identifier));
+			    ->where($identifier_type . ' = ' . $db->quote($identifier));
 
 	        $db->setQuery($query);
 	        $result = $db->loadObject();
@@ -103,7 +103,7 @@ class JFusionUser_efront extends JFusionUser
 		    $query = $db->getQuery(true)
 			    ->select('action')
 			    ->from('#__logs')
-			    ->where('users_LOGIN = ' . $db->Quote($userinfo->username))
+			    ->where('users_LOGIN = ' . $db->quote($userinfo->username))
 		        ->order('timestamp desc');
 
 	        $db->setQuery($query, 0 , 1);
@@ -154,7 +154,7 @@ class JFusionUser_efront extends JFusionUser
 		        $query = $db->getQuery(true)
 			        ->select('password')
 			        ->from('#__users')
-			        ->where('login = ' . $db->Quote($userinfo->username));
+			        ->where('login = ' . $db->quote($userinfo->username));
 
 	            $db->setQuery($query);
 	            $user = $db->loadObject();
@@ -162,7 +162,7 @@ class JFusionUser_efront extends JFusionUser
 		        $query = $db->getQuery(true)
 			        ->select('value')
 			        ->from('#__configuration')
-			        ->where('name = ' . $db->Quote('autologout_time'));
+			        ->where('name = ' . $db->quote('autologout_time'));
 
 	            $db->setQuery($query);
 	            $autologout_time = $db->loadResult(); // this is in minutes
@@ -216,7 +216,7 @@ class JFusionUser_efront extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('password =' . $db->Quote($existinguser->password))
+			    ->set('password =' . $db->quote($existinguser->password))
 			    ->where('id =' . (int)$existinguser->userid);
 
 	        $db->setQuery($query);
@@ -252,7 +252,7 @@ class JFusionUser_efront extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
-			    ->set('email =' . $db->Quote($userinfo->email))
+			    ->set('email =' . $db->quote($userinfo->email))
 			    ->where('id =' . (int)$existinguser->userid);
 
 		    $db->setQuery($query);
@@ -418,7 +418,7 @@ class JFusionUser_efront extends JFusionUser
 	                    $query = $db->getQuery(true)
 		                    ->select('basic_user_type')
 		                    ->from('#__user_types')
-		                    ->where('id = ' . $db->Quote($user_types_ID));
+		                    ->where('id = ' . $db->quote($user_types_ID));
 
 	                    $db->setQuery($query);
 	                    $user_type = $db->loadResult();
@@ -436,7 +436,7 @@ class JFusionUser_efront extends JFusionUser
 		        $query = $db->getQuery(true)
 			        ->select('value')
 			        ->from('#__configuration')
-			        ->where('name = ' . $db->Quote('default_language'));
+			        ->where('name = ' . $db->quote('default_language'));
 
 	            $db->setQuery($query);
 	            $default_language = $db->loadResult();
@@ -594,7 +594,7 @@ class JFusionUser_efront extends JFusionUser
 				    $query = $db->getQuery(true)
 					    ->select('basic_user_type')
 					    ->from('#__user_types')
-					    ->where('id = ' . $db->Quote($user_types_ID));
+					    ->where('id = ' . $db->quote($user_types_ID));
 
 				    $db->setQuery($query);
 				    $user_type = $db->loadResult();
@@ -602,8 +602,8 @@ class JFusionUser_efront extends JFusionUser
 
 			    $query = $db->getQuery(true)
 				    ->update('#__users')
-				    ->set('user_type =' . $db->Quote($user_type))
-				    ->set('user_types_ID =' . $db->Quote($user_types_ID))
+				    ->set('user_type =' . $db->quote($user_type))
+				    ->set('user_types_ID =' . $db->quote($user_types_ID))
 				    ->where('id =' . (int)$existinguser->userid);
 
 			    $db->setQuery($query);

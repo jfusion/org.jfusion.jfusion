@@ -87,9 +87,9 @@ class JFusionDiscussBotHelper {
 				$query = $db->getQuery(true)
 					->select('*')
 					->from('#__jfusion_discussion_bot')
-					->where('contentid = ' . $db->Quote($this->article->id))
-					->where('jname = ' . $db->Quote($this->jname))
-					->where('component = ' . $db->Quote($this->option));
+					->where('contentid = ' . $db->quote($this->article->id))
+					->where('jname = ' . $db->quote($this->jname))
+					->where('component = ' . $db->quote($this->option));
 
 				$db->setQuery($query);
 				$threadinfo = $this->setThreadInfo($db->loadObject());
@@ -466,7 +466,7 @@ class JFusionDiscussBotHelper {
 														$query = $db->getQuery(true)
 															->select('parent')
 															->from('#__k2_categories')
-															->where('id = ' . $db->Quote($parent_id));
+															->where('id = ' . $db->quote($parent_id));
 
 														$db->setQuery($query);
 														//keep going up
@@ -498,7 +498,7 @@ class JFusionDiscussBotHelper {
 														$query = $db->getQuery(true)
 															->select('parent')
 															->from('#__k2_categories')
-															->where('id = ' . $db->Quote($parent_id));
+															->where('id = ' . $db->quote($parent_id));
 														$parent_id = $db->setQuery($query);
 													}
 												} else {

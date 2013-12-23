@@ -65,7 +65,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			$query = $db->getQuery(true)
 				->select('u.userid, u.username, u.email, u.usergroupid AS group_id, u.membergroupids, u.displaygroupid, u.password, u.salt as password_salt, u.usertitle, u.customtitle, u.posts, u.username as name')
 				->from('#__user AS u')
-				->where($identifier_type . ' = ' . $db->Quote($identifier));
+				->where($identifier_type . ' = ' . $db->quote($identifier));
 
 			if ($ignore_id) {
 				$query->where('u.userid != ' . $ignore_id);
@@ -219,9 +219,9 @@ class JFusionUser_vbulletin extends JFusionUser
 				if ($session_user) {
 					$queries[] = $db->getQuery(true)
 						->update('#__user')
-						->set('lastvisit = ' .  $db->Quote($timenow))
-						->set('lastactivity = ' .  $db->Quote($timenow - $cookie_expires))
-						->where('userid = ' . $db->Quote($session_user));
+						->set('lastvisit = ' .  $db->quote($timenow))
+						->set('lastactivity = ' .  $db->quote($timenow - $cookie_expires))
+						->where('userid = ' . $db->quote($session_user));
 
 					$queries[] = $db->getQuery(true)
 						->delete('#__session')
@@ -280,7 +280,7 @@ class JFusionUser_vbulletin extends JFusionUser
 					$query = $db->getQuery(true)
 						->select('COUNT(*)')
 						->from('#__strikes')
-						->where('strikeip = ' . $db->Quote($ip))
+						->where('strikeip = ' . $db->quote($ip))
 						->where('striketime >= ' . $time);
 
 					$db->setQuery($query);
@@ -381,9 +381,9 @@ class JFusionUser_vbulletin extends JFusionUser
 
 			$query = $db->getQuery(true)
 				->update('#__user')
-				->set('passworddate = ' . $db->Quote($date))
-				->set('password = ' . $db->Quote($existinguser->password))
-				->set('salt = ' . $db->Quote($existinguser->password_salt))
+				->set('passworddate = ' . $db->quote($date))
+				->set('password = ' . $db->quote($existinguser->password))
+				->set('salt = ' . $db->quote($existinguser->password_salt))
 				->where('userid  = ' . $existinguser->userid);
 
 			$db->setQuery($query);
@@ -717,7 +717,7 @@ class JFusionUser_vbulletin extends JFusionUser
 
 							$query = $db->getQuery(true)
 								->update('#__user')
-								->set('password = ' . $db->Quote($userinfo->password))
+								->set('password = ' . $db->quote($userinfo->password))
 								->where('userid  = ' . $userdmid);
 
 							$db->setQuery($query);

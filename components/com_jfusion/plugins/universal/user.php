@@ -47,7 +47,7 @@ class JFusionUser_universal extends JFusionUser
 			$query = $db->getQuery(true)
 				->select($field)
 				->from('#__' . $this->helper->getTable())
-				->where($identifier_type . ' = ' . $db->Quote($identifier));
+				->where($identifier_type . ' = ' . $db->quote($identifier));
 
 			$db->setQuery($query);
 			$result = $db->loadObject();
@@ -84,7 +84,7 @@ class JFusionUser_universal extends JFusionUser
 					$query = $db->getQuery(true)
 						->select($field)
 						->from('#__' . $groupt)
-						->where($userid->field . ' = ' . $db->Quote($result->userid));
+						->where($userid->field . ' = ' . $db->quote($result->userid));
 
 					$db->setQuery($query);
 					$result2 = $db->loadObject();
@@ -124,7 +124,7 @@ class JFusionUser_universal extends JFusionUser
 
 				$query = $db->getQuery(true)
 					->delete('#__' . $this->helper->getTable())
-					->where($userid->field . ' = ' . $db->Quote($userinfo->userid));
+					->where($userid->field . ' = ' . $db->quote($userinfo->userid));
 
 				$db->setQuery($query);
 				$db->execute();
@@ -135,7 +135,7 @@ class JFusionUser_universal extends JFusionUser
 
 					$query = $db->getQuery(true)
 						->delete('#__' . $this->helper->getTable('group'))
-						->where($userid->field . ' = ' . $db->Quote($userinfo->userid));
+						->where($userid->field . ' = ' . $db->quote($userinfo->userid));
 
 					$maped = $this->helper->getMap('group');
 					foreach ($maped as $value) {
@@ -144,7 +144,7 @@ class JFusionUser_universal extends JFusionUser
 							switch ($type) {
 								case 'DEFAULT':
 									if ($value->fieldtype == 'VALUE') {
-										$query->where($field . ' = ' . $db->Quote($value->value));
+										$query->where($field . ' = ' . $db->quote($value->value));
 									}
 									break;
 							}
@@ -233,11 +233,7 @@ class JFusionUser_universal extends JFusionUser
 					foreach ($value->type as $type) {
 						switch ($type) {
 							case 'PASSWORD':
-								if ( isset($userinfo->password_clear) ) {
-									$query->set($value->field . ' = ' . $db->quote($this->helper->getValue($value->fieldtype, $userinfo->password_clear, $userinfo)));
-								} else {
-									$query->set($value->field . ' = ' . $db->quote($userinfo->password));
-								}
+								$query->set($value->field . ' = ' . $db->quote($this->helper->getHashedPassword($value->fieldtype, $value->value, $userinfo)));
 								break;
 							case 'SALT':
 								if (!isset($userinfo->password_salt)) {
@@ -250,7 +246,7 @@ class JFusionUser_universal extends JFusionUser
 					}
 				}
 
-				$query->where($userid->field . ' = ' . $db->Quote($existinguser->userid));
+				$query->where($userid->field . ' = ' . $db->quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
@@ -296,7 +292,7 @@ class JFusionUser_universal extends JFusionUser
 				$query = $db->getQuery(true)
 					->update('#__' . $this->helper->getTable())
 					->set($email->field . ' = ' . $db->quote($userinfo->email))
-					->where($userid->field . '=' . $db->Quote($existinguser->userid));
+					->where($userid->field . '=' . $db->quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
@@ -347,7 +343,7 @@ class JFusionUser_universal extends JFusionUser
 					$query = $db->getQuery(true)
 						->update('#__' . $table)
 						->set($group->field . ' = ' . $db->quote(base64_decode($usergroup)))
-						->where($userid->field . '=' . $db->Quote($existinguser->userid));
+						->where($userid->field . '=' . $db->quote($existinguser->userid));
 
 					$db->setQuery($query);
 					$db->execute();
@@ -358,7 +354,7 @@ class JFusionUser_universal extends JFusionUser
 
 					$query = $db->getQuery(true)
 						->delete('#__' . $this->helper->getTable('group'))
-						->where($userid->field . ' = ' . $db->Quote($userinfo->userid));
+						->where($userid->field . ' = ' . $db->quote($userinfo->userid));
 
 					foreach ($maped as $value) {
 						$field = $value->field;
@@ -366,7 +362,7 @@ class JFusionUser_universal extends JFusionUser
 							switch ($type) {
 								case 'DEFAULT':
 									if ($value->fieldtype == 'VALUE') {
-										$query->where($field . ' = ' . $db->Quote($value->value));
+										$query->where($field . ' = ' . $db->quote($value->value));
 									}
 									break;
 							}
@@ -446,7 +442,7 @@ class JFusionUser_universal extends JFusionUser
 					$query = $db->getQuery(true)
 						->update('#__' . $this->helper->getTable())
 						->set($active->field . ' = ' . $db->quote($userStatus))
-						->where($userid->field . ' = ' . $db->Quote($existinguser->userid));
+						->where($userid->field . ' = ' . $db->quote($existinguser->userid));
 
 					$db->setQuery($query);
 					$db->execute();
@@ -486,7 +482,7 @@ class JFusionUser_universal extends JFusionUser
 				$query = $db->getQuery(true)
 					->update('#__' . $this->helper->getTable())
 					->set($active->field . ' = ' . $db->quote($userStatus))
-					->where($userid->field . ' = ' . $db->Quote($existinguser->userid));
+					->where($userid->field . ' = ' . $db->quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
@@ -519,7 +515,7 @@ class JFusionUser_universal extends JFusionUser
 				$query = $db->getQuery(true)
 					->update('#__' . $this->helper->getTable())
 					->set($activecode->field . ' = ' . $db->quote($userinfo->activation))
-					->where($userid->field . ' = ' . $db->Quote($existinguser->userid));
+					->where($userid->field . ' = ' . $db->quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
@@ -553,7 +549,7 @@ class JFusionUser_universal extends JFusionUser
 				$query = $db->getQuery(true)
 					->update('#__' . $this->helper->getTable())
 					->set($activecode->field . ' = ' . $db->quote($userinfo->activation))
-					->where($userid->field . ' = ' . $db->Quote($existinguser->userid));
+					->where($userid->field . ' = ' . $db->quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
@@ -599,7 +595,7 @@ class JFusionUser_universal extends JFusionUser
 								foreach ($value->type as $type) {
 									switch ($type) {
 										case 'USERID':
-											$query = 'SHOW COLUMNS FROM #__' . $this->helper->getTable() . ' where Field = ' . $db->Quote($field) . ' AND Extra like \'%auto_increment%\'';
+											$query = 'SHOW COLUMNS FROM #__' . $this->helper->getTable() . ' where Field = ' . $db->quote($field) . ' AND Extra like \'%auto_increment%\'';
 											$db->setQuery($query);
 											$fieldslist = $db->loadObject();
 											if ($fieldslist) {
@@ -657,11 +653,7 @@ class JFusionUser_universal extends JFusionUser
 											}
 											break;
 										case 'PASSWORD':
-											if ( isset($userinfo->password_clear) ) {
-												$user->$field = $this->helper->getValue($value->fieldtype, $userinfo->password_clear, $userinfo);
-											} else {
-												$user->$field = $userinfo->password;
-											}
+											$user->$field = $this->helper->getHashedPassword($value->fieldtype, $value->value, $userinfo);
 											break;
 										case 'SALT':
 											if (!isset($userinfo->password_salt)) {
