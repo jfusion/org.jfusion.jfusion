@@ -242,12 +242,32 @@ class JFusionAdmin_magento extends JFusionAdmin
 			    JFusionFunction::raiseWarning(JText::_('MAGENTO_NEED_API_USER'), $this->getJname());
 		    } else {
 			    // check if we have valid parameters  for apiuser and api key
+                $apipath = $this->params->get('source_url') . 'index.php/api/?wsdl';
 			    $apiuser = $this->params->get('apiuser');
 			    $apikey = $this->params->get('apikey');
 			    if (!$apiuser || !$apikey) {
 				    JFusionFunction::raiseWarning(JText::_('MAGENTO_NO_API_DATA'), $this->getJname());
 			    } else {
 				    //finally check if the apiuser and apikey are valid
+                    try {
+                        require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'soapclient.php';
+
+                        $proxi = new MagentoSoapClient($apipath);
+                        if($proxi->login($apiuser, $apikey)) {
+                        // all ok
+                            try {
+                                $proxi->endSession();
+                            } catch (Soapfault $fault) {
+                                /** @noinspection PhpUndefinedFieldInspection */
+                                $status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
+                            }
+
+                        }
+                    } catch (Soapfault $fault) {
+                        /** @noinspection PhpUndefinedFieldInspection */
+                        JFusionFunction::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
+                    }
+                /*
 				    $query = $db->getQuery(true)
 					    ->select('api_key')
 					    ->from('#__api_user')
@@ -268,6 +288,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 				    if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
 					    JFusionFunction::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
 				    }
+                */
 			    }
 		    }
 		    try {
@@ -305,240 +326,6 @@ class JFusionAdmin_magento extends JFusionAdmin
 		return $result;
 	}
 
-    /**
-     * @return string
-     */
-    public function moduleInstallation()
-    {
-        $jname = $this->getJname();
-	    try {
-		    try {
-			    JFusionFactory::getDatabase($jname);
-		    } catch (Exception $e) {
-			    throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
-		    }
-
-		    $source_path = $this->params->get('source_path', '');
-		    if (! file_exists($source_path . 'app' . DIRECTORY_SEPARATOR . 'Mage.php')) {
-			    throw new RuntimeException(JText::_('MAGE_CONFIG_SOURCE_PATH'));
-		    } else {
-			    $mod_exists = false;
-			    if (file_exists($source_path . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml')) {
-				    $mod_exists = true;
-			    }
-
-			    if ($mod_exists) {
-				    $src = 'components/com_jfusion/images/tick.png';
-				    $mod = 'uninstallModule';
-				    $text = JText::_('MODULE_UNINSTALL_BUTTON');
-			    } else {
-				    $src = 'components/com_jfusion/images/cross.png';
-				    $mod = 'installModule';
-				    $text = JText::_('MODULE_INSTALL_BUTTON');
-			    }
-
-			    $html = <<<HTML
-                <div class="button2-left">
-                    <div class="blank">
-                        <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('{$mod}');">{$text}</a>
-                    </div>
-                </div>
-
-                <img src="{$src}" style="margin-left:10px;" id="usergroups_img"/>
-HTML;
-		    }
-		    return $html;
-	    } catch (Exception $e) {
-		    return $e->getMessage();
-	    }
-
-	}
-
-    /**
-     * @return array
-     */
-    public function installModule()
-    {
-	    $status = array('error' => array(), 'debug' => array());
-		try {
-			$jname =  $this->getJname ();
-			$db = JFusionFactory::getDatabase($jname);
-			$source_path = $this->params->get('source_path');
-			jimport('joomla.filesystem.archive');
-			jimport('joomla.filesystem.file');
-			$pear_path = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'pear';
-			require_once $pear_path . DIRECTORY_SEPARATOR . 'PEAR.php';
-			$pear_archive_path = $pear_path . DIRECTORY_SEPARATOR . 'archive_tar' . DIRECTORY_SEPARATOR . 'Archive_Tar.php';
-			require_once $pear_archive_path;
-
-			$archive_filename = 'magento_module_jfusion.tar.gz';
-			$old_chdir = getcwd();
-			$src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module';
-			$src_code =  $src_archive . DIRECTORY_SEPARATOR . 'source';
-
-			// Create an archive to facilitate the installation into the Magento installation while extracting
-			chdir($src_code);
-			$tar = new Archive_Tar($archive_filename, 'gz');
-			$tar->setErrorHandling(PEAR_ERROR_PRINT);
-			$tar->createModify('app', '', '');
-			chdir($old_chdir);
-
-			$ret = JArchive::extract($src_code . DIRECTORY_SEPARATOR . $archive_filename, $source_path);
-			JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
-
-			if ($ret === true) {
-				// Initialize default data config in Magento database
-				$joomla = JFusionFactory::getParams('joomla_int');
-				$joomla_baseurl = $joomla->get('source_url');
-				$joomla_secret = $joomla->get('secret');
-
-				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/baseurl\', value = \'' . $joomla_baseurl . '\';';
-				$db->transactionStart();
-				$db->setQuery($query);
-				$db->execute();
-
-				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/installationpath\', value = \'' . JPATH_SITE . '\';';
-				$db->transactionStart();
-				$db->setQuery($query);
-				$db->execute();
-
-				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/secret_key\', value = \'' . $joomla_secret . '\';';
-				$db->transactionStart();
-				$db->setQuery($query);
-				$db->execute();
-				$status['message'] = $jname . ': ' . JText::_('INSTALL_MODULE_SUCCESS');
-			} else {
-				$status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $source_path);
-			}
-		} catch (Exception $e) {
-			if (isset($db)) {
-				$db->transactionRollback();
-			}
-			$status['error'] = $e->getMessage();
-		}
-		return $status;
-	}
-
-    /**
-     * @return array
-     */
-    public function uninstallModule()
-    {
-        $status = array('error' => array(), 'debug' => array());
-	    try {
-		    jimport('joomla.filesystem.file');
-		    jimport('joomla.filesystem.folder');
-
-		    $jname =  $this->getJname ();
-		    $db = JFusionFactory::getDatabase($jname);
-		    $source_path = $this->params->get('source_path');
-		    $xmlfile = realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
-
-		    $listfiles = JFusionFunction::getXml($xmlfile);
-		    $files = $listfiles->file;
-		    /**
-		     * @ignore
-		     * @var $file SimpleXMLElement
-		     */
-		    foreach($files as $file) {
-			    $file = (string)$file;
-			    $file = preg_replace('#/#', DIRECTORY_SEPARATOR, $file);
-			    @chmod($source_path . $file, 0777);
-			    if (!is_dir($source_path . $file)) {
-				    JFile::delete($source_path . $file);
-			    } else {
-				    JFolder::delete($source_path . $file);
-			    }
-		    }
-
-		    $paths = array();
-		    $paths[] = 'joomla/joomlaconfig/baseurl';
-		    $paths[] = 'joomla/joomlaconfig/installationpath';
-		    $paths[] = 'joomla/joomlaconfig/secret_key';
-
-		    foreach($paths as $path) {
-			    $query = $db->getQuery(true)
-				    ->delete('#__core_config_data')
-				    ->where('path = ' .  $db->Quote($path));
-
-			    $db->transactionStart();
-			    $db->setQuery($query);
-			    $db->execute();
-		    }
-
-		    $status['message'] = $jname . ': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
-	    } catch (Exception $e) {
-		    if (isset($db)) {
-			    $db->transactionRollback();
-		    }
-		    $status['error'] = $e->getMessage();
-	    }
-        return $status;
-	}
-
-    /**
-     * @return mixed|string
-     */
-    public function moduleActivation()
-    {
-		$source_path = $this->params->get('source_path');
-		
-		$jfusion_mod_xml = $source_path . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml';
-		
-		if(file_exists($jfusion_mod_xml)) {
-			$xml = JFusionFunction::getXml($jfusion_mod_xml);
-
-			$modules = $xml->modules->jfusion_joomla->active;
-			$activated = (string)$modules;
-			
-			if($activated == 'false') {
-				$activated = 0;
-			} else {
-				$activated = 1;
-			}
-
-            if ($activated) {
-                $src = 'components/com_jfusion/images/tick.png';
-                $text = JText::_('MODULE_DEACTIVATION_BUTTON');
-            } else {
-                $src = 'components/com_jfusion/images/cross.png';
-                $text = JText::_('MODULE_ACTIVATION_BUTTON');
-            }
-
-            $html = <<<HTML
-			    <div class="button2-left">
-			        <div class="blank">
-			            <a href="javascript:void(0);"  onclick="return JFusion.Plugin.module('activateModule');">{$text}</a>
-			        </div>
-			    </div>
-			    <input type="hidden" name="activation" id="activation" value="{$activated}"/>
-
-			    <img src="{$src}" style="margin-left:10px;"/>
-HTML;
-		} else {
-			$html =  JText::_('MAGE_CONFIG_FIRST');
-		}
-        return $html;
-	}
-	
-	public function activateModule()
-	{
-		jimport('joomla.filesystem.file');
-		
-		$activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
-
-		$source_path = $this->params->get('source_path');
-		$jfusion_mod_xml = $source_path . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml';
-
-		$xml = JFusionFunction::getXml($jfusion_mod_xml);
-
-		unset($xml->modules->jfusion_joomla->active);
-		$xml->modules->jfusion_joomla->addChild('active', $activation);
-
-		$buffer = '<?xml version="1.0"?>';
-		$buffer .= $xml->asXML();
-		JFile::write($jfusion_mod_xml, $buffer);
-	}
 
     /**
      * do plugin support multi usergroups
