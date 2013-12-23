@@ -296,7 +296,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 			    $query = $db->getQuery(true)
 				    ->select('value')
 				    ->from('#__core_config_data')
-				    ->where('path = ' . $db->Quote('web/session/use_remote_addr'));
+				    ->where('path = ' . $db->quote('web/session/use_remote_addr'));
 
 			    $db->setQuery($query);
 			    $value = $db->loadResult();
