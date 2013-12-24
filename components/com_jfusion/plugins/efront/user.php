@@ -97,8 +97,26 @@ class JFusionUser_efront extends JFusionUser
             }
         }
 	    try {
-	        $db = JFusionFactory::getDatabase($this->getJname());
+            $cookiedomain = $this->params->get('cookie_domain', '');
+            $cookiepath = $this->params->get('cookie_path', '/');
+            $httponly = $this->params->get('httponly', 0);
+            $secure = $this->params->get('secure', false);
+            $db = JFusionFactory::getDatabase($this->getJname());
 	        $status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'));
+
+            $expires = $this->params->get('secure', false);
+	            $name = 'cookie_login';
+	            $value = $userinfo->username;
+	            $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+
+	            $name = 'cookie_password';
+	            $value = '';
+	            $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+
+  //          unset($_COOKIE['cookie_login']);
+  //          unset($_COOKIE['cookie_password']);
+
+
 
 		    $query = $db->getQuery(true)
 			    ->select('action')
@@ -139,52 +157,53 @@ class JFusionUser_efront extends JFusionUser
      */
     function createSession($userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
-	    try {
-	        //do not create sessions for blocked users
-	        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-		        throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
-	        } else {
-	            //get cookiedomain, cookiepath
-	            $cookiedomain = $this->params->get('cookie_domain', '');
-	            $cookiepath = $this->params->get('cookie_path', '/');
-	            $httponly = $this->params->get('httponly', 0);
-	            $secure = $this->params->get('secure', false);
-	            $db = JFusionFactory::getDatabase($this->getJname());
+                try {
+                    //do not create sessions for blocked users
+                    if (!empty($userinfo->block) || !empty($userinfo->activation)) {
+                        throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
+                    } else {
+                        //get cookiedomain, cookiepath
+                        $db = JFusionFactory::getDatabase($this->getJname());
+                         $cookiedomain = $this->params->get('cookie_domain', '');
+                         $cookiepath = $this->params->get('cookie_path', '/');
+                         $httponly = $this->params->get('httponly', 0);
+                         $secure = $this->params->get('secure', false);
 
-		        $query = $db->getQuery(true)
-			        ->select('password')
-			        ->from('#__users')
-			        ->where('login = ' . $db->quote($userinfo->username));
+                        $query = $db->getQuery(true)
+                            ->select('password')
+                            ->from('#__users')
+                            ->where('login = ' . $db->quote($userinfo->username));
 
-	            $db->setQuery($query);
-	            $user = $db->loadObject();
-	            // Set cookie values
-		        $query = $db->getQuery(true)
-			        ->select('value')
-			        ->from('#__configuration')
-			        ->where('name = ' . $db->quote('autologout_time'));
+                        $db->setQuery($query);
+                        $user = $db->loadObject();
+                        // Set cookie values
+                        $query = $db->getQuery(true)
+                            ->select('value')
+                            ->from('#__configuration')
+                            ->where('name = ' . $db->quote('autologout_time'));
 
-	            $db->setQuery($query);
-	            $autologout_time = $db->loadResult(); // this is in minutes
-	            $expires = 60 * $autologout_time; // converted to seconds
-	            // correct for remember me option
-	            if (isset($options['remember'])) {
-	                if ($options['remember']) {
-	                    // Make the cookie expire in a years time
-	                    $expires = 60 * 60 * 24 * 365;
-	                }
-	            }
-	            $name = 'cookie_login';
-	            $value = $userinfo->username;
-	            $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+                        $db->setQuery($query);
+                        $autologout_time = $db->loadResult(); // this is in minutes
+                        $expires = 60 * $autologout_time; // converted to seconds
+                        // correct for remember me option
+                        if (isset($options['remember'])) {
+                            if ($options['remember']) {
+                                // Make the cookie expire in a years time
+                                $expires = 60 * 60 * 24 * 365;
+                            }
+                        }
+                        $name = 'cookie_login';
+                        $value = $userinfo->username;
+                        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 
-	            $name = 'cookie_password';
-	            $value = $user->password;
-	            $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
-	        }
-	    } catch (Exception $e) {
-		    $status['error'][] = $e->getMessage();
-	    }
+                        $name = 'cookie_password';
+                        $value = $user->password;
+                        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+                    }
+                } catch (Exception $e) {
+                    $status['error'][] = $e->getMessage();
+                }
+
         return $status;
     }
 

@@ -36,7 +36,7 @@
                 <field name="avatar_url" type="text" size="60" label="EFRONT_AVATAR_URL" default="http://www.yourdomain.com/efront/" description="EFRONT_AVATAR_URL_DESC" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="apiuser" type="text" size="60" label="APIUSER" default="" description="APIUSER_DESC" />
-                <field name="apikey" type="text" size="60" label="APIKEY" default="" description="APIKEY_DESC" />
+                <field name="apikey" type="password" size="60" label="APIKEY" default="" description="APIKEY_DESC" />
                 <field name="login_identifier" type="list" label="LOGIN_IDENTIFIER" default="1" description="LOGIN_IDENTIFIER_DESC">
                     <option value="1">USERNAME</option>
                     <option value="2">EMAIL</option>
@@ -85,6 +85,7 @@
             </fieldset>
 
             <fieldset name="CURL_OPTIONS_GENERAL">
+                <field name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="1" description="CURL_INTEGRATIONTYPE_DESC" />
                 <field name="httpauth" type="list" default="" label="CURL_HTTPAUTH" description="CURL_HTTPAUTH_DESCR">
                     <option value="">Disabled</option>
                     <option value="any">ANY</option>
@@ -98,6 +99,7 @@
                 <field name="curl_password" type="password" default="" size="60" label="CURL_PASSWORD" description="CURL_PASSWORD_DESCR" />
             </fieldset>
 
+
             <fieldset name="CURL_OPTIONS_COOKIE">
                 <field name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
                 <field name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
@@ -110,6 +112,45 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
+                <field name="override" type="text" size="60" label="CURL_COOKIE_OVERRIDE" default="login[indirect]=no" description="CURL_COOKIE_OVERRIDE_DESC" />
+                <field name="leavealone" type="text" size="60" label="CURL_COOKIE_LEAVEALONE" default="magento=>" description="CURL_COOKIE_LEAVEALONE_DESC" />
+            </fieldset>
+
+            <fieldset name="CURL_OPTIONS_LOGIN">
+                <field name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="" description="CURL_LOGIN_URL_DESC" />
+                <field name="brute_force" type="radio" class="btn-group" default="standard" label="CURL_BRUTE_FORCE" description="CURL_BRUTE_FORCE_DESC">
+                    <option value="brute_force">JYES</option>
+                    <option value="standard">JNO</option>
+                </field>
+                <field name="loginform_id" type="text" size="60" label="CURL_LOGINFORM_ID" default="login_form" description="CURL_LOGINFORM_ID_DESC" />
+                <field name="relpath" type="radio" class="btn-group" default="0" label="CURL_RELPATH" description="CURL_RELPATH_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="input_username_id" type="text" size="60" label="CURL_INPUT_USERNAME_ID" default="login" description="CURL_INPUT_USERNAME_ID_DESC" />
+                <field name="input_password_id" type="text" size="60" label="CURL_INPUT_PASSWORD_ID" default="password" description="CURL_INPUT_PASSWORD_ID_DESC" />
+                <field name="hidden" type="radio" class="btn-group" default="1" label="CURL_HIDDEN" description="CURL_HIDDEN_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="buttons" type="radio" class="btn-group" default="1" label="CURL_BUTTONS" description="CURL_BUTTONS_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+
+            <fieldset name="CURL_OPTIONS_LOGOUT">
+                <field name="logout_type" type="list" default="url" label="CURL_LOGOUT_TYPE" description="CURL_LOGOUT_TYPE_DESC">
+                    <option value="url">URL</option>
+                    <option value="form">FORM</option>
+                    <option value="brute_force">BRUTE_FORCE</option>
+                </field>
+                <field name="logout_url" type="text" size="60" label="CURL_LOGOUT_URL" default="index.php?logout=true" description="CURL_LOGOUT_URL_DESC" />
+                <field name="relpathl" type="radio" class="btn-group" default="0" label="CURL_RELPATHL" description="CURL_RELPATHL_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="postfields" type="text" size="60" label="CURL_POSTFIELDS" default="" description="CURL_POSTFIELDS_DESC" />
             </fieldset>
         </fields>
     </form>
