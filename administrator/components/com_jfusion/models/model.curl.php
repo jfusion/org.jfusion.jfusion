@@ -1318,7 +1318,24 @@ class JFusionCurl
 		return $this->status;
 	}
 
-	/**
+
+
+    /**
+     * ReadPage
+     *
+     * @param array $options curl options
+
+     * @return string something
+     */
+    public static function RemoteReadPage($options)
+    {
+        $curl = new JFusionCurl($options);
+        return $curl->ReadPage();
+    }
+
+
+
+    /**
 	 * RemoteLogout
 	 *
 	 * @param array $options curl options
