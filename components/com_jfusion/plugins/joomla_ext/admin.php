@@ -126,37 +126,6 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 		}
 	}
 
-	/**
-	 * Function used to display the default usergroup in the JFusion plugin overview
-	 *
-	 * @return string|array Default usergroup name
-	 */
-	public function getDefaultUsergroup()
-	{
-		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
-
-			if ($usergroups !== null) {
-				$group = array();
-				foreach($usergroups as $usergroup) {
-					$query = $db->getQuery(true)
-						->select('title')
-						->from('#__usergroups')
-						->where('id = ' . $usergroup);
-
-					$db->setQuery($query);
-					$group[] = $db->loadResult();
-				}
-			} else {
-				$group = '';
-			}
-		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-			$group = '';
-		}
-		return $group;
-	}
 
 	/**
 	 * Function used get usergroup name by id
