@@ -123,27 +123,23 @@ class plgContentJfusion extends JPlugin
 		$this->helper->option = JFactory::getApplication()->input->getCmd('option');
 	}
 
-
 	/**
-	 * @param $subject
+	 * @param $context
+	 * @param $article
 	 * @param $isNew
-	 * @return bool
 	 */
-	public function onAfterContentSave(&$subject, $isNew) {
+	public function onContentAfterSave($context, $article, $isNew)
+	{
 		//check to see if a valid $content object was passed on
-		$result = true;
-		if (!is_object($subject)){
+		if (!is_object($article)){
 			JFusionFunction::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
-			$result = false;
 		} else {
-			$this->article = $subject;
+			$this->article = $article;
 			$this->helper->setArticle($this->article);
 
 			//make sure there is a plugin
-			if (empty($this->jname)) {
-				$result = false;
-			} else {
-				$this->helper->debug('onAfterContentSave called');
+			if (!empty($this->jname)) {
+				$this->helper->debug('onContentAfterSave called');
 
 				//validate the article
 				// changed _validate to pass the $isNew flag, so that it will only check will happen depending on this flag
@@ -236,129 +232,9 @@ class plgContentJfusion extends JPlugin
 						$this->helper->debug('Article has not been initialized');
 					}
 				}
-				$this->helper->debug('onAfterContentSave complete', true);
+				$this->helper->debug('onContentAfterSave complete', true);
 			}
 		}
-		return $result;
-	}
-
-	/**
-	 * @param $subject
-	 * @param $params
-	 * @return bool
-	 */
-	public function onPrepareContent(&$subject, $params)
-	{
-		$result = true;
-		$this->article = $subject;
-		$this->helper->setArticle($this->article);
-
-		//reset some vars
-		$this->manual = false;
-		$this->manual_threadid = 0;
-
-		$this->validity_reason = '';
-		$this->helper->debug('onPrepareContent called');
-
-		//check to see if a valid $content object was passed on
-		if (!is_object($subject)){
-			JFusionFunction::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
-			$result = false;
-		} else {
-			//make sure there is a plugin
-			if (empty($this->jname)) {
-				$result = false;
-			} else {
-				//do nothing if this is a K2 category object
-				if ($this->helper->option == 'com_k2' && get_class($this->article) == 'TableK2Category') {
-					$result = false;
-				} else {
-					//set some variables needed throughout
-					$this->template = $this->params->get('template', 'default');
-
-					//make sure we have an actual article
-					if (!empty($this->article->id)) {
-						$this->dbtask = JFactory::getApplication()->input->get('dbtask', null);
-						$skip_new_check = ($this->dbtask == 'create_thread') ? true : false;
-						$skip_k2_check = ($this->helper->option == 'com_k2' && in_array($this->dbtask, array('unpublish_discussion', 'publish_discussion'))) ? true : false;
-
-						list($this->valid, $this->validity_reason) = $this->helper->validate($skip_new_check, $skip_k2_check);
-						$this->helper->debug('Validity: ' . $this->valid . '; ' . $this->validity_reason);
-
-						$this->ajax_request = JFactory::getApplication()->input->getInt('ajax_request', 0);
-						$ajax = $this->prepareAjaxResponce();
-
-						if ($this->dbtask == 'create_thread') {
-							//this article has been manually initiated for discussion
-							$this->createThread();
-						} elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get('enable_quickreply', false)) {
-							//a quick reply has been submitted so let's create the post
-							$this->createPost();
-						} elseif ($this->dbtask == 'unpublish_discussion') {
-							//an article has been 'uninitiated'
-							$this->unpublishDiscussion();
-						} elseif ($this->dbtask == 'publish_discussion') {
-							//an article has been 'reinitiated'
-							$this->publishDiscussion();
-							$threadinfo = $this->helper->getThreadInfo();
-							if ($threadinfo->valid && $threadinfo->published) {
-								//content is now published so display it
-								$ajax->posts = $this->renderDiscussionContent();
-							} else {
-								$ajax->posts = null;
-							}
-							$ajax->status = true;
-						}
-
-						//save the visibility of the posts if applicable
-						$show_discussion = JFactory::getApplication()->input->get('show_discussion', '');
-						if ($show_discussion !== '') {
-							$JSession = JFactory::getSession();
-							$JSession->set('jfusion.discussion.visibility', (int)$show_discussion);
-						}
-
-						//check for some specific ajax requests
-						if ($this->ajax_request) {
-							//check to see if this is an ajax call to update the pagination
-							if ($this->params->get('show_posts', 1) && $this->dbtask == 'update_posts') {
-								$this->updatePosts();
-							}  else if ($this->dbtask == 'update_debug_info') {
-								$ajax->status = true;
-							} else if ($show_discussion !== '') {
-								$ajax->status = true;
-								JFusionFunction::raiseNotice('jfusion.discussion.visibility set to ' . $show_discussion);
-							} else {
-								JFusionFunction::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
-							}
-							$this->renderAjaxResponce($ajax);
-						}
-						//add scripts to header
-						$this->helper->loadScripts();
-
-						if (empty($this->article->params) && !empty($this->article->parameters)) {
-							$this->article->params = $this->article->parameters;
-						}
-
-						if (!empty($this->article->params)) {
-							$this->prepareContent();
-						}
-					}
-				}
-			}
-		}
-		return $result;
-	}
-
-	/**
-	 * joomla 1.6 compatibility layer
-	 *
-	 * @param $context
-	 * @param $article
-	 * @param $isNew
-	 */
-	public function onContentAfterSave($context, &$article, $isNew)
-	{
-		$this->onAfterContentSave($article, $isNew);
 	}
 
 	/**
@@ -371,7 +247,98 @@ class plgContentJfusion extends JPlugin
 	{
 		if ($context != 'com_content.featured' && $context != 'com_content.category') {
 			//seems syntax has completely changed :(
-			$this->onPrepareContent($article, $params);
+			$this->article = $article;
+			$this->helper->setArticle($this->article);
+
+			//reset some vars
+			$this->manual = false;
+			$this->manual_threadid = 0;
+
+			$this->validity_reason = '';
+			$this->helper->debug('onContentPrepare called');
+
+			//check to see if a valid $content object was passed on
+			if (!is_object($this->article)){
+				JFusionFunction::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+			} else {
+				//make sure there is a plugin
+				if (!empty($this->jname)) {
+					//do nothing if this is a K2 category object
+					if ($this->helper->option == 'com_k2' && get_class($this->article) == 'TableK2Category') {
+					} else {
+						//set some variables needed throughout
+						$this->template = $this->params->get('template', 'default');
+
+						//make sure we have an actual article
+						if (!empty($this->article->id)) {
+							$this->dbtask = JFactory::getApplication()->input->get('dbtask', null);
+							$skip_new_check = ($this->dbtask == 'create_thread') ? true : false;
+							$skip_k2_check = ($this->helper->option == 'com_k2' && in_array($this->dbtask, array('unpublish_discussion', 'publish_discussion'))) ? true : false;
+
+							list($this->valid, $this->validity_reason) = $this->helper->validate($skip_new_check, $skip_k2_check);
+							$this->helper->debug('Validity: ' . $this->valid . '; ' . $this->validity_reason);
+
+							$this->ajax_request = JFactory::getApplication()->input->getInt('ajax_request', 0);
+							$ajax = $this->prepareAjaxResponce();
+
+							if ($this->dbtask == 'create_thread') {
+								//this article has been manually initiated for discussion
+								$this->createThread();
+							} elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get('enable_quickreply', false)) {
+								//a quick reply has been submitted so let's create the post
+								$this->createPost();
+							} elseif ($this->dbtask == 'unpublish_discussion') {
+								//an article has been 'uninitiated'
+								$this->unpublishDiscussion();
+							} elseif ($this->dbtask == 'publish_discussion') {
+								//an article has been 'reinitiated'
+								$this->publishDiscussion();
+								$threadinfo = $this->helper->getThreadInfo();
+								if ($threadinfo->valid && $threadinfo->published) {
+									//content is now published so display it
+									$ajax->posts = $this->renderDiscussionContent();
+								} else {
+									$ajax->posts = null;
+								}
+								$ajax->status = true;
+							}
+
+							//save the visibility of the posts if applicable
+							$show_discussion = JFactory::getApplication()->input->get('show_discussion', '');
+							if ($show_discussion !== '') {
+								$JSession = JFactory::getSession();
+								$JSession->set('jfusion.discussion.visibility', (int)$show_discussion);
+							}
+
+							//check for some specific ajax requests
+							if ($this->ajax_request) {
+								//check to see if this is an ajax call to update the pagination
+								if ($this->params->get('show_posts', 1) && $this->dbtask == 'update_posts') {
+									$this->updatePosts();
+								}  else if ($this->dbtask == 'update_debug_info') {
+									$ajax->status = true;
+								} else if ($show_discussion !== '') {
+									$ajax->status = true;
+									JFusionFunction::raiseNotice('jfusion.discussion.visibility set to ' . $show_discussion);
+								} else {
+									JFusionFunction::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
+								}
+								$this->renderAjaxResponce($ajax);
+							}
+							//add scripts to header
+							$this->helper->loadScripts();
+
+							if (empty($this->article->params) && !empty($this->article->parameters)) {
+								$this->article->params = $this->article->parameters;
+							}
+
+							if (!empty($this->article->params)) {
+								$this->prepareContent();
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -389,7 +356,7 @@ class plgContentJfusion extends JPlugin
 		if ($this->helper->option == 'com_content') {
 			if ($view == 'featured' || ($view == 'category' && $layout == 'blog')) {
 				$article->text = $article->introtext;
-				$this->onPrepareContent($article, $params);
+				$this->onContentPrepare($context, $article, $params, $limitstart);
 				$article->introtext = $article->text;
 			}
 		}
