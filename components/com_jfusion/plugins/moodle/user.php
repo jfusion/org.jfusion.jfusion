@@ -186,89 +186,52 @@ class JFusionUser_moodle extends JFusionUser {
 	 *
 	 * @return array result Array containing the result of the session destroy
 	 */
-	function destroySession($userinfo, $options) {
-		$status = array('debug' => array(), 'error' => array());
+	function destroySession($userinfo, $options)
+    {
+        $status = array('error' => array(), 'debug' => array());
+        $status = array('debug' => array(), 'error' => array());
 
-		$status['cURL'] = array();
-		$status['cURL']['moodle'] = '';
-		$status['cURL']['data'] = array();
+        // find out if moodle stores its sessions on disk or in the database
 
-		// check if curl extension is loaded
-		if (!extension_loaded('curl')) {
-			$status['error'][] = JFusionCurl::_('CURL_NOTINSTALLED');
-			return $status;
-		}
+        $db = JFusionFactory::getDatabase($this->getJname());
+        //get the identifier
+        $query = $db->getQuery(true)
+            ->select('value')
+            ->from('#__config')
+            ->where('name = ' . $db->quote('dbsessions'));
 
-		$logout_url = $this->params->get('logout_url');
+        $db->setQuery($query);
+        $dbsessions = $db->loadResult();
+        $query = $db->getQuery(true)
+            ->select('value')
+            ->from('#__config')
+            ->where('name = ' . $db->quote('sessioncookie'));
 
-		$curl_options['post_url'] = $this->params->get('source_url') . $logout_url;
-		$curl_options['cookiedomain'] = $this->params->get('cookie_domain');
-		$curl_options['cookiepath'] = $this->params->get('cookie_path');
-		$curl_options['leavealone'] = $this->params->get('leavealone');
-		$curl_options['secure'] = $this->params->get('secure');
-		$curl_options['httponly'] = $this->params->get('httponly');
-		$curl_options['verifyhost'] = 0; //$this->params->get('ssl_verifyhost');
-		$curl_options['httpauth'] = $this->params->get('httpauth');
-		$curl_options['httpauth_username'] = $this->params->get('curl_username');
-		$curl_options['httpauth_password'] = $this->params->get('curl_password');
-		$curl_options['integrationtype']=0;
-		$curl_options['debug'] =0;
+        $db->setQuery($query);
+        $postfix = $db->loadResult();
+        $cookieName = 'MoodleSession'.$postfix;
+        $currentSession = $_COOKIE[$cookieName];
+        $sessionFile = $this->params->get('dataroot', '').'sessions/sess_'.$currentSession;
+        // find out the current session name
 
-		// to prevent endless loops on systems where there are multiple places where a user can login
-		// we post an unique ID for the initiating software so we can make a difference between
-		// a user logging out or another jFusion installation, or even another system with reverse dual login code.
-		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
-		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
+        if ($dbsessions){
+            $query = $db->getQuery(true)
+                ->delete('#__sessions')
+                ->where('sid = ' .  $db->quote($currentSession));
 
+            $db->setQuery($query);
+            $db->execute();
+            $status['debug'][]='Moodle: session '.$currentSession. ' deleted in database';
+        } else {
+            $result = unlink($sessionFile);
+            if ($result) {
+                $status['debug'][]='Moodle: session '.$currentSession. ' deleted as file';
+            } else {
+                $status['debug'][]='Moodle: session '.$currentSession. ' could not delete file '.$sessionFile;
+            }
+        }
 
-		$my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST).parse_url(JURI::root(), PHP_URL_PATH), '/');
-		$curl_options['jnodeid'] = $my_ID;
-		
-		$curl = new JFusionCurl($curl_options);
-		
-		$remotedata = $curl->ReadPage();
-		if (!empty($curl->status['error'])) {
-			$curl->status['debug'][] = JText::_('CURL_COULD_NOT_READ_PAGE: ') . $curl->options['post_url'];
-		} else {
-			// get the form with no name and id!
-			$parser = new JFusionCurlHtmlFormParser($remotedata);
-			$result = $parser->parseForms();
-			$frmcount = count($result);
-			$myfrm = -1;
-			$i = 0;
-			do {
-				$form_action = htmlspecialchars_decode($result[$i]['form_data']['action']);
-				if (strpos($curl_options['post_url'], $form_action) !== false){
-					$myfrm = $i;
-					break;
-				}
-				$i +=1;
-			} while ($i<$frmcount);
-
-			if ($myfrm == -1) {
-				// did not find a session key, so perform a brute force logout
-				$status = $this->curlLogout($userinfo, $options);
-			} else {
-				$elements_keys = array_keys($result[$myfrm]['form_elements']);
-				$elements_values = array_values($result[$myfrm]['form_elements']);
-				$elements_count  = count($result[$myfrm]['form_elements']);
-				$sessionkey = '';
-				for ($i = 0; $i <= $elements_count-1; $i++) {
-					if (strtolower($elements_keys[$i]) == 'sesskey') {
-						$sessionkey = $elements_values[$i]['value'];
-						break;
-					}
-				}
-				if ($sessionkey == '') {
-					// did not find a session key, so perform a brute force logout
-					$status = $this->curlLogout($userinfo, $options);
-				} else {
-					$curl_options['post_url'] = $curl_options['post_url'] . '?sesskey=' . $sessionkey;
-					$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
-				}
-			}
-		}
-		return $curl->$status;
+        return $status;
 	}
 
 	/**

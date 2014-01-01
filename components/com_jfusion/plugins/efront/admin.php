@@ -80,9 +80,15 @@ class JFusionAdmin_efront extends JFusionAdmin
 		        }
 	        }
 
+
 	        $myfile = $softwarePath . 'libraries' . DIRECTORY_SEPARATOR . 'globals.php';
 
-	        $lines = $this->readFile($myfile);
+            // this are now predefined in globals.php during efron startup, so let's start with them as well
+            define("G_MD5KEY", 'cDWQR#$Rcxsc');
+            define ("G_UPLOADPATH", $softwarePath."upload/");
+
+
+            $lines = $this->readFile($myfile);
             if ($lines === false) {
                 JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	            return false;
@@ -95,6 +101,8 @@ class JFusionAdmin_efront extends JFusionAdmin
 			            }
 		            }
 	            }
+
+
                 //save the parameters into array
 
                 $params['database_host'] = G_DBHOST;
@@ -104,8 +112,7 @@ class JFusionAdmin_efront extends JFusionAdmin
                 $params['database_type'] = G_DBTYPE;
                 $params['source_path'] = $softwarePath;
                 $params['md5_key'] = G_MD5KEY;
-                $params['uploadpath'] = G_UPLOADPATH;
-            }
+                $params['uploadpath'] = G_UPLOADPATH;            }
         }
         return $params;
     }
@@ -187,19 +194,6 @@ class JFusionAdmin_efront extends JFusionAdmin
          return $this->helper->getUsergroupList();
     }
 
-    /**
-     * @return string|array
-     */
-    function getDefaultUsergroup()
-    {
-	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
-	    if ($usergroups !== null) {
-			$group = $this->helper->groupIdToName($usergroups);
-	    } else {
-		    $group = '';
-	    }
-	    return $group;
-    }
 
     /**
      * @return bool

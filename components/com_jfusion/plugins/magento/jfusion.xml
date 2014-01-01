@@ -15,7 +15,6 @@
     <update>http://update.jfusion.org/jfusion/joomla/</update>
 
     <files>
-        <folder>install_module</folder>
         <filename>admin.php</filename>
         <filename>auth.php</filename>
         <filename>index.html</filename>
@@ -152,11 +151,6 @@
 
             <fieldset name="MOD_OPTIONS">
                 <field name=" " type="helptext" default="MODULE_FOR_MAGENTO_DESCR" label=""/>
-                <field name="@spacer" type="spacer" default="" label="" description="" />
-                <field name="moduleInstallation" label="MODULE_INSTALLATION" type="JFusionCustomParam" description="MODULE_INSTALLATION_DESCR" />
-                <field name="moduleActivation" type="JFusionCustomParam" label="ACTIVATION_MAGENTO_MODULE" description="ACTIVATION_MAGENTO_MODULE_DESC" />
-
-                <field name="security_check_disabled" type="hidden" default="0" label="" description="" />
             </fieldset>
         </fields>
     </form>

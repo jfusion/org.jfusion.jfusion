@@ -262,8 +262,8 @@ class JFusionUser_magento extends JFusionUser {
 					$magento_user['email']['value'] = $result->email;
 					$magento_user['created_at']['value'] = $result->created_at;
 					$magento_user['updated_at']['value'] = $result->updated_at;
-                    $is_active = $result->is_active; //TO DO: have to figure out what theirs means
-					$instance->userid = $entity;
+                    $magento_user['is_active']['value'] = $result->is_active;
+ 					$instance->userid = $entity;
 					$instance->username = $magento_user['email']['value'];
 					$name = $magento_user['firstname']['value'];
 					if ($magento_user['middlename']['value']) {
@@ -281,16 +281,12 @@ class JFusionUser_magento extends JFusionUser {
 						$instance->password_salt = $hashArr[1];
 					}
 					$instance->activation = '';
-					if ($magento_user['confirmation']['value']) {
-						$instance->activation = $magento_user['confirmation']['value'];
+					if ($magento_user['is_active']['value'] == 0) {
+						$instance->activation = "need activation";
 					}
 					$instance->registerDate = $magento_user['created_at']['value'];
 					$instance->lastvisitDate = $magento_user['updated_at']['value'];
-					if ($instance->activation) {
-						$instance->block = 1;
-					} else {
-						$instance->block = 0;
-					}
+                    $instance->block = !$magento_user['is_active']['value'];
 				}
 			}
 		}
@@ -322,12 +318,13 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return array|string
 	 */
 	function createSession($userinfo, $options) {
-		$status = array('error' => array(), 'debug' => array());
-		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
+/*		$status = array('error' => array(), 'debug' => array());
+		if ($userinfo->block)=="1" || !empty($userinfo->activation)) {
 			$status['error'][] = JText::_('FUSION_BLOCKED_USER');
 		} else {
 			$status = $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
 		}
+*/			$status = $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
 		return $status;
 	}
 	/**
@@ -399,7 +396,7 @@ class JFusionUser_magento extends JFusionUser {
 				$entry->updated_at = $sqlDateTime;
 
 				$db->insertObject('#__customer_entity', $entry);
-				// so far so good, now create an empty user, to be updates later
+				// so far so good, now create an empty user, to be updated later
 				$entity_id = $db->insertid();
 			} else { // we are updating
 				$query = $db->getQuery(true)
@@ -536,8 +533,10 @@ class JFusionUser_magento extends JFusionUser {
 			$default_created_in_store = $result->name;
 			$magento_user = $this->getMagentoDataObjectRaw('customer');
 			if ($userinfo->activation) {
-				$this->fillMagentouser($magento_user, 'confirmation', $userinfo->activation);
-			}
+				$this->fillMagentouser($magento_user, 'is_active', 0);
+			} else {
+                $this->fillMagentouser($magento_user, 'is_active', 1);
+            }
 			$this->fillMagentouser($magento_user, 'created_in', $default_created_in_store);
 			$this->fillMagentouser($magento_user, 'email', $userinfo->email);
 			$parts = explode(' ', $userinfo->name);
@@ -622,7 +621,7 @@ class JFusionUser_magento extends JFusionUser {
 		if ($errors) {
 			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR');
 		} else {
-			$status['debug'][] = JText::_('PASSWORD_UPDATE') . $existinguser->password;
+			$status['debug'][] = JText::_('PASSWORD_UPDATE');
 		}
 	}
 
@@ -647,12 +646,12 @@ class JFusionUser_magento extends JFusionUser {
 	 */
 	function activateUser($userinfo, &$existinguser, &$status) {
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
-		$this->fillMagentouser($magento_user, 'confirmation', '');
+		$this->fillMagentouser($magento_user, 'is_active', 1);
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
 		if ($errors) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
 		} else {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$status['debug'][] = JText::_('ACTIVATION_UPDATE') ;
 		}
 	}
 
@@ -665,12 +664,12 @@ class JFusionUser_magento extends JFusionUser {
 	 */
 	function inactivateUser($userinfo, &$existinguser, &$status) {
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
-		$this->fillMagentouser($magento_user, 'confirmation', $userinfo->activation);
+        $this->fillMagentouser($magento_user, 'is_active', 0);
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
 		if ($errors) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
 		} else {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$status['debug'][] = JText::_('ACTIVATION_UPDATE') ;
 		}
 	}
 

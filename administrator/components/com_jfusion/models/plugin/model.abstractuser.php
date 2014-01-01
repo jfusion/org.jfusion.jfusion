@@ -738,6 +738,54 @@ class JFusionUser extends JFusionPlugin
 		return $status;
 	}
 
+    final public function curlReadPage()
+    {
+        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
+        $curl_options = array();
+        $status = array('error' => array(), 'debug' => array());
+
+        $status = array('debug' => array(), 'error' => array());
+
+        $status['cURL'] = array();
+        $status['cURL']['moodle'] = '';
+        $status['cURL']['data'] = array();
+
+        // check if curl extension is loaded
+        if (!extension_loaded('curl')) {
+            $status['error'][] = JFusionCurl::_('CURL_NOTINSTALLED');
+            return $status;
+        }
+
+        $logout_url = $this->params->get('logout_url');
+
+        $curl_options['post_url'] = $this->params->get('source_url') . $logout_url;
+        $curl_options['cookiedomain'] = $this->params->get('cookie_domain');
+        $curl_options['cookiepath'] = $this->params->get('cookie_path');
+        $curl_options['leavealone'] = $this->params->get('leavealone');
+        $curl_options['secure'] = $this->params->get('secure');
+        $curl_options['httponly'] = $this->params->get('httponly');
+        $curl_options['verifyhost'] = 0; //$this->params->get('ssl_verifyhost');
+        $curl_options['httpauth'] = $this->params->get('httpauth');
+        $curl_options['httpauth_username'] = $this->params->get('curl_username');
+        $curl_options['httpauth_password'] = $this->params->get('curl_password');
+        $curl_options['integrationtype']=0;
+        $curl_options['debug'] =0;
+
+        // to prevent endless loops on systems where there are multiple places where a user can login
+        // we post an unique ID for the initiating software so we can make a difference between
+        // a user logging out or another jFusion installation, or even another system with reverse dual login code.
+        // We always use the source url of the initializing system, here the source_url as defined in the joomla_int
+        // plugin. This is totally transparent for the the webmaster. No additional setup is needed
+
+
+        $my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST).parse_url(JURI::root(), PHP_URL_PATH), '/');
+        $curl_options['jnodeid'] = $my_ID;
+        $remotedata = JFusionCurl::RemoteReadPage($curl_options);
+        return $remotedata;
+
+    }
+
+
 
 	/**
 	 * Function that automatically logs out the user from the integrated software
