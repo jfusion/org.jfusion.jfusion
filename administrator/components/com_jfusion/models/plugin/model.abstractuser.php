@@ -738,7 +738,10 @@ class JFusionUser extends JFusionPlugin
 		return $status;
 	}
 
-    final public function curlReadPage()
+	/**
+	 * @return array|string
+	 */
+	final public function curlReadPage()
     {
         require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
         $curl_options = array();

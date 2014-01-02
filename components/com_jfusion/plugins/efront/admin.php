@@ -83,7 +83,7 @@ class JFusionAdmin_efront extends JFusionAdmin
 
 	        $myfile = $softwarePath . 'libraries' . DIRECTORY_SEPARATOR . 'globals.php';
 
-            // this are now predefined in globals.php during efron startup, so let's start with them as well
+            // this are now predefined in globals.php during efront startup, so let's start with them as well
             define("G_MD5KEY", 'cDWQR#$Rcxsc');
             define ("G_UPLOADPATH", $softwarePath."upload/");
 
