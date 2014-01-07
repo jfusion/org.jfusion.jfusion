@@ -940,12 +940,13 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 			$defaults = $this->readDefaultSettings();
 
 			foreach ($defaults as $key => $value) {
-				if (isset($conf['auth']['mysql'][$key])) continue;
-				$conf['auth']['mysql'][$key] = $value;
+				if (!isset($conf['plugin']['authmysql'][$key])) {
+					$conf['plugin']['authmysql'][$key] = $value;
+				}
 			}
 
 			$this->configloaded = true;
-			$this->conf = $conf['auth']['mysql'];
+			$this->conf = $conf['plugin']['authmysql'];
 		}
 
 		/**
