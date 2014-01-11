@@ -83,7 +83,7 @@ class JFusionUser_prestashop extends JFusionUser
 				   $result->activation = '';
 			   } else {
 				   jimport('joomla.user.helper');
-				   $result->activation = JApplication::getHash(JUserHelper::genRandomPassword());
+				   $result->activation = JFusionFunction::getHash(JUserHelper::genRandomPassword());
 			   }
 		    }
 	    } catch (Exception $e) {

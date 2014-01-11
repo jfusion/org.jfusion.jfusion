@@ -694,7 +694,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				if (!isset($userinfo->password_clear)) {
 					//clear password is not available, set a random password for now
 					jimport('joomla.user.helper');
-					$random_password = JApplication::getHash(JUserHelper::genRandomPassword(10));
+					$random_password = JFusionFunction::getHash(JUserHelper::genRandomPassword(10));
 					$userinfo->password_clear = $random_password;
 				}
 
@@ -902,7 +902,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			$JUser = JFactory::getUser();
 			if (JPluginHelper::isEnabled('system', 'remember')) {
 				jimport('joomla.utilities.utility');
-				$hash = JApplication::getHash('JLOGIN_REMEMBER');
+				$hash = JFusionFunction::getHash('JLOGIN_REMEMBER');
 
 				$joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '', 'raw');
 			} else {

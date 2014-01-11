@@ -244,7 +244,7 @@ function logout_jfusion(&$data) {
 }
 
 /**
- * @return JApplication
+ * @return JApplication|JApplicationCms
  */
 function startJoomla() {
     define('_JFUSIONAPI_INTERNAL', true);

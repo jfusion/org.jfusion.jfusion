@@ -208,7 +208,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
     }
 
     /**
-     * @return JApplication
+     * @return JApplication|JApplicationCms
      */
     function startJoomla() {
     	$this->session_save_handler = ini_get('session.save_handler');

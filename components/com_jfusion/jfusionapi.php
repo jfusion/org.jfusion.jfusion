@@ -763,7 +763,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	}
 
 	/**
-	 * @return JApplication
+	 * @return JApplication|JApplicationCms
 	 */
 	public static function startJoomla()
 	{

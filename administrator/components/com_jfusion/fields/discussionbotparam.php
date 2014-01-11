@@ -77,7 +77,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 				JFusionFunction::initJavaScript();
 
 				jimport('joomla.user.helper');
-				$hash = JApplication::getHash($name . JUserHelper::genRandomPassword());
+				$hash = JFusionFunction::getHash($name . JUserHelper::genRandomPassword());
 				$session = JFactory::getSession();
 				$session->set($hash, $value);
 

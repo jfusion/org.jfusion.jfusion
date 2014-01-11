@@ -66,7 +66,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 		}
 
 		jimport('joomla.user.helper');
-		$hash = JApplication::getHash($this->name . JUserHelper::genRandomPassword());
+		$hash = JFusionFunction::getHash($this->name . JUserHelper::genRandomPassword());
 		$session = JFactory::getSession();
 		$session->set($hash, $this->value);
 

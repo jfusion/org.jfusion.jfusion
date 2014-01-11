@@ -581,7 +581,7 @@ class JFusionFunction
 
         if ($mainframe->isAdmin()) {
             //setup JRoute to use the frontend router
-            $app = JApplication::getInstance('site');
+	        $app = JFactory::getApplication('site');
             $router = $app->getRouter();
             /**
              * @ignore
@@ -1534,5 +1534,15 @@ JS;
 		}
 		ob_end_clean();
 		return $result;
+	}
+
+	/**
+	 * @param $seed
+	 *
+	 * @return string
+	 */
+	public static function getHash($seed)
+	{
+		return md5(JFactory::getConfig()->get('secret') . $seed);
 	}
 }

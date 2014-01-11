@@ -253,7 +253,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    }
 				    } else {
 					    jimport('joomla.user.helper');
-					    $session_key = JApplication::getHash(JUserHelper::genRandomPassword(32));
+					    $session_key = JFusionFunction::getHash(JUserHelper::genRandomPassword(32));
 					    //Check for admin access
 					    $query = $jdb->getQuery(true)
 						    ->select('b.group_name')
@@ -1338,7 +1338,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $JUser = JFactory::getUser();
 			    if (JPluginHelper::isEnabled ('system', 'remember')) {
 				    jimport('joomla.utilities.utility');
-				    $hash = JApplication::getHash('JLOGIN_REMEMBER');
+				    $hash = JFusionFunction::getHash('JLOGIN_REMEMBER');
 				    $joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '', 'raw');
 			    } else {
 				    $joomla_persistant_cookie = '';

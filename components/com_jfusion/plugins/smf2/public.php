@@ -336,8 +336,8 @@ class JFusionPublic_smf2 extends JFusionPublic {
      * @return bool
      */
     function onAfterRender()
-    {	
-        $buffer = JResponse::getBody();    	
+    {
+	    $buffer = JFactory::getApplication()->getBody();
     	
         $base = JURI::base(true) . '/';
 
@@ -345,9 +345,9 @@ class JFusionPublic_smf2 extends JFusionPublic {
         $replace_body= 'src="%';
         
         $buffer = preg_replace($regex_body, $replace_body, $buffer);
-        
-        JResponse::setBody($buffer);
-        return true;    	
+
+	    JFactory::getApplication()->setBody($buffer);
+        return true;
     }
 
     /**
