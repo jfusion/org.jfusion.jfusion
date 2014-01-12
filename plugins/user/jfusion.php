@@ -794,17 +794,13 @@ class plgUserJfusion extends JPlugin
 					        );
 
 					        // Assemble the email data...the sexy way!
-					        /**
-					         * @ignore
-					         * @var $mail JMail
-					         */
 					        $mail = JFactory::getMailer()
 						        ->setSender(
-						        array(
-							        $config->get('mailfrom'),
-							        $config->get('fromname')
+							        array(
+								        $config->get('mailfrom'),
+								        $config->get('fromname')
+							        )
 						        )
-					        )
 						        ->addRecipient($user['email'])
 						        ->setSubject($emailSubject)
 						        ->setBody($emailBody);

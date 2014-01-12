@@ -598,10 +598,6 @@ HTML;
 					$theme = $dbparams->get('recaptcha_theme', 'red');
 					$lang = $dbparams->get('recaptcha_lang', 'en');
 
-                    /**
-                     * @ignore
-                     * @var $document JDocumentHTML
-                     */
 					$document = JFactory::getDocument();
 
                     $js = <<<JS

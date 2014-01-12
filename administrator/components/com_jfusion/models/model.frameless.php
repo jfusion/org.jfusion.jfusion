@@ -132,10 +132,7 @@ class JFusionFrameless {
 	public static function displayContent($data)
 	{
 		$mainframe = JFactory::getApplication();
-		/**
-		 * @ignore
-		 * @var $document JDocumentHTML
-		 */
+
 		$document = JFactory::getDocument();
 
 		if (!$data->isPlugin) {

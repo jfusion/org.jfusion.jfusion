@@ -78,23 +78,36 @@ function login_jfusion(&$username, &$password) {
 			//if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
 			//by php session_write_close and thus the user is not logged into Joomla.  php bug?
 			if (!defined('IN_JOOMLA')) {
-				/**
-				 * @ignore
-				 * @var $session_table JTableSession
-				 */
-				$session_table = JTable::getInstance('session');
-				if ($session_table->load($id)) {
-					/** @noinspection PhpUndefinedFieldInspection */
-					$session_table->data = $session_data;
-					$session_table->store();
+				$jdb = JFactory::getDbo();
+
+				$query = $jdb->getQuery(true);
+
+				$query->select('*')
+					->from('#__session')
+					->where('session_id = ' . $id);
+
+				$jdb->setQuery($query, 0 , 1);
+
+				$data = $jdb->loadResult();
+
+				if ($data) {
+					$data->time = time();
+					$jdb->updateObject('#__session', $data, 'session_id');
 				} else {
 					// if load failed then we assume that it is because
 					// the session doesn't exist in the database
 					// therefore we use insert instead of store
 					$app = JFactory::getApplication();
-					/** @noinspection PhpUndefinedFieldInspection */
-					$session_table->data = $session_data;
-					$session_table->insert($id, $app->getClientId());
+
+					$data = new stdClass();
+					$data->session_id = $id;
+					$data->data = $session_data;
+					$data->client_id = $app->getClientId();
+					$data->username = '';
+					$data->guest = 1;
+					$data->time = time();
+
+					$jdb->insertObject('#__session', $data, 'session_id');
 				}
 			}
 

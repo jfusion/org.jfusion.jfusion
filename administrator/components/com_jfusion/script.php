@@ -711,10 +711,6 @@ HTML;
 
 		//output some info to the user
 		$db = JFactory::getDBO();
-		/**
-		 * @ignore
-		 * @var $installer JInstaller
-		 */
 
 		$installer = JInstaller::getInstance();
 		$manifest = $installer->getPath('manifest');
