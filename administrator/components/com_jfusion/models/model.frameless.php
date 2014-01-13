@@ -133,6 +133,10 @@ class JFusionFrameless {
 	{
 		$mainframe = JFactory::getApplication();
 
+		/**
+		 * @ignore
+		 * @var $document JDocumentHtml
+		 */
 		$document = JFactory::getDocument();
 
 		if (!$data->isPlugin) {
@@ -272,7 +276,7 @@ class JFusionFrameless {
 
 				$JFusionPlugin->parseCSS($data, $data->header);
 
-				$document->addCustomTag($data->header );
+				$document->addCustomTag($data->header);
 
 				$pathway = $JFusionPlugin->getPathWay();
 				if (is_array($pathway)) {
