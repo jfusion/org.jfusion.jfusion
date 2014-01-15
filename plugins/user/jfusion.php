@@ -532,7 +532,6 @@ class plgUserJfusion extends JPlugin
 			    $allow_redirect_login = $params->get('allow_redirect_login', 0);
 			    $redirecturl_login = $params->get('redirecturl_login', '');
 			    $source_url = $params->get('source_url', '');
-			    ob_end_clean();
 			    $jfc = JFusionFactory::getCookies();
 			    if ($allow_redirect_login && !empty($redirecturl_login)) {
 				    // only redirect if we are in the frontend and allowed and have an URL
