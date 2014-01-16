@@ -238,6 +238,7 @@ class JFusionHelper_phpbb3
      * @param string &$text
      */
     function parse_bbcode(&$text) {
+	    $text = htmlspecialchars($text);
         if (empty($this->bbcodes)) {
             $this->bbcodes = array(
 	            'code'          => array('bbcode_id' => 8, 'regexp' => array('#\[code(?:=([a-z]+))?\](.+\[/code\])#ise' => "\$this->bbcode_code('\$1', '\$2')")),
