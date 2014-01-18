@@ -130,109 +130,111 @@ class plgContentJfusion extends JPlugin
 	 */
 	public function onContentAfterSave($context, $article, $isNew)
 	{
-		//check to see if a valid $content object was passed on
-		if (!is_object($article)){
-			JFusionFunction::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
-		} else {
-			$this->article = $article;
-			$this->helper->setArticle($this->article);
-
-			//make sure there is a plugin
-			if (!empty($this->jname)) {
-				$this->helper->debug('onContentAfterSave called');
-
-				//validate the article
-				// changed _validate to pass the $isNew flag, so that it will only check will happen depending on this flag
-				$threadinfo = $this->helper->getThreadInfo();
-				list($this->valid, $this->validity_reason) = $this->helper->validate($isNew);
-				$this->helper->debug('Validity: ' . $this->valid . '; ' . $this->validity_reason);
-
-				//ignore auto mode if the article has been manually plugged
-				$manually_plugged = preg_match('/\{jfusion_discuss (.*)\}/U', $this->article->introtext . $this->article->fulltext);
-
-				$this->helper->debug('Checking mode...');
-				if ($this->mode == 'auto' && empty($manually_plugged)) {
-					$this->helper->debug('In auto mode');
-					if ($this->valid) {
-						if (($this->creationMode == 'load') ||
-							($this->creationMode == 'new' && ($isNew || (!$isNew && $threadinfo->valid))) ||
-							($this->creationMode == 'reply' && $threadinfo->valid)) {
-
-							//update/create thread
+		if ($context != 'com_categories.category') {
+			//check to see if a valid $content object was passed on
+			if (!is_object($article)){
+				JFusionFunction::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+			} else {
+				$this->article = $article;
+				$this->helper->setArticle($this->article);
+	
+				//make sure there is a plugin
+				if (!empty($this->jname)) {
+					$this->helper->debug('onContentAfterSave called');
+	
+					//validate the article
+					// changed _validate to pass the $isNew flag, so that it will only check will happen depending on this flag
+					$threadinfo = $this->helper->getThreadInfo();
+					list($this->valid, $this->validity_reason) = $this->helper->validate($isNew);
+					$this->helper->debug('Validity: ' . $this->valid . '; ' . $this->validity_reason);
+	
+					//ignore auto mode if the article has been manually plugged
+					$manually_plugged = preg_match('/\{jfusion_discuss (.*)\}/U', $this->article->introtext . $this->article->fulltext);
+	
+					$this->helper->debug('Checking mode...');
+					if ($this->mode == 'auto' && empty($manually_plugged)) {
+						$this->helper->debug('In auto mode');
+						if ($this->valid) {
+							if (($this->creationMode == 'load') ||
+								($this->creationMode == 'new' && ($isNew || (!$isNew && $threadinfo->valid))) ||
+								($this->creationMode == 'reply' && $threadinfo->valid)) {
+	
+								//update/create thread
+								$this->helper->checkThreadExists();
+							} else {
+								$this->helper->debug('Article did not meet requirements to update/create thread');
+							}
+						} elseif ($this->creationMode == 'new' && $isNew) {
+							$this->helper->debug('Failed validity test but creationMode is set to new and this is a new article');
+	
+							$publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
+							$now = JFactory::getDate('now', JFactory::getConfig()->get('offset'))->toUnix();
+							if ($now < $publish_up || !$this->article->state) {
+								$this->helper->debug('Article set to be published in the future or is unpublished thus creating an entry in the database so that the thread is created when appropriate.');
+	
+								//the publish date is set for the future so create an entry in the
+								//database so that the thread is created when the publish date arrives
+								$placeholder = new stdClass();
+								$placeholder->threadid = 0;
+								$placeholder->forumid = 0;
+								$placeholder->postid = 0;
+								JFusionFunction::updateDiscussionBotLookup($this->article->id, $placeholder, $this->jname);
+							}
+						}
+					} elseif ($this->mode == 'test' && empty($manually_plugged)) {
+						//recheck validity without stipulation
+						$this->helper->debug('In test mode thus not creating the article');
+						$JFusionForum = JFusionFactory::getForum($this->jname);
+						$content = '<u>' . $this->article->title . '</u><br />';
+						if ($threadinfo->valid) {
+							$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
+							if ($threadinfo->published) {
+								$content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_PUBLISHED') . '<br />';
+							} else {
+								$content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_UNPUBLISHED') . '<br />';
+							}
+							$content .= JText::_('THREADID') . ': ' . $threadinfo->threadid . '<br />';
+							$content .= JText::_('FORUMID') . ': ' . $threadinfo->forumid . '<br />';
+							$content .= JText::_('FIRST_POSTID') . ': ' . $threadinfo->postid. '<br />';
+	
+							$forumlist = $this->helper->getForumList();
+							if (!in_array($threadinfo->forumid, $forumlist)) {
+								$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('FORUM_NOT_EXIST') . '<br />';
+							}
+	
+							$forumthread = $JFusionForum->getThread($threadinfo->threadid);
+							if (empty($forumthread)) {
+								$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('THREAD_NOT_EXIST') . '<br />';
+							}
+						} else {
+							$valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
+							if (!$this->valid) {
+								$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/x.png" style="margin-left:5px;"><br/>';
+								$content .= JText::_('VALID') . ': ' . $valid . '<br />';
+								$content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
+							} else {
+								$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;2><br/>';
+								$content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
+								$content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
+								$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+								$content .= JText::_('FORUMID') . ': ' . $forumid . '<br />';
+								$author = $JFusionForum->getThreadAuthor($this->params, $this->article);
+								$content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
+							}
+						}
+						JFusionFunction::raiseNotice($content);
+					} else {
+						$this->helper->debug('In manual mode...checking to see if article has been initialized');
+						if ($threadinfo->valid && $threadinfo->published == 1 && $threadinfo->manual == 1) {
+							$this->helper->debug('Article has been initialized...updating thread');
+							//update thread
 							$this->helper->checkThreadExists();
 						} else {
-							$this->helper->debug('Article did not meet requirements to update/create thread');
-						}
-					} elseif ($this->creationMode == 'new' && $isNew) {
-						$this->helper->debug('Failed validity test but creationMode is set to new and this is a new article');
-
-						$publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
-						$now = JFactory::getDate('now', JFactory::getConfig()->get('offset'))->toUnix();
-						if ($now < $publish_up || !$this->article->state) {
-							$this->helper->debug('Article set to be published in the future or is unpublished thus creating an entry in the database so that the thread is created when appropriate.');
-
-							//the publish date is set for the future so create an entry in the
-							//database so that the thread is created when the publish date arrives
-							$placeholder = new stdClass();
-							$placeholder->threadid = 0;
-							$placeholder->forumid = 0;
-							$placeholder->postid = 0;
-							JFusionFunction::updateDiscussionBotLookup($this->article->id, $placeholder, $this->jname);
+							$this->helper->debug('Article has not been initialized');
 						}
 					}
-				} elseif ($this->mode == 'test' && empty($manually_plugged)) {
-					//recheck validity without stipulation
-					$this->helper->debug('In test mode thus not creating the article');
-					$JFusionForum = JFusionFactory::getForum($this->jname);
-					$content = '<u>' . $this->article->title . '</u><br />';
-					if ($threadinfo->valid) {
-						$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
-						if ($threadinfo->published) {
-							$content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_PUBLISHED') . '<br />';
-						} else {
-							$content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_UNPUBLISHED') . '<br />';
-						}
-						$content .= JText::_('THREADID') . ': ' . $threadinfo->threadid . '<br />';
-						$content .= JText::_('FORUMID') . ': ' . $threadinfo->forumid . '<br />';
-						$content .= JText::_('FIRST_POSTID') . ': ' . $threadinfo->postid. '<br />';
-
-						$forumlist = $this->helper->getForumList();
-						if (!in_array($threadinfo->forumid, $forumlist)) {
-							$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('FORUM_NOT_EXIST') . '<br />';
-						}
-
-						$forumthread = $JFusionForum->getThread($threadinfo->threadid);
-						if (empty($forumthread)) {
-							$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('THREAD_NOT_EXIST') . '<br />';
-						}
-					} else {
-						$valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
-						if (!$this->valid) {
-							$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/x.png" style="margin-left:5px;"><br/>';
-							$content .= JText::_('VALID') . ': ' . $valid . '<br />';
-							$content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
-						} else {
-							$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;2><br/>';
-							$content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
-							$content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
-							$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-							$content .= JText::_('FORUMID') . ': ' . $forumid . '<br />';
-							$author = $JFusionForum->getThreadAuthor($this->params, $this->article);
-							$content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
-						}
-					}
-					JFusionFunction::raiseNotice($content);
-				} else {
-					$this->helper->debug('In manual mode...checking to see if article has been initialized');
-					if ($threadinfo->valid && $threadinfo->published == 1 && $threadinfo->manual == 1) {
-						$this->helper->debug('Article has been initialized...updating thread');
-						//update thread
-						$this->helper->checkThreadExists();
-					} else {
-						$this->helper->debug('Article has not been initialized');
-					}
+					$this->helper->debug('onContentAfterSave complete', true);
 				}
-				$this->helper->debug('onContentAfterSave complete', true);
 			}
 		}
 	}
