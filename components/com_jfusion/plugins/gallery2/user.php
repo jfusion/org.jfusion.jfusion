@@ -103,18 +103,6 @@ class JFusionUser_gallery2 extends JFusionUser
     }
 
     /**
-     * @param string $username
-     *
-     * @return string
-     */
-    function filterUsername($username) {
-        /**
-         * @TODO Implement User filtering
-         */
-        return $username;
-    }
-
-    /**
      * @param object $userinfo
      * @param array $options
      *

@@ -344,15 +344,6 @@ class JFusionUser_magento extends JFusionUser {
 	}
 
 	/**
-	 * @param string $username
-	 * @return string
-	 */
-	function filterUsername($username) {
-		//no username filtering implemented yet
-		return $username;
-	}
-
-	/**
 	 * @param $user
 	 * @param $entity_id
 	 * @return bool

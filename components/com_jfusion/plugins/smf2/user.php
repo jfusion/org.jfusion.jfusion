@@ -214,17 +214,6 @@ class JFusionUser_smf2 extends JFusionUser {
     }
 
     /**
-     * @param string $username
-     *
-     * @return string
-     */
-    function filterUsername($username)
-    {
-        //no username filtering implemented yet
-        return $username;
-    }
-
-    /**
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status

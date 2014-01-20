@@ -37,12 +37,14 @@ class JFusionUser_mediawiki extends JFusionUser {
     {
 	    try {
 		    // get the username
-		    if (is_object($userinfo)){
+		    if (is_object($userinfo)) {
 			    $username = $userinfo->username;
 		    } else {
 			    $username = $userinfo;
 		    }
-		    $username = ucfirst($username);
+
+		    $username = $this->filterUsername($userinfo->username);
+
 		    // initialise some objects
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -211,7 +213,11 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function filterUsername($username)
     {
-        //no username filtering implemented yet
+	    // as the username also is used as a directory we probably must strip unwanted characters.
+	    $bad = array('_');
+	    $replacement = array(' ');
+	    $username = str_replace($bad, $replacement, $username);
+	    $username = ucfirst($username);
         return $username;
     }
 
@@ -442,7 +448,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    //prepare the user variables
 			    $user = new stdClass;
 			    $user->user_id = NULL;
-			    $user->user_name = ucfirst($userinfo->username);
+			    $user->user_name = $this->filterUsername($userinfo->username);
 			    $user->user_real_name = $userinfo->name;
 			    $user->user_email = $userinfo->email;
 			    $user->user_email_token_expires = null;
