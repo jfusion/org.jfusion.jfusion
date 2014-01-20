@@ -150,15 +150,6 @@ class JFusionUser_prestashop extends JFusionUser {
 	}
 
     /**
-     * @param string $username
-     *
-     * @return string
-     */
-    function filterUsername($username) {
-        return $username;
-    }
-
-    /**
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status

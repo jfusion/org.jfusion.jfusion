@@ -199,21 +199,6 @@ class JFusionUser_smf extends JFusionUser
     }
 
     /**
-     * filterUsername
-     *
-     * @param string $username holds the new user data
-     *
-     * @access public
-     *
-     * @return string
-     */
-    function filterUsername($username)
-    {
-        //no username filtering implemented yet
-        return $username;
-    }
-
-    /**
      * updatePassword
      *
      * @param object $userinfo      holds the new user data

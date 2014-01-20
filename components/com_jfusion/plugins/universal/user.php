@@ -209,13 +209,6 @@ class JFusionUser_universal extends JFusionUser {
 		return $status;
 	}
 
-	/*
-		function filterUsername($username)
-		{
-			//no username filtering implemented yet
-			return $username;
-		}
-	*/
 	/**
 	 * @param object $userinfo
 	 * @param object $existinguser

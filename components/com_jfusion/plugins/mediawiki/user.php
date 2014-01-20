@@ -43,7 +43,8 @@ class JFusionUser_mediawiki extends JFusionUser {
 		} else {
 			$username = $userinfo;
 		}
-		$username = ucfirst($username);
+	    $username = $this->filterUsername($username);
+
         // initialise some objects
         $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -210,8 +211,12 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function filterUsername($username)
     {
-        //no username filtering implemented yet
-        return $username;
+	    // as the username also is used as a directory we probably must strip unwanted characters.
+	    $bad = array('_');
+	    $replacement = array(' ');
+	    $username = str_replace($bad, $replacement, $username);
+	    $username = ucfirst($username);
+	    return $username;
     }
 
     /**
@@ -401,7 +406,7 @@ class JFusionUser_mediawiki extends JFusionUser {
             //prepare the user variables
             $user = new stdClass;
             $user->user_id = NULL;
-            $user->user_name = ucfirst($userinfo->username);
+            $user->user_name = $this->filterUsername($userinfo->username);
             $user->user_real_name = $userinfo->name;
             $user->user_email = $userinfo->email;
             $user->user_email_token_expires = null;
@@ -433,7 +438,7 @@ class JFusionUser_mediawiki extends JFusionUser {
             //now append the new user data
             if (!$db->insertObject('#__user', $user, 'user_id' )) {
                 //return the error
-                $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
+                $status['error'] = JText::_('USER_CREATION_ERROR') . ': ' . $db->stderr();
             } else {
                 $wgDBprefix = $params->get('database_prefix');
                 $wgDBname = $params->get('database_name');
