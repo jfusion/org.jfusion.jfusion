@@ -608,9 +608,7 @@ class JFusionUser_joomla_ext extends JFusionUser
 		$added_filter = $this->params->get('username_filter');
 		if ($added_filter && $added_filter != $this->getJname()) {
 			$JFusionPlugin = JFusionFactory::getUser($added_filter);
-			if (method_exists($JFusionPlugin, 'filterUsername')) {
-				$filteredUsername = $JFusionPlugin->filterUsername($username);
-			}
+			$filteredUsername = $JFusionPlugin->filterUsername($username);
 		}
 		//make sure the filtered username isn't empty
 		$username = (!empty($filteredUsername)) ? $filteredUsername : $username;
