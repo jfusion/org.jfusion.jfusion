@@ -29,6 +29,7 @@ $user = JFactory::getUser();
 $params->def('greeting', 1);
 $type = modjfusionLoginHelper::getType();
 $return = modjfusionLoginHelper::getReturnURL($params, $type);
+$twofactormethods = modjfusionLoginHelper::getTwoFactorMethods();
 //check if the JFusion component is installed
 $factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
 if (file_exists($factory_file)) {
@@ -141,5 +142,12 @@ if (empty($lostusername_url)) {
 if (empty($register_url)) {
     $register_url = JRoute::_($public->getRegistrationUrl());
 }
+$layout = 'default';
+if ($params->get('layout') == 'horizontal') {
+	$layout .= '_horizontal';
+}
+if ($type == 'logout') {
+	$layout .= '_logout';
+}
 //render the login module
-require_once JModuleHelper::getLayoutPath('mod_jfusion_login');
+require_once JModuleHelper::getLayoutPath('mod_jfusion_login', $layout);
