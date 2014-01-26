@@ -61,7 +61,7 @@ class plgAuthenticationjfusion extends JPlugin
 	 * @param $options
 	 * @param $response
 	 *
-	 * @return bool
+	 * @return void
 	 */
     function onUserAuthenticate($credentials, $options, &$response){
 	    jimport('joomla.user.helper');
@@ -294,7 +294,7 @@ class plgAuthenticationjfusion extends JPlugin
 							    // Two factor authentication is not enabled on this account.
 							    // Any string is assumed to be a valid OTEP.
 
-							    return true;
+							    return;
 						    }
 						    else
 						    {
@@ -303,7 +303,7 @@ class plgAuthenticationjfusion extends JPlugin
 							     * user has used them all up. Therefore anything he enters is
 							     * an invalid OTEP.
 							     */
-							    return false;
+							    return;
 						    }
 					    }
 
