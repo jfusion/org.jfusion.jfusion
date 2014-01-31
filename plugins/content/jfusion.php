@@ -130,7 +130,7 @@ class plgContentJfusion extends JPlugin
 	 */
 	public function onContentAfterSave($context, $article, $isNew)
 	{
-		if ($context != 'com_categories.category') {
+		if (substr($context, -8) == '.article') {
 			//check to see if a valid $content object was passed on
 			if (!is_object($article)){
 				JFusionFunction::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));

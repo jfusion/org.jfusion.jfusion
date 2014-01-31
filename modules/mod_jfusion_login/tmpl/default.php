@@ -30,206 +30,125 @@ defined('_JEXEC') or die('Restricted access');
  * @var $lostusername_url string
  * @var $register_url string
  * @var $avatar string
+ * @var $twofactormethods array
  */
 
-$output = '';
-$form_id = 'login-form';
-if ($params->get('layout') == 'horizontal') {
-    if ($type == 'logout') {
-         $output .= '<form action="' . JRoute::_('index.php', true, $params->get('usesecure')) . '" method="post" name="login" id="' . $form_id . '" >';
-    	
-        if (!empty($avatar)) {
-            $maxheight = $params->get('avatar_height', 80);
-            $maxwidth = $params->get('avatar_width', 60);
-
-            $output .= '<img src="' . $avatar . '" alt="' . $display_name . '" style="';
-            $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : '';
-            $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : '';
-            $output .= '" />' . "\n";
-        }
-
-        if ($params->get('greeting')) {
-        	$custom_greeting = $params->get('custom_greeting');
-        	if (empty($custom_greeting)) {
-        		$custom_greeting = 'HINAME';
-        	}
-        	$output .= JText::sprintf($custom_greeting, $display_name);
-        	
-            //if (!empty($pmcount)) {
-                //$output .= '<br/>' . JText::_('PM_START');
-                //$output .= '<a href="' . $url_pm . '">' . JText::sprintf('PM_LINK', $pmcount["total"]) . "</a>";
-                //$output .= JText::sprintf('PM_END', $pmcount["unread"]);
-            //}
-        }
-
-        if (!empty($pmcount)) {
-            $output .= JText::_('PM_START') . ' ';
-            $output .= ' <a href="' . $url_pm . '">' . JText::sprintf('PM_LINK', $pmcount["total"]) . '</a> ';
-            $output .= JText::sprintf('PM_END', $pmcount["unread"]) . ' ';
-        }
-
-        if (!empty($url_viewnewmessages)) {
-            $output .= '<a href="' . $url_viewnewmessages . '">' . JText::_('VIEW_NEW_TOPICS') . '</a> ';
-        }
-
-        $output .= '<input type="submit" name="Submit" class="button" value="' . JText::_('BUTTON_LOGOUT') . '" />';
-        $output .= '<input type="hidden" name="silent" value="true" />';
-        $output .= '<input type="hidden" name="return" value="' . $return . '" />';
-
-	    $output .= '<input type="hidden" name="task" value="user.logout" />';
-	    $output .= '<input type="hidden" name="option" value="com_users" />';
-        $output .= JHTML::_('form.token');
-        $output .= '</form>';
-    } else {
-
-        if (JPluginHelper::isEnabled('authentication', 'openid')) {
-            JHTML::_('script', 'openid.js');
-        }
-
-        $output .= '<form action="' . JRoute::_('index.php', true, $params->get('usesecure')) . '" method="post" name="login" id="' . $form_id . '" >';
-        $output .= $params->get('pretext');
-        if ($params->get('show_labels', 1)) {
-        	$output .= '<label for="modlgn_username">' . JText::_('USERNAME') . '</label> ';
-        }
-        $output .= '<input placeholder="' . JText::_('USERNAME') . '" id="modlgn_username" type="text" name="username" class="inputbox" alt="username" size="18" /> ';
-        if ($params->get('show_labels', 1)) {
-        	$output .= '<label for="modlgn_passwd">' . JText::_('PASSWORD') . '</label> ';
-        }
-	    $output .= '<input placeholder="' . JText::_('PASSWORD') . '" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /> ';
-
-        if ($params->get('show_rememberme')) {
-            $output .= '<label for="modlgn_remember">' . JText::_('REMEMBER_ME') . '</label> ';
-            $output .= '<input id="modlgn_remember" type="checkbox" name="remember" value="yes" alt="Remember Me" /> ';
-        }
-        $output .= '<input type="submit" name="Submit" class="button" value="' . JText::_('BUTTON_LOGIN') . '" /> ';
-
-        if ($params->get('lostpassword_show') || $params->get('lostusername_show') || $params->get('register_show')) {
-
-            $output .= '<ul>';
-            if ($params->get('lostpassword_show')) {
-                $output .= '<li><a href="' . $lostpassword_url . '">' . JText::_('FORGOT_YOUR_PASSWORD') . '</a></li>';
-            }
-
-            if ($params->get('lostusername_show')) {
-                $output .= '<li><a href="' . $lostusername_url . '">' . JText::_('FORGOT_YOUR_USERNAME') . '</a></li>';
-            }
-
-            $usersConfig = JComponentHelper::getParams('com_users');
-            if ($params->get('register_show')) {
-                $output .= '<li><a href="' . $register_url . '">' . JText::_('REGISTER') . '</a> </li>';
-            }
-            $output .= '</ul>';
-        }
-
-        $output .= $params->get('posttext');
-
-	    $output .= '<input type="hidden" name="task" value="user.login" />';
-	    $output .= '<input type="hidden" name="option" value="com_users" />';
-        $output .= '<input type="hidden" name="silent" value="true" />';
-        $output .= '<input type="hidden" name="return" value="' . $return . '" />';
-        $output .= JHTML::_('form.token') . '</form>';
-    }
-} else {
-    if ($type == 'logout') {
-        $output .= '<form action="' . JRoute::_('index.php', true, $params->get('usesecure')) . '" method="post" name="login" id="' . $form_id . '" >';
-    	
-        if (!empty($avatar)) {
-            $maxheight = $params->get('avatar_height', 80);
-            $maxwidth = $params->get('avatar_width', 60);
-
-            $output .= '<div align="center"><img src="' . $avatar . '" alt="' . $display_name . '" style="';
-            $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : '';
-            $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : '';
-            $output .= '" /></div>' . "\n";
-        }
-
-        if ($params->get('greeting')) {
-			$custom_greeting = $params->get('custom_greeting');
-        	if (empty($custom_greeting)) {
-        		$custom_greeting = 'HINAME';       		
-        	}
-            $output .= '<div align="center">' . JText::sprintf($custom_greeting, $display_name);
-            //if (!empty($pmcount)) {
-                //$output .= '<br/>' . JText::_('PM_START');
-                //$output .= '<a href="' . $url_pm . '">' . JText::sprintf('PM_LINK', $pmcount["total"]) . "</a>";
-                //$output .= JText::sprintf('PM_END', $pmcount["unread"]);
-            //}
-            $output .= '</div>';
-        }
-
-        if (!empty($pmcount)) {
-            $output .= '<div align="center">' . JText::_('PM_START');
-            $output .= ' <a href="' . $url_pm . '">' . JText::sprintf('PM_LINK', $pmcount["total"]) . '</a>';
-            $output .= JText::sprintf('PM_END', $pmcount["unread"]);
-            $output .= '</div>';
-        }
-
-        if (!empty($url_viewnewmessages)) {
-            $output .= '<div align="center"><a href="' . $url_viewnewmessages . '">' . JText::_('VIEW_NEW_TOPICS') . '</a></div>';
-        }
-
-        $output .= '<div align="center">';
-        $output .= '<input type="submit" name="Submit" class="button" value="' . JText::_('BUTTON_LOGOUT') . '" />';
-        $output .= '</div>';
-
-	    $output .= '<input type="hidden" name="task" value="user.logout" />';
-	    $output .= '<input type="hidden" name="option" value="com_users" />';
-
-        $output .= '<input type="hidden" name="silent" value="true" />';
-        $output .= '<input type="hidden" name="return" value="' . $return . '" />';
-        $output .= JHTML::_('form.token');
-        $output .= '</form>';
-    } else {
-        if (JPluginHelper::isEnabled('authentication', 'openid')) {
-            JHTML::_('script', 'openid.js');
-        }
-        $output .= '<form action="' . JRoute::_('index.php', true, $params->get('usesecure')) . '" method="post" name="login" id="' . $form_id . '" >';
-        $output .= $params->get('pretext');
-        $output .= '<p id="form-login-username">';
-        if ($params->get('show_labels', 1)) {
-        	$output .= '<label for="modlgn_username">' . JText::_('USERNAME') . '</label><br />';
-        }
-        $output .= '<input placeholder="' . JText::_('USERNAME') . '" id="modlgn_username" type="text" name="username" class="inputbox" alt="username" size="18" />';
-        $output .= '</p><p id="form-login-password">';
-        
-        if ($params->get('show_labels', 1)) {
-        	$output .= '<label for="modlgn_passwd">' . JText::_('PASSWORD') . '</label><br />';
-        }
-	    $output .= '<input placeholder="' . JText::_('PASSWORD') . '" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /></p> ';
-
-        if ($params->get('show_rememberme')) {
-            $output .= '<p id="form-login-remember">';
-            $output .= '<label for="modlgn_remember">' . JText::_('REMEMBER_ME') . '</label>';
-            $output .= '<input id="modlgn_remember" type="checkbox" name="remember" value="yes" alt="Remember Me" /></p>';
-        }
-        $output .= '<input type="submit" name="Submit" class="button" value="' . JText::_('BUTTON_LOGIN') . '" />';
-
-        if ($params->get('lostpassword_show') || $params->get('lostusername_show') || $params->get('register_show')) {
-
-            $output .= '<ul>';
-            if ($params->get('lostpassword_show')) {
-                $output .= '<li><a href="' . $lostpassword_url . '">' . JText::_('FORGOT_YOUR_PASSWORD') . '</a></li>';
-            }
-
-            if ($params->get('lostusername_show')) {
-                $output .= '<li><a href="' . $lostusername_url . '">' . JText::_('FORGOT_YOUR_USERNAME') . '</a></li>';
-            }
-
-            $usersConfig = JComponentHelper::getParams('com_users');
-            if ($params->get('register_show')) {
-                $output .= '<li><a href="' . $register_url . '">' . JText::_('REGISTER') . '</a> </li>';
-            }
-            $output .= '</ul>';
-        }
-
-        $output .= $params->get('posttext');
-
-	    $output .= '<input type="hidden" name="task" value="user.login" />';
-	    $output .= '<input type="hidden" name="option" value="com_users" />';
-        $output .= '<input type="hidden" name="silent" value="true" />';
-        $output .= '<input type="hidden" name="return" value="' . $return . '" />';
-        $output .= JHTML::_('form.token') . '</form>';
-    }
+if (JPluginHelper::isEnabled('authentication', 'openid')) {
+	JHTML::_('script', 'openid.js');
 }
+?>
+<form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post" name="login" id="login-form" >
+	<?php if ($params->get('pretext')) : ?>
+		<div class="pretext">
+			<p><?php echo $params->get('pretext'); ?></p>
+		</div>
+	<?php endif; ?>
+	<div class="userdata">
+		<div id="form-login-username" class="control-group">
+			<div class="controls">
+				<?php if (!$params->get('show_labels')) : ?>
+					<div class="input-prepend">
+						<span class="add-on">
+							<span class="icon-user hasTooltip" title="<?php echo JText::_('USERNAME') ?>"></span>
+							<label for="modlgn-username" class="element-invisible"><?php echo JText::_('USERNAME'); ?></label>
+						</span>
+						<input id="modlgn-username" type="text" name="username" class="input-small" tabindex="0" size="18" placeholder="<?php echo JText::_('USERNAME') ?>" />
+					</div>
+				<?php else: ?>
+					<label for="modlgn-username"><?php echo JText::_('USERNAME') ?></label>
+					<input id="modlgn-username" type="text" name="username" class="input-small" tabindex="0" size="18" placeholder="<?php echo JText::_('USERNAME') ?>" />
+				<?php endif; ?>
+			</div>
+		</div>
+		<div id="form-login-password" class="control-group">
+			<div class="controls">
+				<?php if (!$params->get('show_labels')) : ?>
+					<div class="input-prepend">
+						<span class="add-on">
+							<span class="icon-lock hasTooltip" title="<?php echo JText::_('PASSWORD') ?>"></span>
+							<label for="modlgn-passwd" class="element-invisible"><?php echo JText::_('PASSWORD'); ?></label>
+						</span>
+						<input id="modlgn-passwd" type="password" name="password" class="input-small" tabindex="0" size="18" placeholder="<?php echo JText::_('PASSWORD') ?>" />
+					</div>
+				<?php else: ?>
+					<label for="modlgn-passwd"><?php echo JText::_('PASSWORD') ?></label>
+					<input id="modlgn-passwd" type="password" name="password" class="input-small" tabindex="0" size="18" placeholder="<?php echo JText::_('PASSWORD') ?>" />
+				<?php endif; ?>
+			</div>
+		</div>
 
-echo $output;
+		<?php if (count($twofactormethods) > 1): ?>
+			<div id="form-login-secretkey" class="control-group">
+				<div class="controls">
+					<?php if (!$params->get('show_labels')) : ?>
+						<div class="input-prepend input-append">
+							<span class="add-on">
+								<span class="icon-star hasTooltip" title="<?php echo JText::_('JGLOBAL_SECRETKEY'); ?>">
+								</span>
+									<label for="modlgn-secretkey" class="element-invisible"><?php echo JText::_('JGLOBAL_SECRETKEY'); ?>
+									</label>
+							</span>
+							<input id="modlgn-secretkey" type="text" name="secretkey" class="input-small" tabindex="0" size="18" placeholder="<?php echo JText::_('JGLOBAL_SECRETKEY') ?>" />
+							<span class="btn width-auto hasTooltip" title="<?php echo JText::_('JGLOBAL_SECRETKEY_HELP'); ?>">
+								<span class="icon-help"></span>
+							</span>
+						</div>
+					<?php else: ?>
+						<label for="modlgn-secretkey"><?php echo JText::_('JGLOBAL_SECRETKEY') ?></label>
+						<input id="modlgn-secretkey" type="text" name="secretkey" class="input-small" tabindex="0" size="18" placeholder="<?php echo JText::_('JGLOBAL_SECRETKEY') ?>" />
+						<span class="btn width-auto hasTooltip" title="<?php echo JText::_('JGLOBAL_SECRETKEY_HELP'); ?>">
+							<span class="icon-help"></span>
+						</span>
+					<?php endif; ?>
+
+				</div>
+			</div>
+		<?php endif; ?>
+
+		<?php if (JPluginHelper::isEnabled('system', 'remember') && $params->get('show_rememberme')) : ?>
+			<div id="form-login-remember" class="control-group checkbox">
+				<label for="modlgn-remember" class="control-label"><?php echo JText::_('REMEMBER_ME') ?></label> <input id="modlgn-remember" type="checkbox" name="remember" class="inputbox" value="yes"/>
+			</div>
+		<?php endif; ?>
+
+		<div id="form-login-submit" class="control-group">
+			<div class="controls">
+				<button type="submit" tabindex="0" name="Submit" class="btn btn-primary"><?php echo JText::_('BUTTON_LOGIN') ?></button>
+			</div>
+		</div>
+
+		<?php if ($params->get('lostpassword_show') || $params->get('lostusername_show') || $params->get('register_show')) : ?>
+			<ul>
+				<?php if ($params->get('lostpassword_show')) : ?>
+					<li>
+						<a href="<?php echo $lostpassword_url; ?>"><?php echo JText::_('FORGOT_YOUR_PASSWORD'); ?></a>
+					</li>
+				<?php endif; ?>
+
+				<?php if ($params->get('lostusername_show')) : ?>
+					<li>
+						<a href="<?php echo $lostusername_url; ?>"><?php echo JText::_('FORGOT_YOUR_USERNAME'); ?></a>
+					</li>
+				<?php endif; ?>
+
+				<?php if ($params->get('register_show')) : ?>
+					<li>
+						<a href="<?php echo $register_url; ?>"><?php echo JText::_('REGISTER'); ?></a>
+					</li>
+				<?php endif; ?>
+			</ul>
+		<?php endif; ?>
+
+		<input type="hidden" name="task" value="user.login" />
+		<input type="hidden" name="option" value="com_users" />
+		<input type="hidden" name="silent" value="true" />
+		<input type="hidden" name="return" value="<?php echo $return; ?>" />
+		<?php echo JHTML::_('form.token'); ?>
+	</div>
+
+	<?php if ($params->get('posttext')) : ?>
+		<div class="posttext">
+			<p><?php echo $params->get('posttext'); ?></p>
+		</div>
+	<?php endif; ?>
+</form>

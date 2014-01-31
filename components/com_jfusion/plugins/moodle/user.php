@@ -271,20 +271,6 @@ class JFusionUser_moodle extends JFusionUser {
 	}
 
 	/**
-	 * Function that filters the username according to the JFusion plugin
-	 *
-	 * @param string $username Username as it was entered by the user
-	 *
-	 * @return string filtered username that should be used for lookups
-	 */
-	function filterUsername($username) {
-		//Moodle has a switch to allow any character or just alphanumeric, dot, hyphen (will be extended with @ and _ in Moodle 2.0
-		// I recommend to set allow extended usernames to true in Moodles config.
-		// must make note of this in docs.
-		return $username;
-	}
-
-	/**
 	 * Function that updates the user password
 	 * $status['error'] (contains any error messages)
 	 * $status['debug'] (contains information on what was done)

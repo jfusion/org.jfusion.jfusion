@@ -352,16 +352,6 @@ class JFusionUser_vbulletin extends JFusionUser
 	}
 
 	/**
-	 * @param string $username
-	 * @return string
-	 */
-	function filterUsername($username)
-	{
-		//lower username for case insensitivity purposes
-		return strtolower($username);
-	}
-
-	/**
 	 * @param object $userinfo
 	 * @param object $existinguser
 	 * @param array $status

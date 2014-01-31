@@ -152,16 +152,6 @@ class JFusionUser_mybb extends JFusionUser {
     }
 
     /**
-     * @TODO: no username filtering implemented yet
-     *
-     * @param string $username
-     * @return string
-     */
-    function filterUsername($username) {
-        return $username;
-    }
-
-    /**
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
@@ -327,11 +317,10 @@ class JFusionUser_mybb extends JFusionUser {
 			    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
 		    } else {
 			    $usergroup = $usergroups[0];
-			    $username_clean = $this->filterUsername($userinfo->username);
 			    //prepare the variables
 			    $user = new stdClass;
 			    $user->uid = null;
-			    $user->username = $username_clean;
+			    $user->username = $userinfo->username;
 			    $user->email = $userinfo->email;
 			    jimport('joomla.user.helper');
 			    if (isset($userinfo->password_clear)) {
