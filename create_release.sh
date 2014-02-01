@@ -17,20 +17,21 @@ createpackage(){
 		XMLFILE=jfusion
 	fi
 
-	mkdir $FULLPATH/tmppackage
+		echo "Creating: " $TARGETDEST
 
-	rsync -r --exclude=".*/" $FULLPATH/$TARGETPATH $FULLPATH/tmppackage/
+		mkdir $FULLPATH/tmppackage
 
-	createxml $FULLPATH/tmppackage/$XMLFILE
+		rsync -r --exclude=".*/" $FULLPATH/$TARGETPATH $FULLPATH/tmppackage/
 
-	if [ "$USEZIPCMD" == "zip" ];
-	then
-	  cd $FULLPATH/tmppackage
-    $ZIPCMD -r $FULLPATH/$TARGETDEST . -x *.svn*  > /dev/null
-	else
-		$ZIPCMD a "$FULLPATH/$TARGETDEST" $FULLPATH/tmppackage/* -xr!*.svn* > /dev/null
-	fi
+		createxml $FULLPATH/tmppackage/$XMLFILE
 
+		if [ "$USEZIPCMD" == "zip" ];
+		then
+		  cd $FULLPATH/tmppackage
+			$ZIPCMD -r $FULLPATH/$TARGETDEST . -x *.svn*  > /dev/null
+		else
+			$ZIPCMD a "$FULLPATH/$TARGETDEST" $FULLPATH/tmppackage/* -xr!*.svn* > /dev/null
+		fi
 	rm -r $FULLPATH/tmppackage
 	
 	cd $FULLPATH
@@ -80,42 +81,35 @@ case $1 in
 		
 		#login module has folders thus has to be treated differently
 
-				createpackage modules/mod_jfusion_login/ administrator/components/com_jfusion/packages/jfusion_mod_login.zip mod_jfusion_login
-				createpackage modules/mod_jfusion_activity/ administrator/components/com_jfusion/packages/jfusion_mod_activity.zip mod_jfusion_activity
-				createpackage modules/mod_jfusion_whosonline/ administrator/components/com_jfusion/packages/jfusion_mod_whosonline.zip mod_jfusion_whosonline
-				createpackage modules/mod_jfusion_user_activity/ administrator/components/com_jfusion/packages/jfusion_mod_user_activity.zip mod_jfusion_user_activity
+		createpackage modules/mod_jfusion_login/ administrator/components/com_jfusion/packages/jfusion_mod_login.zip mod_jfusion_login
+		createpackage modules/mod_jfusion_activity/ administrator/components/com_jfusion/packages/jfusion_mod_activity.zip mod_jfusion_activity
+		createpackage modules/mod_jfusion_whosonline/ administrator/components/com_jfusion/packages/jfusion_mod_whosonline.zip mod_jfusion_whosonline
+		createpackage modules/mod_jfusion_user_activity/ administrator/components/com_jfusion/packages/jfusion_mod_user_activity.zip mod_jfusion_user_activity
 
-				createpackage plugins/authentication/ administrator/components/com_jfusion/packages/jfusion_plugin_auth.zip
-				createpackage plugins/user/ administrator/components/com_jfusion/packages/jfusion_plugin_user.zip
-				createpackage plugins/search/ administrator/components/com_jfusion/packages/jfusion_plugin_search.zip
-				createpackage plugins/content/ administrator/components/com_jfusion/packages/jfusion_plugin_content.zip
-				createpackage "plugins/system/jfusion.*" administrator/components/com_jfusion/packages/jfusion_plugin_system.zip
+		createpackage plugins/authentication/ administrator/components/com_jfusion/packages/jfusion_plugin_auth.zip
+		createpackage plugins/user/ administrator/components/com_jfusion/packages/jfusion_plugin_user.zip
+		createpackage plugins/search/ administrator/components/com_jfusion/packages/jfusion_plugin_search.zip
+		createpackage plugins/content/ administrator/components/com_jfusion/packages/jfusion_plugin_content.zip
+		createpackage "plugins/system/jfusion.*" administrator/components/com_jfusion/packages/jfusion_plugin_system.zip
 				
 				
-				createpackage modules/mod_jfusion_magecart/ side_projects/magento/jfusion_mod_magecart.zip mod_jfusion_magecart
-				createpackage modules/mod_jfusion_mageselectblock/ side_projects/magento/jfusion_mod_mageselectblock.zip mod_jfusion_mageselectblock
-				createpackage modules/mod_jfusion_magecustomblock/ side_projects/magento/jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
-				createpackage "plugins/system/magelib.*" side_projects/magento/jfusion_plugin_magelib.zip magelib
-				
-				
-				createpackage components/com_jfusion/plugins/dokuwiki/ pluginpackages/jfusion_dokuwiki.zip
-				createpackage components/com_jfusion/plugins/efront/ pluginpackages/jfusion_efront.zip
-				createpackage components/com_jfusion/plugins/elgg/ pluginpackages/jfusion_elgg.zip
-				createpackage components/com_jfusion/plugins/gallery2/ pluginpackages/jfusion_gallery2.zip
-				createpackage components/com_jfusion/plugins/joomla_ext/ pluginpackages/jfusion_joomla_ext.zip
-				createpackage components/com_jfusion/plugins/joomla_int/ pluginpackages/jfusion_joomla_int.zip
-				createpackage components/com_jfusion/plugins/magento/ pluginpackages/jfusion_magento.zip
-				createpackage components/com_jfusion/plugins/mediawiki/ pluginpackages/jfusion_mediawiki.zip
-				createpackage components/com_jfusion/plugins/moodle/ pluginpackages/jfusion_moodle.zip
-				createpackage components/com_jfusion/plugins/mybb/ pluginpackages/jfusion_mybb.zip
-				createpackage components/com_jfusion/plugins/oscommerce/ pluginpackages/jfusion_oscommerce.zip
-				createpackage components/com_jfusion/plugins/phpbb3/ pluginpackages/jfusion_phpbb3.zip
-				createpackage components/com_jfusion/plugins/prestashop/ pluginpackages/jfusion_prestashop.zip
-				createpackage components/com_jfusion/plugins/smf/ pluginpackages/jfusion_smf.zip
-				createpackage components/com_jfusion/plugins/smf2/ pluginpackages/jfusion_smf2.zip
-				createpackage components/com_jfusion/plugins/universal/ pluginpackages/jfusion_universal.zip
-				createpackage components/com_jfusion/plugins/vbulletin/ pluginpackages/jfusion_vbulletin.zip
-				createpackage components/com_jfusion/plugins/wordpress/ pluginpackages/jfusion_wordpress.zip
+		createpackage modules/mod_jfusion_magecart/ side_projects/magento/jfusion_mod_magecart.zip mod_jfusion_magecart
+		createpackage modules/mod_jfusion_mageselectblock/ side_projects/magento/jfusion_mod_mageselectblock.zip mod_jfusion_mageselectblock
+		createpackage modules/mod_jfusion_magecustomblock/ side_projects/magento/jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
+		createpackage "plugins/system/magelib.*" side_projects/magento/jfusion_plugin_magelib.zip magelib
+
+		cd  $FULLPATH
+		for i in components/com_jfusion/plugins/*
+		do
+        	if [ -d "$i" ]; then
+        		if [ -e $i/jfusion.xml ]; then
+                	createpackage $i"/" pluginpackages/jfusion_$(basename "$i").zip
+               	else
+               		echo Error: $i/jfusion.xml was not found
+               	fi
+        	fi
+		done
+
 		;;
 	create_main)
 		$0 clear_main

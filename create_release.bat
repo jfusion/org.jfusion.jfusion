@@ -87,26 +87,36 @@ call :CreatePackage plugins\content\* administrator\components\com_jfusion\packa
 call :CreatePackage plugins\system\jfusion.* administrator\components\com_jfusion\packages\jfusion_plugin_system.zip
 
 
-echo "create the jfusion plugin packages"
+echo Create the jfusion plugin packages
 
-call :CreatePackage components\com_jfusion\plugins\dokuwiki pluginpackages\jfusion_dokuwiki.zip
-call :CreatePackage components\com_jfusion\plugins\efront pluginpackages\jfusion_efront.zip
-call :CreatePackage components\com_jfusion\plugins\elgg pluginpackages\jfusion_elgg.zip
-call :CreatePackage components\com_jfusion\plugins\gallery2 pluginpackages\jfusion_gallery2.zip
-call :CreatePackage components\com_jfusion\plugins\joomla_ext pluginpackages\jfusion_joomla_ext.zip
-call :CreatePackage components\com_jfusion\plugins\joomla_int pluginpackages\jfusion_joomla_int.zip
-call :CreatePackage components\com_jfusion\plugins\magento pluginpackages\jfusion_magento.zip
-call :CreatePackage components\com_jfusion\plugins\mediawiki pluginpackages\jfusion_mediawiki.zip
-call :CreatePackage components\com_jfusion\plugins\moodle pluginpackages\jfusion_moodle.zip
-call :CreatePackage components\com_jfusion\plugins\mybb pluginpackages\jfusion_mybb.zip
-call :CreatePackage components\com_jfusion\plugins\oscommerce pluginpackages\jfusion_oscommerce.zip
-call :CreatePackage components\com_jfusion\plugins\phpbb3 pluginpackages\jfusion_phpbb3.zip
-call :CreatePackage components\com_jfusion\plugins\prestashop pluginpackages\jfusion_prestashop.zip
-call :CreatePackage components\com_jfusion\plugins\smf pluginpackages\jfusion_smf.zip
-call :CreatePackage components\com_jfusion\plugins\smf2 pluginpackages\jfusion_smf2.zip
-call :CreatePackage components\com_jfusion\plugins\universal pluginpackages\jfusion_universal.zip
-call :CreatePackage components\com_jfusion\plugins\vbulletin pluginpackages\jfusion_vbulletin.zip
-call :CreatePackage components\com_jfusion\plugins\wordpress pluginpackages\jfusion_wordpress.zip
+FOR /f "tokens=*" %%G IN ('dir /d /b /a:d components\com_jfusion\plugins\') DO (
+   	if exist %FULLPATH%components\com_jfusion\plugins\%%G\jfusion.xml (
+		call :CreatePackage components\com_jfusion\plugins\%%G pluginpackages\jfusion_%%G.zip
+   	) else (
+       	echo Error: %FULLPATH%components\com_jfusion\plugins\%%G\jfusion.xml was not found
+   	)
+)
+
+pause>nul
+
+REM call :CreatePackage components\com_jfusion\plugins\dokuwiki pluginpackages\jfusion_dokuwiki.zip
+REM call :CreatePackage components\com_jfusion\plugins\efront pluginpackages\jfusion_efront.zip
+REM call :CreatePackage components\com_jfusion\plugins\elgg pluginpackages\jfusion_elgg.zip
+REM call :CreatePackage components\com_jfusion\plugins\gallery2 pluginpackages\jfusion_gallery2.zip
+REM call :CreatePackage components\com_jfusion\plugins\joomla_ext pluginpackages\jfusion_joomla_ext.zip
+REM call :CreatePackage components\com_jfusion\plugins\joomla_int pluginpackages\jfusion_joomla_int.zip
+REM call :CreatePackage components\com_jfusion\plugins\magento pluginpackages\jfusion_magento.zip
+REM call :CreatePackage components\com_jfusion\plugins\mediawiki pluginpackages\jfusion_mediawiki.zip
+REM call :CreatePackage components\com_jfusion\plugins\moodle pluginpackages\jfusion_moodle.zip
+REM call :CreatePackage components\com_jfusion\plugins\mybb pluginpackages\jfusion_mybb.zip
+REM call :CreatePackage components\com_jfusion\plugins\oscommerce pluginpackages\jfusion_oscommerce.zip
+REM call :CreatePackage components\com_jfusion\plugins\phpbb3 pluginpackages\jfusion_phpbb3.zip
+REM call :CreatePackage components\com_jfusion\plugins\prestashop pluginpackages\jfusion_prestashop.zip
+REM call :CreatePackage components\com_jfusion\plugins\smf pluginpackages\jfusion_smf.zip
+REM call :CreatePackage components\com_jfusion\plugins\smf2 pluginpackages\jfusion_smf2.zip
+REM call :CreatePackage components\com_jfusion\plugins\universal pluginpackages\jfusion_universal.zip
+REM call :CreatePackage components\com_jfusion\plugins\vbulletin pluginpackages\jfusion_vbulletin.zip
+REM call :CreatePackage components\com_jfusion\plugins\wordpress pluginpackages\jfusion_wordpress.zip
 
 
 echo "create the new packages for the Magento Integration"
@@ -179,6 +189,8 @@ endlocal & set "%1=%ut%" & goto :EOF
 	SET XMLFILE=%3
 
 	IF "%3" == "" SET XMLFILE=jfusion
+
+	echo Creating: %TARGETDEST%
 
 	md %FULLPATH%tmppackage
 
