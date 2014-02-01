@@ -97,28 +97,6 @@ FOR /f "tokens=*" %%G IN ('dir /d /b /a:d components\com_jfusion\plugins\') DO (
    	)
 )
 
-pause>nul
-
-REM call :CreatePackage components\com_jfusion\plugins\dokuwiki pluginpackages\jfusion_dokuwiki.zip
-REM call :CreatePackage components\com_jfusion\plugins\efront pluginpackages\jfusion_efront.zip
-REM call :CreatePackage components\com_jfusion\plugins\elgg pluginpackages\jfusion_elgg.zip
-REM call :CreatePackage components\com_jfusion\plugins\gallery2 pluginpackages\jfusion_gallery2.zip
-REM call :CreatePackage components\com_jfusion\plugins\joomla_ext pluginpackages\jfusion_joomla_ext.zip
-REM call :CreatePackage components\com_jfusion\plugins\joomla_int pluginpackages\jfusion_joomla_int.zip
-REM call :CreatePackage components\com_jfusion\plugins\magento pluginpackages\jfusion_magento.zip
-REM call :CreatePackage components\com_jfusion\plugins\mediawiki pluginpackages\jfusion_mediawiki.zip
-REM call :CreatePackage components\com_jfusion\plugins\moodle pluginpackages\jfusion_moodle.zip
-REM call :CreatePackage components\com_jfusion\plugins\mybb pluginpackages\jfusion_mybb.zip
-REM call :CreatePackage components\com_jfusion\plugins\oscommerce pluginpackages\jfusion_oscommerce.zip
-REM call :CreatePackage components\com_jfusion\plugins\phpbb3 pluginpackages\jfusion_phpbb3.zip
-REM call :CreatePackage components\com_jfusion\plugins\prestashop pluginpackages\jfusion_prestashop.zip
-REM call :CreatePackage components\com_jfusion\plugins\smf pluginpackages\jfusion_smf.zip
-REM call :CreatePackage components\com_jfusion\plugins\smf2 pluginpackages\jfusion_smf2.zip
-REM call :CreatePackage components\com_jfusion\plugins\universal pluginpackages\jfusion_universal.zip
-REM call :CreatePackage components\com_jfusion\plugins\vbulletin pluginpackages\jfusion_vbulletin.zip
-REM call :CreatePackage components\com_jfusion\plugins\wordpress pluginpackages\jfusion_wordpress.zip
-
-
 echo "create the new packages for the Magento Integration"
 
 call :CreatePackage modules\mod_jfusion_magecart\* side_projects\magento\jfusion_mod_magecart.zip mod_jfusion_magecart
