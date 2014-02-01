@@ -17,7 +17,6 @@ createpackage(){
 		XMLFILE=jfusion
 	fi
 
-	if [ -e $TARGETPATH/$XMLFILE ]; then
 		echo "Creating: " $TARGETDEST
 
 		mkdir $FULLPATH/tmppackage
@@ -33,9 +32,6 @@ createpackage(){
 		else
 			$ZIPCMD a "$FULLPATH/$TARGETDEST" $FULLPATH/tmppackage/* -xr!*.svn* > /dev/null
 		fi
-	else
-		echo Error: $TARGETPATH/$XMLFILE was not found
-	fi
 	rm -r $FULLPATH/tmppackage
 	
 	cd $FULLPATH
@@ -106,7 +102,11 @@ case $1 in
 		for i in components/com_jfusion/plugins/*
 		do
         	if [ -d "$i" ]; then
-                createpackage $i"/" pluginpackages/jfusion_$(basename "$i").zip
+        		if [ -e $i/jfusion.xml ]; then
+                	createpackage $i"/" pluginpackages/jfusion_$(basename "$i").zip
+               	else
+               		echo Error: $i/jfusion.xml was not found
+               	fi
         	fi
 		done
 
