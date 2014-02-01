@@ -627,7 +627,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
 			$query = $db->getQuery(true)
 				->select('id_topic, id_board, subject')
-				->from('#__members')
+				->from('#__messages')
 				->where('id_topic = ' . $db->quote($topic_id));
 
 			$db->setQuery($query);
