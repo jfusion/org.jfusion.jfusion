@@ -280,7 +280,7 @@ class JFusionUsersync
 			    //setup some variables
 			    $MasterPlugin = JFusionFactory::getAdmin($syncdata['master']);
 			    $MasterUser = JFusionFactory::getUser($syncdata['master']);
-			    $sync_log = new stdClass;
+
 			    $syncid = $syncdata['syncid'];
 			    $sync_active = static::getSyncStatus($syncid);
 			    $db = JFactory::getDBO();
@@ -339,14 +339,17 @@ class JFusionUsersync
 									    }
 								    }
 
+								    $sync_log = new stdClass;
 								    $sync_log->syncid = $syncdata['syncid'];
 								    $sync_log->jname = $jname;
 								    $sync_log->message = '';
 								    $sync_log->data = '';
+
+								    $sync_log->username = $userlist[$j]->username;
+								    $sync_log->email = $userlist[$j]->email;
+
 								    if (!empty($status['error'])) {
 									    $status['action'] = 'error';
-									    $sync_log->username = $userinfo->username;
-									    $sync_log->email = $userinfo->email;
 									    $sync_log->message = (is_array($status['error'])) ? implode('; ', $status['error']) : $status['error'];
 									    $sync_error = array();
 									    $sync_error['conflict']['userinfo'] = $status['userinfo'];
@@ -373,7 +376,6 @@ class JFusionUsersync
 
 								    //append the error to the log
 								    $db->insertObject('#__jfusion_sync_details', $sync_log);
-								    $sync_log = new stdClass;
 
 								    //update the counters
 								    $syncdata['slave_data'][$i][$status['action']]+= 1;
