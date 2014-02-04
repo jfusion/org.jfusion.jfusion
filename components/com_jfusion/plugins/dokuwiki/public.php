@@ -260,7 +260,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         $q = urldecode($q);
         $q = str_replace(':', ';', $q);
         if (strpos($q, '#') === 0) {
-            $url = $q;
+	        $url = $fullURL . $q;
         } else {
             $q = ltrim($q, '/');
             if (strpos($q, '_detail/') === 0 || strpos($q, 'lib/exe/detail.php') === 0) {
