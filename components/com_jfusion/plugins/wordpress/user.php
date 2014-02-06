@@ -174,8 +174,9 @@ class JFusionUser_wordpress extends JFusionUser
      * @return array|bool|string
      */
     function destroySession($userinfo, $options) {
+	    require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 
-    $status = array('error' => array(), 'debug' => array());
+        $status = array('error' => array(), 'debug' => array());
 		$wpnonce = array();
 
 		$logout_url = $this->params->get('logout_url');
