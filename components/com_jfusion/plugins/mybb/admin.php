@@ -200,7 +200,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
 
 			    $query = $db->getQuery(true)
 				    ->select('title')
-				    ->from('gid = ' . (int)$usergroups);
+				    ->from('#__usergroups')
+				    ->where('gid = ' . (int)$usergroups);
 
 			    $db->setQuery($query);
 			    $group = $db->loadResult();
