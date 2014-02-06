@@ -15,7 +15,7 @@
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
+
 /**
  * JFusion Public Class for Magento 1.1
  * For detailed descriptions on these functions please check the model.abstractpublic.php
@@ -85,6 +85,8 @@ class JFusionPublic_magento extends JFusionPublic {
         if (strlen($language_store_view) <= 0) {
             $status['debug'] = JText::_('NO_STORE_LANGUAGE_LIST');
         } else {
+	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
+
             // we define and set the cookie 'store'
             $langs = explode(';', $language_store_view);
             foreach ($langs as $lang) {
