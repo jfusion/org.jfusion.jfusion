@@ -133,10 +133,10 @@ class jfusionViewconfigdump extends JViewLegacy {
 				if (isset($usergroups->{$row->name})) {
 					$new->usergroups = $usergroups->{$row->name};
 				} else {
-					$new->usergroups = array();
+					$new->usergroups = false;
 				}
 
-				if ($new->updateusergroups === false) {
+				if ($new->updateusergroups === false  && $new->usergroups) {
 					foreach($new->usergroups as $index => $group) {
 						if ($index) {
 							unset($new->usergroups[$index]);

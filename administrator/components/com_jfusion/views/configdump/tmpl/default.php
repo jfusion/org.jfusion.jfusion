@@ -9,7 +9,7 @@
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-JFusionFunctionAdmin::displayDonate();
+echo JFusionFunctionAdmin::getDonationBanner();
 
 $show = '';
 if (JFactory::getApplication()->input->get('show', false)) {

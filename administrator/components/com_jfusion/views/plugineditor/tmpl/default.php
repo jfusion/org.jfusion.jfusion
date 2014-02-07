@@ -16,7 +16,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 //display the paypal donation button
-JFusionFunctionAdmin::displayDonate();
+echo JFusionFunctionAdmin::getDonationBanner();
 ?>
 <div class="jfusion">
 	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
@@ -25,9 +25,7 @@ JFusionFunctionAdmin::displayDonate();
 		<input type="hidden" name="customcommand" value="" />
 		<input type="hidden" name="customarg1" value="" />
 		<input type="hidden" name="customarg2" value="" />
-		<style type="text/css">
 
-		</style>
 		<?php
 		if ($this->form) {
 			$params = $this->form->getGroup('params');

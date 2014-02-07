@@ -39,6 +39,8 @@ class jfusionViewLoginChecker extends JViewLegacy
      */
     function display($tpl = null)
     {
-        parent::display($tpl);
+	    if (JFusionFunctionAdmin::isConfigOk()) {
+		    parent::display($tpl);
+	    }
     }
 }

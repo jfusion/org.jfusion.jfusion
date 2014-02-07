@@ -935,7 +935,7 @@ class JFusionFunction
 	public static function getUserGroups($jname = '', $default = false) {
 		jimport('joomla.application.component.helper');
 		$params = JComponentHelper::getParams('com_jfusion');
-		$usergroups = $params->get('usergroups', new stdClass());
+		$usergroups = $params->get('usergroups', false);
 
 		if ($jname) {
 			if (isset($usergroups->{$jname})) {

@@ -615,25 +615,14 @@ class JFusionController extends JControllerLegacy
      */
     function enableplugins()
     {
-        //enable the JFusion login behaviour, but we wanna make sure there is at least 1 master with good config
-        $db = JFactory::getDBO();
-
-	    $query = $db->getQuery(true)
-		    ->select('count(*)')
-		    ->from('#__jfusion')
-		    ->where('master = 1')
-		    ->where('status = 1');
-
-        $db->setQuery($query);
-        if ($db->loadResult()) {
-            JFusionFunctionAdmin::changePluginStatus('joomla', 'authentication', 0);
-            JFusionFunctionAdmin::changePluginStatus('joomla', 'user', 0);
-            JFusionFunctionAdmin::changePluginStatus('jfusion', 'authentication', 1);
-            JFusionFunctionAdmin::changePluginStatus('jfusion', 'user', 1);
-        } else {
-            JFusionFunction::raiseWarning(JText::_('NO_MASTER_WARNING'));
+        if (JFusionFunctionAdmin::isConfigOk()) {
+	        //enable the JFusion login behaviour, but we wanna make sure there is at least 1 master with good config
+	        JFusionFunctionAdmin::changePluginStatus('joomla', 'authentication', 0);
+	        JFusionFunctionAdmin::changePluginStatus('joomla', 'user', 0);
+	        JFusionFunctionAdmin::changePluginStatus('jfusion', 'authentication', 1);
+	        JFusionFunctionAdmin::changePluginStatus('jfusion', 'user', 1);
         }
-        $this->setRedirect('index.php?option=com_jfusion&task=cpanel');
+	    $this->setRedirect('index.php?option=com_jfusion&task=cpanel');
     }
 
     /**

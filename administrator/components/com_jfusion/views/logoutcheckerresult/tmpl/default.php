@@ -15,7 +15,7 @@
  */
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-JFusionFunctionAdmin::displayDonate();
+echo JFusionFunctionAdmin::getDonationBanner();
 
 /**
  * Output information about the server for future support queries

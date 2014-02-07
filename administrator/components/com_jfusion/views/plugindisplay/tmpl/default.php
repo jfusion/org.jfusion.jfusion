@@ -11,7 +11,7 @@
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-JFusionFunctionAdmin::displayDonate();
+echo JFusionFunctionAdmin::getDonationBanner();
 $images = 'components/com_jfusion/images/';
 ?>
 <div class="jfusion">

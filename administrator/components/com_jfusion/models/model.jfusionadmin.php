@@ -84,44 +84,82 @@ class JFusionFunctionAdmin
 
 
     /**
-     * Tests if a plugin is installed with the specified name, where folder is the type (e.g. user)
-     *
-     * @param string $element       element name of the plugin
-     * @param string $folder        folder name of the plugin
-     * @param int    $testPublished Variable to determine if the function should test to see if the plugin is published
-     *
-     * @return boolean returns true if successful and false if an error occurred
-     */
-    public static function isPluginInstalled($element, $folder, $testPublished)
-    {
-        $db = JFactory::getDBO();
+ * Tests if a plugin is installed with the specified name, where folder is the type (e.g. user)
+ *
+ * @param string $element       element name of the plugin
+ * @param string $folder        folder name of the plugin
+ * @param int    $testPublished Variable to determine if the function should test to see if the plugin is published
+ *
+ * @return boolean returns true if successful and false if an error occurred
+ */
+	public static function isPluginInstalled($element, $folder, $testPublished)
+	{
+		$db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true)
-		    ->select('enabled')
-		    ->from('#__extensions')
-		    ->where('element = ' . $db->quote($element))
-		    ->where('folder = ' . $db->quote($folder));
+		$query = $db->getQuery(true)
+			->select('enabled')
+			->from('#__extensions')
+			->where('element = ' . $db->quote($element))
+			->where('folder = ' . $db->quote($folder));
 
-        $db->setQuery($query);
-        $result = $db->loadResult();
-        if ($result) {
-            if ($testPublished) {
-                $result = ($result == 1);
-            } else {
-                $result = true;
-            }
-        } else {
-            $result = false;
-        }
-        return $result;
-    }
+		$db->setQuery($query);
+		$result = $db->loadResult();
+		if ($result) {
+			if ($testPublished) {
+				$result = ($result == 1);
+			} else {
+				$result = true;
+			}
+		} else {
+			$result = false;
+		}
+		return $result;
+	}
+
+	/**
+	 * Check if the jfusion configuration is ok
+	 *
+	 * @return boolean returns true if config seems ok
+	 */
+	public static function isConfigOk()
+	{
+		$result = true;
+		$task = 'cpanel';
+
+		//enable the JFusion login behaviour, but we wanna make sure there is at least 1 master with good config
+		$db = JFactory::getDBO();
+
+		$query = $db->getQuery(true)
+			->select('count(*)')
+			->from('#__jfusion')
+			->where('master = 1')
+			->where('status = 1');
+
+		$db->setQuery($query);
+		if (!$db->loadResult()) {
+			$result = false;
+			$task = 'plugindisplay';
+			JFusionFunction::raiseWarning(JText::_('NO_MASTER_WARNING'));
+		} else if (JFusionFunction::getUserGroups() === false) {
+			// Prevent to loginchecker without any usergroups configured.
+			$result = false;
+			$task = 'usergroups';
+			JFusionFunction::raiseWarning(JText::_('NO_USERGROUPS_ERROR'));
+		}
+
+		if ($result === false) {
+			$mainframe = JFactory::getApplication();
+			$mainframe->redirect('index.php?option=com_jfusion&task=' . $task);
+		}
+		return $result;
+	}
 
     /**
      * Raise warning function that can handle arrays
      *
      * @return string display donate information
      */
-    public static function displayDonate()
+    public static function getDonationBanner()
     {
         $msg = JText::_('BANNER_MESSAGE');
         $html =<<<HTML
@@ -136,7 +174,7 @@ class JFusionFunctionAdmin
                     <h1><strong>{$msg}</strong></h1>
                 </td>
                 <td style="width: 15%; text-align: right;">
-                    <div id="navButton">
+                    <div id="jfusionDonateButton">
                         <form id="ppform" action="https://www.paypal.com/cgi-bin/webscr" method="post">
                         <input type="hidden" name="cmd" value="_donations" />
                         <input type="hidden" name="business" value="webmaster@jfusion.org" />
@@ -147,7 +185,7 @@ class JFusionFunctionAdmin
                         <input type="hidden" name="tax" value="0" />
                         <input type="hidden" name="lc" value="AU" />
                         <input type="hidden" name="bn" value="PP-DonationsBF" />
-                        <a class="navButton" href="#" onclick="$('ppform').submit();return false"></a>
+                        <a class="jfusionDonateButton" href="#" onclick="$('ppform').submit();return false"></a>
                     </form>
                     </div>
                 </td>

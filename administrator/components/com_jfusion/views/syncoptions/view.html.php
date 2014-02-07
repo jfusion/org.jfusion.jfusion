@@ -69,92 +69,93 @@ class jfusionViewsyncoptions extends JViewLegacy
      */
     function display($tpl = null)
     {
-	    $document = JFactory::getDocument();
-	    $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
+	    if (JFusionFunctionAdmin::isConfigOk()) {
+		    $document = JFactory::getDocument();
+		    $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
-        //find out what the JFusion master and slaves are
-        $db = JFactory::getDBO();
-	    $master = JFusionFunction::getMaster();
-	    $slaves = JFusionFunction::getSlaves();
-        //were we redirected here for a sync resume?
-        $syncid = JFactory::getApplication()->input->get->get('syncid', '');
-        if (!empty($syncid)) {
-	        $query = $db->getQuery(true)
-		        ->select('syncid')
-		        ->from('#__jfusion_sync')
-		        ->where('syncid = ' . $db->quote($syncid));
+		    //find out what the JFusion master and slaves are
+		    $db = JFactory::getDBO();
+		    $master = JFusionFunction::getMaster();
+		    $slaves = JFusionFunction::getSlaves();
+		    //were we redirected here for a sync resume?
+		    $syncid = JFactory::getApplication()->input->get->get('syncid', '');
+		    if (!empty($syncid)) {
+			    $query = $db->getQuery(true)
+				    ->select('syncid')
+				    ->from('#__jfusion_sync')
+				    ->where('syncid = ' . $db->quote($syncid));
 
-            $db->setQuery($query);
-            if ($db->loadResult()) {
-                include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-                $syncdata = JFusionUsersync::getSyncdata($syncid);
-	            $this->syncdata = $syncdata;
-                $mode = 'resume';
-            } else {
-                $mode = 'new';
-            }
-        } else {
-            $mode = 'new';
-        }
-        //only run the usersync if master and slaves exist
-        if ($master && $slaves) {
-            if ($mode == 'new') {
-                //generate a user sync sessionid
-                jimport('joomla.user.helper');
-                $syncid = JUserHelper::genRandomPassword(10);
-                $sync_active = 0;
-            } else {
-                $sync_active = JFusionUsersync::getSyncStatus($syncid);
-            }
-            //get the master data
-            $JFusionPlugin = JFusionFactory::getAdmin($master->name);
-            $master_data = $slave_data = array();
-            $master_data['total'] = $JFusionPlugin->getUserCount();
-            $master_data['jname'] = $master->name;
-            //get the slave data
-            foreach ($slaves as $slave) {
-                $JFusionSlave = JFusionFactory::getAdmin($slave->name);
-                $slave_data[$slave->name]['total'] = $JFusionSlave->getUserCount();
-                $slave_data[$slave->name]['jname'] = $slave->name;
-                unset($JFusionSlave);
-            }
+			    $db->setQuery($query);
+			    if ($db->loadResult()) {
+				    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
+				    $syncdata = JFusionUsersync::getSyncdata($syncid);
+				    $this->syncdata = $syncdata;
+				    $mode = 'resume';
+			    } else {
+				    $mode = 'new';
+			    }
+		    } else {
+			    $mode = 'new';
+		    }
+		    //only run the usersync if master and slaves exist
+		    if ($master && $slaves) {
+			    if ($mode == 'new') {
+				    //generate a user sync sessionid
+				    jimport('joomla.user.helper');
+				    $syncid = JUserHelper::genRandomPassword(10);
+				    $sync_active = 0;
+			    } else {
+				    $sync_active = JFusionUsersync::getSyncStatus($syncid);
+			    }
+			    //get the master data
+			    $JFusionPlugin = JFusionFactory::getAdmin($master->name);
+			    $master_data = $slave_data = array();
+			    $master_data['total'] = $JFusionPlugin->getUserCount();
+			    $master_data['jname'] = $master->name;
+			    //get the slave data
+			    foreach ($slaves as $slave) {
+				    $JFusionSlave = JFusionFactory::getAdmin($slave->name);
+				    $slave_data[$slave->name]['total'] = $JFusionSlave->getUserCount();
+				    $slave_data[$slave->name]['jname'] = $slave->name;
+				    unset($JFusionSlave);
+			    }
 
-            //print out results to user
-	        $this->sync_mode = $mode;
-	        $this->master_data = $master_data;
-	        $this->slave_data = $slave_data;
-	        $this->syncid = $syncid;
-	        $this->sync_active = $sync_active;
+			    //print out results to user
+			    $this->sync_mode = $mode;
+			    $this->master_data = $master_data;
+			    $this->slave_data = $slave_data;
+			    $this->syncid = $syncid;
+			    $this->sync_active = $sync_active;
 
-	        JFusionFunction::loadJavascriptLanguage(array('SYNC_PROGRESS', 'SYNC_USERS_TODO', 'CLICK_FOR_MORE_DETAILS', 'CONFLICTS',
-		        'UNCHANGED', 'FINISHED', 'PAUSE', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START', 'UPDATED', 'PLUGIN', 'USER', 'USERS',
-		        'NAME', 'CREATED'));
+			    JFusionFunction::loadJavascriptLanguage(array('SYNC_PROGRESS', 'SYNC_USERS_TODO', 'CLICK_FOR_MORE_DETAILS', 'CONFLICTS',
+				                                            'UNCHANGED', 'FINISHED', 'PAUSE', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START', 'UPDATED', 'PLUGIN', 'USER', 'USERS',
+				                                            'NAME', 'CREATED'));
 
-			$slave_data = json_encode($this->slave_data);
+			    $slave_data = json_encode($this->slave_data);
 
-	        $js=<<<JS
+			    $js=<<<JS
 	        JFusion.slaveData = {$slave_data};
 	        JFusion.syncMode = '{$this->sync_mode}';
 			JFusion.syncid = '{$this->syncid}';
 JS;
-			$document->addScriptDeclaration($js);
-			if ($this->sync_mode != 'new') {
-				$syncdata = json_encode($this->syncdata);
+			    $document->addScriptDeclaration($js);
+			    if ($this->sync_mode != 'new') {
+				    $syncdata = json_encode($this->syncdata);
 
-				$js=<<<JS
+				    $js=<<<JS
 	        JFusion.response = {$syncdata};
 
 			window.addEvent('domready',function() {
 				JFusion.renderSync(JFusion.response)
 			});
 JS;
-				$document->addScriptDeclaration($js);
-			}
+				    $document->addScriptDeclaration($js);
+			    }
 
-	        parent::display();
-        } else {
-            JFusionFunctionAdmin::displayDonate();
-            JFusionFunction::raiseWarning(JText::_('SYNC_NOCONFIG'));
-        }
+			    parent::display();
+		    } else {
+			    JFusionFunction::raiseWarning(JText::_('SYNC_NOCONFIG'));
+		    }
+	    }
     }
 }

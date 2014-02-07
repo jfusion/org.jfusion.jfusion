@@ -42,6 +42,31 @@
     text-align: center;
 }
 
+/** donate button **/
+#jfusionDonateButton {
+    position: relative;
+    width: 160px;
+    height: 30px;
+    margin-top: 0;
+    margin-left: 0;
+    z-index: 2;
+}
+
+a.jfusionDonateButton {
+    vertical-align:middle;
+    display: inline-block;
+    width: 160px;
+    height: 30px;
+    outline: none;
+    background: url(../images/donate.png) no-repeat 0 0;
+    z-index: 2;
+}
+
+a.jfusionDonateButton:hover {
+    background-position: 0 -30px;
+    z-index: 2;
+}
+
 /** sync **/
 .jfusion div.ajax_bar {
     background-color: #e4ecf2;
