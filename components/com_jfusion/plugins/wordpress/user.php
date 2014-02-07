@@ -210,36 +210,36 @@ class JFusionUser_wordpress extends JFusionUser
 		if (!empty($curl->status['error'])) {
 			$curl->status['debug'][] = JText::_('CURL_COULD_NOT_READ_PAGE: ') . $curl->options['post_url'];
 		} else {
-        // get _wpnonce security value
-        preg_match('/action=logout.+?_wpnonce=([\w\s-]*)["\']/i', $remotedata, $wpnonce);
-        if (!empty($wpnonce[1])) {
-			$curl_options['post_url'] = $curl_options['post_url'] . '?action=logout&_wpnonce=' . $wpnonce[1];
-			$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
-        } else {
-          // non wpnonce, we are probably not on the logout page. Just report
-          $status['debug'][] = JText::_('NO_WPNONCE_FOUND: ');
-  
-          //try to delete all cookies
-          $cookie_name = $this->params->get('cookie_name');
-          $cookie_domain = $this->params->get('cookie_domain');
-          $cookie_path = $this->params->get('cookie_path');
-          $cookie_hash = $this->params->get('cookie_hash');
+	        // get _wpnonce security value
+	        preg_match('/action=logout.+?_wpnonce=([\w\s-]*)["\']/i', $remotedata, $wpnonce);
+	        if (!empty($wpnonce[1])) {
+				$curl_options['post_url'] = $curl_options['post_url'] . '?action=logout&_wpnonce=' . $wpnonce[1];
+				$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
+	        } else {
+	          // non wpnonce, we are probably not on the logout page. Just report
+	          $status['debug'][] = JText::_('NO_WPNONCE_FOUND: ');
 
-          $cookies = array();
-          $cookies[0][0] = 'wordpress_logged_in' . $cookie_name . '=';
-          $cookies[1][0] = 'wordpress' . $cookie_name . '=';
-          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $cookie_path, '');
+	          //try to delete all cookies
+	          $cookie_name = $this->params->get('cookie_name');
+	          $cookie_domain = $this->params->get('cookie_domain');
+	          $cookie_path = $this->params->get('cookie_path');
+	          $cookie_hash = $this->params->get('cookie_hash');
 
-          $cookies = array();
-          $cookies[1][0] = 'wordpress' . $cookie_name . '=';
+	          $cookies = array();
+	          $cookies[0][0] = 'wordpress_logged_in' . $cookie_name . '=';
+	          $cookies[1][0] = 'wordpress' . $cookie_name . '=';
+	          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $cookie_path, '');
 
-          $path = $cookie_path . 'wp-content/plugins';
-          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, '');
+	          $cookies = array();
+	          $cookies[1][0] = 'wordpress' . $cookie_name . '=';
 
-          $path = $cookie_path . 'wp-admin';
-          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, '');
-        }
-    }      
+	          $path = $cookie_path . 'wp-content/plugins';
+	          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, '');
+
+	          $path = $cookie_path . 'wp-admin';
+	          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, '');
+	        }
+	    }
 		return $status;
 	}
 
