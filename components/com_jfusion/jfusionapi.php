@@ -785,13 +785,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			define('_JREQUEST_NO_CLEAN', true); // we don't want to clean variables as it can "corrupt" them for some applications, it also clear any globals used...
 
 			if (!class_exists('JVersion')) {
-				if (file_exists(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'version' . DIRECTORY_SEPARATOR . 'version.php')) {
-					include_once(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'version' . DIRECTORY_SEPARATOR . 'version.php');
-				} elseif (file_exists(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'version.php')) {
-					include_once(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'version.php');
-				} elseif (file_exists(JPATH_ROOT . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'version.php')) {
-					include_once(JPATH_ROOT . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'version.php');
-				}
+				include_once(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'version' . DIRECTORY_SEPARATOR . 'version.php');
 			}
 
 			include_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'import.php';
