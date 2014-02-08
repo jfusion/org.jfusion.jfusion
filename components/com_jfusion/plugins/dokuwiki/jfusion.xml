@@ -31,7 +31,7 @@
     <form>
         <fields name="params">
             <fieldset name="PLUGIN_GENERAL_DETAILS">
-                <field name="description" type="text" size="60" label="DESCRIPTION" default="Docukwiki" description="DESCRIPTION_DESC" />
+                <field name="description" type="text" size="60" label="DESCRIPTION" default="Dokukwiki" description="DESCRIPTION_DESC" />
                 <field name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/yourdir/" description="SOURCE_URL_DESC" />
                 <field name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
@@ -47,7 +47,7 @@
             </fieldset>
 
             <fieldset name="DATABASE_OPTIONS">
-                <field name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
+                <field name="database_type" type="text" size="20" label="DATABASE_TYPE" default="" description="DATABASE_TYPE_DESC" />
                 <field name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
                 <field name="database_name" type="text" size="20" label="DATABASE_NAME" default="" description="DATABASE_NAME_DESC" />
                 <field name="database_user" type="text" size="20" label="DATABASE_USER" default="" description="DATABASE_USER_DESC" />

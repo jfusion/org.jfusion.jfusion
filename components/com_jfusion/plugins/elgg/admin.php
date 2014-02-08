@@ -87,7 +87,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
      */
     function setupFromPath($softwarePath)
     {
-        $config = JFusionAdmin_elgg::loadSetup($softwarePath);
+        $config = $this->loadSetup($softwarePath);
         $params = array();
         if (!empty($config)) {
             //save the parameters into array

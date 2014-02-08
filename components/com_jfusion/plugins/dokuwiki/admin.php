@@ -83,14 +83,14 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
             JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $softwarePath . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
-            if (isset($config['auth']['mysql']) && isset($config['authtype']) && $config['authtype'] == 'mysql') {
+            if (isset($config['plugin']['authmysql']) && isset($config['authtype']) && $config['authtype'] == 'authmysql') {
 	            $params['database_type'] = 'mysql';
-	            $params['database_host'] = $config['auth']['mysql']['server'];
-	            $params['database_name'] = $config['auth']['mysql']['database'];
-	            $params['database_user'] = $config['auth']['mysql']['user'];
-	            $params['database_password'] = $config['auth']['mysql']['password'];
-            	if (isset($config['auth']['mysql']['charset'])) {
-            		$params['database_charset'] = $config['auth']['mysql']['charset'];
+	            $params['database_host'] = $config['plugin']['authmysql']['server'];
+	            $params['database_name'] = $config['plugin']['authmysql']['database'];
+	            $params['database_user'] = $config['plugin']['authmysql']['user'];
+	            $params['database_password'] = $config['plugin']['authmysql']['password'];
+            	if (isset($config['plugin']['authmysql']['charset'])) {
+            		$params['database_charset'] = $config['plugin']['authmysql']['charset'];
             	} else {
             		$params['database_charset'] = 'utf8';
             	}
