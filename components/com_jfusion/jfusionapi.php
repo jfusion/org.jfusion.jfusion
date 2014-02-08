@@ -773,6 +773,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			 * @TODO determine if we really need session_write_close or if it need to be selectable
 			 */
 			session_write_close();
+			session_id(null);
+
 			// trick joomla into thinking we're running through joomla
 			define('_JEXEC', true);
 			define('DS', DIRECTORY_SEPARATOR);

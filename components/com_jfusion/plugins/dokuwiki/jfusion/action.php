@@ -45,15 +45,15 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
      * @param $param
      */
     function jfusion_login(&$event, $param) {
-        //do not use Dokuwiki standard login method
-        $event->preventDefault();
+	    //do not use Dokuwiki standard login method
+	    $event->preventDefault();
 
         $user = & $event->data['user'];
         $password = & $event->data['password'];
         $sticky = & $event->data['sticky'];
         $silent = & $event->data['silent'];
 
-        $this->loginDokuwiki($user, $password, $sticky, $silent);
+	    $this->loginDokuwiki($user, $password, $sticky, $silent);
     }
 
     /**
@@ -75,6 +75,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
         $sticky ? $sticky = true : $sticky = false; //sanity check
 
         if(!empty($user)) {
+
             //usual login
             if ($auth->checkPass($user, $password)) {
                 // make logininfo globally available
@@ -99,6 +100,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
                 $_SESSION[DOKU_COOKIE]['auth']['time'] = time();
 
         if (!empty($conf['jfusion']['joomla'])) {
+
             $this->loginJoomla($user, $password, $sticky);
         }
 
