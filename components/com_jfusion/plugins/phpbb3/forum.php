@@ -882,7 +882,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 	 * Creates a post from the quick reply
      *
 	 * @param JRegistry $params      object with discussion bot parameters
-	 * @param object $ids         array with forum id ($ids['forumid'], thread id ($ids['threadid']) and first post id ($ids['postid'])
+	 * @param stdClass $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
 	 * @param object $contentitem object of content item
 	 * @param object $userinfo    object info of the forum user
 	 * @param stdClass $postinfo object with post info

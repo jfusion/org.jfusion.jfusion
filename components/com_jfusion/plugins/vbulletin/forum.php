@@ -195,7 +195,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param JRegistry $params
-     * @param object $ids
+     * @param stdClass $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
      * @param object $contentitem
      * @param object $userinfo
      * @param stdClass $postinfo object with post info
