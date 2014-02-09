@@ -907,7 +907,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 					$query = $db->getQuery(true)
 						->select('COUNT(*)')
 						->from('#__users')
-						->where('username = ' . $db->quote($userinfo->username))
+						->where('username = ' . $db->quote($userinfo->username), 'OR')
 						->where('username = ' . $db->quote($username_clean))
 						->where('username_clean = ' . $db->quote($userinfo->username))
 						->where('username_clean = ' . $db->quote($username_clean))
