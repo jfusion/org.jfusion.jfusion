@@ -77,14 +77,14 @@ function login_jfusion(&$username, &$password) {
 
 			//if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
 			//by php session_write_close and thus the user is not logged into Joomla.  php bug?
-			if (!defined('IN_JOOMLA')) {
+			if (!defined('IN_JOOMLA') && $id) {
 				$jdb = JFactory::getDbo();
 
 				$query = $jdb->getQuery(true);
 
 				$query->select('*')
 					->from('#__session')
-					->where('session_id = ' . $id);
+					->where('session_id = ' . $db->quote($id));
 
 				$jdb->setQuery($query, 0 , 1);
 
