@@ -329,7 +329,8 @@ JS;
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','reenable')">{$reenable}</a>
 HTML;
                 } else {
-	                $secret = $this->params->get('vb_secret', null);
+	                $params = JFusionFactory::getParams($this->getJname());
+	                $secret = $params->get('vb_secret', null);
 	                if (empty($secret)) {
 		                $output = JText::_('VB_SECRET_EMPTY');
 					} else {
