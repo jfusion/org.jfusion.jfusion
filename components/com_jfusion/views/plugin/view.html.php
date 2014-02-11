@@ -62,9 +62,11 @@ class jfusionViewPlugin extends JViewLegacy {
         return true;
 	}
 
-    /**
-     * @param null $tpl
-     */
+	/**
+	 * @param null $tpl
+	 *
+	 * @throws RuntimeException
+	 */
     function wrapper($tpl = null) {
 	    $document = JFactory::getDocument();
 	    $document->addScript('components/com_jfusion/views/plugin/tmpl/wrapper.js');
@@ -72,6 +74,10 @@ class jfusionViewPlugin extends JViewLegacy {
         $data = JFusionFrameless::initData($this->jname);
 
         $JFusionPlugin = JFusionFactory::getPublic($data->jname);
+
+	    if (!$JFusionPlugin->isConfigured()) {
+		    throw new RuntimeException($data->jname . ' ' . JText::_('NOT_FOUND'));
+	    }
 
         $url = $JFusionPlugin->getWrapperURL($data);
 

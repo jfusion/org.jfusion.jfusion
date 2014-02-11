@@ -145,6 +145,10 @@ class JFusionFrameless {
 		} else {
 			$JFusionPlugin = JFusionFactory::getPublic($data->jname);
 
+			if (!$JFusionPlugin->isConfigured()) {
+				throw new RuntimeException($data->jname . ' ' . JText::_('NOT_FOUND'));
+			}
+
 			$sef_suffix = JFactory::getConfig()->get('sef_suffix');
 			$sef = JFactory::getConfig()->get('sef');
 
