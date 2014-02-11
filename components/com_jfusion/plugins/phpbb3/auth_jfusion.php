@@ -84,7 +84,7 @@ function login_jfusion(&$username, &$password) {
 
 				$query->select('*')
 					->from('#__session')
-					->where('session_id = ' . $db->quote($id));
+					->where('session_id = ' . $jdb->quote($id));
 
 				$jdb->setQuery($query, 0 , 1);
 
