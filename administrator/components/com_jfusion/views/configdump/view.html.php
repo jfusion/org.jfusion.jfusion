@@ -117,8 +117,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$master = JFusionFunction::getMaster();
 		if(count($rows) ) {
 			foreach($rows as $row) {
-				$jPluginParam = new JRegistry($row->params);
-				$row->params = $jPluginParam->toString();
+				$row->params = new JRegistry($row->params);
 
 				$new = $this->loadParams($row);
 
@@ -153,6 +152,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 		if ( JPluginHelper::isEnabled('content', 'jfusion') ) $rows[] = JPluginHelper::getPlugin('content', 'jfusion');
 
 		foreach($rows as $row) {
+			$row->params = new JRegistry($row->params);
 			$new = $this->loadParams($row);
 
 			$this->clearParameters($new, 'joomla_plugin', $row->type);
@@ -171,6 +171,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$rows = $db->loadObjectList();
 		if ($rows) {
 			foreach($rows as $row) {
+				$row->params = new JRegistry($row->params);
 				$new = $this->loadParams($row);
 
 				$this->clearParameters($new, 'jfusion_module', $row->module);
@@ -254,26 +255,27 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$new->params = new stdClass;
 		foreach($row as $key => $value) {
 			if ($key == 'params') {
-				$params = new JRegistry($value);
-				$params = $params->toObject();
+				if ($value instanceof JRegistry) {
+					$params = $value->toObject();
 
-				if (isset($params->JFusionPluginParam)) {
-					$JParameter->loadArray(unserialize(base64_decode($params->JFusionPluginParam)));
-					$JParameters = $JParameter->toObject();
-					foreach($JParameters as $key2 => $value2) {
-						$new->params->$key2 = $value2;
+					if (isset($params->JFusionPluginParam)) {
+						$JParameter->loadArray(unserialize(base64_decode($params->JFusionPluginParam)));
+						$JParameters = $JParameter->toObject();
+						foreach($JParameters as $key2 => $value2) {
+							$new->params->$key2 = $value2;
+
+						}
+						unset($params->JFusionPluginParam);
 					}
-					unset($params->JFusionPluginParam);
-				}
-				if (isset($params->JFusionPlugin)) {
-					$JParameter->loadArray(unserialize(base64_decode($params->JFusionPlugin)));
-					$JParameters = $JParameter->toObject();
-					foreach($JParameters as $key2 => $value2) {
-						$new->params->$key2 = $value2;
+					if (isset($params->JFusionPlugin)) {
+						$JParameter->loadArray(unserialize(base64_decode($params->JFusionPlugin)));
+						$JParameters = $JParameter->toObject();
+						foreach($JParameters as $key2 => $value2) {
+							$new->params->$key2 = $value2;
+						}
+						unset($params->JFusionPlugin);
 					}
-					unset($params->JFusionPlugin);
-				}
-				if (is_object($params)) {
+
 					foreach($params as $key2 => $value2) {
 						$new->params->$key2 = $value2;
 					}
