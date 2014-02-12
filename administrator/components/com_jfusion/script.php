@@ -512,23 +512,10 @@ class com_jfusionInstallerScript
 		$db = JFactory::getDBO();
 
 		try {
-			$query = $db->getQuery(true)
-				->update('#__extensions')
-				->set('enabled = 1')
-				->where('element = ' . $db->quote('joomla'))
-				->where('folder = ' . $db->quote('authentication'));
-
-			$db->setQuery($query);
-			$db->execute();
-
-			$query = $db->getQuery(true)
-				->update('#__extensions')
-				->set('enabled = 1')
-				->where('element = ' . $db->quote('joomla'))
-				->where('folder = ' . $db->quote('user'));
-
-			$db->setQuery($query);
-			$db->execute();
+			JFusionFunctionAdmin::changePluginStatus('joomla', 'authentication', 1);
+			JFusionFunctionAdmin::changePluginStatus('joomla', 'user', 1);
+			JFusionFunctionAdmin::changePluginStatus('jfusion', 'authentication', 0);
+			JFusionFunctionAdmin::changePluginStatus('jfusion', 'user', 0);
 		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';
 		}
@@ -942,6 +929,7 @@ HTML;
 
 	private function init() {
 		JFactory::getLanguage()->load('com_jfusion', JPATH_BASE);
+		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
 	}
