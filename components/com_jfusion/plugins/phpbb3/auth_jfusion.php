@@ -47,70 +47,22 @@ function login_jfusion(&$username, &$password) {
 //        $redirect = request_var('redirect', "{$phpbb_root_path}adm/index.$phpEx");
     } else {
 		//check to see if login successful and jFusion is not active
+		$joomla = startJoomla();
+
 		//backup phpbb globals
-		jfusion_backup_restore_globals('backup');
+		$joomla->backupGlobal();
 
 		global $JFusionActive;
 		if ($result['status'] == LOGIN_SUCCESS && empty($JFusionActive)) {
-			$mainframe = startJoomla();
-			//define that the phpBB3 JFusion plugin needs to be excluded
-			global $JFusionActivePlugin;
-			$JFusionActivePlugin = 'JFUSION_JNAME';
-			// do the login
-			$credentials = array('username' => $username, 'password' => $password);
-			$options = array('entry_url' => JURI::root() . 'index.php?option=com_user&task=login', 'silent' => true);
 
 			//detect if the session should be remembered
 			if (!empty($_POST['autologin'])) {
-				$options['remember'] = 1;
+				$remember = 1;
 			} else {
-				$options['remember'] = 0;
+				$remember = 0;
 			}
-
-			$mainframe->login($credentials, $options);
-
-			//clean up the joomla session object before continuing
-			$session = JFactory::getSession();
-			$id = $session->getId();
-			$session_data = session_encode();
-			$session->close();
-
-			//if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
-			//by php session_write_close and thus the user is not logged into Joomla.  php bug?
-			if (!defined('IN_JOOMLA') && $id) {
-				$jdb = JFactory::getDbo();
-
-				$query = $jdb->getQuery(true);
-
-				$query->select('*')
-					->from('#__session')
-					->where('session_id = ' . $jdb->quote($id));
-
-				$jdb->setQuery($query, 0 , 1);
-
-				$data = $jdb->loadResult();
-
-				if ($data) {
-					$data->time = time();
-					$jdb->updateObject('#__session', $data, 'session_id');
-				} else {
-					// if load failed then we assume that it is because
-					// the session doesn't exist in the database
-					// therefore we use insert instead of store
-					$app = JFactory::getApplication();
-
-					$data = new stdClass();
-					$data->session_id = $id;
-					$data->data = $session_data;
-					$data->client_id = $app->getClientId();
-					$data->username = '';
-					$data->guest = 1;
-					$data->time = time();
-
-					$jdb->insertObject('#__session', $data, 'session_id');
-				}
-			}
-
+			$joomla->setActivePlugin('JFUSION_JNAME');
+			$joomla->login($username, $password, $remember);
 
 			if (FORCE_REDIRECT_AFTER_LOGIN) {
 				if (isset($_REQUEST['redirect']) && defined('IN_JOOMLA')) {
@@ -142,7 +94,7 @@ function login_jfusion(&$username, &$password) {
 				unset($dbpasswd);
 
 				//create phpBB user session
-				$user->session_create($result['user_row']['user_id'], 0, $options['remember']);
+				$user->session_create($result['user_row']['user_id'], 0, $remember);
 
 				$url = str_replace('&amp;', '&', $redirect);
 
@@ -156,9 +108,8 @@ function login_jfusion(&$username, &$password) {
 				unset($dbpasswd);
 			}
 		}
-
 		//backup phpbb globals
-		jfusion_backup_restore_globals('restore');
+		$joomla->restoreGlobal();
 	}
     return $result;
 }
@@ -174,19 +125,15 @@ function logout_jfusion(&$data) {
     //check to see if JFusion is not active
     global $JFusionActive, $db, $user, $phpbb_root_path, $phpEx;
     if (empty($JFusionActive)) {
+	    $joomla = startJoomla();
+
         //backup phpbb globals
-        jfusion_backup_restore_globals('backup');
+	    $joomla->backupGlobal();
 
         //define that the phpBB3 JFusion plugin needs to be excluded
-        global $JFusionActivePlugin;
-        $JFusionActivePlugin ='JFUSION_JNAME';
-        $mainframe = startJoomla();
-        // logout any joomla users
-        $mainframe->logout();
+	    $joomla->setActivePlugin('JFUSION_JNAME');
 
-        // clean up session
-        $session = JFactory::getSession();
-        $session->close();
+	    $joomla->logout();
 
         $link = null;
         if (FORCE_REDIRECT_AFTER_LOGOUT) {
@@ -252,37 +199,15 @@ function logout_jfusion(&$data) {
             exit();
         }
         //backup phpbb globals
-        jfusion_backup_restore_globals('restore');
+	    $joomla->restoreGlobal();
     }
 }
 
 /**
- * @return JApplication|JApplicationCms
+ * @return JFusionAPIInternal
  */
 function startJoomla() {
     define('_JFUSIONAPI_INTERNAL', true);
     require_once 'JFUSION_PATH' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
-    $mainframe = JFusionAPIInternal::startJoomla();
-    return $mainframe;
-}
-
-/**
- * @param $action
- */
-function jfusion_backup_restore_globals($action) {
-    static $phpbb_globals;
-
-    if (!is_array($phpbb_globals)) {
-        $phpbb_globals = array();
-    }
-
-    if ($action == 'backup') {
-        foreach ($GLOBALS as $n => $v) {
-            $phpbb_globals[$n] = $v;
-        }
-    } else {
-        foreach ($phpbb_globals as $n => $v) {
-            $GLOBALS[$n] = $v;
-        }
-    }
+	return JFusionAPIInternal::getInstance();
 }

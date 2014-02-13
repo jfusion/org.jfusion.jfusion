@@ -218,7 +218,8 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
 
         define('_JFUSIONAPI_INTERNAL', true);
         require_once $conf['jfusion']['joomla_basepath'] . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
-        $mainframe = JFusionAPIInternal::startJoomla();
+	    $joomla = JFusionAPIInternal::getInstance();
+        $mainframe = $joomla->getApplication();
 
         //set the cookie path to the correct setting
         if (version_compare(PHP_VERSION, '5.2.0', '>')) {

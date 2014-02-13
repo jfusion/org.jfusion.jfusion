@@ -562,7 +562,8 @@ class JFusionAPI_User extends JFusionAPIBase {
 	 */
 	public function getUser()
 	{
-		JFusionAPIInternal::startJoomla();
+
+		$joomla = JFusionAPIInternal::getInstance(true);
 		$plugin = isset($this->payload['plugin']) ? $this->payload['plugin'] : 'joomla_int';
 
 		$userPlugin = JFusionFactory::getUser($plugin);
@@ -592,7 +593,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 		if (isset($session['login'])) {
 			$userinfo = $session['login'];
 			if (is_array($userinfo)) {
-				$joomla = new JFusionAPIInternal();
+				$joomla = JFusionAPIInternal::getInstance();
 
 				if (isset($userinfo['plugin'])) {
 					$joomla->setActivePlugin($userinfo['plugin']);
@@ -609,7 +610,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 	public function executeLogout()
 	{
 		if ($this->readPayload(false)) {
-			$joomla = new JFusionAPIInternal();
+			$joomla = JFusionAPIInternal::getInstance();
 
 			if (isset($userinfo['plugin'])) {
 				$joomla->setActivePlugin($userinfo['plugin']);
@@ -629,7 +630,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 		if ($this->payload) {
 			if (isset($this->payload['userinfo']) && get_class($this->payload['userinfo']) == 'stdClass') {
 
-				$joomla = new JFusionAPIInternal();
+				$joomla = JFusionAPIInternal::getInstance();
 
 				if (isset($userinfo['plugin'])) {
 					$joomla->setActivePlugin($userinfo['plugin']);
@@ -660,7 +661,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 	{
 		if ($this->payload) {
 			if ( isset($this->payload['userinfo']) && is_array($this->payload['userinfo'])) {
-				$joomla = new JFusionAPIInternal();
+				$joomla = JFusionAPIInternal::getInstance();
 
 				if (isset($this->payload['overwrite']) && $this->payload['overwrite']) {
 					$overwrite = 1;
@@ -687,7 +688,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 	{
 		if ($this->payload) {
 			if (isset($this->payload['userid'])) {
-				$joomla = new JFusionAPIInternal();
+				$joomla = JFusionAPIInternal::getInstance();
 
 				$joomla->delete($this->payload['userid']);
 
@@ -754,7 +755,19 @@ class JFusionAPI_Cookie extends JFusionAPIBase {
  * Intended for direct integration with joomla (loading the joomla framework directly in to other software.)
  */
 class JFusionAPIInternal extends JFusionAPIBase {
+	/**
+	 * Global joomla object
+	 *
+	 * @var    JFusionAPIInternal
+	 * @since  11.1
+	 */
+	public static $joomla = null;
+
 	var $activePlugin = null;
+
+	private $globals_backup = array();
+
+	private $original_session_id = null;
 	/**
 	 *
 	 */
@@ -763,17 +776,35 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	}
 
 	/**
+	 * Get a joomla object.
+	 *
+	 * @see     JFusionAPIInternal
+	 * @since   11.1
+	 */
+	public static function getInstance($start = false)
+	{
+		if (!self::$joomla)
+		{
+			self::$joomla = new JFusionAPIInternal();
+		}
+		if ($start) {
+			self::$joomla->getApplication();
+		}
+		return self::$joomla;
+	}
+
+	/**
 	 * @return JApplication|JApplicationCms
 	 */
-	public static function startJoomla()
+	public function getApplication()
 	{
 		$old = error_reporting(0);
 		if (!defined('_JEXEC')) {
 			/**
 			 * @TODO determine if we really need session_write_close or if it need to be selectable
 			 */
-			session_write_close();
-			session_id(null);
+//			session_write_close();
+//			session_id(null);
 
 			// trick joomla into thinking we're running through joomla
 			define('_JEXEC', true);
@@ -827,6 +858,26 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	}
 
 	/**
+	 * @return void
+	 */
+	public function backupGlobal()
+	{
+		foreach ($GLOBALS as $n => $v) {
+			$this->globals_backup[$n] = $v;
+		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function restoreGlobal()
+	{
+		foreach ($this->globals_backup as $n => $v) {
+			$GLOBALS[$n] = $v;
+		}
+	}
+
+	/**
 	 * @param string $plugin
 	 *
 	 * @return void
@@ -845,7 +896,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function login($username, $password, $remember = 1)
 	{
-		$mainframe = $this->startJoomla();
+		$mainframe = $this->getApplication();
 
 		if ($this->activePlugin) {
 			global $JFusionActivePlugin;
@@ -868,19 +919,19 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 		//if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
 		//by php session_write_close and thus the user is not logged into Joomla.  php bug?
-		if (!defined('IN_JOOMLA')) {
+		if (!defined('IN_JOOMLA') && $id) {
 			$jdb = JFactory::getDbo();
 
 			$query = $jdb->getQuery(true);
 
 			$query->select('*')
 				->from('#__session')
-				->where('session_id = ' . $id);
+				->where('session_id = ' . $jdb->quote($id));
+
 
 			$jdb->setQuery($query, 0 , 1);
 
-			$data = $jdb->loadResult();
-
+			$data = $jdb->loadObject();
 			if ($data) {
 				$data->time = time();
 				$jdb->updateObject('#__session', $data, 'session_id');
@@ -910,7 +961,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function logout($username=null)
 	{
-		$mainframe = $this->startJoomla();
+		$mainframe = $this->getApplication();
 
 		if ($this->activePlugin) {
 			global $JFusionActivePlugin;
@@ -946,7 +997,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function register($userinfo)
 	{
-		$this->startJoomla();
+		$this->getApplication();
 
 		$plugins = JFusionFunction::getSlaves();
 		$plugins[] = JFusionFunction::getMaster();
@@ -988,7 +1039,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function update($userinfo, $overwrite)
 	{
-		$this->startJoomla();
+		$this->getApplication();
 
 		$plugins = JFusionFunction::getSlaves();
 		$plugins[] = JFusionFunction::getMaster();
@@ -1033,7 +1084,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function delete($userid)
 	{
-		$this->startJoomla();
+		$this->getApplication();
 
 		$user = JUser::getInstance($userid);
 

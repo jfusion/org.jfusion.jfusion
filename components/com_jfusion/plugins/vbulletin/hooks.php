@@ -586,7 +586,8 @@ class executeJFusionHook
         define('_VBULLETIN_JFUSION_HOOK', true);
         define('_JFUSIONAPI_INTERNAL', true);
         require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
-        $mainframe = JFusionAPIInternal::startJoomla();
+	    $joomla = JFusionAPIInternal::getInstance();
+	    $mainframe = $joomla->getApplication();
 
         $curlFile = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
         if (file_exists($curlFile)) {
