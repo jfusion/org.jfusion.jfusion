@@ -68,10 +68,8 @@ class JFusionFactory
                 $class = 'JFusionPublic';
             }
             $public_instances[$jname] = new $class;
-            return $public_instances[$jname];
-        } else {
-            return $public_instances[$jname];
         }
+	    return $public_instances[$jname];
     }
     /**
      * Gets an Fusion front object
@@ -132,11 +130,8 @@ class JFusionFactory
                 $class = 'JFusionAuth';
             }
             $auth_instances[$jname] = new $class;
-            return $auth_instances[$jname];
-
-        } else {
-            return $auth_instances[$jname];
         }
+	    return $auth_instances[$jname];
     }
 
     /**
@@ -165,11 +160,8 @@ class JFusionFactory
                 $class = 'JFusionUser';
             }
             $user_instances[$jname] = new $class;
-            return $user_instances[$jname];
-
-        } else {
-            return $user_instances[$jname];
         }
+	    return $user_instances[$jname];
     }
 
     /**
@@ -198,10 +190,8 @@ class JFusionFactory
                 $class = 'JFusionForum';
             }
             $forum_instances[$jname] = new $class;
-            return $forum_instances[$jname];
-        } else {
-            return $forum_instances[$jname];
         }
+	    return $forum_instances[$jname];
     }
 
     /**
@@ -250,10 +240,8 @@ class JFusionFactory
         //only create a new database instance if it has not been created before
         if (!isset($database_instances[$jname])) {
             $database_instances[$jname] = static::createDatabase($jname);
-            return $database_instances[$jname];
-        } else {
-            return $database_instances[$jname];
         }
+	    return $database_instances[$jname];
     }
 
     /**
@@ -273,10 +261,8 @@ class JFusionFactory
         //only create a new parameter instance if it has not been created before
         if (!isset($params_instances[$jname]) || $reset) {
             $params_instances[$jname] = static::createParams($jname);
-            return $params_instances[$jname];
-        } else {
-            return $params_instances[$jname];
         }
+	    return $params_instances[$jname];
     }
 
 	/**
