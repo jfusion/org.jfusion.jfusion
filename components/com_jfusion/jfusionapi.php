@@ -766,8 +766,6 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			/**
 			 * @TODO determine if we really need session_write_close or if it need to be selectable
 			 */
-			session_write_close();
-			session_id(null);
 
 			// trick joomla into thinking we're running through joomla
 			define('_JEXEC', true);
@@ -870,7 +868,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 		//if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
 		//by php session_write_close and thus the user is not logged into Joomla.  php bug?
-		if (!defined('IN_JOOMLA')) {
+		if (!defined('IN_JOOMLA') && $id) {
 			/**
 			 * @ignore
 			 * @var $session_table JTableSession
