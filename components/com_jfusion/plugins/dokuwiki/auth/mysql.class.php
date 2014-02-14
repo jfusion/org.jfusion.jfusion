@@ -675,7 +675,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 */
 		protected function _openDB() {
 			if(!$this->dbcon) {
-				$con = @mysql_connect($this->getConf('server'), $this->getConf('user'), $this->getConf('password'));
+				$con = @mysql_connect($this->getConf('server'), $this->getConf('user'), $this->getConf('password'), true);
 				if($con) {
 					if((mysql_select_db($this->getConf('database'), $con))) {
 						if((preg_match('/^(\d+)\.(\d+)\.(\d+).*/', mysql_get_server_info($con), $result)) == 1) {
@@ -730,7 +730,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 */
 		protected function _queryDB($query) {
 			if($this->getConf('debug') >= 2) {
-				msg('MySQL query: ' . hsc($query), 0, __LINE__, __FILE__);
+				$this->debug('MySQL query: ' . hsc($query), 0, __LINE__, __FILE__);
 			}
 
 			$resultarray = array();
@@ -760,7 +760,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 */
 		protected function _modifyDB($query) {
 			if($this->getConf('debug') >= 2) {
-				msg('MySQL query: ' . hsc($query), 0, __LINE__, __FILE__);
+				$this->debug('MySQL query: ' . hsc($query), 0, __LINE__, __FILE__);
 			}
 
 			if($this->dbcon) {
