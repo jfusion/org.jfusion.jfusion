@@ -46,7 +46,7 @@ class plgSearchJfusion extends JPlugin
 	{
 		parent::__construct($subject, $config);
 		//load the language
-		$this->loadLanguage('plg_search_jfusion', JPATH_BASE);
+		$this->loadLanguage('plg_search_jfusion', JPATH_ADMINISTRATOR);
 	}
 
 	/**
