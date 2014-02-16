@@ -91,5 +91,6 @@ try {
 		throw new RuntimeException(JText::_('NO_COMPONENT'));
 	}
 } catch (Exception $e) {
+	JFusionFunction::raiseError($e, 'mod_jfusion_user_activity');
 	echo $e->getMessage();
 }

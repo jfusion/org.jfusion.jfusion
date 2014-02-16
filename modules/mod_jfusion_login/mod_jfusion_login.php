@@ -163,5 +163,6 @@ try {
 	//render the login module
 	require_once JModuleHelper::getLayoutPath('mod_jfusion_login', $layout);
 } catch (Exception $e) {
+	JFusionFunction::raiseError($e, 'mod_jfusion_login');
 	echo $e->getMessage();
 }
