@@ -208,130 +208,132 @@ class plgAuthenticationjfusion extends JPlugin
 
 				    require_once JPATH_ADMINISTRATOR . '/components/com_users/helpers/users.php';
 
-				    $methods = UsersHelper::getTwoFactorMethods();
+				    if (method_exists('UsersHelper', 'getTwoFactorMethods')) {
+					    $methods = UsersHelper::getTwoFactorMethods();
 
-				    if (count($methods) <= 1)
-				    {
-					    // No two factor authentication method is enabled
-					    return;
-				    }
-
-				    require_once JPATH_ADMINISTRATOR . '/components/com_users/models/user.php';
-
-				    $model = new UsersModelUser;
-
-				    // Load the user's OTP (one time password, a.k.a. two factor auth) configuration
-				    if (!array_key_exists('otp_config', $options))
-				    {
-					    $otpConfig = $model->getOtpConfig($joomlauser->userid);
-					    $options['otp_config'] = $otpConfig;
-				    }
-				    else
-				    {
-					    $otpConfig = $options['otp_config'];
-				    }
-
-				    // Check if the user has enabled two factor authentication
-				    if (empty($otpConfig->method) || ($otpConfig->method == 'none'))
-				    {
-					    // Warn the user if he's using a secret code but he has not
-					    // enabed two factor auth in his account.
-					    if (!empty($credentials['secretkey']))
+					    if (count($methods) <= 1)
 					    {
-						    try
-						    {
-							    $app = JFactory::getApplication();
-
-							    $this->loadLanguage();
-
-							    $app->enqueueMessage(JText::_('PLG_AUTH_JOOMLA_ERR_SECRET_CODE_WITHOUT_TFA'), 'warning');
-						    }
-						    catch (Exception $exc)
-						    {
-							    // This happens when we are in CLI mode. In this case
-							    // no warning is issued
-							    return;
-						    }
+						    // No two factor authentication method is enabled
+						    return;
 					    }
 
-					    return;
-				    }
+					    require_once JPATH_ADMINISTRATOR . '/components/com_users/models/user.php';
 
-				    // Load the Joomla! RAD layer
-				    if (!defined('FOF_INCLUDED'))
-				    {
-					    include_once JPATH_LIBRARIES . '/fof/include.php';
-				    }
+					    $model = new UsersModelUser;
 
-				    // Try to validate the OTP
-				    FOFPlatform::getInstance()->importPlugin('twofactorauth');
-
-				    $otpAuthReplies = FOFPlatform::getInstance()->runPlugins('onUserTwofactorAuthenticate', array($credentials, $options));
-
-				    $check = false;
-
-				    /**
-				     * This looks like noob code but DO NOT TOUCH IT and do not convert
-				     * to in_array(). During testing in_array() inexplicably returned
-				     * null when the OTEP begins with a zero! o_O
-				     */
-				    if (!empty($otpAuthReplies))
-				    {
-					    foreach ($otpAuthReplies as $authReply)
+					    // Load the user's OTP (one time password, a.k.a. two factor auth) configuration
+					    if (!array_key_exists('otp_config', $options))
 					    {
-						    $check = $check || $authReply;
+						    $otpConfig = $model->getOtpConfig($joomlauser->userid);
+						    $options['otp_config'] = $otpConfig;
 					    }
-				    }
-
-				    // Fall back to one time emergency passwords
-				    if (!$check)
-				    {
-					    // Did the user use an OTEP instead?
-					    if (empty($otpConfig->otep))
+					    else
 					    {
-						    if (empty($otpConfig->method) || ($otpConfig->method == 'none'))
-						    {
-							    // Two factor authentication is not enabled on this account.
-							    // Any string is assumed to be a valid OTEP.
-
-							    return;
-						    }
-						    else
-						    {
-							    /**
-							     * Two factor authentication enabled and no OTEPs defined. The
-							     * user has used them all up. Therefore anything he enters is
-							     * an invalid OTEP.
-							     */
-							    return;
-						    }
+						    $otpConfig = $options['otp_config'];
 					    }
 
-					    // Clean up the OTEP (remove dashes, spaces and other funny stuff
-					    // our beloved users may have unwittingly stuffed in it)
-					    $otep = $credentials['secretkey'];
-					    $otep = filter_var($otep, FILTER_SANITIZE_NUMBER_INT);
-					    $otep = str_replace('-', '', $otep);
+					    // Check if the user has enabled two factor authentication
+					    if (empty($otpConfig->method) || ($otpConfig->method == 'none'))
+					    {
+						    // Warn the user if he's using a secret code but he has not
+						    // enabed two factor auth in his account.
+						    if (!empty($credentials['secretkey']))
+						    {
+							    try
+							    {
+								    $app = JFactory::getApplication();
+
+								    $this->loadLanguage();
+
+								    $app->enqueueMessage(JText::_('PLG_AUTH_JOOMLA_ERR_SECRET_CODE_WITHOUT_TFA'), 'warning');
+							    }
+							    catch (Exception $exc)
+							    {
+								    // This happens when we are in CLI mode. In this case
+								    // no warning is issued
+								    return;
+							    }
+						    }
+
+						    return;
+					    }
+
+					    // Load the Joomla! RAD layer
+					    if (!defined('FOF_INCLUDED'))
+					    {
+						    include_once JPATH_LIBRARIES . '/fof/include.php';
+					    }
+
+					    // Try to validate the OTP
+					    FOFPlatform::getInstance()->importPlugin('twofactorauth');
+
+					    $otpAuthReplies = FOFPlatform::getInstance()->runPlugins('onUserTwofactorAuthenticate', array($credentials, $options));
 
 					    $check = false;
 
-					    // Did we find a valid OTEP?
-					    if (in_array($otep, $otpConfig->otep))
+					    /**
+					     * This looks like noob code but DO NOT TOUCH IT and do not convert
+					     * to in_array(). During testing in_array() inexplicably returned
+					     * null when the OTEP begins with a zero! o_O
+					     */
+					    if (!empty($otpAuthReplies))
 					    {
-						    // Remove the OTEP from the array
-						    $otpConfig->otep = array_diff($otpConfig->otep, array($otep));
-
-						    $model->setOtpConfig($joomlauser->userid, $otpConfig);
-
-						    // Return true; the OTEP was a valid one
-						    $check = true;
+						    foreach ($otpAuthReplies as $authReply)
+						    {
+							    $check = $check || $authReply;
+						    }
 					    }
-				    }
 
-				    if (!$check)
-				    {
-					    $response->status = JAuthentication::STATUS_FAILURE;
-					    $response->error_message = JText::_('JGLOBAL_AUTH_INVALID_SECRETKEY');
+					    // Fall back to one time emergency passwords
+					    if (!$check)
+					    {
+						    // Did the user use an OTEP instead?
+						    if (empty($otpConfig->otep))
+						    {
+							    if (empty($otpConfig->method) || ($otpConfig->method == 'none'))
+							    {
+								    // Two factor authentication is not enabled on this account.
+								    // Any string is assumed to be a valid OTEP.
+
+								    return;
+							    }
+							    else
+							    {
+								    /**
+								     * Two factor authentication enabled and no OTEPs defined. The
+								     * user has used them all up. Therefore anything he enters is
+								     * an invalid OTEP.
+								     */
+								    return;
+							    }
+						    }
+
+						    // Clean up the OTEP (remove dashes, spaces and other funny stuff
+						    // our beloved users may have unwittingly stuffed in it)
+						    $otep = $credentials['secretkey'];
+						    $otep = filter_var($otep, FILTER_SANITIZE_NUMBER_INT);
+						    $otep = str_replace('-', '', $otep);
+
+						    $check = false;
+
+						    // Did we find a valid OTEP?
+						    if (in_array($otep, $otpConfig->otep))
+						    {
+							    // Remove the OTEP from the array
+							    $otpConfig->otep = array_diff($otpConfig->otep, array($otep));
+
+							    $model->setOtpConfig($joomlauser->userid, $otpConfig);
+
+							    // Return true; the OTEP was a valid one
+							    $check = true;
+						    }
+					    }
+
+					    if (!$check)
+					    {
+						    $response->status = JAuthentication::STATUS_FAILURE;
+						    $response->error_message = JText::_('JGLOBAL_AUTH_INVALID_SECRETKEY');
+					    }
 				    }
 			    }
 		    }

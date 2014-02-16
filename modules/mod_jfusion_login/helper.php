@@ -71,7 +71,11 @@ class modjfusionLoginHelper
 	 */
 	public static function getTwoFactorMethods()
 	{
+		$twofactor = 0;
 		require_once JPATH_ADMINISTRATOR . '/components/com_users/helpers/users.php';
-		return UsersHelper::getTwoFactorMethods();
+		if (method_exists('UsersHelper', 'getTwoFactorMethods')) {
+			$twofactor = UsersHelper::getTwoFactorMethods();
+		}
+		return $twofactor;
 	}
 }
