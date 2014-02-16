@@ -101,6 +101,10 @@ try {
 			    $config['new_window'] = '_self';
 			}
 
+			if (empty($config['itemid'])) {
+				throw new RuntimeException(JText::_('NO_ITEMID_SELLECTED'));
+			}
+
 			//can be used in plugins filterActivityResults
 			defined('ACTIVITY_MODE') or define('ACTIVITY_MODE', $config['mode']);
 

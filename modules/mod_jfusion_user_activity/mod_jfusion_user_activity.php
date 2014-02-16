@@ -22,26 +22,25 @@ require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'helper.php');
 
 //check if the JFusion component is installed
 $factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
-if (file_exists($factory_file)) {
+try {
+	if (file_exists($factory_file)) {
+		/**
+		* require the JFusion libraries
+		*/
+		require_once $factory_file;
+	    /**
+	     * @ignore
+	     * @var $params JRegistry
+	     * @var $config array
+	     */
+	    $pluginParamValue = $params->get('JFusionPlugin');
+	    $pluginParamValue = unserialize(base64_decode($pluginParamValue));
+	    $jname = $pluginParamValue['jfusionplugin'];
 
-	/**
-	* require the JFusion libraries
-	*/
-	require_once $factory_file;
-    /**
-     * @ignore
-     * @var $params JRegistry
-     * @var $config array
-     */
-    $pluginParamValue = $params->get('JFusionPlugin');
-    $pluginParamValue = unserialize(base64_decode($pluginParamValue));
-    $jname = $pluginParamValue['jfusionplugin'];
+		$view = $params->get('view', 'auto');
 
-	$view = $params->get('view', 'auto');
-
-	$public = JFusionFactory::getPublic($jname);
-	if($public->isConfigured()) {
-		if($view == 'auto') {
+		$public = JFusionFactory::getPublic($jname);
+		if($public->isConfigured()) {
 			//configuration
 			$config['itemid'] = $params->get('itemid');
 			$config['avatar'] = $params->get('avatar', false);
@@ -58,31 +57,39 @@ if (file_exists($factory_file)) {
 			if ($params->get('new_window', false)) {
 				$config['new_window'] = '_blank';
 			} else {
-			    $config['new_window'] = '_self';
+				$config['new_window'] = '_self';
 			}
 
-			$joomlaUser = JFactory::getUser();
-
-			if(!$joomlaUser->guest) {
-				$output = modjfusionUserActivityHelper::prepareAutoOutput($jname, $config, $params);
+			if (empty($config['itemid'])) {
+				throw new RuntimeException(JText::_('NO_ITEMID_SELLECTED'));
 			}
 
-			require(JModuleHelper::getLayoutPath('mod_jfusion_user_activity'));
-		} else {
-			if ($public->methodDefined('renderUserActivityModule')) {
-				$output = $public->renderUserActivityModule($config, $view, $params);
-				echo $output;
+			if($view == 'auto') {
+				$joomlaUser = JFactory::getUser();
+
+				if(!$joomlaUser->guest) {
+					$output = modjfusionUserActivityHelper::prepareAutoOutput($jname, $config, $params);
+				}
+
+				require(JModuleHelper::getLayoutPath('mod_jfusion_user_activity'));
 			} else {
-				echo JText::_('NOT_IMPLEMENTED_YET');
-			}
-        }
-	} else {
-		if (empty($jname)) {
-			echo JText::_('MODULE_NOT_CONFIGURED');
+				if ($public->methodDefined('renderUserActivityModule')) {
+					$output = $public->renderUserActivityModule($config, $view, $params);
+					echo $output;
+				} else {
+					throw new RuntimeException(JText::_('NOT_IMPLEMENTED_YET'));
+				}
+	        }
 		} else {
-	    	echo JText::_('NO_PLUGIN');
+			if (empty($jname)) {
+				throw new RuntimeException(JText::_('MODULE_NOT_CONFIGURED'));
+			} else {
+				throw new RuntimeException(JText::_('NO_PLUGIN'));
+			}
 		}
+	} else {
+		throw new RuntimeException(JText::_('NO_COMPONENT'));
 	}
-} else {
-    echo JText::_('NO_COMPONENT');
+} catch (Exception $e) {
+	echo $e->getMessage();
 }
