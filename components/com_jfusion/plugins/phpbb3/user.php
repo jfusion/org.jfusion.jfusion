@@ -1527,45 +1527,49 @@ class JFusionUser_phpbb3 extends JFusionUser
 	/**
 	 * Function That find the correct user group index
 	 *
-	 * @param array $mastergroups
 	 * @param stdClass $userinfo
 	 *
 	 * @return int
 	 */
-	function getUserGroupIndex($mastergroups, $userinfo)
+	function getUserGroupIndex($userinfo)
 	{
 		$index = 0;
 
-		foreach ($mastergroups as $key => $mastergroup) {
-			if ($mastergroup) {
-				$found = true;
+		$master = JFusionFunction::getMaster();
+		if ($master) {
+			$mastergroups = JFusionFunction::getUserGroups($master->name);
 
-				if (!isset($mastergroup->groups)) {
-					$mastergroup->groups = array($mastergroup->defaultgroup);
-				} else if (!in_array($mastergroup->defaultgroup, $mastergroup->groups)) {
-					$mastergroup->groups[] = $mastergroup->defaultgroup;
-				}
+			foreach ($mastergroups as $key => $mastergroup) {
+				if ($mastergroup) {
+					$found = true;
 
-				//check to see if the default groups are different
-				if ($mastergroup->defaultgroup != $userinfo->group_id ) {
-					$found = false;
-				} else {
-					//check to see if member groups are different
-					if (count($userinfo->groups) != count($mastergroup->groups)) {
+					if (!isset($mastergroup->groups)) {
+						$mastergroup->groups = array($mastergroup->defaultgroup);
+					} else if (!in_array($mastergroup->defaultgroup, $mastergroup->groups)) {
+						$mastergroup->groups[] = $mastergroup->defaultgroup;
+					}
+
+					//check to see if the default groups are different
+					if ($mastergroup->defaultgroup != $userinfo->group_id ) {
 						$found = false;
-						break;
 					} else {
-						foreach ($mastergroup->groups as $gid) {
-							if (!in_array($gid, $userinfo->groups)) {
-								$found = false;
-								break;
+						//check to see if member groups are different
+						if (count($userinfo->groups) != count($mastergroup->groups)) {
+							$found = false;
+							break;
+						} else {
+							foreach ($mastergroup->groups as $gid) {
+								if (!in_array($gid, $userinfo->groups)) {
+									$found = false;
+									break;
+								}
 							}
 						}
 					}
-				}
-				if ($found) {
-					$index = $key;
-					break;
+					if ($found) {
+						$index = $key;
+						break;
+					}
 				}
 			}
 		}

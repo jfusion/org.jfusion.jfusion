@@ -1208,49 +1208,54 @@ class JFusionUser_vbulletin extends JFusionUser
 	/**
 	 * Function That find the correct user group index
 	 *
-	 * @param array $mastergroups
 	 * @param stdClass $userinfo
 	 *
 	 * @return int
 	 */
-	function getUserGroupIndex($mastergroups, $userinfo)
+	function getUserGroupIndex($userinfo)
 	{
 		$index = 0;
 
-		foreach ($mastergroups as $key => $mastergroup) {
-			if ($mastergroup) {
-				$found = true;
-				//check to see if the default groups are different
-				if ($mastergroup->defaultgroup != $userinfo->group_id ) {
-					$found = false;
-				} else {
-					if ($this->params->get('compare_displaygroups', true) && $mastergroup->displaygroup != $userinfo->displaygroupid ) {
-						//check to see if the display groups are different
+		$master = JFusionFunction::getMaster();
+		if ($master) {
+			$mastergroups = JFusionFunction::getUserGroups($master->name);
+
+			foreach ($mastergroups as $key => $mastergroup) {
+				if ($mastergroup) {
+					$found = true;
+					//check to see if the default groups are different
+					if ($mastergroup->defaultgroup != $userinfo->group_id ) {
 						$found = false;
 					} else {
-						if ($this->params->get('compare_membergroups', true) && isset($mastergroup->membergroups)) {
-							//check to see if member groups are different
-							$current_membergroups = explode(',', $userinfo->membergroupids);
-							if (count($current_membergroups) != count($mastergroup->membergroups)) {
-								$found = false;
-								break;
-							} else {
-								foreach ($mastergroup->membergroups as $gid) {
-									if (!in_array($gid, $current_membergroups)) {
-										$found = false;
-										break;
+						if ($this->params->get('compare_displaygroups', true) && $mastergroup->displaygroup != $userinfo->displaygroupid ) {
+							//check to see if the display groups are different
+							$found = false;
+						} else {
+							if ($this->params->get('compare_membergroups', true) && isset($mastergroup->membergroups)) {
+								//check to see if member groups are different
+								$current_membergroups = explode(',', $userinfo->membergroupids);
+								if (count($current_membergroups) != count($mastergroup->membergroups)) {
+									$found = false;
+									break;
+								} else {
+									foreach ($mastergroup->membergroups as $gid) {
+										if (!in_array($gid, $current_membergroups)) {
+											$found = false;
+											break;
+										}
 									}
 								}
 							}
 						}
 					}
-				}
-				if ($found) {
-					$index = $key;
-					break;
+					if ($found) {
+						$index = $key;
+						break;
+					}
 				}
 			}
 		}
+
 		return $index;
 	}
 }

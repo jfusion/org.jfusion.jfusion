@@ -564,36 +564,40 @@ class JFusionUser extends JFusionPlugin
 	/**
 	 * Function That find the correct user group index
 	 *
-	 * @param array $mastergroups
 	 * @param stdClass $userinfo
 	 *
 	 * @return int
 	 */
-	function getUserGroupIndex($mastergroups, $userinfo)
+	function getUserGroupIndex($userinfo)
 	{
 		$index = 0;
 
-		$groups = array();
-		if ($userinfo) {
-			if (isset($userinfo->groups)) {
-				$groups = $userinfo->groups;
-			} elseif (isset($userinfo->group_id)) {
-				$groups[] = $userinfo->group_id;
-			}
-		}
+		$master = JFusionFunction::getMaster();
+		if ($master) {
+			$mastergroups = JFusionFunction::getUserGroups($master->name);
 
-		foreach ($mastergroups as $key => $mastergroup) {
-			if ($mastergroup) {
-				if ( count($mastergroup) == count($groups) ) {
-					$count = 0;
-					foreach ($mastergroup as $value) {
-						if (in_array($value, $groups, true)) {
-							$count++;
+			$groups = array();
+			if ($userinfo) {
+				if (isset($userinfo->groups)) {
+					$groups = $userinfo->groups;
+				} elseif (isset($userinfo->group_id)) {
+					$groups[] = $userinfo->group_id;
+				}
+			}
+
+			foreach ($mastergroups as $key => $mastergroup) {
+				if ($mastergroup) {
+					if ( count($mastergroup) == count($groups) ) {
+						$count = 0;
+						foreach ($mastergroup as $value) {
+							if (in_array($value, $groups, true)) {
+								$count++;
+							}
 						}
-					}
-					if (count($groups) == $count ) {
-						$index = $key;
-						break;
+						if (count($groups) == $count ) {
+							$index = $key;
+							break;
+						}
 					}
 				}
 			}
@@ -930,17 +934,13 @@ class JFusionUser extends JFusionPlugin
 		$group = array();
 
 		$master = JFusionFunction::getMaster();
-
-		$mastergroups = JFusionFunction::getUserGroups($master->name);
-		$slavegroups = JFusionFunction::getUserGroups($jname);
-
 		if ($master->name == $jname) {
-			if (isset($mastergroups[0])) {
-				$group = $mastergroups[0];
-			}
+			$group = JFusionFunction::getUserGroups($master->name, true);
 		} else {
+			$slavegroups = JFusionFunction::getUserGroups($jname);
+
 			$user = JFusionFactory::getUser($master->name);
-			$index = $user->getUserGroupIndex($mastergroups, $userinfo);
+			$index = $user->getUserGroupIndex($userinfo);
 
 			if (isset($slavegroups[$index])) {
 				$group = $slavegroups[$index];
