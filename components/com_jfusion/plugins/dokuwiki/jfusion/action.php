@@ -107,7 +107,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
                 return true;
             }else{
                 //invalid credentials - log off
-                if(!$silent) $this->debug($lang['badlogin'],-1);
+                if(!$silent) msg($lang['badlogin'],-1);
                 $this->logoutDokuwiki();
                 return false;
             }

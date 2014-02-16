@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FULLPATH="$PWD"
+FULLPATH="${PWD}"
 
 if [ -f "/usr/bin/7z" ]; then
    USEZIPCMD="7z"
@@ -16,13 +16,13 @@ fi
 case $1 in
 	clear_packages)
 		echo "delete old package zip files"
-		cd $FULLPATH
+		cd ${FULLPATH}
 		rm administrator/components/com_jfusion/packages/*.zip
 		
 		;;
 	clear_main)
 		echo "delete old main zip files"
-		cd $FULLPATH
+		cd ${FULLPATH}
 		rm *.zip
 
 		;;
@@ -40,125 +40,125 @@ case $1 in
 
         if [ "$USEZIPCMD" == "zip" ];
         then
-		    cd $FULLPATH/modules/mod_jfusion_login
-		    $ZIPCMD -r $FULLPATH/administrator/components/com_jfusion/packages/jfusion_mod_login.zip . -x *.svn*  > /dev/null
-		    cd $FULLPATH
+		    cd ${FULLPATH}/modules/mod_jfusion_login
+		    ${ZIPCMD} -r ${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_mod_login.zip . -x *.svn*  > /dev/null
+		    cd ${FULLPATH}
 
-		    cd $FULLPATH/modules/mod_jfusion_activity
-		    $ZIPCMD -r $FULLPATH/administrator/components/com_jfusion/packages/jfusion_mod_activity.zip . -x *.svn*  > /dev/null
-		    cd $FULLPATH
+		    cd ${FULLPATH}/modules/mod_jfusion_activity
+		    ${ZIPCMD} -r ${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_mod_activity.zip . -x *.svn*  > /dev/null
+		    cd ${FULLPATH}
 
-		    cd $FULLPATH/modules/mod_jfusion_whosonline
-		    $ZIPCMD -r $FULLPATH/administrator/components/com_jfusion/packages/jfusion_mod_whosonline.zip . -x *.svn*  > /dev/null
-		    cd $FULLPATH
+		    cd ${FULLPATH}/modules/mod_jfusion_whosonline
+		    ${ZIPCMD} -r ${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_mod_whosonline.zip . -x *.svn*  > /dev/null
+		    cd ${FULLPATH}
 
-		    cd $FULLPATH/modules/mod_jfusion_user_activity
-		    $ZIPCMD -r $FULLPATH/administrator/components/com_jfusion/packages/jfusion_mod_user_activity.zip . -x *.svn*  > /dev/null
-		    cd $FULLPATH
+		    cd ${FULLPATH}/modules/mod_jfusion_user_activity
+		    ${ZIPCMD} -r ${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_mod_user_activity.zip . -x *.svn*  > /dev/null
+		    cd ${FULLPATH}
 
-		    $ZIPCMD -rj $FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_auth.zip plugins/authentication -x *.svn* > /dev/null
-		    $ZIPCMD -rj $FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_user.zip plugins/user -x *.svn* > /dev/null
-		    $ZIPCMD -rj $FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_search.zip plugins/search -x *.svn* > /dev/null
+		    ${ZIPCMD} -rj ${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_auth.zip plugins/authentication -x *.svn* > /dev/null
+		    ${ZIPCMD} -rj ${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_user.zip plugins/user -x *.svn* > /dev/null
+		    ${ZIPCMD} -rj ${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_search.zip plugins/search -x *.svn* > /dev/null
 
-		    cd $FULLPATH/plugins/content
-		    $ZIPCMD -r $FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_content.zip . -x *.svn*  > /dev/null
-		    cd $FULLPATH
+		    cd ${FULLPATH}/plugins/content
+		    ${ZIPCMD} -r ${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_content.zip . -x *.svn*  > /dev/null
+		    cd ${FULLPATH}
 
-		    $ZIPCMD -j $FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_system.zip plugins/system/jfusion.php plugins/system/jfusion.xml -x *.svn* > /dev/null
-		    $ZIPCMD -rj $FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_override.zip plugins/override -x *.svn* > /dev/null
+		    ${ZIPCMD} -j ${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_system.zip plugins/system/jfusion.php plugins/system/jfusion.xml -x *.svn* > /dev/null
+		    ${ZIPCMD} -rj ${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_override.zip plugins/override -x *.svn* > /dev/null
 		  
-		    cd $FULLPATH/modules/mod_jfusion_magecart
-		    $ZIPCMD -r $FULLPATH/side_projects/magento/jfusion_mod_magecart.zip . -x *.svn*  > /dev/null
+		    cd ${FULLPATH}/modules/mod_jfusion_magecart
+		    ${ZIPCMD} -r ${FULLPATH}/side_projects/magento/jfusion_mod_magecart.zip . -x *.svn*  > /dev/null
 		  
-		    cd $FULLPATH/modules/mod_jfusion_mageselectblock
-		    $ZIPCMD -r $FULLPATH/side_projects/magento/jfusion_mod_mageselectblock.zip . -x *.svn*  > /dev/null
+		    cd ${FULLPATH}/modules/mod_jfusion_mageselectblock
+		    ${ZIPCMD} -r ${FULLPATH}/side_projects/magento/jfusion_mod_mageselectblock.zip . -x *.svn*  > /dev/null
 		  
-		    cd $FULLPATH/modules/mod_jfusion_magecustomblock
-		    $ZIPCMD -r $FULLPATH/side_projects/magento/jfusion_mod_magecustomblock.zip . -x *.svn*  > /dev/null
+		    cd ${FULLPATH}/modules/mod_jfusion_magecustomblock
+		    ${ZIPCMD} -r ${FULLPATH}/side_projects/magento/jfusion_mod_magecustomblock.zip . -x *.svn*  > /dev/null
 		  
-		    cd $FULLPATH/plugins/system
-            $ZIPCMD -r $FULLPATH/side_projects/magento/jfusion_plugin_magelib.zip ./magelib.* -x *.svn*  > /dev/null
+		    cd ${FULLPATH}/plugins/system
+            ${ZIPCMD} -r ${FULLPATH}/side_projects/magento/jfusion_plugin_magelib.zip ./magelib.* -x *.svn*  > /dev/null
 
-            cd $FULLPATH/components/com_jfusion/plugins/dokuwiki
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_dokuwiki.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/efront
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_efront.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/elgg
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_elgg.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/gallery2
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_gallery2.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/joomla_ext
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_joomla_ext.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/joomla_int
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_joomla_int.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/magento
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_magento.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/mediawiki
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_mediawiki.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/moodle
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_moodle.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/mybb
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_mybb.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/oscommerce
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_oscommerce.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/phpbb3
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_phpbb3.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/prestashop
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_prestashop.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/smf
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_smf.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/smf2
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_smf2.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/universal
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_universal.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/vbulletin
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_vbulletin.zip" -x *.svn* > /dev/null
-            cd $FULLPATH/components/com_jfusion/plugins/wordpress
-            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_wordpress.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/dokuwiki
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_dokuwiki.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/efront
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_efront.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/elgg
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_elgg.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/gallery2
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_gallery2.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/joomla_ext
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_joomla_ext.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/joomla_int
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_joomla_int.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/magento
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_magento.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/mediawiki
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_mediawiki.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/moodle
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_moodle.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/mybb
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_mybb.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/oscommerce
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_oscommerce.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/phpbb3
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_phpbb3.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/prestashop
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_prestashop.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/smf
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_smf.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/smf2
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_smf2.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/universal
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_universal.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/vbulletin
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_vbulletin.zip" -x *.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins/wordpress
+            ${ZIPCMD} -r "${FULLPATH}/pluginpackages/jfusion_wordpress.zip" -x *.svn* > /dev/null
 		  
         else
-            cd $FULLPATH/modules/
-            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_mod_activity.zip" ./mod_jfusion_activity/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_mod_login.zip" ./mod_jfusion_login/* -r -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_mod_whosonline.zip" ./mod_jfusion_whosonline/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_mod_user_activity.zip" ./mod_jfusion_user_activity/* -xr!*.svn* > /dev/null        
+            cd ${FULLPATH}/modules/
+            ${ZIPCMD} a "${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_mod_activity.zip" ./mod_jfusion_activity/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_mod_login.zip" ./mod_jfusion_login/* -r -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_mod_whosonline.zip" ./mod_jfusion_whosonline/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_mod_user_activity.zip" ./mod_jfusion_user_activity/* -xr!*.svn* > /dev/null
 
-            cd $FULLPATH/plugins/
-            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_auth.zip" ./authentication/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_user.zip" ./user/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_search.zip" ./search/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_content.zip" ./content/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_system.zip" ./system/jfusion.* -xr!*.svn* > /dev/null
+            cd ${FULLPATH}/plugins/
+            ${ZIPCMD} a "${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_auth.zip" ./authentication/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_user.zip" ./user/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_search.zip" ./search/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_content.zip" ./content/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/administrator/components/com_jfusion/packages/jfusion_plugin_system.zip" ./system/jfusion.* -xr!*.svn* > /dev/null
 
             echo "create the new packages for the Magento Integration"
-            cd $FULLPATH/modules/
-            $ZIPCMD a "$FULLPATH/side_projects/magento/jfusion_mod_magecart.zip" ./mod_jfusion_magecart/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/side_projects/magento/jfusion_mod_mageselectblock.zip" ./mod_jfusion_mageselectblock/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/side_projects/magento/jfusion_mod_magecustomblock.zip" ./mod_jfusion_magecustomblock/* -xr!*.svn* > /dev/null
+            cd ${FULLPATH}/modules/
+            ${ZIPCMD} a "${FULLPATH}/side_projects/magento/jfusion_mod_magecart.zip" ./mod_jfusion_magecart/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/side_projects/magento/jfusion_mod_mageselectblock.zip" ./mod_jfusion_mageselectblock/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/side_projects/magento/jfusion_mod_magecustomblock.zip" ./mod_jfusion_magecustomblock/* -xr!*.svn* > /dev/null
 
-            cd $FULLPATH/plugins/
-            $ZIPCMD a "$FULLPATH/side_projects/magento/jfusion_plugin_magelib.zip" ./system/magelib.* -xr!*.svn* > /dev/null
+            cd ${FULLPATH}/plugins/
+            ${ZIPCMD} a "${FULLPATH}/side_projects/magento/jfusion_plugin_magelib.zip" ./system/magelib.* -xr!*.svn* > /dev/null
 
-            cd $FULLPATH/components/com_jfusion/plugins
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_dokuwiki.zip" ./dokuwiki/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_efront.zip" ./efront/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_elgg.zip" ./elgg/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_gallery2.zip" ./gallery2/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_joomla_ext.zip" ./joomla_ext/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_joomla_int.zip" ./joomla_int/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_magento.zip" ./magento/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_mediawiki.zip" ./mediawiki/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_moodle.zip" ./moodle/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_mybb.zip" ./mybb/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_oscommerce.zip" ./oscommerce/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_phpbb3.zip" ./phpbb3/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_prestashop.zip" ./prestashop/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_smf.zip" ./smf/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_smf2.zip" ./smf2/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_vbulletin.zip" ./vbulletin/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_wordpress.zip" ./wordpress/* -xr!*.svn* > /dev/null
+            cd ${FULLPATH}/components/com_jfusion/plugins
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_dokuwiki.zip" ./dokuwiki/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_efront.zip" ./efront/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_elgg.zip" ./elgg/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_gallery2.zip" ./gallery2/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_joomla_ext.zip" ./joomla_ext/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_joomla_int.zip" ./joomla_int/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_magento.zip" ./magento/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_mediawiki.zip" ./mediawiki/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_moodle.zip" ./moodle/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_mybb.zip" ./mybb/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_oscommerce.zip" ./oscommerce/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_phpbb3.zip" ./phpbb3/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_prestashop.zip" ./prestashop/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_smf.zip" ./smf/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_smf2.zip" ./smf2/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_vbulletin.zip" ./vbulletin/* -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/pluginpackages/jfusion_wordpress.zip" ./wordpress/* -xr!*.svn* > /dev/null
 
-            cd $FULLPATH
+            cd ${FULLPATH}
         fi
 		;;
 	create_main)
@@ -188,10 +188,10 @@ case $1 in
 		if which git &> /dev/null; then
 			mv tmp/jfusion.xml tmp/jfusion.tmp
     		VERSION=$(git rev-parse HEAD)
-    		sed "s/<revision>\$revision\$<\/revision>/<revision>$VERSION<\/revision>/g" tmp/jfusion.tmp > tmp/jfusion.xml
+    		sed "s/<revision>\$revision\$<\/revision>/<revision>${VERSION}<\/revision>/g" tmp/jfusion.tmp > tmp/jfusion.xml
     		mv tmp/jfusion.xml tmp/jfusion.tmp
     		TIMESTAMP=$(date +%s)
-    		sed "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>$TIMESTAMP<\/timestamp>/g" tmp/jfusion.tmp > tmp/jfusion.xml
+    		sed "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>${TIMESTAMP}<\/timestamp>/g" tmp/jfusion.tmp > tmp/jfusion.xml
     		rm tmp/jfusion.tmp
 		else
     		echo "git is not available.  Install git command line client."
@@ -204,21 +204,21 @@ case $1 in
         if [ "$USEZIPCMD" == "zip" ];
         then
             cd tmp
-		    $ZIPCMD -r $FULLPATH/jfusion_package.zip . > /dev/null
+		    ${ZIPCMD} -r ${FULLPATH}/jfusion_package.zip . > /dev/null
         else
-            cd $FULLPATH
-            $ZIPCMD a "$FULLPATH/jfusion_package.zip" ./tmp/* -xr!*.svn* > /dev/null
+            cd ${FULLPATH}
+            ${ZIPCMD} a "${FULLPATH}/jfusion_package.zip" ./tmp/* -xr!*.svn* > /dev/null
         fi
 	
 		echo "Create a ZIP containing all files to allow for easy updates"
 
-		cd $FULLPATH
+		cd ${FULLPATH}
 
         if [ "$USEZIPCMD" == "zip" ];
         then
-	    	$ZIPCMD -r jfusion_files.zip administrator components language modules plugins -x *.svn* > /dev/null
+	    	${ZIPCMD} -r jfusion_files.zip administrator components language modules plugins -x *.svn* > /dev/null
         else
-            $ZIPCMD a "$FULLPATH/jfusion_files.zip" administrator components language modules plugins -r -xr!*.svn* > /dev/null
+            ${ZIPCMD} a "${FULLPATH}/jfusion_files.zip" administrator components language modules plugins -r -xr!*.svn* > /dev/null
         fi          
 
 		echo "Remove temporary files"
@@ -232,7 +232,7 @@ case $1 in
 		;;
 
 	*)
-		echo "Usage $FULLPATH/create_package.sh {clear_packages|clear_main|clear|create_main|create_packages|create}"
+		echo "Usage ${FULLPATH}/create_package.sh {clear_packages|clear_main|clear|create_main|create_packages|create}"
 		;;
 esac
 

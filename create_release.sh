@@ -1,11 +1,11 @@
 #!/bin/bash
 createxml(){
 		FILE=$1
-		mv $FILE.xml $FILE.tmp
-		sed "s/<revision>\$revision\$<\/revision>/<revision>$REVISION<\/revision>/g" $FILE.tmp > $FILE.xml
-		mv $FILE.xml $FILE.tmp
-		sed "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>$TIMESTAMP<\/timestamp>/g" $FILE.tmp > $FILE.xml
-		rm $FILE.tmp
+		mv ${FILE}.xml ${FILE}.tmp
+		sed "s/<revision>\$revision\$<\/revision>/<revision>${REVISION}<\/revision>/g" ${FILE}.tmp > ${FILE}.xml
+		mv ${FILE}.xml ${FILE}.tmp
+		sed "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>${TIMESTAMP}<\/timestamp>/g" ${FILE}.tmp > ${FILE}.xml
+		rm ${FILE}.tmp
 }
 createpackage(){
 	TARGETPATH=$1
@@ -17,24 +17,24 @@ createpackage(){
 		XMLFILE=jfusion
 	fi
 
-		echo "Creating: " $TARGETDEST
+		echo "Creating: " ${TARGETDEST}
 
-		mkdir $FULLPATH/tmppackage
+		mkdir ${FULLPATH}/tmppackage
 
-		rsync -r --exclude=".*/" $FULLPATH/$TARGETPATH $FULLPATH/tmppackage/
+		rsync -r --exclude=".*/" ${FULLPATH}/${TARGETPATH} ${FULLPATH}/tmppackage/
 
-		createxml $FULLPATH/tmppackage/$XMLFILE
+		createxml ${FULLPATH}/tmppackage/${XMLFILE}
 
 		if [ "$USEZIPCMD" == "zip" ];
 		then
-		  cd $FULLPATH/tmppackage
-			$ZIPCMD -r $FULLPATH/$TARGETDEST . -x *.svn*  > /dev/null
+		  cd ${FULLPATH}/tmppackage
+			${ZIPCMD} -r ${FULLPATH}/${TARGETDEST} . -x *.svn*  > /dev/null
 		else
-			$ZIPCMD a "$FULLPATH/$TARGETDEST" $FULLPATH/tmppackage/* -xr!*.svn* > /dev/null
+			${ZIPCMD} a "${REVISION}/${TARGETDEST}" ${FULLPATH}/tmppackage/* -xr!*.svn* > /dev/null
 		fi
-	rm -r $FULLPATH/tmppackage
+	rm -r ${FULLPATH}/tmppackage
 	
-	cd $FULLPATH
+	cd ${FULLPATH}
 }
 
 FULLPATH=$(dirname $(readlink -f $0))
@@ -61,12 +61,12 @@ TIMESTAMP=$(date +%s)
 case $1 in
 	clear_packages)
 		echo "delete old package zip files"
-		rm $FULLPATH/administrator/components/com_jfusion/packages/*.zip
+		rm ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip
 		
 		;;
 	clear_main)
 		echo "delete old main zip files"
-		rm $FULLPATH/*.zip
+		rm ${FULLPATH}/*.zip
 
 		;;
 	clear)
@@ -98,14 +98,14 @@ case $1 in
 		createpackage modules/mod_jfusion_magecustomblock/ side_projects/magento/jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
 		createpackage "plugins/system/magelib.*" side_projects/magento/jfusion_plugin_magelib.zip magelib
 
-		cd  $FULLPATH
+		cd  ${FULLPATH}
 		for i in components/com_jfusion/plugins/*
 		do
         	if [ -d "$i" ]; then
-        		if [ -e $i/jfusion.xml ]; then
-                	createpackage $i"/" pluginpackages/jfusion_$(basename "$i").zip
+        		if [ -e ${i}/jfusion.xml ]; then
+                	createpackage ${i}"/" pluginpackages/jfusion_$(basename "$i").zip
                	else
-               		echo Error: $i/jfusion.xml was not found
+               		echo Error: ${i}/jfusion.xml was not found
                	fi
         	fi
 		done
@@ -115,7 +115,7 @@ case $1 in
 		$0 clear_main
 
 		echo "Prepare the files for packaging"
-		cd $FULLPATH
+		cd ${FULLPATH}
 		mkdir tmp
 		mkdir tmp/admin
 		rsync -r --exclude=".*/" administrator/components/com_jfusion/* tmp/admin
@@ -144,23 +144,23 @@ case $1 in
 		
 		echo "Create the new master package"
 
-    if [ "$USEZIPCMD" == "zip" ];
-    then
-        cd tmp
-    	$ZIPCMD -r $FULLPATH/jfusion_package.zip . > /dev/null
-    else
-        $ZIPCMD a "$FULLPATH/jfusion_package.zip" $FULLPATH/tmp/* -xr!*.svn* > /dev/null
-    fi
+		if [ "$USEZIPCMD" == "zip" ];
+		then
+			cd tmp
+			${ZIPCMD} -r ${FULLPATH}/jfusion_package.zip . > /dev/null
+		else
+			${ZIPCMD} a "${REVISION}/jfusion_package.zip" ${FULLPATH}/tmp/* -xr!*.svn* > /dev/null
+		fi
 	
 		echo "Create a ZIP containing all files to allow for easy updates"
 
-		cd $FULLPATH
-    if [ "$USEZIPCMD" == "zip" ];
-    then
-  			$ZIPCMD -r jfusion_files.zip administrator components language modules plugins -x *.svn* > /dev/null
-    else
-        $ZIPCMD a "$FULLPATH/jfusion_files.zip" administrator components language modules plugins -r -xr!*.svn* > /dev/null
-    fi            
+		cd ${FULLPATH}
+		if [ "$USEZIPCMD" == "zip" ];
+		then
+			${ZIPCMD} -r jfusion_files.zip administrator components language modules plugins -x *.svn* > /dev/null
+		else
+			${ZIPCMD} a "${REVISION}/jfusion_files.zip" administrator components language modules plugins -r -xr!*.svn* > /dev/null
+		fi
 
 		echo "Remove temporary files"
 		rm -r tmp
@@ -173,7 +173,7 @@ case $1 in
 		;;
 
 	*)
-		echo "Usage $FULLPATH/create_package.sh {clear_packages|clear_main|clear|create_main|create_packages|create}"
+		echo "Usage ${REVISION}/create_package.sh {clear_packages|clear_main|clear|create_main|create_packages|create}"
 		;;
 esac
 

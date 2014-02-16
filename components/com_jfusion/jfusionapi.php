@@ -767,7 +767,6 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 	private $globals_backup = array();
 
-	private $original_session_id = null;
 	/**
 	 *
 	 */
