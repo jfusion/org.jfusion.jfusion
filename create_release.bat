@@ -141,9 +141,6 @@ del %FULLPATH%*.zip
 
 RMDIR "%FULLPATH%tmp" /S /Q
 
-echo Create a ZIP containing all files to allow for easy updates
-chdir %FULLPATH%
-7za a "%FULLPATH%jfusion_files.zip" administrator components language modules plugins -r -xr!*.svn* > NUL
 IF "%action%"=="1" goto end
 
 :end

@@ -152,16 +152,6 @@ case $1 in
 			${ZIPCMD} a "${REVISION}/jfusion_package.zip" ${FULLPATH}/tmp/* -xr!*.svn* > /dev/null
 		fi
 	
-		echo "Create a ZIP containing all files to allow for easy updates"
-
-		cd ${FULLPATH}
-		if [ "$USEZIPCMD" == "zip" ];
-		then
-			${ZIPCMD} -r jfusion_files.zip administrator components language modules plugins -x *.svn* > /dev/null
-		else
-			${ZIPCMD} a "${REVISION}/jfusion_files.zip" administrator components language modules plugins -r -xr!*.svn* > /dev/null
-		fi
-
 		echo "Remove temporary files"
 		rm -r tmp
 		
