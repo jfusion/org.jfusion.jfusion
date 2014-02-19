@@ -589,16 +589,16 @@ class JFvBulletinTask {
     function performTask($task) {
         if (isset($_POST['jfvbdata'])) {
             $this->data = $this->decryptApiData($_POST['jfvbdata']);
+
+	        if (method_exists($this, "_{$task}")) {
+		        //perform the task
+		        $this->{"_{$task}"}();
+	        } else {
+		        //respond with error
+		        $this->outputResponse(array('error' => 'Task does not exist!'));
+	        }
         } else {
             $this->outputResponse(array('error' => 'Missing data!'));
-        }
-
-        if (method_exists($this, "_{$task}")) {
-            //perform the task
-            $this->{"_{$task}"}();
-        } else {
-            //respond with error
-            $this->outputResponse(array('error' => 'Task does not exist!'));
         }
     }
 
@@ -626,13 +626,17 @@ class JFvBulletinTask {
      * @param array $data
      */
     function outputResponse($data = array('error' => 'Access Denied!')) {
-        if (!empty($data['errors'])) {
-            $data['success'] = 0;
-        } elseif (!empty($data['error'])) {
-            $data['success'] = 0;
+	    if (!isset($data['success'])) {
+		    $data['success'] = 0;
+	    }
+		if (!empty($data['error'])) {
             $data['errors'] = array($data['error']);
             unset($data['error']);
         }
+
+	    if ($data['success'] == 0 && isset($data['errors'])) {
+		    $data['errors'] = array('Unknown Error');
+	    }
 
         $this->xml = new SimpleXMLElement('<root></root>');
         array_walk($data, array ($this, 'addDataToXML'));
@@ -704,16 +708,16 @@ class JFvBulletinTask {
 
         //performs some final VB checks before saving
         $userdm->pre_save();
+
+	    $response = array('success' => 0);
         if (empty($userdm->errors)) {
             $userdmid = $userdm->save();
-            $response = array(
-            	"new_id" => $userdmid,
-                "success" => 1
-            );
-            $this->outputResponse($response);
+	        $response['new_id'] = $userdmid;
+	        $response['success'] = 1;
         } else {
-            $this->outputResponse(array("errors" => $userdm->errors));
+	        $response['errors'] = $userdm->errors;
         }
+	    $this->outputResponse($response);
     }
 
     function _deleteUser() {
@@ -721,12 +725,14 @@ class JFvBulletinTask {
         $existinguser = $this->convertUserData($this->data['userinfo']);
         $userdm->set_existing($existinguser);
         $userdm->delete();
-	    if(!empty($userdm->errors)){
-            $this->outputResponse(array('errors' => $userdm->errors));
+
+	    $response = array('success' => 0);
+	    if (empty($userdm->errors)) {
+		    $response['success'] = 1;
 	    } else {
-            $response = array('success' => 1);
-            $this->outputResponse($response);
+		    $response['errors'] = $userdm->errors;
 	    }
+	    $this->outputResponse($response);
     }
 
     function _updateUsergroup() {
@@ -747,32 +753,21 @@ class JFvBulletinTask {
         }
 
         $userdm->set('usergroupid', $defaultgroup);
+	    $userdm->set('displaygroupid', $displaygroup);
         $userdm->set('membergroupids', $membergroups);
         $userdm->set('usertitle',$this->data['usertitle']);
 
         //performs some final VB checks before saving
         $userdm->pre_save();
+
+	    $response = array('success' => 0);
         if (empty($userdm->errors)) {
             $userdm->save();
-
-            //now save the displaygroup
-            if (!empty($displaygroup)) {
-                unset($userdm);
-                $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
-                $userdm->set_existing($vbuserinfo);
-                $userdm->set('displaygroupid', $displaygroup);
-                $userdm->pre_save();
-                if (empty($userdm->errors)) {
-                    $userdm->save();
-                    $response = array('success' => 1);
-                    $this->outputResponse($response);
-                } else {
-                    $this->outputResponse(array('errors' => $userdm->errors));
-                }
-            }
+	        $response['success'] = 1;
         } else {
-            $this->outputResponse(array('errors' => $userdm->errors));
+	        $response['errors'] = $userdm->errors;
         }
+	    $this->outputResponse($response);
     }
 
     function _updateEmail() {
@@ -781,13 +776,15 @@ class JFvBulletinTask {
 		$userdm->set('email', $this->data['userinfo']->email);
 		//performs some final VB checks before saving
 		$userdm->pre_save();
+
+	    $response = array('success' => 0);
 	    if(empty($userdm->errors)){
 			$userdm->save();
-            $response = array('success' => 1);
-            $this->outputResponse($response);
+		    $response['success'] = 1;
 	    } else {
-            $this->outputResponse(array('errors' => $userdm->errors));
+		    $response['errors'] = $userdm->errors;
 	    }
+	    $this->outputResponse($response);
     }
 
     function _unblockUser() {
@@ -836,13 +833,15 @@ class JFvBulletinTask {
 
         //performs some final VB checks before saving
         $userdm->pre_save();
+
+	    $response = array('success' => 0);
 	    if(empty($userdm->errors)){
 			$userdm->save();
-            $response = array('success' => 1);
-            $this->outputResponse($response);
+		    $response['success'] = 1;
 	    } else {
-            $this->outputResponse(array('errors' => $userdm->errors));
+		    $response['errors'] = $userdm->errors;
 	    }
+	    $this->outputResponse($response);
     }
 
     function _inactivateUser() {
@@ -853,13 +852,15 @@ class JFvBulletinTask {
         $userdm->set_bitfield('options', 'noactivationmails', 0);
         //performs some final VB checks before saving
         $userdm->pre_save();
+	    $response = array('success' => 0);
+
 	    if(empty($userdm->errors)){
-			$userdm->save();
-			$response = array('success' => 1);
-            $this->outputResponse($response);
+		    $userdm->save();
+		    $response['success'] = 1;
 	    } else {
-            $this->outputResponse(array('errors' => $userdm->errors));
+		    $response['errors'] = $userdm->errors;
 	    }
+	    $this->outputResponse($response);
     }
 
     function _createThread() {
@@ -879,18 +880,18 @@ class JFvBulletinTask {
         $timestamp = ($this->data['timestamp'] == 'timestamp') ? TIMENOW : $this->data['timestamp'];
         $threaddm->set('dateline', $timestamp);
         $threaddm->pre_save();
-        if (!empty($threaddm->errors)) {
-            $this->outputResponse(array('errors' => $threaddm->errors));
+
+	    $response = array('success' => 0);
+        if (empty($threaddm->errors)) {
+	        $threadid = $threaddm->save();
+	        $postid = $threaddm->fetch_field('firstpostid');
+	        $response['new_id'] = $threadid;
+	        $response['firstpostid'] = $postid;
+	        $response['success'] = 1;
         } else {
-            $threadid = $threaddm->save();
-            $postid = $threaddm->fetch_field('firstpostid');
-            $response = array(
-                'new_id' => $threadid,
-                'firstpostid' => $postid,
-                'success' => 1
-            );
-            $this->outputResponse($response);
+	        $response['errors'] = $threaddm->errors;
         }
+	    $this->outputResponse($response);
     }
 
     function _createPost() {
@@ -925,16 +926,15 @@ class JFvBulletinTask {
         $postdm->set('showsignature', 1);
         $postdm->pre_save();
 
-        if (!empty($postdm->errors)) {
-            $this->outputResponse(array('errors' => $postdm->errors));
+	    $response = array('success' => 0);
+        if (empty($postdm->errors)) {
+	        $id = $postdm->save();
+	        $response['new_id'] = $id;
+	        $response['success'] = 1;
         } else {
-            $id = $postdm->save();
-            $response = array(
-                'new_id' => $id,
-                'success' => 1
-            );
-            $this->outputResponse($response);
+	        $response['errors'] = $postdm->errors;
         }
+	    $this->outputResponse($response);
     }
 
     function _updateThread() {
@@ -959,18 +959,20 @@ class JFvBulletinTask {
         $parseurl = (($vbulletin->options['allowedbbcodes'] & ALLOW_BBCODE_URL) AND $foruminfo['allowbbcode']);
         $postdm->set_info('parseurl', $parseurl);
         $postdm->pre_save();
-        if (!empty($postdm->errors)) {
-            $this->outputResponse(array('errors' => $postdm->errors));
-        } else {
-            $postdm->save();
-            //update the thread's title
-            $threaddm = & datamanager_init('Thread', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
-            $threaddm->set_existing($threadinfo);
-            $threaddm->set('title', $this->data['title']);
-            $threaddm->save();
 
-            $response = array('success' => 1);
-            $this->outputResponse($response);
+	    $response = array('success' => 0);
+        if (empty($postdm->errors)) {
+	        $postdm->save();
+	        //update the thread's title
+	        $threaddm = & datamanager_init('Thread', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
+	        $threaddm->set_existing($threadinfo);
+	        $threaddm->set('title', $this->data['title']);
+	        $threaddm->save();
+
+	        $response['success'] = 1;
+        } else {
+	        $response['errors'] = $postdm->errors;
         }
+	    $this->outputResponse($response);
     }
 }
