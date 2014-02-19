@@ -626,17 +626,16 @@ class JFvBulletinTask {
     function performTask($task) {
         if (isset($_POST['jfvbdata'])) {
             $this->data = $this->decryptApiData($_POST['jfvbdata']);
+	        if (method_exists($this, "_{$task}")) {
+		        //perform the task
+		        $this->{"_{$task}"}();
+	        } else {
+		        //respond with error
+		        $this->response['errors'][] = 'Task does not exist!';
+		        $this->outputResponse();
+	        }
         } else {
 	        $this->response['errors'][] = 'Missing data!';
-            $this->outputResponse();
-        }
-
-        if (method_exists($this, "_{$task}")) {
-            //perform the task
-            $this->{"_{$task}"}();
-        } else {
-            //respond with error
-	        $this->response['errors'][] = 'Task does not exist!';
             $this->outputResponse();
         }
     }
@@ -765,6 +764,7 @@ class JFvBulletinTask {
         }
 
         $userdm->set('usergroupid', $defaultgroup);
+	    $userdm->set('displaygroupid', $displaygroup);
         $userdm->set('membergroupids', $membergroups);
         $userdm->set('usertitle', $this->data['usertitle']);
 
@@ -772,21 +772,7 @@ class JFvBulletinTask {
         $userdm->pre_save();
         if (empty($userdm->errors)) {
             $userdm->save();
-
-            //now save the displaygroup
-            if (!empty($displaygroup)) {
-                unset($userdm);
-                $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
-                $userdm->set_existing($vbuserinfo);
-                $userdm->set('displaygroupid', $displaygroup);
-                $userdm->pre_save();
-                if (empty($userdm->errors)) {
-                    $userdm->save();
-	                $this->response['success'] = 1;
-                } else {
-	                $this->response['errors'] = $userdm->errors;
-                }
-            }
+	        $this->response['success'] = 1;
         } else {
 	        $this->response['errors'] = $userdm->errors;
         }
@@ -913,15 +899,16 @@ class JFvBulletinTask {
         $timestamp = ($this->data['timestamp'] == 'timestamp') ? TIMENOW : $this->data['timestamp'];
         $threaddm->set('dateline', $timestamp);
         $threaddm->pre_save();
-        if (!empty($threaddm->errors)) {
-	        $this->response['errors'] = $threaddm->errors;
-        } else {
-            $threadid = $threaddm->save();
-            $postid = $threaddm->fetch_field('firstpostid');
+
+        if (empty($threaddm->errors)) {
+	        $threadid = $threaddm->save();
+	        $postid = $threaddm->fetch_field('firstpostid');
 
 	        $this->response['new_id'] = $threadid;
 	        $this->response['firstpostid'] = $postid;
 	        $this->response['success'] = 1;
+        } else {
+	        $this->response['errors'] = $threaddm->errors;
         }
 	    $this->outputResponse();
     }
@@ -961,12 +948,12 @@ class JFvBulletinTask {
         $postdm->set('showsignature', 1);
         $postdm->pre_save();
 
-        if (!empty($postdm->errors)) {
-	        $this->response['errors'] = $postdm->errors;
-        } else {
-            $id = $postdm->save();
+        if (empty($postdm->errors)) {
+	        $id = $postdm->save();
 	        $this->response['new_id'] = $id;
 	        $this->response['success'] = 1;
+        } else {
+	        $this->response['errors'] = $postdm->errors;
         }
 	    $this->outputResponse();
     }
@@ -998,17 +985,18 @@ class JFvBulletinTask {
         $parseurl = (($vbulletin->options['allowedbbcodes'] & ALLOW_BBCODE_URL) AND $foruminfo['allowbbcode']);
         $postdm->set_info('parseurl', $parseurl);
         $postdm->pre_save();
-        if (!empty($postdm->errors)) {
-	        $this->response['errors'] = $postdm->errors;
-        } else {
-            $postdm->save();
-            //update the thread's title
-            $threaddm = & datamanager_init('Thread', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
-            $threaddm->set_existing($threadinfo);
-            $threaddm->set('title', $this->data['title']);
-            $threaddm->save();
+
+        if (empty($postdm->errors)) {
+	        $postdm->save();
+	        //update the thread's title
+	        $threaddm = & datamanager_init('Thread', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
+	        $threaddm->set_existing($threadinfo);
+	        $threaddm->set('title', $this->data['title']);
+	        $threaddm->save();
 
 	        $this->response['success'] = 1;
+        } else {
+	        $this->response['errors'] = $postdm->errors;
         }
 	    $this->outputResponse();
     }
