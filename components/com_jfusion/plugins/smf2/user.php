@@ -46,7 +46,7 @@ class JFusionUser_smf2 extends JFusionUser {
 				    $query = $db->getQuery(true)
 					    ->select('group_name')
 					    ->from('#__membergroups')
-					    ->where('id_group = ' . $result->group_id);
+					    ->where('id_group = ' . (int)$result->group_id);
 
 				    $db->setQuery($query);
 				    $result->group_name = $db->loadResult();
@@ -59,9 +59,9 @@ class JFusionUser_smf2 extends JFusionUser {
 
 				    foreach($groups as $group) {
 					    $query = $db->getQuery(true)
-						    ->select('groupName')
+						    ->select('group_name')
 						    ->from('#__membergroups')
-						    ->where('ID_GROUP = ' . (int)$group);
+						    ->where('id_group = ' . (int)$group);
 
 					    $db->setQuery($query);
 					    $result->groups[] = $group;
