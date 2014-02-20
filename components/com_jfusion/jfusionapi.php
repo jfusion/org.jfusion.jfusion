@@ -797,7 +797,6 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function getApplication()
 	{
-		$old = error_reporting(0);
 		if (!defined('_JEXEC')) {
 			/**
 			 * @TODO determine if we really need session_write_close or if it need to be selectable
@@ -852,7 +851,6 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 		$mainframe = JFactory::getApplication('site');
 		$GLOBALS['mainframe'] = $mainframe;
-		error_reporting($old);
 		return $mainframe;
 	}
 
