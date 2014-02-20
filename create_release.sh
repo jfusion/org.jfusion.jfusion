@@ -153,6 +153,7 @@ case $1 in
 		fi
 	
 		echo "Remove temporary files"
+		cd ${FULLPATH}
 		rm -r tmp
 		
 		;;
