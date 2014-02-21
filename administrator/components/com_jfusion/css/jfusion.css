@@ -78,6 +78,11 @@ a.jfusionDonateButton:hover {
     vertical-align: middle;
 }
 
+.jfusion div.ajax_bar label {
+    display: initial;
+}
+
+
 .jfusion #log_res {
     min-width: 950px;
 }
