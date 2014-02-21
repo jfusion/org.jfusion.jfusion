@@ -73,7 +73,7 @@ $custom_greeting = JText::sprintf($custom_greeting, $display_name);
 			<a href="<?php echo $url_viewnewmessages; ?>"><?php echo JText::_('VIEW_NEW_TOPICS'); ?></a>
 		</div>
 	<?php endif; ?>
-	<?php echo $url_viewnewmessages; ?>
+
 	<div align="center">
 		<input type="submit" name="Submit" class="button" value="<?php echo JText::_('BUTTON_LOGOUT'); ?>" />
 	</div>
