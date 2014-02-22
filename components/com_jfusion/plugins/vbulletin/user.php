@@ -238,9 +238,10 @@ class JFusionUser_vbulletin extends JFusionUser
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
-    function createSession(&$userinfo, $options)
+    function createSession($userinfo, $options)
     {
         $status = array('error' => array(),'debug' => array());
         //do not create sessions for blocked users
@@ -388,7 +389,7 @@ class JFusionUser_vbulletin extends JFusionUser
      *
      * @return void
      */
-    function blockUser (&$userinfo, &$existinguser, &$status)
+    function blockUser($userinfo, &$existinguser, &$status)
     {
         $db = JFusionFactory::getDatabase($this->getJname());
 

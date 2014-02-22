@@ -28,11 +28,14 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionAuth_vbulletin extends JFusionAuth
 {
-    /**
-     * @param array|object $userinfo
-     * @return string
-     */
-    function generateEncryptedPassword(&$userinfo)
+	/**
+	 * Generates an encrypted password based on the userinfo passed to this function
+	 *
+	 * @param object $userinfo userdata object containing the userdata
+	 *
+	 * @return string Returns generated password
+	 */
+    function generateEncryptedPassword($userinfo)
     {
         //are we logging in with the dual login plugin?
         if (strlen($userinfo->password_clear) == 32 && defined('_VBULLETIN_JFUSION_HOOK') && defined('_VB_SECURITY_CHECK')) {
@@ -54,6 +57,7 @@ class JFusionAuth_vbulletin extends JFusionAuth
         }
         return $testcrypt;
     }
+
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
