@@ -1226,8 +1226,7 @@ class JFusionFunction
 		$plugin = $db->setQuery($query)->loadObject();
 		$plugin->type = $plugin->folder;
 
-		$path = JPATH_PLUGINS . '/authentication/joomla/joomla.php';
-		require_once $path;
+		require_once JPATH_PLUGINS . '/authentication/joomla/joomla.php';
 
 		return new plgAuthenticationJoomla($dispatcher, (array) ($plugin));
 	}
