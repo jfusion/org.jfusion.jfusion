@@ -66,6 +66,8 @@ class jfusionViewplugineditor extends JViewLegacy
 		        jimport('joomla.filesystem.file');
 		        $content = file_get_contents($file);
 
+		        $content = str_replace('<fieldset name="FRAMELESS_OPTIONS"/>', $this->getFramelessOptions(), $content);
+
 		        $xml = JFusionFunction::getXML($content, false);
 
 		        $fields = $xml->form;
@@ -95,4 +97,50 @@ class jfusionViewplugineditor extends JViewLegacy
 	        throw new RuntimeException(JText::_('NONE_SELECTED'));
         }
     }
+
+	/**
+	 * @return string
+	 */
+	function getFramelessOptions() {
+		$xml =<<<XML
+            <fieldset name="FRAMELESS_OPTIONS">
+                <field name="parse_anchors" type="radio" class="btn-group" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="parse_rel_url" type="radio" class="btn-group" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="parse_abs_url" type="radio" class="btn-group" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="parse_abs_path" type="radio" class="btn-group" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="parse_rel_img" type="radio" class="btn-group" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="parse_action" type="radio" class="btn-group" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="parse_popup" type="radio" class="btn-group" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="parse_redirect" type="radio" class="btn-group" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="headermap" default="" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP_DESCR"/>
+                <field name="bodymap" default="" type="JFusionPair" label="BODY_MAP" description="BODY_MAP_DESCR"/>
+            </fieldset>
+XML;
+		return $xml;
+	}
 }
