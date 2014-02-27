@@ -598,8 +598,7 @@ class plgUserJfusion extends JPlugin
         if (!$JFusionActive) {
             //A change has been made to a user without JFusion knowing about it
             //we need to make sure that group_id is in the $user array
-            ;
-            if (!isset($user['group_id']) && !isset($user['gid'])) {
+            if (!isset($user['group_id']) && isset($user['gid'])) {
                 $user['group_id'] = $user['gid'];
             }
             //convert the user array into a user object
