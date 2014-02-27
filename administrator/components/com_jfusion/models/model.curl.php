@@ -69,29 +69,29 @@ class JFusionCurlHtmlFormParser
 				$this->button_counter = 0;
 
 				//form details
-				preg_match('/<form.*?name=["\']?([\w\s-]*)["\']?[\s>]/i', $form, $form_name);
+				preg_match('/<form.*?name=["\']?([\w\s-]*)["\']?[\s>]/is', $form, $form_name);
 				if ($form_name) {
 					$this->_return[$this->_counter]['form_data']['name'] = preg_replace('/["\'<>]/', '', $form_name[1]);
 				}
-				preg_match('/<form.*?action=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/i', $form, $action);
+				preg_match('/<form.*?action=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/is', $form, $action);
 				if ($action) {
 					$this->_return[$this->_counter]['form_data']['action'] = preg_replace('/["\'<>]/', '', $action[1]);
 				}
-				preg_match('/<form.*?method=["\']?([\w\s]*)["\']?[\s>]/i', $form, $method);
+				preg_match('/<form.*?method=["\']?([\w\s]*)["\']?[\s>]/is', $form, $method);
 				if ($method) {
 					$this->_return[$this->_counter]['form_data']['method'] = preg_replace('/["\'<>]/', '', $method[1]);
 				}
-				preg_match('/<form.*?enctype=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/i', $form, $enctype);
+				preg_match('/<form.*?enctype=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/is', $form, $enctype);
 				if ($enctype) {
 					$this->_return[$this->_counter]['form_data']['enctype'] = preg_replace('/["\'<>]/', '', $enctype[1]);
 				}
-				preg_match('/<form.*?id=["\']?([\w\s-]*)["\']?[\s>]/i', $form, $id);
+				preg_match('/<form.*?id=["\']?([\w\s-]*)["\']?[\s>]/is', $form, $id);
 				if ($id) {
 					$this->_return[$this->_counter]['form_data']['id'] = preg_replace('/["\'<>]/', '', $id[1]);
 				}
 
 				// form elements: input type = hidden
-				if (preg_match_all('/<input[^<>]+type=["\']hidden["\'][^<>]*>/iU', $form, $hiddens)) {
+				if (preg_match_all('/<input[^<>]+type=["\']hidden["\'][^<>]*>/isU', $form, $hiddens)) {
 					foreach ($hiddens[0] as $hidden) {
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($hidden)] = array(
 							'type'  =>  'hidden',
@@ -101,7 +101,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = text
-				if (preg_match_all('/<input[^<>]+type=["\']text["\'][^<>]*>/iU', $form, $texts)) {
+				if (preg_match_all('/<input[^<>]+type=["\']text["\'][^<>]*>/isU', $form, $texts)) {
 					foreach ($texts[0] as $text) {
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($text)] = array(
 							'type'  => 'text',
@@ -113,7 +113,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = password
-				if (preg_match_all('/<input[^<>]+type=["\']password["\'][^<>]*>/iU', $form, $passwords)) {
+				if (preg_match_all('/<input[^<>]+type=["\']password["\'][^<>]*>/isU', $form, $passwords)) {
 					foreach ($passwords[0] as $password) {
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($password)] = array(
 							'type'  =>  'password',
@@ -134,9 +134,9 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = checkbox
-				if (preg_match_all('/<input[^<>]+type=["\']checkbox["\'][^<>]*>/iU', $form, $checkboxes)) {
+				if (preg_match_all('/<input[^<>]+type=["\']checkbox["\'][^<>]*>/isU', $form, $checkboxes)) {
 					foreach ($checkboxes[0] as $checkbox) {
-						if (preg_match('/checked/i', $checkbox)) {
+						if (preg_match('/checked/is', $checkbox)) {
 							$this->_return[$this->_counter]['form_elements'][$this->_getName($checkbox)] = array(
 								'type'  =>  'checkbox',
 								'value'  =>  'on'
@@ -151,7 +151,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = radio
-				if (preg_match_all('/<input[^<>]+type=["\']radio["\'][^<>]*>/iU', $form, $radios)) {
+				if (preg_match_all('/<input[^<>]+type=["\']radio["\'][^<>]*>/isU', $form, $radios)) {
 					foreach ($radios[0] as $radio) {
 						if (preg_match('/checked/i', $radio)) {
 							$this->_return[$this->_counter]['form_elements'][$this->_getName($radio)] = array(
@@ -163,7 +163,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = submit
-				if (preg_match_all('/<input[^<>]+type=["\']submit["\'][^<>]*>/iU', $form, $submits)) {
+				if (preg_match_all('/<input[^<>]+type=["\']submit["\'][^<>]*>/isU', $form, $submits)) {
 					foreach ($submits[0] as $submit) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
 							'type'  => 'submit',
@@ -175,7 +175,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = button
-				if (preg_match_all('/<input[^<>]+type=["\']button["\'][^<>]*>/iU', $form, $buttons)) {
+				if (preg_match_all('/<input[^<>]+type=["\']button["\'][^<>]*>/isU', $form, $buttons)) {
 					foreach ($buttons[0] as $button) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
 							'type'  => 'button',
@@ -187,7 +187,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = reset
-				if (preg_match_all('/<input[^<>]+type=["\']reset["\'][^<>]*>/iU', $form, $resets)) {
+				if (preg_match_all('/<input[^<>]+type=["\']reset["\'][^<>]*>/isU', $form, $resets)) {
 					foreach ($resets[0] as $reset) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
 							'type'  => 'reset',
@@ -199,7 +199,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				// form elements: input type = image
-				if (preg_match_all('/<input[^<>]+type=["\']image["\'][^<>]*>/iU', $form, $images)) {
+				if (preg_match_all('/<input[^<>]+type=["\']image["\'][^<>]*>/isU', $form, $images)) {
 					foreach ($images[0] as $image) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
 							'type'  => 'image',
@@ -219,7 +219,7 @@ class JFusionCurlHtmlFormParser
 							$option_value = '';
 							foreach ($all_options[0] as $option) {
 								if (preg_match('/selected/i', $option)) {
-									if (preg_match('/value=["\'](.*)["\']\s/iU', $option, $option_value)) {
+									if (preg_match('/value=["\'](.*)["\']\s/isU', $option, $option_value)) {
 										$option_value = $option_value[1];
 										$found_selected = 1;
 									} else {
@@ -230,10 +230,10 @@ class JFusionCurlHtmlFormParser
 								}
 							}
 							if (!isset($found_selected)) {
-								if (preg_match('/value=["\'](.*)["\']/iU', $all_options[0][0], $option_value)) {
+								if (preg_match('/value=["\'](.*)["\']/isU', $all_options[0][0], $option_value)) {
 									$option_value = $option_value[1];
 								} else {
-									preg_match('/<option>(.*)<\/option>/iU', $all_options[0][0], $option_value);
+									preg_match('/<option>(.*)<\/option>/isU', $all_options[0][0], $option_value);
 									$option_value = $option_value[1];
 								}
 							} else {
@@ -248,7 +248,7 @@ class JFusionCurlHtmlFormParser
 				}
 
 				# form elements: input type = --not defined--
-				if ( preg_match_all('/<input[^<>]+name=["\'](.*)["\'][^<>]*>/iU', $form, $inputs)) {
+				if ( preg_match_all('/<input[^<>]+name=["\'](.*)["\'][^<>]*>/isU', $form, $inputs)) {
 					foreach ($inputs[0] as $input) {
 						if ( !preg_match('/type=("([^"]*)"|\'([^\']*)\'|[^>\s]*)([^>]*)?>/is', $input) ) {
 							if ( !isset($this->_return[$this->_counter]['form_elements'][$this->_getName($input)]) ) {
@@ -1054,27 +1054,31 @@ class JFusionCurl
 					$frmcount = count($result);
 					$myfrm = -1;
 					$i = 0;
-					do {
-						if (isset($result[$i]['form_data']['name'])) {
-							if ($result[$i]['form_data']['name'] == $this->options['formid']) {
-								$myfrm = $i;
-								break;
-							}
-						}
-						if (isset($result[$i]['form_data']['id'])) {
-							if ($result[$i]['form_data']['id'] == $this->options['formid']) {
-								$myfrm = $i;
-								break;
-							}
-						}
-						if (isset($result[$i]['form_data']['action'])) {
-							if (htmlspecialchars_decode($result[$i]['form_data']['action']) == $this->options['formid']) {
-								$myfrm = $i;
-								break;
-							}
-						}
-						$i +=1;
-					} while ($i<$frmcount);
+                    // HJW changed 12 januari 2013 to accomodate from identifiers changing every
+                    // new access to the page containg the form. Like logonform123 , loginform a2s
+                    // etc.
+
+                    do {
+                        if (isset($result[$i]['form_data']['name'])) {
+                            if (strpos(strtolower($result[$i]['form_data']['name']),strtolower($this->options['formid'] )) !== false){
+                                $myfrm = $i;
+                                break;
+                            }
+                        }
+                        if (isset($result[$i]['form_data']['id'])) {
+                            if (strpos(strtolower($result[$i]['form_data']['id']),strtolower($this->options['formid'] )) !== false){
+                                $myfrm = $i;
+                                break;
+                            }
+                        }
+                        if (isset($result[$i]['form_data']['action'])) {
+                            if (strpos(strtolower(htmlspecialchars_decode($result[$i]['form_data']['action'])),strtolower($this->options['formid'] )) !== false){
+                                $myfrm = $i;
+                                break;
+                            }
+                        }
+                        $i +=1;
+                    } while ($i<$frmcount);
 
 					if ($myfrm == -1) {
 						$helpthem = '';
