@@ -125,16 +125,19 @@ class JFusionUser_joomla_int extends JFusionUser {
 					$result->groups = array();
 					$result->groupnames = array();
 				}
+
 				//split up the password if it contains a salt
 				//note we cannot use explode as a salt from another software may contain a colon which messes Joomla up
-				if (strpos($result->password, ':') !== false) {
-					$saltStart = strpos($result->password, ':');
-					$result->password_salt = substr($result->password, $saltStart + 1);
-					$result->password = substr($result->password, 0, $saltStart);
+				$result->password_salt = null;
+				if (substr($userinfo->password, 0, 4) == '$2y$') {
+					// BCrypt passwords are always 60 characters, but it is possible that salt is appended although non standard.
+					$userinfo->password = substr($userinfo->password, 0, 60);
 				} else {
-					//prevent php notices
-					$result->password_salt = '';
+					if (strpos($result->password, ':') !== false) {
+						list($result->password, $result->password_salt) = explode(':', $result->password);
+					}
 				}
+
 				// Get the language of the user and store it as variable in the user object
 				$user_params = new JRegistry($result->params);
 
