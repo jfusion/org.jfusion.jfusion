@@ -87,4 +87,15 @@ class JFusionAuth_joomla_ext extends JFusionAuth
 		}
 		return $testcrypt;
 	}
+
+	/**
+	 * used by framework to ensure a password test
+	 *
+	 * @param object $userinfo userdata object containing the userdata
+	 *
+	 * @return boolean
+	 */
+	function checkPassword($userinfo) {
+		return ($this->generateEncryptedPassword($userinfo) === true || $userinfo->password == $this->generateEncryptedPassword($userinfo));
+	}
 }

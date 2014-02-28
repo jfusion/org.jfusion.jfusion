@@ -105,7 +105,7 @@ class plgAuthenticationjfusion extends JPlugin
 						    $response->debug[] = $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********';
 					    }
 
-					    if ($testcrypt == $userinfo->password) {
+					    if ($model->checkPassword($userinfo)) {
 						    //found a match
 						    $response->debug[] = $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS');
 						    $response->status = JAuthentication::STATUS_SUCCESS;
@@ -133,10 +133,10 @@ class plgAuthenticationjfusion extends JPlugin
 							    if (!empty($slaveuserinfo)) {
 								    $slaveuserinfo->password_clear = $userinfo->password_clear;
 								    $testcrypt = $model->generateEncryptedPassword($slaveuserinfo);
-								    $check = ($testcrypt == $slaveuserinfo->password);
+								    $check = $model->checkPassword($slaveuserinfo);
 							    } else {
 								    $testcrypt = $model->generateEncryptedPassword($userinfo);
-								    $check = ($testcrypt == $userinfo->password);
+								    $check = $model->checkPassword($userinfo);
 							    }
 
 							    if (isset($options['show_unsensored'])) {

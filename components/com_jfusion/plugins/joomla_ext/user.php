@@ -669,9 +669,8 @@ class JFusionUser_joomla_ext extends JFusionUser
 						$existinguser->password_clear = $userinfo->password_clear;
 						//check if the password needs to be updated
 						$model = JFusionFactory::getAuth($this->getJname());
-						$testcrypt = $model->generateEncryptedPassword($existinguser);
 						//if the passwords are not the same or if Joomla salt has inherited a colon which will confuse Joomla without JFusion; generate a new password hash
-						if ($testcrypt != $existinguser->password || strpos($existinguser->password_salt, ':') !== false) {
+						if (!$model->checkPassword($existinguser)) {
 							$this->updatePassword($userinfo, $existinguser, $status);
 							$changed = true;
 						} else {
