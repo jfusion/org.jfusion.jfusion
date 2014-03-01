@@ -368,11 +368,11 @@ class plgUserJfusion extends JPlugin
 						    $this->raise('error', $JoomlaSession['error'], 'joomla_int: ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
 						    $success = -1;
 					    } else {
-						    //make sure Joomla salt is Joomla-compatible while we have the clear password
-						    if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32 && strpos($JoomlaUserinfo->password_salt, ':') !== false) {
-							    $JoomlaUserinfo->password_clear = $userinfo->password_clear;
+						    //make sure we have the clear password
+						    if (!empty($userinfo->password_clear)) {
 							    $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $jfusionDebug);
 						    }
+
 						    $success = 1;
 					    }
 				    } else  {
