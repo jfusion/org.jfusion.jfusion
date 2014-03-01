@@ -54,23 +54,22 @@ class JFusionAuth_joomla_ext extends JFusionAuth
 	 */
 	public function generateEncryptedPassword($userinfo)
 	{
+		$testcrypt = null;
 		if (substr($userinfo->password, 0, 4) == '$2y$') {
 			// BCrypt passwords are always 60 characters, but it is possible that salt is appended although non standard.
 			$password60 = substr($userinfo->password, 0, 60);
 
 			if (JCrypt::hasStrongPasswordSupport()) {
 				$testcrypt = password_verify($userinfo->password_clear, $password60);
-			} else {
-				$testcrypt = null;
 			}
-		} elseif (substr($userinfo->password, 0, 8) == '{SHA256}') {
-			jimport('joomla.user.helper');
-
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'sha256', false);
 		} else {
+			if (substr($userinfo->password, 0, 8) == '{SHA256}') {
+				$hashtype = 'sha256';
+			} else {
+				$hashtype = 'md5-hex';
+			}
 			jimport('joomla.user.helper');
-
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex', false);
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, $hashtype, false);
 		}
 		return $testcrypt;
 	}
@@ -91,19 +90,16 @@ class JFusionAuth_joomla_ext extends JFusionAuth
 			if (JCrypt::hasStrongPasswordSupport()) {
 				$match = password_verify($userinfo->password_clear, $password60);
 			}
-		} elseif (substr($userinfo->password, 0, 8) == '{SHA256}') {
-			jimport('joomla.user.helper');
-
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'sha256', false);
-
-			if ($userinfo->password == $testcrypt) {
-				$match = true;
-			}
 		} else {
+			if (substr($userinfo->password, 0, 8) == '{SHA256}') {
+				$hashtype = 'sha256';
+			} else {
+				$hashtype = 'md5-hex';
+			}
 			jimport('joomla.user.helper');
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, $hashtype, false);
 
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex', false);
-
+			// Check the password
 			if ($userinfo->password == $testcrypt) {
 				$match = true;
 			}

@@ -94,9 +94,9 @@ class JFusionUser_joomla_ext extends JFusionUser
 				//split up the password if it contains a salt
 				//note we cannot use explode as a salt from another software may contain a colon which messes Joomla up
 				$result->password_salt = null;
-				if (substr($userinfo->password, 0, 4) == '$2y$') {
+				if (substr($result->password, 0, 4) == '$2y$') {
 					// BCrypt passwords are always 60 characters, but it is possible that salt is appended although non standard.
-					$userinfo->password = substr($userinfo->password, 0, 60);
+					$result->password = substr($result->password, 0, 60);
 				} else {
 					if (strpos($result->password, ':') !== false) {
 						list($result->password, $result->password_salt) = explode(':', $result->password);

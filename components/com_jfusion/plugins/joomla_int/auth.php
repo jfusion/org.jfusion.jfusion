@@ -49,43 +49,22 @@ class JFusionAuth_joomla_int extends JFusionAuth
 	 */
 	public function generateEncryptedPassword($userinfo)
 	{
+		$testcrypt = null;
 		if (substr($userinfo->password, 0, 4) == '$2y$') {
 			// BCrypt passwords are always 60 characters, but it is possible that salt is appended although non standard.
 			$password60 = substr($userinfo->password, 0, 60);
 
 			if (JCrypt::hasStrongPasswordSupport()) {
 				$testcrypt = password_verify($userinfo->password_clear, $password60);
-			} else {
-				$testcrypt = null;
 			}
-		} elseif (substr($userinfo->password, 0, 8) == '{SHA256}') {
-			jimport('joomla.user.helper');
-
-			$password = $userinfo->password . ':' . $userinfo->password_salt;
-			// Check the password
-			$parts = explode(':', $userinfo->password);
-			$crypt = $parts[0];
-			if (isset($parts[1])) {
-				$salt = $parts[1];
-			} else {
-				$salt = null;
-			}
-
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'sha256', false);
 		} else {
-			jimport('joomla.user.helper');
-			// Check the password
-			$password = $userinfo->password . ':' . $userinfo->password_salt;
-
-			$parts = explode(':', $userinfo->password);
-			$crypt = $parts[0];
-			if (isset($parts[1])) {
-				$salt = $parts[1];
+			if (substr($userinfo->password, 0, 8) == '{SHA256}') {
+				$hashtype = 'sha256';
 			} else {
-				$salt = null;
+				$hashtype = 'md5-hex';
 			}
-
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'md5-hex', false);
+			jimport('joomla.user.helper');
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, $hashtype, false);
 		}
 		return $testcrypt;
 	}
@@ -106,36 +85,17 @@ class JFusionAuth_joomla_int extends JFusionAuth
 			if (JCrypt::hasStrongPasswordSupport()) {
 				$match = password_verify($userinfo->password_clear, $password60);
 			}
-		} elseif (substr($userinfo->password, 0, 8) == '{SHA256}') {
-			jimport('joomla.user.helper');
-			// Check the password
-			$parts = explode(':', $userinfo->password);
-			$crypt = $parts[0];
-			if (isset($parts[1])) {
-				$salt = $parts[1];
-			} else {
-				$salt = null;
-			}
-
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'sha256', false);
-
-			if ($userinfo->password == $testcrypt) {
-				$match = true;
-			}
 		} else {
-			jimport('joomla.user.helper');
-			// Check the password
-			$parts = explode(':', $userinfo->password);
-			$crypt = $parts[0];
-			if (isset($parts[1])) {
-				$salt = $parts[1];
+			if (substr($userinfo->password, 0, 8) == '{SHA256}') {
+				$hashtype = 'sha256';
 			} else {
-				$salt = null;
+				$hashtype = 'md5-hex';
 			}
+			jimport('joomla.user.helper');
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, $hashtype, false);
 
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'md5-hex', false);
-
-			if ($crypt == $testcrypt) {
+			// Check the password
+			if ($userinfo->password == $testcrypt) {
 				$match = true;
 			}
 		}
