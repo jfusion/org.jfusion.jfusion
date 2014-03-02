@@ -44,8 +44,6 @@ class jfusionViewLogoutCheckerResult extends JViewLegacy
      */
     function display($tpl = null)
     {
-	    //Load debug library
-	    require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
         //get the joomla id
 	    $joomlaid = JFactory::getApplication()->input->get('joomlaid');
 	    $user = (array)JFactory::getUser($joomlaid);
@@ -61,7 +59,7 @@ class jfusionViewLogoutCheckerResult extends JViewLegacy
 	    $JFusionActivePlugin = 'joomla_int';
 	    $JFusionLoginCheckActive = true;
 
-	    JFusionFactory::getDebugger()->set(null, array());
+	    JFusionFactory::getDebugger()->reset();
 
 	    $JFusionActivePlugin = 'joomla_int';
 	    $jfusion_user = array('type' => 'user', 'name' => 'jfusion', 'params' => '');

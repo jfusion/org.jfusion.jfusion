@@ -1,0 +1,20 @@
+.debugger div.debug .value {
+    min-width: 100px;
+    background-color: #ecf8fd;
+}
+.debugger div.debug .a_key {
+    min-width: 100px;
+    background-color: #dbfede;
+}
+.debugger div.debug .o_key {
+    min-width: 100px;
+    background-color: #dbfede;
+}
+.debugger div.debug .title {
+    background-color: #d6f2ff;
+}
+.debugger div.debug .grid {
+    font-family: arial, serif;
+    background-color: #fbfed6;
+    vertical-align:top;
+}

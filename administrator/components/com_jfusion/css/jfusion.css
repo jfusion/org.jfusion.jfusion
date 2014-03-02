@@ -317,6 +317,26 @@ a.jfusionDonateButton:hover {
     width: 100%;
 }
 
+.jfusion .loginchecker {
+    width: 800px;
+}
+
+.jfusion .login div {
+    display: table-cell;
+}
+
+.jfusion .success {
+    height: 50px;
+    background: #d9f9e2 url(../images/check_good_small.png) no-repeat left center;
+    padding-left: 50px;
+}
+
+.jfusion .error {
+    height: 50px;
+    background: #f9ded9 url(../images/check_bad_small.png) no-repeat left center;
+    padding-left: 50px;
+}
+
 /*
 Joomla stuff
 */

@@ -210,12 +210,6 @@ class JFusionHook {
         if (!empty($register_url)) {
             $template->_tpldata['.'][0]['U_REGISTER'] = $register_url;
         }
-        /**
-         *     Load debug library
-         */
-        //require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
-        //die(debug::show($template->_tpldata['.'][0], 'template',1));
-
     }
     /**
      * Function not implemented

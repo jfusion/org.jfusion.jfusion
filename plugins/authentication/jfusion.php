@@ -68,7 +68,9 @@ class plgAuthenticationjfusion extends JPlugin
 	    global $JFusionLoginCheckActive;
 	    $mainframe = JFactory::getApplication();
 	    // Initialize variables
-	    $response->debug = array();
+	    $debugger = JFusionFactory::getDebugger('jfusion-authentication');
+	    $debugger->reset();
+
 	    $db = JFactory::getDBO();
 	    //get the JFusion master
 	    $master = JFusionFunction::getMaster();
@@ -80,7 +82,7 @@ class plgAuthenticationjfusion extends JPlugin
 			    //check to see if the login checker wanted a skip password
 			    $debug = JFusionFunction::isAdministrator();
 			    if (!empty($options['skip_password_check']) && $debug === true) {
-				    $response->debug[] = JText::_('SKIPPED') . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK');
+				    $debugger->add('debug', JText::_('SKIPPED') . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK'));
 				    $response->status = JAuthentication::STATUS_SUCCESS;
 				    $response->email = $userinfo->email;
 				    $response->fullname = $userinfo->name;
@@ -100,14 +102,14 @@ class plgAuthenticationjfusion extends JPlugin
 					    $model = JFusionFactory::getAuth($master->name);
 					    $testcrypt = $model->generateEncryptedPassword($userinfo);
 					    if (isset($options['show_unsensored'])) {
-						    $response->debug[] = $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . $testcrypt . ' vs ' . $userinfo->password;
+						    $debugger->add('debug', $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . $testcrypt . ' vs ' . $userinfo->password);
 					    } else {
-						    $response->debug[] = $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********';
+						    $debugger->add('debug', $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
 					    }
 
 					    if ($model->checkPassword($userinfo)) {
 						    //found a match
-						    $response->debug[] = $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS');
+						    $debugger->add('debug', $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS'));
 						    $response->status = JAuthentication::STATUS_SUCCESS;
 						    $response->email = $userinfo->email;
 						    $response->fullname = $userinfo->name;
@@ -140,14 +142,14 @@ class plgAuthenticationjfusion extends JPlugin
 							    }
 
 							    if (isset($options['show_unsensored'])) {
-								    $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  $testcrypt . ' vs ' . $userinfo->password;
+								    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  $testcrypt . ' vs ' . $userinfo->password);
 							    } else {
-								    $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********';
+								    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
 							    }
 
 							    if ($check) {
 								    //found a match
-								    $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS');
+								    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS'));
 								    $response->status = JAuthentication::STATUS_SUCCESS;
 								    $response->email = $userinfo->email;
 								    $response->fullname = $userinfo->name;
@@ -160,10 +162,10 @@ class plgAuthenticationjfusion extends JPlugin
 								    if (strlen($userinfo->password_clear) != 32) {
 									    $JFusionMaster->updatePassword($userinfo, $userinfo, $status);
 									    if (!empty($status['error'])) {
-										    $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') . ': ' . $status['error'];
+										    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') . ': ' . $status['error']);
 										    JFusionFunction::raise('error', $status['error'], $master->name. ' ' .JText::_('PASSWORD') . ' ' . JText::_('UPDATE'));
 									    } else {
-										    $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('SUCCESS');
+										    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('SUCCESS'));
 									    }
 								    } else {
 									    $status['debug'][] = $auth_model->name . ' ' . JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
@@ -175,7 +177,7 @@ class plgAuthenticationjfusion extends JPlugin
 						    if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
 							    //Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour
 							    JFusionFunction::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
-							    $response->debug[] = JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED');
+							    $debugger->add('debug', JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED'));
 						    }
 
 						    if (isset($response->status) && $response->status != JAuthentication::STATUS_SUCCESS) {
@@ -190,7 +192,7 @@ class plgAuthenticationjfusion extends JPlugin
 			    if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
 				    //Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour
 				    JFusionFunction::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
-				    $response->debug[] = JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED');
+				    $debugger->add('debug', JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED'));
 			    }
 
 			    if (isset($response->status) && $response->status != JAuthentication::STATUS_SUCCESS) {
@@ -340,7 +342,7 @@ class plgAuthenticationjfusion extends JPlugin
 	    } else {
 		    //we have to call the main Joomla plugin as we have no master
 		    JFusionFunction::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
-		    $response->debug[] = JText::_('JOOMLA_AUTH_PLUGIN_USED_NO_MASTER');
+		    $debugger->add('debug', JText::_('JOOMLA_AUTH_PLUGIN_USED_NO_MASTER'));
 	    }
     }
 }

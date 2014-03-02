@@ -573,26 +573,23 @@ class plgContentJfusion extends JPlugin
 	{
 		$debug_contents = '';
 		if ($this->params->get('debug', 0)) {
-			require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php');
-
+			$debugger = JFusionFactory::getDebugger('jfusion-content-plugin');
+			$debugger->reset($this->helper->debug);
+			$debugger->setTitle('Discussion bot debug info');
 			if ($this->ajax_request) {
-				debug::$toggleScriptInited = true;
-				debug::$colorSchemeInited[0] = true;
+				$html = $debugger->getAsHtml(null, false);
+			} else {
+				$html = $debugger->getAsHtml();
 			}
-			ob_start();
-			debug::show($this->helper->debug, 'Discussion bot debug info', 1);
-			$debug_contents = ob_get_contents();
-			ob_end_clean();
-
 			if (!$this->ajax_request) {
 				$this->article->text .= <<<HTML
                     <div id="jfusionDebugContainer{$this->article->id}">
-                        {$debug_contents}
+                        {$html}
                     </div>
 HTML;
 			}
 		}
-		return $debug_contents;
+		return $html;
 	}
 
 	/*

@@ -65,7 +65,7 @@ class jfusionViewsyncerrordetails extends JViewLegacy
          *     Load usersync and debug library
          */
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
+
         //check to see if the sync has already started
         $syncid = JFactory::getApplication()->input->get('syncid');
         $syncdata = JFusionUsersync::getSyncdata($syncid);

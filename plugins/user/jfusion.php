@@ -261,7 +261,7 @@ class plgUserJfusion extends JPlugin
 		    //use a global for the login checker instead
 
 		    $debugger = JFusionFactory::getDebugger();
-		    $debugger->set(null, array());
+		    $debugger->reset();
 		    $debugger->set('init', array());
 
 		    //determine if overwrites are allowed
@@ -375,7 +375,7 @@ class plgUserJfusion extends JPlugin
 						    if (!empty($userinfo->password_clear)) {
 							    $debug = $debugger->get();
 							    $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $debug);
-							    $debugger->set(null, $debug);
+							    $debugger->reset($debug);
 						    }
 
 						    $success = 1;

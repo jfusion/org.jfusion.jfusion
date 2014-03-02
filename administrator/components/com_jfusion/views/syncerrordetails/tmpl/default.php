@@ -27,19 +27,49 @@ defined('_JEXEC') or die('Restricted access');
 	//get the error
 	$errorid = JFactory::getApplication()->input->get->get('errorid', '');
 	$error = unserialize($this->synclog[$errorid]->data);
+
+	$debugger = JFusionFactory::getDebugger('jfusion-syncerrordetails');
+
 	//display the userlist info
-	debug::show($error['user']['jname'], 'User from Plugin', 1);
-	?><br/><?php
-	debug::show($error['user']['userlist'], 'User Info from Usersync List', 1);
-	?><br/><?php
-	debug::show($error['user']['userinfo'], 'User Info from getUser() function');
-	?><br/><?php
-	debug::show($error['conflict']['jname'], 'User target Plugin', 1);
-	?><br/><?php
-	debug::show($error['conflict']['error'], 'Error Info from updateUser() function');
-	?><br/><?php
-	debug::show($error['conflict']['debug'], 'Debug Info from updateUser() function');
-	?><br/><?php
-	debug::show($error['conflict']['userinfo'], 'User Info from updateUser() function');
+
+	$debugger->reset($error['user']['jname']);
+	$debugger->setTitle('User from Plugin');
+	$debugger->displayHtml();
+	?>
+	<br/>
+	<?php
+	$debugger->reset($error['user']['userlist']);
+	$debugger->setTitle('User Info from Usersync List');
+	$debugger->displayHtml();
+	?>
+	<br/>
+	<?php
+	$debugger->reset($error['user']['userinfo']);
+	$debugger->setTitle('User Info from getUser() function');
+	$debugger->displayHtml();
+	?>
+	<br/>
+	<?php
+	$debugger->reset($error['conflict']['jname']);
+	$debugger->setTitle('User target Plugin');
+	$debugger->displayHtml();
+	?>
+	<br/>
+	<?php
+	$debugger->reset($error['conflict']['error']);
+	$debugger->setTitle('Error Info from updateUser() function');
+	$debugger->displayHtml();
+	?>
+	<br/>
+	<?php
+	$debugger->reset($error['conflict']['debug']);
+	$debugger->setTitle('Debug Info from updateUser() function');
+	$debugger->displayHtml();
+	?>
+	<br/>
+	<?php
+	$debugger->reset($error['conflict']['userinfo']);
+	$debugger->setTitle('User Info from updateUser() function');
+	$debugger->displayHtml();
 	?>
 </div>

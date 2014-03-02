@@ -163,17 +163,10 @@ echo JFusionFunctionAdmin::getDonationBanner();
 					        $error_type = 'ERROR';
 					    }
 					    ?>
-					    <label for="syncError<?php echo $i; ?>"><?php echo JText::_($error_type) ?></label>
+					    <label for="syncError<?php echo $i; ?>"><?php echo JText::_($error_type); ?></label>
 				    </td>
 				    <td>
-					    <?php echo $error['user']['jname'] . ': ' . $error['user']['userinfo']->userid . ' / ' . $error['user']['userlist']->username . ' / ' . $error['user']['userlist']->email;
-					    /**
-					     * Load the debug model
-					     */
-					    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
-					    //debug::show($error, 'Info on Error');
-
-					    ?>
+					    <?php echo $error['user']['jname'] . ': ' . $error['user']['userinfo']->userid . ' / ' . $error['user']['userlist']->username . ' / ' . $error['user']['userlist']->email; ?>
 				    </td>
 				    <td>
 					    <?php

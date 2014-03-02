@@ -17,20 +17,22 @@
 defined('_JEXEC') or die('Restricted access');
 echo JFusionFunctionAdmin::getDonationBanner();
 
+$debugger = JFusionFactory::getDebugger('jfusion-logoutcheckerresult');
+$debugger->reset($this->debug);
+$debugger->setTitle(JText::_('LOGOUT') . ' ' . JText::_('DEBUG'));
 /**
  * Output information about the server for future support queries
  */
 ?>
 <div class="jfusion">
-	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
-		<input type="hidden" name="task" value="logoutcheckerresult" />
-	</form>
-	<div style="border:0 none ; margin:0; padding:0 5px; width: 800px; float: left;">
-		<?php
-		$title = JText::_('LOGOUT') . ' ' . JText::_('DEBUG');
-	    debug::show($this->debug, $title);
-		?>
+	<div class="loginchecker">
+		<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
+			<input type="hidden" name="task" value="logoutcheckerresult" />
+		</form>
+		<?php $debugger->displayHtml(); ?>
+		<br/>
+		<br/>
 		<label for="debug"><?php echo JText::_('JFUSION') . ' ' . JText::_('DEBUG'); ?></label>
-		<textarea id="debug" rows="25" class="dumparea"><?php echo debug::getText($this->debug, $title) ?></textarea>
+		<textarea id="debug" rows="25" class="dumparea"><?php echo $debugger->getAsText(); ?></textarea>
 	</div>
 </div>

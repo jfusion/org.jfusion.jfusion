@@ -23,6 +23,7 @@
         <filename>language/en-GB/en-GB.com_jfusion.ini</filename>
 		<folder>controllers</folder>
 		<folder>css</folder>
+        <folder>js</folder>
 		<folder>helpers</folder>
 		<folder>views</folder>
 		<folder>images</folder>
