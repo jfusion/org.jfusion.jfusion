@@ -32,44 +32,39 @@ defined('_JEXEC') or die('Restricted access');
 
 	//display the userlist info
 
-	$debugger->reset($error['user']['jname']);
+	$debugger->reset($error['user']);
 	$debugger->setTitle('User from Plugin');
-	$debugger->displayHtml();
+	$debugger->displayHtml('jname');
 	?>
 	<br/>
 	<?php
-	$debugger->reset($error['user']['userlist']);
 	$debugger->setTitle('User Info from Usersync List');
-	$debugger->displayHtml();
+	$debugger->displayHtml('userlist');
 	?>
 	<br/>
 	<?php
-	$debugger->reset($error['user']['userinfo']);
 	$debugger->setTitle('User Info from getUser() function');
-	$debugger->displayHtml();
+	$debugger->displayHtml('userinfo');
 	?>
 	<br/>
 	<?php
-	$debugger->reset($error['conflict']['jname']);
+	$debugger->reset($error['conflict']);
 	$debugger->setTitle('User target Plugin');
-	$debugger->displayHtml();
+	$debugger->displayHtml('jname');
 	?>
 	<br/>
 	<?php
-	$debugger->reset($error['conflict']['error']);
 	$debugger->setTitle('Error Info from updateUser() function');
-	$debugger->displayHtml();
+	$debugger->displayHtml('error');
 	?>
 	<br/>
 	<?php
-	$debugger->reset($error['conflict']['debug']);
 	$debugger->setTitle('Debug Info from updateUser() function');
-	$debugger->displayHtml();
+	$debugger->displayHtml('debug');
 	?>
 	<br/>
 	<?php
-	$debugger->reset($error['conflict']['userinfo']);
 	$debugger->setTitle('User Info from updateUser() function');
-	$debugger->displayHtml();
+	$debugger->displayHtml('userinfo');
 	?>
 </div>
