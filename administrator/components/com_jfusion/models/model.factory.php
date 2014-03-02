@@ -51,12 +51,12 @@ class JFusionFactory
      */
     public static function &getPublic($jname)
     {
-        static $public_instances;
-        if (!isset($public_instances)) {
-            $public_instances = array();
+        static $instances;
+        if (!isset($instances)) {
+	        $instances = array();
         }
         //only create a new plugin instance if it has not been created before
-        if (!isset($public_instances[$jname])) {
+        if (!isset($instances[$jname])) {
             //load the Abstract Public Class
 	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php';
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'public.php';
@@ -67,9 +67,9 @@ class JFusionFactory
             } else {
                 $class = 'JFusionPublic';
             }
-            $public_instances[$jname] = new $class;
+	        $instances[$jname] = new $class;
         }
-	    return $public_instances[$jname];
+	    return $instances[$jname];
     }
     /**
      * Gets an Fusion front object
@@ -80,12 +80,12 @@ class JFusionFactory
      */
     public static function &getAdmin($jname)
     {
-        static $admin_instances;
-        if (!isset($admin_instances)) {
-            $admin_instances = array();
+        static $instances;
+        if (!isset($instances)) {
+	        $instances = array();
         }
         //only create a new plugin instance if it has not been created before
-        if (!isset($admin_instances[$jname])) {
+        if (!isset($instances[$jname])) {
             //load the Abstract Admin Class
 	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php';
 
@@ -99,9 +99,9 @@ class JFusionFactory
             } else {
                 $class = 'JFusionAdmin';
             }
-            $admin_instances[$jname] = new $class;
+	        $instances[$jname] = new $class;
         }
-        return $admin_instances[$jname];
+        return $instances[$jname];
     }
 
     /**
@@ -113,12 +113,12 @@ class JFusionFactory
      */
     public static function &getAuth($jname)
     {
-        static $auth_instances;
-        if (!isset($auth_instances)) {
-            $auth_instances = array();
+        static $instances;
+        if (!isset($instances)) {
+	        $instances = array();
         }
         //only create a new authentication instance if it has not been created before
-        if (!isset($auth_instances[$jname])) {
+        if (!isset($instances[$jname])) {
             //load the Abstract Auth Class
 	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractauth.php';
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'auth.php';
@@ -129,9 +129,9 @@ class JFusionFactory
             } else {
                 $class = 'JFusionAuth';
             }
-            $auth_instances[$jname] = new $class;
+	        $instances[$jname] = new $class;
         }
-	    return $auth_instances[$jname];
+	    return $instances[$jname];
     }
 
     /**
@@ -143,12 +143,12 @@ class JFusionFactory
      */
     public static function &getUser($jname)
     {
-        static $user_instances;
-        if (!isset($user_instances)) {
-            $user_instances = array();
+        static $instances;
+        if (!isset($instances)) {
+	        $instances = array();
         }
         //only create a new user instance if it has not been created before
-        if (!isset($user_instances[$jname])) {
+        if (!isset($instances[$jname])) {
             //load the User Public Class
 	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractuser.php';
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'user.php';
@@ -159,9 +159,9 @@ class JFusionFactory
             } else {
                 $class = 'JFusionUser';
             }
-            $user_instances[$jname] = new $class;
+	        $instances[$jname] = new $class;
         }
-	    return $user_instances[$jname];
+	    return $instances[$jname];
     }
 
     /**
@@ -173,12 +173,12 @@ class JFusionFactory
      */
     public static function &getForum($jname)
     {
-        static $forum_instances;
-        if (!isset($forum_instances)) {
-            $forum_instances = array();
+        static $instances;
+        if (!isset($instances)) {
+	        $instances = array();
         }
         //only create a new thread instance if it has not been created before
-        if (!isset($forum_instances[$jname])) {
+        if (!isset($instances[$jname])) {
             //load the Abstract Forum Class
 	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractforum.php';
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'forum.php';
@@ -189,9 +189,9 @@ class JFusionFactory
             } else {
                 $class = 'JFusionForum';
             }
-            $forum_instances[$jname] = new $class;
+	        $instances[$jname] = new $class;
         }
-	    return $forum_instances[$jname];
+	    return $instances[$jname];
     }
 
     /**
@@ -203,24 +203,24 @@ class JFusionFactory
      */
     public static function &getHelper($jname)
     {
-        static $helper_instances;
-        if (!isset($helper_instances)) {
-            $helper_instances = array();
+        static $instances;
+        if (!isset($instances)) {
+	        $instances = array();
         }
         //only create a new thread instance if it has not been created before
-        if (!isset($helper_instances[$jname])) {
+        if (!isset($instances[$jname])) {
 	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractplugin.php';
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'helper.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
 	            require_once $filename;
                 $class = 'JFusionHelper_' . $jname;
-                $helper_instances[$jname] = new $class;
+	            $instances[$jname] = new $class;
             } else {
-	            $helper_instances[$jname] = false;
+	            $instances[$jname] = false;
             }
         }
-	    return $helper_instances[$jname];
+	    return $instances[$jname];
     }
 
     /**
@@ -233,15 +233,15 @@ class JFusionFactory
      */
     public static function &getDatabase($jname)
     {
-        static $database_instances;
-        if (!isset($database_instances)) {
-            $database_instances = array();
+        static $instances;
+        if (!isset($instances)) {
+	        $instances = array();
         }
         //only create a new database instance if it has not been created before
-        if (!isset($database_instances[$jname])) {
-            $database_instances[$jname] = static::createDatabase($jname);
+        if (!isset($instances[$jname])) {
+	        $instances[$jname] = static::createDatabase($jname);
         }
-	    return $database_instances[$jname];
+	    return $instances[$jname];
     }
 
     /**
@@ -254,15 +254,15 @@ class JFusionFactory
      */
     public static function &getParams($jname, $reset = false)
     {
-        static $params_instances;
-        if (!isset($params_instances)) {
-            $params_instances = array();
+        static $instances;
+        if (!isset($instances)) {
+	        $instances = array();
         }
         //only create a new parameter instance if it has not been created before
-        if (!isset($params_instances[$jname]) || $reset) {
-            $params_instances[$jname] = static::createParams($jname);
+        if (!isset($instances[$jname]) || $reset) {
+	        $instances[$jname] = static::createParams($jname);
         }
-	    return $params_instances[$jname];
+	    return $instances[$jname];
     }
 
 	/**
@@ -357,7 +357,10 @@ class JFusionFactory
      */
     public static function getPlugins($criteria = 'both', $joomla = false, $active = true)
     {
-        static $plugins;
+        static $instances;
+	    if (!isset($instances)) {
+		    $instances = array();
+	    }
 	    $db = JFactory::getDBO();
 
 	    $query = $db->getQuery(true)
@@ -376,7 +379,7 @@ class JFusionFactory
 		        break;
         }
         $key = $criteria . '_' . $joomla . '_' . $active;
-        if (!isset($plugins[$key])) {
+        if (!isset($instances[$key])) {
             if (!$joomla) {
 	            $query->where('name NOT LIKE ' . $db->quote('joomla_int'));
             }
@@ -385,9 +388,9 @@ class JFusionFactory
             }
 
 	        $db->setQuery($query);
-	        $plugins[$key] = $db->loadObjectList();
+	        $instances[$key] = $db->loadObjectList();
         }
-        return $plugins[$key];
+        return $instances[$key];
     }
 
     /**
@@ -426,27 +429,26 @@ class JFusionFactory
      * @return BBCode_Parser of parser class
      */
     public static function &getCodeParser($type = 'bbcode') {
-        static $jfusion_code_parsers;
+        static $instance;
 
-        if (!is_array($jfusion_code_parsers)) {
-            $jfusion_code_parsers = array();
-        } 
+	    if (!isset($instance)) {
+		    $instance = array();
+	    }
 
-        if (empty($jfusion_code_parsers[$type])) {
+        if (empty($instance[$type])) {
             switch ($type) {
                 case 'bbcode':
                     if (!class_exists('BBCode_Parser')) {
                         include_once 'parsers' . DIRECTORY_SEPARATOR . 'nbbc.php';
                     }
-                    $jfusion_code_parsers[$type] = new BBCode_Parser;
+	                $instance[$type] = new BBCode_Parser;
                     break;
                 default:
-                    $jfusion_code_parsers[$type] = false;
+	                $instance[$type] = false;
                     break;
             }
         }
-
-        return $jfusion_code_parsers[$type];
+        return $instance[$type];
     }
     
     /**
@@ -455,15 +457,34 @@ class JFusionFactory
      * @return JFusionCookies object for the JFusion cookies
      */
     public static function &getCookies() {
-    	static $instances;
+    	static $instance;
     	//only create a new plugin instance if it has not been created before
-    	if (!isset($instances)) {
+    	if (!isset($instance)) {
     		//  load the Abstract Public Class
     		require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.cookie.php');
-    		
-			$params = static::getParams('joomla_int');
-    		$instances = new JFusionCookies($params->get('secret'));
+
+		    $instance = new JFusionCookies(static::getParams('joomla_int')->get('secret'));
     	}
-    	return $instances;
+    	return $instance;
     }
+
+	/**
+	 * @param string $jname
+	 *
+	 * @return JFusionDebugger
+	 */
+	public static function &getDebugger($jname = 'jfusion-loginchecker')
+	{
+		static $instances;
+
+		if (!isset($instances)) {
+			$instances = array();
+		}
+
+		require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debugger.php');
+		if (!isset($instances[$jname])) {
+			$instances[$jname] = new JFusionDebugger();
+		}
+		return $instances[$jname];
+	}
 }

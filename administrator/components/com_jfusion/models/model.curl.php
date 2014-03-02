@@ -1054,8 +1054,8 @@ class JFusionCurl
 					$frmcount = count($result);
 					$myfrm = -1;
 					$i = 0;
-                    // HJW changed 12 januari 2013 to accomodate from identifiers changing every
-                    // new access to the page containg the form. Like logonform123 , loginform a2s
+                    // HJW changed 12 january 2013 to accommodate from identifiers changing every
+                    // new access to the page containing the form. Like logonform123 , loginform a2s
                     // etc.
 
                     do {

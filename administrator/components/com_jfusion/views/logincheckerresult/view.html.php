@@ -142,7 +142,6 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 	 */
 	function getAuth($credentials, $options)
 	{
-		global $jfusionDebug;
 		/**
 		 * Launch Authentication Plugin Code
 		 */
@@ -251,7 +250,8 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 
 					$result = new stdClass;
 					$result->result = $results;
-					$result->debug = $jfusionDebug;
+					$result->debug = JFusionFactory::getDebugger()->get();
+
 					$this->auth_results[$plugin_name] = $result;
 				}
 			}

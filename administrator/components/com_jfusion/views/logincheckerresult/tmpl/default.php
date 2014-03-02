@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 //please support JFusion
 echo JFusionFunctionAdmin::getDonationBanner();
 
-global $jfusionDebug;
+$joomlaid = JFusionFactory::getDebugger()->get('joomlaid');
 
 /**
  * Output information about the server for future support queries
@@ -29,8 +29,8 @@ global $jfusionDebug;
 	    <form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 	        <input type="hidden" name="show_unsensored" value="<?php echo $this->options['show_unsensored']; ?>" />
 	        <input type="hidden" name="task" value="logoutcheckerresult" />
-			<?php if (!empty($jfusionDebug['joomlaid'])) : ?>
-	        <input type="hidden" name="joomlaid" value="<?php echo $jfusionDebug['joomlaid']; ?>"/>
+			<?php if ($joomlaid) : ?>
+	        <input type="hidden" name="joomlaid" value="<?php echo $joomlaid; ?>"/>
 			<?php endif; ?>
 
 			<?php

@@ -148,7 +148,7 @@ CSS;
 	 * @return string a HTML-Code Snippet (e.g. to be Viewed in a Browser)
 	 ** ************************
 	 */
-	public static function get($arr, $start = true, $style = null) {
+	public static function getHtml($arr, $start = true, $style = null) {
 		$schema = 0;
 		$str = '';
 		$name = '';
@@ -213,7 +213,7 @@ CSS;
 					}
 					$str .= '<tr>';
 					$str .= '<td class="' . $keyClass . '" ' . $onClick . ' style="' . $style . '">' . static::decorateValue($key) . '</td>';
-					$str .= '<td class="value" style="' . $style . '">' . static::get($value, false, $style) . '</td>';
+					$str .= '<td class="value" style="' . $style . '">' . static::getHtml($value, false, $style) . '</td>';
 					$str .= '</tr>';
 					$style = $temp;
 				}
@@ -302,8 +302,8 @@ CSS;
 
 	/**
 	 *    Checks if an array is one-dimensional, i.e. if no one of the values is an array or abject again
-	 *    The public version of this function is in arrayfunc, this here is just to use by debug::get
-	 *    To avoid that the basic methods debug::get and debug::show have dependencies of other classes
+	 *    The public version of this function is in arrayfunc, this here is just to use by debug::getHtml
+	 *    To avoid that the basic methods debug::getHtml and debug::show have dependencies of other classes
 	 *
 	 *    @param array|object $arr: the array to check
 	 *
@@ -324,7 +324,7 @@ CSS;
 		return $result;
 	}
 	/**
-	 * Same as debug::get, but prints the created HTML-Code directly to the Standard Output.
+	 * Same as debug::getHtml, but prints the created HTML-Code directly to the Standard Output.
 	 * NOTE: This is the one and only debuging Tool!!
 	 *
 	 * @param mixed $arr the PHP-Variable to look in
@@ -333,13 +333,12 @@ CSS;
 	 * @return void
 	 */
 	public static function show($arr, $title = false) {
-		print (static::get($arr, $title));
+		print(static::getHtml($arr, $title));
 		//flush();
-
 	}
 
 	/**
-	 *    Prepares Values to be used in debug::show / debug::get used to indicate a values type
+	 *    Prepares Values to be used in debug::show / debug::getHtml used to indicate a values type
 	 *    - Strings will be
 	 *        - in double-quotes if they are empty (to see something)
 	 *        - Normal if not empty
