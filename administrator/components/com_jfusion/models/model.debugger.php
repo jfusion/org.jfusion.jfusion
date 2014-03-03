@@ -338,8 +338,7 @@ HTML;
 	 * render the debugging info as HTML-Code directly to the Standard Output.
 	 *
 	 * @param string|null $key
-	 *
-	 * @param bool        $loadresources
+	 * @param bool $loadresources
 	 *
 	 * @return void
 	 */
@@ -350,8 +349,7 @@ HTML;
 
 	/**
 	 * @param string|null $key
-	 *
-	 * @param bool        $loadresources
+	 * @param bool $loadresources
 	 *
 	 * @return string
 	 */

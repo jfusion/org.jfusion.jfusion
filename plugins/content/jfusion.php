@@ -571,7 +571,7 @@ class plgContentJfusion extends JPlugin
 	 */
 	public function renderDebugOutput()
 	{
-		$debug_contents = '';
+		$html = '';
 		if ($this->params->get('debug', 0)) {
 			$debugger = JFusionFactory::getDebugger('jfusion-content-plugin');
 			$debugger->reset($this->helper->debug);
