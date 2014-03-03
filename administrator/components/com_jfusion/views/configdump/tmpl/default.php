@@ -44,12 +44,14 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 			</tr>
 			<tr>
 				<td>
-					<input id="filter" type="checkbox" <?php echo $filter; ?> name="filter" value="true" /> <label for="filter"><?php echo JText::_('CONFIGDUMP_FILTER'); ?></label>
+					<input id="filter" type="checkbox" <?php echo $filter; ?> name="filter" value="true" />
+					<label for="filter" style="display: inline;"><?php echo JText::_('CONFIGDUMP_FILTER'); ?></label>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<input id="show" type="checkbox" <?php echo $show; ?> name="show" value="true" /> <label for="show"><?php echo JText::_('CONFIGDUMP_SHOW'); ?></label>
+					<input id="show" type="checkbox" <?php echo $show; ?> name="show" value="true" />
+					<label for="show" style="display: inline;"><?php echo JText::_('CONFIGDUMP_SHOW'); ?></label>
 				</td>
 			</tr>
 		</table>
