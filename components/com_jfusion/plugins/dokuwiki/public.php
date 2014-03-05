@@ -155,15 +155,15 @@ class JFusionPublic_dokuwiki extends JFusionPublic
         $regex_body = array();
         $replace_body = array();
         $callback_body = array();
-        $source_url = $this->params->get('source_url');
-        $doku_path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
-        $doku_path = preg_replace('#//+#', '/', '/' . $doku_path . '/');
+
+	    $uri = new JUri($data->integratedURL);
+	    $path = $uri->getPath();
         
         $regex_body[] = '#(href|action|src)=["\']' . preg_quote($data->integratedURL, '#') . '(.*?)["\']#mS';
         $replace_body[] = '$1="/$2"';
         $callback_body[] = '';
         
-        $regex_body[] = '#(href|action|src)=["\']' . preg_quote($doku_path, '#') . '(.*?)["\']#mS';
+        $regex_body[] = '#(href|action|src)=["\']' . preg_quote($path, '#') . '(.*?)["\']#mS';
         $replace_body[] = '$1="/$2"';
         $callback_body[] = '';
         
@@ -215,14 +215,12 @@ class JFusionPublic_dokuwiki extends JFusionPublic
             $regex_header = array();
             $replace_header = array();
             /*
-            $source_url = $this->params->get('source_url');
-
-            $doku_path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
-            $doku_path = preg_replace('#//+#', '/', '/' . $doku_path . '/');
+	        $uri = new JUri($data->integratedURL);
+	        $path = $uri->getPath();
 
             $regex_header[]    = '#(href|src)=["\']'.preg_quote($data->integratedURL, '#').'(.*?)["\']#mS';
             $replace_header[]    = '$1="/$2"';
-            $regex_header[]    = '#(href|src)=["\']'.preg_quote($doku_path, '#').'(.*?)["\']#mS';
+            $regex_header[]    = '#(href|src)=["\']'.preg_quote($path, '#').'(.*?)["\']#mS';
             $replace_header[]    = '$1="/$2"';
 
             //convert relative links into absolute links

@@ -34,8 +34,9 @@ class JFusionPublic_mediawiki extends JFusionPublic {
 	    $regex_body		= array();
 	    $replace_body	= array();
 
+		$uri = new JUri($data->integratedURL);
 		$regex_body[]	= '#addButton\("/(.*?)"#mS';
-		$replace_body[]	= 'addButton("' . $data->integratedURL . '$1"';
+		$replace_body[]	= 'addButton("' . $uri->toString(array('scheme', 'host')) . '/$1"';
 
 	    $data->body = preg_replace($regex_body, $replace_body, $data->body);
 	}
