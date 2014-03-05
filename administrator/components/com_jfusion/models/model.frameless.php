@@ -284,7 +284,7 @@ class JFusionFrameless {
 
 				$pathway = $JFusionPlugin->getPathWay();
 				if (is_array($pathway)) {
-					$breadcrumbs = & $mainframe->getPathWay();
+					$breadcrumbs = $mainframe->getPathWay();
 					foreach ($pathway as $path) {
 						$breadcrumbs->addItem($path->title, JFusionFunction::routeURL($path->url, JFactory::getApplication()->input->getInt('Itemid')));
 					}
@@ -294,8 +294,6 @@ class JFusionFrameless {
 			// Output the body
 			if (isset($data->body)) {
 				$JFusionPlugin->parseCSS($data, $data->body, true);
-
-				static::parseBody($data);
 
 				// parse the URL's'
 				$JFusionPlugin->parseBody($data);
@@ -315,7 +313,7 @@ class JFusionFrameless {
 	 * @param $buffer
 	 * @return string
 	 */
-	function parseEncoding($buffer) {
+	public static function parseEncoding($buffer) {
 		if (preg_match('#<meta.*?content="(.*?); charset=(.*?)".*?/>#isS', $buffer, $matches)) {
 			if (stripos($matches[1], 'text/html') !== false && stripos($matches[2], 'utf-8') === false ) {
 				foreach(mb_list_encodings() as $chr) {
@@ -326,44 +324,5 @@ class JFusionFrameless {
 			}
 		}
 		return $buffer;
-	}
-
-	/**
-	 * @param $data
-	 * @return mixed
-	 */
-	function parseBody(&$data) {
-		if ( !empty($data->bodyextract) || !empty($data->bodyremove) ) {
-			/*
-			require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'simple_html_dom.php');
-			$html = str_get_html($data->body);
-
-			if (!empty($data->bodyremove)) {
-				$extract = explode(';', $data->bodyremove);
-				foreach ($extract as $value) {
-					$elements = $html->find(trim($value));
-					if ($elements) {
-						foreach ($elements as $element) {
-							$element->outertext = '';
-						}
-					}
-				}
-			}
-			if ( !empty($data->bodyextract) ) {
-				$extract = explode(';', $data->bodyextract);
-
-				foreach ($extract as $value) {
-					$elements = $html->find(trim($value));
-					if ($elements) {
-						foreach($elements as $element) {
-							$data->body = $element->outertext();
-							return;
-						}
-					}
-				}
-			}
-			$data->body = $html->outertext();
-			*/
-		}
 	}
 }
