@@ -222,8 +222,7 @@ class JFusionUser
                     $existinguser->password_clear = $userinfo->password_clear;
                     //check if the password needs to be updated
                     $model = JFusionFactory::getAuth($this->getJname());
-                    $testcrypt = $model->generateEncryptedPassword($existinguser);
-                    if ($testcrypt != $existinguser->password) {
+                    if (!$model->checkPassword($existinguser)) {
                         $this->updatePassword($userinfo, $existinguser, $status);
                         $changed = true;
                     } else {

@@ -41,4 +41,29 @@ class JFusionAuth_joomla_ext extends JFusionAuth {
     function generateEncryptedPassword($userinfo) {
         return JFusionJplugin::generateEncryptedPassword($userinfo);
     }
+
+	/**
+	 * used by framework to ensure a password test
+	 *
+	 * @param object $userinfo userdata object containing the userdata
+	 *
+	 * @return boolean
+	 */
+	function checkPassword($userinfo) {
+		$match = false;
+
+		// If we are using phpass
+		if (strpos($userinfo->password, '$P$') === 0)
+		{
+			// Use PHPass's portable hashes with a cost of 10.
+			$phpass = new PasswordHash(10, true);
+
+			$match = $phpass->CheckPassword($userinfo->password_clear, $userinfo->password);
+		} else {
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
+
+			$match = $this->comparePassword($userinfo->password, $testcrypt);
+		}
+		return $match;
+	}
 }

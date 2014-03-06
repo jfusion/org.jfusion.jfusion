@@ -42,10 +42,76 @@ class JFusionJplugin
      */
     public static function generateEncryptedPassword($userinfo)
     {
-        jimport('joomla.user.helper');
-        $crypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
+	    if (class_exists('PasswordHash')) {
+		    // Use PHPass's portable hashes with a cost of 10.
+		    $phpass = new PasswordHash(10, true);
+
+		    $crypt = $phpass->HashPassword($userinfo->password_clear);
+	    } else {
+		    jimport('joomla.user.helper');
+		    $crypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
+	    }
         return $crypt;
     }
+
+	/**
+	 * used by framework to ensure a password test
+	 *
+	 * @param object $userinfo userdata object containing the userdata
+	 *
+	 * @return boolean
+	 */
+	public static function checkPassword($userinfo) {
+		$match = false;
+
+		// If we are using phpass
+		if (strpos($userinfo->password, '$P$') === 0)
+		{
+			// Use PHPass's portable hashes with a cost of 10.
+			$phpass = new PasswordHash(10, true);
+
+			$match = $phpass->CheckPassword($userinfo->password_clear, $userinfo->password);
+		} else {
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
+
+			$match = static::timingSafeCompare($userinfo->password, $testcrypt);
+		}
+		return $match;
+	}
+
+	/**
+	 * A timing safe comparison method. This defeats hacking
+	 * attempts that use timing based attack vectors.
+	 *
+	 * @param   string  $known    A known string to check against.
+	 * @param   string  $unknown  An unknown string to check.
+	 *
+	 * @return  boolean  True if the two strings are exactly the same.
+	 *
+	 * @since   3.2
+	 */
+	public static function timingSafeCompare($known, $unknown)
+	{
+		// Prevent issues if string length is 0
+		$known .= chr(0);
+		$unknown .= chr(0);
+
+		$knownLength = strlen($known);
+		$unknownLength = strlen($unknown);
+
+		// Set the result to the difference between the lengths
+		$result = $knownLength - $unknownLength;
+
+		// Note that we ALWAYS iterate over the user-supplied length to prevent leaking length info.
+		for ($i = 0; $i < $unknownLength; $i++)
+		{
+			// Using % here is a trick to prevent notices. It's safe, since if the lengths are different, $result is already non-0
+			$result |= (ord($known[$i % $knownLength]) ^ ord($unknown[$i]));
+		}
+
+		// They are only identical strings if $result is exactly 0...
+		return $result === 0;
+	}
 
     /**
      * returns the name of user table of integrated software
@@ -687,14 +753,12 @@ class JFusionJplugin
         	}
             //split up the password if it contains a salt
             //note we cannot use explode as a salt from another software may contain a colon which messes Joomla up
-            if (strpos($result->password, ':') !== false) {
-                $saltStart = strpos($result->password, ':');
-                $result->password_salt = substr($result->password, $saltStart + 1);
-                $result->password = substr($result->password, 0, $saltStart);
-            } else {
-                //prevent php notices
-                $result->password_salt = '';
-            }
+
+	        $result->password_salt = null;
+	        if (strpos($result->password, ':') !== false) {
+		        list($result->password, $result->password_salt) = explode(':', $result->password, 2);
+	        }
+
             // Get the language of the user and store it as variable in the user object
             $user_params = new JParameter($result->params);
             $JLang = JFactory::getLanguage();
@@ -771,10 +835,19 @@ class JFusionJplugin
     public static function updatePassword($userinfo, &$existinguser, &$status, $jname)
     {
         $db = JFusionFactory::getDatabase($jname);
-	    jimport( 'joomla.user.helper' );
-        $userinfo->password_salt = JUserHelper::genRandomPassword(32);
-        $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
-        $new_password = $userinfo->password . ':' . $userinfo->password_salt;
+
+	    if (class_exists('PasswordHash')) {
+		    // Use PHPass's portable hashes with a cost of 10.
+		    $phpass = new PasswordHash(10, true);
+
+		    $new_password = $existinguser->password = $phpass->HashPassword($userinfo->password_clear);
+	    } else {
+		    jimport( 'joomla.user.helper' );
+		    $existinguser->password_salt = JUserHelper::genRandomPassword(32);
+		    $existinguser->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
+		    $new_password = $existinguser->password . ':' . $existinguser->password_salt;
+	    }
+
         $query = 'UPDATE #__users SET password =' . $db->Quote($new_password) . ' WHERE id =' . $existinguser->userid;
         $db->setQuery($query);
         if (!$db->query()) {
@@ -988,10 +1061,7 @@ class JFusionJplugin
                 $status['debug'][] = JText::_('USERNAME') . ':' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
                 //create a Joomla password hash if password_clear is available
                 if (!empty($userinfo->password_clear)) {
-	                jimport( 'joomla.user.helper' );
-                    $userinfo->password_salt = JUserHelper::genRandomPassword(32);
-                    $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
-                    $password = $userinfo->password . ':' . $userinfo->password_salt;
+	                $password = static::generateEncryptedPassword($userinfo);
                 } else {
                     //if password_clear is not available, store hashed password as is and also store the salt if present
                     if (isset($userinfo->password_salt)) {
@@ -1185,9 +1255,8 @@ class JFusionJplugin
                     $existinguser->password_clear = $userinfo->password_clear;
                     //check if the password needs to be updated
                     $model = JFusionFactory::getAuth($jname);
-                    $testcrypt = $model->generateEncryptedPassword($existinguser);
                     //if the passwords are not the same or if Joomla salt has inherited a colon which will confuse Joomla without JFusion; generate a new password hash
-                    if ($testcrypt != $existinguser->password || strpos($existinguser->password_salt, ':') !== false) {
+                    if (!$model->checkPassword($existinguser)) {
                         JFusionJplugin::updatePassword($userinfo, $existinguser, $status, $jname);
                         $changed = true;
                     } else {
