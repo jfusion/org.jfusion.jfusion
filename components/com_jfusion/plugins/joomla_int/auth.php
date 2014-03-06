@@ -49,22 +49,14 @@ class JFusionAuth_joomla_int extends JFusionAuth
 	 */
 	public function generateEncryptedPassword($userinfo)
 	{
-		$testcrypt = null;
-		if (substr($userinfo->password, 0, 4) == '$2y$') {
-			// BCrypt passwords are always 60 characters, but it is possible that salt is appended although non standard.
-			$password60 = substr($userinfo->password, 0, 60);
+		if (class_exists('PasswordHash'))
+		{
+			// Use PHPass's portable hashes with a cost of 10.
+			$phpass = new PasswordHash(10, true);
 
-			if (JCrypt::hasStrongPasswordSupport()) {
-				$testcrypt = password_verify($userinfo->password_clear, $password60);
-			}
+			$testcrypt = $phpass->HashPassword($userinfo->password_clear);
 		} else {
-			if (substr($userinfo->password, 0, 8) == '{SHA256}') {
-				$hashtype = 'sha256';
-			} else {
-				$hashtype = 'md5-hex';
-			}
-			jimport('joomla.user.helper');
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, $hashtype, false);
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
 		}
 		return $testcrypt;
 	}
@@ -77,28 +69,81 @@ class JFusionAuth_joomla_int extends JFusionAuth
 	 * @return boolean
 	 */
 	function checkPassword($userinfo) {
+		$rehash = false;
 		$match = false;
-		if (substr($userinfo->password, 0, 4) == '$2y$') {
-			// BCrypt passwords are always 60 characters, but it is possible that salt is appended although non standard.
-			$password60 = substr($userinfo->password, 0, 60);
 
-			if (JCrypt::hasStrongPasswordSupport()) {
-				$match = password_verify($userinfo->password_clear, $password60);
-			}
-		} else {
-			if (substr($userinfo->password, 0, 8) == '{SHA256}') {
-				$hashtype = 'sha256';
-			} else {
-				$hashtype = 'md5-hex';
-			}
-			jimport('joomla.user.helper');
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, $hashtype, false);
+		// If we are using phpass
+		if (strpos($userinfo->password, '$P$') === 0)
+		{
+			// Use PHPass's portable hashes with a cost of 10.
+			$phpass = new PasswordHash(10, true);
 
+			$match = $phpass->CheckPassword($userinfo->password_clear, $userinfo->password);
+		}
+		elseif ($userinfo->password[0] == '$')
+		{
+			// JCrypt::hasStrongPasswordSupport() includes a fallback for us in the worst case
+			JCrypt::hasStrongPasswordSupport();
+			$match = password_verify($userinfo->password_clear, $userinfo->password);
+
+			// Uncomment this line if we actually move to bcrypt.
+			// $rehash = password_needs_rehash($hash, PASSWORD_DEFAULT);
+			$rehash = true;
+		}
+		elseif (substr($userinfo->password, 0, 8) == '{SHA256}')
+		{
 			// Check the password
-			if ($userinfo->password == $testcrypt) {
-				$match = true;
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'sha256', true);
+
+			$match = $this->comparePassword($userinfo->password, $testcrypt);
+
+			$rehash = true;
+		}
+		else
+		{
+			$rehash = true;
+
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex', false);
+
+			$match = $this->comparePassword($userinfo->password, $testcrypt);
+		}
+
+		// If we have a match and rehash = true, rehash the password with the current algorithm.
+		if ($match && $rehash)
+		{
+			$user = JFusionFactory::getUser($this->getJname());
+			$old = $user->getUser($userinfo);
+			if ($old) {
+				$status = array('error' => array(), 'debug' => array());
+				$user->updatePassword($userinfo, $old, $status);
 			}
 		}
 		return $match;
+	}
+
+	/**
+	 * Hashes a password using the current encryption.
+	 *
+	 * @param   object  $userinfo  The plaintext password to encrypt.
+	 *
+	 * @return  string  The encrypted password.
+	 *
+	 * @since   3.2.1
+	 */
+	public function hashPassword($userinfo)
+	{
+		if (class_exists('PasswordHash'))
+		{
+			// Use PHPass's portable hashes with a cost of 10.
+			$phpass = new PasswordHash(10, true);
+
+			$password = $phpass->HashPassword($userinfo->password_clear);
+		} else {
+			jimport('joomla.user.helper');
+			$userinfo->password_salt = JUserHelper::genRandomPassword(32);
+			$userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex');
+			$password = $userinfo->password . ':' . $userinfo->password_salt;
+		}
+		return $password;
 	}
 }

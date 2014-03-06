@@ -100,12 +100,6 @@ class plgAuthenticationjfusion extends JPlugin
 					    $userinfo->password_clear = $credentials['password'];
 					    //check the master plugin for a valid password
 					    $model = JFusionFactory::getAuth($master->name);
-					    $testcrypt = $model->generateEncryptedPassword($userinfo);
-					    if (isset($options['show_unsensored'])) {
-						    $debugger->add('debug', $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . $testcrypt . ' vs ' . $userinfo->password);
-					    } else {
-						    $debugger->add('debug', $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
-					    }
 
 					    if ($model->checkPassword($userinfo)) {
 						    //found a match
@@ -116,6 +110,13 @@ class plgAuthenticationjfusion extends JPlugin
 						    $response->error_message = '';
 						    $response->userinfo = $userinfo;
 					    } else {
+						    $testcrypt = $model->generateEncryptedPassword($userinfo);
+						    if (isset($options['show_unsensored'])) {
+							    $debugger->add('debug', $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . $testcrypt . ' vs ' . $userinfo->password);
+						    } else {
+							    $debugger->add('debug', $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
+						    }
+
 						    //otherwise check the other authentication models
 						    $query = $db->getQuery(true)
 							    ->select('name')
@@ -139,12 +140,6 @@ class plgAuthenticationjfusion extends JPlugin
 							    } else {
 								    $testcrypt = $model->generateEncryptedPassword($userinfo);
 								    $check = $model->checkPassword($userinfo);
-							    }
-
-							    if (isset($options['show_unsensored'])) {
-								    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  $testcrypt . ' vs ' . $userinfo->password);
-							    } else {
-								    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
 							    }
 
 							    if ($check) {
@@ -171,6 +166,12 @@ class plgAuthenticationjfusion extends JPlugin
 									    $status['debug'][] = $auth_model->name . ' ' . JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
 								    }
 								    return;
+							    } else {
+								    if (isset($options['show_unsensored'])) {
+									    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  $testcrypt . ' vs ' . $userinfo->password);
+								    } else {
+									    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
+								    }
 							    }
 						    }
 

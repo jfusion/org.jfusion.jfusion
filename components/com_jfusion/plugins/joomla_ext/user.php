@@ -99,7 +99,7 @@ class JFusionUser_joomla_ext extends JFusionUser
 					$result->password = substr($result->password, 0, 60);
 				} else {
 					if (strpos($result->password, ':') !== false) {
-						list($result->password, $result->password_salt) = explode(':', $result->password);
+						list($result->password, $result->password_salt) = explode(':', $result->password, 2);
 					}
 				}
 
@@ -236,12 +236,18 @@ class JFusionUser_joomla_ext extends JFusionUser
 					$status['debug'][] = JText::_('USERNAME') . ': ' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ': ' . $username_clean;
 
 					//create a Joomla password hash if password_clear is available
-					$userinfo->password_salt = JUserHelper::genRandomPassword(32);
 					if (!empty($userinfo->password_clear)) {
-						jimport('joomla.user.helper');
-						$userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
+						/**
+						 * @ignore
+						 * @var $auth JFusionAuth_joomla_ext
+						 */
+						$auth = JFusionFactory::getAuth($this->getJname());
+						$password = $auth->hashPassword($userinfo);
+					}  else if (isset($userinfo->password_salt)) {
+						$password = $userinfo->password . ':' . $userinfo->password_salt;
+					} else {
+						$password = $userinfo->password;
 					}
-					$password = $userinfo->password . ':' . $userinfo->password_salt;
 
 					//find out what usergroup the new user should have
 					//the $userinfo object was probably reconstructed in the user plugin and autoregister = 1
@@ -449,21 +455,24 @@ class JFusionUser_joomla_ext extends JFusionUser
 				throw new Exception(JText::_('JLIB_USER_ERROR_PASSWORD_TOO_LONG'));
 			}
 
+			/**
+			 * @ignore
+			 * @var $auth JFusionAuth_joomla_ext
+			 */
+			$auth = JFusionFactory::getAuth($this->getJname());
+			$password = $auth->hashPassword($userinfo);
+
 			$db = JFusionFactory::getDatabase($this->getJname());
-			jimport('joomla.user.helper');
-			$existinguser->password_salt = JUserHelper::genRandomPassword(32);
-			$existinguser->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $existinguser->password_salt);
-			$new_password = $existinguser->password . ':' . $existinguser->password_salt;
 
 			$query = $db->getQuery(true)
 				->update('#__users')
-				->set('password = ' . $db->quote($new_password))
+				->set('password = ' . $db->quote($password))
 				->where('id = ' . $db->quote($existinguser->userid));
 
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($password, 0, 6) . '********';
 		} catch (Exception $e) {
 			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $e->getMessage();
 		}
