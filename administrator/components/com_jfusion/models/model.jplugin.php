@@ -80,6 +80,26 @@ class JFusionJplugin
 	}
 
 	/**
+	 * Hashes a password using the current encryption.
+	 *
+	 * @param   object  $userinfo  The plaintext password to encrypt.
+	 *
+	 * @return  string  The encrypted password.
+	 *
+	 * @since   3.2.1
+	 */
+	public static function hashPassword($userinfo) {
+		jimport('joomla.user.helper');
+		if (jimport('phpass.passwordhash')) {
+			$password = JUserHelper::hashPassword($userinfo->password_clear);
+		} else {
+			$salt = JUserHelper::genRandomPassword(32);
+			$password = JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'md5-hex') . ':' . $salt;
+		}
+		return $password;
+	}
+
+	/**
 	 * A timing safe comparison method. This defeats hacking
 	 * attempts that use timing based attack vectors.
 	 *
@@ -836,19 +856,9 @@ class JFusionJplugin
     {
         $db = JFusionFactory::getDatabase($jname);
 
-	    if (class_exists('PasswordHash')) {
-		    // Use PHPass's portable hashes with a cost of 10.
-		    $phpass = new PasswordHash(10, true);
+	    $password = static::hashPassword($userinfo);
 
-		    $new_password = $existinguser->password = $phpass->HashPassword($userinfo->password_clear);
-	    } else {
-		    jimport( 'joomla.user.helper' );
-		    $existinguser->password_salt = JUserHelper::genRandomPassword(32);
-		    $existinguser->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
-		    $new_password = $existinguser->password . ':' . $existinguser->password_salt;
-	    }
-
-        $query = 'UPDATE #__users SET password =' . $db->Quote($new_password) . ' WHERE id =' . $existinguser->userid;
+        $query = 'UPDATE #__users SET password =' . $db->Quote($password) . ' WHERE id =' . $existinguser->userid;
         $db->setQuery($query);
         if (!$db->query()) {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
@@ -1061,7 +1071,7 @@ class JFusionJplugin
                 $status['debug'][] = JText::_('USERNAME') . ':' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
                 //create a Joomla password hash if password_clear is available
                 if (!empty($userinfo->password_clear)) {
-	                $password = static::generateEncryptedPassword($userinfo);
+	                $password = static::hashPassword($userinfo);
                 } else {
                     //if password_clear is not available, store hashed password as is and also store the salt if present
                     if (isset($userinfo->password_salt)) {
