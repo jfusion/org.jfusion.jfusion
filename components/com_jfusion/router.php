@@ -100,7 +100,7 @@ function jfusionParseRoute($segments)
                     if (strpos($parts[0], '[')) {
                         //prepare the variable
                         $array_parts = explode('[', $parts[0]);
-                        $array_index = substr_replace($array_parts[1], "", -1);
+                        $array_index = substr_replace($array_parts[1], '', -1);
                         //set the variable
                         if (empty($vars[$array_parts[0]])) {
                             $vars[$array_parts[0]] = array();
