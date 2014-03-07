@@ -119,6 +119,11 @@ function jfusionParseRoute($segments)
     $menu = JMenu::getInstance('site');
     $item = $menu->getActive();
     $vars += $item->query;
+
+	foreach ($vars as $key => $var) {
+		$_GET[$key] = $var;
+	}
+
 	if ($vars['view'] == 'plugin') {
 	    $JFusionPluginParam = $item->params->get('JFusionPluginParam');
 	    if (empty($JFusionPluginParam)) {
