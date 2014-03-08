@@ -50,27 +50,11 @@ class JFusionDokuWikiHook
      * @param object $param
      */
     function _ACTION_SHOW_REDIRECT(&$event, $param) {
-        /*
-        $mainframe = JFactory::getApplication('site');
-
-        //var_dump($mainframe);
-        //die();
-        //        $mainframe = JFactory::getApplication('site');
-        $my = JFactory::getUser();
-        //        echo $mainframe->getClientId();
-
-        //        var_dump($mainframe);
-
-        //        echo $my->get('id');
-        // logout any joomla users
-        $mainframe->logout();
-        //        die();
-        // clean up session
-        $session = JFactory::getSession();
-        $session->close();
-        */
         $event->data['id'] = str_replace(':', ';', $event->data['id']);
-        $baseURL = JFusionFunction::getPluginURL(JFactory::getApplication()->input->getInt('Itemid'), false);
+
+	    $Itemid = JFactory::getApplication('site')->getMenu()->getActive()->id;
+
+        $baseURL = JFusionFunction::getPluginURL($Itemid, false);
         if (is_array($event->data['preact'])) {
             $q = 'doku.php?id=' . $event->data['id'];
         } else {
@@ -84,7 +68,7 @@ class JFusionDokuWikiHook
             global $jname;
             $sefmode = JFusionFactory::getParams($jname)->get('sefmode');
             if ($sefmode == 1) {
-                $url = JFusionFunction::routeURL($q, JFactory::getApplication()->input->getInt('Itemid'));
+                $url = JFusionFunction::routeURL($q, $Itemid);
             } else {
                 //we can just append both variables
                 $url = $baseURL . $q;

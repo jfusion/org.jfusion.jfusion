@@ -316,7 +316,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic
      * @param $data
      */
     function replaceForm(&$data) {
-        $pattern = '#<form(.*?)action=["\'](.\S*?)["\'](.*?)>(.*?)</form>#mSsi';
+        $pattern = '#<form(.*?)action=["\'](.*?)["\'](.*?)>(.*?)</form>#mSsi';
         $getData = '';
         if (JFactory::getApplication()->input->getInt('Itemid')) $getData.= '<input name="Itemid" value="' . JFactory::getApplication()->input->getInt('Itemid') . '" type="hidden"/>';
         if (JFactory::getApplication()->input->get('option')) $getData.= '<input name="option" value="' . JFactory::getApplication()->input->get('option') . '" type="hidden"/>';
