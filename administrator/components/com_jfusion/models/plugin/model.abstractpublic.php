@@ -32,7 +32,14 @@ class JFusionPublic extends JFusionPlugin
 {
 	var $helper;
 
+	/**
+	 * @var $data stdClass
+	 */
     var $data;
+
+	private $cookies = array();
+	private $protected = array('format');
+	private $curlLocation = null;
 
 	/**
 	 *
@@ -48,15 +55,14 @@ class JFusionPublic extends JFusionPlugin
      * gets the visual html output from the plugin
      *
      * @param object &$data object containing all frameless data
+     *
      * @return void
      */
     function getBuffer(&$data)
     {
-        require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curlframeless.php');
+	    trigger_error('&$data deprecreated use $this->data instead', E_USER_DEPRECATED);
+        $status = $this->curlFrameless($data);
 
-        $frameless = new JFusionCurlFrameless();
-
-        $status = $frameless->display($data);
         if ( isset($data->location) ) {
             $location = str_replace($data->integratedURL, '', $data->location);
 	        $location = $this->fixUrl(array(1 => $location));
@@ -746,12 +752,6 @@ HTML;
             }
         }
         unset($url_variables['option'], $url_variables['jfile'], $url_variables['Itemid']);
-        if(!empty($url_variables['mode'])) {
-            if ($url_variables['mode'] == 'topic_view') {
-                $url_variables['t'] = JFactory::getApplication()->input->get('t');
-                $url_variables['f'] = JFactory::getApplication()->input->get('f');
-            }
-        }
 
         //add any other variables
         if (is_array($url_variables)) {
@@ -1048,4 +1048,241 @@ HTML;
 
         return $source_url . $wrap;
     }
+
+	/**
+	 * @param $data
+	 * @return array
+	 */
+	private function curlFrameless(&$data) {
+		require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.cookie.php');
+
+		$status = array('error' => array(), 'debug' => array());
+
+		$url = $data->source_url;
+
+		$config = JFactory::getConfig();
+		$sefenabled = $config->get('sef');
+		if(!empty($sefenabled)) {
+			$uri = JURI::getInstance();
+			$current = $uri->toString(array('path', 'query'));
+
+			$menu = JMenu::getInstance('site');
+			$item = $menu->getActive();
+			$index = '/' . $item->route;
+			$pos = strpos($current, $index);
+			if ($pos !== false) {
+				$current = substr($current, $pos+strlen($index));
+			}
+			$current = ltrim($current , '/');
+		} else {
+			$current = JFactory::getApplication()->input->get('jfile') . '?';
+			$current .= $this->curlFramelessBuildUrl('GET');
+		}
+
+		$url .= $current;
+		$post = $this->curlFramelessBuildUrl('POST');
+
+		$files = $_FILES;
+		$filepath = array();
+		if($post) {
+			foreach($files as $userfile=>$file) {
+				if (is_array($file)) {
+					if(is_array($file['name'])) {
+						foreach ($file['name'] as $key => $value) {
+							$name = $file['name'][$key];
+							$path = $file['tmp_name'][$key];
+							if ($name) {
+								$filepath[$key] = JPATH_ROOT . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $name;
+								rename($path, $filepath[$key]);
+								$post[$userfile . '[' . $key . ']'] = '@' . $filepath[$key];
+							}
+						}
+					} else {
+						$path = $file['tmp_name'];
+						$name = $file['name'];
+						$key = $path;
+						$filepath[$key] = JPATH_ROOT . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $name;
+						rename($path, $filepath[$key]);
+						$post[$userfile] = '@' . $filepath[$key];
+					}
+				}
+			}
+		}
+
+		$ch = curl_init($url);
+		if ($post) {
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+		} else {
+			curl_setopt($ch, CURLOPT_POST, 0);
+		}
+
+		if(!empty($data->httpauth) ) {
+			curl_setopt($ch,CURLOPT_USERPWD, $data->httpauth_username . ':' . $data->httpauth_password);
+
+			switch ($data->httpauth) {
+				case 'basic':
+					$data->httpauth = CURLAUTH_BASIC;
+					break;
+				case 'gssnegotiate':
+					$data->httpauth = CURLAUTH_GSSNEGOTIATE;
+					break;
+				case 'digest':
+					$data->httpauth = CURLAUTH_DIGEST;
+					break;
+				case 'ntlm':
+					$data->httpauth = CURLAUTH_NTLM;
+					break;
+				case 'anysafe':
+					$data->httpauth = CURLAUTH_ANYSAFE;
+					break;
+				case 'any':
+				default:
+					$data->httpauth = CURLAUTH_ANY;
+			}
+
+			curl_setopt($ch,CURLOPT_HTTPAUTH, $data->httpauth);
+		}
+
+		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+		$ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+		curl_setopt($ch, CURLOPT_REFERER, $ref);
+
+		$headers[] = 'X-Forwarded-For: ' . $_SERVER['REMOTE_ADDR'];
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+		curl_setopt($ch, CURLOPT_HEADERFUNCTION, array($this, 'curlFramelessReadHeader'));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
+		curl_setopt($ch, CURLOPT_FAILONERROR, 0);
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 2 );
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		$data->verifyhost = isset($data->verifyhost) ? $data->verifyhost : 2;
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $data->verifyhost);
+
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+
+		$_COOKIE['jfusionframeless'] = true;
+		curl_setopt($ch, CURLOPT_COOKIE, JFusionCookies::buildCookie());
+		unset($_COOKIE['jfusionframeless']);
+
+		$data->buffer = curl_exec($ch);
+
+		$this->curlFramelessProtectParams($data);
+
+		if ($this->curlLocation) {
+			$data->location = $this->curlLocation;
+		}
+
+		$data->cookie_domain = isset($data->cookie_domain) ? $data->cookie_domain : '';
+		$data->cookie_path = isset($data->cookie_path) ? $data->cookie_path : '';
+
+		$cookies = JFusionFactory::getCookies();
+		foreach ($this->cookies as $cookie) {
+			$cookies->addCookie($cookie->name, urldecode($cookie->value), $cookie->expires, $data->cookie_path, $data->cookie_domain);
+		}
+
+		if (curl_error($ch)) {
+			$status['error'][] = JText::_('CURL_ERROR_MSG') . ': ' . curl_error($ch) . ' URL:' . $url;
+			curl_close($ch);
+			return $status;
+		}
+
+		curl_close($ch);
+
+		if (count($filepath)) {
+			foreach($filepath as $value) {
+				unlink($value);
+			}
+		}
+		return $status;
+	}
+
+	/**
+	 * @param $ch
+	 * @param $string
+	 *
+	 * @return int
+	 */
+	public final function curlFramelessReadHeader($ch, $string) {
+		$length = strlen($string);
+		if(!strncmp($string, 'Location:', 9)) {
+			$this->curlLocation = trim(substr($string, 9, -1));
+		} else if(!strncmp($string, 'Set-Cookie:', 11)) {
+			$string = trim(substr($string, 11, -1));
+			$parts = explode(';', $string);
+
+			list($name, $value) = explode('=', $parts[0]);
+
+			$cookie = new stdClass;
+			$cookie->name = trim($name);
+			$cookie->value = trim($value);
+			$cookie->expires = 0;
+
+			if (isset($parts[1])) {
+				list($name, $value) = explode('=', $parts[1]);
+				if ($name == 'expires') {
+					$cookie->expires = strtotime($value);
+				}
+			}
+			$this->cookies[] = $cookie;
+		}
+		return $length;
+	}
+
+	/**
+	 * @param string $type
+	 * @return mixed|string
+	 */
+	private function curlFramelessBuildUrl($type = 'GET') {
+		if ($type == 'POST') {
+			$var = $_POST;
+		} else {
+			$var = $_GET;
+		}
+
+		foreach($this->protected as $name) {
+			$key = 'jfusion_' . $name;
+			if (isset($var[$key])) {
+				$var[$name] = $var[$key];
+				unset($var[$key]);
+			}
+		}
+
+		unset($var['Itemid'], $var['option'], $var['view'], $var['jFusion_Route'], $var['jfile']);
+		if ($type == 'POST') return $var;
+		return http_build_query($var);
+	}
+
+	/**
+	 * @param stdClass $data
+	 */
+	private function curlFramelessProtectParams(&$data) {
+		$regex_input = array();
+		$replace_input = array();
+
+		$uri = new JUri($data->source_url);
+
+		$search = array();
+		$search[] = preg_quote($uri->getPath(), '#');
+		$search[] = preg_quote($uri->toString(array('scheme', 'host', 'path')), '#');
+		$search[] = '(?!\w{0,10}://|\w{0,10}:|\/)';
+
+		foreach($this->protected as $name) {
+			$name = preg_quote($name , '#');
+			$regex_input[]	= '#<input([^<>]+name=["\'])(' . $name . '["\'][^<>]*)>#Si';
+			$replace_input[] = '<input$1jfusion_$2>';
+
+			foreach($search as $type) {
+				$regex_input[]	= '#<a([^<>]+href=["\']' . $type . '.*?[\?|\&|\&amp;])(' . $name . '.*?["\'][^<>]*)>#Si';
+				$replace_input[] = '<a$1jfusion_$2>';
+			}
+		}
+
+		foreach ($regex_input as $k => $v) {
+			//check if we need to use callback
+			$data->buffer = preg_replace($regex_input[$k], $replace_input[$k], $data->buffer);
+		}
+	}
 }

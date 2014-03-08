@@ -10,8 +10,6 @@
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
-//require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curlframeless.php');
-
 /**
  * JFusion Public Class for mediawiki 1.1.x
  * For detailed descriptions on these functions please check the model.abstractpublic.php

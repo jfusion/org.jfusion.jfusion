@@ -54,11 +54,10 @@ class JFusionAuth_joomla_ext extends JFusionAuth
 	 */
 	public function generateEncryptedPassword($userinfo)
 	{
-		jimport('joomla.user.helper');
 		if (jimport('phpass.passwordhash')) {
-			$testcrypt = JUserHelper::hashPassword($userinfo->password_clear);
+			$testcrypt = $this->helper->hashPassword($userinfo);
 		} else {
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex');
+			$testcrypt = $this->helper->getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex');
 		}
 		return $testcrypt;
 	}
@@ -90,7 +89,7 @@ class JFusionAuth_joomla_ext extends JFusionAuth
 			$rehash = true;
 		} elseif (substr($userinfo->password, 0, 8) == '{SHA256}') {
 			// Check the password
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'sha256', true);
+			$testcrypt = $this->helper->getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'sha256', true);
 
 			$match = $this->comparePassword($userinfo->password, $testcrypt);
 
@@ -98,7 +97,7 @@ class JFusionAuth_joomla_ext extends JFusionAuth
 		} else {
 			$rehash = true;
 
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex', false);
+			$testcrypt = $this->helper->getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex', false);
 
 			$match = $this->comparePassword($userinfo->password, $testcrypt);
 		}
@@ -126,12 +125,11 @@ class JFusionAuth_joomla_ext extends JFusionAuth
 	 */
 	public function hashPassword($userinfo)
 	{
-		jimport('joomla.user.helper');
 		if (jimport('phpass.passwordhash')) {
-			$password = JUserHelper::hashPassword($userinfo->password_clear);
+			$password = $this->helper->hashPassword($userinfo->password_clear);
 		} else {
-			$salt = JUserHelper::genRandomPassword(32);
-			$password = JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'md5-hex') . ':' . $salt;
+			$salt = $this->helper->genRandomPassword(32);
+			$password = $this->helper->getCryptedPassword($userinfo->password_clear, $salt, 'md5-hex') . ':' . $salt;
 		}
 		return $password;
 	}

@@ -232,6 +232,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
 
     function stopJoomla() {
         global $conf;
+	    session_write_close();
         //restore Dokuwiki cookie settings
         if (version_compare(PHP_VERSION, '5.2.0', '>')) {
             session_set_cookie_params(0, DOKU_REL, '', ($conf['securecookie'] && is_ssl()), true);
@@ -239,6 +240,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
             session_set_cookie_params(0, DOKU_REL, '', ($conf['securecookie'] && is_ssl()));
         }
         ini_set('session.save_handler', $this->session_save_handler);
+	    session_start();
     }
 
     /**

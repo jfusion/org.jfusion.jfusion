@@ -189,7 +189,7 @@ class JFusionCookies {
 	 *        3. 3 Delimeters in between key and value
 	 *        4. 4 Delimeters in between key-value pairs
 	 *
-	 * @see model.curl.php and model.curlframeless.php
+	 * @see model.curl.php
      *
      * @param array $array
      * @param string $delimeter
