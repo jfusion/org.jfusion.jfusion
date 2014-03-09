@@ -473,7 +473,7 @@ class JFusionFactory
 	 *
 	 * @return JFusionDebugger
 	 */
-	public static function &getDebugger($jname = 'jfusion-loginchecker')
+	public static function &getDebugger($jname)
 	{
 		static $instances;
 

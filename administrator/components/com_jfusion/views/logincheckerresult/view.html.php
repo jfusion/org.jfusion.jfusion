@@ -248,7 +248,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 
 					$result = new stdClass;
 					$result->result = $results;
-					$result->debug = JFusionFactory::getDebugger()->get();
+					$result->debug = JFusionFactory::getDebugger('jfusion-loginchecker')->get();
 
 					$this->auth_results[$plugin_name] = $result;
 				}

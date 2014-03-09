@@ -1148,6 +1148,7 @@ HTML;
 		$ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 		curl_setopt($ch, CURLOPT_REFERER, $ref);
 
+		$headers = array();
 		$headers[] = 'X-Forwarded-For: ' . $_SERVER['REMOTE_ADDR'];
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
@@ -1163,8 +1164,10 @@ HTML;
 
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 
+		$cookies = JFusionFactory::getCookies();
+
 		$_COOKIE['jfusionframeless'] = true;
-		curl_setopt($ch, CURLOPT_COOKIE, JFusionCookies::buildCookie());
+		curl_setopt($ch, CURLOPT_COOKIE, $cookies->buildCookie());
 		unset($_COOKIE['jfusionframeless']);
 
 		$data->buffer = curl_exec($ch);
@@ -1178,7 +1181,6 @@ HTML;
 		$data->cookie_domain = isset($data->cookie_domain) ? $data->cookie_domain : '';
 		$data->cookie_path = isset($data->cookie_path) ? $data->cookie_path : '';
 
-		$cookies = JFusionFactory::getCookies();
 		foreach ($this->cookies as $cookie) {
 			$cookies->addCookie($cookie->name, urldecode($cookie->value), $cookie->expires, $data->cookie_path, $data->cookie_domain);
 		}
@@ -1226,6 +1228,7 @@ HTML;
 					$cookie->expires = strtotime($value);
 				}
 			}
+
 			$this->cookies[] = $cookie;
 		}
 		return $length;

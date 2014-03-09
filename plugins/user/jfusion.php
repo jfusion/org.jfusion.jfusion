@@ -260,7 +260,7 @@ class plgUserJfusion extends JPlugin
 		    //php 5.3 does not allow plugins to contain pass by references
 		    //use a global for the login checker instead
 
-		    $debugger = JFusionFactory::getDebugger();
+		    $debugger = JFusionFactory::getDebugger('jfusion-loginchecker');
 		    $debugger->reset();
 		    $debugger->set('init', array());
 
@@ -576,7 +576,7 @@ class plgUserJfusion extends JPlugin
 	    ob_start();
 	    //logout from the JFusion plugins if done through frontend
 	    if (empty($options['clientid'][0])) {
-		    $debugger = JFusionFactory::getDebugger();
+		    $debugger = JFusionFactory::getDebugger('jfusion-loginchecker');
 
 		    //get the JFusion master
 		    $master = JFusionFunction::getMaster();

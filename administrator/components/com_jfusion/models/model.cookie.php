@@ -169,14 +169,14 @@ class JFusionCookies {
 	 * @param string $type
 	 * @return string or array
 	 */
-	public static function buildCookie($type = 'string') {
+	public function buildCookie($type = 'string') {
 		switch ($type) {
 			case 'array':
 				return $_COOKIE;
 				break;
 			case 'string':
 			default:
-				return static::implodeCookies($_COOKIE, ';');
+				return $this->implodeCookies($_COOKIE, ';');
 			break;
 		}
 	}
@@ -197,7 +197,7 @@ class JFusionCookies {
      *
      * @return string
 	 */
-	public static function implodeCookies($array, $delimeter, $keyssofar = '') {
+	public function implodeCookies($array, $delimeter, $keyssofar = '') {
 		$output = '';
 		foreach ($array as $key => $value) {
 			if (! is_array($value)) {
@@ -208,7 +208,7 @@ class JFusionCookies {
 			}
 			else {
 				if ($output != '') $output .= ' ';
-				$output .= self::implodeCookies($value, $delimeter, $key . $keyssofar);
+				$output .= $this->implodeCookies($value, $delimeter, $key . $keyssofar);
 			}
 		}
 		return $output;
