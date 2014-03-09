@@ -413,9 +413,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+		    $this->debugger->add('debug', JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage();
+		    $this->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
 	    }
 
     }
@@ -449,9 +449,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+
+		    $this->debugger->add('debug', JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
+		    $this->debugger->add('error', JText::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage());
 	    }
     }
 
@@ -466,7 +467,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    try {
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
-			    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+			    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		    } else {
 			    $usergroup = $usergroups[0];
 
@@ -514,7 +515,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+				    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			    }
 
 			    foreach($usergroup->groups as $group) {
@@ -537,7 +538,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+				    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			    }
 
 			    try {
@@ -550,7 +551,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+				    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			    }
 
 			    try {
@@ -562,7 +563,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+				    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			    }
 
 			    $query = $db->getQuery(true)
@@ -582,14 +583,14 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    $db->setQuery($query);
 						$db->execute();
 				    } catch (Exception $e) {
-					    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+					    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 				    }
 			    }
 			    //log the group change success
-			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroup->groups);
+			    $this->debugger->add('debug', JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroup->groups));
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+		    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 	    }
     }
 
@@ -650,9 +651,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 		    $db->insertObject('#__banlist', $ban);
 
-		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		    $this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+		    $this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
 	    }
     }
 
@@ -674,9 +675,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		    $this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+		    $this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
 	    }
     }
 
@@ -702,9 +703,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		    $this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+		    $this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
 	    }
     }
 
@@ -730,9 +731,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		    $this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+		    $this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
 	    }
     }
 
@@ -929,12 +930,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    }
 				    }
 				    //return the good news
-				    $status['debug'][] = JText::_('USER_CREATION');
-				    $status['userinfo'] = $this->getUser($userinfo);
+				    $this->debugger->add('debug', JText::_('USER_CREATION'));
+				    $this->debugger->set('userinfo', $this->getUser($userinfo));
 			    }
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ERROR_CREATE_USER') . ': ' . $e->getMessage();
+		    $this->debugger->add('error', JText::_('ERROR_CREATE_USER') . ' ' . $e->getMessage());
 	    }
     }
 
@@ -967,7 +968,6 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    $report_posts[] = $row->post_id;
 					    $report_topics[] = $row->topic_id;
 				    }
-				    //$status['debug'][] = 'Retrieved all reported posts/topics by user ' . $user_id;
 			    }
 		    } catch (RuntimeException $e) {
 				throw new RuntimeException('Error Could not retrieve reported posts/topics by user ' . $user_id . ': ' . $e->getMessage());
@@ -993,7 +993,6 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    foreach ($results as $row) {
 						    $keep_report_topics[] = $row->topic_id;
 					    }
-					    //$status['debug'][] = 'Sorted through reported topics by user ' . $user_id . ' to keep.';
 				    }
 			    } catch (Exception $e) {
 				    $status['error'][] = 'Error Could not retrieve a list of topics that still contain reported posts by user ' . $user_id . ': ' . $e->getMessage();
@@ -1164,7 +1163,6 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    $undelivered_msg[] = $row->msg_id;
 					    $undelivered_user[$row->user_id][] = true;
 				    }
-				    //$status['debug'][] = 'Retrieved undelivered private messages from user ' . $user_id;
 			    }
 		    } catch (Exception $e) {
 			    $status['error'][] = 'Error Could not retrieve undeliverd messages to user ' . $user_id . ': ' . $e->getMessage();

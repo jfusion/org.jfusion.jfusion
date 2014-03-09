@@ -151,19 +151,24 @@ class plgAuthenticationjfusion extends JPlugin
 								    $response->error_message = '';
 								    $response->userinfo = $userinfo;
 								    //update the password format to what the master expects
-								    $status = array('error' => array(), 'debug' => array());
 								    $JFusionMaster = JFusionFactory::getUser($master->name);
 								    //make sure that the password_clear is not already hashed which may be the case for some dual login plugins
+
 								    if (strlen($userinfo->password_clear) != 32) {
+									    $status = array('error' => array(), 'debug' => array());
 									    $JFusionMaster->updatePassword($userinfo, $userinfo, $status);
+									    $JFusionMaster->mergeStatus($status);
+									    $status = $JFusionMaster->debugger->get();
 									    if (!empty($status['error'])) {
-										    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') . ': ' . $status['error']);
+										    foreach($status['error'] as $error) {
+											    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') . ': ' . $error);
+										    }
 										    JFusionFunction::raise('error', $status['error'], $master->name. ' ' .JText::_('PASSWORD') . ' ' . JText::_('UPDATE'));
 									    } else {
 										    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('SUCCESS'));
 									    }
 								    } else {
-									    $status['debug'][] = $auth_model->name . ' ' . JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
+									    $debugger->add('debug', $auth_model->name . ' ' . JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE'));
 								    }
 								    return;
 							    } else {

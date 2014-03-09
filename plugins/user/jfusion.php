@@ -333,6 +333,9 @@ class plgUserJfusion extends JPlugin
 							    $status = array('error' => array(), 'debug' => array());
 							    //try to create a Master user
 							    $JFusionMaster->createUser($auth_userinfo, $status);
+							    $JFusionMaster->mergeStatus($status);
+							    $status = $JFusionMaster->debugger->get();
+
 							    if (empty($status['error'])) {
 								    //success
 								    //make sure the userinfo is available
@@ -373,9 +376,10 @@ class plgUserJfusion extends JPlugin
 					    } else {
 						    //make sure we have the clear password
 						    if (!empty($userinfo->password_clear)) {
-							    $debug = $debugger->get();
-							    $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $debug);
-							    $debugger->reset($debug);
+							    $status = array('error' => array(), 'debug' => array());
+							    $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $status);
+							    $JFusionJoomla->mergeStatus($status);
+							    $debugger->merge($JFusionJoomla->debugger->get());
 						    }
 
 						    $success = 1;

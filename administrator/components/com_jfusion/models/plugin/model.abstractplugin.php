@@ -37,14 +37,24 @@ class JFusionPlugin
 	var $params;
 
 	/**
+	 * @var JFusionDebugger
+	 */
+	var $debugger;
+
+	/**
 	 *
 	 */
 	function __construct()
 	{
+		JFactory::getLanguage()->load('com_jfusion', JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
+		JFactory::getLanguage()->load('com_jfusion', JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
+
+
 		$jname = $this->getJname();
 		if (!empty($jname)) {
 			//get the params object
 			$this->params = JFusionFactory::getParams($jname);
+			$this->debugger = JFusionFactory::getDebugger($jname);
 
 			if (!isset(static::$language[$jname])) {
 				$db = JFactory::getDBO();
@@ -144,5 +154,17 @@ class JFusionPlugin
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 * @param array &$status
+	 *
+	 * @return array
+	 */
+	final public function mergeStatus(&$status) {
+		if (!empty($status['error']) || !empty($status['debug'])) {
+			$this->debugger->merge($status);
+		}
+		$status = array('error' => array(), 'debug' => array());
 	}
 }

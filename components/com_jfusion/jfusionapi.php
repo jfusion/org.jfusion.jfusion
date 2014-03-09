@@ -1015,6 +1015,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			if(!$existinguser) {
 				$status = array('error' => array(), 'debug' => array());
 				$PluginUserUpdate->createUser($userinfo, $status);
+				$PluginUserUpdate->mergeStatus($status);
+				$status = $PluginUserUpdate->debugger->get();
 
 				foreach ($status['error'] as $error) {
 					$this->error[][$plugin->name] = $error;

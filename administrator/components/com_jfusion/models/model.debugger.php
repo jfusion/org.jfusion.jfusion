@@ -95,6 +95,13 @@ class JFusionDebugger {
 	}
 
 	/**
+	 * @param array $debugger
+	 */
+	public function merge($debugger) {
+		$this->data = array_merge_recursive($this->data, $debugger);
+	}
+
+	/**
 	 * @param string $title
 	 *
 	 * @return boolean
