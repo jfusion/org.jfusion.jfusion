@@ -229,22 +229,18 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-	    try {
-	        $existinguser->password = ':A:' . md5($userinfo->password_clear);
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	    $existinguser->password = ':A:' . md5($userinfo->password_clear);
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__user')
-			    ->set('user_password = ' . $db->quote($existinguser->password))
-			    ->where('user_id = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__user')
+		    ->set('user_password = ' . $db->quote($existinguser->password))
+		    ->where('user_id = ' . (int)$existinguser->userid);
 
-	        $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
     /**
@@ -268,21 +264,17 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
-	    try {
-		    //we need to update the email
-		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = $db->getQuery(true)
-			    ->update('#__user')
-			    ->set('user_email = ' . $db->quote($userinfo->email))
-			    ->where('user_id = ' . (int)$existinguser->userid);
+	    //we need to update the email
+	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $query = $db->getQuery(true)
+		    ->update('#__user')
+		    ->set('user_email = ' . $db->quote($userinfo->email))
+		    ->where('user_id = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
 
     /**
@@ -292,36 +284,32 @@ class JFusionUser_mediawiki extends JFusionUser {
      *
      * @return void
      */
-    function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
-		try {
-			$usergroups = $this->getCorrectUserGroups($userinfo);
-			if (empty($usergroups)) {
-				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
-			} else {
-				$db = JFusionFactory::getDatabase($this->getJname());
-				try {
-					$query = $db->getQuery(true)
-						->delete('#__user_groups')
-						->where('ug_user = ' .  $db->quote($userinfo->userid));
+		$usergroups = $this->getCorrectUserGroups($userinfo);
+		if (empty($usergroups)) {
+			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		} else {
+			$db = JFusionFactory::getDatabase($this->getJname());
+			try {
+				$query = $db->getQuery(true)
+					->delete('#__user_groups')
+					->where('ug_user = ' .  $db->quote($userinfo->userid));
 
-					$db->setQuery($query);
-					$db->execute();
-				} catch (Exception $e) {
-				}
-				foreach($usergroups as $usergroup) {
-					//prepare the user variables
-					$ug = new stdClass;
-					$ug->ug_user = $existinguser->userid;
-					$ug->ug_group = $usergroup;
-
-					$db->insertObject('#__user_groups', $ug, 'ug_user' );
-
-					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
-				}
+				$db->setQuery($query);
+				$db->execute();
+			} catch (Exception $e) {
 			}
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+			foreach($usergroups as $usergroup) {
+				//prepare the user variables
+				$ug = new stdClass;
+				$ug->ug_user = $existinguser->userid;
+				$ug->ug_group = $usergroup;
+
+				$db->insertObject('#__user_groups', $ug, 'ug_user' );
+
+				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+			}
 		}
 	}
 
@@ -334,36 +322,32 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
-	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $ban = new stdClass;
-		    $ban->ipb_id = NULL;
-		    $ban->ipb_address = NULL;
-		    $ban->ipb_user = $existinguser->userid;
-		    $ban->ipb_by = $existinguser->userid;
-		    $ban->ipb_by_text = $existinguser->username;
+	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $ban = new stdClass;
+	    $ban->ipb_id = NULL;
+	    $ban->ipb_address = NULL;
+	    $ban->ipb_user = $existinguser->userid;
+	    $ban->ipb_by = $existinguser->userid;
+	    $ban->ipb_by_text = $existinguser->username;
 
-		    $ban->ipb_reason = 'You have been banned from this software. Please contact your site admin for more details';
-		    $ban->ipb_timestamp = gmdate('YmdHis', time());
+	    $ban->ipb_reason = 'You have been banned from this software. Please contact your site admin for more details';
+	    $ban->ipb_timestamp = gmdate('YmdHis', time());
 
-		    $ban->ipb_auto = 0;
-		    $ban->ipb_anon_only = 0;
-		    $ban->ipb_create_account = 1;
-		    $ban->ipb_enable_autoblock = 1;
-		    $ban->ipb_expiry = 'infinity';
-		    $ban->ipb_range_start = NULL;
-		    $ban->ipb_range_end = NULL;
-		    $ban->ipb_deleted = 0;
-		    $ban->ipb_block_email = 0;
-		    $ban->ipb_allow_usertalk = 0;
+	    $ban->ipb_auto = 0;
+	    $ban->ipb_anon_only = 0;
+	    $ban->ipb_create_account = 1;
+	    $ban->ipb_enable_autoblock = 1;
+	    $ban->ipb_expiry = 'infinity';
+	    $ban->ipb_range_start = NULL;
+	    $ban->ipb_range_end = NULL;
+	    $ban->ipb_deleted = 0;
+	    $ban->ipb_block_email = 0;
+	    $ban->ipb_allow_usertalk = 0;
 
-		    //now append the new user data
-		    $db->insertObject('#__ipblocks', $ban, 'ipb_id' );
+	    //now append the new user data
+	    $db->insertObject('#__ipblocks', $ban, 'ipb_id' );
 
-		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 
     /**
@@ -375,57 +359,45 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
-	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->delete('#__ipblocks')
-			    ->where('ipb_user = ' .  $db->quote($userinfo->userid));
+	    $query = $db->getQuery(true)
+		    ->delete('#__ipblocks')
+		    ->where('ipb_user = ' .  $db->quote($userinfo->userid));
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 /*
     function activateUser($userinfo, &$existinguser, &$status)
     {
-		try {
-	        $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = $db->getQuery(true)
-			    ->update('#__user')
-			    ->set('is_activated = 1')
-				->set('validation_code = ' . $db->quote(''))
-			    ->where('user_id = ' . (int)$existinguser->userid);
+        $db = JFusionFactory::getDatabase($this->getJname());
+	    $query = $db->getQuery(true)
+		    ->update('#__user')
+		    ->set('is_activated = 1')
+			->set('validation_code = ' . $db->quote(''))
+		    ->where('user_id = ' . (int)$existinguser->userid);
 
-	        $db->setQuery($query);
-			$db->execute():
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-		} catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
-	    }
+        $db->setQuery($query);
+		$db->execute():
+		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
-		try {
-	        $db = JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__user')
-			    ->set('is_activated = 0')
-				->set('validation_code = ' . $db->quote($userinfo->activation))
-			    ->where('user_id = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__user')
+		    ->set('is_activated = 0')
+			->set('validation_code = ' . $db->quote($userinfo->activation))
+		    ->where('user_id = ' . (int)$existinguser->userid);
 
-	        $db->setQuery($query);
-			$db->execute();
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-		} catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
-	    }
+        $db->setQuery($query);
+		$db->execute();
+		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 */
 

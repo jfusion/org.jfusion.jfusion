@@ -151,45 +151,34 @@ class JFusionUser_zencart extends JFusionUser
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
-        try {
-            $existinguser->password = '';
-            for ($i = 0; $i < 10; $i++) {
-                $existinguser->password .= mt_rand((double)microtime() * 1000000);
-            }
-            $salt = substr(md5($existinguser->password), 0, 2);
-            $existinguser->password = md5($salt . $userinfo->password_clear) . ':' . $salt;
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $modified_date = date('Y-m-d H:i:s', time());
-            $query1 = $query2 = null;
-            $query1 = (string)$db->getQuery(true)
-                ->update('#__customers')
-                ->set('customers_password = ' . $db->quote($existinguser->password))
-                ->where('customers_id  = ' . $db->Quote($existinguser->userid));
+	    $existinguser->password = '';
+	    for ($i = 0; $i < 10; $i++) {
+		    $existinguser->password .= mt_rand((double)microtime() * 1000000);
+	    }
+	    $salt = substr(md5($existinguser->password), 0, 2);
+	    $existinguser->password = md5($salt . $userinfo->password_clear) . ':' . $salt;
+	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $modified_date = date('Y-m-d H:i:s', time());
+	    $query1 = $query2 = null;
+	    $query1 = (string)$db->getQuery(true)
+		    ->update('#__customers')
+		    ->set('customers_password = ' . $db->quote($existinguser->password))
+		    ->where('customers_id  = ' . $db->Quote($existinguser->userid));
 
-            $query2 = (string)$db->getQuery(true)
-                ->update('#__customers_info')
-                ->set('customers_info_date_account_last_modified = ' . $db->quote($modified_date))
-                ->where('customers_info_id  = ' . $db->quote($existinguser->userid));
-            if ($query1) {
-                $db->transactionStart();
-                $db->setQuery($query1);
-                $db->execute();
+	    $query2 = (string)$db->getQuery(true)
+		    ->update('#__customers_info')
+		    ->set('customers_info_date_account_last_modified = ' . $db->quote($modified_date))
+		    ->where('customers_info_id  = ' . $db->quote($existinguser->userid));
 
-                if ($query2) {
-                    $db->setQuery($query2);
-                    $db->execute();
-                }
-                $db->transactionCommit();
-                $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-            } else {
-                throw new RuntimeException();
-            }
-        } catch (Exception $e) {
-            if (isset($db)) {
-                $db->transactionRollback();
-            }
-            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $e->getMessage();
-        }
+	    $db->transactionStart();
+	    $db->setQuery($query1);
+	    $db->execute();
+
+	    $db->setQuery($query2);
+	    $db->execute();
+
+	    $db->transactionCommit();
+	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
     /**
@@ -246,32 +235,6 @@ class JFusionUser_zencart extends JFusionUser
             }
             $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
         }
-    }
-
-    /**
-     * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     *
-     * @return void
-     */
-    function activateUser($userinfo, &$existinguser, &$status)
-    {
-        //activate the user not supported
-
-    }
-
-    /**
-     * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     *
-     * @return void
-     */
-    function inactivateUser($userinfo, &$existinguser, &$status)
-    {
-        // inactivate the user is not supported
-
     }
 
     /**
@@ -497,28 +460,24 @@ class JFusionUser_zencart extends JFusionUser
      *
      * @return void
      */
-    function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup($userinfo, &$existinguser, &$status)
     {
-        try {
-            $usergroups = $this->getCorrectUserGroups($userinfo);
-            if (empty($usergroups)) {
-                throw new RuntimeException(JText::_('USERGROUP_MISSING'));
-            } else {
-                $usergroup = $usergroups[0];
-                $db = JFusionFactory::getDataBase($this->getJname());
-                        //set the usergroup in the user table
-                        $query = $db->getQuery(true)
-                            ->update('#__customers')
-                            ->set('customers_group_pricing = ' . $usergroup)
-                            ->where('entity_id  = ' . $existinguser->userid);
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+	    } else {
+		    $usergroup = $usergroups[0];
+		    $db = JFusionFactory::getDataBase($this->getJname());
+		    //set the usergroup in the user table
+		    $query = $db->getQuery(true)
+			    ->update('#__customers')
+			    ->set('customers_group_pricing = ' . $usergroup)
+			    ->where('entity_id  = ' . $existinguser->userid);
 
-                        $db->setQuery($query);
-                        $db->execute();
+		    $db->setQuery($query);
+		    $db->execute();
 
-                        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
-           }
-        } catch (Exception $e) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
-        }
+		    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+	    }
     }
 }

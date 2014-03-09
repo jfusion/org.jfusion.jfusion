@@ -173,25 +173,21 @@ class JFusionUser_prestashop extends JFusionUser
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-	    try {
-	        $this->helper->loadFramework();
+	    $this->helper->loadFramework();
 
-	        $existinguser->password = Tools::encrypt($userinfo->password_clear);
+	    $existinguser->password = Tools::encrypt($userinfo->password_clear);
 
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__customer')
-			    ->set('passwd = ' . $db->quote($existinguser->password))
-			    ->where('id_customer = ' . $db->quote((int)$existinguser->userid));
+	    $query = $db->getQuery(true)
+		    ->update('#__customer')
+		    ->set('passwd = ' . $db->quote($existinguser->password))
+		    ->where('id_customer = ' . $db->quote((int)$existinguser->userid));
 
-	        $db->setQuery($query);
+	    $db->setQuery($query);
 
-		    $db->execute();
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $db->execute();
+	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
     /**
@@ -311,22 +307,18 @@ class JFusionUser_prestashop extends JFusionUser
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-	    try {
-		    //we need to update the email
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //we need to update the email
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__customer')
-			    ->set('email = ' . $db->quote($userinfo->email))
-			    ->where('id_customer = ' . $db->quote((int)$existinguser->userid));
+	    $query = $db->getQuery(true)
+		    ->update('#__customer')
+		    ->set('email = ' . $db->quote($userinfo->email))
+		    ->where('id_customer = ' . $db->quote((int)$existinguser->userid));
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
 
     /**
@@ -337,22 +329,18 @@ class JFusionUser_prestashop extends JFusionUser
      * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
-	    try {
-		    /* change the 'active' field of the customer in the ps_customer table to 1 */
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    /* change the 'active' field of the customer in the ps_customer table to 1 */
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__customer')
-			    ->set('active = 1')
-			    ->where('id_customer = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__customer')
+		    ->set('active = 1')
+		    ->where('id_customer = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
     /**
@@ -363,22 +351,18 @@ class JFusionUser_prestashop extends JFusionUser
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
-	    try {
-		    /* change the 'active' field of the customer in the ps_customer table to 0 */
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    /* change the 'active' field of the customer in the ps_customer table to 0 */
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__customer')
-			    ->set('active = 0')
-			    ->where('id_customer = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__customer')
+		    ->set('active = 0')
+		    ->where('id_customer = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
     /**
@@ -388,40 +372,36 @@ class JFusionUser_prestashop extends JFusionUser
      *
      * @return void
      */
-    function updateUsergroup($userinfo, &$existinguser, &$status) {
-	    try {
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
-		    } else {
-			    $db = JFusionFactory::getDatabase($this->getJname());
-			    // now delete the user
-			    $query = $db->getQuery(true)
-				    ->delete('#__customer_group')
-				    ->where('id_customer = ' .  $existinguser->userid);
+	public function updateUsergroup($userinfo, &$existinguser, &$status) {
+		$usergroups = $this->getCorrectUserGroups($userinfo);
+		if (empty($usergroups)) {
+			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		} else {
+			$db = JFusionFactory::getDatabase($this->getJname());
+			// now delete the user
+			$query = $db->getQuery(true)
+				->delete('#__customer_group')
+				->where('id_customer = ' .  $existinguser->userid);
 
-			    $db->setQuery($query);
-			    $db->execute();
+			$db->setQuery($query);
+			$db->execute();
 
 
-			    $query = $db->getQuery(true)
-				    ->update('#__customer')
-				    ->set('id_default_group = ' . $db->quote($usergroups[0]))
-				    ->where('id_customer = ' . (int)$existinguser->userid);
+			$query = $db->getQuery(true)
+				->update('#__customer')
+				->set('id_default_group = ' . $db->quote($usergroups[0]))
+				->where('id_customer = ' . (int)$existinguser->userid);
 
-			    $db->setQuery($query);
-			    $db->execute();
+			$db->setQuery($query);
+			$db->execute();
 
-			    foreach($usergroups as $value) {
-				    $group = new stdClass;
-				    $group->id_customer = $existinguser->userid;
-				    $group->id_group = $value;
-				    $db->insertObject('#__customer_group', $group);
-			    }
-			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
-		    }
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
-	    }
+			foreach($usergroups as $value) {
+				$group = new stdClass;
+				$group->id_customer = $existinguser->userid;
+				$group->id_group = $value;
+				$db->insertObject('#__customer_group', $group);
+			}
+			$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
+		}
     }
 }

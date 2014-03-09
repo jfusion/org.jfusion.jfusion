@@ -161,7 +161,11 @@ class JFusionPublic_joomla_ext extends JFusionPublic
 		// If the user is connected we change his account parameter in function of the language front end
 		if ($existinguser) {
 			$userinfo->language = JFactory::getLanguage()->getTag();
-			$user->updateUserLanguage($userinfo, $existinguser, $status, $this->getJname());
+			try {
+				$user->updateUserLanguage($userinfo, $existinguser, $status, $this->getJname());
+			} catch (Exception $e) {
+				$status['error'][] = JText::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage();
+			}
 		} else {
 			$status['debug'] = JText::_('NO_USER_DATA_FOUND');
 		}

@@ -156,7 +156,11 @@ class plgAuthenticationjfusion extends JPlugin
 
 								    if (strlen($userinfo->password_clear) != 32) {
 									    $status = array('error' => array(), 'debug' => array());
-									    $JFusionMaster->updatePassword($userinfo, $userinfo, $status);
+									    try {
+										    $JFusionMaster->updatePassword($userinfo, $userinfo, $status);
+									    } catch (Exception $e) {
+									        $JFusionMaster->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
+									    }
 									    $JFusionMaster->mergeStatus($status);
 									    $status = $JFusionMaster->debugger->get();
 									    if (!empty($status['error'])) {

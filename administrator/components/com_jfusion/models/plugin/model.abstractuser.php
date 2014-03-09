@@ -210,9 +210,13 @@ class JFusionUser extends JFusionPlugin
 					    $this->debugger->add('debug', JText::_('EMAIL_CONFLICT'));
 					    if ($update_email || $overwrite) {
 						    $this->debugger->add('debug', JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
-						    $this->updateEmail($userinfo, $existinguser, $status);
+						    try {
+							    $this->updateEmail($userinfo, $existinguser, $status);
+							    $changed = true;
+						    } catch (Exception $e) {
+							    $this->debugger->add('error', JText::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage());
+						    }
 						    $this->mergeStatus($status);
-						    $changed = true;
 					    } else {
 						    //return a email conflict
 						    $this->debugger->add('debug', JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
@@ -228,9 +232,13 @@ class JFusionUser extends JFusionPlugin
 					    try {
 						    $model = JFusionFactory::getAuth($this->getJname());
 						    if (!$model->checkPassword($existinguser)) {
-							    $this->updatePassword($userinfo, $existinguser, $status);
+							    try {
+								    $this->updatePassword($userinfo, $existinguser, $status);
+								    $changed = true;
+							    } catch (Exception $e) {
+								    $this->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
+							    }
 							    $this->mergeStatus($status);
-							    $changed = true;
 						    } else {
 							    $this->debugger->add('debug', JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . JText::_('PASSWORD_VALID'));
 						    }
@@ -245,14 +253,23 @@ class JFusionUser extends JFusionPlugin
 					    if ($update_block || $overwrite) {
 						    if ($userinfo->block) {
 							    //block the user
-							    $this->blockUser($userinfo, $existinguser, $status);
+							    try {
+								    $this->blockUser($userinfo, $existinguser, $status);
+								    $changed = true;
+							    } catch (Exception $e) {
+								    $this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
+							    }
 							    $this->mergeStatus($status);
 							    $changed = true;
 						    } else {
 							    //unblock the user
-							    $this->unblockUser($userinfo, $existinguser, $status);
+							    try {
+								    $this->unblockUser($userinfo, $existinguser, $status);
+								    $changed = true;
+							    } catch (Exception $e) {
+								    $this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
+							    }
 							    $this->mergeStatus($status);
-							    $changed = true;
 						    }
 					    } else {
 						    //return a debug to inform we skipped this step
@@ -265,14 +282,22 @@ class JFusionUser extends JFusionPlugin
 						    if ($update_activation || $overwrite) {
 							    if ($userinfo->activation) {
 								    //inactive the user
-								    $this->inactivateUser($userinfo, $existinguser, $status);
+								    try {
+									    $this->inactivateUser($userinfo, $existinguser, $status);
+									    $changed = true;
+								    } catch (Exception $e) {
+									    $this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
+								    }
 								    $this->mergeStatus($status);
-								    $changed = true;
 							    } else {
 								    //activate the user
-								    $this->activateUser($userinfo, $existinguser, $status);
+								    try {
+									    $this->activateUser($userinfo, $existinguser, $status);
+									    $changed = true;
+								    } catch (Exception $e) {
+									    $this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
+								    }
 								    $this->mergeStatus($status);
-								    $changed = true;
 							    }
 						    } else {
 							    //return a debug to inform we skipped this step
@@ -283,13 +308,17 @@ class JFusionUser extends JFusionPlugin
 				    //check for advanced usergroup sync
 				    if (!$userinfo->block && empty($userinfo->activation)) {
 					    if (JFusionFunction::updateUsergroups($this->getJname())) {
-						    $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $status);
-						    $this->mergeStatus($status);
-						    if ($usergroup_updated) {
-							    $changed = true;
-						    } else {
-							    $this->debugger->add('debug', JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID'));
+						    try {
+							    $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $status);
+							    if ($usergroup_updated) {
+								    $changed = true;
+							    } else {
+								    $this->debugger->add('debug', JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID'));
+							    }
+						    } catch (Exception $e) {
+							    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 						    }
+						    $this->mergeStatus($status);
 					    }
 				    }
 
@@ -299,11 +328,16 @@ class JFusionUser extends JFusionPlugin
 					    $userinfo->language = ($user_lang) ? $user_lang : JFactory::getLanguage()->getTag();
 				    }
 				    if (!empty($userinfo->language) && isset($existinguser->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
-					    $this->updateUserLanguage($userinfo, $existinguser, $status);
+					    try {
+						    $this->updateUserLanguage($userinfo, $existinguser, $status);
+						    $existinguser->language = $userinfo->language;
+						    $this->debugger->add('debug', JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
+
+						    $changed = true;
+					    } catch (Exception $e) {
+						    $this->debugger->add('error', JText::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
+					    }
 					    $this->mergeStatus($status);
-					    $existinguser->language = $userinfo->language;
-					    $this->debugger->add('debug', JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
-					    $changed = true;
 				    } else {
 					    //return a debug to inform we skipped this step
 					    $this->debugger->add('debug', JText::_('LANGUAGE_NOT_UPDATED'));
@@ -422,7 +456,7 @@ class JFusionUser extends JFusionPlugin
      * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      */
-    function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup($userinfo, &$existinguser, &$status)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }

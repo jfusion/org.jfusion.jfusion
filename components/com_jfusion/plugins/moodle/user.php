@@ -280,26 +280,22 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function updatePassword($userinfo, &$existinguser, &$status) {
-		try {
-			if ($this->params->get('passwordsaltmain')) {
-				$existinguser->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));
-			} else {
-				$existinguser->password = md5($userinfo->password_clear);
-			}
-			$db = JFusionFactory::getDatabase($this->getJname());
-
-			$query = $db->getQuery(true)
-				->update('#__user')
-				->set('password = ' . $db->quote($existinguser->password))
-				->where('id = ' . $existinguser->userid);
-
-			$db->setQuery($query);
-			$db->execute();
-
-			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
+		if ($this->params->get('passwordsaltmain')) {
+			$existinguser->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));
+		} else {
+			$existinguser->password = md5($userinfo->password_clear);
 		}
+		$db = JFusionFactory::getDatabase($this->getJname());
+
+		$query = $db->getQuery(true)
+			->update('#__user')
+			->set('password = ' . $db->quote($existinguser->password))
+			->where('id = ' . $existinguser->userid);
+
+		$db->setQuery($query);
+		$db->execute();
+
+		$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	}
 
 	/**
@@ -325,23 +321,19 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function updateEmail($userinfo, &$existinguser, &$status) {
-		try {
-			//TODO ? check for duplicates, or leave it at db error
-			//we need to update the email
-			$db = JFusionFactory::getDatabase($this->getJname());
+		//TODO ? check for duplicates, or leave it at db error
+		//we need to update the email
+		$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = $db->getQuery(true)
-				->update('#__user')
-				->set('email = ' . $db->quote($userinfo->email))
-				->where('id = ' . (int)$existinguser->userid);
+		$query = $db->getQuery(true)
+			->update('#__user')
+			->set('email = ' . $db->quote($userinfo->email))
+			->where('id = ' . (int)$existinguser->userid);
 
-			$db->setQuery($query);
-			$db->execute();
+		$db->setQuery($query);
+		$db->execute();
 
-			$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR')  . $e->getMessage();
-		}
+		$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 	}
 
 	/**
@@ -354,29 +346,25 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function blockUser($userinfo, &$existinguser, &$status) {
-		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
+		$query = $db->getQuery(true)
+			->select('value')
+			->from('#__config')
+			->where('name = ' . $db->quote('sitepolicy'));
+		$db->setQuery($query);
+		$sitepolicy = $db->loadObject();
+		if ($sitepolicy->value) {
 			$query = $db->getQuery(true)
-				->select('value')
-				->from('#__config')
-				->where('name = ' . $db->quote('sitepolicy'));
+				->update('#__user')
+				->set('policyagreed = false')
+				->where('id = ' . (int)$existinguser->userid);
+
 			$db->setQuery($query);
-			$sitepolicy = $db->loadObject();
-			if ($sitepolicy->value) {
-				$query = $db->getQuery(true)
-					->update('#__user')
-					->set('policyagreed = false')
-					->where('id = ' . (int)$existinguser->userid);
+			$db->execute();
 
-				$db->setQuery($query);
-				$db->execute();
-
-				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-			} else {
-				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET');
-			}
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+			$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		} else {
+			throw new RuntimeException(JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET'));
 		}
 	}
 
@@ -390,30 +378,26 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function unblockUser($userinfo, &$existinguser, &$status) {
-		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
+		$query = $db->getQuery(true)
+			->select('value')
+			->from('#__config')
+			->where('name = ' . $db->quote('sitepolicy'));
+		$db->setQuery($query);
+		$sitepolicy = $db->loadObject();
+		if ($sitepolicy->value) {
+
 			$query = $db->getQuery(true)
-				->select('value')
-				->from('#__config')
-				->where('name = ' . $db->quote('sitepolicy'));
+				->update('#__user')
+				->set('policyagreed = true')
+				->where('id = ' . (int)$existinguser->userid);
+
 			$db->setQuery($query);
-			$sitepolicy = $db->loadObject();
-			if ($sitepolicy->value) {
+			$db->execute();
 
-				$query = $db->getQuery(true)
-					->update('#__user')
-					->set('policyagreed = true')
-					->where('id = ' . (int)$existinguser->userid);
-
-				$db->setQuery($query);
-				$db->execute();
-
-				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-			} else {
-				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET');
-			}
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+			$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		} else {
+			throw new RuntimeException(JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET'));
 		}
 	}
 
@@ -427,22 +411,18 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function activateUser($userinfo, &$existinguser, &$status) {
-		try {
-			//activate the user
-			$db = JFusionFactory::getDatabase($this->getJname());
+		//activate the user
+		$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = $db->getQuery(true)
-				->update('#__user')
-				->set('confirmed = true')
-				->where('id = ' . (int)$existinguser->userid);
+		$query = $db->getQuery(true)
+			->update('#__user')
+			->set('confirmed = true')
+			->where('id = ' . (int)$existinguser->userid);
 
-			$db->setQuery($query);
-			$db->execute();
+		$db->setQuery($query);
+		$db->execute();
 
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
-		}
+		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	}
 
 	/**
@@ -455,21 +435,17 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function inactivateUser($userinfo, &$existinguser, &$status) {
-		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = $db->getQuery(true)
-				->update('#__user')
-				->set('confirmed = false')
-				->where('id = ' . (int)$existinguser->userid);
+		$query = $db->getQuery(true)
+			->update('#__user')
+			->set('confirmed = false')
+			->where('id = ' . (int)$existinguser->userid);
 
-			$db->setQuery($query);
-			$db->execute();
+		$db->setQuery($query);
+		$db->execute();
 
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
-		}
+		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	}
 
 	/**
@@ -650,11 +626,11 @@ class JFusionUser_moodle extends JFusionUser {
 		}
 		return $status;
 	}
-	/*       function updateUsergroup($userinfo, &$existinguser, &$status, $jname) {
-
-	Moodles groupings depend on the course. In the current implementation you can map groups FROM moodles
-	roles to usertype. because of the connection between courses, roles and groups the reverse is (not yet) possible.
-	We have to come up with a way to handle this
+	/*
+	public function updateUsergroup($userinfo, &$existinguser, &$status, $jname) {
+		Moodles groupings depend on the course. In the current implementation you can map groups FROM moodles
+		roles to usertype. because of the connection between courses, roles and groups the reverse is (not yet) possible.
+		We have to come up with a way to handle this
 	}
 	*/
 }

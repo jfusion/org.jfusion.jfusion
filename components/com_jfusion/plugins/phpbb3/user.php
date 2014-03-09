@@ -394,30 +394,25 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-	    try {
-		    /**
-		     * @ignore
-		     * @var $auth JFusionAuth_phpbb3
-		     */
-		    $auth = JFusionFactory::getAuth($this->getJname());
-		    $existinguser->password = $auth->HashPassword($userinfo->password_clear);
+	    /**
+	     * @ignore
+	     * @var $auth JFusionAuth_phpbb3
+	     */
+	    $auth = JFusionFactory::getAuth($this->getJname());
+	    $existinguser->password = $auth->HashPassword($userinfo->password_clear);
 
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('user_password = ' . $db->quote($existinguser->password))
-			    ->set('user_pass_convert = 0')
-			    ->where('user_id = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('user_password = ' . $db->quote($existinguser->password))
+		    ->set('user_pass_convert = 0')
+		    ->where('user_id = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $this->debugger->add('debug', JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
-	    } catch (Exception $e) {
-		    $this->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
-	    }
-
+	    $this->debugger->add('debug', JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
@@ -438,22 +433,18 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-	    try {
-		    //we need to update the email
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //we need to update the email
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('user_email = ' . $db->quote($userinfo->email))
-			    ->where('user_id = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('user_email = ' . $db->quote($userinfo->email))
+		    ->where('user_id = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $this->debugger->add('debug', JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
-	    } catch (Exception $e) {
-		    $this->debugger->add('error', JText::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage());
-	    }
+	    $this->debugger->add('debug', JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
     /**
@@ -463,135 +454,131 @@ class JFusionUser_phpbb3 extends JFusionUser
      *
      * @return void
      */
-    function updateUsergroup($userinfo, &$existinguser, &$status) {
-	    try {
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
-		    } else {
-			    $usergroup = $usergroups[0];
+	public function updateUsergroup($userinfo, &$existinguser, &$status) {
+		$usergroups = $this->getCorrectUserGroups($userinfo);
+		if (empty($usergroups)) {
+			throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
+		} else {
+			$usergroup = $usergroups[0];
 
-			    if (!isset($usergroup->groups)) {
-				    $usergroup->groups = array($usergroup->defaultgroup);
-			    } else if (!in_array($usergroup->defaultgroup, $usergroup->groups)) {
-				    $usergroup->groups[] = $usergroup->defaultgroup;
-			    }
+			if (!isset($usergroup->groups)) {
+				$usergroup->groups = array($usergroup->defaultgroup);
+			} else if (!in_array($usergroup->defaultgroup, $usergroup->groups)) {
+				$usergroup->groups[] = $usergroup->defaultgroup;
+			}
 
-			    $db = JFusionFactory::getDatabase($this->getJname());
-			    $user = new stdClass;
-			    $user->user_id = $existinguser->userid;
-			    $user->group_id = $usergroup->defaultgroup;
-			    $user->user_colour = '';
-			    //clear out cached permissions so that those of the new group are generated
-			    $user->user_permissions = '';
-			    //update the user colour, avatar, etc to the groups if applicable
-			    $query = $db->getQuery(true)
-				    ->select('group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height')
-				    ->from('#__groups')
-				    ->where('group_id = ' . $user->group_id);
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$user = new stdClass;
+			$user->user_id = $existinguser->userid;
+			$user->group_id = $usergroup->defaultgroup;
+			$user->user_colour = '';
+			//clear out cached permissions so that those of the new group are generated
+			$user->user_permissions = '';
+			//update the user colour, avatar, etc to the groups if applicable
+			$query = $db->getQuery(true)
+				->select('group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height')
+				->from('#__groups')
+				->where('group_id = ' . $user->group_id);
 
-			    $db->setQuery($query);
-			    $group_attribs = $db->loadAssoc();
-			    if (!empty($group_attribs)) {
-				    foreach($group_attribs AS $k => $v) {
-					    // If we are about to set an avatar or rank, we will not overwrite with empty, unless we are not actually changing the default group
-					    if ((strpos($k, 'group_avatar') === 0 || strpos($k, 'group_rank') === 0) && !$group_attribs[$k])
-					    {
-						    continue;
-					    }
-					    $user->{str_replace('group_', 'user_', $k)} = $v;
-				    }
-			    }
+			$db->setQuery($query);
+			$group_attribs = $db->loadAssoc();
+			if (!empty($group_attribs)) {
+				foreach($group_attribs AS $k => $v) {
+					// If we are about to set an avatar or rank, we will not overwrite with empty, unless we are not actually changing the default group
+					if ((strpos($k, 'group_avatar') === 0 || strpos($k, 'group_rank') === 0) && !$group_attribs[$k])
+					{
+						continue;
+					}
+					$user->{str_replace('group_', 'user_', $k)} = $v;
+				}
+			}
 
-			    //set the usergroup in the user table
-			    $db->updateObject('#__users', $user, 'user_id');
+			//set the usergroup in the user table
+			$db->updateObject('#__users', $user, 'user_id');
 
-			    try {
-				    //remove the old usergroup for the user in the groups table
-				    $query = $db->getQuery(true)
-					    ->delete('#__user_group')
-					    ->where('user_id = ' . (int)$existinguser->userid);
+			try {
+				//remove the old usergroup for the user in the groups table
+				$query = $db->getQuery(true)
+					->delete('#__user_group')
+					->where('user_id = ' . (int)$existinguser->userid);
 
-				    $db->setQuery($query);
-				    $db->execute();
-			    } catch (Exception $e) {
-				    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
-			    }
+				$db->setQuery($query);
+				$db->execute();
+			} catch (Exception $e) {
+				$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+			}
 
-			    foreach($usergroup->groups as $group) {
-				    $newgroup = new stdClass;
-				    $newgroup->group_id = (int)$group;
-				    $newgroup->user_id = (int)$existinguser->userid;
-				    $newgroup->group_leader = 0;
-				    $newgroup->user_pending = 0;
+			foreach($usergroup->groups as $group) {
+				$newgroup = new stdClass;
+				$newgroup->group_id = (int)$group;
+				$newgroup->user_id = (int)$existinguser->userid;
+				$newgroup->group_leader = 0;
+				$newgroup->user_pending = 0;
 
-				    $db->insertObject('#__user_group', $newgroup);
-			    }
+				$db->insertObject('#__user_group', $newgroup);
+			}
 
-			    try {
-				    //update correct group colors where applicable
-				    $query = $db->getQuery(true)
-					    ->update('#__forums')
-					    ->set('forum_last_poster_colour = ' . $db->quote($user->user_colour))
-					    ->where('forum_last_poster_id = ' . (int)$existinguser->userid);
+			try {
+				//update correct group colors where applicable
+				$query = $db->getQuery(true)
+					->update('#__forums')
+					->set('forum_last_poster_colour = ' . $db->quote($user->user_colour))
+					->where('forum_last_poster_id = ' . (int)$existinguser->userid);
 
-				    $db->setQuery($query);
-				    $db->execute();
-			    } catch (Exception $e) {
-				    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
-			    }
+				$db->setQuery($query);
+				$db->execute();
+			} catch (Exception $e) {
+				$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+			}
 
-			    try {
-				    //update correct group colors where applicable
-				    $query = $db->getQuery(true)
-					    ->update('#__topics')
-					    ->set('topic_first_poster_colour = ' . $db->quote($user->user_colour))
-					    ->where('topic_poster = ' . (int)$existinguser->userid);
+			try {
+				//update correct group colors where applicable
+				$query = $db->getQuery(true)
+					->update('#__topics')
+					->set('topic_first_poster_colour = ' . $db->quote($user->user_colour))
+					->where('topic_poster = ' . (int)$existinguser->userid);
 
-				    $db->setQuery($query);
-				    $db->execute();
-			    } catch (Exception $e) {
-				    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
-			    }
+				$db->setQuery($query);
+				$db->execute();
+			} catch (Exception $e) {
+				$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+			}
 
-			    try {
-				    $query = $db->getQuery(true)
-					    ->update('#__topics')
-					    ->set('topic_last_poster_colour = ' . $db->quote($user->user_colour))
-					    ->where('topic_last_poster_id = ' . (int)$existinguser->userid);
+			try {
+				$query = $db->getQuery(true)
+					->update('#__topics')
+					->set('topic_last_poster_colour = ' . $db->quote($user->user_colour))
+					->where('topic_last_poster_id = ' . (int)$existinguser->userid);
 
-				    $db->setQuery($query);
-				    $db->execute();
-			    } catch (Exception $e) {
-				    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
-			    }
+				$db->setQuery($query);
+				$db->execute();
+			} catch (Exception $e) {
+				$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+			}
 
-			    $query = $db->getQuery(true)
-				    ->select('config_value')
-				    ->from('#__config')
-				    ->where('config_name = ' . $db->quote('newest_user_id'));
+			$query = $db->getQuery(true)
+				->select('config_value')
+				->from('#__config')
+				->where('config_name = ' . $db->quote('newest_user_id'));
 
-			    $db->setQuery($query);
-			    $newest_user_id = $db->loadResult();
-			    if ($newest_user_id == $existinguser->userid) {
-				    try {
-					    $query = $db->getQuery(true)
-						    ->update('#__config')
-						    ->set('config_value = ' . $db->quote($user->user_colour))
-						    ->where('config_name = ' . $db->quote('newest_user_id'));
+			$db->setQuery($query);
+			$newest_user_id = $db->loadResult();
+			if ($newest_user_id == $existinguser->userid) {
+				try {
+					$query = $db->getQuery(true)
+						->update('#__config')
+						->set('config_value = ' . $db->quote($user->user_colour))
+						->where('config_name = ' . $db->quote('newest_user_id'));
 
-					    $db->setQuery($query);
-						$db->execute();
-				    } catch (Exception $e) {
-					    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
-				    }
-			    }
-			    //log the group change success
-			    $this->debugger->add('debug', JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroup->groups));
-		    }
-	    } catch (Exception $e) {
-		    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
-	    }
+					$db->setQuery($query);
+					$db->execute();
+				} catch (Exception $e) {
+					$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+				}
+			}
+			//log the group change success
+			$this->debugger->add('debug', JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroup->groups));
+		}
     }
 
 	/**
@@ -641,20 +628,16 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
-	    try {
-		    //block the user
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //block the user
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $ban = new stdClass;
-		    $ban->ban_userid = $existinguser->userid;
-		    $ban->ban_start = time();
+	    $ban = new stdClass;
+	    $ban->ban_userid = $existinguser->userid;
+	    $ban->ban_start = time();
 
-		    $db->insertObject('#__banlist', $ban);
+	    $db->insertObject('#__banlist', $ban);
 
-		    $this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
-	    } catch (Exception $e) {
-		    $this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
-	    }
+	    $this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -665,20 +648,16 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
-	    try {
-		    //unblock the user
-		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = $db->getQuery(true)
-			    ->delete('#__banlist')
-			    ->where('ban_userid = ' . (int)$existinguser->userid);
+	    //unblock the user
+	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $query = $db->getQuery(true)
+		    ->delete('#__banlist')
+		    ->where('ban_userid = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
-	    } catch (Exception $e) {
-		    $this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
-	    }
+	    $this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -689,24 +668,20 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
-	    try {
-		    //activate the user
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //activate the user
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('user_type = 0')
-			    ->set('user_inactive_reason = 0')
-			    ->set('user_actkey = ' . $db->quote(''))
-			    ->where('user_id = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('user_type = 0')
+		    ->set('user_inactive_reason = 0')
+		    ->set('user_actkey = ' . $db->quote(''))
+		    ->where('user_id = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
-	    } catch (Exception $e) {
-		    $this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
-	    }
+	    $this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
@@ -717,24 +692,20 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
-	    try {
-		    //set activation key
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //set activation key
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('user_type = 1')
-			    ->set('user_inactive_reason = 1')
-			    ->set('user_actkey = ' . $db->quote($userinfo->activation))
-			    ->where('user_id = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('user_type = 1')
+		    ->set('user_inactive_reason = 1')
+		    ->set('user_actkey = ' . $db->quote($userinfo->activation))
+		    ->where('user_id = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
-	    } catch (Exception $e) {
-		    $this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
-	    }
+	    $this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**

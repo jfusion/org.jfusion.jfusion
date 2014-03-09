@@ -206,25 +206,21 @@ class JFusionUser_elgg extends JFusionUser {
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-	    try {
-	        jimport('joomla.user.helper');
-	        $existinguser->password_salt = JUserHelper::genRandomPassword(8);
-	        $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	    jimport('joomla.user.helper');
+	    $existinguser->password_salt = JUserHelper::genRandomPassword(8);
+	    $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users_entity')
-			    ->set('password = ' . $db->quote($existinguser->password))
-			    ->set('salt = ' . $db->quote($existinguser->password_salt))
-			    ->where('guid = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users_entity')
+		    ->set('password = ' . $db->quote($existinguser->password))
+		    ->set('salt = ' . $db->quote($existinguser->password_salt))
+		    ->where('guid = ' . (int)$existinguser->userid);
 
-	        $db->setQuery($query);
+	    $db->setQuery($query);
 
-		    $db->execute();
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
-	    }
+	    $db->execute();
+	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
     /**
@@ -318,27 +314,21 @@ class JFusionUser_elgg extends JFusionUser {
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
-	    try {
-		    //we need to update the email
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //we need to update the email
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users_entity')
-			    ->set('email = ' . $db->quote($userinfo->email))
-			    ->where('guid = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users_entity')
+		    ->set('email = ' . $db->quote($userinfo->email))
+		    ->where('guid = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
     
     /**
-     * blockUser
-     *
      * @param object $userinfo      holds the new user data
      * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array

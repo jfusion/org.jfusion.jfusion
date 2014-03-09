@@ -295,28 +295,24 @@ class JFusionUser_wordpress extends JFusionUser
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-	    try {
-		    // get the encryption PHP file
-		    if (!class_exists('PasswordHashOrg')) {
-			    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
-		    }
-		    $t_hasher = new PasswordHashOrg(8, true);
-		    $existinguser->password = $t_hasher->HashPassword($userinfo->password_clear);
-		    unset($t_hasher);
-		    $db = JFusionFactory::getDatabase($this->getJname());
-
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('user_pass = ' . $db->quote($existinguser->password))
-			    ->where('ID = ' . (int)$existinguser->userid);
-
-		    $db->setQuery($query);
-		    $db->execute();
-
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $e->getMessage();
+	    // get the encryption PHP file
+	    if (!class_exists('PasswordHashOrg')) {
+		    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
 	    }
+	    $t_hasher = new PasswordHashOrg(8, true);
+	    $existinguser->password = $t_hasher->HashPassword($userinfo->password_clear);
+	    unset($t_hasher);
+	    $db = JFusionFactory::getDatabase($this->getJname());
+
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('user_pass = ' . $db->quote($existinguser->password))
+		    ->where('ID = ' . (int)$existinguser->userid);
+
+	    $db->setQuery($query);
+	    $db->execute();
+
+	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	}
 
     /**
@@ -338,22 +334,18 @@ class JFusionUser_wordpress extends JFusionUser
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-	    try {
-		    //we need to update the email
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //we need to update the email
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('user_email = ' . $db->quote($userinfo->email))
-			    ->where('ID = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('user_email = ' . $db->quote($userinfo->email))
+		    ->where('ID = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 	}
 
     /**
@@ -365,7 +357,7 @@ class JFusionUser_wordpress extends JFusionUser
      */
     function blockUser($userinfo, &$existinguser, &$status) {
 		// not supported for Wordpress
-		$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': Blocking not supported by Wordpress';
+	    throw new RuntimeException('Blocking not supported by Wordpress');
 	}
 
     /**
@@ -386,21 +378,17 @@ class JFusionUser_wordpress extends JFusionUser
      * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
-	    try {
-		    //activate the user
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //activate the user
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('user_activation_key = ' . $db->quote(''))
-			    ->where('ID = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('user_activation_key = ' . $db->quote(''))
+		    ->where('ID = ' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $db->setQuery($query);
+	    $db->execute();
+	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	}
 
     /**
@@ -411,22 +399,18 @@ class JFusionUser_wordpress extends JFusionUser
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
-	    try {
-			//set activation key
-			$db = JFusionFactory::getDatabase($this->getJname());
+	    //set activation key
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('user_activation_key = ' . $db->quote($userinfo->activation))
-			    ->where('ID = ' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('user_activation_key = ' . $db->quote($userinfo->activation))
+		    ->where('ID = ' . (int)$existinguser->userid);
 
-			$db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	}
 
     /**
@@ -663,37 +647,33 @@ class JFusionUser_wordpress extends JFusionUser
      *
      * @return void
      */
-    function updateUsergroup($userinfo, &$existinguser, &$status) {
-	    try {
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
-		    } else {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+	public function updateUsergroup($userinfo, &$existinguser, &$status) {
+		$usergroups = $this->getCorrectUserGroups($userinfo);
+		if (empty($usergroups)) {
+			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		} else {
+			$db = JFusionFactory::getDatabase($this->getJname());
 
-			    $database_prefix = $this->params->get('database_prefix');
+			$database_prefix = $this->params->get('database_prefix');
 
-			    $caps = array();
-			    foreach($usergroups as $usergroup) {
-				    $newgroupname = strtolower($this->helper->getUsergroupNameWP($usergroup));
-				    $caps[$newgroupname] = '1';
-			    }
+			$caps = array();
+			foreach($usergroups as $usergroup) {
+				$newgroupname = strtolower($this->helper->getUsergroupNameWP($usergroup));
+				$caps[$newgroupname] = '1';
+			}
 
-			    $capsfield = serialize($caps);
+			$capsfield = serialize($caps);
 
-			    $query = $db->getQuery(true)
-				    ->update('#__usermeta')
-				    ->set('meta_value = ' . $db->quote($capsfield))
-				    ->where('meta_key = ' . $db->quote($database_prefix . 'capabilities'))
-				    ->where('user_id = ' . (int)$existinguser->userid);
+			$query = $db->getQuery(true)
+				->update('#__usermeta')
+				->set('meta_value = ' . $db->quote($capsfield))
+				->where('meta_key = ' . $db->quote($database_prefix . 'capabilities'))
+				->where('user_id = ' . (int)$existinguser->userid);
 
-			    $db->setQuery($query);
-			    $db->execute();
+			$db->setQuery($query);
+			$db->execute();
 
-			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
-		    }
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
-	    }
+			$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
+		}
 	}
 }

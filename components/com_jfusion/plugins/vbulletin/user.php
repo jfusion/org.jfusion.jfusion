@@ -360,29 +360,25 @@ class JFusionUser_vbulletin extends JFusionUser
 	 */
 	function updatePassword($userinfo, &$existinguser, &$status)
 	{
-		try {
-			jimport('joomla.user.helper');
-			$existinguser->password_salt = JUserHelper::genRandomPassword(3);
-			$existinguser->password = md5(md5($userinfo->password_clear) . $existinguser->password_salt);
+		jimport('joomla.user.helper');
+		$existinguser->password_salt = JUserHelper::genRandomPassword(3);
+		$existinguser->password = md5(md5($userinfo->password_clear) . $existinguser->password_salt);
 
-			$date = date('Y-m-d');
+		$date = date('Y-m-d');
 
-			$db = JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = $db->getQuery(true)
-				->update('#__user')
-				->set('passworddate = ' . $db->quote($date))
-				->set('password = ' . $db->quote($existinguser->password))
-				->set('salt = ' . $db->quote($existinguser->password_salt))
-				->where('userid  = ' . $existinguser->userid);
+		$query = $db->getQuery(true)
+			->update('#__user')
+			->set('passworddate = ' . $db->quote($date))
+			->set('password = ' . $db->quote($existinguser->password))
+			->set('salt = ' . $db->quote($existinguser->password_salt))
+			->where('userid  = ' . $existinguser->userid);
 
-			$db->setQuery($query);
-			$db->execute();
+		$db->setQuery($query);
+		$db->execute();
 
-			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
-		}
+		$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	}
 
 	/**
@@ -417,60 +413,55 @@ class JFusionUser_vbulletin extends JFusionUser
 	 */
 	function blockUser($userinfo, &$existinguser, &$status)
 	{
-		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 
-			//get the id of the banned group
-			$bannedgroup = $this->params->get('bannedgroup');
+		//get the id of the banned group
+		$bannedgroup = $this->params->get('bannedgroup');
 
-			//update the usergroup to banned
-			$query = $db->getQuery(true)
-				->update('#__user')
-				->set('usergroupid = ' . $bannedgroup)
-				->where('userid  = ' . $existinguser->userid);
+		//update the usergroup to banned
+		$query = $db->getQuery(true)
+			->update('#__user')
+			->set('usergroupid = ' . $bannedgroup)
+			->where('userid  = ' . $existinguser->userid);
 
-			$db->setQuery($query);
+		$db->setQuery($query);
 
-			$db->execute();
+		$db->execute();
 
-			//add a banned user catch to vbulletin database
-			$ban = new stdClass;
-			$ban->userid = $existinguser->userid;
-			$ban->usergroupid = $existinguser->group_id;
-			$ban->displaygroupid = $existinguser->displaygroupid;
-			$ban->customtitle = $existinguser->customtitle;
-			$ban->usertitle = $existinguser->usertitle;
-			$ban->adminid = 1;
-			$ban->bandate = time();
-			$ban->liftdate = 0;
-			$ban->reason = (!empty($status['aec'])) ? $status['block_message'] : $this->params->get('blockmessage');
+		//add a banned user catch to vbulletin database
+		$ban = new stdClass;
+		$ban->userid = $existinguser->userid;
+		$ban->usergroupid = $existinguser->group_id;
+		$ban->displaygroupid = $existinguser->displaygroupid;
+		$ban->customtitle = $existinguser->customtitle;
+		$ban->usertitle = $existinguser->usertitle;
+		$ban->adminid = 1;
+		$ban->bandate = time();
+		$ban->liftdate = 0;
+		$ban->reason = (!empty($status['aec'])) ? $status['block_message'] : $this->params->get('blockmessage');
 
-			//now append or update the new user data
+		//now append or update the new user data
 
-			$query = $db->getQuery(true)
-				->select('COUNT(*)')
-				->from('#__userban')
-				->where('userid = ' . $existinguser->userid);
+		$query = $db->getQuery(true)
+			->select('COUNT(*)')
+			->from('#__userban')
+			->where('userid = ' . $existinguser->userid);
 
-			$db->setQuery($query);
-			$banned = $db->loadResult();
+		$db->setQuery($query);
+		$banned = $db->loadResult();
 
-			if ($banned) {
-				$db->updateObject('#__userban', $ban, 'userid');
-			} else {
-				$db->insertObject('#__userban', $ban, 'userid');
-			}
-
-			$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-
-			//note that blockUser has been called
-			if (empty($status['aec'])) {
-				define('VBULLETIN_BLOCKUSER_CALLED', 1);
-			}
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
+		if ($banned) {
+			$db->updateObject('#__userban', $ban, 'userid');
+		} else {
+			$db->insertObject('#__userban', $ban, 'userid');
 		}
 
+		$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+
+		//note that blockUser has been called
+		if (empty($status['aec'])) {
+			define('VBULLETIN_BLOCKUSER_CALLED', 1);
+		}
 	}
 
 	/**
@@ -482,65 +473,61 @@ class JFusionUser_vbulletin extends JFusionUser
 	 */
 	function unblockUser($userinfo, &$existinguser, &$status)
 	{
-		try {
-			$usergroups = $this->getCorrectUserGroups($existinguser);
-			$usergroup = $usergroups[0];
+		$usergroups = $this->getCorrectUserGroups($existinguser);
+		$usergroup = $usergroups[0];
 
-			//found out what usergroup should be used
-			$bannedgroup = $this->params->get('bannedgroup');
+		//found out what usergroup should be used
+		$bannedgroup = $this->params->get('bannedgroup');
 
-			//first check to see if user is banned and if so, retrieve the prebanned fields
-			//must be something other than $db because it conflicts with vbulletin global variables
-			$db = JFusionFactory::getDatabase($this->getJname());
+		//first check to see if user is banned and if so, retrieve the prebanned fields
+		//must be something other than $db because it conflicts with vbulletin global variables
+		$db = JFusionFactory::getDatabase($this->getJname());
 
+		$query = $db->getQuery(true)
+			->select('b.*, g.usertitle AS bantitle')
+			->from('#__userban AS b')
+			->innerJoin('#__user AS u ON b.userid = u.userid')
+			->innerJoin('#__usergroup AS g ON u.usergroupid = g.usergroupid')
+			->where('b.userid = ' . $existinguser->userid);
+
+		$db->setQuery($query);
+		$result = $db->loadObject();
+
+		$defaultgroup = $usergroup->defaultgroup;
+		$displaygroup = $usergroup->displaygroup;
+
+		$defaulttitle = $this->getDefaultUserTitle($defaultgroup, $existinguser->posts);
+
+		$apidata = array(
+			"userinfo" => $userinfo,
+			"existinguser" => $existinguser,
+			"usergroups" => $usergroup,
+			"bannedgroup" => $bannedgroup,
+			"defaultgroup" => $defaultgroup,
+			"displaygroup" => $displaygroup,
+			"defaulttitle" => $defaulttitle,
+			"result" => $result
+		);
+		$response = $this->helper->apiCall('unblockUser', $apidata);
+
+		if ($result) {
+			//remove any banned user catches from vbulletin database
 			$query = $db->getQuery(true)
-				->select('b.*, g.usertitle AS bantitle')
-				->from('#__userban AS b')
-				->innerJoin('#__user AS u ON b.userid = u.userid')
-				->innerJoin('#__usergroup AS g ON u.usergroupid = g.usergroupid')
-				->where('b.userid = ' . $existinguser->userid);
+				->delete('#__userban')
+				->where('userid = ' . $existinguser->userid);
 
 			$db->setQuery($query);
-			$result = $db->loadObject();
+			$db->execute();
+		}
 
-			$defaultgroup = $usergroup->defaultgroup;
-			$displaygroup = $usergroup->displaygroup;
-
-			$defaulttitle = $this->getDefaultUserTitle($defaultgroup, $existinguser->posts);
-
-			$apidata = array(
-				"userinfo" => $userinfo,
-				"existinguser" => $existinguser,
-				"usergroups" => $usergroup,
-				"bannedgroup" => $bannedgroup,
-				"defaultgroup" => $defaultgroup,
-				"displaygroup" => $displaygroup,
-				"defaulttitle" => $defaulttitle,
-				"result" => $result
-			);
-			$response = $this->helper->apiCall('unblockUser', $apidata);
-
-			if ($result) {
-				//remove any banned user catches from vbulletin database
-				$query = $db->getQuery(true)
-					->delete('#__userban')
-					->where('userid = ' . $existinguser->userid);
-
-				$db->setQuery($query);
-				$db->execute();
-			}
-
-			if ($response['success']) {
-				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-			}
-			foreach ($response['errors'] as $error) {
-				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $error;
-			}
-			foreach ($response['debug'] as $debug) {
-				$status['debug'][] = $debug;
-			}
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
+		if ($response['success']) {
+			$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		}
+		foreach ($response['errors'] as $error) {
+			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $error;
+		}
+		foreach ($response['debug'] as $debug) {
+			$status['debug'][] = $debug;
 		}
 	}
 
@@ -553,34 +540,30 @@ class JFusionUser_vbulletin extends JFusionUser
 	 */
 	function activateUser($userinfo, &$existinguser, &$status)
 	{
-		try {
-			//found out what usergroup should be used
-			$usergroups = $this->getCorrectUserGroups($existinguser);
-			$usergroup = $usergroups[0];
+		//found out what usergroup should be used
+		$usergroups = $this->getCorrectUserGroups($existinguser);
+		$usergroup = $usergroups[0];
 
-			//update the usergroup to default group
-			$db = JFusionFactory::getDatabase($this->getJname());
+		//update the usergroup to default group
+		$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = $db->getQuery(true)
-				->update('#__user')
-				->set('usergroupid = ' . $usergroup->defaultgroup)
-				->where('userid  = ' . $existinguser->userid);
+		$query = $db->getQuery(true)
+			->update('#__user')
+			->set('usergroupid = ' . $usergroup->defaultgroup)
+			->where('userid  = ' . $existinguser->userid);
 
-			$db->setQuery($query);
-			$db->execute();
+		$db->setQuery($query);
+		$db->execute();
 
-			//remove any activation catches from vbulletin database
-			$query = $db->getQuery(true)
-				->delete('#__useractivation')
-				->where('userid = ' . $existinguser->userid);
+		//remove any activation catches from vbulletin database
+		$query = $db->getQuery(true)
+			->delete('#__useractivation')
+			->where('userid = ' . $existinguser->userid);
 
-			$db->setQuery($query);
-			$db->execute();
+		$db->setQuery($query);
+		$db->execute();
 
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
-		}
+		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	}
 
 	/**
@@ -592,60 +575,56 @@ class JFusionUser_vbulletin extends JFusionUser
 	 */
 	function inactivateUser($userinfo, &$existinguser, &$status)
 	{
-		try {
-			//found out what usergroup should be used
-			$activationgroup = $this->params->get('activationgroup');
+		//found out what usergroup should be used
+		$activationgroup = $this->params->get('activationgroup');
 
-			//update the usergroup to awaiting activation
-			$db = JFusionFactory::getDatabase($this->getJname());
+		//update the usergroup to awaiting activation
+		$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = $db->getQuery(true)
-				->update('#__user')
-				->set('usergroupid = ' . $activationgroup)
-				->where('userid  = ' . $existinguser->userid);
+		$query = $db->getQuery(true)
+			->update('#__user')
+			->set('usergroupid = ' . $activationgroup)
+			->where('userid  = ' . $existinguser->userid);
 
-			$db->setQuery($query);
-			$db->execute();
+		$db->setQuery($query);
+		$db->execute();
 
-			//update the activation status
-			//check to see if the user is already inactivated
-			$query = $db->getQuery(true)
-				->select('COUNT(*)')
-				->from('#__useractivation')
-				->where('userid = ' . $existinguser->userid);
+		//update the activation status
+		//check to see if the user is already inactivated
+		$query = $db->getQuery(true)
+			->select('COUNT(*)')
+			->from('#__useractivation')
+			->where('userid = ' . $existinguser->userid);
 
-			$db->setQuery($query);
-			$count = $db->loadResult();
-			if (empty($count)) {
-				//if not, then add an activation catch to vbulletin database
-				$useractivation = new stdClass;
-				$useractivation->userid = $existinguser->userid;
-				$useractivation->dateline = time();
-				jimport('joomla.user.helper');
-				$useractivation->activationid = JUserHelper::genRandomPassword(40);
+		$db->setQuery($query);
+		$count = $db->loadResult();
+		if (empty($count)) {
+			//if not, then add an activation catch to vbulletin database
+			$useractivation = new stdClass;
+			$useractivation->userid = $existinguser->userid;
+			$useractivation->dateline = time();
+			jimport('joomla.user.helper');
+			$useractivation->activationid = JUserHelper::genRandomPassword(40);
 
-				$usergroups = $this->getCorrectUserGroups($existinguser);
-				$usergroup = $usergroups[0];
-				$useractivation->usergroupid = $usergroup->defaultgroup;
+			$usergroups = $this->getCorrectUserGroups($existinguser);
+			$usergroup = $usergroups[0];
+			$useractivation->usergroupid = $usergroup->defaultgroup;
 
-				$db->insertObject('#__useractivation', $useractivation, 'useractivationid' );
+			$db->insertObject('#__useractivation', $useractivation, 'useractivationid' );
 
-				$apidata = array('existinguser' => $existinguser);
-				$response = $this->helper->apiCall('inactivateUser', $apidata);
-				if ($response['success']) {
-					$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-				}
-				foreach ($response['errors'] as $error) {
-					$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $error;
-				}
-				foreach ($response['debug'] as $debug) {
-					$status['debug'][] = $debug;
-				}
-			} else {
+			$apidata = array('existinguser' => $existinguser);
+			$response = $this->helper->apiCall('inactivateUser', $apidata);
+			if ($response['success']) {
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 			}
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
+			foreach ($response['errors'] as $error) {
+				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $error;
+			}
+			foreach ($response['debug'] as $debug) {
+				$status['debug'][] = $debug;
+			}
+		} else {
+			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		}
 	}
 
@@ -726,7 +705,10 @@ class JFusionUser_vbulletin extends JFusionUser
 
 					//does the user still need to be activated?
 					if ($setAsNeedsActivation) {
-						$this->inactivateUser($userinfo, $status['userinfo'], $status);
+						try {
+							$this->inactivateUser($userinfo, $status['userinfo'], $status);
+						} catch (Exception $e) {
+						}
 					}
 
 					//return the good news
@@ -795,12 +777,12 @@ class JFusionUser_vbulletin extends JFusionUser
 	 *
 	 * @return void
 	 */
-	function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
 		//check to see if we have a group_id in the $userinfo, if not return
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+			throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
 		} else {
 			$usergroup = $usergroups[0];
 			$defaultgroup = $usergroup->defaultgroup;
@@ -1097,7 +1079,10 @@ class JFusionUser_vbulletin extends JFusionUser
 		if (!empty($existinguser)) {
 			if ($settings['vb_block_user']) {
 				$userinfo->block =  1;
-				$this->blockUser($userinfo, $existinguser, $status);
+				try {
+					$this->blockUser($userinfo, $existinguser, $status);
+				} catch(Exception $e) {
+				}
 			}
 
 			if ($settings['vb_update_expiration_group'] && !empty($settings['vb_expiration_groupid'])) {
@@ -1143,7 +1128,10 @@ class JFusionUser_vbulletin extends JFusionUser
 		if (!empty($existinguser)) {
 			if ($settings['vb_unblock_user']) {
 				$userinfo->block =  0;
-				$this->unblockUser($userinfo, $existinguser, $status);
+				try {
+					$this->unblockUser($userinfo, $existinguser, $status);
+				} catch (Exception $e) {
+				}
 			}
 
 			if ($settings['vb_update_subscription_group'] && !empty($settings['vb_subscription_groupid'])) {
@@ -1199,7 +1187,10 @@ class JFusionUser_vbulletin extends JFusionUser
 			if (!empty($existinguser)) {
 				if ($settings['vb_block_user_registration']) {
 					$userinfo->block =  1;
-					$this->blockUser($userinfo, $existinguser, $status);
+					try {
+						$this->blockUser($userinfo, $existinguser, $status);
+					} catch(Exception $e) {
+					}
 				}
 			}
 		}

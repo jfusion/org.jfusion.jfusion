@@ -724,23 +724,19 @@ class JFusionUser_magento extends JFusionUser {
 		// this can be complicated so we are going to use the Magento customer API
 		// for the time being. Speed is not a great issue here
 		// connect to host
-		try {
-			$proxi = $this->connectToApi($status);
+		$proxi = $this->connectToApi($status);
 
-			try {
-				$proxi->call('customer.update', array($user_id, $update));
-			} catch (Soapfault $fault) {
-				/** @noinspection PhpUndefinedFieldInspection */
-				$status['error'][] = 'Magento API: Could not update email of user with id ' . $user_id . ' , message: ' . $fault->faultstring;
-			}
-			try {
-				$proxi->endSession();
-			} catch (Soapfault $fault) {
-				/** @noinspection PhpUndefinedFieldInspection */
-				$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
-			}
-		} catch (Exception $e) {
-			$status['error'][] = $e->getMessage();
+		try {
+			$proxi->call('customer.update', array($user_id, $update));
+		} catch (Soapfault $fault) {
+			/** @noinspection PhpUndefinedFieldInspection */
+			$status['error'][] = 'Magento API: Could not update email of user with id ' . $user_id . ' , message: ' . $fault->faultstring;
+		}
+		try {
+			$proxi->endSession();
+		} catch (Soapfault $fault) {
+			/** @noinspection PhpUndefinedFieldInspection */
+			$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
 		}
 	}
 
@@ -751,27 +747,23 @@ class JFusionUser_magento extends JFusionUser {
 	 *
 	 * @return void
 	 */
-	function updateUsergroup($userinfo, &$existinguser, &$status) {
-		try {
-			$usergroups = $this->getCorrectUserGroups($userinfo);
-			if (empty($usergroups)) {
-				throw new RuntimeException(JText::_('USERGROUP_MISSING'));
-			} else {
-				$usergroup = $usergroups[0];
-				//set the usergroup in the user table
-				$db = JFusionFactory::getDataBase($this->getJname());
+	public function updateUsergroup($userinfo, &$existinguser, &$status) {
+		$usergroups = $this->getCorrectUserGroups($userinfo);
+		if (empty($usergroups)) {
+			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		} else {
+			$usergroup = $usergroups[0];
+			//set the usergroup in the user table
+			$db = JFusionFactory::getDataBase($this->getJname());
 
-				$query = $db->getQuery(true)
-					->update('#__customer_entity')
-					->set('group_id = ' . (int)$usergroup)
-					->where('entity_id = ' . (int)$existinguser->userid);
+			$query = $db->getQuery(true)
+				->update('#__customer_entity')
+				->set('group_id = ' . (int)$usergroup)
+				->where('entity_id = ' . (int)$existinguser->userid);
 
-				$db->setQuery($query);
-				$db->execute();
-				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
-			}
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
+			$db->setQuery($query);
+			$db->execute();
+			$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 		}
 	}
 }

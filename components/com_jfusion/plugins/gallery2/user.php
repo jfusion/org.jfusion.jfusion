@@ -287,7 +287,7 @@ class JFusionUser_gallery2 extends JFusionUser
                         foreach ($usergroups as $group) {
                             $ret = GalleryCoreApi::addUserToGroup($user->id, (int)$group);
                             if ($ret) {
-                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $group;
+                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $ret->getErrorMessage();
                             }
                         }
                         $status['userinfo'] = $this->_getUser($user);
@@ -308,18 +308,17 @@ class JFusionUser_gallery2 extends JFusionUser
      *
      * @return void
      */
-    function updateUsergroup($userinfo, &$existinguser, &$status) {
+	public function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    $this->helper->loadGallery2Api(false);
         $usergroups = $this->getCorrectUserGroups($userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
+	        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
         } else {
             foreach($existinguser->groups as $group) {
                 if (!in_array($group, $usergroups, true)) {
                     $ret = GalleryCoreApi::removeUserFromGroup($existinguser->userid, (int)$group);
                     if ($ret) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
-                        return;
+	                    throw new RuntimeException($ret->getErrorMessage());
                     }
                 }
             }
@@ -327,8 +326,7 @@ class JFusionUser_gallery2 extends JFusionUser
                 if (!in_array($group, $existinguser->groups, true)) {
                     $ret = GalleryCoreApi::addUserToGroup($existinguser->userid, (int)($group));
                     if ($ret) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
-                        return;
+	                    throw new RuntimeException($ret->getErrorMessage());
                     }
                 }
             }
@@ -412,45 +410,5 @@ class JFusionUser_gallery2 extends JFusionUser
             }
         }
         GalleryEmbed::done();
-    }
-
-    /**
-     * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     *
-     * @return void
-     */
-    function blockUser($userinfo, &$existinguser, &$status) {
-    }
-
-    /**
-     * @param object $userinfo
-     * @param object &$existinguser
-     * @param array &$status
-     *
-     * @return void
-     */
-    function unblockUser($userinfo, &$existinguser, &$status) {
-    }
-
-    /**
-     * @param $userinfo
-     * @param &$existinguser
-     * @param &$status
-     *
-     * @return void
-     */
-    function activeUser($userinfo, &$existinguser, &$status) {
-    }
-
-    /**
-     * @param $userinfo
-     * @param &$existinguser
-     * @param &$status
-     *
-     * @return void
-     */
-    function inactiveUser($userinfo, &$existinguser, &$status) {
     }
 }

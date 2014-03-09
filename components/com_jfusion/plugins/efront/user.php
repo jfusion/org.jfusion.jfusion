@@ -105,16 +105,16 @@ class JFusionUser_efront extends JFusionUser
 	        $status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'));
 
             $expires = $this->params->get('secure', false);
-	            $name = 'cookie_login';
-	            $value = $userinfo->username;
-	            $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+	        $name = 'cookie_login';
+	        $value = $userinfo->username;
+	        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 
-	            $name = 'cookie_password';
-	            $value = '';
-	            $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+	        $name = 'cookie_password';
+	        $value = '';
+	        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 
-  //          unset($_COOKIE['cookie_login']);
-  //          unset($_COOKIE['cookie_password']);
+			//unset($_COOKIE['cookie_login']);
+			//unset($_COOKIE['cookie_password']);
 
 
 
@@ -228,23 +228,19 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-	    try {
-	        $md5_key = $this->params->get('md5_key');
-	        $existinguser->password = md5($userinfo->password_clear . $md5_key);
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	    $md5_key = $this->params->get('md5_key');
+	    $existinguser->password = md5($userinfo->password_clear . $md5_key);
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('password =' . $db->quote($existinguser->password))
-			    ->where('id =' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('password =' . $db->quote($existinguser->password))
+		    ->where('id =' . (int)$existinguser->userid);
 
-	        $db->setQuery($query);
+	    $db->setQuery($query);
 
-		    $db->execute();
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
-	    }
+	    $db->execute();
+	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
     /**
@@ -266,20 +262,17 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('email =' . $db->quote($userinfo->email))
-			    ->where('id =' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('email =' . $db->quote($userinfo->email))
+		    ->where('id =' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
-		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $db->setQuery($query);
+	    $db->execute();
+
+	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
 
     /**
@@ -290,21 +283,17 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
-	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('active = 0')
-			    ->where('id =' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('active = 0')
+		    ->where('id =' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 
     /**
@@ -315,21 +304,17 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
-	    try {
-		    //unblock the user
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //unblock the user
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('active = 1')
-			    ->where('id =' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('active = 1')
+		    ->where('id =' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
-		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $db->setQuery($query);
+	    $db->execute();
+	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 
     /**
@@ -340,21 +325,17 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
-	    try {
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('pending = 0')
-			    ->where('id =' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('pending = 0')
+		    ->where('id =' . (int)$existinguser->userid);
 
-	        $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
     /**
@@ -365,21 +346,17 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
-	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->update('#__users')
-			    ->set('pending = 1')
-			    ->where('id =' . (int)$existinguser->userid);
+	    $query = $db->getQuery(true)
+		    ->update('#__users')
+		    ->set('pending = 1')
+		    ->where('id =' . (int)$existinguser->userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
-	    }
+	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
     /**
@@ -597,40 +574,36 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
-	    try {
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+	    } else {
+		    $usergroup = $usergroups[0];
+		    $db = JFusionFactory::getDataBase($this->getJname());
+		    if ($usergroup< 3) {
+			    $user_type = $this->helper->groupIdToName($usergroup);
+			    $user_types_ID = 0;
 		    } else {
-			    $usergroup = $usergroups[0];
-			    $db = JFusionFactory::getDataBase($this->getJname());
-			    if ($usergroup< 3) {
-				    $user_type = $this->helper->groupIdToName($usergroup);
-				    $user_types_ID = 0;
-			    } else {
-				    $user_types_ID = $usergroup-2;
-
-				    $query = $db->getQuery(true)
-					    ->select('basic_user_type')
-					    ->from('#__user_types')
-					    ->where('id = ' . $db->quote($user_types_ID));
-
-				    $db->setQuery($query);
-				    $user_type = $db->loadResult();
-			    }
+			    $user_types_ID = $usergroup-2;
 
 			    $query = $db->getQuery(true)
-				    ->update('#__users')
-				    ->set('user_type =' . $db->quote($user_type))
-				    ->set('user_types_ID =' . $db->quote($user_types_ID))
-				    ->where('id =' . (int)$existinguser->userid);
+				    ->select('basic_user_type')
+				    ->from('#__user_types')
+				    ->where('id = ' . $db->quote($user_types_ID));
 
 			    $db->setQuery($query);
-			    $db->execute();
-			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+			    $user_type = $db->loadResult();
 		    }
-	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('user_type =' . $db->quote($user_type))
+			    ->set('user_types_ID =' . $db->quote($user_types_ID))
+			    ->where('id =' . (int)$existinguser->userid);
+
+		    $db->setQuery($query);
+		    $db->execute();
+		    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 	    }
     }
 }

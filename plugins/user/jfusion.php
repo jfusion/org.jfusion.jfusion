@@ -377,7 +377,11 @@ class plgUserJfusion extends JPlugin
 						    //make sure we have the clear password
 						    if (!empty($userinfo->password_clear)) {
 							    $status = array('error' => array(), 'debug' => array());
-							    $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $status);
+							    try {
+								    $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $status);
+							    } catch (Exception $e) {
+								    $JFusionJoomla->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
+							    }
 							    $JFusionJoomla->mergeStatus($status);
 							    $debugger->merge($JFusionJoomla->debugger->get());
 						    }

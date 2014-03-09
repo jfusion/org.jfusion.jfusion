@@ -119,7 +119,6 @@ class JFusionUser_dokuwiki extends JFusionUser
 	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
 	    }
-
         return $status;
     }
 
@@ -332,7 +331,7 @@ class JFusionUser_dokuwiki extends JFusionUser
      *
      * @return void
      */
-    function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup($userinfo, &$existinguser, &$status)
     {
     }
 }
