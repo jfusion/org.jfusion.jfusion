@@ -87,7 +87,11 @@ class jfusionViewusergroups extends JViewLegacy {
 		        if (isset($update->{$plugin->name})) {
 			        $this->plugins[$key]->update = $update->{$plugin->name};
 		        }
-		        $groups[$plugin->name] = $admin->getUsergroupList();
+		        try {
+			        $groups[$plugin->name] = $admin->getUsergroupList();
+		        } catch (Exception $e) {
+			        JFusionFunction::raiseError($e, $admin->getJname());
+		        }
 	        }
 
 	        $groups = json_encode($groups);

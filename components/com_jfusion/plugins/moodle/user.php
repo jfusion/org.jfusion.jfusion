@@ -344,6 +344,8 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param object $userinfo      Object containing the new userinfo
 	 * @param object &$existinguser Object containing the old userinfo
 	 * @param array  &$status       Array containing the errors and result of the function
+	 *
+	 * @throws RuntimeException
 	 */
 	function blockUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
@@ -376,6 +378,8 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param object $userinfo      Object containing the new userinfo
 	 * @param object &$existinguser Object containing the old userinfo
 	 * @param array  &$status       Array containing the errors and result of the function
+	 *
+	 * @throws RuntimeException
 	 */
 	function unblockUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());

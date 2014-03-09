@@ -743,8 +743,9 @@ class JFusionUser_magento extends JFusionUser {
 	/**
 	 * @param object $userinfo
 	 * @param object $existinguser
-	 * @param array $status
+	 * @param array  $status
 	 *
+	 * @throws RuntimeException
 	 * @return void
 	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status) {

@@ -76,7 +76,7 @@ class JFusionAuth extends JFusionPlugin
 	 *
 	 * @since   3.2
 	 */
-	protected function comparePassword($known, $unknown)
+	public final function comparePassword($known, $unknown)
 	{
 		// Prevent issues if string length is 0
 		$known .= chr(0);

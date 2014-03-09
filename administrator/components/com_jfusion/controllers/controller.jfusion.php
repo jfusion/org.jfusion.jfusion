@@ -70,23 +70,26 @@ class JFusionController extends JControllerLegacy
 				    $post['source_path'] .= DIRECTORY_SEPARATOR;
 			    }
 
-			    $params = $JFusionPlugin->setupFromPath($post['source_path']);
+			    try {
+				    $params = $JFusionPlugin->setupFromPath($post['source_path']);
+			    } catch (Exception $e) {
+				    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+				    $params = array();
+			    }
+
 			    if (!empty($params)) {
 				    //save the params first in order for elements to utilize data
 				    $JFusionPlugin->saveParameters($params, true);
 
 				    //make sure the usergroup params are available on first view
-				    $config_status = $JFusionPlugin->checkConfig();
-				    $db = JFactory::getDBO();
-
-				    $query = $db->getQuery(true)
-					    ->update('#__jfusion')
-					    ->set('status = ' . $config_status['config'])
-					    ->where('name = ' . $db->quote($jname));
-
-				    $db->setQuery($query);
-				    $db->execute();
-
+				    try {
+					    $config_status = $JFusionPlugin->checkConfig();
+					    $status = $config_status['config'];
+				    } catch (Exception $e) {
+					    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+					    $status = 0;
+				    }
+				    $JFusionPlugin->updateStatus($status);
 				    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, JText::_('WIZARD_SUCCESS'), 'message');
 			    } else {
 				    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname);
@@ -229,16 +232,15 @@ class JFusionController extends JControllerLegacy
 			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 		    } else {
 			    //update the status field
-			    $config_status = $JFusionPlugin->checkConfig();
-			    $db = JFactory::getDBO();
+			    try {
+				    $config_status = $JFusionPlugin->checkConfig();
+				    $status = $config_status['config'];
+			    } catch (Exception $e) {
+				    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+				    $status = 0;
+			    }
+			    $JFusionPlugin->updateStatus($status);
 
-			    $query = $db->getQuery(true)
-				    ->update('#__jfusion')
-				    ->set('status = ' . $config_status['config'])
-				    ->where('name = ' . $db->quote($jname));
-
-			    $db->setQuery($query);
-			    $db->execute();
 			    if (empty($config_status['config'])) {
 				    throw new RuntimeException($config_status['message']);
 			    } else {
@@ -900,16 +902,15 @@ JS;
 						    } else {
 							    //update the status field
 
-							    $config_status = $JFusionPlugin->checkConfig();
-							    $db = JFactory::getDBO();
-
-							    $query = $db->getQuery(true)
-								    ->update('#__jfusion')
-								    ->set('status = ' . $config_status['config'])
-								    ->where('name = ' . $db->quote($jname));
-
-							    $db->setQuery($query);
-							    $db->execute();
+							    try {
+								    $config_status = $JFusionPlugin->checkConfig();
+								    $status = $config_status['config'];
+							    } catch (Exception $e) {
+								    $config_status['message'] = $e->getMessage();
+								    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+								    $status = 0;
+							    }
+							    $JFusionPlugin->updateStatus($status);
 							    if (empty($config_status['config'])) {
 								    throw new RuntimeException($config_status['message']);
 							    }

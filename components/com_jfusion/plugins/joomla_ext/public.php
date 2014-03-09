@@ -151,21 +151,20 @@ class JFusionPublic_joomla_ext extends JFusionPublic
 	 *
 	 * @param object $userinfo userinfo
 	 *
+	 * @throws RuntimeException
+	 *
 	 * @return array status
 	 */
 	public function setLanguageFrontEnd($userinfo = null)
 	{
-		$status = array('error' => array(), 'debug' => array());
+		$status = array('error' => '', 'debug' => '');
 		$user = JFusionFactory::getUser($this->getJname());
 		$existinguser = (isset($userinfo)) ? $user->getUser($userinfo) : null;
 		// If the user is connected we change his account parameter in function of the language front end
 		if ($existinguser) {
 			$userinfo->language = JFactory::getLanguage()->getTag();
-			try {
-				$user->updateUserLanguage($userinfo, $existinguser, $status, $this->getJname());
-			} catch (Exception $e) {
-				$status['error'][] = JText::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage();
-			}
+
+			$user->updateUserLanguage($userinfo, $existinguser, $status, $this->getJname());
 		} else {
 			$status['debug'] = JText::_('NO_USER_DATA_FOUND');
 		}

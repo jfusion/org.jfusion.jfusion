@@ -273,16 +273,17 @@ class JFusionUser_smf2 extends JFusionUser {
 
 	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
-    
-    /**
-     * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the existing user data
-     * @param array  &$status       Status array
-     *
-     * @access public
-     *
-     * @return void
-     */
+
+	/**
+	 * @param object $userinfo      holds the new user data
+	 * @param object &$existinguser holds the existing user data
+	 * @param array  &$status       Status array
+	 *
+	 * @throws RuntimeException
+	 * @access public
+	 *
+	 * @return void
+	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status)
     {
 	    //get the usergroup and determine if working in advanced or simple mode

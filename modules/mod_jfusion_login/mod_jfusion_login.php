@@ -67,7 +67,7 @@ try {
 	        $lostusername_url = JFusionFunction::routeURL($LinkPlugin->getLostUsernameURL(), $link_itemid);
 	    }
 	    if (empty($register_url) && method_exists($LinkPlugin, 'getRegistrationURL')) {
-	        $register_url = JFusionFunction::routeURL($LinkPlugin->getRegistrationURL(), $link_itemid);
+		    $register_url = JFusionFunction::routeURL($LinkPlugin->getRegistrationURL(), $link_itemid);
 	    }
 	    //now find out from which plugin the avatars need to be displayed
 	    $itemid = $params->get('itemidAvatarPMs');

@@ -89,7 +89,11 @@ class jfusionViewplugineditor extends JViewLegacy
 	        //output detailed configuration warnings for the plugin
 	        $JFusionPlugin = JFusionFactory::getAdmin($jname);
 	        if ($JFusionPlugin->isConfigured()) {
-		        $JFusionPlugin->debugConfig();
+		        try {
+			        $JFusionPlugin->debugConfig();
+		        } catch (Exception $e) {
+			        JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+		        }
 	        }
             //render view
             parent::display($tpl);

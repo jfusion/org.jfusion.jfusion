@@ -617,9 +617,13 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 					JFusionFunction::raiseWarning(JText::_('NO_GROUP_GROUPID_DEFINED'), $this->getJname());
 				}
 			}
-			$grouplist = $this->getUsergroupList();
-			if (empty($grouplist)) {
-				JFusionFunction::raiseWarning(JText::_('NO_GROUPS_MAPPED'), $this->getJname());
+			try {
+				$grouplist = $this->getUsergroupList();
+				if (empty($grouplist)) {
+					JFusionFunction::raiseWarning(JText::_('NO_GROUPS_MAPPED'), $this->getJname());
+				}
+			} catch (Exception $e) {
+				JFusionFunction::raiseError($e, $this->getJname());
 			}
 		} else {
 			JFusionFunction::raiseWarning(JText::_('NO_USERTABLE_DEFINED'), $this->getJname());

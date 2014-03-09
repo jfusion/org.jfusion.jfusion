@@ -137,7 +137,12 @@ class plgSearchJfusion extends JPlugin
 				$pluginParam = new JRegistry('');
 			}
 			$itemid = $pluginParam->get('itemid');
-			$results = $searchMe->getSearchResults($text, $phrase, $pluginParam, $itemid, $ordering);
+			try {
+				$results = $searchMe->getSearchResults($text, $phrase, $pluginParam, $itemid, $ordering);
+			} catch (Exception $e) {
+				JFusionFunction::raiseError($e,$searchMe->getJname());
+				$results = array();
+			}
 			if (is_array($results)) {
 				//check to see if the results contain the appropriate field
 				if (isset($results[0]->$sortField)) {

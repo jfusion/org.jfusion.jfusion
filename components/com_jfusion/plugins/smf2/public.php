@@ -219,12 +219,14 @@ class JFusionPublic_smf2 extends JFusionPublic {
                 $JFusionMaster = JFusionFactory::getPublic($master->name);
                 $source_url = $this->params->get('source_url');
                 $source_url = rtrim($source_url, '/');
-				if ($action == 'register') {
-                    header('Location: ' . $source_url . '/' . $JFusionMaster->getRegistrationURL());
-                } else {
-                    header('Location: ' . $source_url . '/' . $JFusionMaster->getLostPasswordURL());
-                }
-                exit();
+	            try {
+		            if ($action == 'register') {
+			            header('Location: ' . $source_url . '/' . $JFusionMaster->getRegistrationURL());
+		            } else {
+			            header('Location: ' . $source_url . '/' . $JFusionMaster->getLostPasswordURL());
+		            }
+		            exit();
+	            } catch (Exception $e) {}
             }
         }
         //handle dual logout

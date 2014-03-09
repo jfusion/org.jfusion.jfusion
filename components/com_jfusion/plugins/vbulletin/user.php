@@ -773,8 +773,9 @@ class JFusionUser_vbulletin extends JFusionUser
 	/**
 	 * @param object $userinfo
 	 * @param object $existinguser
-	 * @param array $status
+	 * @param array  $status
 	 *
+	 * @throws RuntimeException
 	 * @return void
 	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status)
@@ -1053,7 +1054,14 @@ class JFusionUser_vbulletin extends JFusionUser
 		$settings['vb_block_reason_registration'] = array('inputE', 'vB - Registration Ban Reason', 'Message displayed as the reason the user has been banned.');
 
 		$admin = JFusionFactory::getAdmin($this->getJname());
-		$usergroups = $admin->getUsergroupList();
+
+		try {
+			$usergroups = $admin->getUsergroupList();
+		} catch (Exception $e) {
+			$usergroups = array();
+			JFusionFunction::raiseError($e, $admin->getJname());
+		}
+
 		array_unshift($usergroups, JHTML::_('select.option', '0', '- Select a Group -', 'id', 'name'));
 		$v = (isset($current_settings['vb_expiration_groupid'])) ? $current_settings['vb_expiration_groupid'] : '';
 		$settings['lists']['vb_expiration_groupid'] = JHTML::_('select.genericlist', $usergroups,  'vb_expiration_groupid', '', 'id', 'name', $v);
@@ -1107,7 +1115,7 @@ class JFusionUser_vbulletin extends JFusionUser
 					$status['debug'][] = $debug;
 				}
 			} else {
-				$this->updateUser($userinfo, 0);
+				$this->updateUser($userinfo);
 			}
 		}
 	}
@@ -1156,7 +1164,7 @@ class JFusionUser_vbulletin extends JFusionUser
 					$status['debug'][] = $debug;
 				}
 			} else {
-				$this->updateUser($userinfo, 0);
+				$this->updateUser($userinfo);
 			}
 		}
 

@@ -74,7 +74,7 @@ class JFusionUser extends JFusionPlugin
      *
      * @return array array($identifier, $identifier_type)
      */
-    function getUserIdentifier(&$userinfo, $username_col, $email_col, $lowerEmail = true)
+	public final function getUserIdentifier(&$userinfo, $username_col, $email_col, $lowerEmail = true)
     {
         //the discussion bot may need to override the identifier_type to prevent user hijacking by guests
         $override = (defined('OVERRIDE_IDENTIFIER')) ? OVERRIDE_IDENTIFIER : 'default';
@@ -181,6 +181,8 @@ class JFusionUser extends JFusionPlugin
      *
      * @param object $userinfo  contains the userinfo
      * @param int    $overwrite determines if the userinfo can be overwritten
+     *
+     * @throws RuntimeException
      *
      * @return array result Array containing the result of the user update
      */
@@ -392,6 +394,8 @@ class JFusionUser extends JFusionPlugin
      * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
+     * @throws RuntimeException
+     *
      * @return boolean Whether updateUsergroup was executed or not
      */
     function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
@@ -413,6 +417,8 @@ class JFusionUser extends JFusionPlugin
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
+     *
+     * @throws RuntimeException
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
@@ -427,6 +433,8 @@ class JFusionUser extends JFusionPlugin
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
+     *
+     * @throws RuntimeException
      */
     function updateUsername($userinfo, &$existinguser, &$status)
     {
@@ -441,6 +449,8 @@ class JFusionUser extends JFusionPlugin
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
+     *
+     * @throws RuntimeException
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
@@ -455,6 +465,8 @@ class JFusionUser extends JFusionPlugin
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
+     *
+     * @throws RuntimeException
      */
 	public function updateUsergroup($userinfo, &$existinguser, &$status)
     {
@@ -469,6 +481,8 @@ class JFusionUser extends JFusionPlugin
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
+     *
+     * @throws RuntimeException
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
@@ -483,6 +497,8 @@ class JFusionUser extends JFusionPlugin
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
+     *
+     * @throws RuntimeException
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
@@ -497,6 +513,8 @@ class JFusionUser extends JFusionPlugin
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
+     *
+     * @throws RuntimeException
      */
     function activateUser($userinfo, &$existinguser, &$status)
     {
@@ -511,6 +529,8 @@ class JFusionUser extends JFusionPlugin
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
+     *
+     * @throws RuntimeException
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {

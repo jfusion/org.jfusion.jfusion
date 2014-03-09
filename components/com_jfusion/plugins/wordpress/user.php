@@ -348,13 +348,14 @@ class JFusionUser_wordpress extends JFusionUser
 	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 	}
 
-    /**
-     * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     *
-     * @return void
-     */
+	/**
+	 * @param object $userinfo
+	 * @param object $existinguser
+	 * @param array  $status
+	 *
+	 * @throws RuntimeException
+	 * @return void
+	 */
     function blockUser($userinfo, &$existinguser, &$status) {
 		// not supported for Wordpress
 	    throw new RuntimeException('Blocking not supported by Wordpress');
@@ -640,13 +641,14 @@ class JFusionUser_wordpress extends JFusionUser
 		return $status;
 	}
 
-    /**
-     * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     *
-     * @return void
-     */
+	/**
+	 * @param object $userinfo
+	 * @param object $existinguser
+	 * @param array  $status
+	 *
+	 * @throws RuntimeException
+	 * @return void
+	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status) {
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {

@@ -110,8 +110,7 @@ class JFusionAuth_joomla_ext extends JFusionAuth
 				$status = array('error' => array(), 'debug' => array());
 				try {
 					$user->updatePassword($userinfo, $old, $status);
-				} catch (Exception $e) {
-				}
+				} catch (Exception $e) {}
 			}
 		}
 		return $match;

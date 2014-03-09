@@ -201,8 +201,9 @@ class JFusionUser_universal extends JFusionUser
 	/**
 	 * @param object $userinfo
 	 * @param object $existinguser
-	 * @param array $status
+	 * @param array  $status
 	 *
+	 * @throws RuntimeException
 	 * @return void
 	 */
 	function updatePassword($userinfo, &$existinguser, &$status)
@@ -291,8 +292,9 @@ class JFusionUser_universal extends JFusionUser
 	/**
 	 * @param object $userinfo
 	 * @param object $existinguser
-	 * @param array $status
+	 * @param array  $status
 	 *
+	 * @throws RuntimeException
 	 * @return void
 	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status)
@@ -384,8 +386,9 @@ class JFusionUser_universal extends JFusionUser
 	/**
 	 * @param object $userinfo
 	 * @param object $existinguser
-	 * @param array $status
+	 * @param array  $status
 	 *
+	 * @throws RuntimeException
 	 * @return void
 	 */
 	function blockUser($userinfo, &$existinguser, &$status)
@@ -434,8 +437,9 @@ class JFusionUser_universal extends JFusionUser
 	/**
 	 * @param object $userinfo
 	 * @param object $existinguser
-	 * @param array $status
+	 * @param array  $status
 	 *
+	 * @throws RuntimeException
 	 * @return void
 	 */
 	function unblockUser($userinfo, &$existinguser, &$status)
@@ -468,8 +472,9 @@ class JFusionUser_universal extends JFusionUser
 	/**
 	 * @param object $userinfo
 	 * @param object $existinguser
-	 * @param array $status
+	 * @param array  $status
 	 *
+	 * @throws RuntimeException
 	 * @return void
 	 */
 	function activateUser($userinfo, &$existinguser, &$status)
@@ -498,8 +503,9 @@ class JFusionUser_universal extends JFusionUser
 	/**
 	 * @param object $userinfo
 	 * @param object $existinguser
-	 * @param array $status
+	 * @param array  $status
 	 *
+	 * @throws RuntimeException
 	 * @return void
 	 */
 	function inactivateUser($userinfo, &$existinguser, &$status)

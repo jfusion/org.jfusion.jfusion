@@ -365,13 +365,14 @@ class JFusionUser_prestashop extends JFusionUser
 	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
-    /**
-     * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     *
-     * @return void
-     */
+	/**
+	 * @param object $userinfo
+	 * @param object $existinguser
+	 * @param array  $status
+	 *
+	 * @throws RuntimeException
+	 * @return void
+	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status) {
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {

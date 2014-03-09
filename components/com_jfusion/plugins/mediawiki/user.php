@@ -277,13 +277,14 @@ class JFusionUser_mediawiki extends JFusionUser {
 	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
 
-    /**
-     * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     *
-     * @return void
-     */
+	/**
+	 * @param object $userinfo
+	 * @param object $existinguser
+	 * @param array  $status
+	 *
+	 * @throws RuntimeException
+	 * @return void
+	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);

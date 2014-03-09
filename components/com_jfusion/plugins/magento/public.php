@@ -61,10 +61,13 @@ class JFusionPublic_magento extends JFusionPublic {
 
     /**
      * @param null $userinfo
+     *
+     * @throws RuntimeException
+     *
      * @return array|string
      */
     function setLanguageFrontEnd($userinfo = null) {
-        $status = array('error' => array(), 'debug' => array());
+	    $status = array('error' => '', 'debug' => '');
         // The language is selected by the library magelib when the magento framework is started
         /*if (JPluginHelper::isEnabled('system', 'magelib')) {
             $status['debug'] = JText::_('STEP_SKIPPED_MAGELIB_INSTALLED');

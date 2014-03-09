@@ -184,13 +184,14 @@ class JFusionUser_mybb extends JFusionUser {
 	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 
-    /**
-     * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     *
-     * @return void
-     */
+	/**
+	 * @param object $userinfo
+	 * @param object $existinguser
+	 * @param array  $status
+	 *
+	 * @throws RuntimeException
+	 * @return void
+	 */
     function unblockUser($userinfo, &$existinguser, &$status) {
 	    $db = JFusionFactory::getDatabase($this->getJname());
 	    //found out what the old usergroup was
@@ -257,13 +258,14 @@ class JFusionUser_mybb extends JFusionUser {
 	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
-    /**
-     * @param object $userinfo
-     * @param object &$existinguser
-     * @param array &$status
-     *
-     * @return void
-     */
+	/**
+	 * @param object $userinfo
+	 * @param object &$existinguser
+	 * @param array  &$status
+	 *
+	 * @throws RuntimeException
+	 * @return void
+	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status)
     {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);

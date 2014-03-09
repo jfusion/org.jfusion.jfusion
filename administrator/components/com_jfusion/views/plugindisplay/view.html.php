@@ -111,19 +111,18 @@ class jfusionViewplugindisplay extends JViewLegacy {
 
 		    if($record->status==1) {
 			    //added check for database configuration to prevent error after moving sites
-			    $status =  $JFusionPlugin->checkConfig();
+			    try {
+				    $config_status = $JFusionPlugin->checkConfig();
+				    $status = $config_status['config'];
+			    } catch (Exception $e) {
+				    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+				    $status = 0;
+			    }
 			    //do a check to see if the status field is correct
-			    if ($status['config'] != $record->status) {
+			    if ($status != $record->status) {
 				    //update the status and deactivate the plugin
 
-				    $query = $db->getQuery(true)
-					    ->update('#__jfusion')
-					    ->set('status = ' . $db->quote($status['config']))
-					    ->where('name = ' . $db->quote($record->name));
-				    $db->setQuery($query);
-				    $db->execute();
-				    //update the record status for the resExecute of the code
-				    $record->status = $status['config'];
+				    $JFusionPlugin->updateStatus($status);
 			    }
 		    }
 
@@ -267,7 +266,13 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    $record->registrationimage = 'components/com_jfusion/images/clear.png';
 			    $record->registrationalt =  '';
 		    } else {
-			    $record->registration  = $JFusionPlugin->allowRegistration();
+			    try {
+				    $record->registration = $JFusionPlugin->allowRegistration();
+			    } catch (Exception $e) {
+				    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+				    $record->registration = false;
+			    }
+
 			    if (!empty($record->registration)) {
 				    $record->registrationimage = 'components/com_jfusion/images/tick.png';
 				    $record->registrationalt =  JText::_('ENABLED');
@@ -278,7 +283,12 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    }
 
 		    if($record->status == 1) {
-			    $usergroup = $JFusionPlugin->getDefaultUsergroup();
+			    try {
+				    $usergroup = $JFusionPlugin->getDefaultUsergroup();
+			    } catch (Exception $e) {
+				    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+				    $usergroup = null;
+			    }
 
 			    if ($usergroup) {
 					if (is_array($usergroup)) {

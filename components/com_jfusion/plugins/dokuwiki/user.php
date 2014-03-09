@@ -87,6 +87,7 @@ class JFusionUser_dokuwiki extends JFusionUser
 					    $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
 				    }
 				    //check for advanced usergroup sync
+
 				    if (JFusionFunction::updateUsergroups($this->getJname())) {
 					    $usergroups = $this->getCorrectUserGroups($userinfo);
 					    if (!empty($usergroups)) {

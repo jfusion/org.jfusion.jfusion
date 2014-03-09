@@ -69,20 +69,9 @@ class JFusionAdmin extends JFusionPlugin
      * @return array List of usergroups
      */
     function getUsergroupList()
-    {
-            $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
-
-            $groups = array();
-            if ($usergroups !== null) {
-                $list = $this->getUsergroupList();
-                foreach ($list as $group) {
-                    if(in_array($group ->id, $usergroups)){
-                        $groups[] = $group->name;
-                    }
-                }
-            }
-            return $groups;
-        }
+	{
+        return array();
+    }
 
 
     /**
@@ -96,12 +85,16 @@ class JFusionAdmin extends JFusionPlugin
 
         $groups = array();
         if ($usergroups !== null) {
-            $list = $this->getUsergroupList();
-            foreach ($list as $group) {
-                if(in_array($group ->id, $usergroups)){
-                    $groups[] = $group->name;
-                }
-            }
+	        try {
+		        $list = $this->getUsergroupList();
+		        foreach ($list as $group) {
+			        if(in_array($group ->id, $usergroups)){
+				        $groups[] = $group->name;
+			        }
+		        }
+	        } catch (Exception $e) {
+		        JFusionFunction::raiseError($e, $this->getJname());
+	        }
         }
         return $groups;
     }
@@ -224,6 +217,21 @@ class JFusionAdmin extends JFusionPlugin
 	    }
         return $status;
     }
+
+	/**
+	 * @param int $status
+	 */
+	public final function updateStatus($status = 0) {
+		try {
+			$db = JFactory::getDBO();
+			$query = $db->getQuery(true)
+				->update('#__jfusion')
+				->set('status = ' . $db->quote($status))
+				->where('name = ' . $db->quote($this->getJname()));
+			$db->setQuery($query);
+			$db->execute();
+		} catch (Exception $e) {}
+	}
 
     /**
      * Function that checks if the plugin has a valid config
@@ -399,7 +407,7 @@ class JFusionAdmin extends JFusionPlugin
      * @param int $itemid
      * @return bool
      */
-    function isValidItemID($itemid)
+    public final function isValidItemID($itemid)
     {
         $result = false;
         if ($itemid) {
@@ -464,71 +472,71 @@ JS;
 	{
 		$jname = $this->getJname();
 		$result = false;
-		if (!empty($jname)) {
-			$db = JFactory::getDBO();
+		try {
+			if (!empty($jname)) {
+				$db = JFactory::getDBO();
 
-			if (isset($post['source_url'])) {
-				//check for trailing slash in URL, in order for us not to worry about it later
-				if (substr($post['source_url'], -1) != '/') {
-					$post['source_url'] .= '/';
-				}
+				if (isset($post['source_url'])) {
+					//check for trailing slash in URL, in order for us not to worry about it later
+					if (substr($post['source_url'], -1) != '/') {
+						$post['source_url'] .= '/';
+					}
 
-				//now also check to see that the url starts with http:// or https://
-				if (substr($post['source_url'], 0, 7) != 'http://' && substr($post['source_url'], 0, 8) != 'https://') {
-					if (substr($post['source_url'], 0, 1) != '/') {
-						$post['source_url'] = 'http://' . $post['source_url'];
+					//now also check to see that the url starts with http:// or https://
+					if (substr($post['source_url'], 0, 7) != 'http://' && substr($post['source_url'], 0, 8) != 'https://') {
+						if (substr($post['source_url'], 0, 1) != '/') {
+							$post['source_url'] = 'http://' . $post['source_url'];
+						}
 					}
 				}
-			}
-			if (isset($post['source_path'])) {
-				if (!empty($post['source_path'])) {
-					if (substr($post['source_path'], -1) != DIRECTORY_SEPARATOR) {
-						$post['source_path'] .= DIRECTORY_SEPARATOR;
-					}
-					if (!is_dir($post['source_path'])) {
-						JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
+				if (isset($post['source_path'])) {
+					if (!empty($post['source_path'])) {
+						if (substr($post['source_path'], -1) != DIRECTORY_SEPARATOR) {
+							$post['source_path'] .= DIRECTORY_SEPARATOR;
+						}
+						if (!is_dir($post['source_path'])) {
+							JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
+						}
 					}
 				}
-			}
 
-			if ($wizard) {
-				//data submitted by the wizard so merge the data with existing params if they do indeed exist
+				if ($wizard) {
+					//data submitted by the wizard so merge the data with existing params if they do indeed exist
+
+					$query = $db->getQuery(true)
+						->select('params')
+						->from('#__jfusion')
+						->where('name = ' . $db->quote($jname));
+
+					$db->setQuery($query);
+					$params = $db->loadResult();
+					$params = new JRegistry($params);
+
+					$existing_params = $params->toArray();
+					if (is_array($existing_params)) {
+						$post = array_merge($existing_params, $post);
+					}
+				}
+
+				$data = new JRegistry($post);
+				//set the current parameters in the jfusion table
 
 				$query = $db->getQuery(true)
-					->select('params')
-					->from('#__jfusion')
+					->update('#__jfusion')
+					->set('params = ' . $db->quote($data->toString()))
 					->where('name = ' . $db->quote($jname));
 
 				$db->setQuery($query);
-				$params = $db->loadResult();
-				$params = new JRegistry($params);
 
-				$existing_params = $params->toArray();
-				if (is_array($existing_params)) {
-					$post = array_merge($existing_params, $post);
-				}
-			}
-
-			$data = new JRegistry($post);
-			//set the current parameters in the jfusion table
-
-			$query = $db->getQuery(true)
-				->update('#__jfusion')
-				->set('params = ' . $db->quote($data->toString()))
-				->where('name = ' . $db->quote($jname));
-
-			$db->setQuery($query);
-			try {
 				$db->execute();
 
 				//reset the params instance for this plugin
 				JFusionFactory::getParams($jname, true);
 				$result = true;
-			} catch (Exception $e ) {
-				//there was an error saving the parameters
-				JFusionFunction::raiseWarning($e, $jname);
-				$result = false;
 			}
+		} catch (Exception $e ) {
+			//there was an error saving the parameters
+			JFusionFunction::raiseWarning($e, $jname);
 		}
 		return $result;
 	}

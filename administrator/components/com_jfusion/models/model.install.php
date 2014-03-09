@@ -478,17 +478,13 @@ class JFusionPluginInstaller extends JObject
 		    $JFusionAdmin = JFusionFactory::getAdmin($jname);
 		    if ($JFusionAdmin->isConfigured()) {
 			    //if this plugin had been valid, call its uninstall function if it exists
-			    $result = $JFusionAdmin->uninstall();
+			    list($success, $reasons) = $JFusionAdmin->uninstall();
+
 			    $reason = '';
-			    if (is_array($result)) {
-				    $success = $result[0];
-				    if (is_array($result[1])) {
-					    $reason = implode('</li><li>' . $jname . ': ', $result[1]);
-				    } elseif (!empty($result[1])) {
-					    $reason = $result[1];
-				    }
+			    if (is_array($reasons)) {
+				    $reason = implode('</li><li>' . $jname . ': ', $reasons);
 			    } else {
-				    $success = $jname . ': ' . $result;
+				    $reason = $jname . ': ' . $reasons;
 			    }
 			    if (!$success) {
 				    throw new RuntimeException(JText::_('PLUGIN') . ' ' . $jname . ' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason);

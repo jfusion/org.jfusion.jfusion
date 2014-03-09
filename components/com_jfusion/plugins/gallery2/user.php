@@ -301,13 +301,14 @@ class JFusionUser_gallery2 extends JFusionUser
         GalleryEmbed::done();
     }
 
-    /**
-     * @param object $userinfo
-     * @param object &$existinguser
-     * @param array &$status
-     *
-     * @return void
-     */
+	/**
+	 * @param object $userinfo
+	 * @param object &$existinguser
+	 * @param array  &$status
+	 *
+	 * @throws RuntimeException
+	 * @return void
+	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    $this->helper->loadGallery2Api(false);
         $usergroups = $this->getCorrectUserGroups($userinfo);

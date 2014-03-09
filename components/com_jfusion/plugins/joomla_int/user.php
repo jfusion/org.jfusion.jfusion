@@ -548,8 +548,9 @@ class JFusionUser_joomla_int extends JFusionUser {
 	 * @param object $userinfo          Object containing the new userinfo
 	 * @param object &$existinguser     Object containing the old userinfo
 	 * @param array  &$status           Array containing the errors and result of the function
-	 * @param bool $fire_user_plugins needs more detail
+	 * @param bool   $fire_user_plugins needs more detail
 	 *
+	 * @throws RuntimeException
 	 * @return string updates are passed on into the $status array
 	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status, $fire_user_plugins = true)
@@ -628,6 +629,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 	 * @param object &$existinguser Object containing the old userinfo
 	 * @param array  &$status       Array containing the errors and result of the function
 	 *
+	 * @throws Exception
 	 * @return string updates are passed on into the $status array
 	 */
 	public function updatePassword($userinfo, &$existinguser, &$status)

@@ -324,10 +324,10 @@ class JFusionUsersync
 								    $syncdata['user_offset']++;
 								    if ($action == 'master') {
 									    $userinfo = $SlaveUser->getUser($userlist[$j]);
-									    $status = $MasterUser->updateUser($userinfo, 0);
+									    $status = $MasterUser->updateUser($userinfo);
 								    } else {
 									    $userinfo = $MasterUser->getUser($userlist[$j]);
-									    $status = $SlaveUser->updateUser($userinfo, 0);
+									    $status = $SlaveUser->updateUser($userinfo);
 								    }
 
 								    //populate userinfo if not done by plugin

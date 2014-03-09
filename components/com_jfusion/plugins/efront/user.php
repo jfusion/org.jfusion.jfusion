@@ -566,13 +566,14 @@ class JFusionUser_efront extends JFusionUser
         return $status;
     }
 
-    /**
-     * @param object $userinfo
-     * @param object &$existinguser
-     * @param array &$status
-     *
-     * @return void
-     */
+	/**
+	 * @param object $userinfo
+	 * @param object &$existinguser
+	 * @param array  &$status
+	 *
+	 * @throws RuntimeException
+	 * @return void
+	 */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
