@@ -931,9 +931,13 @@ class JFusionUser_vbulletin extends JFusionUser
 						$user_identifiers = $db->loadObject();
 						$userinfo = $this->getUser($user_identifiers);
 						//create a new session
-						$status = $this->createSession($userinfo, $options);
-						if ($debug) {
-							JFusionFunction::raise('notice', $status, $this->getJname());
+						try {
+							$status = $this->createSession($userinfo, $options);
+							if ($debug) {
+								JFusionFunction::raise('notice', $status, $this->getJname());
+							}
+						} catch (Exception $e) {
+							JfusionFunction::raiseError($e, $this->getJname());
 						}
 						//signal that session was changed
 						return 1;
@@ -955,9 +959,13 @@ class JFusionUser_vbulletin extends JFusionUser
 						$userinfo->password_clear = $JUser->password_clear;
 
 						$options['clientid'][] = '0';
-						$status = $JoomlaUser->destroySession($userinfo, $options);
-						if ($debug) {
-							JFusionFunction::raise('notice', $status, $this->getJname());
+						try {
+							$status = $JoomlaUser->destroySession($userinfo, $options);
+							if ($debug) {
+								JFusionFunction::raise('notice', $status, $this->getJname());
+							}
+						} catch (Exception $e) {
+							JfusionFunction::raiseError($e, $JoomlaUser->getJname());
 						}
 					}
 				} elseif ($debug) {
@@ -971,10 +979,14 @@ class JFusionUser_vbulletin extends JFusionUser
 				}
 
 				if (!empty($cookie_userid) && $cookie_userid != $session_userid) {
-					$status = $this->destroySession(null, null);
-					if ($debug) {
-						JFusionFunction::raiseNotice('Cookie userid did not match session userid thus destroyed vB\'s session.', $this->getJname());
-						JFusionFunction::raise('notice', $status, $this->getJname());
+					try {
+						$status = $this->destroySession(null, null);
+						if ($debug) {
+							JFusionFunction::raiseNotice('Cookie userid did not match session userid thus destroyed vB\'s session.', $this->getJname());
+							JFusionFunction::raise('notice', $status, $this->getJname());
+						}
+					} catch (Exception $e) {
+						JfusionFunction::raiseError($e, $this->getJname());
 					}
 				}
 
@@ -991,7 +1003,11 @@ class JFusionUser_vbulletin extends JFusionUser
 						JFusionFunction::raiseNotice('Keep alive disabled so kill vBs session', $this->getJname());
 					}
 					//something fishy or user chose not to use remember me so let's destroy vB's session
-					$this->destroySession(null, null);
+					try {
+						$this->destroySession(null, null);
+					} catch (Exception $e) {
+						JfusionFunction::raiseError($e, $this->getJname());
+					}
 					return 1;
 				} elseif ($debug) {
 					JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session', $this->getJname());
@@ -1016,10 +1032,15 @@ class JFusionUser_vbulletin extends JFusionUser
 					if (!empty($userinfo)) {
 						global $JFusionActivePlugin;
 						$JFusionActivePlugin = $this->getJname();
-						$status = $JoomlaUser->createSession($userinfo, $options);
-						if ($debug) {
-							JFusionFunction::raise('notice', $status, $this->getJname());
+						try {
+							$status = $JoomlaUser->createSession($userinfo, $options);
+							if ($debug) {
+								JFusionFunction::raise('notice', $status, $this->getJname());
+							}
+						} catch (Exception $e) {
+							JfusionFunction::raiseError($e, $JoomlaUser->getJname());
 						}
+
 						//no need to signal refresh as Joomla will recognize this anyway
 						return 0;
 					}
@@ -1083,40 +1104,42 @@ class JFusionUser_vbulletin extends JFusionUser
 		$status['aec'] = 1;
 		$status['block_message'] = $settings['vb_block_reason'];
 
-		$existinguser = $this->getUser($userinfo);
-		if (!empty($existinguser)) {
-			if ($settings['vb_block_user']) {
-				$userinfo->block =  1;
-				try {
+		try {
+			$existinguser = $this->getUser($userinfo);
+			if (!empty($existinguser)) {
+				if ($settings['vb_block_user']) {
+					$userinfo->block =  1;
+
 					$this->blockUser($userinfo, $existinguser, $status);
-				} catch(Exception $e) {
+				}
+
+				if ($settings['vb_update_expiration_group'] && !empty($settings['vb_expiration_groupid'])) {
+					$usertitle = $this->getDefaultUserTitle($settings['vb_expiration_groupid']);
+
+					$apidata = array(
+						'userinfo' => $userinfo,
+						'existinguser' => $existinguser,
+						'aec' => 1,
+						'aecgroupid' => $settings['vb_expiration_groupid'],
+						'usertitle' => $usertitle
+					);
+					$response = $this->helper->apiCall('unblockUser', $apidata);
+
+					if ($response['success']) {
+						$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $settings['vb_expiration_groupid'];
+					}
+					foreach ($response['errors'] AS $error) {
+						$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+					}
+					foreach ($response['debug'] as $debug) {
+						$status['debug'][] = $debug;
+					}
+				} else {
+					$this->updateUser($userinfo);
 				}
 			}
-
-			if ($settings['vb_update_expiration_group'] && !empty($settings['vb_expiration_groupid'])) {
-				$usertitle = $this->getDefaultUserTitle($settings['vb_expiration_groupid']);
-
-				$apidata = array(
-					'userinfo' => $userinfo,
-					'existinguser' => $existinguser,
-					'aec' => 1,
-					'aecgroupid' => $settings['vb_expiration_groupid'],
-					'usertitle' => $usertitle
-				);
-				$response = $this->helper->apiCall('unblockUser', $apidata);
-
-				if ($response['success']) {
-					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $settings['vb_expiration_groupid'];
-				}
-				foreach ($response['errors'] AS $error) {
-					$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
-				}
-				foreach ($response['debug'] as $debug) {
-					$status['debug'][] = $debug;
-				}
-			} else {
-				$this->updateUser($userinfo);
-			}
+		} catch (Exception $e) {
+			$status['error'][] = $e->getMessage();
 		}
 	}
 
@@ -1132,48 +1155,53 @@ class JFusionUser_vbulletin extends JFusionUser
 		$status['debug'] = array();
 		$status['aec'] = 1;
 
-		$existinguser = $this->getUser($userinfo);
-		if (!empty($existinguser)) {
-			if ($settings['vb_unblock_user']) {
-				$userinfo->block =  0;
-				try {
-					$this->unblockUser($userinfo, $existinguser, $status);
-				} catch (Exception $e) {
+		try {
+			$existinguser = $this->getUser($userinfo);
+			if (!empty($existinguser)) {
+				if ($settings['vb_unblock_user']) {
+					$userinfo->block =  0;
+					try {
+						$this->unblockUser($userinfo, $existinguser, $status);
+					} catch (Exception $e) {
+					}
+				}
+
+				if ($settings['vb_update_subscription_group'] && !empty($settings['vb_subscription_groupid'])) {
+					$usertitle = $this->getDefaultUserTitle($settings['vb_subscription_groupid']);
+
+					$apidata = array(
+						'userinfo' => $userinfo,
+						'existinguser' => $existinguser,
+						'aec' => 1,
+						'aecgroupid' => $settings['vb_subscription_groupid'],
+						'usertitle' => $usertitle
+					);
+					$response = $this->helper->apiCall('unblockUser', $apidata);
+
+					if ($response['success']) {
+						$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $settings['vb_subscription_groupid'];
+					}
+					foreach ($response['errors'] AS $error) {
+						$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+					}
+					foreach ($response['debug'] as $debug) {
+						$status['debug'][] = $debug;
+					}
+				} else {
+					$this->updateUser($userinfo);
 				}
 			}
 
-			if ($settings['vb_update_subscription_group'] && !empty($settings['vb_subscription_groupid'])) {
-				$usertitle = $this->getDefaultUserTitle($settings['vb_subscription_groupid']);
+			$mainframe = JFactory::getApplication();
+			if (!$mainframe->isAdmin()) {
+				//login to vB
+				$options = array();
+				$options['remember'] = 1;
 
-				$apidata = array(
-					'userinfo' => $userinfo,
-					'existinguser' => $existinguser,
-					'aec' => 1,
-					'aecgroupid' => $settings['vb_subscription_groupid'],
-					'usertitle' => $usertitle
-				);
-				$response = $this->helper->apiCall('unblockUser', $apidata);
-
-				if ($response['success']) {
-					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $settings['vb_subscription_groupid'];
-				}
-				foreach ($response['errors'] AS $error) {
-					$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
-				}
-				foreach ($response['debug'] as $debug) {
-					$status['debug'][] = $debug;
-				}
-			} else {
-				$this->updateUser($userinfo);
+				$this->createSession($existinguser, $options);
 			}
-		}
-
-		$mainframe = JFactory::getApplication();
-		if (!$mainframe->isAdmin()) {
-			//login to vB
-			$options = array();
-			$options['remember'] = 1;
-			$this->createSession($existinguser, $options);
+		} catch (Exception $e) {
+			$status['error'][] = $e->getMessage();
 		}
 	}
 

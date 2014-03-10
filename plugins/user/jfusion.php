@@ -73,6 +73,8 @@ class plgUserJfusion extends JPlugin
         }
         //create an array to store the debug info
         $debug_info = array();
+	    $error_info = array();
+	    $master_userinfo = null;
         //prevent any output by the plugins (this could prevent cookies from being passed to the header)
         ob_start();
         $Itemid_backup = JFactory::getApplication()->input->getInt('Itemid', 0);
@@ -134,82 +136,110 @@ class plgUserJfusion extends JPlugin
                     $JoomlaUser->username = $storedUsername;
                 }
             }
-            $JFusionMaster = JFusionFactory::getUser($master->name);
-            //update the master user if not joomla_int
-            if ($master->name != 'joomla_int') {                
-                $master_userinfo = $JFusionMaster->getUser($JoomlaUser->olduserinfo);
-                //if the username was updated, call the updateUsername function before calling updateUser
-                if ($updateUsername) {
-                    $updateUsernameStatus = array();
-                    if (!empty($master_userinfo)) {
-                        $JFusionMaster->updateUsername($JoomlaUser, $master_userinfo, $updateUsernameStatus);
-                        if (!empty($updateUsernameStatus['error'])) {
-                            $debug_info[$master->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $updateUsernameStatus['error'];
-                        }
-                        $debug_info[$master->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') ] = $updateUsernameStatus['debug'];
-                    } else {
-                        $debug_info[$master->name] = JText::_('NO_USER_DATA_FOUND');
-                    }
-                }
-                //run the update user to ensure any other userinfo is updated as well
-                $MasterUser = $JFusionMaster->updateUser($JoomlaUser, 1);
-                if (!empty($MasterUser['error'])) {
-                    $debug_info[$master->name] = $MasterUser['error'];
-                }
-                //make sure the userinfo is available
-                if (empty($MasterUser['userinfo'])) {
-                    $MasterUser['userinfo'] = $JFusionMaster->getUser($JoomlaUser);
-                }
-                $debug_info[$master->name] = $MasterUser['debug'];
-                //update the jfusion_users_plugin table
-                JFusionFunction::updateLookup($MasterUser['userinfo'], $JoomlaUser->id, $master->name);
-            } else {
-	            //Joomla is master
-// commented out because we should use the joomla use object (in out plugins)
-//	            $master_userinfo = $JoomlaUser;
-	            $master_userinfo = $JFusionMaster->getUser($JoomlaUser);
-            }
-            if ( !empty($JoomlaUser->password_clear) ) {
-            	$master_userinfo->password_clear = $JoomlaUser->password_clear;
-            }
-            //update the user details in any JFusion slaves
-            $slaves = JFusionFactory::getPlugins('slave');
-            foreach ($slaves as $slave) {
-                $JFusionSlave = JFusionFactory::getUser($slave->name);
-                //if the username was updated, call the updateUsername function before calling updateUser
-                if ($updateUsername) {
-                    $slave_userinfo = $JFusionSlave->getUser($JoomlaUser->olduserinfo);
-                    if (!empty($slave_userinfo)) {
-                        $updateUsernameStatus = array();
-                        $JFusionSlave->updateUsername($master_userinfo, $slave_userinfo, $updateUsernameStatus);
-                        if (!empty($updateUsernameStatus['error'])) {
-                            $debug_info[$slave->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $updateUsernameStatus['error'];
-                        }
-                        $debug_info[$slave->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') ] = $updateUsernameStatus['debug'];
-                    } else {
-                        $debug_info[$slave->name] = JText::_('NO_USER_DATA_FOUND');
-                    }
-                }
-                $SlaveUser = $JFusionSlave->updateUser($master_userinfo, 1);
+	        try {
+	            $JFusionMaster = JFusionFactory::getUser($master->name);
+	            //update the master user if not joomla_int
+	            if ($master->name != 'joomla_int') {
+			            $master_userinfo = $JFusionMaster->getUser($JoomlaUser->olduserinfo);
+			            //if the username was updated, call the updateUsername function before calling updateUser
+			            if ($updateUsername) {
+				            $updateUsernameStatus = array();
+				            if (!empty($master_userinfo)) {
+					            $JFusionMaster->updateUsername($JoomlaUser, $master_userinfo, $updateUsernameStatus);
+					            if (!empty($updateUsernameStatus['error'])) {
+						            $error_info[$master->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $updateUsernameStatus['error'];
+					            }
+					            if (!empty($updateUsernameStatus['debug'])) {
+						            $debug_info[$master->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG') ] = $updateUsernameStatus['debug'];
+					            }
+				            } else {
+					            $error_info[$master->name] = JText::_('NO_USER_DATA_FOUND');
+				            }
+			            }
+			            try {
+				            //run the update user to ensure any other userinfo is updated as well
+				            $MasterUser = $JFusionMaster->updateUser($JoomlaUser, 1);
+				            if (!empty($MasterUser['error'])) {
+					            $error_info[$master->name] = $MasterUser['error'];
+				            }
+				            if (!empty($MasterUser['debug'])) {
+					            $debug_info[$master->name] = $MasterUser['debug'];
+				            }
+				            //make sure the userinfo is available
+				            if (empty($MasterUser['userinfo'])) {
+					            $userinfo = $JFusionMaster->getUser($JoomlaUser);
+				            } else {
+					            $userinfo = $MasterUser['userinfo'];
+				            }
+				            //update the jfusion_users_plugin table
+				            JFusionFunction::updateLookup($userinfo, $JoomlaUser->id, $master->name);
+			            } catch (Exception $e) {
+				            $error_info[$master->name] = array($e->getMessage());
+			            }
+	            } else {
+		            //Joomla is master
+	// commented out because we should use the joomla use object (in out plugins)
+	//	            $master_userinfo = $JoomlaUser;
+		            $master_userinfo = $JFusionMaster->getUser($JoomlaUser);
+	            }
+	        } catch (Exception $e) {
+		        $error_info[$master->name] = array($e->getMessage());
+	        }
 
-                if (!empty($SlaveUser['error'])) {
-                    if (!is_array($SlaveUser['error'])) {
-                        $SlaveUser['error'] = array($SlaveUser['error']);
-                    }
-                    $debug_info[$slave->name] = $SlaveUser['error'];
-                    if (!empty($SlaveUser['debug'])) {
-                        if (!is_array($SlaveUser['debug'])) {
-                            $SlaveUser['debug'] = array($SlaveUser['debug']);
-                        }
-                        $debug_info[$slave->name] = $debug_info[$slave->name] + $SlaveUser['debug'];
-                    }
-                } else {
-                    $debug_info[$slave->name] = $SlaveUser['debug'];
-                }
+			if ($master_userinfo) {
+				if ( !empty($JoomlaUser->password_clear) ) {
+					$master_userinfo->password_clear = $JoomlaUser->password_clear;
+				}
+				//update the user details in any JFusion slaves
+				$slaves = JFusionFactory::getPlugins('slave');
+				foreach ($slaves as $slave) {
+					try {
+						$JFusionSlave = JFusionFactory::getUser($slave->name);
+						//if the username was updated, call the updateUsername function before calling updateUser
+						if ($updateUsername) {
+							$slave_userinfo = $JFusionSlave->getUser($JoomlaUser->olduserinfo);
+							if (!empty($slave_userinfo)) {
+								$updateUsernameStatus = array();
+								$JFusionSlave->updateUsername($master_userinfo, $slave_userinfo, $updateUsernameStatus);
+								if (!empty($updateUsernameStatus['error'])) {
+									$error_info[$slave->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $updateUsernameStatus['error'];
+								}
+								if (!empty($updateUsernameStatus['debug'])) {
+									$debug_info[$slave->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG') ] = $updateUsernameStatus['debug'];
+								}
+							} else {
+								$error_info[$slave->name] = JText::_('NO_USER_DATA_FOUND');
+							}
+						}
+						$SlaveUser = $JFusionSlave->updateUser($master_userinfo, 1);
+						if (!empty($SlaveUser['error'])) {
+							if (!is_array($SlaveUser['error'])) {
+								$error_info[$slave->name] = array($SlaveUser['error']);
+							} else {
+								$error_info[$slave->name] = $SlaveUser['error'];
+							}
+						}
+						if (!empty($SlaveUser['debug'])) {
+							if (!is_array($SlaveUser['debug'])) {
+								$debug_info[$slave->name] = array($SlaveUser['debug']);
+							} else {
+								$debug_info[$slave->name] = $SlaveUser['debug'];
+							}
+						}
+						if (empty($SlaveUser['userinfo'])) {
+							$userinfo = $JFusionSlave->getUser($master_userinfo);
+						} else {
+							$userinfo = $SlaveUser['userinfo'];
+						}
 
-                //update the jfusion_users_plugin table
-                JFusionFunction::updateLookup($SlaveUser['userinfo'], $JoomlaUser->id, $slave->name);
-            }
+						//update the jfusion_users_plugin table
+						JFusionFunction::updateLookup($userinfo, $JoomlaUser->id, $slave->name);
+					} catch (Exception $e) {
+						$error_info[$slave->name] = $debug_info[$slave->name] + array($e->getMessage());
+					}
+				}
+			}
+
 	        //check to see if the Joomla database is still connected in case the plugin messed it up
 	        JFusionFunction::reconnectJoomlaDb();
         }
@@ -224,6 +254,7 @@ class plgUserJfusion extends JPlugin
         $isAdministrator = JFusionFunction::isAdministrator();
         if ($isAdministrator === true) {
 	        $this->raise('notice', $debug_info);
+	        $this->raise('error', $error_info);
         }
         //stop output buffer
         ob_end_clean();
@@ -329,27 +360,33 @@ class plgUserJfusion extends JPlugin
 						    $params = JFusionFactory::getParams('joomla_int');
 						    $autoregister = $params->get('autoregister', 0);
 						    if ($autoregister == 1) {
-							    $debugger->add('init', JText::_('CREATING_MASTER_USER'));
-							    $status = array('error' => array(), 'debug' => array());
-							    //try to create a Master user
-							    $JFusionMaster->createUser($auth_userinfo, $status);
-							    $JFusionMaster->mergeStatus($status);
-							    $status = $JFusionMaster->debugger->get();
+							    try {
+								    $debugger->add('init', JText::_('CREATING_MASTER_USER'));
+								    $status = array('error' => array(), 'debug' => array());
+								    //try to create a Master user
+								    $JFusionMaster->createUser($auth_userinfo, $status);
+								    $JFusionMaster->mergeStatus($status);
+								    $status = $JFusionMaster->debugger->get();
 
-							    if (empty($status['error'])) {
-								    //success
-								    //make sure the userinfo is available
-								    if (!empty($status['userinfo'])) {
-									    $userinfo = $status['userinfo'];
+								    if (empty($status['error'])) {
+									    //success
+									    //make sure the userinfo is available
+									    if (!empty($status['userinfo'])) {
+										    $userinfo = $status['userinfo'];
+									    } else {
+										    $userinfo = $JFusionMaster->getUser($auth_userinfo);
+									    }
+
+									    $debugger->add('init', JText::_('MASTER') . ' ' . JText::_('USER') . ' ' . JText::_('CREATE') . ' ' . JText::_('SUCCESS'));
 								    } else {
-									    $userinfo = $JFusionMaster->getUser($auth_userinfo);
+									    //could not create user
+									    $debugger->add('init', $master->name . ' ' . JText::_('USER') . ' ' . JText::_('CREATE') . ' ' . JText::_('ERROR') . ' ' . $status['error']);
+									    $this->raise('error', $status['error'], $master->name . ': ' . JText::_('USER') . ' ' . JText::_('CREATE'));
+									    $success = -1;
 								    }
-
-								    $debugger->add('init', JText::_('MASTER') . ' ' . JText::_('USER') . ' ' . JText::_('CREATE') . ' ' . JText::_('SUCCESS'));
-							    } else {
-								    //could not create user
-								    $debugger->add('init', $master->name . ' ' . JText::_('USER') . ' ' . JText::_('CREATE') . ' ' . JText::_('ERROR') . ' ' . $status['error']);
-								    $this->raise('error', $status['error'], $master->name . ': ' . JText::_('USER') . ' ' . JText::_('CREATE'));
+							    } catch (Exception $e) {
+								    JfusionFunction::raiseError($e, $JFusionMaster->getJname());
+								    $debugger->add('error', $e->getMessage());
 								    $success = -1;
 							    }
 						    } else {
@@ -367,26 +404,32 @@ class plgUserJfusion extends JPlugin
 
 				    //if logging in via Joomla backend, create a Joomla session and do nothing else to prevent lockouts
 				    if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
-					    $JoomlaUserinfo = (empty($JoomlaUserinfo)) ? $JFusionJoomla->getUser($userinfo) : $JoomlaUserinfo;
-					    $JoomlaSession = $JFusionJoomla->createSession($JoomlaUserinfo, $options);
-					    if (!empty($JoomlaSession['error'])) {
-						    //no Joomla session could be created -> deny login
-						    $this->raise('error', $JoomlaSession['error'], 'joomla_int: ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
-						    $success = -1;
-					    } else {
-						    //make sure we have the clear password
-						    if (!empty($userinfo->password_clear)) {
-							    $status = array('error' => array(), 'debug' => array());
-							    try {
-								    $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $status);
-							    } catch (Exception $e) {
-								    $JFusionJoomla->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
-							    }
-							    $JFusionJoomla->mergeStatus($status);
-							    $debugger->merge($JFusionJoomla->debugger->get());
-						    }
+					    try {
+					        $JoomlaUserinfo = (empty($JoomlaUserinfo)) ? $JFusionJoomla->getUser($userinfo) : $JoomlaUserinfo;
 
-						    $success = 1;
+						    $JoomlaSession = $JFusionJoomla->createSession($JoomlaUserinfo, $options);
+						    if (!empty($JoomlaSession['error'])) {
+							    //no Joomla session could be created -> deny login
+							    $this->raise('error', $JoomlaSession['error'], 'joomla_int: ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
+							    $success = -1;
+						    } else {
+							    //make sure we have the clear password
+							    if (!empty($userinfo->password_clear)) {
+								    $status = array('error' => array(), 'debug' => array());
+								    try {
+									    $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $status);
+								    } catch (Exception $e) {
+									    $JFusionJoomla->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
+								    }
+								    $JFusionJoomla->mergeStatus($status);
+								    $debugger->merge($JFusionJoomla->debugger->get());
+							    }
+							    $success = 1;
+						    }
+					    } catch (Exception $e) {
+						    JfusionFunction::raiseError($e, $JFusionJoomla->getJname());
+						    $debugger->add('error', $e->getMessage());
+						    $success = -1;
 					    }
 				    } else  {
 					    // See if the user has been blocked or is not activated
@@ -394,18 +437,26 @@ class plgUserJfusion extends JPlugin
 						    //make sure the block is also applied in slave software
 						    $slaves = JFusionFunction::getSlaves();
 						    foreach ($slaves as $slave) {
-							    if ($JFusionActivePlugin != $slave->name) {
-								    $JFusionSlave = JFusionFactory::getUser($slave->name);
-								    $SlaveUser = $JFusionSlave->updateUser($userinfo, $overwrite);
-								    //make sure the userinfo is available
-								    if (empty($SlaveUser['userinfo'])) {
-									    $SlaveUser['userinfo'] = $JFusionSlave->getUser($userinfo);
+							    try {
+								    if ($JFusionActivePlugin != $slave->name) {
+									    $JFusionSlave = JFusionFactory::getUser($slave->name);
+									    $SlaveUser = $JFusionSlave->updateUser($userinfo, $overwrite);
+									    //make sure the userinfo is available
+									    if (empty($SlaveUser['userinfo'])) {
+										    $SlaveUser['userinfo'] = $JFusionSlave->getUser($userinfo);
+									    }
+									    if (!empty($SlaveUser['error'])) {
+										    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), $SlaveUser['error']);
+									    }
+									    if (!empty($SlaveUser['debug'])) {
+										    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), $SlaveUser['debug']);
+									    }
+
+									    $debugger->set($slave->name . ' ' . JText::_('USERINFO'), $SlaveUser['userinfo']);
 								    }
-								    if (!empty($SlaveUser['error'])) {
-									    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), $SlaveUser['error']);
-								    }
-								    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), $SlaveUser['debug']);
-								    $debugger->set($slave->name . ' ' . JText::_('USERINFO'), $SlaveUser['userinfo']);
+							    } catch (Exception $e) {
+								    JfusionFunction::raiseError($e, $slave->name);
+								    $debugger->add('error', $e->getMessage());
 							    }
 						    }
 						    if (!empty($userinfo->block)) {
@@ -418,59 +469,81 @@ class plgUserJfusion extends JPlugin
 							    $success = -1;
 						    }
 					    } else {
+						    $JoomlaUser = array('userinfo' => null, 'error' => '');
 						    //check to see if we need to setup a Joomla session
 						    if ($master->name != 'joomla_int') {
-							    //setup the Joomla user
-							    $JoomlaUser = $JFusionJoomla->updateUser($userinfo, $overwrite);
-							    if (!empty($JoomlaUser['error'])) {
-								    //no Joomla user could be created, fatal error
-								    $debugger->set('joomla_int ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), $JoomlaUser['debug']);
-								    $debugger->set('joomla_int ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), $JoomlaUser['error']);
-								    $this->raise('error', $JoomlaUser['error'], 'joomla_int: ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
-								    $success = -1;
-							    } else {
-								    $debugger->set('joomla_int ' . JText::_('USER') . ' ' . JText::_('UPDATE'), $JoomlaUser['debug']);
-								    if (isset($options['show_unsensored'])) {
-									    $details = $JoomlaUser['userinfo'];
-								    } else {
-									    $details = JFusionFunction::anonymizeUserinfo($JoomlaUser['userinfo']);
+							    try {
+								    //setup the Joomla user
+								    $JoomlaUser = $JFusionJoomla->updateUser($userinfo, $overwrite);
+								    if (!empty($JoomlaUser['debug'])) {
+									    $debugger->set('joomla_int ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), $JoomlaUser['debug']);
 								    }
-								    $debugger->set('joomla_int ' . JText::_('USER') . ' ' . JText::_('DETAILS'), $details);
-
-								    //create a Joomla session
-								    if ($JFusionActivePlugin != 'joomla_int') {
-									    $JoomlaSession = $JFusionJoomla->createSession($JoomlaUser['userinfo'], $options);
-									    if (!empty($JoomlaSession['error'])) {
-										    $debugger->set('joomla_int ' . JText::_('SESSION') . ' ' . JText::_('DEBUG'), $JoomlaSession['debug']);
-										    $debugger->set('joomla_int ' . JText::_('SESSION') . ' ' . JText::_('ERROR'), $JoomlaSession['error']);
-										    //no Joomla session could be created -> deny login
-										    $this->raise('error', $JoomlaSession['error'], 'joomla_int: ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
-										    $success = -1;
+								    if (!empty($JoomlaUser['error'])) {
+									    //no Joomla user could be created, fatal error
+									    $debugger->set('joomla_int ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), $JoomlaUser['error']);
+									    $this->raise('error', $JoomlaUser['error'], 'joomla_int: ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
+									    $success = -1;
+								    } else {
+									    if (isset($options['show_unsensored'])) {
+										    $details = $JoomlaUser['userinfo'];
 									    } else {
-										    $debugger->set('joomla_int ' . JText::_('SESSION'), $JoomlaSession['debug']);
+										    $details = JFusionFunction::anonymizeUserinfo($JoomlaUser['userinfo']);
+									    }
+									    $debugger->set('joomla_int ' . JText::_('USER') . ' ' . JText::_('DETAILS'), $details);
+
+									    //create a Joomla session
+									    if ($JFusionActivePlugin != 'joomla_int') {
+										    try {
+											    $JoomlaSession = $JFusionJoomla->createSession($JoomlaUser['userinfo'], $options);
+											    if (!empty($JoomlaSession['error'])) {
+												    //no Joomla session could be created -> deny login
+												    $debugger->set('joomla_int ' . JText::_('SESSION') . ' ' . JText::_('ERROR'), $JoomlaSession['error']);
+												    $this->raise('error', $JoomlaSession['error'], 'joomla_int: ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
+												    $success = -1;
+											    }
+											    if (!empty($JoomlaSession['debug'])) {
+												    $debugger->set('joomla_int ' . JText::_('SESSION') . ' ' . JText::_('DEBUG'), $JoomlaSession['debug']);
+											    }
+										    } catch (Exception $e) {
+											    JfusionFunction::raiseError($e, $JFusionJoomla->getJname());
+											    $debugger->set('joomla_int ' . JText::_('SESSION') . ' ' . JText::_('ERROR'), $e->getMessage());
+											    $success = -1;
+										    }
 									    }
 								    }
+							    } catch (Exception $e) {
+								    JfusionFunction::raiseError($e, $JFusionJoomla->getJname());
+								    $debugger->add('error', $e->getMessage());
 							    }
 						    } else {
 							    //joomla already setup, we can copy its details from the master
-							    $JoomlaUser = array('userinfo' => $userinfo, 'error' => '');
+							    $JoomlaUser['userinfo'] = $userinfo;
 						    }
 						    if ($success === 0) {
 							    //setup the master session if
 							    //a) The master is not joomla_int and the user is logging into Joomla frontend only
 							    //b) The master is joomla_int and the user is logging into either Joomla frontend or backend
 							    if ($JFusionActivePlugin != $master->name && $master->dual_login == 1 && (!isset($options['group']) || $master->name == 'joomla_int')) {
-								    $MasterSession = $JFusionMaster->createSession($userinfo, $options);
-								    if (!empty($MasterSession['error'])) {
-									    $debugger->set($master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DEBUG'), $MasterSession['debug']);
-									    $debugger->set($master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('ERROR'), $MasterSession['error']);
-									    //report the error back
-									    $this->raise('error', $MasterSession['error'], $master->name . ': ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
+								    try {
+									    $MasterSession = $JFusionMaster->createSession($userinfo, $options);
+
+									    if (!empty($MasterSession['error'])) {
+										    $debugger->set($master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('ERROR'), $MasterSession['error']);
+										    $this->raise('error', $MasterSession['error'], $master->name . ': ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
+										    if ($master->name == 'joomla_int') {
+											    $success = -1;
+										    }
+									    }
+									    if (!empty($MasterSession['debug'])) {
+										    $debugger->set($master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DEBUG'), $MasterSession['debug']);
+										    //report the error back
+									    }
+								    } catch (Exception $e) {
+									    $debugger->set($master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('ERROR'), $e->getMessage());
+									    JfusionFunction::raiseError($e, $master->name . ': ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
 									    if ($master->name == 'joomla_int') {
 										    $success = -1;
 									    }
-								    } else {
-									    $debugger->set($master->name . ' ' . JText::_('SESSION'), $MasterSession['debug']);
 								    }
 							    }
 							    if ($success === 0) {
@@ -482,40 +555,51 @@ class plgUserJfusion extends JPlugin
 								    //setup the other slave JFusion plugins
 								    $slaves = JFusionFactory::getPlugins('slave');
 								    foreach ($slaves as $slave) {
-									    $JFusionSlave = JFusionFactory::getUser($slave->name);
-									    $SlaveUser = $JFusionSlave->updateUser($userinfo, $overwrite);
-									    if (!empty($SlaveUser['error'])) {
-										    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), $SlaveUser['debug']);
-										    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), $SlaveUser['error']);
-										    $this->raise('error', $SlaveUser['error'], $slave->name . ': ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
-									    } else {
-										    //make sure the userinfo is available
-										    if (empty($SlaveUser['userinfo'])) {
-											    $SlaveUser['userinfo'] = $JFusionSlave->getUser($userinfo);
+									    try {
+										    $JFusionSlave = JFusionFactory::getUser($slave->name);
+										    $SlaveUser = $JFusionSlave->updateUser($userinfo, $overwrite);
+										    if (!empty($SlaveUser['debug'])) {
+											    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), $SlaveUser['debug']);
 										    }
-										    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'), $SlaveUser['debug']);
-
-										    if (isset($options['show_unsensored'])) {
-											    $details = $SlaveUser['userinfo'];
+										    if (!empty($SlaveUser['error'])) {
+											    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), $SlaveUser['error']);
+											    $this->raise('error', $SlaveUser['error'], $slave->name . ': ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
 										    } else {
-											    $details = JFusionFunction::anonymizeUserinfo($SlaveUser['userinfo']);
-										    }
+											    //make sure the userinfo is available
+											    if (empty($SlaveUser['userinfo'])) {
+												    $SlaveUser['userinfo'] = $JFusionSlave->getUser($userinfo);
+											    }
 
-										    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'), $details);
-
-										    //apply the clear text password to the user object
-										    $SlaveUser['userinfo']->password_clear = $user['password'];
-										    JFusionFunction::updateLookup($SlaveUser['userinfo'], $JoomlaUser['userinfo']->userid, $slave->name);
-										    if (!isset($options['group']) && $slave->dual_login == 1 && $JFusionActivePlugin != $slave->name) {
-											    $SlaveSession = $JFusionSlave->createSession($SlaveUser['userinfo'], $options);
-											    if (!empty($SlaveSession['error'])) {
-												    $debugger->set($slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DEBUG'), $SlaveSession['debug']);
-												    $debugger->set($slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('ERROR'), $SlaveSession['error']);
-												    $this->raise('error', $SlaveSession['error'], $slave->name . ': ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
+											    if (isset($options['show_unsensored'])) {
+												    $details = $SlaveUser['userinfo'];
 											    } else {
-												    $debugger->set($slave->name . ' ' . JText::_('SESSION'), $SlaveSession['debug']);
+												    $details = JFusionFunction::anonymizeUserinfo($SlaveUser['userinfo']);
+											    }
+
+											    $debugger->set($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'), $details);
+
+											    //apply the clear text password to the user object
+											    $SlaveUser['userinfo']->password_clear = $user['password'];
+											    JFusionFunction::updateLookup($SlaveUser['userinfo'], $JoomlaUser['userinfo']->userid, $slave->name);
+											    if (!isset($options['group']) && $slave->dual_login == 1 && $JFusionActivePlugin != $slave->name) {
+												    try {
+													    $SlaveSession = $JFusionSlave->createSession($SlaveUser['userinfo'], $options);
+													    if (!empty($SlaveSession['error'])) {
+														    $debugger->set($slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('ERROR'), $SlaveSession['error']);
+														    $this->raise('error', $SlaveSession['error'], $slave->name . ': ' . JText::_('SESSION') . ' ' . JText::_('CREATE'));
+													    }
+													    if (!empty($SlaveSession['debug'])) {
+														    $debugger->set($slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DEBUG'), $SlaveSession['debug']);
+													    }
+												    } catch (Exception $e) {
+													    $debugger->set($slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('ERROR'), $e->getMessage());
+													    JfusionFunction::raiseError($e, $JFusionSlave->getJname());
+												    }
 											    }
 										    }
+									    } catch (Exception $e) {
+										    JfusionFunction::raiseError($e, $slave->name);
+										    $debugger->add('error', $e->getMessage());
 									    }
 								    }
 								    $success = 1;
@@ -602,11 +686,17 @@ class plgUserJfusion extends JPlugin
 
 			    //check if a user was found
 			    if (!empty($MasterUser)) {
-				    $MasterSession = $JFusionMaster->destroySession($MasterUser, $options);
-				    if (!empty($MasterSession['error'])) {
-					    $this->raise('error', $MasterSession['error'], $master->name . ': ' . JText::_('SESSION') . ' ' . JText::_('DESTROY'));
+				    try {
+					    $MasterSession = $JFusionMaster->destroySession($MasterUser, $options);
+					    if (!empty($MasterSession['error'])) {
+						    $this->raise('error', $MasterSession['error'], $master->name . ': ' . JText::_('SESSION') . ' ' . JText::_('DESTROY'));
+					    }
+					    if (!empty($MasterSession['debug'])) {
+						    $debugger->set($master->name . ' logout', $MasterSession['debug']);
+					    }
+				    } catch (Exception $e) {
+					    JFusionFunction::raiseError($e, $JFusionMaster->getJname());
 				    }
-				    $debugger->set($master->name . ' logout', $MasterSession['debug']);
 			    } else {
 				    $this->raise('notice', JText::_('LOGOUT') . ' ' . JText::_('COULD_NOT_FIND_USER'), $master->name);
 			    }
@@ -628,12 +718,17 @@ class plgUserJfusion extends JPlugin
 
 				    //check if a user was found
 				    if (!empty($SlaveUser)) {
-					    $SlaveSession = $JFusionSlave->destroySession($SlaveUser, $options);
-					    if (!empty($SlaveSession['error'])) {
-						    $this->raise('error', $SlaveSession['error'], $slave->name . ': ' . JText::_('SESSION') . ' ' . JText::_('DESTROY'));
-					    }
-					    if (!empty($SlaveSession['debug'])) {
-						    $debugger->set($slave->name . ' logout', $SlaveSession['debug']);
+					    $SlaveSession = array();
+					    try {
+						    $SlaveSession = $JFusionSlave->destroySession($SlaveUser, $options);
+						    if (!empty($SlaveSession['error'])) {
+							    $this->raise('error', $SlaveSession['error'], $slave->name . ': ' . JText::_('SESSION') . ' ' . JText::_('DESTROY'));
+						    }
+						    if (!empty($SlaveSession['debug'])) {
+							    $debugger->set($slave->name . ' logout', $SlaveSession['debug']);
+						    }
+					    } catch (Exception $e) {
+						    JFusionFunction::raiseError($e, $JFusionSlave->getJname());
 					    }
 				    } else {
 					    $this->raise('notice', JText::_('LOGOUT') . ' ' . JText::_('COULD_NOT_FIND_USER'), $slave->name);
@@ -645,7 +740,11 @@ class plgUserJfusion extends JPlugin
 	    //destroy the joomla session itself
 	    if ($JFusionActivePlugin != 'joomla_int') {
 		    $JoomlaUser = JFusionFactory::getUser('joomla_int');
-		    $JoomlaUser->destroySession($userinfo, $options);
+		    try {
+			    $JoomlaUser->destroySession($userinfo, $options);
+		    } catch (Exception $e) {
+			    JFusionFunction::raiseError($e, $JoomlaUser->getJname());
+		    }
 	    }
 
 	    $params = JFusionFactory::getParams('joomla_int');
@@ -678,6 +777,7 @@ class plgUserJfusion extends JPlugin
 	    } else {
 		    //create an array to store the debug info
 		    $debug_info = array();
+		    $error_info = array();
 		    //convert the user array into a user object
 		    $userinfo = (object)$user;
 		    //delete the master user if it is not Joomla
@@ -688,11 +788,17 @@ class plgUserJfusion extends JPlugin
 			    $JFusionMaster = JFusionFactory::getUser($master->name);
 			    $MasterUser = $JFusionMaster->getUser($userinfo);
 			    if (!empty($MasterUser) && $deleteEnabled) {
-				    $status = $JFusionMaster->deleteUser($MasterUser);
-				    if (!empty($status['error'])) {
-					    $debug_info[$master->name . ' ' . JText::_('ERROR') ] = $status['error'];
+				    try {
+					    $status = $JFusionMaster->deleteUser($MasterUser);
+					    if (!empty($status['error'])) {
+						    $error_info[$master->name . ' ' . JText::_('ERROR') ] = $status['error'];
+					    }
+					    if (!empty($status['debug'])) {
+						    $debug_info[$master->name] = $status['debug'];
+					    }
+				    } catch (Exception $e) {
+					    JFusionFunction::raiseError($e, $JFusionMaster->getJname());
 				    }
-				    $debug_info[$master->name] = $status['debug'];
 			    } elseif ($deleteEnabled) {
 				    $debug_info[$master->name] = JText::_('NO_USER_DATA_FOUND');
 			    } else {
@@ -707,11 +813,17 @@ class plgUserJfusion extends JPlugin
 			    $JFusionSlave = JFusionFactory::getUser($slave->name);
 			    $SlaveUser = $JFusionSlave->getUser($userinfo);
 			    if (!empty($SlaveUser) && $deleteEnabled) {
-				    $status = $JFusionSlave->deleteUser($SlaveUser);
-				    if (!empty($status['error'])) {
-					    $debug_info[$slave->name . ' ' . JText::_('ERROR') ] = $status['error'];
+				    try {
+					    $status = $JFusionSlave->deleteUser($SlaveUser);
+					    if (!empty($status['error'])) {
+						    $error_info[$slave->name . ' ' . JText::_('ERROR') ] = $status['error'];
+					    }
+					    if (!empty($status['debug'])) {
+						    $debug_info[$slave->name] = $status['debug'];
+					    }
+				    } catch (Exception $e) {
+					    JFusionFunction::raiseError($e, $JFusionSlave->getJname());
 				    }
-				    $debug_info[$slave->name] = $status['debug'];
 			    } elseif ($deleteEnabled) {
 				    $debug_info[$slave->name] = JText::_('NO_USER_DATA_FOUND');
 			    } else {
@@ -733,6 +845,7 @@ class plgUserJfusion extends JPlugin
 		    $isAdministrator = JFusionFunction::isAdministrator();
 		    if ($isAdministrator === true) {
 			    $this->raise('notice', $debug_info);
+			    $this->raise('error', $error_info);
 		    }
 	    }
 	    return $result;

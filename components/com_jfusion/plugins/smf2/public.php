@@ -232,8 +232,13 @@ class JFusionPublic_smf2 extends JFusionPublic {
         //handle dual logout
         if ($action == 'logout') {
             //destroy the SMF session first
-            $JFusionUser = JFusionFactory::getUser($this->getJname());
-            $JFusionUser->destroySession(null, null);
+	        $JFusionUser = JFusionFactory::getUser($this->getJname());
+	        try {
+		        $JFusionUser->destroySession(null, null);
+	        } catch (Exception $e) {
+		        JFusionFunction::raiseError($e, $JFusionUser->getJname());
+	        }
+
             //destroy the Joomla session
             $mainframe = JFactory::getApplication();
             $mainframe->logout();

@@ -1008,24 +1008,27 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		}
 
 		foreach ($plugins as $plugin) {
-			$PluginUserUpdate = JFusionFactory::getUser($plugin->name);
+			try {
+				$PluginUserUpdate = JFusionFactory::getUser($plugin->name);
+				$existinguser = $PluginUserUpdate->getUser($userinfo);
 
-			$existinguser = $PluginUserUpdate->getUser($userinfo);
+				if(!$existinguser) {
+					$status = array('error' => array(), 'debug' => array());
+					$PluginUserUpdate->createUser($userinfo, $status);
+					$PluginUserUpdate->mergeStatus($status);
+					$status = $PluginUserUpdate->debugger->get();
 
-			if(!$existinguser) {
-				$status = array('error' => array(), 'debug' => array());
-				$PluginUserUpdate->createUser($userinfo, $status);
-				$PluginUserUpdate->mergeStatus($status);
-				$status = $PluginUserUpdate->debugger->get();
-
-				foreach ($status['error'] as $error) {
-					$this->error[][$plugin->name] = $error;
+					foreach ($status['error'] as $error) {
+						$this->error[][$plugin->name] = $error;
+					}
+					foreach ($status['debug'] as $debug) {
+						$this->debug[][$plugin->name] = $debug;
+					}
+				} else {
+					$this->error[][$plugin->name] = 'user already exsists';
 				}
-				foreach ($status['debug'] as $debug) {
-					$this->debug[][$plugin->name] = $debug;
-				}
-			} else {
-				$this->error[][$plugin->name] = 'user already exsists';
+			} catch (Exception $e) {
+				$this->error[][$plugin->name] = $e->getMessage();
 			}
 		}
 	}
@@ -1049,29 +1052,33 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			}
 		}
 		foreach ($plugins as $plugin) {
-			$PluginUserUpdate = JFusionFactory::getUser($plugin->name);
-			$updateinfo = $userinfo[$plugin->name];
+			try {
+				$PluginUserUpdate = JFusionFactory::getUser($plugin->name);
+				$updateinfo = $userinfo[$plugin->name];
 
-			if (get_class($updateinfo) == 'stdClass') {
-				$lookupUser = JFusionFunction::lookupUser($plugin->name, '', false, $updateinfo->username);
+				if (get_class($updateinfo) == 'stdClass') {
+					$lookupUser = JFusionFunction::lookupUser($plugin->name, '', false, $updateinfo->username);
 
-				if($lookupUser) {
-					$existinguser = $PluginUserUpdate->getUser($updateinfo->username);
+					if($lookupUser) {
+						$existinguser = $PluginUserUpdate->getUser($updateinfo->username);
 
-					foreach ($updateinfo as $key => $value) {
-						if ($key != 'userid' && isset($existinguser->$key)) {
-							if ($existinguser->$key != $updateinfo->$key) {
-								$existinguser->$key = $updateinfo->$key;
+						foreach ($updateinfo as $key => $value) {
+							if ($key != 'userid' && isset($existinguser->$key)) {
+								if ($existinguser->$key != $updateinfo->$key) {
+									$existinguser->$key = $updateinfo->$key;
+								}
 							}
 						}
-					}
 
-					$this->debug[][$plugin->name] = $PluginUserUpdate->updateUser($existinguser, $overwrite);
+						$this->debug[][$plugin->name] = $PluginUserUpdate->updateUser($existinguser, $overwrite);
+					} else {
+						$this->error[][$plugin->name] = 'invalid user';
+					}
 				} else {
-					$this->error[][$plugin->name] = 'invalid user';
+					$this->error[][$plugin->name] = 'invalid update user';
 				}
-			} else {
-				$this->error[][$plugin->name] = 'invalid update user';
+			} catch (Exception $e) {
+				$this->error[][$plugin->name] = $e->getMessage();
 			}
 		}
 	}

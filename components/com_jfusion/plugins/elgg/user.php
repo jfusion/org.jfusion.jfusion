@@ -142,7 +142,11 @@ class JFusionUser_elgg extends JFusionUser {
      */
     function createSession($userinfo, $options, $framework = true) {
         //destroy a cookie if it exists already, this will prevent the person logging in from having to refresh twice to appear as logged in
-        $this->destroySession(null, null);
+	    try {
+		    $this->destroySession(null, null);
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e, $this->getJname());
+	    }
         $status = array('error' => array(), 'debug' => array());
 
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {

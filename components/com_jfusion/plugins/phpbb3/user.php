@@ -1356,12 +1356,15 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    //enable remember me as this is a keep alive function anyway
 							    $options['remember'] = 1;
 							    //create a new session
-							    $status = $this->createSession($userinfo, $options);
 
-							    if ($debug) {
-								    JFusionFunction::raise('notice', $status, $this->getJname());
+							    try {
+								    $status = $this->createSession($userinfo, $options);
+								    if ($debug) {
+									    JFusionFunction::raise('notice', $status, $this->getJname());
+								    }
+							    } catch (Exception $e) {
+								    JfusionFunction::raiseError($e, $this->getJname());
 							    }
-
 							    //signal that session was changed
 							    $return = 1;
 						    } else {
@@ -1382,9 +1385,14 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $userinfo->password_clear = $JUser->password_clear;
 
 							    $options['clientid'][] = '0';
-							    $status = $JoomlaUser->destroySession($userinfo, $options);
-							    if ($debug) {
-								    JFusionFunction::raise('notice', $status, $this->getJname());
+
+							    try {
+								    $status = $JoomlaUser->destroySession($userinfo, $options);
+								    if ($debug) {
+									    JFusionFunction::raise('notice', $status, $this->getJname());
+								    }
+							    } catch (Exception $e) {
+									JFusionFunction::raiseError($e, $JoomlaUser->getJname());
 							    }
 						    }
 					    } else {
@@ -1473,9 +1481,14 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    if (!empty($userinfo)) {
 								    global $JFusionActivePlugin;
 								    $JFusionActivePlugin = $this->getJname();
-								    $status = $JoomlaUser->createSession($userinfo, $options);
-								    if ($debug) {
-									    JFusionFunction::raise('notice', $status, $this->getJname());
+
+								    try {
+									    $status = $JoomlaUser->createSession($userinfo, $options);
+									    if ($debug) {
+										    JFusionFunction::raise('notice', $status, $JoomlaUser->getJname());
+									    }
+								    } catch (Exception $e) {
+									    JfusionFunction::raiseError($e, $JoomlaUser->getJname());
 								    }
 								    //no need to signal refresh as Joomla will recognize this anyway
 							    }
