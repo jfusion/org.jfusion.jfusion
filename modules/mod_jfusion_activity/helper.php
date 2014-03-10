@@ -172,11 +172,13 @@ class modjfusionActivityHelper
                     }
                 }
 
-                if ($config['shownew']) {
-                    $r->output->newpost = $forum->checkReadStatus($r);
-                } else {
-                    $r->output->newpost = '';
-                }
+	            $r->output->newpost = '';
+	            try {
+		            $r->output->newpost = $forum->checkReadStatus($r);
+	            } catch (Exception $e) {
+		            JFusionFunction::raiseError($e, $forum->getJname());
+	            }
+
                 $r->output->body = $r->body;
             }
         } else {

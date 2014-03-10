@@ -289,17 +289,21 @@ class JFusionFunction
 				    $db->setQuery($query);
 				    $jnames = $db->loadObjectList();
 
-				    foreach ($jnames as $jname) {
-					    if ($jname->name != 'joomla_int') {
-						    $user = JFusionFactory::getUser($jname->name);
-						    $puserinfo = $user->getUser($userinfo);
-						    if ($delete) {
-							    $queries[] = '(id = ' . $joomla_id . ' AND jname = ' . $db->quote($jname->name) . ')';
-						    } else {
-							    $queries[] = '(' . $db->quote($puserinfo->userid) . ',' . $db->quote($puserinfo->username) . ', ' . $joomla_id . ', ' . $db->quote($jname->name) . ')';
+				    foreach ($jnames as $j) {
+					    if ($j->name != 'joomla_int') {
+						    try {
+							    $user = JFusionFactory::getUser($j->name);
+							    $puserinfo = $user->getUser($userinfo);
+							    if ($delete) {
+								    $queries[] = '(id = ' . $joomla_id . ' AND jname = ' . $db->quote($j->name) . ')';
+							    } else {
+								    $queries[] = '(' . $db->quote($puserinfo->userid) . ',' . $db->quote($puserinfo->username) . ', ' . $joomla_id . ', ' . $db->quote($j->name) . ')';
+							    }
+							    unset($user);
+							    unset($puserinfo);
+						    } catch (Exception $e) {
+							    static::raiseError($e, $j->name);
 						    }
-						    unset($user);
-						    unset($puserinfo);
 					    }
 				    }
 				    if (!empty($queries)) {
@@ -410,8 +414,14 @@ class JFusionFunction
             }
             if (!empty($result) && !empty($joomla_id) && !empty($jname)) {
                 //get the plugin userinfo - specifically we need the userid which it will provide
-                $user = JFusionFactory::getUser($jname);
-                $existinguser = $user->getUser($result);
+	            $existinguser = null;
+	            try {
+		            $user = JFusionFactory::getUser($jname);
+		            $existinguser = $user->getUser($result);
+	            } catch (Exception $e) {
+					JfusionFunction::raiseError($e, $jname);
+	            }
+
                 if (!empty($existinguser)) {
                     //update the lookup table with the new acquired info
 	                static::updateLookup($existinguser, $joomla_id, $jname);

@@ -348,6 +348,7 @@ class JFusionUsersync
 									    }
 								    } catch (Exception $e) {
 									    $status['error'] = $e->getMessage();
+									    $status['userinfo'] = null;
 								    }
 
 
@@ -381,7 +382,11 @@ class JFusionUsersync
 									    if ($action == 'master') {
 										    JFusionFunction::updateLookup($userinfo, 0, $jname);
 									    } else {
-										    JFusionFunction::updateLookup($SlaveUser->getUser($userlist[$j]), 0, $jname);
+										    try {
+											    JFusionFunction::updateLookup($SlaveUser->getUser($userlist[$j]), 0, $jname);
+										    } catch (Exception $e) {
+											    throw new RuntimeException($jname . ': ' . $e->getMessage());
+										    }
 									    }
 								    }
 								    $sync_log->action = $status['action'];

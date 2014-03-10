@@ -838,16 +838,20 @@ class JFusionUser_joomla_int extends JFusionUser {
 						//if not salt set, update the password
 						$existinguser->password_clear = $userinfo->password_clear;
 						//check if the password needs to be updated
-						$model = JFusionFactory::getAuth($this->getJname());
-						if (!$model->checkPassword($existinguser)) {
-							try {
-								$this->updatePassword($userinfo, $existinguser, $status);
-								$changed = true;
-							} catch (Exception $e) {
-								$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage();
+						try {
+							$model = JFusionFactory::getAuth($this->getJname());
+							if (!$model->checkPassword($existinguser)) {
+								try {
+									$this->updatePassword($userinfo, $existinguser, $status);
+									$changed = true;
+								} catch (Exception $e) {
+									$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage();
+								}
+							} else {
+								$status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_VALID');
 							}
-						} else {
-							$status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_VALID');
+						} catch (Exception $e) {
+							$status['error'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . $e->getMessage();
 						}
 					} else {
 						$status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');

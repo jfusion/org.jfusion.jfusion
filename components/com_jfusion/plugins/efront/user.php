@@ -511,7 +511,11 @@ class JFusionUser_efront extends JFusionUser
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');
         } else {
-            $existinguser = $this->getUser($userinfo);
+	        try {
+		        $existinguser = $this->getUser($userinfo);
+	        } catch (Exception $e) {
+		        $existinguser = null;
+	        }
             if (!empty($existinguser)) {
                 $apiuser = $this->params->get('apiuser');
                 $apikey = $this->params->get('apikey');

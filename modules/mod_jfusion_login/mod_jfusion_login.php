@@ -88,8 +88,12 @@ try {
 		if (!$user->get('guest')) {
 	        $userlookup = JFusionFunction::lookupUser($jname, $user->get('id'));
 	        if (!empty($userlookup)) {
-	            $JFusionUser = JFusionFactory::getUser($link_jname);
-	            $userinfo = $JFusionUser->getUser($userlookup);
+		        try {
+			        $JFusionUser = JFusionFactory::getUser($link_jname);
+			        $userinfo = $JFusionUser->getUser($userlookup);
+		        } catch (Exception $e) {
+			        $userinfo = null;
+		        }
 	            if (!empty($userinfo)) {
 	                $display_name = ($params->get('name') && isset($userinfo->name)) ? $userinfo->name : $userinfo->username;
 	            } else {

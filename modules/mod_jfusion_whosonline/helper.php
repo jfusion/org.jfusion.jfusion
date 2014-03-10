@@ -82,7 +82,12 @@ class modjfusionWhosOnlineHelper {
 						} else {
 							//first, the userid of the JFusion plugin for the menu item must be obtained
 							$JFusionUser = JFusionFactory::getUser($link_jname);
-							$userinfo = $JFusionUser->getUser($u);
+
+							try {
+								$userinfo = $JFusionUser->getUser($u);
+							} catch (Exception $e) {
+								$userinfo = null;
+							}
 
 							if(!empty($userinfo)) {
 								$jfusion_userid = $userinfo->userid;

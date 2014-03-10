@@ -76,7 +76,11 @@ class plgAuthenticationjfusion extends JPlugin
 	    $master = JFusionFunction::getMaster();
 	    if (!empty($master)) {
 		    $JFusionMaster = JFusionFactory::getUser($master->name);
-		    $userinfo = $JFusionMaster->getUser($credentials['username']);
+		    try {
+			    $userinfo = $JFusionMaster->getUser($credentials['username']);
+		    } catch (Exception $e) {
+			    $userinfo = null;
+		    }
 		    //check if a user was found
 		    if (!empty($userinfo)) {
 			    //check to see if the login checker wanted a skip password
@@ -101,7 +105,13 @@ class plgAuthenticationjfusion extends JPlugin
 					    //check the master plugin for a valid password
 					    $model = JFusionFactory::getAuth($master->name);
 
-					    if ($model->checkPassword($userinfo)) {
+					    try {
+						    $check = $model->checkPassword($userinfo);
+					    } catch (Exception $e) {
+						    JFusionFunction::raiseError($e, $model->getJname());
+						    $check = false;
+					    }
+					    if ($check) {
 						    //found a match
 						    $debugger->add('debug', $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS'));
 						    $response->status = JAuthentication::STATUS_SUCCESS;
@@ -128,59 +138,63 @@ class plgAuthenticationjfusion extends JPlugin
 						    $auth_models = $db->loadObjectList();
 						    //loop through the different models
 						    foreach ($auth_models as $auth_model) {
-							    //Generate an encrypted password for comparison
-							    $model = JFusionFactory::getAuth($auth_model->name);
-							    $JFusionSlave = JFusionFactory::getUser($auth_model->name);
-							    $slaveuserinfo = $JFusionSlave->getUser($userinfo);
-							    // add in the clear password to be able to generate the hash
-							    if (!empty($slaveuserinfo)) {
-								    $slaveuserinfo->password_clear = $userinfo->password_clear;
-								    $testcrypt = $model->generateEncryptedPassword($slaveuserinfo);
-								    $check = $model->checkPassword($slaveuserinfo);
-							    } else {
-								    $testcrypt = $model->generateEncryptedPassword($userinfo);
-								    $check = $model->checkPassword($userinfo);
-							    }
+							    try {
+								    //Generate an encrypted password for comparison
+								    $model = JFusionFactory::getAuth($auth_model->name);
+								    $JFusionSlave = JFusionFactory::getUser($auth_model->name);
+								    $slaveuserinfo = $JFusionSlave->getUser($userinfo);
+								    // add in the clear password to be able to generate the hash
+								    if (!empty($slaveuserinfo)) {
+									    $slaveuserinfo->password_clear = $userinfo->password_clear;
+									    $testcrypt = $model->generateEncryptedPassword($slaveuserinfo);
+									    $check = $model->checkPassword($slaveuserinfo);
+								    } else {
+									    $testcrypt = $model->generateEncryptedPassword($userinfo);
+									    $check = $model->checkPassword($userinfo);
+								    }
 
-							    if ($check) {
-								    //found a match
-								    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS'));
-								    $response->status = JAuthentication::STATUS_SUCCESS;
-								    $response->email = $userinfo->email;
-								    $response->fullname = $userinfo->name;
-								    $response->error_message = '';
-								    $response->userinfo = $userinfo;
-								    //update the password format to what the master expects
-								    $JFusionMaster = JFusionFactory::getUser($master->name);
-								    //make sure that the password_clear is not already hashed which may be the case for some dual login plugins
+								    if ($check) {
+									    //found a match
+									    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS'));
+									    $response->status = JAuthentication::STATUS_SUCCESS;
+									    $response->email = $userinfo->email;
+									    $response->fullname = $userinfo->name;
+									    $response->error_message = '';
+									    $response->userinfo = $userinfo;
+									    //update the password format to what the master expects
+									    $JFusionMaster = JFusionFactory::getUser($master->name);
+									    //make sure that the password_clear is not already hashed which may be the case for some dual login plugins
 
-								    if (strlen($userinfo->password_clear) != 32) {
-									    $status = array('error' => array(), 'debug' => array());
-									    try {
-										    $JFusionMaster->updatePassword($userinfo, $userinfo, $status);
-									    } catch (Exception $e) {
-									        $JFusionMaster->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
-									    }
-									    $JFusionMaster->mergeStatus($status);
-									    $status = $JFusionMaster->debugger->get();
-									    if (!empty($status['error'])) {
-										    foreach($status['error'] as $error) {
-											    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') . ': ' . $error);
+									    if (strlen($userinfo->password_clear) != 32) {
+										    $status = array('error' => array(), 'debug' => array());
+										    try {
+											    $JFusionMaster->updatePassword($userinfo, $userinfo, $status);
+										    } catch (Exception $e) {
+											    $JFusionMaster->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
 										    }
-										    JFusionFunction::raise('error', $status['error'], $master->name. ' ' .JText::_('PASSWORD') . ' ' . JText::_('UPDATE'));
+										    $JFusionMaster->mergeStatus($status);
+										    $status = $JFusionMaster->debugger->get();
+										    if (!empty($status['error'])) {
+											    foreach($status['error'] as $error) {
+												    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') . ': ' . $error);
+											    }
+											    JFusionFunction::raise('error', $status['error'], $master->name. ' ' .JText::_('PASSWORD') . ' ' . JText::_('UPDATE'));
+										    } else {
+											    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('SUCCESS'));
+										    }
 									    } else {
-										    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('SUCCESS'));
+										    $debugger->add('debug', $auth_model->name . ' ' . JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE'));
 									    }
+									    return;
 								    } else {
-									    $debugger->add('debug', $auth_model->name . ' ' . JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE'));
+									    if (isset($options['show_unsensored'])) {
+										    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  $testcrypt . ' vs ' . $userinfo->password);
+									    } else {
+										    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
+									    }
 								    }
-								    return;
-							    } else {
-								    if (isset($options['show_unsensored'])) {
-									    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  $testcrypt . ' vs ' . $userinfo->password);
-								    } else {
-									    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
-								    }
+							    } catch (Exception $e) {
+								    JFusionFunction::raiseError($e);
 							    }
 						    }
 
@@ -216,6 +230,7 @@ class plgAuthenticationjfusion extends JPlugin
 			    if ($response->status == JAuthentication::STATUS_SUCCESS)
 			    {
 				    $joomla = JFusionFactory::getUser('joomla_int');
+
 				    $joomlauser = $joomla->getUser($credentials['username']);
 
 				    require_once JPATH_ADMINISTRATOR . '/components/com_users/helpers/users.php';

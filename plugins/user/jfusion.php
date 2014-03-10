@@ -336,7 +336,11 @@ class plgUserJfusion extends JPlugin
 				    $auth_userinfo->password_clear = $user['password'];
 				    $auth_userinfo->name = $user['fullname'];
 				    //get the userinfo for real
-				    $userinfo = $JFusionMaster->getUser($auth_userinfo);
+				    try {
+					    $userinfo = $JFusionMaster->getUser($auth_userinfo);
+				    } catch (Exception $e) {
+					    $userinfo = null;
+				    }
 				    if (isset($master->joomlaAuth)) {
 					    $debugger->add('init', JText::_('USING_JOOMLA_AUTH'));
 				    } else {
@@ -346,7 +350,11 @@ class plgUserJfusion extends JPlugin
 					    //are we in Joomla backend?  Let's check internal Joomla for the user if joomla_int isn't already the master to prevent lockouts
 					    if ($master->name != 'joomla_int' && $mainframe->isAdmin()) {
 						    $JFusionJoomla = JFusionFactory::getUser('joomla_int');
-						    $JoomlaUserinfo = $JFusionJoomla->getUser($auth_userinfo);
+						    try {
+							    $JoomlaUserinfo = $JFusionJoomla->getUser($auth_userinfo);
+						    } catch (Exception $e) {
+							    $JoomlaUserinfo = null;
+						    }
 						    if (!empty($JoomlaUserinfo)) {
 							    //user found in Joomla, let them pass just to be able to login to the backend
 							    $userinfo = $JoomlaUserinfo;
@@ -707,7 +715,11 @@ class plgUserJfusion extends JPlugin
 			    if ($slave->dual_login == 1 && $JFusionActivePlugin != $slave->name) {
 				    $JFusionSlave = JFusionFactory::getUser($slave->name);
 				    $userlookup = JFusionFunction::lookupUser($slave->name, $userinfo->id);
-				    $SlaveUser = $JFusionSlave->getUser($userlookup);
+				    try {
+					    $SlaveUser = $JFusionSlave->getUser($userlookup);
+				    } catch (Exception $e) {
+					    $SlaveUser = null;
+				    }
 				    if (isset($options['show_unsensored'])) {
 					    $info = $SlaveUser;
 				    } else {
@@ -786,7 +798,11 @@ class plgUserJfusion extends JPlugin
 			    $params = JFusionFactory::getParams($master->name);
 			    $deleteEnabled = $params->get('allow_delete_users', 0);
 			    $JFusionMaster = JFusionFactory::getUser($master->name);
-			    $MasterUser = $JFusionMaster->getUser($userinfo);
+			    try {
+				    $MasterUser = $JFusionMaster->getUser($userinfo);
+			    } catch (Exception $e) {
+				    $MasterUser = null;
+			    }
 			    if (!empty($MasterUser) && $deleteEnabled) {
 				    try {
 					    $status = $JFusionMaster->deleteUser($MasterUser);
@@ -811,7 +827,13 @@ class plgUserJfusion extends JPlugin
 			    $params = JFusionFactory::getParams($slave->name);
 			    $deleteEnabled = $params->get('allow_delete_users', 0);
 			    $JFusionSlave = JFusionFactory::getUser($slave->name);
-			    $SlaveUser = $JFusionSlave->getUser($userinfo);
+
+			    try {
+				    $SlaveUser = $JFusionSlave->getUser($userinfo);
+			    } catch (Exception $e) {
+				    $SlaveUser = null;
+			    }
+
 			    if (!empty($SlaveUser) && $deleteEnabled) {
 				    try {
 					    $status = $JFusionSlave->deleteUser($SlaveUser);

@@ -104,9 +104,7 @@ class JFusionAuth_joomla_int extends JFusionAuth
 			$old = $user->getUser($userinfo);
 			if ($old) {
 				$status = array('error' => array(), 'debug' => array());
-				try {
-					$user->updatePassword($userinfo, $old, $status);
-				} catch (Exception $e) {}
+				$user->updatePassword($userinfo, $old, $status);
 			}
 		}
 		return $match;

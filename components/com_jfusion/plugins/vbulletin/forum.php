@@ -1011,7 +1011,7 @@ class JFusionForum_vbulletin extends JFusionForum
     {
         list($groupPerms, $forumPerms) = $this->getForumPermissions();
         if (empty($forumids)) {
-            $forumids = $this->getForumList(false);
+	        $forumids = $this->getForumList(false);
         } elseif (!is_array($forumids)) {
             $forumids = explode(',', $forumids);
         }
