@@ -69,7 +69,7 @@ class plgAuthenticationjfusion extends JPlugin
 	    $mainframe = JFactory::getApplication();
 	    // Initialize variables
 	    $debugger = JFusionFactory::getDebugger('jfusion-authentication');
-	    $debugger->reset();
+	    $debugger->set(null, array());
 
 	    $db = JFactory::getDBO();
 	    //get the JFusion master

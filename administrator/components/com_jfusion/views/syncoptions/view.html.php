@@ -155,10 +155,10 @@ class jfusionViewsyncoptions extends JViewLegacy
 JS;
 			    $document->addScriptDeclaration($js);
 			    if ($this->sync_mode != 'new') {
-				    $syncdata = json_encode($this->syncdata);
+				    $syncdata = (string)new JResponseJson($this->syncdata);
 
 				    $js=<<<JS
-	        JFusion.response = {$syncdata};
+	        JFusion.response = $syncdata;
 
 			window.addEvent('domready',function() {
 				JFusion.renderSync(JFusion.response)

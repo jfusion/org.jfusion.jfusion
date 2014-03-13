@@ -9,7 +9,6 @@ JFusion.confirmationBoxSlides = [];
 
 JFusion.view = false;
 JFusion.enablePagination = false;
-JFusion.enableAjax = false;
 JFusion.enableJumpto = false;
 JFusion.loadMarkitup = false;
 
@@ -18,34 +17,42 @@ JFusion.highlightDelay = 500;
 
 JFusion.articelUrl = [];
 
-JFusion.OnError = function (messages, force) {
-    JFusion.emptyMessage();
-    if (messages.indexOf('<!') === 0) {
-        this.OnMessage('error', [ Joomla.JText._('SESSION_TIMEOUT') ], force);
-    } else {
-        this.OnMessage('error', [ messages ], force);
+JFusion.onSuccess = function (JSONobject) {
+    if (!JSONobject.success && JSONobject.message) {
+        if (!JSONobject.messages) {
+            JSONobject.messages = {};
+        }
+        if (!JSONobject.messages.error) {
+            JSONobject.messages.error = [];
+        }
+        JSONobject.messages.error[JSONobject.messages.error.length] = JSONobject.message;
+        alert(JSONobject.message);
+    }
+    if (JSONobject.messages) {
+        JFusion.renderMessages(JSONobject.messages);
     }
 };
 
-JFusion.OnMessages = function (messages) {
+JFusion.OnError = function (messages) {
     JFusion.emptyMessage();
 
-    this.OnMessage('message', messages.message);
-    this.OnMessage('notice', messages.notice);
-    this.OnMessage('warning', messages.warning);
-    this.OnMessage('error', messages.error);
-
-    JFusion.delayHiding = setTimeout(function () {
-        if (JFusion.messageSlide) {
-            JFusion.messageSlide.slideOut();
-        }
-    }, JFusion.timeout);
+    var message = {};
+    if (messages.indexOf('<!') === 0) {
+        message.error = [ Joomla.JText._('SESSION_TIMEOUT') ];
+    } else {
+        message.error = [ messages ];
+    }
+    JFusion.renderMessages(message);
 };
 
-JFusion.OnMessage = function (type, messages) {
-    var errorlist, div, messageArea;
-    if (messages instanceof Array) {
-        if (messages.length) {
+JFusion.renderMessages = function (messages) {
+    var container = document.id('jfusionMessageArea');
+
+    if (container) {
+        var children = $$('#jfusionMessageArea > *');
+        children.destroy();
+
+        Object.each(messages, function (item, type) {
             if (type === 'error') {
                 window.location = '#jfusionMessageArea';
             }
@@ -55,23 +62,36 @@ JFusion.OnMessage = function (type, messages) {
                 clearTimeout(JFusion.delayHiding);
             }
 
-            errorlist = { 'error' : 'alert-error', 'warning' : '', 'notice' : 'alert-info', 'message' : 'alert-success'};
-
-            div = new Element('div', {'class' : 'alert' + ' ' + errorlist[type] });
-
-            new Element('h4', {'class': 'alert-heading', 'html' : Joomla.JText._(type) }).inject(div);
-            Array.each(messages, function (message) {
-                new Element('p', { 'html' : message }).inject(div);
+            var div = new Element('div', {
+                id: 'system-message',
+                'class': 'alert alert-' + type
             });
-            messageArea = $('jfusionMessageArea');
-            if (messageArea) {
-                div.inject(messageArea);
-            }
+            div.inject(container);
+            var h4 = new Element('h4', {
+                'class' : 'alert-heading',
+                html: Joomla.JText._(type)
+            });
+            h4.inject(div);
+            var divList = new Element('div');
+            Array.each(item, function (item, index, object) {
+                if (JFusion.messageSlide) {
+                    JFusion.messageSlide.slideIn();
+                }
+                var p = new Element('p', {
+                    html: item
+                });
+                p.inject(divList);
+            }, this);
+            divList.inject(div);
+        }, this);
 
+        JFusion.delayHiding = setTimeout(function () {
             if (JFusion.messageSlide) {
-                JFusion.messageSlide.slideIn();
+                JFusion.messageSlide.slideOut();
             }
-        }
+        }, JFusion.timeout);
+    } else {
+        Joomla.renderMessages(messages);
     }
 };
 
@@ -99,26 +119,26 @@ JFusion.initializeDiscussbot = function () {
 
 JFusion.updateContent = function (JSONobject) {
     var postArea, buttonArea, postPagination, jfusionDebugContainer;
-    if (JSONobject.status) {
+    if (JSONobject.success) {
         //update the post area with the updated content
         postArea = $('jfusionPostArea');
         if (postArea) {
-            postArea.set('html', JSONobject.posts);
+            postArea.set('html', JSONobject.data.posts);
         }
 
-        buttonArea = $('jfusionButtonArea' + JSONobject.articleid);
+        buttonArea = $('jfusionButtonArea' + JSONobject.data.articleid);
         if (buttonArea) {
-            buttonArea.set('html', JSONobject.buttons);
+            buttonArea.set('html', JSONobject.data.buttons);
         }
         if (JFusion.enablePagination) {
             postPagination = $('jfusionPostPagination');
             if (postPagination) {
-                postPagination.set('html', JSONobject.pagination);
+                postPagination.set('html', JSONobject.data.pagination);
             }
         }
 
-        if (JSONobject.postid) {
-            JFusion.highlightPost('post' + JSONobject.postid);
+        if (JSONobject.data.postid) {
+            JFusion.highlightPost('post' + JSONobject.data.postid);
 
             //remove the preview iframe if exists
             if ($('markItUpQuickReply')) {
@@ -126,10 +146,9 @@ JFusion.updateContent = function (JSONobject) {
             }
         }
     }
-    JFusion.OnMessages(JSONobject.messages);
-    jfusionDebugContainer = $('jfusionDebugContainer' + JSONobject.articleid);
+    jfusionDebugContainer = $('jfusionDebugContainer' + JSONobject.data.articleid);
     if (jfusionDebugContainer) {
-        jfusionDebugContainer.set('html', JSONobject.debug);
+        jfusionDebugContainer.set('html', JSONobject.data.debug);
     }
 };
 
@@ -168,6 +187,7 @@ JFusion.refreshPosts = function (id) {
         url: JFusion.articelUrl[id],
         noCache: true,
         onSuccess: function (JSONobject) {
+            JFusion.onSuccess(JSONobject);
             JFusion.updateContent(JSONobject);
         },
         onError: function (JSONobject) {
@@ -308,7 +328,14 @@ JFusion.submitAjaxRequest = function (id, task, vars) {
     new Request.JSON({
         url: url,
         noCache: true,
-        onSuccess: function () {
+        onSuccess: function (JSONobject) {
+            JFusion.onSuccess(JSONobject);
+            if (JSONobject.success) {
+                window.location = url;
+            }
+        },
+        onError: function (JSONobject) {
+            JFusion.onError(JSONobject);
             window.location = url;
         }
     }).post('tmpl=component&ajax_request=1&dbtask=' + task + '&articleId=' + id + vars);
@@ -361,8 +388,11 @@ JFusion.pagination = function (id) {
         url: JFusion.articelUrl[id],
         noCache: true,
         onSuccess : function (JSONobject) {
+            JFusion.onSuccess(JSONobject);
             JFusion.updateContent(JSONobject);
-            window.location = '#discussion';
+            if (JSONobject.success) {
+                window.location = '#discussion';
+            }
         },
         onError: function (JSONobject) {
             JFusion.OnError(JSONobject);
@@ -371,28 +401,30 @@ JFusion.pagination = function (id) {
 };
 
 JFusion.submitReply = function (id) {
-    if (JFusion.enableAjax) {
-        var form = $('jfusionQuickReply' + id);
-        //show a loading
-        JFusion.emptyMessage();
+    var form = $('jfusionQuickReply' + id);
+    //show a loading
+    JFusion.emptyMessage();
 
-        JFusion.OnMessage('message', [Joomla.JText._('SUBMITTING_QUICK_REPLY')]);
+    var messages = {};
+    messages.message = [ Joomla.JText._('SUBMITTING_QUICK_REPLY') ];
+    JFusion.renderMessages(messages);
 
-        //update the post area content
-        new Request.JSON({
-            url: JFusion.articelUrl[id],
-            noCache: true,
-            onSuccess: function (JSONobject) {
-                JFusion.updateContent(JSONobject);
+    //update the post area content
+    new Request.JSON({
+        url: JFusion.articelUrl[id],
+        noCache: true,
+        onSuccess: function (JSONobject) {
+            JFusion.onSuccess(JSONobject);
+            JFusion.updateContent(JSONobject);
+            if (JSONobject.success) {
                 $('quickReply').set('value', '');
-            },
-            onError: function (JSONobject) {
-                JFusion.OnError(JSONobject);
             }
-        }).post(form.toQueryString() + '&tmpl=component&ajax_request=1');
-        return false;
-    }
-    return true;
+        },
+        onError: function (JSONobject) {
+            JFusion.OnError(JSONobject);
+        }
+    }).post(form.toQueryString() + '&tmpl=component&ajax_request=1');
+    return false;
 };
 
 JFusion.emptyMessage = function () {

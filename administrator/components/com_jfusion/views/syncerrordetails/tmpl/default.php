@@ -32,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
 
 	//display the userlist info
 
-	$debugger->reset($error['user']);
+	$debugger->set(null, $error['user']);
 	$debugger->setTitle('User from Plugin');
 	$debugger->displayHtml('jname');
 	?>
@@ -48,7 +48,7 @@ defined('_JEXEC') or die('Restricted access');
 	?>
 	<br/>
 	<?php
-	$debugger->reset($error['conflict']);
+	$debugger->set(null, $error['conflict']);
 	$debugger->setTitle('User target Plugin');
 	$debugger->displayHtml('jname');
 	?>

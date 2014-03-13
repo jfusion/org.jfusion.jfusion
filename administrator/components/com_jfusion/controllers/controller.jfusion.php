@@ -109,104 +109,108 @@ class JFusionController extends JControllerLegacy
      */
     function changesettings()
     {
-        //find out the posted ID of the JFusion module to publish
-        $jname = JFactory::getApplication()->input->get('jname');
-        $field_name = JFactory::getApplication()->input->get('field_name');
-        $field_value = JFactory::getApplication()->input->get('field_value');
-        //check to see if an integration was selected
-        $db = JFactory::getDBO();
-        if ($jname) {
-            if ($field_name == 'master') {
-                //If a master is being set make sure all other masters are disabled first
-	            $query = $db->getQuery(true)
-		            ->update('#__jfusion')
-		            ->set('master = 0');
-                $db->setQuery($query);
-	            $db->execute();
-            }
-            //perform the update
-	        $query = $db->getQuery(true)
-		        ->update('#__jfusion')
-		        ->set($field_name . ' = ' . $db->quote($field_value))
-		        ->where('name = ' . $db->quote($jname));
-            $db->setQuery($query);
-            $db->execute();
+	    try {
+		    //find out the posted ID of the JFusion module to publish
+		    $jname = JFactory::getApplication()->input->get('jname');
+		    $field_name = JFactory::getApplication()->input->get('field_name');
+		    $field_value = JFactory::getApplication()->input->get('field_value');
+		    //check to see if an integration was selected
+		    $db = JFactory::getDBO();
+		    if ($jname) {
+			    if ($field_name == 'master') {
+				    //If a master is being set make sure all other masters are disabled first
+				    $query = $db->getQuery(true)
+					    ->update('#__jfusion')
+					    ->set('master = 0');
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
+			    //perform the update
+			    $query = $db->getQuery(true)
+				    ->update('#__jfusion')
+				    ->set($field_name . ' = ' . $db->quote($field_value))
+				    ->where('name = ' . $db->quote($jname));
+			    $db->setQuery($query);
+			    $db->execute();
 
-            //get the new plugin settings
-	        $query = $db->getQuery(true)
-		        ->select('*')
-		        ->from('#__jfusion')
-		        ->where('name = ' . $db->quote($jname));
-            $db->setQuery($query);
-            $result = $db->loadObject();
-            //disable a slave when it is turned into a master
-            if ($field_name == 'master' && $field_value == '1' && $result->slave == '1') {
-	            $query = $db->getQuery(true)
-		            ->update('#__jfusion')
-		            ->set('slave = 0')
-		            ->where('name = ' . $db->quote($jname));
-                $db->setQuery($query);
-                $db->execute();
-            }
-            //disable a master when it is turned into a slave
-            if ($field_name == 'slave' && $field_value == '1' && $result->master == '1') {
-	            $query = $db->getQuery(true)
-		            ->update('#__jfusion')
-		            ->set('master = 0')
-		            ->where('name = ' . $db->quote($jname));
-                $db->setQuery($query);
-                $db->execute();
-            }
-            //auto enable the auth and dual login for newly enabled plugins
-            if (($field_name == 'slave' || $field_name == 'master') && $field_value == '1') {
-	            $query = $db->getQuery(true)
-		            ->select('dual_login')
-		            ->from('#__jfusion')
-		            ->where('name = ' . $db->quote($jname));
-                $db->setQuery($query);
-                $dual_login = $db->loadResult();
-                if ($dual_login > 1) {
-                    //only set the encryption if dual login is disabled
-	                $query = $db->getQuery(true)
-		                ->update('#__jfusion')
-		                ->set('check_encryption = 1')
-		                ->where('name = ' . $db->quote($jname));
-                    $db->setQuery($query);
-                    $db->execute();
-                } else {
-	                $query = $db->getQuery(true)
-		                ->update('#__jfusion')
-		                ->set('dual_login = 1')
-		                ->set('check_encryption = 1')
-		                ->where('name = ' . $db->quote($jname));
-                    $db->setQuery($query);
-                    $db->execute();
-                }
-            }
-            //auto disable the auth and dual login for newly disabled plugins
-            if (($field_name == 'slave' || $field_name == 'master') && $field_value == '0') {
-                //only set the encryption if dual login is disabled
-	            $query = $db->getQuery(true)
-		            ->update('#__jfusion')
-		            ->set('dual_login = 0')
-		            ->set('check_encryption = 0')
-		            ->where('name = ' . $db->quote($jname));
-                $db->setQuery($query);
-                $db->execute();
-            }
-        }
-
-	    $result = array();
-	    /**
-	     * @ignore
-	     * @var $view jfusionViewplugindisplay
-	     */
-	    $view = $this->getView('plugindisplay', 'html');
-	    $plugins = $view->getPlugins();
-	    $result['pluginlist'] = $view->generateListHTML($plugins);
-
-	    $result['messages'] = JFusionFunction::renderMessage();
-        die(json_encode($result));
+			    //get the new plugin settings
+			    $query = $db->getQuery(true)
+				    ->select('*')
+				    ->from('#__jfusion')
+				    ->where('name = ' . $db->quote($jname));
+			    $db->setQuery($query);
+			    $result = $db->loadObject();
+			    //disable a slave when it is turned into a master
+			    if ($field_name == 'master' && $field_value == '1' && $result->slave == '1') {
+				    $query = $db->getQuery(true)
+					    ->update('#__jfusion')
+					    ->set('slave = 0')
+					    ->where('name = ' . $db->quote($jname));
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
+			    //disable a master when it is turned into a slave
+			    if ($field_name == 'slave' && $field_value == '1' && $result->master == '1') {
+				    $query = $db->getQuery(true)
+					    ->update('#__jfusion')
+					    ->set('master = 0')
+					    ->where('name = ' . $db->quote($jname));
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
+			    //auto enable the auth and dual login for newly enabled plugins
+			    if (($field_name == 'slave' || $field_name == 'master') && $field_value == '1') {
+				    $query = $db->getQuery(true)
+					    ->select('dual_login')
+					    ->from('#__jfusion')
+					    ->where('name = ' . $db->quote($jname));
+				    $db->setQuery($query);
+				    $dual_login = $db->loadResult();
+				    if ($dual_login > 1) {
+					    //only set the encryption if dual login is disabled
+					    $query = $db->getQuery(true)
+						    ->update('#__jfusion')
+						    ->set('check_encryption = 1')
+						    ->where('name = ' . $db->quote($jname));
+					    $db->setQuery($query);
+					    $db->execute();
+				    } else {
+					    $query = $db->getQuery(true)
+						    ->update('#__jfusion')
+						    ->set('dual_login = 1')
+						    ->set('check_encryption = 1')
+						    ->where('name = ' . $db->quote($jname));
+					    $db->setQuery($query);
+					    $db->execute();
+				    }
+			    }
+			    //auto disable the auth and dual login for newly disabled plugins
+			    if (($field_name == 'slave' || $field_name == 'master') && $field_value == '0') {
+				    //only set the encryption if dual login is disabled
+				    $query = $db->getQuery(true)
+					    ->update('#__jfusion')
+					    ->set('dual_login = 0')
+					    ->set('check_encryption = 0')
+					    ->where('name = ' . $db->quote($jname));
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
+		    } else {
+				throw new RuntimeException('NO_JNAME');
+		    }
+		    /**
+		     * @ignore
+		     * @var $view jfusionViewplugindisplay
+		     */
+		    $view = $this->getView('plugindisplay', 'html');
+		    $plugins = $view->getPlugins();
+			$data = new stdClass();
+		    $data->pluginlist = $view->generateListHTML($plugins);
+		    echo new JResponseJson($data);
+	    } catch (Exception $e) {
+			echo new JResponseJson($e);
+	    }
+	    exit();
     }
 
     /**
@@ -276,45 +280,42 @@ class JFusionController extends JControllerLegacy
      */
     function syncresume()
     {
-        $syncid = JFactory::getApplication()->input->get->get('syncid', '');
-        $db = JFactory::getDBO();
+	    try {
+		    $syncid = JFactory::getApplication()->input->get->get('syncid', '');
+		    $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true)
-		    ->select('syncid')
-		    ->from('#__jfusion_sync')
-		    ->where('syncid =' . $db->quote($syncid));
+		    $query = $db->getQuery(true)
+			    ->select('syncid')
+			    ->from('#__jfusion_sync')
+			    ->where('syncid =' . $db->quote($syncid));
 
-        $db->setQuery($query);
+		    $db->setQuery($query);
 
-	    $syncdata = array();
-	    $syncdata['errors'] = array();
-        if ($db->loadResult()) {
-            //Load usersync library
-            include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-            $syncdata = JFusionUsersync::getSyncdata($syncid);
-	        $syncdata['errors'] = array();
-	        if (is_array($syncdata)) {
-		        //start the usersync
-		        $plugin_offset = (!empty($syncdata['plugin_offset'])) ? $syncdata['plugin_offset'] : 0;
-		        //start at the next user
-		        $user_offset = (!empty($syncdata['user_offset'])) ? $syncdata['user_offset'] : 0;
-		        if (JFactory::getApplication()->input->get('userbatch')) {
-			        $syncdata['userbatch'] = JFactory::getApplication()->input->get('userbatch');
-		        }
-		        JFusionUsersync::syncExecute($syncdata, $syncdata['action'], $plugin_offset, $user_offset);
-	        } else {
-		        $msg = JText::_('SYNC_FAILED_TO_LOAD_SYNC_DATA');
-		        $syncdata['errors'][] = $msg;
-		        JFusionFunction::raiseError($msg);
-	        }
-        } else {
-	        $msg = JText::sprintf('SYNC_ID_NOT_EXIST', $syncid);
-            $syncdata['errors'][] = $msg;
-	        JFusionFunction::raiseError($msg);
-        }
-
-	    $syncdata['messages'] = JFusionFunction::renderMessage();
-        die(json_encode($syncdata));
+		    $syncdata = array();
+		    if ($db->loadResult()) {
+			    //Load usersync library
+			    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
+			    $syncdata = JFusionUsersync::getSyncdata($syncid);
+			    if (is_array($syncdata)) {
+				    //start the usersync
+				    $plugin_offset = (!empty($syncdata['plugin_offset'])) ? $syncdata['plugin_offset'] : 0;
+				    //start at the next user
+				    $user_offset = (!empty($syncdata['user_offset'])) ? $syncdata['user_offset'] : 0;
+				    if (JFactory::getApplication()->input->get('userbatch')) {
+					    $syncdata['userbatch'] = JFactory::getApplication()->input->get('userbatch');
+				    }
+				    JFusionUsersync::syncExecute($syncdata, $syncdata['action'], $plugin_offset, $user_offset);
+			    } else {
+				    throw new RuntimeException(JText::_('SYNC_FAILED_TO_LOAD_SYNC_DATA'));
+			    }
+		    } else {
+			    throw new RuntimeException(JText::sprintf('SYNC_ID_NOT_EXIST', $syncid));
+		    }
+	        echo new JResponseJson($syncdata);
+        } catch (Exception $e) {
+			echo new JResponseJson($e);
+		}
+		exit();
     }
 
     /**
@@ -324,12 +325,15 @@ class JFusionController extends JControllerLegacy
      */
     function syncprogress()
     {
-        $syncid = JFactory::getApplication()->input->get->get('syncid', '');
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-        $syncdata = JFusionUsersync::getSyncdata($syncid);
-
-	    $syncdata['messages'] = JFusionFunction::renderMessage();
-        die(json_encode($syncdata));
+	    try {
+		    $syncid = JFactory::getApplication()->input->get->get('syncid', '');
+		    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
+		    $syncdata = JFusionUsersync::getSyncdata($syncid);
+		    echo new JResponseJson($syncdata);
+	    } catch (Exception $e) {
+		    echo new JResponseJson($e);
+	    }
+	    exit();
     }
 
     /**
@@ -461,16 +465,26 @@ class JFusionController extends JControllerLegacy
 
         $format = JFactory::getApplication()->input->get('format', 'html');
         if ($format == 'json') {
-	        /**
-	         * @ignore
-	         * @var $view jfusionViewplugindisplay
-	         */
-	        $view = $this->getView('plugindisplay', 'html');
-	        $plugins = $view->getPlugins();
-	        $result['pluginlist'] = $view->generateListHTML($plugins);
+	        try {
+		        $error = true;
+		        /**
+		         * @ignore
+		         * @var $view jfusionViewplugindisplay
+		         */
+		        $view = $this->getView('plugindisplay', 'html');
+		        $plugins = $view->getPlugins();
+		        $result['pluginlist'] = $view->generateListHTML($plugins);
 
-	        $result['messages'] = JFusionFunction::renderMessage();
-            die(json_encode($result));
+		        if ($result['status']) {
+			        $error = false;
+		        }
+		        unset($result['status']);
+
+		        echo new JResponseJson($result, null, $error);
+            } catch (Exception $e) {
+	            echo new JResponseJson($e);
+            }
+	        exit();
         } else {
             $this->setRedirect('index.php?option=com_jfusion&task=plugindisplay');
         }
@@ -512,16 +526,17 @@ class JFusionController extends JControllerLegacy
 
     function plugincopy()
     {
-        $jname = JFactory::getApplication()->input->get('jname');
-        $new_jname = JFactory::getApplication()->input->get('new_jname');
-
-        //replace not-allowed characters with _
-        $new_jname = preg_replace('/([^a-zA-Z0-9_])/', '_', $new_jname);
-
-        //initialise response element
-        $result = array();
-
 	    try {
+	        $jname = JFactory::getApplication()->input->get('jname');
+	        $new_jname = JFactory::getApplication()->input->get('new_jname');
+
+	        //replace not-allowed characters with _
+	        $new_jname = preg_replace('/([^a-zA-Z0-9_])/', '_', $new_jname);
+
+		    $error = true;
+	        //initialise response element
+	        $result = array();
+
 		    //check to see if an integration was selected
 		    $db = JFactory::getDBO();
 
@@ -551,30 +566,29 @@ class JFusionController extends JControllerLegacy
 				    $result = $model->copy($jname, $new_jname);
 
 				    if ($result['status']) {
+					    $error = false;
 					    $result['new_jname'] =  $new_jname;
 				    }
+				    unset($result['status']);
 			    } else {
 				    throw new RuntimeException(JText::_('CANT_COPY'));
 			    }
 		    } else {
 				throw new RuntimeException(JText::_('NONE_SELECTED'));
 		    }
+
+		    /**
+		     * @ignore
+		     * @var $view jfusionViewplugindisplay
+		     */
+		    $view = $this->getView('plugindisplay', 'html');
+		    $plugins = $view->getPlugins();
+		    $result['pluginlist'] = $view->generateListHTML($plugins);
+		    echo new JResponseJson($result, null, $error);
 	    } catch (Exception $e) {
-		    $result['status'] = false;
-		    JFusionFunction::raiseError($e);
+		    echo new JResponseJson($e);
 	    }
-
-	    /**
-	     * @ignore
-	     * @var $view jfusionViewplugindisplay
-	     */
-	    $view = $this->getView('plugindisplay', 'html');
-	    $plugins = $view->getPlugins();
-	    $result['pluginlist'] = $view->generateListHTML($plugins);
-
-	    $result['messages'] = JFusionFunction::renderMessage();
-        //output results
-        die(json_encode($result));
+	    exit();
     }
 
     /**
@@ -584,33 +598,41 @@ class JFusionController extends JControllerLegacy
      */
     function uninstallplugin()
     {
-        $jname = JFactory::getApplication()->input->get('jname');
+	    try {
+		    $error = true;
+	        $jname = JFactory::getApplication()->input->get('jname');
 
-        //set uninstall options
-        $db = JFactory::getDBO();
+	        //set uninstall options
+	        $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true)
-		    ->select('count(*)')
-		    ->from('#__jfusion')
-		    ->where('original_name LIKE ' . $db->quote($jname));
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__jfusion')
+			    ->where('original_name LIKE ' . $db->quote($jname));
 
-        $db->setQuery($query);
-        $copys = $db->loadResult();
+	        $db->setQuery($query);
+	        $copys = $db->loadResult();
 
-        //check to see if an integration was selected
-        if ($jname && $jname != 'joomla_int' && !$copys) {
-            include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
-            $model = new JFusionModelInstaller();
-            $result = $model->uninstall($jname);
-        } else {
-	        JFusionFunction::raiseError('JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED'));
-            $result['status'] = false;
-        }
+	        //check to see if an integration was selected
+	        if ($jname && $jname != 'joomla_int' && !$copys) {
+	            include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
+	            $model = new JFusionModelInstaller();
+	            $result = $model->uninstall($jname);
 
-	    $result['messages'] = JFusionFunction::renderMessage();
-        $result['jname'] = $jname;
-        //output results
-        die(json_encode($result));
+		        if ($result['status']) {
+			        $error = false;
+		        }
+		        unset($result['status']);
+	        } else {
+		        throw new RuntimeException('JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED'));
+	        }
+	        $result['jname'] = $jname;
+	        //output results
+		    echo new JResponseJson($result, null, $error);
+	    } catch (Exception $e) {
+			echo new JResponseJson($e);
+		}
+		exit();
     }
 
     /**
@@ -747,41 +769,38 @@ JS;
 
     function saveorder()
     {
-        //split the value of the sort action
-        $sort_order = JFactory::getApplication()->input->getString('sort_order');
-        $ids = explode('|', $sort_order);
-        $db = JFactory::getDBO();
+	    try {
+		    //split the value of the sort action
+		    $sort_order = JFactory::getApplication()->input->getString('sort_order');
+		    $ids = explode('|', $sort_order);
+		    $db = JFactory::getDBO();
 
-        $result = array('status' => true, 'messages' => '');
-        /* run the update query for each id */
-        foreach($ids as $index=>$id)
-        {
-            if($id != '') {
-	            $query = $db->getQuery(true)
-		            ->update('#__jfusion')
-	                ->set('ordering = ' .(int) $index)
-		            ->where('name = ' . $db->quote($id));
+		    $result = array('status' => true, 'messages' => '');
+		    /* run the update query for each id */
+		    foreach($ids as $index=>$id)
+		    {
+			    if($id != '') {
+				    $query = $db->getQuery(true)
+					    ->update('#__jfusion')
+					    ->set('ordering = ' .(int) $index)
+					    ->where('name = ' . $db->quote($id));
 
-	            $db->setQuery($query);
-
-	            try {
-		            $db->execute();
-	            } catch (Exception $e) {
-		            JFusionFunction::raiseError($e);
-		            $result['status'] = false;
-	            }
-            }
-        }
-	    /**
-	     * @ignore
-	     * @var $view jfusionViewplugindisplay
-	     */
-	    $view = $this->getView('plugindisplay', 'html');
-	    $plugins = $view->getPlugins();
-	    $result['pluginlist'] = $view->generateListHTML($plugins);
-
-	    $result['messages'] = JFusionFunction::renderMessage();
-        die(json_encode($result));
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
+		    }
+		    /**
+		     * @ignore
+		     * @var $view jfusionViewplugindisplay
+		     */
+		    $view = $this->getView('plugindisplay', 'html');
+		    $plugins = $view->getPlugins();
+		    $result['pluginlist'] = $view->generateListHTML($plugins);
+		    echo new JResponseJson($result);
+	    } catch (Exception $e) {
+		    echo new JResponseJson($e);
+	    }
+	    exit();
     }
 
     function import()

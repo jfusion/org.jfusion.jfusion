@@ -59,7 +59,7 @@ class jfusionViewLogoutCheckerResult extends JViewLegacy
 	    $JFusionActivePlugin = 'joomla_int';
 	    $JFusionLoginCheckActive = true;
 
-	    JFusionFactory::getDebugger('jfusion-loginchecker')->reset();
+	    JFusionFactory::getDebugger('jfusion-loginchecker')->set(null, array());
 
 	    $JFusionActivePlugin = 'joomla_int';
 	    $jfusion_user = array('type' => 'user', 'name' => 'jfusion', 'params' => '');

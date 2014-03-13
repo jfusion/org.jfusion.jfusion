@@ -12,9 +12,9 @@ JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
             element.set('src', 'components/com_jfusion/images/spinner.gif');
         },
         onSuccess: function (JSONobject) {
-            JFusion.OnMessages(JSONobject.messages);
+            JFusion.onSuccess(JSONobject);
 
-            JFusion.updateList(JSONobject.pluginlist);
+            JFusion.updateList(JSONobject);
         },
         onError: function (JSONobject) {
             JFusion.OnError(JSONobject);
@@ -34,9 +34,9 @@ JFusion.copyPlugin = function (jname) {
                 url: JFusion.url,
                 noCache: true,
                 onSuccess: function (JSONobject) {
-                    JFusion.OnMessages(JSONobject.messages);
+                    JFusion.onSuccess(JSONobject);
 
-                    JFusion.updateList(JSONobject.pluginlist);
+                    JFusion.updateList(JSONobject);
                 },
                 onError: function (JSONobject) {
                     JFusion.OnError(JSONobject);
@@ -58,9 +58,10 @@ JFusion.deletePlugin = function (jname) {
             url: JFusion.url,
             noCache: true,
             onSuccess: function (JSONobject) {
-                JFusion.OnMessages(JSONobject.messages);
-                if (JSONobject.status ===  true) {
-                    var el = $(JSONobject.jname);
+                JFusion.onSuccess(JSONobject);
+
+                if (JSONobject.success ===  true && JSONobject.data && JSONobject.data.jname) {
+                    var el = $(JSONobject.data.jname);
                     el.parentNode.removeChild(el);
                 }
             },
@@ -83,9 +84,9 @@ JFusion.submitForm = function (type) {
         },
         onSuccess: function(JSONobject) {
             $('spinner'+type).set('html', '');
-            JFusion.OnMessages(JSONobject.messages);
+            JFusion.onSuccess(JSONobject);
 
-            JFusion.updateList(JSONobject.pluginlist);
+            JFusion.updateList(JSONobject);
         },
         onError: function (JSONobject) {
             JFusion.OnError(JSONobject);
@@ -97,11 +98,13 @@ JFusion.downloadPlugin = function () {
     window.location = $('server_install_url').getSelected().get('value');
 };
 
-JFusion.updateList = function (html) {
-    var list = $('sort_table');
-    list.empty();
-    list.set('html', html);
-    this.initSortables();
+JFusion.updateList = function (JSONobject) {
+    if (JSONobject.success ===  true && JSONobject.data && JSONobject.data.pluginlist) {
+        var list = $('sort_table');
+        list.empty();
+        list.set('html', JSONobject.data.pluginlist);
+        this.initSortables();
+    }
 };
 
 JFusion.initSortables = function () {
@@ -131,9 +134,9 @@ JFusion.initSortables = function () {
                 url: JFusion.url,
                 noCache: true,
                 onSuccess: function (JSONobject) {
-                    JFusion.OnMessages(JSONobject.messages);
+                    JFusion.onSuccess(JSONobject);
 
-                    JFusion.updateList(JSONobject.pluginlist);
+                    JFusion.updateList(JSONobject);
                 },
                 onError: function (JSONobject) {
                     JFusion.OnError(JSONobject);
@@ -181,9 +184,9 @@ window.addEvent('domready',function() {
                 $('spinnerZIP').set('html', '');
                 if (JSON.validate(result)) {
                     var JSONobject = JSON.decode(result);
-                    JFusion.OnMessages(JSONobject.messages);
+                    JFusion.onSuccess(JSONobject);
 
-                    JFusion.updateList(JSONobject.pluginlist);
+                    JFusion.updateList(JSONobject);
                 } else {
                     JFusion.OnError(result);
                 }

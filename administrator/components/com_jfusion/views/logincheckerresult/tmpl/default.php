@@ -41,7 +41,7 @@ $debugger = JFusionFactory::getDebugger('jfusion-logincheckerresult');
 		global $JFusionActivePlugin;
 		$JFusionActivePlugin = 'joomla_int';
 		foreach ($this->plugins as $plugin) {
-			$debugger->reset($plugin);
+			$debugger->set(null, $plugin);
 			$debugger->setTitle(JText::_('JFUSION') . ' ' . $plugin->name . ' ' . JText::_('PLUGIN'));
 			$debugger->displayHtml();
 			$textOutput[] = $debugger->getAsText();
@@ -50,7 +50,7 @@ $debugger = JFusionFactory::getDebugger('jfusion-logincheckerresult');
 		<br/>
 		<br/>
 		<?php
-		$debugger->reset($this->auth_userinfo);
+		$debugger->set(null, $this->auth_userinfo);
 		$debugger->setTitle(JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'));
 		$debugger->displayHtml();
 		$textOutput[] = $debugger->getAsText();
@@ -105,7 +105,7 @@ $debugger = JFusionFactory::getDebugger('jfusion-logincheckerresult');
 			</div>
 			<?php
 			if (!empty($auth_result->debug)) {
-				$debugger->reset($auth_result->debug);
+				$debugger->set(null, $auth_result->debug);
 				$debugger->setTitle($title);
 				$debugger->displayHtml();
 				$textOutput[] = $debugger->getAsText();

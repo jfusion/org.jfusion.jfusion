@@ -98,7 +98,7 @@ class plgContentJfusion extends JPlugin
 
 		//define some constants
 		if (!defined('DISCUSSION_TEMPLATE_PATH')) {
-			define('DISCUSSBOT_URL_PATH', 'plugins/content/jfusion/discussbot/');
+			define('DISCUSSBOT_URL_PATH', JUri::root(true) . 'plugins/content/jfusion/discussbot/');
 
 			define('DISCUSSBOT_PATH', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'discussbot' . DIRECTORY_SEPARATOR);
 
@@ -252,8 +252,7 @@ class plgContentJfusion extends JPlugin
 	public function onContentPrepare($context, &$article, &$params, $limitstart = 0)
 	{
 		$this->ajax_request = JFactory::getApplication()->input->getInt('ajax_request', 0);
-		$ajax = $this->prepareAjaxResponce();
-
+		$data = $this->prepareJSONResponce();
 		try {
 			if ($context != 'com_content.featured' && $context != 'com_content.category') {
 				//seems syntax has completely changed :(
@@ -303,11 +302,11 @@ class plgContentJfusion extends JPlugin
 									$threadinfo = $this->helper->getThreadInfo();
 									if ($threadinfo->valid && $threadinfo->published) {
 										//content is now published so display it
-										$ajax->posts = $this->renderDiscussionContent();
+										$data->posts = $this->renderDiscussionContent();
 									} else {
-										$ajax->posts = null;
+										$data->posts = null;
 									}
-									$ajax->status = true;
+									$data->error = false;
 								}
 
 								//save the visibility of the posts if applicable
@@ -323,14 +322,14 @@ class plgContentJfusion extends JPlugin
 									if ($this->params->get('show_posts', 1) && $this->dbtask == 'update_posts') {
 										$this->updatePosts();
 									}  else if ($this->dbtask == 'update_debug_info') {
-										$ajax->status = true;
+										$data->error = false;
 									} else if ($show_discussion !== '') {
-										$ajax->status = true;
+										$data->error = false;
 										JFusionFunction::raiseNotice('jfusion.discussion.visibility set to ' . $show_discussion);
 									} else {
 										JFusionFunction::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
 									}
-									$this->renderAjaxResponce($ajax);
+									$this->renderJSONResponce($data);
 								}
 								//add scripts to header
 								$this->helper->loadScripts();
@@ -348,10 +347,11 @@ class plgContentJfusion extends JPlugin
 				}
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
 			if ($this->ajax_request) {
-				$ajax->status = false;
-				$this->renderAjaxResponce($ajax);
+				echo new JResponseJson(null, JText::_('DISCUSSBOT_ERROR') . ': ' . $e->getMessage(), true);
+				exit();
+			} else {
+				JFusionFunction::raiseError($e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
 			}
 		}
 	}
@@ -377,34 +377,34 @@ class plgContentJfusion extends JPlugin
 	}
 
 	/**
-	 * @return  stdClass
+	 * @return stdClass
 	 */
-	public function prepareAjaxResponce() {
-		$output = new stdClass;
-		$output->posts = null;
-		$output->pagination = null;
-		$output->status = false;
-		return $output;
+	public function prepareJSONResponce() {
+		$data = new stdClass;
+		$data->posts = null;
+		$data->pagination = null;
+		$data->error = true;
+		return $data;
 	}
 
 	/**
-	 * @param stdClass $ajax
+	 * @param stdClass $data
 	 */
-	public function renderAjaxResponce($ajax) {
-		$ajax->debug = $this->renderDebugOutput();
-		$ajax->buttons = $this->renderButtons(true);
+	public function renderJSONResponce($data) {
+		$data->debug = $this->renderDebugOutput();
+		$data->buttons = $this->renderButtons(true);
 		if ($this->params->get('enable_pagination', 0)) {
-			$ajax->pagination = $this->updatePagination();
+			$data->pagination = $this->updatePagination();
 		}
-//		$ajax->threadinfo = $this->helper->getThreadInfo(true);
+//		$data->threadinfo = $this->helper->getThreadInfo(true);
 
-		$ajax->articleid = $this->article->id;
+		$data->articleid = $this->article->id;
 
-		$ajax->postid = $this->postid;
-		$ajax->moderated = $this->moderated;
+		$data->postid = $this->postid;
+		$data->moderated = $this->moderated;
 
-		$ajax->messages = JFusionFunction::renderMessage();
-		die(json_encode($ajax));
+		echo new JResponseJson($data, null, $data->error);
+		exit();
 	}
 
 	/**
@@ -585,13 +585,10 @@ class plgContentJfusion extends JPlugin
 	{
 		$html = '';
 		if ($this->params->get('debug', 0)) {
-			$debugger = JFusionFactory::getDebugger('jfusion-content-plugin');
-			$debugger->reset($this->helper->debug);
-			$debugger->setTitle('Discussion bot debug info');
 			if ($this->ajax_request) {
-				$html = $debugger->getAsHtml(null, false);
+				$html = $this->helper->debugger->getAsHtml(null, false);
 			} else {
-				$html = $debugger->getAsHtml();
+				$html = $this->helper->debugger->getAsHtml();
 			}
 			if (!$this->ajax_request) {
 				$this->article->text .= <<<HTML
@@ -632,24 +629,31 @@ HTML;
 
 		$editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
-		$ajaxEnabled = ($this->params->get('enable_ajax', 0) && $this->ajax_request);
-		$ajax = $this->prepareAjaxResponce();
+		$data = $this->prepareJSONResponce();
 
-		if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
-			$status = $this->helper->checkThreadExists(1);
+		if ($editAccess) {
+			if ($this->valid) {
+				if ($submittedArticleId == $this->article->id) {
+					$status = $this->helper->checkThreadExists(1);
 
-			if (!empty($status['error'])) {
-				JFusionFunction::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
+					if (!empty($status['error'])) {
+						JFusionFunction::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
+					} else {
+						$data->error = false;
+						JFusionFunction::raiseMessage(JText::sprintf('THREAD_CREATED_SUCCESSFULLY', $this->article->title), JText::_('SUCCESS'));
+					}
+				} else {
+					throw new RuntimeException(JText::_('ARTICLE_MICH_MACH'));
+				}
 			} else {
-				$ajax->status = true;
-				$msg = JText::sprintf('THREAD_CREATED_SUCCESSFULLY', $this->article->title);
-				JFusionFunction::raiseMessage($msg, JText::_('SUCCESS'));
+				throw new RuntimeException(JText::_('INVALID'));
 			}
 		} else {
-			JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
+			throw new RuntimeException(JText::_('ACCESS_DENIED'));
 		}
-		if ($ajaxEnabled) {
-			$this->renderAjaxResponce($ajax);
+
+		if ($this->ajax_request) {
+			$this->renderJSONResponce($data);
 		} else {
 			$mainframe->redirect($url);
 		}
@@ -661,13 +665,12 @@ HTML;
 	 */
 	public function createPost()
 	{
-		$ajax = $this->prepareAjaxResponce();
+		$data = $this->prepareJSONResponce();
 		$JoomlaUser = JFactory::getUser();
 		$JFusionForum = JFusionFactory::getForum($this->jname);
 
 		//define some variables
 		$allowGuests = $this->params->get('quickreply_allow_guests', 0);
-		$ajaxEnabled = ($this->params->get('enable_ajax', 0) && $this->ajax_request);
 
 		$jumpto = '';
 		$url = $this->helper->getArticleUrl($jumpto, '', false);
@@ -708,37 +711,32 @@ HTML;
 						$status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo, $postinfo);
 
 						if (!empty($status['error'])) {
-							JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
+							JFusionFunction::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
 						} else {
 							$threadinfo = $this->helper->getThreadInfo(true);
-							if ($ajaxEnabled) {
-								//if pagination is set, set $limitstart so that we go to the added post
-								if ($this->params->get('enable_pagination', 0)) {
-									$replyCount = $JFusionForum->getReplyCount($threadinfo);
-									$application = JFactory::getApplication();
-									$limit = $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
 
-									if ($this->params->get('sort_posts', 'ASC') == 'ASC') {
-										$limitstart = floor(($replyCount-1)/$limit) * $limit;
-									} else {
-										$limitstart = 0;
-									}
-									JFactory::getApplication()->input->set('limitstart_discuss', $limitstart);
+							//if pagination is set, set $limitstart so that we go to the added post
+							if ($this->params->get('enable_pagination', 0)) {
+								$replyCount = $JFusionForum->getReplyCount($threadinfo);
+								$application = JFactory::getApplication();
+								$limit = $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
+
+								if ($this->params->get('sort_posts', 'ASC') == 'ASC') {
+									$limitstart = floor(($replyCount-1)/$limit) * $limit;
+								} else {
+									$limitstart = 0;
 								}
-								$this->helper->output = array();
-								$this->helper->output['posts'] = $this->preparePosts();
-
-								//take note of the created post
-								$this->postid = $status['postid'];
-
-								$ajax->posts = $this->helper->renderFile('default_posts.php');
-								$ajax->status = true;
-							} else {
-								if ($this->params->get('jumpto_new_post', 0)) {
-									$jumpto = (isset($status['postid'])) ? 'post' . $status['postid'] : '';
-								}
-								$url = $this->helper->getArticleUrl($jumpto, '', false);
+								JFactory::getApplication()->input->set('limitstart_discuss', $limitstart);
 							}
+							$this->helper->output = array();
+							$this->helper->output['posts'] = $this->preparePosts();
+
+							//take note of the created post
+							$this->postid = $status['postid'];
+
+							$data->posts = $this->helper->renderFile('default_posts.php');
+							$data->error = false;
+
 							if (isset($status['post_moderated'])) {
 								$this->moderated = $status['post_moderated'];
 								$msg = ($this->moderated) ? JText::_('SUCCESSFUL_POST_MODERATED') : JText::_('SUCCESSFUL_POST');
@@ -748,19 +746,19 @@ HTML;
 							JFusionFunction::raiseMessage($msg, JText::_('SUCCESS'));
 						}
 					} else {
-						JFusionFunction::raiseError(JText::_('THREADID_NOT_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+						throw new RuntimeException(JText::_('THREADID_NOT_FOUND'));
 					}
 				} else {
-					JFusionFunction::raiseError(JText::_('CAPTCHA_INCORRECT'), JText::_('DISCUSSBOT_ERROR'));
+					throw new RuntimeException(JText::_('CAPTCHA_INCORRECT'));
 				}
 			} else {
-				JFusionFunction::raiseError(JText::_('QUICKEREPLY_EMPTY'), JText::_('DISCUSSBOT_ERROR'));
+				throw new RuntimeException(JText::_('QUICKEREPLY_EMPTY'));
 			}
 		} else {
-			JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
+			throw new RuntimeException(JText::_('ACCESS_DENIED'));
 		}
-		if ($ajaxEnabled) {
-			$this->renderAjaxResponce($ajax);
+		if ($this->ajax_request) {
+			$this->renderJSONResponce($data);
 		} else {
 			$mainframe = JFactory::getApplication();
 			$mainframe->redirect($url);
@@ -778,46 +776,53 @@ HTML;
 		$submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0);
 		$editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
-		$ajax = $this->prepareAjaxResponce();
-		if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
-			$threadinfo = $this->helper->getThreadInfo();
+		$data = $this->prepareJSONResponce();
+		if ($editAccess && $submittedArticleId == $this->article->id) {
+			if ($this->valid) {
+				if ($submittedArticleId == $this->article->id) {
+					$threadinfo = $this->helper->getThreadInfo();
 
-			if ($threadinfo->valid) {
-				//created by discussion bot thus update the look up table
-				JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 0, $threadinfo->manual);
-			} else {
-				//manually plugged thus remove any db plugin tags
-				$db = JFactory::getDBO();
-				//retrieve the original text
-				$query = $db->getQuery(true)
-					->select('`introtext`, `fulltext`')
-					->from('#__content')
-					->where('id = ' . $this->article->id);
+					if ($threadinfo->valid) {
+						//created by discussion bot thus update the look up table
+						JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 0, $threadinfo->manual);
+					} else {
+						//manually plugged thus remove any db plugin tags
+						$db = JFactory::getDBO();
+						//retrieve the original text
+						$query = $db->getQuery(true)
+							->select('`introtext`, `fulltext`')
+							->from('#__content')
+							->where('id = ' . $this->article->id);
 
-				$db->setQuery($query);
-				$texts = $db->loadObject();
+						$db->setQuery($query);
+						$texts = $db->loadObject();
 
-				//remove any {jfusion_discuss...}
-				$fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $texts->fulltext, -1, $fullTextCount);
-				$introtext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $texts->introtext, -1, $introTextCount);
+						//remove any {jfusion_discuss...}
+						$fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $texts->fulltext, -1, $fullTextCount);
+						$introtext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $texts->introtext, -1, $introTextCount);
 
-				if (!empty($fullTextCount) || !empty($introTextCount)) {
-					$query = $db->getQuery(true)
-						->update('#__content')
-						->set('`fulltext` = ' . $db->quote($fulltext))
-						->set('`introtext` = ' . $db->quote($introtext))
-						->where('id = ' . (int) $this->article->id);
-					$db->setQuery($query);
-					$db->execute();
+						if (!empty($fullTextCount) || !empty($introTextCount)) {
+							$query = $db->getQuery(true)
+								->update('#__content')
+								->set('`fulltext` = ' . $db->quote($fulltext))
+								->set('`introtext` = ' . $db->quote($introtext))
+								->where('id = ' . (int) $this->article->id);
+							$db->setQuery($query);
+							$db->execute();
+						}
+					}
+					$data->error = false;
+				} else {
+					throw new RuntimeException(JText::_('ARTICLE_MICH_MACH'));
 				}
+			} else {
+				throw new RuntimeException(JText::_('INVALID'));
 			}
-
-			$ajax->status = true;
 		} else {
-			JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
+			throw new RuntimeException(JText::_('ACCESS_DENIED'));
 		}
 		if ($this->ajax_request) {
-			$this->renderAjaxResponce($ajax);
+			$this->renderJSONResponce($data);
 		} else {
 			$mainframe = JFactory::getApplication();
 			$mainframe->redirect($this->helper->getArticleUrl('', '', false));
@@ -835,17 +840,26 @@ HTML;
 		$submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0);
 		$editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
-		$ajax = $this->prepareAjaxResponce();
-		if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
-			$threadinfo = $this->helper->getThreadInfo();
-			JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $threadinfo->manual);
+		$data = $this->prepareJSONResponce();
+		if ($editAccess) {
+			if ($this->valid) {
+				if ($submittedArticleId == $this->article->id) {
+					$threadinfo = $this->helper->getThreadInfo();
+					JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $threadinfo->manual);
 
-			$ajax->status = true;
+					$data->error = false;
+				} else {
+					throw new RuntimeException(JText::_('ARTICLE_MICH_MACH'));
+				}
+			} else {
+				throw new RuntimeException(JText::_('INVALID'));
+			}
 		} else {
-			JFusionFunction::raiseError(JText::_('NOT_PUBLISHED'), JText::_('DISCUSSBOT_ERROR'));
+			throw new RuntimeException(JText::_('ACCESS_DENIED'));
 		}
+
 		if ($this->ajax_request) {
-			$this->renderAjaxResponce($ajax);
+			$this->renderJSONResponce($data);
 		} else {
 			$mainframe = JFactory::getApplication();
 			$mainframe->redirect($this->helper->getArticleUrl('', '', false));
@@ -1277,167 +1291,163 @@ HTML;
 	{
 		$post_output = array();
 
-		try {
-			$JFusionForum = JFusionFactory::getForum($this->jname);
-			$threadinfo = $this->helper->getThreadInfo();
+		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$threadinfo = $this->helper->getThreadInfo();
 
-			$sort = $this->params->get('sort_posts', 'ASC');
-			if ($this->params->get('enable_pagination', true)) {
-				$application = JFactory::getApplication() ;
-				$limit = (int)$application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
-				$start = (int)$application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
+		$sort = $this->params->get('sort_posts', 'ASC');
+		if ($this->params->get('enable_pagination', true)) {
+			$application = JFactory::getApplication() ;
+			$limit = (int)$application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
+			$start = (int)$application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
+		} else {
+			$start = 0;
+			$limit = (int)trim($this->params->get('limit_posts', 0));
+		}
+
+		if ($limit == 0) {
+			$start = 0;
+		}
+
+		$posts = $JFusionForum->getPosts($this->params, $threadinfo, (int)$start, (int)$limit, $sort);
+
+		$this->helper->debug('Preparing posts output');
+
+		//get required params
+		defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2', 'Y M d h:i:s A');
+		$date_format = $this->params->get('custom_date', _DATE_FORMAT_LC2);
+		$showdate = intval($this->params->get('show_date'));
+		$showuser = intval($this->params->get('show_user'));
+		$showavatar = $this->params->get('show_avatar');
+		$avatar_software = $this->params->get('avatar_software', false);
+		$resize_avatar = $this->params->get('avatar_keep_proportional', false);
+		$userlink = intval($this->params->get('user_link'));
+		$link_software = $this->params->get('userlink_software', false);
+		$userlink_custom = $this->params->get('userlink_custom', false);
+		$character_limit = (int) $this->params->get('character_limit');
+		$itemid = $this->params->get('itemid');
+		$JFusionPublic = JFusionFactory::getPublic($this->jname);
+
+		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$columns = $JFusionForum->getDiscussionColumns();
+		if (empty($columns)) return '';
+
+		for ($i=0; $i<count($posts); $i++) {
+			$p = $posts[$i];
+			$userid = $p->{$columns->userid};
+			$username = ($this->params->get('display_name') && isset($p->{$columns->name})) ? $p->{$columns->name} : $p->{$columns->username};
+			$dateline = $p->{$columns->dateline};
+			$posttext = $p->{$columns->posttext};
+			$posttitle = $p->{$columns->posttitle};
+			$postid = $p->{$columns->postid};
+			$threadid = $p->{$columns->threadid};
+			$guest = $p->{$columns->guest};
+			$threadtitle = (isset($columns->threadtitle)) ? $p->{$columns->threadtitle} : '';
+
+			$post_output[$i] = new stdClass();
+			$post_output[$i]->postid = $postid;
+			$post_output[$i]->guest = $guest;
+
+			//get Joomla id
+			$userlookup = JFusionFunction::lookupUser($JFusionForum->getJname(), $userid, false, $p->{$columns->username});
+
+			//avatar
+			if ($showavatar){
+				if (!empty($avatar_software) && $avatar_software != 'jfusion' && !empty($userlookup)) {
+					$post_output[$i]->avatar_src = JFusionFunction::getAltAvatar($avatar_software, $userlookup->id);
+				} else {
+					$post_output[$i]->avatar_src = $JFusionForum->getAvatar($userid);
+				}
+
+				if (empty($post_output[$i]->avatar_src)) {
+					$post_output[$i]->avatar_src = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+				}
+
+				$size = ($resize_avatar) ? JFusionFunction::getImageSize($post_output[$i]->avatar_src) : false;
+				$maxheight = $this->params->get('avatar_height', 80);
+				$maxwidth = $this->params->get('avatar_width', 60);
+				//size the avatar to fit inside the dimensions if larger
+				if ($size !== false && ($size->width > $maxwidth || $size->height > $maxheight)) {
+					$wscale = $maxwidth/$size->width;
+					$hscale = $maxheight/$size->height;
+					$scale = min($hscale, $wscale);
+					$post_output[$i]->avatar_width = floor($scale*$size->width);
+					$post_output[$i]->avatar_height = floor($scale*$size->height);
+				} elseif ($size !== false) {
+					//the avatar is within the limits
+					$post_output[$i]->avatar_width = $size->width;
+					$post_output[$i]->avatar_height = $size->height;
+				} else {
+					//getimagesize failed
+					$post_output[$i]->avatar_width = $maxwidth;
+					$post_output[$i]->avatar_height = $maxheight;
+				}
 			} else {
-				$start = 0;
-				$limit = (int)trim($this->params->get('limit_posts', 0));
+				$post_output[$i]->avatar_src = '';
+				$post_output[$i]->avatar_height = '';
+				$post_output[$i]->avatar_width = '';
 			}
 
-			if ($limit == 0) {
-				$start = 0;
+			//post title
+			$post_output[$i]->subject_url = JFusionFunction::routeURL($JFusionForum->getPostURL($threadid, $postid), $itemid);
+			if (!empty($posttitle)) {
+				$post_output[$i]->subject = $posttitle;
+			} elseif (!empty($threadtitle)) {
+				$post_output[$i]->subject = 'Re: ' . $threadtitle;
+			} else {
+				$post_output[$i]->subject = JText::_('NO_SUBJECT');
 			}
 
-			$posts = $JFusionForum->getPosts($this->params, $threadinfo, (int)$start, (int)$limit, $sort);
-
-			$this->helper->debug('Preparing posts output');
-
-			//get required params
-			defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2', 'Y M d h:i:s A');
-			$date_format = $this->params->get('custom_date', _DATE_FORMAT_LC2);
-			$showdate = intval($this->params->get('show_date'));
-			$showuser = intval($this->params->get('show_user'));
-			$showavatar = $this->params->get('show_avatar');
-			$avatar_software = $this->params->get('avatar_software', false);
-			$resize_avatar = $this->params->get('avatar_keep_proportional', false);
-			$userlink = intval($this->params->get('user_link'));
-			$link_software = $this->params->get('userlink_software', false);
-			$userlink_custom = $this->params->get('userlink_custom', false);
-			$character_limit = (int) $this->params->get('character_limit');
-			$itemid = $this->params->get('itemid');
-			$JFusionPublic = JFusionFactory::getPublic($this->jname);
-
-			$JFusionForum = JFusionFactory::getForum($this->jname);
-			$columns = $JFusionForum->getDiscussionColumns();
-			if (empty($columns)) return '';
-
-			for ($i=0; $i<count($posts); $i++) {
-				$p = $posts[$i];
-				$userid = $p->{$columns->userid};
-				$username = ($this->params->get('display_name') && isset($p->{$columns->name})) ? $p->{$columns->name} : $p->{$columns->username};
-				$dateline = $p->{$columns->dateline};
-				$posttext = $p->{$columns->posttext};
-				$posttitle = $p->{$columns->posttitle};
-				$postid = $p->{$columns->postid};
-				$threadid = $p->{$columns->threadid};
-				$guest = $p->{$columns->guest};
-				$threadtitle = (isset($columns->threadtitle)) ? $p->{$columns->threadtitle} : '';
-
-				$post_output[$i] = new stdClass();
-				$post_output[$i]->postid = $postid;
-				$post_output[$i]->guest = $guest;
-
-				//get Joomla id
-				$userlookup = JFusionFunction::lookupUser($JFusionForum->getJname(), $userid, false, $p->{$columns->username});
-
-				//avatar
-				if ($showavatar){
-					if (!empty($avatar_software) && $avatar_software != 'jfusion' && !empty($userlookup)) {
-						$post_output[$i]->avatar_src = JFusionFunction::getAltAvatar($avatar_software, $userlookup->id);
+			//user info
+			if ($showuser) {
+				$post_output[$i]->username_url = '';
+				if ($userlink && empty($guest) && !empty($userlookup)) {
+					if ($link_software == 'custom' && !empty($userlink_custom)  && !empty($userlookup)) {
+						$post_output[$i]->username_url = $userlink_custom . $userlookup->id;
 					} else {
-						$post_output[$i]->avatar_src = $JFusionForum->getAvatar($userid);
-					}
-
-					if (empty($post_output[$i]->avatar_src)) {
-						$post_output[$i]->avatar_src = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
-					}
-
-					$size = ($resize_avatar) ? JFusionFunction::getImageSize($post_output[$i]->avatar_src) : false;
-					$maxheight = $this->params->get('avatar_height', 80);
-					$maxwidth = $this->params->get('avatar_width', 60);
-					//size the avatar to fit inside the dimensions if larger
-					if ($size !== false && ($size->width > $maxwidth || $size->height > $maxheight)) {
-						$wscale = $maxwidth/$size->width;
-						$hscale = $maxheight/$size->height;
-						$scale = min($hscale, $wscale);
-						$post_output[$i]->avatar_width = floor($scale*$size->width);
-						$post_output[$i]->avatar_height = floor($scale*$size->height);
-					} elseif ($size !== false) {
-						//the avatar is within the limits
-						$post_output[$i]->avatar_width = $size->width;
-						$post_output[$i]->avatar_height = $size->height;
-					} else {
-						//getimagesize failed
-						$post_output[$i]->avatar_width = $maxwidth;
-						$post_output[$i]->avatar_height = $maxheight;
-					}
-				} else {
-					$post_output[$i]->avatar_src = '';
-					$post_output[$i]->avatar_height = '';
-					$post_output[$i]->avatar_width = '';
-				}
-
-				//post title
-				$post_output[$i]->subject_url = JFusionFunction::routeURL($JFusionForum->getPostURL($threadid, $postid), $itemid);
-				if (!empty($posttitle)) {
-					$post_output[$i]->subject = $posttitle;
-				} elseif (!empty($threadtitle)) {
-					$post_output[$i]->subject = 'Re: ' . $threadtitle;
-				} else {
-					$post_output[$i]->subject = JText::_('NO_SUBJECT');
-				}
-
-				//user info
-				if ($showuser) {
-					$post_output[$i]->username_url = '';
-					if ($userlink && empty($guest) && !empty($userlookup)) {
-						if ($link_software == 'custom' && !empty($userlink_custom)  && !empty($userlookup)) {
-							$post_output[$i]->username_url = $userlink_custom . $userlookup->id;
-						} else {
-							$post_output[$i]->username_url = JFusionFunction::routeURL($JFusionForum->getProfileURL($userid), $itemid);
-						}
-					}
-					$post_output[$i]->username = $username;
-				} else {
-					$post_output[$i]->username = '';
-					$post_output[$i]->username_url  = '';
-				}
-
-				//post date
-				if ($showdate){
-					jimport('joomla.utilities.date');
-					$JDate =  new JDate($dateline);
-					$JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
-					$post_output[$i]->date = $JDate->format($date_format, true);
-				} else {
-					$post_output[$i]->date = '';
-				}
-
-				//post body
-				$post_output[$i]->text = $posttext;
-				$status = $JFusionPublic->prepareText($post_output[$i]->text, 'joomla', $this->params, $p);
-				$original_text = '[quote="' . $username . '"]' . "\n" . $posttext . "\n" . '[/quote]';
-				$post_output[$i]->original_text = $original_text;
-				$JFusionPublic->prepareText($post_output[$i]->original_text, 'discuss', $this->params, $p);
-
-				//apply the post body limit if there is one
-				if (!empty($character_limit) && empty($status['limit_applied']) && JString::strlen($post_output[$i]->text) > $character_limit) {
-					$post_output[$i]->text = JString::substr($post_output[$i]->text, 0, $character_limit) . '...';
-				}
-
-				$toolbar = array();
-				if ($this->params->get('enable_quickreply')) {
-					$JoomlaUser = JFactory::getUser();
-					if ($this->params->get('quickreply_allow_guests', 0) || !$JoomlaUser->guest) {
-						$toolbar[] = '<a href="javascript:void(0);" onclick="JFusion.quote(' . $postid . ');">' . JText::_('QUOTE') . '</a>';
+						$post_output[$i]->username_url = JFusionFunction::routeURL($JFusionForum->getProfileURL($userid), $itemid);
 					}
 				}
+				$post_output[$i]->username = $username;
+			} else {
+				$post_output[$i]->username = '';
+				$post_output[$i]->username_url  = '';
+			}
 
-				if (!empty($toolbar)) {
-					$post_output[$i]->toolbar = '| ' . implode(' | ', $toolbar) . ' |';
-				} else {
-					$post_output[$i]->toolbar = '';
+			//post date
+			if ($showdate){
+				jimport('joomla.utilities.date');
+				$JDate =  new JDate($dateline);
+				$JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
+				$post_output[$i]->date = $JDate->format($date_format, true);
+			} else {
+				$post_output[$i]->date = '';
+			}
+
+			//post body
+			$post_output[$i]->text = $posttext;
+			$status = $JFusionPublic->prepareText($post_output[$i]->text, 'joomla', $this->params, $p);
+			$original_text = '[quote="' . $username . '"]' . "\n" . $posttext . "\n" . '[/quote]';
+			$post_output[$i]->original_text = $original_text;
+			$JFusionPublic->prepareText($post_output[$i]->original_text, 'discuss', $this->params, $p);
+
+			//apply the post body limit if there is one
+			if (!empty($character_limit) && empty($status['limit_applied']) && JString::strlen($post_output[$i]->text) > $character_limit) {
+				$post_output[$i]->text = JString::substr($post_output[$i]->text, 0, $character_limit) . '...';
+			}
+
+			$toolbar = array();
+			if ($this->params->get('enable_quickreply')) {
+				$JoomlaUser = JFactory::getUser();
+				if ($this->params->get('quickreply_allow_guests', 0) || !$JoomlaUser->guest) {
+					$toolbar[] = '<a href="javascript:void(0);" onclick="JFusion.quote(' . $postid . ');">' . JText::_('QUOTE') . '</a>';
 				}
 			}
-		} catch (Exception $e) {
-			JfusionFunction::raiseError($e);
+
+			if (!empty($toolbar)) {
+				$post_output[$i]->toolbar = '| ' . implode(' | ', $toolbar) . ' |';
+			} else {
+				$post_output[$i]->toolbar = '';
+			}
 		}
 		return $post_output;
 	}
@@ -1459,10 +1469,13 @@ HTML;
 
 		if ($this->helper->replyCount && $this->helper->replyCount > 5) {
 			$pageNav = new JFusionPagination($this->helper->replyCount, $limitstart, $limit, $this->article->id, '_discuss');
+			$footer = $pageNav->getListFooter();
 
-			$pagination = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="' . $action_url . '">';
-			$pagination .= $pageNav->getListFooter();
-			$pagination .= '</form>';
+			$pagination =<<<HTML
+				<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="{$action_url}">
+					{$footer}
+				</form>
+HTML;
 		} else {
 			$pagination = '';
 		}
@@ -1474,17 +1487,21 @@ HTML;
 	 */
 	public function updatePosts()
 	{
-		$ajax = $this->prepareAjaxResponce();
+		$data = $this->prepareJSONResponce();
 
 		$threadinfo = $this->helper->getThreadInfo();
-		if ($threadinfo->published && $threadinfo->threadid) {
-			$this->helper->output = array();
-			$this->helper->output['posts'] = $this->preparePosts();
-			$ajax->posts = $this->helper->renderFile('default_posts.php');
-			$ajax->status = true;
+		if ($threadinfo->published) {
+			if ($threadinfo->threadid) {
+				$this->helper->output = array();
+				$this->helper->output['posts'] = $this->preparePosts();
+				$data->posts = $this->helper->renderFile('default_posts.php');
+				$data->error = false;
+			} else {
+				throw new RuntimeException(JText::_('NO_THREADID'));
+			}
 		} else {
-			JFusionFunction::raiseError(JText::_('NOT_PUBLISHED'));
+			throw new RuntimeException(JText::_('NOT_PUBLISHED'));
 		}
-		$this->renderAjaxResponce($ajax);
+		$this->renderJSONResponce($data);
 	}
 }

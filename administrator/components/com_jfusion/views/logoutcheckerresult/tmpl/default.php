@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 echo JFusionFunctionAdmin::getDonationBanner();
 
 $debugger = JFusionFactory::getDebugger('jfusion-logoutcheckerresult');
-$debugger->reset($this->debug);
+$debugger->set(null, $this->debug);
 $debugger->setTitle(JText::_('LOGOUT') . ' ' . JText::_('DEBUG'));
 /**
  * Output information about the server for future support queries

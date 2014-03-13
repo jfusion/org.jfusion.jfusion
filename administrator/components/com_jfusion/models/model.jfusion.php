@@ -1380,7 +1380,7 @@ class JFusionFunction
 				$document->addScript('components/com_jfusion/js/jfusion.js');
 
 			} else {
-				$keys = array('SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR');
+				$keys = array('SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'OK');
 
 				$url = JURI::root() . 'index.php';
 			}

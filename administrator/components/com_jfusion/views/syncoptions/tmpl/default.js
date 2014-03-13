@@ -2,7 +2,7 @@ if (typeof JFusion === 'undefined') {
     var JFusion = {};
 }
 
-JFusion.response = { 'completed' : false , 'slave_data' : [] , 'errors' : [] };
+JFusion.response = { data : { 'completed' : false , 'slave_data' : [] } };
 
 JFusion.periodical = false;
 // refresh every 10 seconds
@@ -78,7 +78,7 @@ JFusion.renderSync = function(data) {
 
     var root = new Element('table',{ 'class': 'jfusionlist' });
     JFusion.renderSyncHead().inject(root);
-    JFusion.renderSyncBody(data).inject(root);
+    JFusion.renderSyncBody(data.data).inject(root);
 
     root.inject(log_res);
 };
@@ -91,7 +91,7 @@ JFusion.startSync = function() {
         //add another second to the counter
         JFusion.counter -= 1;
         if (JFusion.counter < 1) {
-            if (!JFusion.response.completed) {
+            if (!JFusion.response.data.completed) {
                 JFusion.counter = 10;
 
                 /* our ajax istance for starting the sync */
@@ -99,6 +99,8 @@ JFusion.startSync = function() {
                     url: JFusion.url,
                     noCache: true,
                     onSuccess: function(JSONobject) {
+                        JFusion.onSuccess(JSONobject);
+
                         JFusion.render(JSONobject);
                     }, onError: function(JSONobject) {
                         JFusion.OnError(JSONobject);
@@ -113,6 +115,8 @@ JFusion.startSync = function() {
                     url: JFusion.url,
                     noCache: true,
                     onSuccess: function(JSONobject) {
+                        JFusion.onSuccess(JSONobject);
+
                         JFusion.render(JSONobject);
                     }, onError: function(JSONobject) {
                         JFusion.OnError(JSONobject);
@@ -143,19 +147,19 @@ JFusion.update = function() {
     if (JFusion.syncRunning !== -1) {
         var text;
         var start = $('start');
-        if (JFusion.response.completed) {
+        if (JFusion.response.data.completed) {
             JFusion.stopSync();
             text = Joomla.JText._('FINISHED');
 
-            start.set('html', '<strong>'+Joomla.JText._('CLICK_FOR_MORE_DETAILS')+'</strong>');
-            start.set('href', 'index.php?option=com_jfusion&task=syncstatus&syncid='+JFusion.syncid);
+            start.set('html', '<strong>' + Joomla.JText._('CLICK_FOR_MORE_DETAILS') + '</strong>');
+            start.set('href', 'index.php?option=com_jfusion&task=syncstatus&syncid=' + JFusion.syncid);
             start.removeEvents('click');
         } else if (JFusion.syncRunning === 0) {
             text = Joomla.JText._('PAUSED');
 
             start.set('html', Joomla.JText._('RESUME'));
         } else {
-            text = Joomla.JText._('UPDATE_IN')+ ' ' + JFusion.counter + ' '+Joomla.JText._('SECONDS');
+            text = Joomla.JText._('UPDATE_IN') + ' ' + JFusion.counter + ' ' + Joomla.JText._('SECONDS');
 
             start.set('html', Joomla.JText._('PAUSE'));
         }
@@ -166,13 +170,12 @@ JFusion.update = function() {
 JFusion.render = function(JSONobject) {
     JFusion.response = JSONobject;
 
-    JFusion.OnMessages(JSONobject.messages);
-    if (JSONobject.messages.error) {
+    if (!JSONobject.success || (JSONobject.messages && JSONobject.messages.error)) {
         JFusion.stopSync();
     } else {
         JFusion.renderSync(JSONobject);
 
-        if (JSONobject.completed) {
+        if (JSONobject.data.completed) {
             JFusion.update();
         }
     }
@@ -199,7 +202,7 @@ window.addEvent('domready', function() {
                         select.each(function (el) {
                             var value = el.get('value');
                             if (value) {
-                                JFusion.response.slave_data[count] = {
+                                JFusion.response.data.slave_data[count] = {
                                     "jname": value,
                                     "total": JFusion.slaveData[value].total,
                                     "total_to_sync": JFusion.slaveData[value].total,
@@ -212,7 +215,7 @@ window.addEvent('domready', function() {
                             }
                         });
                     }
-                    if (JFusion.response.slave_data.length) {
+                    if (JFusion.response.data.slave_data.length) {
                         //give the user a last chance to opt-out
 
                         JFusion.confirm(Joomla.JText._('SYNC_CONFIRM_START'), Joomla.JText._('OK'), function () {
@@ -222,6 +225,8 @@ window.addEvent('domready', function() {
                                 url: JFusion.url,
                                 noCache: true,
                                 onSuccess: function (JSONobject) {
+                                    JFusion.onSuccess(JSONobject);
+
                                     JFusion.render(JSONobject);
                                 }, onError: function (JSONobject) {
                                     JFusion.OnError(JSONobject);

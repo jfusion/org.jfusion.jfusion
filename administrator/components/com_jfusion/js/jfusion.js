@@ -6,43 +6,27 @@ JFusion.Plugin = {};
 JFusion.View = {};
 JFusion.url = '';
 
-JFusion.OnError = function (messages, force) {
-    var systemMessageContainer = $('system-message-container');
-    systemMessageContainer.empty();
+JFusion.onSuccess = function (JSONobject) {
+    if (!JSONobject.success && JSONobject.message) {
+        JFusion.confirm(JSONobject.message, Joomla.JText._('OK'));
+    }
+
+    if (JSONobject.messages)
+    {
+        Joomla.renderMessages(JSONobject.messages);
+    }
+};
+
+JFusion.OnError = function (messages) {
+    var message = {};
+
     if (messages.indexOf('<!') === 0) {
-        this.OnMessage('error', [ Joomla.JText._('SESSION_TIMEOUT') ], force);
+        message.error = [ Joomla.JText._('SESSION_TIMEOUT') ];
     } else {
-        this.OnMessage('error', [ messages ], force);
+        message.error = [ messages ];
     }
-};
 
-JFusion.OnMessages = function (messages) {
-    var systemMessageContainer = $('system-message-container');
-    systemMessageContainer.empty();
-
-    this.OnMessage('message', messages.message);
-    this.OnMessage('notice', messages.notice);
-    this.OnMessage('warning', messages.warning);
-    this.OnMessage('error', messages.error);
-};
-
-JFusion.OnMessage = function (type, messages) {
-    var div, systemMessageContainer, errorlist;
-    if (messages instanceof Array) {
-        if (messages.length) {
-            systemMessageContainer = $('system-message-container');
-
-            errorlist = { 'error': 'alert-error', 'warning': '', 'notice': 'alert-info', 'message': 'alert-success'};
-
-            div = new Element('div', {'class': 'alert' + ' ' + errorlist[type] });
-
-            new Element('h4', {'class': 'alert-heading', 'html' : Joomla.JText._(type) }).inject(div);
-            Array.each(messages, function (message) {
-                new Element('p', { 'html' : message }).inject(div);
-            });
-            div.inject(systemMessageContainer);
-        }
-    }
+    Joomla.renderMessages(message);
 };
 
 JFusion.confirm = function (message, button, fn) {
@@ -94,8 +78,8 @@ JFusion.prompt = function (message, button, fn) {
         'events': {
             'click': function () {
                 var input = $('jfusionprompt');
-                var newjname = input.get('value');
-                fn(newjname);
+                var newvalue = input.get('value');
+                fn(newvalue);
                 SqueezeBox.close();
             }
         }

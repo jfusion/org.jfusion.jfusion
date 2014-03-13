@@ -36,7 +36,11 @@ class JFusionDiscussBotHelper {
 	var $jname;
 	var $mode;
 	var $threadinfo = array();
-	var $debug = array();
+
+	/**
+	 * @var JFusionDebugger
+	 */
+	var $debugger;
 	var $output;
 	var $replyCount = 0;
 	var $option;
@@ -47,6 +51,9 @@ class JFusionDiscussBotHelper {
 	 * @param $mode
 	 */
 	public function __construct(&$params, $mode) {
+		$this->debugger = JFusionFactory::getDebugger('jfusion-content-plugin');
+		$this->debugger->setTitle('Discussion bot debug info');
+
 		$this->params = $params;
 		$this->jname = $this->params->get('jname', false);
 		$this->mode = $mode;
@@ -65,9 +72,9 @@ class JFusionDiscussBotHelper {
 
 		if (isset($this->article->id)) {
 			$session = JFactory::getSession();
-			$this->debug = $session->get('jfusion.discussion.debug.' . $this->article->id, false);
-			if ($this->debug == false) {
-				$this->debug = array();
+			$debug = $session->get('jfusion.discussion.debug.' . $this->article->id, false);
+			if ($debug !== false) {
+				$this->debugger->set(null, $debug);
 			}
 			$session->clear('jfusion.discussion.debug.' . $this->article->id);
 		}
@@ -539,7 +546,6 @@ class JFusionDiscussBotHelper {
 		        JFusion.view = '{$view}';
 		        JFusion.jumptoDiscussion = {$jumpto_discussion};
 		        JFusion.enablePagination = {$this->params->get('enable_pagination', 0)};
-		        JFusion.enableAjax = {$this->params->get('enable_ajax', 0)};
 		        JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
 				JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
 JS;
@@ -617,11 +623,11 @@ JS;
 	public function debug($text, $save = false)
 	{
 		if ($this->params->get('debug', 0)) {
-			$this->debug[] = $text;
+			$this->debugger->add(null, $text);
 
 			if ($save) {
 				$session = JFactory::getSession();
-				$session->set('jfusion.discussion.debug.' . $this->article->id, $this->debug);
+				$session->set('jfusion.discussion.debug.' . $this->article->id, $this->debugger->get());
 			}
 		}
 	}
@@ -798,14 +804,15 @@ class JFusionPagination extends JPagination {
 	public function jfusion_list_footer($list)
 	{
 		// Initialize variables
-		$html = '<div class="list-footer">';
-		$html .= '<div class="limit">' . JText::_('JGLOBAL_DISPLAY_NUM') . $list['limitfield'] . '</div>';
-		$html .= '<p class="counter" style="font-weight: bold; margin: 8px 0;">' . $list['pagescounter'] . '</p>';
-		$html .= $list['pageslinks'];
-
-		$html .= '<input type="hidden" name="limitstart' . $this->identifier . '" value="' . $list['limitstart'] . '"/>';
-		$html .= '</div>';
-
+		$num = JText::_('JGLOBAL_DISPLAY_NUM');
+		$html =<<<HTML
+			<div class="list-footer">
+				<div class="limit">{$num}{$list['limitfield']}</div>
+				<p class="counter" style="font-weight: bold; margin: 8px 0;">{$list['pagescounter']}</p>
+				{$list['pageslinks']}
+				<input type="hidden" name="limitstart{$this->identifier}" value="{$list['limitstart']}"/>
+			</div>
+HTML;
 		return $html;
 	}
 

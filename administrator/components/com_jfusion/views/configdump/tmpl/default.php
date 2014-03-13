@@ -60,7 +60,7 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 	<?php
 	$textOutput = array();
 	//output the information to the user
-	$debugger->reset($this->server_info);
+	$debugger->set(null, $this->server_info);
 	$debugger->setTitle(JText::_('SERVER') . ' ' . JText::_('CONFIGURATION'));
 	$debugger->displayHtml();
 	$textOutput[] = $debugger->getAsText();
@@ -68,7 +68,7 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 	<br/>
 	<?php
 
-	$debugger->reset($this->jfusion_version);
+	$debugger->set(null, $this->jfusion_version);
 	$debugger->setTitle(JText::_('JFUSION') . ' ' . JText::_('VERSIONS'));
 	$debugger->displayHtml();
 	$textOutput[] = $debugger->getAsText();
@@ -78,7 +78,7 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 
 	$debugger->setCallback(array($this, 'jfusion_plugin', null));
 	foreach($this->jfusion_plugin as $key => $value) {
-		$debugger->reset($value);
+		$debugger->set(null, $value);
 		$debugger->setTitle(JText::_('JFUSION') . ' ' . $key . ' ' . JText::_('PLUGIN'));
 		$debugger->displayHtml();
 		$textOutput[] = $debugger->getAsText();
@@ -88,7 +88,7 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 	}
 
 	foreach($this->jfusion_module as $key => $value) {
-		$debugger->reset($value);
+		$debugger->set(null, $value);
 		$debugger->setCallback(array($this, 'jfusion_module', $key));
 		$debugger->setTitle($key . ' ' . JText::_('MODULE'));
 		$debugger->displayHtml();
@@ -99,7 +99,7 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 	}
 
 	foreach($this->joomla_plugin as $key => $value) {
-		$debugger->reset($value);
+		$debugger->set(null, $value);
 		$debugger->setCallback(array($this, 'joomla_plugin', $key));
 		$debugger->setTitle($key . ' ' . JText::_('PLUGIN'));
 		$debugger->displayHtml();
@@ -110,7 +110,7 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 	}
 	$debugger->setCallback(array($this, 'menu_item', null));
 	foreach($this->menu_item as $key => $value) {
-		$debugger->reset($value);
+		$debugger->set(null, $value);
 		$debugger->setTitle($key . ' ' . JText::_('PLUGIN'));
 		$debugger->displayHtml();
 		$textOutput[] = $debugger->getAsText();

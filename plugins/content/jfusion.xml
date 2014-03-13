@@ -149,10 +149,6 @@
                 <field name="must_login_msg" type="text" size="20" default="Login to reply" label="LOGIN_TO_POST_MSG" description="LOGIN_TO_POST_MSG_DESC" />
                 <field name="locked_msg" type="text" size="20" default="Topic is locked for posting" label="LOCKED_MSG" description="LOCKED_MSG_DESC" />
                 <field name="quick_reply_header" type="text" size="20" default="" label="QUICKREPLY_HEADER" description="QUICKREPLY_HEADER_DESC" />
-                <field name="enable_ajax" type="radio" class="btn-group" default="1" label="ENABLE_AJAX_POSTING" description="ENABLE_AJAX_POSTING_DESCR">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
                 <field name="jumpto_new_post" type="radio" class="btn-group" default="0" label="JUMP_TO_NEW_POST" description="JUMP_TO_NEW_POST_DESCR">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>

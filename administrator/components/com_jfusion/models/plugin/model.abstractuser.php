@@ -196,7 +196,7 @@ class JFusionUser extends JFusionPlugin
         $update_activation = $this->params->get('update_activation');
         $update_email = $this->params->get('update_email');
         $status = array('error' => array(), 'debug' => array());
-	    $this->debugger->reset(array('error' => array(), 'debug' => array()));
+	    $this->debugger->set(null, $status);
 	    try {
 		    //check to see if a valid $userinfo object was passed on
 		    if (!is_object($userinfo)) {

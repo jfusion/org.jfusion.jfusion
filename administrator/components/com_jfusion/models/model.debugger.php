@@ -34,11 +34,18 @@ class JFusionDebugger {
 	 * @param $value
 	 */
 	public function add($key, $value) {
-		if (isset($this->data[$key]) && is_array($this->data[$key])) {
-			$this->data[$key][] = $value;
+		if ($key === null) {
+			if (!is_array($this->data)) {
+				$this->data = array();
+			}
+			$this->data[] = $value;
 		} else {
-			$this->data[$key] = array();
-			$this->data[$key][] = $value;
+			if (isset($this->data[$key]) && is_array($this->data[$key])) {
+				$this->data[$key][] = $value;
+			} else {
+				$this->data[$key] = array();
+				$this->data[$key][] = $value;
+			}
 		}
 	}
 
@@ -57,22 +64,15 @@ class JFusionDebugger {
 	}
 
 	/**
-	 * @param string|null $key
+	 * @param string $key
 	 * @param      $value
 	 */
-	public function set($key = null, $value) {
+	public function set($key, $value) {
 		if ($key === null) {
 			$this->data = $value;
 		} else {
 			$this->data[$key] = $value;
 		}
-	}
-
-	/**
-	 * @param array $value
-	 */
-	public function reset($value = array()) {
-		$this->data = $value;
 	}
 
 	/**

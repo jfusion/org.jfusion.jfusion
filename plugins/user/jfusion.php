@@ -292,7 +292,7 @@ class plgUserJfusion extends JPlugin
 		    //use a global for the login checker instead
 
 		    $debugger = JFusionFactory::getDebugger('jfusion-loginchecker');
-		    $debugger->reset();
+		    $debugger->set(null, array());
 		    $debugger->set('init', array());
 
 		    //determine if overwrites are allowed
