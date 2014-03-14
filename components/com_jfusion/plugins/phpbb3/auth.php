@@ -69,7 +69,7 @@ class JFusionAuth_phpbb3 extends JFusionAuth
         $helper = JFusionFactory::getHelper($this->getJname());
         $userinfo->password_clear = $helper->clean_string($userinfo->password_clear);
 
-        $check = $this->CheckPassword($userinfo->password_clear, $userinfo->password);
+        $check = $this->doCheckPassword($userinfo->password_clear, $userinfo->password);
 
         if ($check) {
             //password is correct and return the phpbb3 password hash
@@ -78,15 +78,15 @@ class JFusionAuth_phpbb3 extends JFusionAuth
             //no phpbb3 encryption used and return the phpbb2 password hash
 			$password_old_format = addslashes($userinfo->password_clear);
 
-			if ($this->CheckPassword($userinfo->password_clear, md5($this->utf8_to_cp1252($password_old_format)))) {
+			if ($this->doCheckPassword($userinfo->password_clear, md5($this->utf8_to_cp1252($password_old_format)))) {
 				//password is correct
 				return $userinfo->password;
-			} elseif ($this->CheckPassword($userinfo->password_clear, md5($password_old_format))) {
+			} elseif ($this->doCheckPassword($userinfo->password_clear, md5($password_old_format))) {
 				//password is correct
-				return $userinfo->password;				
+				return $userinfo->password;
 			} elseif (md5($this->utf8_to_cp1252($password_old_format)) ===  $userinfo->password) {
 				//password is correct
-				return $userinfo->password;								
+				return $userinfo->password;
 			} else {
 				//ah who cares lets just a md5 standard encryption
 				$encrypt_password = md5($password_old_format);
@@ -418,7 +418,7 @@ class JFusionAuth_phpbb3 extends JFusionAuth
      * @param $stored_hash
      * @return bool
      */
-    function CheckPassword($password, $stored_hash) {
+    function doCheckPassword($password, $stored_hash) {
         $hash = $this->crypt_private($password, $stored_hash);
         if ($hash[0] == '*') $hash = crypt($password, $stored_hash);
         return $hash == $stored_hash;

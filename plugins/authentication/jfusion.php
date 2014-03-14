@@ -143,6 +143,7 @@ class plgAuthenticationjfusion extends JPlugin
                         $testcrypt = $model->generateEncryptedPassword($slaveuserinfo);
 	                    $check = $model->checkPassword($slaveuserinfo);
                     } else {
+	                    $slaveuserinfo = $userinfo;
                         $testcrypt = $model->generateEncryptedPassword($userinfo);
 	                    $check = $model->checkPassword($userinfo);
                     }
@@ -174,9 +175,9 @@ class plgAuthenticationjfusion extends JPlugin
                         return $result;
                     } else {
 	                    if (isset($options['show_unsensored'])) {
-		                    $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  $testcrypt . ' vs ' . $userinfo->password;
+		                    $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  $testcrypt . ' vs ' . $slaveuserinfo->password;
 	                    } else {
-		                    $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********';
+		                    $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($slaveuserinfo->password, 0, 6) . '********';
 	                    }
                     }
                 }
