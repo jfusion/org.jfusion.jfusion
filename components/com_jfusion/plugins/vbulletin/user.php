@@ -220,7 +220,7 @@ class JFusionUser_vbulletin extends JFusionUser
 					$queries[] = $db->getQuery(true)
 						->update('#__user')
 						->set('lastvisit = ' .  $db->quote($timenow))
-						->set('lastactivity = ' .  $db->quote($timenow - $cookie_expires))
+						->set('lastactivity = ' .  $db->quote($timenow))
 						->where('userid = ' . $db->quote($session_user));
 
 					$queries[] = $db->getQuery(true)
