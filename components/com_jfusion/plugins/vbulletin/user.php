@@ -216,7 +216,7 @@ class JFusionUser_vbulletin extends JFusionUser
     		$queries = array();
 
     		if ($session_user) {
-    			$queries[] = 'UPDATE #__user SET lastvisit = ' . $db->Quote($timenow) . ', lastactivity = ' . $db->Quote($timenow - $cookie_expires) . ' WHERE userid = ' . $db->Quote($session_user);
+    			$queries[] = 'UPDATE #__user SET lastvisit = ' . $db->Quote($timenow) . ', lastactivity = ' . $db->Quote($timenow) . ' WHERE userid = ' . $db->Quote($session_user);
             	$queries[] = 'DELETE FROM #__session WHERE userid = ' . $db->Quote($session_user);
     		}
         	$queries[] = 'DELETE FROM #__session WHERE sessionhash = ' . $db->Quote($session_hash);
