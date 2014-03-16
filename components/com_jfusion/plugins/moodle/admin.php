@@ -166,21 +166,16 @@ class JFusionAdmin_moodle extends JFusionAdmin
      */
     function getUsergroupList()
     {
-        try {
-            //get the connection to the db
-            $db = JFusionFactory::getDatabase($this->getJname());
+	    //get the connection to the db
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-            $query = $db->getQuery(true)
-                ->select('id, shortname as name')
-                ->from('#__role');
+	    $query = $db->getQuery(true)
+		    ->select('id, shortname as name')
+		    ->from('#__role');
 
-            $db->setQuery($query);
-            //getting the results
-            return $db->loadObjectList();
-        } catch(Exception $e) {
-            JFusionFunction::raiseError($e,$this->getJname());
-            return array();
-        }
+	    $db->setQuery($query);
+	    //getting the results
+	    return $db->loadObjectList();
     }
 
     /**

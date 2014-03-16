@@ -193,21 +193,16 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      */
     function getUsergroupList()
     {
-	    try {
-		    //get the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //get the connection to the db
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->select('group_id as id, group_name as name')
-			    ->from('#__groups');
+	    $query = $db->getQuery(true)
+		    ->select('group_id as id, group_name as name')
+		    ->from('#__groups');
 
-		    $db->setQuery($query);
-		    //getting the results
-		    return $db->loadObjectList();
-	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
-		    return array();
-	    }
+	    $db->setQuery($query);
+	    //getting the results
+	    return $db->loadObjectList();
     }
 
     /**

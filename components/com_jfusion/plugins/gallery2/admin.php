@@ -164,22 +164,17 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      */
     function getUsergroupList()
     {
-	    try {
-	        //getting the connection to the db
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	    //getting the connection to the db
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->select('g_id as id, g_groupName as name')
-			    ->from('#__Group')
-			    ->where('g_id != 4');
+	    $query = $db->getQuery(true)
+		    ->select('g_id as id, g_groupName as name')
+		    ->from('#__Group')
+		    ->where('g_id != 4');
 
-	        $db->setQuery($query);
-	        //getting the results
-	        return $db->loadObjectList();
-	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-		    return array();
-	    }
+	    $db->setQuery($query);
+	    //getting the results
+	    return $db->loadObjectList();
     }
     /**
      * @return array

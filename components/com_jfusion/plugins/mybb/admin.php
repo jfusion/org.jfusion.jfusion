@@ -169,21 +169,16 @@ class JFusionAdmin_mybb extends JFusionAdmin
      */
     function getUsergroupList()
     {
-	    try {
-	        //getting the connection to the db
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	    //getting the connection to the db
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->select('gid as id, title as name')
-			    ->from('#__usergroups');
+	    $query = $db->getQuery(true)
+		    ->select('gid as id, title as name')
+		    ->from('#__usergroups');
 
-	        $db->setQuery($query);
-	        //getting the results
-	        return $db->loadObjectList();
-	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
-		    return array();
-		}
+	    $db->setQuery($query);
+	    //getting the results
+	    return $db->loadObjectList();
     }
 
     /**

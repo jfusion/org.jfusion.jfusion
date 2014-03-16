@@ -181,27 +181,21 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      */
     function getUsergroupList()
     {
-	    try {
-		    //get the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+	    //get the connection to the db
+	    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    //prestashop uses two group categories which are employees and customers, each have there own groups to access either the front or back end
-		    /*
-		  Customers only for this plugin
-		*/
-		    $query = $db->getQuery(true)
-			    ->select('id_group as id, name as name')
-			    ->from('#__group_lang')
-			    ->where('id_lang IN (' . $db->quote($this->helper->getDefaultLanguage()) . ')');
+	    //prestashop uses two group categories which are employees and customers, each have there own groups to access either the front or back end
+	    /*
+  Customers only for this plugin
+*/
+	    $query = $db->getQuery(true)
+		    ->select('id_group as id, name as name')
+		    ->from('#__group_lang')
+		    ->where('id_lang IN (' . $db->quote($this->helper->getDefaultLanguage()) . ')');
 
-		    $db->setQuery($query);
-		    //getting the results
-		    $result = $db->loadObjectList();
-	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
-		    $result = array();
-	    }
-        return $result;
+	    $db->setQuery($query);
+	    //getting the results
+	    return $db->loadObjectList();
     }
 
     /**

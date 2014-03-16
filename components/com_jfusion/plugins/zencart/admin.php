@@ -158,25 +158,20 @@ class JFusionAdmin_zencart extends JFusionAdmin
      */
     function getUsergroupList()
     {
-        $result = array();
-        try {
-            $db = JFusionFactory::getDataBase($this->getJname());
+	    $db = JFusionFactory::getDataBase($this->getJname());
 
-            $query = $db->getQuery(true)
-                ->select('group_id as id, group_name as name')
-                ->from('#__group_pricing');
+	    $query = $db->getQuery(true)
+		    ->select('group_id as id, group_name as name')
+		    ->from('#__group_pricing');
 
-            $db->setQuery($query);
-            //getting the results
-            $result1 = $db->loadObjectList();
-            $result = array();
-            $result[0] = new stdClass;
-            $result[0]->id = '0';
-            $result[0]->name = '-none-';
-            $result = array_merge((array)$result, (array)$result1);
-        } catch (Exception $e) {
-            JFusionFunction::raiseError($e, $this->getJname());
-        }
+	    $db->setQuery($query);
+	    //getting the results
+	    $result1 = $db->loadObjectList();
+	    $result = array();
+	    $result[0] = new stdClass;
+	    $result[0]->id = '0';
+	    $result[0]->name = '-none-';
+	    $result = array_merge((array)$result, (array)$result1);
         return $result;
     }
 

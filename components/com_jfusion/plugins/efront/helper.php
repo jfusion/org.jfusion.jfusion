@@ -45,9 +45,9 @@ class JFusionHelper_efront extends JFusionPlugin {
         $handle = opendir($dir);
 	    ob_start();
         if ($handle) {
-            while (false !== ($file = readdir($handle))){
-                if ($file != '.' && $file != '..'){
-                    if(is_dir($dir . $file)){
+            while (false !== ($file = readdir($handle))) {
+                if ($file != '.' && $file != '..') {
+                    if(is_dir($dir . $file)) {
                         if(!rmdir($dir . $file)){ // Empty directory? Remove it
                             $this->delete_directory($dir . $file . '/'); // Not empty? Delete the files inside it
                         }
@@ -68,7 +68,7 @@ class JFusionHelper_efront extends JFusionPlugin {
      *
      * @return int
      */
-    function groupNameToID($user_type, $user_types_ID){
+    function groupNameToID($user_type, $user_types_ID) {
         $group_id = 0;
         if ($user_types_ID == 0) {
             switch ($user_type) {
@@ -90,7 +90,7 @@ class JFusionHelper_efront extends JFusionPlugin {
      *
      * @return bool|string
      */
-    function groupIdToName ($group_id){
+    function groupIdToName ($group_id) {
         switch ($group_id){
            case 0: return 'student';
            case 1: return 'professor';

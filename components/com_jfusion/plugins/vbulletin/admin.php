@@ -225,21 +225,16 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	 */
 	function getUsergroupList()
 	{
-		try {
-			//get the connection to the db
-			$db = JFusionFactory::getDatabase($this->getJname());
+		//get the connection to the db
+		$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = $db->getQuery(true)
-				->select('usergroupid as id, title as name')
-				->from('#__usergroup');
+		$query = $db->getQuery(true)
+			->select('usergroupid as id, title as name')
+			->from('#__usergroup');
 
-			$db->setQuery($query);
-			//getting the results
-			return $db->loadObjectList();
-		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-			return array();
-		}
+		$db->setQuery($query);
+		//getting the results
+		return $db->loadObjectList();
 	}
 
 	/**

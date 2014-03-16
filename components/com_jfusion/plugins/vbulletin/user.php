@@ -1076,10 +1076,10 @@ class JFusionUser_vbulletin extends JFusionUser
 
 		$admin = JFusionFactory::getAdmin($this->getJname());
 
+		$usergroups = array();
 		try {
 			$usergroups = $admin->getUsergroupList();
 		} catch (Exception $e) {
-			$usergroups = array();
 			JFusionFunction::raiseError($e, $admin->getJname());
 		}
 

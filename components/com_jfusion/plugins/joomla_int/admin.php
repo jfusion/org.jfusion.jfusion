@@ -150,20 +150,15 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 	 */
 	public function getUsergroupList()
 	{
-		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = $db->getQuery(true)
-				->select('id, title as name')
-				->from('#__usergroups');
+		$query = $db->getQuery(true)
+			->select('id, title as name')
+			->from('#__usergroups');
 
-			$db->setQuery($query);
-			//getting the results
-			return $db->loadObjectList();
-		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-			return array();
-		}
+		$db->setQuery($query);
+		//getting the results
+		return $db->loadObjectList();
 	}
 
 	/**
