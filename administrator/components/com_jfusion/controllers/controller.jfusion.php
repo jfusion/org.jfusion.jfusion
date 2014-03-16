@@ -82,14 +82,18 @@ class JFusionController extends JControllerLegacy
 				    $JFusionPlugin->saveParameters($params, true);
 
 				    //make sure the usergroup params are available on first view
+				    $config_status = array();
+				    $config_status['config'] = 0;
+				    $config_status['message'] = JText::_('UNKNOWN');
 				    try {
 					    $config_status = $JFusionPlugin->checkConfig();
-					    $status = $config_status['config'];
 				    } catch (Exception $e) {
-					    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
-					    $status = 0;
+					    $config_status['message'] = $e->getMessage();
 				    }
-				    $JFusionPlugin->updateStatus($status);
+				    if (!$config_status['config']) {
+					    JFusionFunction::raiseError($config_status['message'], $JFusionPlugin->getJname());
+				    }
+				    $JFusionPlugin->updateStatus($config_status['config']);
 				    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, JText::_('WIZARD_SUCCESS'), 'message');
 			    } else {
 				    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname);
@@ -227,7 +231,7 @@ class JFusionController extends JControllerLegacy
         $jname = JFactory::getApplication()->input->post->getString('jname', '');
 	    $action = JFactory::getApplication()->input->get('action');
 	    try {
-		    if (empty($post)) {
+		    if (empty($post) || empty($jname)) {
 			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 		    }
 
@@ -235,17 +239,18 @@ class JFusionController extends JControllerLegacy
 		    if (!$JFusionPlugin->saveParameters($post)) {
 			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 		    } else {
+			    $config_status = array();
+			    $config_status['config'] = 0;
+			    $config_status['message'] = JText::_('UNKNOWN');
 			    //update the status field
 			    try {
 				    $config_status = $JFusionPlugin->checkConfig();
-				    $status = $config_status['config'];
 			    } catch (Exception $e) {
-				    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
-				    $status = 0;
+				    $config_status['message'] = $e->getMessage();
 			    }
-			    $JFusionPlugin->updateStatus($status);
+			    $JFusionPlugin->updateStatus($config_status['config']);
 
-			    if (empty($config_status['config'])) {
+			    if (!$config_status['config']) {
 				    throw new RuntimeException($config_status['message']);
 			    } else {
 				    $msg = $jname . ': ' . JText::_('SAVE_SUCCESS');
@@ -920,17 +925,16 @@ JS;
 							    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 						    } else {
 							    //update the status field
-
+							    $config_status = array();
+							    $config_status['config'] = 0;
+							    $config_status['message'] = JText::_('UNKNOWN');
 							    try {
 								    $config_status = $JFusionPlugin->checkConfig();
-								    $status = $config_status['config'];
 							    } catch (Exception $e) {
 								    $config_status['message'] = $e->getMessage();
-								    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
-								    $status = 0;
 							    }
-							    $JFusionPlugin->updateStatus($status);
-							    if (empty($config_status['config'])) {
+							    $JFusionPlugin->updateStatus($config_status['config']);
+							    if (!$config_status['config']) {
 								    throw new RuntimeException($config_status['message']);
 							    }
 						    }

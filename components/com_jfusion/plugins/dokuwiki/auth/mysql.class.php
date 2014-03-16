@@ -25,11 +25,6 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		/** @var int database subrevision */
 		protected $dbsub = 0;
 
-		/**
-		 * @var JFusionHelper_dokuwiki $helper
-		 */
-		protected $helper;
-
 		var $configloaded = false;
 
 		var $conf = array();
@@ -48,7 +43,6 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 			if(!function_exists('mysql_connect')) {
 				$this->debug('MySQL err: PHP MySQL extension not found.', -1, __LINE__, __FILE__);
 				$this->success = false;
-				return;
 			}
 		}
 
@@ -956,9 +950,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 * @return    array    setting => value
 		 */
 		function readDefaultSettings() {
-			$params = JFusionFactory::getParams($this->helper->getJname());
-
-			$path = $params->get('source_path') . 'authmysql' . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR;
+			$path = $this->helper->params->get('source_path') . 'authmysql' . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR;
 			$conf = array();
 
 			if (file_exists($path . 'default.php')) {

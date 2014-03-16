@@ -459,7 +459,7 @@ class JFusionUser_moodle extends JFusionUser {
 	 *
 	 * @param object $userinfo Object containing the new userinfo
 	 * @param array  &$status  Array containing the errors and result of the function
-	 * @return null|void
+	 * @return void
 	 */
 	function createUser($userinfo, &$status) {
 		try {

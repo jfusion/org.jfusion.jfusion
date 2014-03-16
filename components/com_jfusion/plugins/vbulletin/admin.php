@@ -243,39 +243,31 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	}
 
 	/**
-	 * @return string|array
+	 * @return array
 	 */
 	function getDefaultUsergroup()
 	{
-		try {
-			$usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+		$usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 
-			if ($usergroup !== null) {
-				//we want to output the usergroup name
-				$db = JFusionFactory::getDatabase($this->getJname());
+		$group = array();
+		if ($usergroup !== null) {
+			//we want to output the usergroup name
+			$db = JFusionFactory::getDatabase($this->getJname());
 
-				if (!isset($usergroup->membergroups)) {
-					$usergroup->membergroups = array($usergroup->defaultgroup);
-				} else if (!in_array($usergroup->defaultgroup, $usergroup->membergroups)) {
-					$usergroup->membergroups[] = $usergroup->defaultgroup;
-				}
-
-				$group = array();
-				foreach ($usergroup->membergroups as $g) {
-					$query = $db->getQuery(true)
-						->select('title')
-						->from('#__usergroup')
-						->where('usergroupid = ' . $db->quote($g));
-
-					$db->setQuery($query);
-					$group[] = $db->loadResult();
-				}
-			} else {
-				$group = '';
+			if (!isset($usergroup->membergroups)) {
+				$usergroup->membergroups = array($usergroup->defaultgroup);
+			} else if (!in_array($usergroup->defaultgroup, $usergroup->membergroups)) {
+				$usergroup->membergroups[] = $usergroup->defaultgroup;
 			}
-		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-			$group = '';
+			foreach ($usergroup->membergroups as $g) {
+				$query = $db->getQuery(true)
+					->select('title')
+					->from('#__usergroup')
+					->where('usergroupid = ' . $db->quote($g));
+
+				$db->setQuery($query);
+				$group[] = $db->loadResult();
+			}
 		}
 		return $group;
 	}
@@ -704,27 +696,23 @@ HTML;
 
 	function debugConfigExtra()
 	{
-		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = $db->getQuery(true)
-				->select('COUNT(*)')
-				->from('#__plugin')
-				->where('hookname = ' . $db->quote('init_startup'))
-				->where('title = ' . $db->quote(static::$mods['jfvbtask']))
-				->where('active = 1');
+		$query = $db->getQuery(true)
+			->select('COUNT(*)')
+			->from('#__plugin')
+			->where('hookname = ' . $db->quote('init_startup'))
+			->where('title = ' . $db->quote(static::$mods['jfvbtask']))
+			->where('active = 1');
 
-			$db->setQuery($query);
-			if ($db->loadResult() == 0) {
+		$db->setQuery($query);
+		if ($db->loadResult() == 0) {
+			JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
+		} else {
+			$response = $this->helper->apiCall('ping', array('ping' => 1));
+			if (!$response['success']) {
 				JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
-			} else {
-				$response = $this->helper->apiCall('ping', array('ping' => 1));
-				if (!$response['success']) {
-					JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
-				}
 			}
-		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
 		}
 	}
 

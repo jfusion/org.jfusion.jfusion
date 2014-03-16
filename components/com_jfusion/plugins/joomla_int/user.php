@@ -198,33 +198,37 @@ class JFusionUser_joomla_int extends JFusionUser {
 	 */
 	public function updateUsername($userinfo, &$existinguser, &$status)
 	{
+		//generate the filtered integration username
+		$db = JFusionFactory::getDatabase($this->getJname());
+		$username_clean = $this->filterUsername($userinfo->username);
+		$this->debugger->add('debug', JText::_('USERNAME') . ': ' . $userinfo->username . ' -> ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean);
+
+		$query = $db->getQuery(true)
+			->update('#__users')
+			->set('username = ' . $db->quote($username_clean))
+			->where('id = ' . $db->quote($existinguser->userid));
+		$db->setQuery($query);
+		$db->execute();
+
+		//update the lookup table
+		$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $existinguser->userid . ', ' . $db->quote($userinfo->username) . ')';
+		$db->setQuery($query);
+		$db->execute();
+
+		$this->debugger->add('debug', JText::_('USERNAME_UPDATE') . ': ' . $username_clean);
+	}
+
+	/**
+	 * @param stdClass $userinfo
+	 */
+	function doCreateUser($userinfo)
+	{
+		$this->debugger->add('debug', JText::_('NO_USER_FOUND_CREATING_ONE'));
 		try {
-			//generate the filtered integration username
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$username_clean = $this->filterUsername($userinfo->username);
-			$status['debug'][] = JText::_('USERNAME') . ': ' . $userinfo->username . ' -> ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
-
-			$query = $db->getQuery(true)
-				->update('#__users')
-				->set('username = ' . $db->quote($username_clean))
-				->where('id = ' . $db->quote($existinguser->userid));
-
-			$db->setQuery($query);
-			try {
-				$db->execute();
-				$status['debug'][] = JText::_('USERNAME_UPDATE') . ': ' . $username_clean;
-			} catch (Exception $e) {
-				$status['error'][] = JText::_('USERNAME_UPDATE_ERROR') . ': ' . $e->getMessage();
-			}
-
-			//update the lookup table
-			$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $existinguser->userid . ', ' . $db->quote($userinfo->username) . ')';
-			$db->setQuery($query);
-			$db->execute();
-
-			$status['debug'][] = JText::_('USERNAME_UPDATE') . ': ' . $username_clean;
+			$this->createUser($userinfo, $status);
+			$this->debugger->set('action', 'created');
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('USERNAME_UPDATE_ERROR') . ': ' . $e->getMessage();
+			$this->debugger->add('error', JText::_('USER_CREATION_ERROR') . $e->getMessage());
 		}
 	}
 
@@ -234,134 +238,129 @@ class JFusionUser_joomla_int extends JFusionUser {
 	 * @param object $userinfo Object containing the new userinfo
 	 * @param array  &$status  Array containing the errors and result of the function
 	 *
-	 * @return string updates are passed on into the $status array
+	 * @throws RuntimeException
 	 */
 	public function createUser($userinfo, &$status)
 	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
-		try {
-			//get the default user group and determine if we are using simple or advanced
-			//check to make sure that if using the advanced group mode, $userinfo->group_id exists
-			if (empty($usergroups)) {
-				throw new RuntimeException(JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING'));
-			} else {
-				//load the database
-				$db = JFusionFactory::getDatabase($this->getJname());
-				//joomla does not allow duplicate email addresses, check to see if the email is unique
+		//get the default user group and determine if we are using simple or advanced
+		//check to make sure that if using the advanced group mode, $userinfo->group_id exists
+		if (empty($usergroups)) {
+			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		} else {
+			//load the database
+			$db = JFusionFactory::getDatabase($this->getJname());
+			//joomla does not allow duplicate email addresses, check to see if the email is unique
+			$query = $db->getQuery(true)
+				->select('id as userid, username, email')
+				->from('#__users')
+				->where('email = ' . $db->quote($userinfo->email));
+
+			$db->setQuery($query);
+			$existinguser = $db->loadObject();
+			if (empty($existinguser)) {
+				//apply username filtering
+				$username_clean = $this->filterUsername($userinfo->username);
+				//now we need to make sure the username is unique in Joomla
+
 				$query = $db->getQuery(true)
-					->select('id as userid, username, email')
+					->select('id')
 					->from('#__users')
-					->where('email = ' . $db->quote($userinfo->email));
+					->where('username=' . $db->quote($username_clean));
 
 				$db->setQuery($query);
-				$existinguser = $db->loadObject();
-				if (empty($existinguser)) {
-					//apply username filtering
-					$username_clean = $this->filterUsername($userinfo->username);
-					//now we need to make sure the username is unique in Joomla
-
+				while ($db->loadResult()) {
+					$username_clean.= '_';
 					$query = $db->getQuery(true)
 						->select('id')
 						->from('#__users')
 						->where('username=' . $db->quote($username_clean));
 
 					$db->setQuery($query);
-					while ($db->loadResult()) {
-						$username_clean.= '_';
-						$query = $db->getQuery(true)
-							->select('id')
-							->from('#__users')
-							->where('username=' . $db->quote($username_clean));
-
-						$db->setQuery($query);
-					}
-					$status['debug'][] = JText::_('USERNAME') . ': ' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ': ' . $username_clean;
-
-					//create a Joomla password hash if password_clear is available
-					$userinfo->password_salt = JUserHelper::genRandomPassword(32);
-					if (!empty($userinfo->password_clear)) {
-						/**
-						 * @ignore
-						 * @var $auth JFusionAuth_joomla_int
-						 */
-						$auth = JFusionFactory::getAuth($this->getJname());
-						$password = $auth->hashPassword($userinfo);
-					} else if (isset($userinfo->password_salt)) {
-						$password = $userinfo->password . ':' . $userinfo->password_salt;
-					} else {
-						$password = $userinfo->password;
-					}
-
-					$instance = new JUser();
-					$instance->set('name', $userinfo->name);
-					$instance->set('username', $username_clean);
-					$instance->set('password', $password);
-					$instance->set('email', $userinfo->email);
-					$instance->set('block', $userinfo->block);
-					$instance->set('activation', $userinfo->activation);
-					$instance->set('sendEmail', 0);
-					//find out what usergroup the new user should have
-					//the $userinfo object was probably reconstructed in the user plugin and autoregister = 1
-					$isadmin = false;
-					if (isset($usergroups[0])) {
-						$isadmin = (in_array (7 , $usergroups, true) || in_array (8 , $usergroups, true)) ? true : false;
-					} else {
-						$usergroups = array(2);
-					}
-
-					//work around the issue where joomla will not allow the creation of an admin or super admin if the logged in user is not a super admin
-					if ($isadmin) {
-						$usergroups = array(2);
-					}
-
-					$instance->set('usertype', 'deprecated');
-					$instance->set('groups', $usergroups);
-
-					//store the username passed into this to prevent the user plugin from attempting to recreate users
-					$instance->set('original_username', $userinfo->username);
-					// save the user
-					global $JFusionActive;
-					$JFusionActive = 1;
-					$instance->save(false);
-
-					$createdUser = $instance->getProperties();
-					$createdUser = (object)$createdUser;
-					//update the user's group to the correct group if they are an admin
-					if ($isadmin) {
-						$createdUser->userid = $createdUser->id;
-						$this->updateUsergroup($userinfo, $createdUser, $status, false);
-					}
-					//create a new entry in the lookup table
-					//if the credentialed username is available (from the auth plugin), store it; otherwise store the $userinfo username
-					$username = (!empty($userinfo->credentialed_username)) ? $userinfo->credentialed_username : $userinfo->username;
-					$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->quote($username) . ')';
-					$db->setQuery($query);
-					try {
-						$db->execute();
-					} catch (Exception $e) {
-						JFusionFunction::raiseWarning($e, $this->getJname());
-					}
-
-					//check to see if the user exists now
-					$joomla_user = $this->getUser($userinfo);
-					if ($joomla_user) {
-						//report back success
-						$status['userinfo'] = $joomla_user;
-						$status['debug'][] = JText::_('USER_CREATION');
-					} else {
-						$status['error'][] = JText::_('COULD_NOT_CREATE_USER');
-					}
-				} else {
-					//Joomla does not allow duplicate emails report error
-					$status['debug'][] = JText::_('USERNAME') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->username . ' -> ' . $userinfo->username;
-					$status['error'][] = JText::_('EMAIL_CONFLICT') . '. UserID: ' . $existinguser->userid . ' JFusionPlugin: ' . $this->getJname();
-					$status['userinfo'] = $existinguser;
 				}
+				$this->debugger->add('debug', JText::_('USERNAME') . ': ' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ': ' . $username_clean);
+
+				//create a Joomla password hash if password_clear is available
+				$userinfo->password_salt = JUserHelper::genRandomPassword(32);
+				if (!empty($userinfo->password_clear)) {
+					/**
+					 * @ignore
+					 * @var $auth JFusionAuth_joomla_int
+					 */
+					$auth = JFusionFactory::getAuth($this->getJname());
+					$password = $auth->hashPassword($userinfo);
+				} else if (isset($userinfo->password_salt)) {
+					$password = $userinfo->password . ':' . $userinfo->password_salt;
+				} else {
+					$password = $userinfo->password;
+				}
+
+				$instance = new JUser();
+				$instance->set('name', $userinfo->name);
+				$instance->set('username', $username_clean);
+				$instance->set('password', $password);
+				$instance->set('email', $userinfo->email);
+				$instance->set('block', $userinfo->block);
+				$instance->set('activation', $userinfo->activation);
+				$instance->set('sendEmail', 0);
+				//find out what usergroup the new user should have
+				//the $userinfo object was probably reconstructed in the user plugin and autoregister = 1
+				$isadmin = false;
+				if (isset($usergroups[0])) {
+					$isadmin = (in_array (7 , $usergroups, true) || in_array (8 , $usergroups, true)) ? true : false;
+				} else {
+					$usergroups = array(2);
+				}
+
+				//work around the issue where joomla will not allow the creation of an admin or super admin if the logged in user is not a super admin
+				if ($isadmin) {
+					$usergroups = array(2);
+				}
+
+				$instance->set('usertype', 'deprecated');
+				$instance->set('groups', $usergroups);
+
+				//store the username passed into this to prevent the user plugin from attempting to recreate users
+				$instance->set('original_username', $userinfo->username);
+				// save the user
+				global $JFusionActive;
+				$JFusionActive = 1;
+				$instance->save(false);
+
+				$createdUser = $instance->getProperties();
+				$createdUser = (object)$createdUser;
+				//update the user's group to the correct group if they are an admin
+				if ($isadmin) {
+					$createdUser->userid = $createdUser->id;
+					$this->updateUsergroup($userinfo, $createdUser, $status, false);
+				}
+				//create a new entry in the lookup table
+				//if the credentialed username is available (from the auth plugin), store it; otherwise store the $userinfo username
+				$username = (!empty($userinfo->credentialed_username)) ? $userinfo->credentialed_username : $userinfo->username;
+				$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->quote($username) . ')';
+				$db->setQuery($query);
+				try {
+					$db->execute();
+				} catch (Exception $e) {
+					JFusionFunction::raiseWarning($e, $this->getJname());
+				}
+
+				//check to see if the user exists now
+				$joomla_user = $this->getUser($userinfo);
+				if ($joomla_user) {
+					//report back success
+					$this->debugger->set('userinfo', $joomla_user);
+					$this->debugger->add('debug', JText::_('USER_CREATION'));
+				} else {
+					throw new RuntimeException(JText::_('COULD_NOT_CREATE_USER'));
+				}
+			} else {
+				//Joomla does not allow duplicate emails report error
+				$this->debugger->add('debug', JText::_('USERNAME') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->username . ' -> ' . $userinfo->username);
+				$this->debugger->set('userinfo', $existinguser);
+				throw new RuntimeException(JText::_('EMAIL_CONFLICT') . '. UserID: ' . $existinguser->userid . ' JFusionPlugin: ' . $this->getJname());
 			}
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
 		}
-		return $status;
 	}
 
     /**
@@ -551,14 +550,13 @@ class JFusionUser_joomla_int extends JFusionUser {
 	 * @param bool   $fire_user_plugins needs more detail
 	 *
 	 * @throws RuntimeException
-	 * @return string updates are passed on into the $status array
 	 */
 	public function updateUsergroup($userinfo, &$existinguser, &$status, $fire_user_plugins = true)
 	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		//make sure the group exists
 		if (empty($usergroups)) {
-			throw new RuntimeException(JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
+			throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		} else {
 			$db = JFusionFactory::getDatabase($this->getJname());
 			$dispatcher = JEventDispatcher::getInstance();
@@ -588,14 +586,13 @@ class JFusionUser_joomla_int extends JFusionUser {
 
 				$db->insertObject('#__user_usergroup_map', $temp);
 			}
-			$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups);
+			$this->debugger->add('debug', JText::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups));
 			if ($fire_user_plugins) {
 				//Fire the onAfterStoreUser event
 				$updated = new JUser($existinguser->userid);
 				$dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
 			}
 		}
-		return $status;
 	}
 
 	/**
@@ -619,7 +616,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+		$this->debugger->add('debug', JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 	}
 
 	/**
@@ -637,26 +634,26 @@ class JFusionUser_joomla_int extends JFusionUser {
 		if (strlen($userinfo->password_clear) > 55)
 		{
 			throw new Exception(JText::_('JLIB_USER_ERROR_PASSWORD_TOO_LONG'));
+		} else {
+			/**
+			 * @ignore
+			 * @var $auth JFusionAuth_joomla_int
+			 */
+			$auth = JFusionFactory::getAuth($this->getJname());
+			$password = $auth->hashPassword($userinfo);
+
+			$db = JFusionFactory::getDatabase($this->getJname());
+
+			$query = $db->getQuery(true)
+				->update('#__users')
+				->set('password = ' . $db->quote($password))
+				->where('id = ' . $db->quote($existinguser->userid));
+
+			$db->setQuery($query);
+			$db->execute();
+
+			$this->debugger->add('debug', JText::_('PASSWORD_UPDATE')  . ': ' . substr($password, 0, 6) . '********');
 		}
-
-		/**
-		 * @ignore
-		 * @var $auth JFusionAuth_joomla_int
-		 */
-		$auth = JFusionFactory::getAuth($this->getJname());
-		$password = $auth->hashPassword($userinfo);
-
-		$db = JFusionFactory::getDatabase($this->getJname());
-
-		$query = $db->getQuery(true)
-			->update('#__users')
-			->set('password = ' . $db->quote($password))
-			->where('id = ' . $db->quote($existinguser->userid));
-
-		$db->setQuery($query);
-		$db->execute();
-
-		$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($password, 0, 6) . '********';
 	}
 
 	/**
@@ -681,7 +678,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		$this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 	}
 
 	/**
@@ -706,7 +703,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		$this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 	}
 
 	/**
@@ -732,7 +729,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
@@ -758,7 +755,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
@@ -790,183 +787,32 @@ class JFusionUser_joomla_int extends JFusionUser {
 	}
 
 	/**
-	 * Updates or creates a user for the integrated software. This allows JFusion to have external software as slave for user management
+	 * @param stdClass $userinfo
+	 * @param stdClass $existinguser
 	 *
-	 * @param object $userinfo  contains the userinfo
-	 * @param int    $overwrite determines if the userinfo can be overwritten
-	 *
-	 * @return array result Array containing the result of the user update
+	 * @return boolean return true if changed
 	 */
-	public function updateUser($userinfo, $overwrite = 0)
+	function doUserLanguage($userinfo, &$existinguser)
 	{
-		$status = array('error' => array(), 'debug' => array());
-		try {
-			// Initialise some variables
-			$update_block = $this->params->get('update_block');
-			$update_activation = $this->params->get('update_activation');
-			$update_email = $this->params->get('update_email');
-			//check to see if a valid $userinfo object was passed on
-			if (!is_object($userinfo)) {
-				throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
-			} else {
-				//check to see if user exists
-				$existinguser = $this->getUser($userinfo);
-				if (!empty($existinguser)) {
-					$changed = false;
-					//a matching user has been found
-					$status['debug'][] = JText::_('USER_DATA_FOUND');
-					// email update?
-					if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
-						$status['debug'][] = JText::_('EMAIL_CONFLICT');
-						if ($update_email || $overwrite) {
-							$status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED');
-							try {
-								$this->updateEmail($userinfo, $existinguser, $status);
-								$changed = true;
-							} catch (Exception $e) {
-								$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage();
-							}
-						} else {
-							//return a email conflict
-							$status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED');
-							$status['userinfo'] = $existinguser;
-							throw new RuntimeException(JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
-						}
-					}
-					// password update ?
-					if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-						//if not salt set, update the password
-						$existinguser->password_clear = $userinfo->password_clear;
-						//check if the password needs to be updated
-						try {
-							$model = JFusionFactory::getAuth($this->getJname());
-							if (!$model->checkPassword($existinguser)) {
-								try {
-									$this->updatePassword($userinfo, $existinguser, $status);
-									$changed = true;
-								} catch (Exception $e) {
-									$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage();
-								}
-							} else {
-								$status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_VALID');
-							}
-						} catch (Exception $e) {
-							$status['error'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . $e->getMessage();
-						}
-					} else {
-						$status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
-					}
-					//block status update?
-					if ($existinguser->block != $userinfo->block) {
-						if ($update_block || $overwrite) {
-							if ($userinfo->block) {
-								//block the user
-								try {
-									$this->blockUser($userinfo, $existinguser, $status);
-									$changed = true;
-								} catch (Exception $e) {
-									$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage();
-								}
-							} else {
-								//unblock the user
-								try {
-									$this->unblockUser($userinfo, $existinguser, $status);
-									$changed = true;
-								} catch (Exception $e) {
-									$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage();
-								}
-							}
-						} else {
-							//return a debug to inform we skipped this step
-							$status['debug'][] = JText::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-						}
-					}
-					//activation status update?
-					if ($existinguser->activation != $userinfo->activation) {
-						if ($update_activation || $overwrite) {
-							if ($userinfo->activation) {
-								//inactive the user
-								try {
-									$this->inactivateUser($userinfo, $existinguser, $status);
-									$changed = true;
-								} catch (Exception $e) {
-									$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage();
-								}
-							} else {
-								//activate the user
-								try {
-									$this->activateUser($userinfo, $existinguser, $status);
-									$changed = true;
-								} catch (Exception $e) {
-									$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage();
-								}
-							}
-						} else {
-							//return a debug to inform we skipped this step
-							$status['debug'][] = JText::_('SKIPPED_EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-						}
-					}
-					//check for advanced usergroup sync
-					if (!$userinfo->block && empty($userinfo->activation)) {
-						if (JFusionFunction::updateUsergroups($this->getJname())) {
-							try {
-								$usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $status);
-								if ($usergroup_updated) {
-									$changed = true;
-								} else {
-									$status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ' ' . JText::_('GROUP_VALID');
-								}
-							} catch (Exception $e) {
-								$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage();
-							}
-						}
-					}
+		$changed = false;
+		//Update the user language in the one existing from an other plugin
+		if (!empty($userinfo->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
+			try {
+				$this->updateUserLanguage($userinfo, $existinguser, $status);
+				$existinguser->language = $userinfo->language;
+				$this->debugger->add('debug', JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
 
-					//Update the user language in the one existing from an other plugin
-					if (!empty($userinfo->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
-						try {
-							$this->updateUserLanguage($userinfo, $existinguser, $status);
-							$existinguser->language = $userinfo->language;
-							$status['debug'][] = JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language;
-
-							$existinguser->language = $userinfo->language;
-							$changed = true;
-						} catch (Exception $e) {
-							$status['error'][] = JText::_('LANGUAGE_UPDATED_ERROR') . ' : ' . $e->getMessage();
-						}
-					} else {
-						//return a debug to inform we skipped this step
-						$status['debug'][] = JText::_('LANGUAGE_NOT_UPDATED');
-					}
-
-					if (empty($status['error'])) {
-						if ($changed == true) {
-							$status['action'] = 'updated';
-							$status['userinfo'] = $this->getUser($userinfo);
-						} else {
-							$status['action'] = 'unchanged';
-							$status['userinfo'] = $existinguser;
-						}
-					}
-				} else {
-					$status['debug'][] = JText::_('NO_USER_FOUND_CREATING_ONE');
-					$this->createUser($userinfo, $status);
-					if (empty($status['error'])) {
-						$status['action'] = 'created';
-					}
-				}
+				$existinguser->language = $userinfo->language;
+				$changed = true;
+			} catch (Exception $e) {
+				$this->debugger->add('error', JText::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
 			}
-		} catch (Exception $e) {
-			$status['error'][] = $e->getMessage();
+		} else {
+			//return a debug to inform we skipped this step
+			$this->debugger->add('debug', JText::_('LANGUAGE_NOT_UPDATED'));
 		}
-		return $status;
+		return $changed;
 	}
-
-	/************************************************
-	 * Functions For JFusion Who's Online Module
-	 ***********************************************/
-
-
 
 	/**
 	 * Update the language user in his account when he logs in Joomla or
@@ -981,25 +827,18 @@ class JFusionUser_joomla_int extends JFusionUser {
 	 */
 	public function updateUserLanguage($userinfo, &$existinguser, &$status)
 	{
-		try {
-			/**
-			 * @TODO joomla 1.5/1.6 if we are talking to external joomla since joomla 1.5 store params in json
-			 */
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$params = new JRegistry($existinguser->params);
-			$params->set('language', $userinfo->language);
+		$db = JFusionFactory::getDatabase($this->getJname());
+		$params = new JRegistry($existinguser->params);
+		$params->set('language', $userinfo->language);
 
-			$query = $db->getQuery(true)
-				->update('#__users')
-				->set('params = ' . $db->quote($params->toString()))
-				->where('id = ' . $db->quote($existinguser->userid));
+		$query = $db->getQuery(true)
+			->update('#__users')
+			->set('params = ' . $db->quote($params->toString()))
+			->where('id = ' . $db->quote($existinguser->userid));
 
-			$db->setQuery($query);
+		$db->setQuery($query);
 
-			$db->execute();
-			$status['debug'][] = JText::_('LANGUAGE_UPDATE') . ' ' . $existinguser->language;
-		} catch (Exception $e) {
-			$status['error'][] = JText::_('LANGUAGE_UPDATE_ERROR') . $e->getMessage();
-		}
+		$db->execute();
+		$this->debugger->add('debug', JText::_('LANGUAGE_UPDATE') . ' ' . $existinguser->language);
 	}
 }

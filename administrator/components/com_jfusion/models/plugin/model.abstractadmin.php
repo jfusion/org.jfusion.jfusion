@@ -39,7 +39,7 @@ class JFusionAdmin extends JFusionPlugin
 	{
 		parent::__construct();
 		//get the helper object
-		$this->helper = JFusionFactory::getHelper($this->getJname());
+		$this->helper = &JFusionFactory::getHelper($this->getJname());
 	}
 
     /**
@@ -77,7 +77,7 @@ class JFusionAdmin extends JFusionPlugin
     /**
      * Function used to display the default usergroup in the JFusion plugin overview
      *
-     * @return string|array Default usergroup name
+     * @return array Default usergroup name
      */
     function getDefaultUsergroup()
     {
@@ -85,15 +85,11 @@ class JFusionAdmin extends JFusionPlugin
 
         $groups = array();
         if ($usergroups !== null) {
-	        try {
-		        $list = $this->getUsergroupList();
-		        foreach ($list as $group) {
-			        if(in_array($group ->id, $usergroups)){
-				        $groups[] = $group->name;
-			        }
+	        $list = $this->getUsergroupList();
+	        foreach ($list as $group) {
+		        if(in_array($group->id, $usergroups)){
+			        $groups[] = $group->name;
 		        }
-	        } catch (Exception $e) {
-		        JFusionFunction::raiseError($e, $this->getJname());
 	        }
         }
         return $groups;
@@ -131,90 +127,77 @@ class JFusionAdmin extends JFusionPlugin
         return array();
     }
 
-    /**
-     * Function that checks if the plugin has a valid config
-     *
-     * @return array result of the config check
-     */
+	/**
+	 * Function that checks if the plugin has a valid config
+	 *
+	 * @throws RuntimeException
+	 * @return array result of the config check
+	 */
     function checkConfig()
     {
-        $status = array();
-	    $status['config'] = 0;
-	    $status['message'] = JText::_('UNKNOWN');
-        $jname = $this->getJname();
         //for joomla_int check to see if the source_url does not equal the default
 	    try {
-		    if ($jname == 'joomla_int') {
-			    $source_url = $this->params->get('source_url');
-			    if (empty($source_url)) {
-				    throw new RuntimeException(JText::_('GOOD_CONFIG'));
-			    }
+		    $db = JFusionFactory::getDatabase($this->getJname());
+	    } catch (Exception $e) {
+		    throw new RuntimeException(JText::_('NO_DATABASE') . ' : ' . $e->getMessage());
+	    }
+
+	    try {
+		    $jdb = JFactory::getDBO();
+	    } catch (Exception $e) {
+		    throw new RuntimeException($this->getJname() . ' -> joomla_int ' . JText::_('NO_DATABASE') . ' : ' . $e->getMessage());
+	    }
+
+	    if (!$db->connected()) {
+		    throw new RuntimeException(JText::_('NO_DATABASE'));
+	    } elseif (!$jdb->connected()) {
+		    throw new RuntimeException($this->getJname() . ' -> joomla_int ' . JText::_('NO_DATABASE'));
+	    } else {
+		    //added check for missing files of copied plugins after upgrade
+		    $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR;
+		    if (!file_exists($path . 'admin.php')) {
+			    throw new RuntimeException(JText::_('NO_FILES') . ' admin.php');
+		    } else if (!file_exists($path . 'user.php')) {
+			    throw new RuntimeException(JText::_('NO_FILES') . ' user.php');
 		    } else {
-			    try {
-				    $db = JFusionFactory::getDatabase($jname);
-			    } catch (Exception $e) {
-				    throw new RuntimeException(JText::_('NO_DATABASE') . ' : ' . $e->getMessage());
-			    }
+			    $cookie_domain = $this->params->get('cookie_domain');
+			    $jfc = JFusionFactory::getCookies();
+			    list($url) = $jfc->getApiUrl($cookie_domain);
+			    if ($url) {
+				    require_once(JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusionapi.php');
 
-			    try {
-				    $jdb = JFactory::getDBO();
-			    } catch (Exception $e) {
-				    throw new RuntimeException(' -> joomla_int ' . JText::_('NO_DATABASE') . ' : ' . $e->getMessage());
-			    }
+				    $api = new JFusionAPI($url, JFusionFactory::getParams('joomla_int')->get('secret'));
+				    if (!$api->ping()) {
+					    list ($message) = $api->getError();
 
-			    if (!$db->connected()) {
-				    throw new RuntimeException(JText::_('NO_DATABASE'));
-			    } elseif (!$jdb->connected()) {
-				    throw new RuntimeException(' -> joomla_int ' . JText::_('NO_DATABASE'));
+					    throw new RuntimeException($api->url . ' ' . $message);
+				    }
+			    }
+			    $source_path = $this->params->get('source_path');
+			    if ($source_path && (strpos($source_path, 'http://') === 0 || strpos($source_path, 'https://') === 0)) {
+				    throw new RuntimeException(JText::_('ERROR_SOURCE_PATH') . ' : ' . $source_path);
 			    } else {
-				    //added check for missing files of copied plugins after upgrade
-				    $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
-				    if (!file_exists($path . 'admin.php')) {
-					    throw new RuntimeException(JText::_('NO_FILES') . ' admin.php');
-				    } else if (!file_exists($path . 'user.php')) {
-					    throw new RuntimeException(JText::_('NO_FILES') . ' user.php');
+				    //get the user table name
+				    $tablename = $this->getTablename();
+				    // lets check if the table exists, now using the Joomla API
+				    $table_list = $db->getTableList();
+				    $table_prefix = $db->getPrefix();
+				    if (!is_array($table_list)) {
+					    throw new RuntimeException($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
 				    } else {
-					    $cookie_domain = $this->params->get('cookie_domain');
-					    $jfc = JFusionFactory::getCookies();
-					    list($url) = $jfc->getApiUrl($cookie_domain);
-					    if ($url) {
-						    require_once(JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusionapi.php');
-
-						    $api = new JFusionAPI($url, JFusionFactory::getParams('joomla_int')->get('secret'));
-						    if (!$api->ping()) {
-							    list ($message) = $api->getError();
-
-							    throw new RuntimeException($api->url . ' ' . $message);
-						    }
-					    }
-					    $source_path = $this->params->get('source_path');
-					    if ($source_path && (strpos($source_path, 'http://') === 0 || strpos($source_path, 'https://') === 0)) {
-						    throw new RuntimeException(JText::_('ERROR_SOURCE_PATH') . ' : ' . $source_path);
-					    } else {
-						    //get the user table name
-						    $tablename = $this->getTablename();
-						    // lets check if the table exists, now using the Joomla API
-						    $table_list = $db->getTableList();
-						    $table_prefix = $db->getPrefix();
-						    if (!is_array($table_list)) {
+					    if (array_search($table_prefix . $tablename, $table_list) === false) {
+						    //do a final check for case insensitive windows servers
+						    if (array_search(strtolower($table_prefix . $tablename), $table_list) === false) {
 							    throw new RuntimeException($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
-						    } else {
-							    if (array_search($table_prefix . $tablename, $table_list) === false) {
-								    //do a final check for case insensitive windows servers
-								    if (array_search(strtolower($table_prefix . $tablename), $table_list) === false) {
-									    throw new RuntimeException($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
-								    }
-							    }
 						    }
 					    }
 				    }
 			    }
 		    }
-		    $status['config'] = 1;
-		    $status['message'] = JText::_('GOOD_CONFIG');
-	    } catch (Exception $e) {
-		    $status['message'] = $e->getMessage();
 	    }
+	    $status = array();
+	    $status['config'] = 1;
+	    $status['message'] = JText::_('GOOD_CONFIG');
         return $status;
     }
 
@@ -230,7 +213,10 @@ class JFusionAdmin extends JFusionPlugin
 				->where('name = ' . $db->quote($this->getJname()));
 			$db->setQuery($query);
 			$db->execute();
-		} catch (Exception $e) {}
+		} catch (Exception $e) {
+			//there was an error saving the parameters
+			JFusionFunction::raiseError($e, $this->getJname());
+		}
 	}
 
     /**
@@ -242,63 +228,59 @@ class JFusionAdmin extends JFusionPlugin
     function debugConfig()
     {
 	    $jname = $this->getJname();
-	    try {
-		    //get registration status
-		    $new_registration = $this->allowRegistration();
+	    //get registration status
+	    $new_registration = $this->allowRegistration();
 
-		    //get the data about the JFusion plugins
-		    $db = JFactory::getDBO();
+	    //get the data about the JFusion plugins
+	    $db = JFactory::getDBO();
 
-		    $query = $db->getQuery(true)
-			    ->select('*')
-			    ->from('#__jfusion')
-			    ->where('name = ' . $db->quote($jname));
+	    $query = $db->getQuery(true)
+		    ->select('*')
+		    ->from('#__jfusion')
+		    ->where('name = ' . $db->quote($jname));
 
-		    $db->setQuery($query);
-		    $plugin = $db->loadObject();
-		    //output a warning to the administrator if the allowRegistration setting is wrong
-		    if ($new_registration && $plugin->slave == 1) {
-			    JFusionFunction::raiseNotice(JText::_('DISABLE_REGISTRATION'), $jname);
-		    }
-		    if (!$new_registration && $plugin->master == 1) {
-			    JFusionFunction::raiseNotice(JText::_('ENABLE_REGISTRATION'), $jname);
-		    }
-		    //most dual login problems are due to incorrect cookie domain settings
-		    //therefore we should check it and output a warning if needed.
-
-		    $cookie_domain = $this->params->get('cookie_domain',-1);
-		    if ($cookie_domain!==-1) {
-			    $cookie_domain = str_replace(array('http://', 'https://'), array('', ''), $cookie_domain);
-			    $correct_array = explode('.', html_entity_decode($_SERVER['SERVER_NAME']));
-
-			    //check for domain names with double extentions
-			    if (isset($correct_array[count($correct_array) - 2]) && isset($correct_array[count($correct_array) - 1])) {
-				    //domain array
-				    $domain_array = array('com', 'net', 'org', 'co', 'me');
-				    if (in_array($correct_array[count($correct_array) - 2], $domain_array)) {
-					    $correct_domain = '.' . $correct_array[count($correct_array) - 3] . '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
-				    } else {
-					    $correct_domain = '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
-				    }
-				    if ($correct_domain != $cookie_domain && !$this->allowEmptyCookieDomain()) {
-					    JFusionFunction::raiseNotice(JText::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain, $jname);
-				    }
-			    }
-		    }
-
-		    //also check the cookie path as it can interfere with frameless
-		    $cookie_path = $this->params->get('cookie_path',-1);
-		    if ($cookie_path!==-1) {
-			    if ($cookie_path != '/' && !$this->allowEmptyCookiePath()) {
-				    JFusionFunction::raiseNotice(JText::_('BEST_COOKIE_PATH') . ' /', $jname);
-			    }
-		    }
-
-		    // allow additional checking of the configuration
-		    $this->debugConfigExtra();
-	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e, $jname);
+	    $db->setQuery($query);
+	    $plugin = $db->loadObject();
+	    //output a warning to the administrator if the allowRegistration setting is wrong
+	    if ($new_registration && $plugin->slave == 1) {
+		    JFusionFunction::raiseNotice(JText::_('DISABLE_REGISTRATION'), $jname);
 	    }
+	    if (!$new_registration && $plugin->master == 1) {
+		    JFusionFunction::raiseNotice(JText::_('ENABLE_REGISTRATION'), $jname);
+	    }
+	    //most dual login problems are due to incorrect cookie domain settings
+	    //therefore we should check it and output a warning if needed.
+
+	    $cookie_domain = $this->params->get('cookie_domain',-1);
+	    if ($cookie_domain!==-1) {
+		    $cookie_domain = str_replace(array('http://', 'https://'), array('', ''), $cookie_domain);
+		    $correct_array = explode('.', html_entity_decode($_SERVER['SERVER_NAME']));
+
+		    //check for domain names with double extentions
+		    if (isset($correct_array[count($correct_array) - 2]) && isset($correct_array[count($correct_array) - 1])) {
+			    //domain array
+			    $domain_array = array('com', 'net', 'org', 'co', 'me');
+			    if (in_array($correct_array[count($correct_array) - 2], $domain_array)) {
+				    $correct_domain = '.' . $correct_array[count($correct_array) - 3] . '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
+			    } else {
+				    $correct_domain = '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
+			    }
+			    if ($correct_domain != $cookie_domain && !$this->allowEmptyCookieDomain()) {
+				    JFusionFunction::raiseNotice(JText::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain, $jname);
+			    }
+		    }
+	    }
+
+	    //also check the cookie path as it can interfere with frameless
+	    $cookie_path = $this->params->get('cookie_path',-1);
+	    if ($cookie_path!==-1) {
+		    if ($cookie_path != '/' && !$this->allowEmptyCookiePath()) {
+			    JFusionFunction::raiseNotice(JText::_('BEST_COOKIE_PATH') . ' /', $jname);
+		    }
+	    }
+
+	    // allow additional checking of the configuration
+	    $this->debugConfigExtra();
     }
 
     /**
@@ -536,7 +518,7 @@ JS;
 			}
 		} catch (Exception $e ) {
 			//there was an error saving the parameters
-			JFusionFunction::raiseWarning($e, $jname);
+			JFusionFunction::raiseError($e, $jname);
 		}
 		return $result;
 	}

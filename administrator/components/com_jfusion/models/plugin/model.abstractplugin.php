@@ -49,12 +49,11 @@ class JFusionPlugin
 		JFactory::getLanguage()->load('com_jfusion', JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
 		JFactory::getLanguage()->load('com_jfusion', JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
 
-
 		$jname = $this->getJname();
 		if (!empty($jname)) {
 			//get the params object
-			$this->params = JFusionFactory::getParams($jname);
-			$this->debugger = JFusionFactory::getDebugger($jname);
+			$this->params = &JFusionFactory::getParams($jname);
+			$this->debugger = &JFusionFactory::getDebugger($jname);
 
 			if (!isset(static::$language[$jname])) {
 				$db = JFactory::getDBO();

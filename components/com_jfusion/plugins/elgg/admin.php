@@ -167,7 +167,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
     }
 
     /**
-     * @return string|array
+     * @return array
      */
     function getDefaultUsergroup()
     {

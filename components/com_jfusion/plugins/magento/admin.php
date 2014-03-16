@@ -201,87 +201,83 @@ class JFusionAdmin_magento extends JFusionAdmin
 
     function debugConfigExtra()
     {
-	    try {
-		    // see if we have an api user in Magento
-		    $db = JFusionFactory::getDataBase($this->getJname());
+	    // see if we have an api user in Magento
+	    $db = JFusionFactory::getDataBase($this->getJname());
 
+	    $query = $db->getQuery(true)
+		    ->select('count(*)')
+		    ->from('#__api_user');
+
+	    $db->setQuery($query);
+	    $no_users = $db->loadResult();
+	    if ($no_users <= 0) {
+		    JFusionFunction::raiseWarning(JText::_('MAGENTO_NEED_API_USER'), $this->getJname());
+	    } else {
+		    // check if we have valid parameters  for apiuser and api key
+		    $apipath = $this->params->get('source_url') . 'index.php/api/?wsdl';
+		    $apiuser = $this->params->get('apiuser');
+		    $apikey = $this->params->get('apikey');
+		    if (!$apiuser || !$apikey) {
+			    JFusionFunction::raiseWarning(JText::_('MAGENTO_NO_API_DATA'), $this->getJname());
+		    } else {
+			    //finally check if the apiuser and apikey are valid
+			    try {
+				    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'soapclient.php';
+
+				    $proxi = new MagentoSoapClient($apipath);
+				    if($proxi->login($apiuser, $apikey)) {
+					    // all ok
+					    try {
+						    $proxi->endSession();
+					    } catch (Soapfault $fault) {
+						    /** @noinspection PhpUndefinedFieldInspection */
+						    $status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
+					    }
+
+				    }
+			    } catch (Soapfault $fault) {
+				    /** @noinspection PhpUndefinedFieldInspection */
+				    JFusionFunction::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
+			    }
+			    /*
+				$query = $db->getQuery(true)
+					->select('api_key')
+					->from('#__api_user')
+					->where('username = ' . $db->Quote($apiuser));
+
+				$db->setQuery($query);
+				$api_key = $db->loadResult();
+				$hashArr = explode(':', $api_key);
+				$api_key = $hashArr[0];
+				$api_salt = $hashArr[1];
+				if ($api_salt) {
+					$params_hash_md5 = md5($api_salt . $apikey);
+					$params_hash_sha256 = hash('sha256', $api_salt . $apikey);
+				} else {
+					$params_hash_md5 = md5($apikey);
+					$params_hash_sha256 = hash('sha256', $apikey);
+				}
+				if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
+					JFusionFunction::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
+				}
+			*/
+		    }
+	    }
+	    try {
+		    // check the user_remote_addr security settings
 		    $query = $db->getQuery(true)
-			    ->select('count(*)')
-			    ->from('#__api_user');
+			    ->select('value')
+			    ->from('#__core_config_data')
+			    ->where('path = ' . $db->quote('web/session/use_remote_addr'));
 
 		    $db->setQuery($query);
-		    $no_users = $db->loadResult();
-		    if ($no_users <= 0) {
-			    JFusionFunction::raiseWarning(JText::_('MAGENTO_NEED_API_USER'), $this->getJname());
-		    } else {
-			    // check if we have valid parameters  for apiuser and api key
-                $apipath = $this->params->get('source_url') . 'index.php/api/?wsdl';
-			    $apiuser = $this->params->get('apiuser');
-			    $apikey = $this->params->get('apikey');
-			    if (!$apiuser || !$apikey) {
-				    JFusionFunction::raiseWarning(JText::_('MAGENTO_NO_API_DATA'), $this->getJname());
-			    } else {
-				    //finally check if the apiuser and apikey are valid
-                    try {
-                        require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'soapclient.php';
-
-                        $proxi = new MagentoSoapClient($apipath);
-                        if($proxi->login($apiuser, $apikey)) {
-                        // all ok
-                            try {
-                                $proxi->endSession();
-                            } catch (Soapfault $fault) {
-                                /** @noinspection PhpUndefinedFieldInspection */
-                                $status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
-                            }
-
-                        }
-                    } catch (Soapfault $fault) {
-                        /** @noinspection PhpUndefinedFieldInspection */
-                        JFusionFunction::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
-                    }
-                /*
-				    $query = $db->getQuery(true)
-					    ->select('api_key')
-					    ->from('#__api_user')
-						->where('username = ' . $db->Quote($apiuser));
-
-				    $db->setQuery($query);
-				    $api_key = $db->loadResult();
-				    $hashArr = explode(':', $api_key);
-				    $api_key = $hashArr[0];
-				    $api_salt = $hashArr[1];
-				    if ($api_salt) {
-					    $params_hash_md5 = md5($api_salt . $apikey);
-					    $params_hash_sha256 = hash('sha256', $api_salt . $apikey);
-				    } else {
-					    $params_hash_md5 = md5($apikey);
-					    $params_hash_sha256 = hash('sha256', $apikey);
-				    }
-				    if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
-					    JFusionFunction::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
-				    }
-                */
-			    }
+		    $value = $db->loadResult();
+		    if ($value) {
+			    JFusionFunction::raiseWarning(JText::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'), $this->getJname());
 		    }
-		    try {
-			    // check the user_remote_addr security settings
-			    $query = $db->getQuery(true)
-				    ->select('value')
-				    ->from('#__core_config_data')
-				    ->where('path = ' . $db->quote('web/session/use_remote_addr'));
-
-			    $db->setQuery($query);
-			    $value = $db->loadResult();
-			    if ($value) {
-				    JFusionFunction::raiseWarning(JText::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'), $this->getJname());
-			    }
-			    // we need to have the curl library installed
-			    if (!extension_loaded('curl')) {
-				    JFusionFunction::raiseWarning(JText::_('CURL_NOTINSTALLED'), $this->getJname());
-			    }
-		    } catch (Exception $e) {
-
+		    // we need to have the curl library installed
+		    if (!extension_loaded('curl')) {
+			    JFusionFunction::raiseWarning(JText::_('CURL_NOTINSTALLED'), $this->getJname());
 		    }
 	    } catch (Exception $e) {
 

@@ -111,18 +111,17 @@ class jfusionViewplugindisplay extends JViewLegacy {
 
 		    if($record->status==1) {
 			    //added check for database configuration to prevent error after moving sites
+			    $config_status = array();
+			    $config_status['config'] = 0;
+			    $config_status['message'] = JText::_('UNKNOWN');
 			    try {
 				    $config_status = $JFusionPlugin->checkConfig();
-				    $status = $config_status['config'];
-			    } catch (Exception $e) {
-				    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
-				    $status = 0;
-			    }
+			    } catch (Exception $e) {}
 			    //do a check to see if the status field is correct
-			    if ($status != $record->status) {
+			    if ($config_status['config'] != $record->status) {
 				    //update the status and deactivate the plugin
 
-				    $JFusionPlugin->updateStatus($status);
+				    $JFusionPlugin->updateStatus($config_status['config']);
 			    }
 		    }
 

@@ -46,16 +46,6 @@
                 </field>
             </fieldset>
 
-            <fieldset name="DATABASE_OPTIONS">
-                <field name="database_type" type="text" size="20" label="DATABASE_TYPE" default="" description="DATABASE_TYPE_DESC" />
-                <field name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
-                <field name="database_name" type="text" size="20" label="DATABASE_NAME" default="" description="DATABASE_NAME_DESC" />
-                <field name="database_user" type="text" size="20" label="DATABASE_USER" default="" description="DATABASE_USER_DESC" />
-                <field name="database_password" type="password" size="20" label="DATABASE_PASSWORD" default="" description="DATABASE_PASSWORD_DESC" />
-                <field name="database_prefix" type="text" size="20" label="DATABASE_PREFIX" default="" description="DATABASE_PREFIX_DESC" />
-                <field name="database_charset" type="text" size="20" label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
-            </fieldset>
-
             <fieldset name="USER_OPTIONS">
                 <field name="usergroupmap" type="text" size="100" label="USERGROUP_MAP" default="user,admin" description="USERGROUP_MAP_DESC" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />

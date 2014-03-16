@@ -31,8 +31,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		public function __construct($helper) {
 			parent::__construct($helper);
 
-			$params = JFusionFactory::getParams($this->helper->getJname());
-			$this->file = $params->get('source_path');
+			$this->file = $this->helper->params->get('source_path');
 			if (substr($this->file, -1) == DIRECTORY_SEPARATOR) {
 				$this->file = $this->file . 'conf/users.auth.php';
 			} else {

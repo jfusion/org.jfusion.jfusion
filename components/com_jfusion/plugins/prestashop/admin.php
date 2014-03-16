@@ -209,20 +209,13 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    try {
-		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
-		    if ($usergroups !== null) {
-			    $group = array();
-			    foreach($usergroups as $usergroup) {
-				    $group[] = $this->helper->getGroupName($usergroup);
-			    }
-		    } else {
-			    $group = '';
+	    $group = array();
+	    if ($usergroups !== null) {
+		    foreach($usergroups as $usergroup) {
+			    $group[] = $this->helper->getGroupName($usergroup);
 		    }
-	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
-		    $group = '';
 	    }
 	    return $group;
     }

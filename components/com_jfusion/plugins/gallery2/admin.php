@@ -182,33 +182,26 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	    }
     }
     /**
-     * @return string|array
+     * @return array
      */
     function getDefaultUsergroup()
     {
-	    try {
-		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
-		    if ($usergroups !== null) {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+	    $group = array();
+	    if ($usergroups !== null) {
+		    $db = JFusionFactory::getDatabase($this->getJname());
 
-			    $group = array();
-			    foreach($usergroups as $usergroup) {
-				    $query = $db->getQuery(true)
-					    ->select('g_groupName')
-					    ->from('#__Group')
-					    ->where('g_id = ' . $db->quote((int)$usergroup));
+		    foreach($usergroups as $usergroup) {
+			    $query = $db->getQuery(true)
+				    ->select('g_groupName')
+				    ->from('#__Group')
+				    ->where('g_id = ' . $db->quote((int)$usergroup));
 
-				    $db->setQuery($query);
-				    $group[] = $db->loadResult();
-			    }
-		    } else {
-			    $group = '';
+			    $db->setQuery($query);
+			    $group[] = $db->loadResult();
 		    }
-	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-		    $group = '';
-		}
+	    }
 	    return $group;
     }
     /**

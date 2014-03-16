@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionHelper_dokuwiki extends JFusionPlugin
 {
     /**
-     * @var Jfusion_DokuWiki_Basic
+     * @var Jfusion_DokuWiki_Basic|Jfusion_DokuWiki_Plain|Jfusion_DokuWiki_Mysql
      */
     var $auth;
 
@@ -40,19 +40,23 @@ class JFusionHelper_dokuwiki extends JFusionPlugin
     function __construct()
     {
         parent::__construct();
-        $database_type = $this->params->get('database_type');
-        $database_host = $this->params->get('database_host');
-        if ($database_host && $database_type == 'mysql') {
-            if (!class_exists('Jfusion_DokuWiki_Mysql')) {
-                require_once('auth' . DIRECTORY_SEPARATOR . 'mysql.class.php');
-            }
-            $this->auth = new Jfusion_DokuWiki_Mysql($this);
-        } else {
-            if (!class_exists('Jfusion_DokuWiki_Plain')) {
-                require_once('auth' . DIRECTORY_SEPARATOR . 'plain.class.php');
-            }
-            $this->auth = new Jfusion_DokuWiki_Plain($this);
-        }
+
+	    $conf = $this->getConf();
+
+	    if ($conf && isset($conf['authtype']))  {
+		    if ($conf['authtype'] == 'authmysql') {
+			    if (!class_exists('Jfusion_DokuWiki_Mysql')) {
+				    require_once('auth' . DIRECTORY_SEPARATOR . 'mysql.class.php');
+			    }
+			    $this->auth = new Jfusion_DokuWiki_Mysql($this);
+		    } elseif ($conf['authtype'] == 'authplain') {
+			    if (!class_exists('Jfusion_DokuWiki_Plain')) {
+				    require_once('auth' . DIRECTORY_SEPARATOR . 'plain.class.php');
+			    }
+			    $this->auth = new Jfusion_DokuWiki_Plain($this);
+		    }
+	    }
+
 	    if (!$this->auth) {
 		    if (!class_exists('Jfusion_DokuWiki_Basic')) {
 			    require_once('auth' . DIRECTORY_SEPARATOR . 'basic.class.php');
@@ -158,33 +162,27 @@ class JFusionHelper_dokuwiki extends JFusionPlugin
      * @return bool|string
      */
     function getConfigPath($path = false) {
-        static $config_path;
+	    static $config_path;
+	    if (!isset($config_path) || $path !== false) {
+		    if (empty($path)) {
+			    $path = $this->params->get('source_path');
+		    }
 
-        if (empty($config_path)) {
-            $source_path = $this->params->get('source_path');
-            $config_path = (empty($path)) ? $source_path : $path;
+		    //standard config path
+		    $config_path = $path . 'conf' . DIRECTORY_SEPARATOR;
 
-            //make sure the source path ends with a DIRECTORY_SEPARATOR
-            if (substr($path, -1) != DIRECTORY_SEPARATOR) {
-                $config_path .= DIRECTORY_SEPARATOR;
-            }
-
-            //standard config path
-            $config_path .= 'conf' . DIRECTORY_SEPARATOR;
-
-            //check to see if conf directory is located somewhere else
-            if (file_exists($source_path  . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'preload.php')) {
-                include_once $source_path  . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'preload.php';
-                if (defined('DOKU_CONF')) {
-                    $config_path = DOKU_CONF;
-                    //make sure we have a ending DIRECTORY_SEPARATOR
-                    if (substr($config_path, -1) != DIRECTORY_SEPARATOR) {
-                       $config_path .= DIRECTORY_SEPARATOR;
-                    }
-                }
-            }
-        }
-
+		    //check to see if conf directory is located somewhere else
+		    if (file_exists($path  . 'inc' . DIRECTORY_SEPARATOR . 'preload.php')) {
+			    include_once $path  . 'inc' . DIRECTORY_SEPARATOR . 'preload.php';
+			    if (defined('DOKU_CONF')) {
+				    $config_path = DOKU_CONF;
+				    //make sure we have a ending DIRECTORY_SEPARATOR
+				    if (substr($config_path, -1) != DIRECTORY_SEPARATOR) {
+					    $config_path .= DIRECTORY_SEPARATOR;
+				    }
+			    }
+		    }
+	    }
         return $config_path;
     }
 
@@ -200,28 +198,31 @@ class JFusionHelper_dokuwiki extends JFusionPlugin
     function getConf($path = false)
     {
         static $config;
-        if (!is_array($config)) {
+        if (!isset($config) || $path !== false) {
             if (!$path) {
                 $path = $this->params->get('source_path');
             }
 
-            $path = $this->getConfigPath($path);
+	        if (!empty($path)) {
+		        $path = $this->getConfigPath($path);
 
-            $myfile = array();
-            $myfile[] = $path . 'dokuwiki.php';
-            $myfile[] = $path . 'local.php';
-            $myfile[] = $path . 'local.protected.php';
+		        $myfile = array();
+		        $myfile[] = $path . 'dokuwiki.php';
+		        $myfile[] = $path . 'local.php';
+		        $myfile[] = $path . 'local.protected.php';
 
-            $conf = array();
-            foreach ($myfile as $file) {
-                if (file_exists($file)) {
-                    require($file);
-                }
-            }
-            $config = $conf;
-            if (!count($config)) {
-                $config = false;
-            }
+		        $conf = array();
+		        foreach ($myfile as $file) {
+			        if (file_exists($file)) {
+				        require($file);
+			        }
+		        }
+		        if (!count($conf)) {
+			        $config = false;
+		        } else {
+			        $config = $conf;
+		        }
+	        }
         }
         return $config;
     }

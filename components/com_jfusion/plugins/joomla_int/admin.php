@@ -51,6 +51,25 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 	}
 
 	/**
+	 * Function that checks if the plugin has a valid config
+	 *
+	 * @throws RuntimeException
+	 * @return array result of the config check
+	 */
+	function checkConfig()
+	{
+		//for joomla_int check to see if the source_url does not equal the default
+		$source_url = $this->params->get('source_url');
+		if (empty($source_url)) {
+			throw new RuntimeException(JText::_('EMPTY_URL'));
+		}
+		$status = array();
+		$status['config'] = 1;
+		$status['message'] = JText::_('GOOD_CONFIG');
+		return $status;
+	}
+
+	/**
 	 * Returns the a list of users of the integrated software
 	 *
 	 * @param int $limitstart start at
@@ -102,31 +121,24 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 	/**
 	 * Function used to display the default usergroup in the JFusion plugin overview
 	 *
-	 * @return string|array Default usergroup name
+	 * @return array Default usergroup name
 	 */
 	public function getDefaultUsergroup()
 	{
-		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+		$db = JFusionFactory::getDatabase($this->getJname());
+		$usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
-			if ($usergroups !== null) {
-				$group = array();
-				foreach($usergroups as $usergroup) {
-					$query = $db->getQuery(true)
-						->select('title')
-						->from('#__usergroups')
-						->where('id = ' . $usergroup);
+		$group = array();
+		if ($usergroups !== null) {
+			foreach($usergroups as $usergroup) {
+				$query = $db->getQuery(true)
+					->select('title')
+					->from('#__usergroups')
+					->where('id = ' . $usergroup);
 
-					$db->setQuery($query);
-					$group[] = $db->loadResult();
-				}
-			} else {
-				$group = '';
+				$db->setQuery($query);
+				$group[] = $db->loadResult();
 			}
-		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-			$group = '';
 		}
 		return $group;
 	}

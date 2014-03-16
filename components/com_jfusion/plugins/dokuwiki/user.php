@@ -44,7 +44,6 @@ class JFusionUser_dokuwiki extends JFusionUser
     function updateUser($userinfo, $overwrite = 0) {
         // Initialise some variables
         $userinfo->username = $this->filterUsername($userinfo->username);
-        $update_email = $this->params->get('update_email');
         $status = array('error' => array(), 'debug' => array());
         //check to see if a valid $userinfo object was passed on
 	    try {
@@ -57,8 +56,9 @@ class JFusionUser_dokuwiki extends JFusionUser
 				    $changes = array();
 				    //a matching user has been found
 				    $status['debug'][] = JText::_('USER_DATA_FOUND');
-				    if ($existinguser->email != $userinfo->email) {
+				    if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
 					    $status['debug'][] = JText::_('EMAIL_CONFLICT');
+					    $update_email = $this->params->get('update_email', false);
 					    if ($update_email || $overwrite) {
 						    $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED');
 						    $changes['mail'] = $userinfo->email;
@@ -80,6 +80,7 @@ class JFusionUser_dokuwiki extends JFusionUser
 						    // add password_clear to existinguser for the Joomla helper routines
 						    $existinguser->password_clear = $userinfo->password_clear;
 						    $changes['pass'] = $userinfo->password_clear;
+						    $status['debug'][] = JText::_('PASSWORD_UPDATE')  . ': ' . substr($userinfo->password_clear, 0, 6) . '********';
 					    } else {
 						    $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_VALID');
 					    }
@@ -112,8 +113,6 @@ class JFusionUser_dokuwiki extends JFusionUser
 				    $this->createUser($userinfo, $status);
 				    if (empty($status['error'])) {
 					    $status['action'] = 'created';
-				    } else {
-					    $status['action'] = 'error';
 				    }
 			    }
 		    }

@@ -143,14 +143,20 @@ class plgUserJfusion extends JPlugin
 			            $master_userinfo = $JFusionMaster->getUser($JoomlaUser->olduserinfo);
 			            //if the username was updated, call the updateUsername function before calling updateUser
 			            if ($updateUsername) {
-				            $updateUsernameStatus = array();
 				            if (!empty($master_userinfo)) {
-					            $JFusionMaster->updateUsername($JoomlaUser, $master_userinfo, $updateUsernameStatus);
-					            if (!empty($updateUsernameStatus['error'])) {
-						            $error_info[$master->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $updateUsernameStatus['error'];
-					            }
-					            if (!empty($updateUsernameStatus['debug'])) {
-						            $debug_info[$master->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG') ] = $updateUsernameStatus['debug'];
+					            try {
+						            $updateUsernameStatus = array();
+						            $JFusionMaster->debugger->set(null, $updateUsernameStatus);
+						            $JFusionMaster->updateUsername($JoomlaUser, $master_userinfo, $updateUsernameStatus);
+						            $JFusionMaster->mergeStatus($updateUsernameStatus);
+						            if (!$JFusionMaster->debugger->isEmpty('error')) {
+							            $error_info[$master->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $JFusionMaster->debugger->get('error');
+						            }
+						            if (!$JFusionMaster->debugger->isEmpty('debug')) {
+							            $debug_info[$master->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG') ] = $JFusionMaster->debugger->get('debug');
+						            }
+					            } catch (Exception $e) {
+						            $status['error'][] = JText::_('USERNAME_UPDATE_ERROR') . ': ' . $e->getMessage();
 					            }
 				            } else {
 					            $error_info[$master->name] = JText::_('NO_USER_DATA_FOUND');
@@ -199,13 +205,19 @@ class plgUserJfusion extends JPlugin
 						if ($updateUsername) {
 							$slave_userinfo = $JFusionSlave->getUser($JoomlaUser->olduserinfo);
 							if (!empty($slave_userinfo)) {
-								$updateUsernameStatus = array();
-								$JFusionSlave->updateUsername($master_userinfo, $slave_userinfo, $updateUsernameStatus);
-								if (!empty($updateUsernameStatus['error'])) {
-									$error_info[$slave->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $updateUsernameStatus['error'];
-								}
-								if (!empty($updateUsernameStatus['debug'])) {
-									$debug_info[$slave->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG') ] = $updateUsernameStatus['debug'];
+								try {
+									$updateUsernameStatus = array();
+									$JFusionSlave->debugger->set(null, $updateUsernameStatus);
+									$JFusionSlave->updateUsername($master_userinfo, $slave_userinfo, $updateUsernameStatus);
+									$JFusionSlave->mergeStatus($updateUsernameStatus);
+									if (!$JFusionSlave->debugger->isEmpty('error')) {
+										$error_info[$slave->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $JFusionSlave->debugger->get('error');
+									}
+									if (!$JFusionSlave->debugger->isEmpty('debug')) {
+										$debug_info[$slave->name . ' ' . JText::_('USERNAME') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG') ] = $JFusionSlave->debugger->get('debug');
+									}
+								}  catch (Exception $e) {
+									$status['error'][] = JText::_('USERNAME_UPDATE_ERROR') . ': ' . $e->getMessage();
 								}
 							} else {
 								$error_info[$slave->name] = JText::_('NO_USER_DATA_FOUND');

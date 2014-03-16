@@ -215,34 +215,28 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    try {
-		    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 
-		    if ($usergroup !== null) {
-			    //we want to output the usergroup name
-			    $db = JFusionFactory::getDatabase($this->getJname());
+	    $group = array();
+	    if ($usergroup !== null) {
+		    //we want to output the usergroup name
+		    $db = JFusionFactory::getDatabase($this->getJname());
 
-			    if (!isset($usergroup->groups)) {
-				    $usergroup->groups = array($usergroup->defaultgroup);
-			    } else if (!in_array($usergroup->defaultgroup, $usergroup->groups)) {
-				    $usergroup->groups[] = $usergroup->defaultgroup;
-			    }
-			    $group = array();
-			    foreach ($usergroup->groups as $g) {
-				    $query = $db->getQuery(true)
-					    ->select('group_name')
-					    ->from('#__groups')
-					    ->where('group_id = ' . $db->quote($g));
-
-				    $db->setQuery($query);
-				    $group[] = $db->loadResult();
-			    }
-		    } else {
-			    $group = '';
+		    if (!isset($usergroup->groups)) {
+			    $usergroup->groups = array($usergroup->defaultgroup);
+		    } else if (!in_array($usergroup->defaultgroup, $usergroup->groups)) {
+			    $usergroup->groups[] = $usergroup->defaultgroup;
 		    }
-	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
-		    $group = '';
+
+		    foreach ($usergroup->groups as $g) {
+			    $query = $db->getQuery(true)
+				    ->select('group_name')
+				    ->from('#__groups')
+				    ->where('group_id = ' . $db->quote($g));
+
+			    $db->setQuery($query);
+			    $group[] = $db->loadResult();
+		    }
 	    }
 	    return $group;
     }

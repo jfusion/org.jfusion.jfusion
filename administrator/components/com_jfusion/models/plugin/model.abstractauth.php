@@ -39,7 +39,7 @@ class JFusionAuth extends JFusionPlugin
 	{
 		parent::__construct();
 		//get the helper object
-		$this->helper = JFusionFactory::getHelper($this->getJname());
+		$this->helper = &JFusionFactory::getHelper($this->getJname());
 	}
 
     /**

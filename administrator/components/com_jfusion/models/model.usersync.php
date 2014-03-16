@@ -351,7 +351,6 @@ class JFusionUsersync
 									    $status['userinfo'] = null;
 								    }
 
-
 								    $sync_log = new stdClass;
 								    $sync_log->syncid = $syncdata['syncid'];
 								    $sync_log->jname = $jname;

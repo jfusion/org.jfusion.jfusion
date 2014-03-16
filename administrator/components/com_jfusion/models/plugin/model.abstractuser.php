@@ -39,7 +39,7 @@ class JFusionUser extends JFusionPlugin
 	{
 		parent::__construct();
 		//get the helper object
-		$this->helper = JFusionFactory::getHelper($this->getJname());
+		$this->helper = &JFusionFactory::getHelper($this->getJname());
 	}
 
     /**
@@ -188,13 +188,6 @@ class JFusionUser extends JFusionPlugin
      */
     function updateUser($userinfo, $overwrite = 0)
     {
-        // Initialise some variables
-        if (!empty($userinfo->params)) {
-            $user_params = new JRegistry($userinfo->params);
-        }
-        $update_block = $this->params->get('update_block');
-        $update_activation = $this->params->get('update_activation');
-        $update_email = $this->params->get('update_email');
         $status = array('error' => array(), 'debug' => array());
 	    $this->debugger->set(null, $status);
 	    try {
@@ -208,141 +201,29 @@ class JFusionUser extends JFusionPlugin
 				    $changed = false;
 				    //a matching user has been found
 				    $this->debugger->add('debug', JText::_('USER_DATA_FOUND'));
-				    if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
-					    $this->debugger->add('debug', JText::_('EMAIL_CONFLICT'));
-					    if ($update_email || $overwrite) {
-						    $this->debugger->add('debug', JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
-						    try {
-							    $this->updateEmail($userinfo, $existinguser, $status);
-							    $changed = true;
-						    } catch (Exception $e) {
-							    $this->debugger->add('error', JText::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage());
-						    }
-						    $this->mergeStatus($status);
-					    } else {
-						    //return a email conflict
-						    $this->debugger->add('debug', JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
 
-						    $this->debugger->set('userinfo', $existinguser);
-						    throw new RuntimeException(JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
-					    }
-				    }
-				    if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-					    // add password_clear to existinguser for the Joomla helper routines
-					    $existinguser->password_clear = $userinfo->password_clear;
-					    //check if the password needs to be updated
-					    try {
-						    $model = JFusionFactory::getAuth($this->getJname());
-						    if (!$model->checkPassword($existinguser)) {
-							    try {
-								    $this->updatePassword($userinfo, $existinguser, $status);
-								    $changed = true;
-							    } catch (Exception $e) {
-								    $this->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
-							    }
-							    $this->mergeStatus($status);
-						    } else {
-							    $this->debugger->add('debug', JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . JText::_('PASSWORD_VALID'));
-						    }
-					    } catch (Exception $e) {
-						    $this->debugger->add('error', JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . $e->getMessage());
-					    }
-				    } else {
-					    $this->debugger->add('debug', JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE'));
-				    }
-				    //check the blocked status
-				    if ($existinguser->block != $userinfo->block) {
-					    if ($update_block || $overwrite) {
-						    if ($userinfo->block) {
-							    //block the user
-							    try {
-								    $this->blockUser($userinfo, $existinguser, $status);
-								    $changed = true;
-							    } catch (Exception $e) {
-								    $this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
-							    }
-							    $this->mergeStatus($status);
-							    $changed = true;
-						    } else {
-							    //unblock the user
-							    try {
-								    $this->unblockUser($userinfo, $existinguser, $status);
-								    $changed = true;
-							    } catch (Exception $e) {
-								    $this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
-							    }
-							    $this->mergeStatus($status);
-						    }
-					    } else {
-						    //return a debug to inform we skipped this step
-						    $this->debugger->add('debug', JText::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
-					    }
-				    }
-				    //check the activation status
-				    if (isset($existinguser->activation)) {
-					    if ($existinguser->activation != $userinfo->activation) {
-						    if ($update_activation || $overwrite) {
-							    if ($userinfo->activation) {
-								    //inactive the user
-								    try {
-									    $this->inactivateUser($userinfo, $existinguser, $status);
-									    $changed = true;
-								    } catch (Exception $e) {
-									    $this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
-								    }
-								    $this->mergeStatus($status);
-							    } else {
-								    //activate the user
-								    try {
-									    $this->activateUser($userinfo, $existinguser, $status);
-									    $changed = true;
-								    } catch (Exception $e) {
-									    $this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
-								    }
-								    $this->mergeStatus($status);
-							    }
-						    } else {
-							    //return a debug to inform we skipped this step
-							    $this->debugger->add('debug', JText::_('SKIPPED_ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
-						    }
-					    }
-				    }
-				    //check for advanced usergroup sync
-				    if (!$userinfo->block && empty($userinfo->activation)) {
-					    if (JFusionFunction::updateUsergroups($this->getJname())) {
-						    try {
-							    $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $status);
-							    if ($usergroup_updated) {
-								    $changed = true;
-							    } else {
-								    $this->debugger->add('debug', JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID'));
-							    }
-						    } catch (Exception $e) {
-							    $this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
-						    }
-						    $this->mergeStatus($status);
-					    }
+				    if($this->doUpdateEmail($userinfo, $existinguser, $overwrite)) {
+					    $changed = true;
 				    }
 
-				    //Update the user language with the current used in Joomla or the one existing from an other plugin
-				    if (empty($userinfo->language)) {
-					    $user_lang = (!empty($user_params)) ? $user_params->get('language') : '';
-					    $userinfo->language = ($user_lang) ? $user_lang : JFactory::getLanguage()->getTag();
+				    if($this->doUpdatePassword($userinfo, $existinguser)) {
+					    $changed = true;
 				    }
-				    if (!empty($userinfo->language) && isset($existinguser->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
-					    try {
-						    $this->updateUserLanguage($userinfo, $existinguser, $status);
-						    $existinguser->language = $userinfo->language;
-						    $this->debugger->add('debug', JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
 
-						    $changed = true;
-					    } catch (Exception $e) {
-						    $this->debugger->add('error', JText::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
-					    }
-					    $this->mergeStatus($status);
-				    } else {
-					    //return a debug to inform we skipped this step
-					    $this->debugger->add('debug', JText::_('LANGUAGE_NOT_UPDATED'));
+				    if ($this->doUpdateBlock($userinfo, $existinguser, $overwrite)) {
+					    $changed = true;
+				    }
+
+				    if($this->doUpdateActivate($userinfo, $existinguser, $overwrite)) {
+					    $changed = true;
+				    }
+
+				    if($this->doUpdateUsergroup($userinfo, $existinguser)) {
+					    $changed = true;
+				    }
+
+				    if($this->doUserLanguage($userinfo, $existinguser)) {
+					    $changed = true;
 				    }
 
 				    if ($this->debugger->isEmpty('error')) {
@@ -354,28 +235,9 @@ class JFusionUser extends JFusionPlugin
 						    $this->debugger->set('action', 'unchanged');
 						    $this->debugger->set('userinfo', $existinguser);
 					    }
-				    } else {
-					    $this->debugger->set('action', 'error');
 				    }
 			    } else {
-				    $this->debugger->add('debug', JText::_('NO_USER_FOUND_CREATING_ONE'));
-				    //check activation and block status
-				    $create_inactive = $this->params->get('create_inactive', 1);
-				    $create_blocked = $this->params->get('create_blocked', 1);
-				    if ((empty($create_inactive) && !empty($userinfo->activation)) || (empty($create_blocked) && !empty($userinfo->block))) {
-					    //block user creation
-					    $this->debugger->add('debug', JText::_('SKIPPED_USER_CREATION'));
-					    $this->debugger->set('debug', 'unchanged');
-					    $this->debugger->set('userinfo', $existinguser);
-				    } else {
-					    $this->createUser($userinfo, $status);
-					    $this->mergeStatus($status);
-					    if ($this->debugger->isEmpty('error')) {
-						    $this->debugger->set('action', 'created');
-					    } else {
-						    $this->debugger->set('action', 'error');
-					    }
-				    }
+				    $this->doCreateUser($userinfo);
 			    }
 		    }
 	    } catch (Exception $e) {
@@ -384,6 +246,35 @@ class JFusionUser extends JFusionPlugin
 	    $status = $this->debugger->get();
         return $status;
     }
+
+	/**
+	 * @param stdClass $userinfo
+	 * @param stdClass $existinguser
+	 *
+	 * @return boolean return true if changed
+	 */
+	function doUpdateUsergroup($userinfo, &$existinguser)
+	{
+		$changed = false;
+		//check for advanced usergroup sync
+		if (!$userinfo->block && empty($userinfo->activation)) {
+			if (JFusionFunction::updateUsergroups($this->getJname())) {
+				$status = array('error' => array(), 'debug' => array());
+				try {
+					$usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $status);
+					if ($usergroup_updated) {
+						$changed = true;
+					} else {
+						$this->debugger->add('debug', JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID'));
+					}
+				} catch (Exception $e) {
+					$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+				}
+				$this->mergeStatus($status);
+			}
+		}
+		return $changed;
+	}
 
     /**
      * Function that determines if the usergroup needs to be updated and executes updateUsergroup if it does
@@ -403,11 +294,48 @@ class JFusionUser extends JFusionPlugin
         $changed = false;
         $usergroups = $this->getCorrectUserGroups($userinfo);
 		if (!$this->compareUserGroups($existinguser, $usergroups)) {
-            $this->updateUsergroup($userinfo, $existinguser, $status);
-            $changed = true;
+			$this->updateUsergroup($userinfo, $existinguser, $status);
+			$changed = true;
+			$this->mergeStatus($status);
         }
     	return $changed;
     }
+
+	/**
+	 * @param stdClass $userinfo
+	 * @param stdClass $existinguser
+	 *
+	 * @return boolean return true if changed
+	 */
+	function doUpdatePassword($userinfo, &$existinguser)
+	{
+		$changed = false;
+		if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
+			// add password_clear to existinguser for the Joomla helper routines
+			$existinguser->password_clear = $userinfo->password_clear;
+			//check if the password needs to be updated
+			try {
+				$model = JFusionFactory::getAuth($this->getJname());
+				if (!$model->checkPassword($existinguser)) {
+					try {
+						$status = array('error' => array(), 'debug' => array());
+						$this->updatePassword($userinfo, $existinguser, $status);
+						$changed = true;
+					} catch (Exception $e) {
+						$this->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
+					}
+					$this->mergeStatus($status);
+				} else {
+					$this->debugger->add('debug', JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . JText::_('PASSWORD_VALID'));
+				}
+			} catch (Exception $e) {
+				$this->debugger->add('error', JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . $e->getMessage());
+			}
+		} else {
+			$this->debugger->add('debug', JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE'));
+		}
+		return $changed;
+	}
 
     /**
      * Function that updates the user password
@@ -441,6 +369,42 @@ class JFusionUser extends JFusionPlugin
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
 
+
+	/**
+	 * @param stdClass $userinfo
+	 * @param stdClass $existinguser
+	 * @param          $overwrite
+	 *
+	 * @throws RuntimeException
+	 * @return boolean return true if changed
+	 */
+	function doUpdateEmail($userinfo, &$existinguser, $overwrite)
+	{
+		$changed = false;
+		if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
+			$this->debugger->add('debug', JText::_('EMAIL_CONFLICT'));
+			$update_email = $this->params->get('update_email', false);
+			if ($update_email || $overwrite) {
+				$this->debugger->add('debug', JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
+				try {
+					$status = array('error' => array(), 'debug' => array());
+					$this->updateEmail($userinfo, $existinguser, $status);
+					$changed = true;
+				} catch (Exception $e) {
+					$this->debugger->add('error', JText::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage());
+				}
+				$this->mergeStatus($status);
+			} else {
+				//return a email conflict
+				$this->debugger->add('debug', JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
+
+				$this->debugger->set('userinfo', $existinguser);
+				throw new RuntimeException(JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+			}
+		}
+		return $changed;
+	}
+
     /**
      * Function that updates the user email address
      * $status['error'] (contains any error messages)
@@ -472,6 +436,50 @@ class JFusionUser extends JFusionPlugin
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
+
+	/**
+	 * @param stdClass $userinfo
+	 * @param stdClass $existinguser
+	 * @param          $overwrite
+	 *
+	 * @return boolean return true if changed
+	 */
+	function doUpdateBlock($userinfo, &$existinguser, $overwrite)
+	{
+		$changed = false;
+		//check the blocked status
+		if ($existinguser->block != $userinfo->block) {
+			$update_block = $this->params->get('update_block', false);
+			if ($update_block || $overwrite) {
+				if ($userinfo->block) {
+					//block the user
+					try {
+						$status = array('error' => array(), 'debug' => array());
+						$this->blockUser($userinfo, $existinguser, $status);
+						$changed = true;
+					} catch (Exception $e) {
+						$this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
+					}
+					$this->mergeStatus($status);
+					$changed = true;
+				} else {
+					//unblock the user
+					try {
+						$status = array('error' => array(), 'debug' => array());
+						$this->unblockUser($userinfo, $existinguser, $status);
+						$changed = true;
+					} catch (Exception $e) {
+						$this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
+					}
+					$this->mergeStatus($status);
+				}
+			} else {
+				//return a debug to inform we skipped this step
+				$this->debugger->add('debug', JText::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+			}
+		}
+		return $changed;
+	}
 
     /**
      * Function that updates the blocks the user account
@@ -505,6 +513,51 @@ class JFusionUser extends JFusionPlugin
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
 
+
+	/**
+	 * @param stdClass $userinfo
+	 * @param stdClass $existinguser
+	 * @param          $overwrite
+	 *
+	 * @return boolean return true if changed
+	 */
+	function doUpdateActivate($userinfo, &$existinguser, $overwrite)
+	{
+		$changed = false;
+		//check the activation status
+		if (isset($existinguser->activation)) {
+			if ($existinguser->activation != $userinfo->activation) {
+				$update_activation = $this->params->get('update_activation', false);
+				if ($update_activation || $overwrite) {
+					if ($userinfo->activation) {
+						//inactive the user
+						try {
+							$status = array('error' => array(), 'debug' => array());
+							$this->inactivateUser($userinfo, $existinguser, $status);
+							$changed = true;
+						} catch (Exception $e) {
+							$this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
+						}
+						$this->mergeStatus($status);
+					} else {
+						//activate the user
+						try {
+							$status = array('error' => array(), 'debug' => array());
+							$this->activateUser($userinfo, $existinguser, $status);
+							$changed = true;
+						} catch (Exception $e) {
+							$this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
+						}
+						$this->mergeStatus($status);
+					}
+				} else {
+					//return a debug to inform we skipped this step
+					$this->debugger->add('debug', JText::_('SKIPPED_ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+				}
+			}
+		}
+		return $changed;
+	}
     /**
      * Function that activates the users account
      * $status['error'] (contains any error messages)
@@ -537,6 +590,36 @@ class JFusionUser extends JFusionPlugin
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
 
+
+	/**
+	 * @param stdClass $userinfo
+	 */
+	function doCreateUser($userinfo)
+	{
+		//check activation and block status
+		$create_inactive = $this->params->get('create_inactive', 1);
+		$create_blocked = $this->params->get('create_blocked', 1);
+		if ((empty($create_inactive) && !empty($userinfo->activation)) || (empty($create_blocked) && !empty($userinfo->block))) {
+			//block user creation
+			$this->debugger->add('debug', JText::_('SKIPPED_USER_CREATION'));
+			$this->debugger->set('debug', 'unchanged');
+			$this->debugger->set('userinfo', null);
+		} else {
+			$this->debugger->add('debug', JText::_('NO_USER_FOUND_CREATING_ONE'));
+			try {
+				$status = array('error' => array(), 'debug' => array());
+				$this->createUser($userinfo, $status);
+				$this->mergeStatus($status);
+				if ($this->debugger->isEmpty('error')) {
+					$this->debugger->set('action', 'created');
+				}
+			} catch (Exception $e) {
+				$this->debugger->add('error', JText::_('USER_CREATION_ERROR') . $e->getMessage());
+			}
+		}
+	}
+
+
     /**
      * Function that creates a new user account
      * $status['error'] (contains any error messages)
@@ -565,6 +648,43 @@ class JFusionUser extends JFusionPlugin
         $status['error'][] = JText::_('DELETE_FUNCTION_MISSING');
         return $status;
     }
+
+	/**
+	 * @param stdClass $userinfo
+	 * @param stdClass $existinguser
+	 *
+	 * @return boolean return true if changed
+	 */
+	function doUserLanguage($userinfo, &$existinguser)
+	{
+		$changed = false;
+		//Update the user language with the current used in Joomla or the one existing from an other plugin
+		if (empty($userinfo->language)) {
+			$user_lang = '';
+			if (!empty($userinfo->params)) {
+				$params = new JRegistry($userinfo->params);
+				$user_lang = $params->get('language');
+			}
+			$userinfo->language = !empty($user_lang) ? $user_lang : JFactory::getLanguage()->getTag();
+		}
+		if (!empty($userinfo->language) && isset($existinguser->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
+			try {
+				$status = array('error' => array(), 'debug' => array());
+				$this->updateUserLanguage($userinfo, $existinguser, $status);
+				$existinguser->language = $userinfo->language;
+				$this->debugger->add('debug', JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
+
+				$changed = true;
+			} catch (Exception $e) {
+				$this->debugger->add('error', JText::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
+			}
+			$this->mergeStatus($status);
+		} else {
+			//return a debug to inform we skipped this step
+			$this->debugger->add('debug', JText::_('LANGUAGE_NOT_UPDATED'));
+		}
+		return $changed;
+	}
 
     /**
      * Function that update the language of a user

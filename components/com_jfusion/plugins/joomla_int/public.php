@@ -159,7 +159,7 @@ class JFusionPublic_joomla_int extends JFusionPublic {
 		if ($existinguser) {
 			$userinfo->language = JFactory::getLanguage()->getTag();
 
-			$user->updateUserLanguage($userinfo, $existinguser, $status, $this->getJname());
+			$user->updateUserLanguage($userinfo, $existinguser, $status);
 		} else {
 			$status['debug'] = JText::_('NO_USER_DATA_FOUND');
 		}

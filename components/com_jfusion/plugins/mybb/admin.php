@@ -187,30 +187,24 @@ class JFusionAdmin_mybb extends JFusionAdmin
     }
 
     /**
-     * @return string|array
+     * @return string
      */
     function getDefaultUsergroup()
     {
-	    try {
-		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
-		    if ($usergroups !== null) {
-			    //we want to output the usergroup name
-			    $db = JFusionFactory::getDatabase($this->getJname());
+	    $group = '';
+	    if ($usergroups !== null) {
+		    //we want to output the usergroup name
+		    $db = JFusionFactory::getDatabase($this->getJname());
 
-			    $query = $db->getQuery(true)
-				    ->select('title')
-				    ->from('#__usergroups')
-				    ->where('gid = ' . (int)$usergroups);
+		    $query = $db->getQuery(true)
+			    ->select('title')
+			    ->from('#__usergroups')
+			    ->where('gid = ' . (int)$usergroups);
 
-			    $db->setQuery($query);
-			    $group = $db->loadResult();
-		    } else {
-			    $group = '';
-		    }
-	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-		    $group = '';
+		    $db->setQuery($query);
+		    $group = $db->loadResult();
 	    }
 	    return $group;
     }

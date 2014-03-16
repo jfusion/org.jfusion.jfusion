@@ -181,45 +181,40 @@ class JFusionAdmin_smf extends JFusionAdmin
     /**
      * get default user group
      *
-     * @return string|array object with default user group
+     * @return array object with default user group
      */
     function getDefaultUsergroup()
     {
-	    try {
-		    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 
-		    $group = '';
-		    if ($usergroup !== null) {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+	    $group = array();
+	    if ($usergroup !== null) {
+		    $db = JFusionFactory::getDatabase($this->getJname());
 
-			    if (isset($usergroup->groups)) {
-				    $groups = $usergroup->groups;
+		    if (isset($usergroup->groups)) {
+			    $groups = $usergroup->groups;
+		    } else {
+			    $groups = array();
+		    }
+
+		    $groups[] = $usergroup->defaultgroup;
+
+		    foreach($groups as $g) {
+			    if ($g != 0) {
+				    //we want to output the usergroup name
+
+				    $query = $db->getQuery(true)
+					    ->select('groupName')
+					    ->from('#__membergroups')
+					    ->where('ID_GROUP = ' . (int)$g);
+
+				    $db->setQuery($query);
+				    $group[] = $db->loadResult();
 			    } else {
-				    $groups = array();
-			    }
-
-			    $groups[] = $usergroup->defaultgroup;
-			    $group = array();
-			    foreach($groups as $g) {
-				    if ($g != 0) {
-					    //we want to output the usergroup name
-
-					    $query = $db->getQuery(true)
-						    ->select('groupName')
-						    ->from('#__membergroups')
-						    ->where('ID_GROUP = ' . (int)$g);
-
-					    $db->setQuery($query);
-					    $group[] = $db->loadResult();
-				    } else {
-					    $group[] = 'Default Usergroup';
-				    }
+				    $group[] = 'Default Usergroup';
 			    }
 		    }
-	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-		    $group = '';
-		}
+	    }
 	    return $group;
     }
 
