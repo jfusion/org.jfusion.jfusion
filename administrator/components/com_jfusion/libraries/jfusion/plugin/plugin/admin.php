@@ -141,7 +141,7 @@ class JFusionAdmin extends JFusionPlugin
 	    }
 
 	    try {
-		    $jdb = JFactory::getDBO();
+		    $jdb = JFusionFactory::getDBO();
 	    } catch (Exception $e) {
 		    throw new RuntimeException($this->getJname() . ' -> joomla_int ' . JText::_('NO_DATABASE') . ' : ' . $e->getMessage());
 	    }
@@ -204,7 +204,7 @@ class JFusionAdmin extends JFusionPlugin
 	 */
 	public final function updateStatus($status = 0) {
 		try {
-			$db = JFactory::getDBO();
+			$db = JFusionFactory::getDBO();
 			$query = $db->getQuery(true)
 				->update('#__jfusion')
 				->set('status = ' . $db->quote($status))
@@ -230,7 +230,7 @@ class JFusionAdmin extends JFusionPlugin
 	    $new_registration = $this->allowRegistration();
 
 	    //get the data about the JFusion plugins
-	    $db = JFactory::getDBO();
+	    $db = JFusionFactory::getDBO();
 
 	    $query = $db->getQuery(true)
 		    ->select('*')
@@ -391,7 +391,7 @@ class JFusionAdmin extends JFusionPlugin
     {
         $result = false;
         if ($itemid) {
-            $app = JFactory::getApplication();
+            $app = JFusionFactory::getApplication();
             $menus = $app->getMenu('site');
             $params = $menus->getParams($itemid);
             if ($params) {
@@ -454,7 +454,7 @@ JS;
 		$result = false;
 		try {
 			if (!empty($jname)) {
-				$db = JFactory::getDBO();
+				$db = JFusionFactory::getDBO();
 
 				if (isset($post['source_url'])) {
 					//check for trailing slash in URL, in order for us not to worry about it later

@@ -332,12 +332,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 $source_path = $this->params->get('source_path');
                 $baseURL = $jfdata->baseURL;
                 $integratedURL = $jfdata->integratedURL;
-                $config = JFactory::getConfig();
+                $config = JFusionFactory::getConfig();
                 $vbsefenabled = $config->get('sef');
                 $hookFile = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
                 if ($vbsefmode) {
                     //need to set the base tag as vB JS/ajax requires it to function
-                    $document = JFactory::getDocument();
+                    $document = JFusionFactory::getDocument();
                     $document->setBase($jfdata->baseURL);
                 }
                 //get the jname to be used in the hook file
@@ -368,19 +368,19 @@ class JFusionPublic_vbulletin extends JFusionPublic
                         } else {
                             if ($r == 'sendmessage.php') {
                                 //only redirect if sending an IM
-                                $do = JFactory::getApplication()->input->get('do');
+                                $do = JFusionFactory::getApplication()->input->get('do');
                                 if ($do != 'im') {
                                     continue;
                                 }
                             }
                             $url = $integratedURL . substr($url, strpos($url, $r));
                         }
-                        $mainframe = JFactory::getApplication();
+                        $mainframe = JFusionFactory::getApplication();
                         $mainframe->redirect($url);
                     }
                 }
                 //get the filename
-                $jfile = JFactory::getApplication()->input->get('jfile');
+                $jfile = JFusionFactory::getApplication()->input->get('jfile');
                 if (!$jfile) {
                     //use the default index.php
                     $jfile = 'index.php';
@@ -433,7 +433,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $fullURL = $data->fullURL;
         $integratedURL = $data->integratedURL;
         $vbsefmode = $this->params->get('sefmode', 0);
-        $config = JFactory::getConfig();
+        $config = JFusionFactory::getConfig();
         $vbsefenabled = $config->get('sef');
         //fix for form actions
         //cannot use preg_replace here because it adds unneeded slashes which messes up JS
@@ -486,7 +486,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $fullURL = $data->fullURL;
         $integratedURL = $data->integratedURL;
         $vbsefmode = $this->params->get('sefmode', 0);
-        $config = JFactory::getConfig();
+        $config = JFusionFactory::getConfig();
         $vbsefenabled = $config->get('sef');
         $js = '<script type="text/javascript">';
         $js .= <<<JS
@@ -518,10 +518,11 @@ JS;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    //let's get the jfile
-		    $jfile = JFactory::getApplication()->input->get('jfile');
+		    $mainframe = JFusionFactory::getApplication();
+		    $jfile = $mainframe->input->get('jfile');
 		    //we are viewing a forum
-		    if (JFactory::getApplication()->input->get('f', false) !== false) {
-			    $fid = JFactory::getApplication()->input->get('f');
+		    if ($mainframe->input->get('f', false) !== false) {
+			    $fid = $mainframe->input->get('f');
 
 			    $query = $db->getQuery(true)
 				    ->select('title, parentlist, parentid')
@@ -553,8 +554,8 @@ JS;
 				    $crumb->url = 'forumdisplay.php?f=' . $fid;
 				    $pathway[] = $crumb;
 			    }
-		    } elseif (JFactory::getApplication()->input->get('t', false) !== false) {
-			    $tid = JFactory::getApplication()->input->get('t');
+		    } elseif ($mainframe->input->get('t', false) !== false) {
+			    $tid = $mainframe->input->get('t');
 
 			    $query = $db->getQuery(true)
 				    ->select('t.title AS thread, f.title AS forum, f.forumid, f.parentid, f.parentlist')
@@ -591,8 +592,8 @@ JS;
 			    $crumb->title = $result->thread;
 			    $crumb->url = 'showthread.php?t=' . $tid;
 			    $pathway[] = $crumb;
-		    } elseif (JFactory::getApplication()->input->get('p', false) !== false) {
-			    $pid = JFactory::getApplication()->input->get('p');
+		    } elseif ($mainframe->input->get('p', false) !== false) {
+			    $pid = $mainframe->input->get('p');
 
 			    $query = $db->getQuery(true)
 				    ->select('t.title AS thread, t.threadid, f.title AS forum, f.forumid, f.parentid, f.parentlist')
@@ -629,10 +630,10 @@ JS;
 			    $crumb->title = $result->thread;
 			    $crumb->url = 'showthread.php?t=' . $result->threadid;
 			    $pathway[] = $crumb;
-		    } elseif (JFactory::getApplication()->input->get('u', false) !== false) {
+		    } elseif ($mainframe->input->get('u', false) !== false) {
 			    if ($jfile == 'member.php') {
 				    // we are viewing a member's profile
-				    $uid = JFactory::getApplication()->input->get('u');
+				    $uid = $mainframe->input->get('u');
 				    $crumb = new stdClass();
 				    $crumb->title = 'Members List';
 				    $crumb->url = 'memberslist.php';
@@ -655,8 +656,8 @@ JS;
 			    $crumb->title = 'Search';
 			    $crumb->url = 'search.php';
 			    $pathway[] = $crumb;
-			    if (JFactory::getApplication()->input->get('do', false) !== false) {
-				    $do = JFactory::getApplication()->input->get('do');
+			    if ($mainframe->input->get('do', false) !== false) {
+				    $do = $mainframe->input->get('do');
 				    if ($do == 'getnew') {
 					    $crumb = new stdClass();
 					    $crumb->title = 'New Posts';
@@ -688,7 +689,7 @@ JS;
 			    $crumb->title = 'User Control Panel';
 			    $crumb->url = 'usercp.php';
 			    $pathway[] = $crumb;
-			    if (JFactory::getApplication()->input->get('do', false) !== false) {
+			    if ($mainframe->input->get('do', false) !== false) {
 				    $crumb = new stdClass();
 				    $crumb->title = 'Your Profile';
 				    $crumb->url = 'profile.php?do=editprofile';
@@ -699,7 +700,7 @@ JS;
 			    $crumb->title = 'User Control Panel';
 			    $crumb->url = 'usercp.php';
 			    $pathway[] = $crumb;
-			    if (JFactory::getApplication()->input->get('do', false) !== false) {
+			    if ($mainframe->input->get('do', false) !== false) {
 				    $crumb = new stdClass();
 				    $crumb->title = 'Moderator Tasks';
 				    $crumb->url = 'moderation.php';
@@ -886,7 +887,7 @@ JS;
             $jfile = basename($url_details['path']);
         }
 
-        $actionURL = JFusionFunction::routeURL($jfile, JFactory::getApplication()->input->getInt('Itemid'));
+        $actionURL = JFusionFunction::routeURL($jfile, JFusionFactory::getApplication()->input->getInt('Itemid'));
         $replacement = 'action=\'' . $actionURL . '\'' . $extra . '>';
 
         unset($url_variables['option']);

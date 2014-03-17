@@ -61,10 +61,6 @@ class jfusionViewsyncerrordetails extends JViewLegacy
         $document->addStyleSheet('templates/' . $template . '/css/general.css');
         $css = 'table.jfusionlist, table.jfusiontable{ font-size:11px; }';
         $document->addStyleDeclaration($css);
-        /**
-         *     Load usersync and debug library
-         */
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
 
         //check to see if the sync has already started
         $syncid = JFactory::getApplication()->input->get('syncid');

@@ -655,8 +655,6 @@ class JFusionFunction
      */
     public static function parseCode($text, $to, $options = array())
     {
-	    require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.parse.php');
-
 	    $parser = new JFusionParse();
 	    return $parser->parseCode($text, $to, $options);
     }

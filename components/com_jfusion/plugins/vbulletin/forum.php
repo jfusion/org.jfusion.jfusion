@@ -122,7 +122,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
         $useContentDate = $dbparams->get('use_content_created_date', false);
         if ($useContentDate) {
-            $timezone = JFactory::getConfig()->get('offset');
+            $timezone = JFusionFactory::getConfig()->get('offset');
             $timestamp = strtotime($contentitem->created);
             //undo Joomla timezone offset
             $timestamp += ($timezone * 3600);

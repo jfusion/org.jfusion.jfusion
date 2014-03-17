@@ -323,7 +323,8 @@ class executeJFusionHook
                     $show['nojs_link'] = $url;
                     $show['nojs_link'].= (substr($url, -1) != '/') ? '/nojs,1/' : 'nojs,1/';
                 } else {
-                    $jfile = (JFactory::getApplication()->input->get('jfile', false)) ? JFactory::getApplication()->input->get('jfile') : 'index.php';
+	                $jfile = JFusionFactory::getApplication()->input->get('jfile', false);
+                    $jfile = ($jfile) ? $jfile : 'index.php';
                     $show['nojs_link'] = $jfile . '?nojs=1';
                 }
             }
@@ -399,7 +400,7 @@ class executeJFusionHook
         $testURL = (substr($baseURL, -1) == '/') ? substr($baseURL, 0, -1) : $baseURL;
         if (strpos(strtolower($this->vars['url']), strtolower($testURL)) === false) {
             $url = basename($this->vars);
-            $url = JFusionFunction::routeURL($url, JFactory::getApplication()->input->getInt('Itemid'));
+            $url = JFusionFunction::routeURL($url, JFusionFactory::getApplication()->input->getInt('Itemid'));
             $this->vars = $url;
         }
         //convert &amp; to & so the redirect is correct
@@ -515,7 +516,7 @@ class executeJFusionHook
         global $vbsefmode, $vbsefenabled, $baseURL;
         static $profileurlSet;
         if (!empty($this->vars['profileurl']) && $profileurlSet !== true) {
-            $uid = JFactory::getApplication()->input->get('u');
+            $uid = JFusionFactory::getApplication()->input->get('u');
             if ($vbsefenabled && $vbsefmode) {
                 $this->vars['profileurl'] = str_replace('member.php?u=' . $uid, '', $this->vars['profileurl']);
             } else {
@@ -541,7 +542,7 @@ class executeJFusionHook
         $testURL = (substr($baseURL, -1) == '/') ? substr($baseURL, 0, -1) : $baseURL;
         if (strpos(strtolower($this->vars['url']), strtolower($testURL)) === false) {
             $url = basename($this->vars['url']);
-            $url = JFusionFunction::routeURL($url, JFactory::getApplication()->input->getInt('Itemid'));
+            $url = JFusionFunction::routeURL($url, JFusionFactory::getApplication()->input->getInt('Itemid'));
 
             //convert &amp; to & so the redirect is correct
             $url = str_replace('&amp;', '&', $url);

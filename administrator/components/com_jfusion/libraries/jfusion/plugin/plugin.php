@@ -46,8 +46,8 @@ class JFusionPlugin
 	 */
 	function __construct()
 	{
-		JFactory::getLanguage()->load('com_jfusion', JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
-		JFactory::getLanguage()->load('com_jfusion', JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
+		JFusionFactory::getLanguage()->load('com_jfusion', JFUSIONPATH_ADMINISTRATOR);
+		JFusionFactory::getLanguage()->load('com_jfusion', JFUSIONPATH_SITE);
 
 		$jname = $this->getJname();
 		if (!empty($jname)) {
@@ -56,7 +56,7 @@ class JFusionPlugin
 			$this->debugger = &JFusionFactory::getDebugger($jname);
 
 			if (!isset(static::$language[$jname])) {
-				$db = JFactory::getDBO();
+				$db = JFusionFactory::getDBO();
 				$query = $db->getQuery(true)
 					->select('name, original_name')
 					->from('#__jfusion')
@@ -70,7 +70,7 @@ class JFusionPlugin
 					foreach($plugins as $plugin) {
 						$name = $plugin->original_name ? $plugin->original_name : $plugin->name;
 						if (!$loaded) {
-							JFactory::getLanguage()->load('com_jfusion.plg_' . $name, JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
+							JFusionFactory::getLanguage()->load('com_jfusion.plg_' . $name, JFUSIONPATH_ADMINISTRATOR);
 							$loaded = true;
 						}
 						static::$language[$jname] = true;
@@ -134,7 +134,7 @@ class JFusionPlugin
 
 		if (!empty($jname)) {
 			if (!isset(static::$status[$jname])) {
-				$db = JFactory::getDBO();
+				$db = JFusionFactory::getDBO();
 				$query = $db->getQuery(true)
 					->select('status')
 					->from('#__jfusion')

@@ -362,7 +362,7 @@ HTML;
 	 */
 	public function getAsHtml($key = null, $loadresources = true) {
 		if ($loadresources) {
-			$document = JFactory::getDocument();
+			$document = JFusionFactory::getDocument();
 			$document->addStyleSheet(JUri::root(true) . '/components/com_jfusion/css/debugger.css');
 			$document->addScript(JUri::root(true) . '/components/com_jfusion/js/debugger.js');
 		}

@@ -222,19 +222,20 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getBuffer(&$data)
     {
-        $jFusion_Route = JFactory::getApplication()->input->get('jFusion_Route', null, 'raw');
+	    $mainframe = JFusionFactory::getApplication();
+        $jFusion_Route = $mainframe->input->get('jFusion_Route', null, 'raw');
         if ($jFusion_Route) {
         	$jFusion_Route = unserialize($jFusion_Route);
         	foreach ($jFusion_Route as $value) {
         		if (stripos($value, 'action') === 0) {
 	        		list ($key, $value) = explode(',', $value);
 	        		if ($key == 'action') {
-				        JFactory::getApplication()->input->set('action', $value);
+				        $mainframe->input->set('action', $value);
 	        		}
         		}
         	}
         }
-        $action = JFactory::getApplication()->input->get('action');
+        $action = $mainframe->input->get('action');
         if ($action == 'register' || $action == 'reminder') {
             $master = JFusionFunction::getMaster();
             if ($master->name != $this->getJname()) {
@@ -262,7 +263,6 @@ class JFusionPublic_smf extends JFusionPublic
 	        }
 
             //destroy the Joomla session
-            $mainframe = JFactory::getApplication();
             $mainframe->logout();
             $session = JFactory::getSession();
             $session->close();
@@ -277,8 +277,8 @@ class JFusionPublic_smf extends JFusionPublic
         if ($action == 'login2') {
             //uncommented out the code below, as the smf session is needed to validate the password, which can not be done unless SSI.php is required
             //get the submitted user details
-            //$username = JFactory::getApplication()->input->get('user');
-            //$password = JFactory::getApplication()->input->get('hash_passwrd');
+            //$username = JFusionFactory::getApplication()->input->get('user');
+            //$password = JFusionFactory::getApplication()->input->get('hash_passwrd');
             //get the userinfo directly from SMF
             //$JFusionUser = JFusionFactory::getUser($this->getJname());
             //$userinfo = $JFusionUser->getUser($username);
@@ -289,7 +289,7 @@ class JFusionPublic_smf extends JFusionPublic
             //}
         }
 		if ($action == 'verificationcode') {
-			JFactory::getApplication()->input->set('format', null);
+			$mainframe->input->set('format', null);
 		}
         
         // We're going to want a few globals... these are all set later.
@@ -335,7 +335,7 @@ class JFusionPublic_smf extends JFusionPublic
         if (!$rs) {
             JFusionFunction::raiseWarning('Could not find SMF in the specified directory', $this->getJname());
         }
-        $document = JFactory::getDocument();
+        $document = JFusionFactory::getDocument();
         $document->addScript(JFusionFunction::getJoomlaURL() . JFUSION_PLUGIN_DIR_URL . $this->getJname() . '/js/script.js');
     }
 
@@ -429,7 +429,7 @@ class JFusionPublic_smf extends JFusionPublic
         static $regex_header, $replace_header;
         if (!$regex_header || !$replace_header) {
             $joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
-            $baseURLnoSef = 'index.php?option=com_jfusion&Itemid=' . JFactory::getApplication()->input->getInt('Itemid');
+            $baseURLnoSef = 'index.php?option=com_jfusion&Itemid=' . JFusionFactory::getApplication()->input->getInt('Itemid');
             if (substr($joomla_url, -1) == '/') {
                 $baseURLnoSef = $joomla_url . $baseURLnoSef;
             } else {
@@ -482,7 +482,7 @@ class JFusionPublic_smf extends JFusionPublic
 	        } else {
 	            $sefmode = $this->params->get('sefmode');
 	            if ($sefmode == 1) {
-	                $url = JFusionFunction::routeURL($q, JFactory::getApplication()->input->getInt('Itemid'));
+	                $url = JFusionFunction::routeURL($q, JFusionFactory::getApplication()->input->getInt('Itemid'));
 	            } else {
 	                //we can just append both variables
 	                $url = $baseURL . $q;
@@ -521,7 +521,7 @@ class JFusionPublic_smf extends JFusionPublic
 		$baseURL = $this->data->baseURL;    	
         //JFusionFunction::raiseWarning($url, $this->getJname());
         $url = htmlspecialchars_decode($url);
-        $Itemid = JFactory::getApplication()->input->getInt('Itemid');
+        $Itemid = JFusionFactory::getApplication()->input->getInt('Itemid');
         $extra = stripslashes($extra);
         $url = str_replace(';', '&amp;', $url);
         if (substr($baseURL, -1) != '/') {
@@ -619,7 +619,7 @@ class JFusionPublic_smf extends JFusionPublic
                 if (!empty($query)) {
                     $redirectURL.= '?' . $query;
                 }
-                $redirectURL = JFusionFunction::routeURL($redirectURL, JFactory::getApplication()->input->getInt('Itemid'));
+                $redirectURL = JFusionFunction::routeURL($redirectURL, JFusionFactory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $redirectURL = $baseURL . $jfile;
@@ -645,11 +645,12 @@ class JFusionPublic_smf extends JFusionPublic
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    list ($board_id) = explode('.', JFactory::getApplication()->input->get('board'), 1);
-		    list ($topic_id) = explode('.', JFactory::getApplication()->input->get('topic'), 1);
-		    list ($action) = explode(';', JFactory::getApplication()->input->get('action'), 1);
+			$mainframe = JFusionFactory::getApplication();
+		    list ($board_id) = explode('.', $mainframe->input->get('board'), 1);
+		    list ($topic_id) = explode('.', $mainframe->input->get('topic'), 1);
+		    list ($action) = explode(';', $mainframe->input->get('action'), 1);
 
-		    $msg = JFactory::getApplication()->input->get('msg');
+		    $msg = $mainframe->input->get('msg');
 
 		    $query = $db->getQuery(true)
 			    ->select('ID_TOPIC,ID_BOARD, subject')
@@ -706,7 +707,7 @@ class JFusionPublic_smf extends JFusionPublic
 		    switch ($action) {
 			    case 'post':
 				    $path = new stdClass();
-				    if ( JFactory::getApplication()->input->get('board')) {
+				    if ( $mainframe->input->get('board')) {
 					    $path->title = 'Modify Toppic ( Start new topic )';
 					    $path->url = 'index.php?action=post&board=' . $board_id . '.0';;
 				    } else if ($msg) {
@@ -725,23 +726,23 @@ class JFusionPublic_smf extends JFusionPublic
 				    $pathway[] = $path;
 
 				    $path = new stdClass();
-				    if ( JFactory::getApplication()->input->get('sa') == 'send' ) {
+				    if ( $mainframe->input->get('sa') == 'send' ) {
 					    $path->title = 'New Message';
 					    $path->url = 'index.php?action=pm&sa=send';
 					    $pathway[] = $path;
-				    } elseif ( JFactory::getApplication()->input->get('sa') == 'search' ) {
+				    } elseif ( $mainframe->input->get('sa') == 'search' ) {
 					    $path->title = 'Search Messages';
 					    $path->url = 'index.php?action=pm&sa=search';
 					    $pathway[] = $path;
-				    } elseif ( JFactory::getApplication()->input->get('sa') == 'prune' ) {
+				    } elseif ( $mainframe->input->get('sa') == 'prune' ) {
 					    $path->title = 'Prune Messages';
 					    $path->url = 'index.php?action=pm&sa=prune';
 					    $pathway[] = $path;
-				    } elseif ( JFactory::getApplication()->input->get('sa') == 'manlabels' ) {
+				    } elseif ( $mainframe->input->get('sa') == 'manlabels' ) {
 					    $path->title = 'Manage Labels';
 					    $path->url = 'index.php?action=pm&sa=manlabels';
 					    $pathway[] = $path;
-				    } elseif ( JFactory::getApplication()->input->get('f') == 'outbox' ) {
+				    } elseif ( $mainframe->input->get('f') == 'outbox' ) {
 					    $path->title = 'Outbox';
 					    $path->url = 'index.php?action=pm&f=outbox';
 					    $pathway[] = $path;

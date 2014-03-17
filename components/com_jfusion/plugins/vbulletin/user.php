@@ -178,6 +178,7 @@ class JFusionUser_vbulletin extends JFusionUser
 	{
 		$status = array('error' => array(), 'debug' => array());
 		try {
+			$mainframe = JFusionFactory::getApplication();
 			$cookie_prefix = $this->params->get('cookie_prefix');
 			$vbversion = $this->helper->getVersion();
 			if ((int) substr($vbversion, 0, 1) > 3) {
@@ -192,12 +193,12 @@ class JFusionUser_vbulletin extends JFusionUser
 			$httponly = $this->params->get('httponly', true);
 			$timenow = time();
 
-			$session_user = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
+			$session_user = $mainframe->input->cookie->get($cookie_prefix . 'userid', '');
 			if (empty($session_user)) {
 				$status['debug'][] = JText::_('VB_COOKIE_USERID_NOT_FOUND');
 			}
 
-			$session_hash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
+			$session_hash = $mainframe->input->cookie->get($cookie_prefix . 'sessionhash', '');
 			if (empty($session_hash)) {
 				$status['debug'][] = JText::_('VB_COOKIE_HASH_NOT_FOUND');
 			}
@@ -318,9 +319,10 @@ class JFusionUser_vbulletin extends JFusionUser
 				$db->setQuery($query);
 				$sessionhash = $db->loadResult();
 
-				$cookie_sessionhash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
-				$cookie_userid = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
-				$cookie_password = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'password', '');
+				$mainframe = JFusionFactory::getApplication();
+				$cookie_sessionhash = $mainframe->input->cookie->get($cookie_prefix . 'sessionhash', '');
+				$cookie_userid = $mainframe->input->cookie->get($cookie_prefix . 'userid', '');
+				$cookie_password = $mainframe->input->cookie->get($cookie_prefix . 'password', '');
 
 				if (!empty($cookie_userid) && $cookie_userid == $userinfo->userid && !empty($cookie_password) && $cookie_password == $passwordhash) {
 					$vbcookieuser = true;
@@ -669,7 +671,7 @@ class JFusionUser_vbulletin extends JFusionUser
 
 				//set the timezone
 				if (!isset($userinfo->timezone)) {
-					$config = JFactory::getConfig();
+					$config = JFusionFactory::getConfig();
 					$userinfo->timezone = $config->get('offset', 'UTC');
 				}
 
@@ -869,15 +871,16 @@ class JFusionUser_vbulletin extends JFusionUser
 					$cookie_prefix .= '_';
 				}
 			}
-			$cookie_sessionhash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
-			$cookie_userid = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
-			$cookie_password = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'password', '');
+			$mainframe = JFusionFactory::getApplication();
+			$cookie_sessionhash = $mainframe->input->cookie->get($cookie_prefix . 'sessionhash', '');
+			$cookie_userid = $mainframe->input->cookie->get($cookie_prefix . 'userid', '');
+			$cookie_password = $mainframe->input->cookie->get($cookie_prefix . 'password', '');
 			$JUser = JFactory::getUser();
 			if (JPluginHelper::isEnabled('system', 'remember')) {
 				jimport('joomla.utilities.utility');
 				$hash = JFusionFunction::getHash('JLOGIN_REMEMBER');
 
-				$joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '', 'raw');
+				$joomla_persistant_cookie = $mainframe->input->cookie->get($hash, '', 'raw');
 			} else {
 				$joomla_persistant_cookie = '';
 			}
@@ -1192,7 +1195,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				}
 			}
 
-			$mainframe = JFactory::getApplication();
+			$mainframe = JFusionFactory::getApplication();
 			if (!$mainframe->isAdmin()) {
 				//login to vB
 				$options = array();

@@ -494,7 +494,7 @@ HTML;
 	function toggleHook($hook, $action)
 	{
 		try {
-			$params = JFactory::getApplication()->input->get('params', array(), 'array');
+			$params = JFusionFactory::getApplication()->input->get('params', array(), 'array');
 			$itemid = $params['plugin_itemid'];
 			$db = JFusionFactory::getDatabase($this->getJname());
 			if ($hook != 'framelessoptimization') {
@@ -621,7 +621,7 @@ HTML;
 		} elseif ($plugin == 'redirect') {
 			$php.= "if (!defined('_JEXEC')){\n";
 			$sefmode = $this->params->get('sefmode', 0);
-			$config = JFactory::getConfig();
+			$config = JFusionFactory::getConfig();
 			$sef = $config->get('sef');
 			//get the baseUR
 			$app = JFactory::getApplication('site');
@@ -675,7 +675,7 @@ HTML;
 		$php.= "if (file_exists(JFUSION_VB_HOOK_FILE)) {\n";
 		$php.= "include_once(JFUSION_VB_HOOK_FILE);\n";
 		$php.= "\$val = '$plugin';\n";
-		$secret = $this->params->get('vb_secret', JFactory::getConfig()->get('secret'));
+		$secret = $this->params->get('vb_secret', JFusionFactory::getConfig()->get('secret'));
 		$php.= "\$JFusionHook = new executeJFusionHook('init_startup', \$val, '$secret');\n";
 
 		$version = $this->helper->getVersion();

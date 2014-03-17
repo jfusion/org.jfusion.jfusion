@@ -20,7 +20,7 @@ if (!class_exists('JFusionLoader'))
 // Setup the autoloaders.
 JFusionLoader::setup();
 
-JFusionLoader::register('JFusionPlugin', JFUSIONPATH_PLATFORM . '/jfusion/plugin/plugin.php');
+JFusionLoader::register('JFusionPublic', JFUSIONPATH_PLATFORM . '/jfusion/plugin/plugin/public.php');
 JFusionLoader::register('JFusionAdmin', JFUSIONPATH_PLATFORM . '/jfusion/plugin/plugin/admin.php');
 JFusionLoader::register('JFusionAuth', JFUSIONPATH_PLATFORM . '/jfusion/plugin/plugin/auth.php');
 JFusionLoader::register('JFusionForum', JFUSIONPATH_PLATFORM . '/jfusion/plugin/plugin/forum.php');

@@ -123,9 +123,9 @@ class JFusionHelper_gallery2 extends JFusionPlugin
      * @return string
      */
     function getEmbedUri($itemId = null) {
-        $mainframe = JFactory::getApplication();
+        $mainframe = JFusionFactory::getApplication();
         $router = $mainframe->getRouter();
-        $id = JFactory::getApplication()->input->get('Itemid', -1);
+        $id = $mainframe->input->get('Itemid', -1);
         if ($itemId !== null) {
             $id = $itemId;
         }
@@ -147,7 +147,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
             $uri = $path;
         }
         if ($router->getMode() == JROUTER_MODE_SEF) {
-            if (JFactory::getConfig()->get('sef_suffix')) {
+            if (JFusionFactory::getConfig()->get('sef_suffix')) {
                 $uri = str_replace('.html', '', $uri);
             }
             if (!strpos($uri, '?')) {
@@ -193,7 +193,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
 	     * @var $it GalleryItem
 	     */
         $entities = array();
-        $mainframe = JFactory::getApplication();
+        $mainframe = JFusionFactory::getApplication();
         $urlGenerator = $gallery->getUrlGenerator();
         $itemId = (int)GalleryUtilities::getRequestVariables('itemId');
         $userId = $gallery->getActiveUserId();
@@ -233,7 +233,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
             }
         }
         $breadcrumbs = $mainframe->getPathWay();
-        $document = JFactory::getDocument();
+        $document = JFusionFactory::getDocument();
         /* check permissions and push */
         $i = 1;
         $limit = count($parentSequence);

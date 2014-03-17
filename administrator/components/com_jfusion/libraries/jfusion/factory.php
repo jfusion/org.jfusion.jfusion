@@ -16,8 +16,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'defines.php';
-require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php');
 /**
  * Custom parameter class that can save array values
  *
@@ -42,6 +40,54 @@ jimport('joomla.html.parameter');
  */
 class JFusionFactory
 {
+	/**
+	 * Global database object
+	 *
+	 * @var    JDatabaseDriver
+	 * @since  11.1
+	 */
+	public static $database = null;
+
+	/**
+	 * Global application object
+	 *
+	 * @var    JApplicationCms
+	 * @since  11.1
+	 */
+	public static $application = null;
+
+	/**
+	 * Global configuration object
+	 *
+	 * @var    JRegistry
+	 * @since  11.1
+	 */
+	public static $config = null;
+
+	/**
+	 * Global document object
+	 *
+	 * @var    JDocument
+	 * @since  11.1
+	 */
+	public static $document = null;
+
+	/**
+	 * Global language object
+	 *
+	 * @var    JLanguage
+	 * @since  11.1
+	 */
+	public static $language = null;
+
+	/**
+	 * Container for JDate instances
+	 *
+	 * @var    array
+	 * @since  11.3
+	 */
+	public static $dates = array();
+
     /**
      * Gets an Fusion front object
      *
@@ -265,7 +311,7 @@ class JFusionFactory
     {
         jimport('joomla.html.parameter');
         //get the current parameters from the jfusion table
-        $db = JFactory::getDBO();
+        $db = self::getDBO();
 
 	    $query = $db->getQuery(true)
 		    ->select('params')
@@ -297,11 +343,8 @@ class JFusionFactory
     {
         //check to see if joomla DB is requested
         if ($jname == 'joomla_int') {
-            $db = JFactory::getDBO();
+            $db = self::getDBO();
         } else {
-            //get the debug configuration setting
-	        $conf = JFactory::getConfig();
-            $debug = $conf->get('debug');
             //get config values
             $params = static::getParams($jname);
             //prepare the data for creating a database connection
@@ -327,8 +370,9 @@ class JFusionFactory
 	            //add support for UTF8
 	            $db->setQuery('SET names ' . $db->quote($charset));
 	            $db->execute();
-	            //support debugging
-	            $db->setDebug($debug);
+
+	            //get the debug configuration setting
+	            $db->setDebug(JFusionFactory::getConfig()->get('debug'));
             }
         }
         return $db;
@@ -349,7 +393,7 @@ class JFusionFactory
 	    if (!isset($instances)) {
 		    $instances = array();
 	    }
-	    $db = JFactory::getDBO();
+	    $db = JFusionFactory::getDBO();
 
 	    $query = $db->getQuery(true)
 		    ->select('id, name, status, dual_login')
@@ -448,9 +492,6 @@ class JFusionFactory
     	static $instance;
     	//only create a new plugin instance if it has not been created before
     	if (!isset($instance)) {
-    		//  load the Abstract Public Class
-    		require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.cookie.php');
-
 		    $instance = new JFusionCookies(static::getParams('joomla_int')->get('secret'));
     	}
     	return $instance;
@@ -469,10 +510,206 @@ class JFusionFactory
 			$instances = array();
 		}
 
-		require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debugger.php');
 		if (!isset($instances[$jname])) {
 			$instances[$jname] = new JFusionDebugger();
 		}
 		return $instances[$jname];
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * Get a database object.
+	 *
+	 * Returns the global {@link JDatabaseDriver} object, only creating it if it doesn't already exist.
+	 *
+	 * @return  JDatabaseDriver
+	 *
+	 * @see     JDatabaseDriver
+	 * @since   11.1
+	 */
+	public static function getDbo()
+	{
+		if (!self::$database)
+		{
+			/*
+			 * TODO CREATE DBO
+			 */
+		}
+		return self::$database;
+	}
+
+	/**
+	 * Get a application object.
+	 *
+	 * Returns the global {@link JApplicationCms} object, only creating it if it doesn't already exist.
+	 *
+	 * @param   mixed   $id      A client identifier or name.
+	 * @param   array   $config  An optional associative array of configuration settings.
+	 * @param   string  $prefix  Application prefix
+	 *
+	 * @return  JApplicationCms object
+	 *
+	 * @see     JApplication
+	 * @since   11.1
+	 * @throws  Exception
+	 */
+	public static function getApplication($id = null, array $config = array(), $prefix = 'J')
+	{
+		if (!self::$application)
+		{
+			throw new Exception('Application Instantiation Error', 500);
+			/**
+			 * TODO CREATE Application
+			 */
+		}
+
+		return self::$application;
+	}
+
+	/**
+	 * Get a configuration object
+	 *
+	 * Returns the global {@link JRegistry} object, only creating it if it doesn't already exist.
+	 *
+	 * @param   string  $file       The path to the configuration file
+	 * @param   string  $type       The type of the configuration file
+	 * @param   string  $namespace  The namespace of the configuration file
+	 *
+	 * @return  JRegistry
+	 *
+	 * @see     JRegistry
+	 * @since   11.1
+	 */
+	public static function getConfig($file = null, $type = 'PHP', $namespace = '')
+	{
+		if (!self::$config)
+		{
+			/**
+			 * TODO CREATE Config
+			 */
+		}
+		return self::$config;
+	}
+
+	/**
+	 * Get a document object.
+	 *
+	 * Returns the global {@link JDocument} object, only creating it if it doesn't already exist.
+	 *
+	 * @return  JDocument object
+	 *
+	 * @see     JDocument
+	 * @since   11.1
+	 */
+	public static function getDocument()
+	{
+		if (!self::$document)
+		{
+			/**
+			 * TODO CREATE Config
+			 */
+		}
+
+		return self::$document;
+	}
+
+	/**
+	 * Get a language object.
+	 *
+	 * Returns the global {@link JLanguage} object, only creating it if it doesn't already exist.
+	 *
+	 * @return  JLanguage object
+	 *
+	 * @see     JLanguage
+	 * @since   11.1
+	 */
+	public static function getLanguage()
+	{
+		if (!self::$language)
+		{
+			/**
+			 * TODO CREATE Config
+			 */
+		}
+		return self::$language;
+	}
+
+	/**
+	 * Return the {@link JDate} object
+	 *
+	 * @param   mixed  $time      The initial time for the JDate object
+	 * @param   mixed  $tzOffset  The timezone offset.
+	 *
+	 * @return  JDate object
+	 *
+	 * @see     JDate
+	 * @since   11.1
+	 */
+	public static function getDate($time = 'now', $tzOffset = null)
+	{
+		static $classname;
+		static $mainLocale;
+
+		$language = self::getLanguage();
+		$locale = $language->getTag();
+
+		if (!isset($classname) || $locale != $mainLocale)
+		{
+			// Store the locale for future reference
+			$mainLocale = $locale;
+
+			if ($mainLocale !== false)
+			{
+				$classname = str_replace('-', '_', $mainLocale) . 'Date';
+
+				if (!class_exists($classname))
+				{
+					// The class does not exist, default to JDate
+					$classname = 'JDate';
+				}
+			}
+			else
+			{
+				// No tag, so default to JDate
+				$classname = 'JDate';
+			}
+		}
+
+		$key = $time . '-' . ($tzOffset instanceof DateTimeZone ? $tzOffset->getName() : (string) $tzOffset);
+
+		if (!isset(self::$dates[$classname][$key]))
+		{
+			self::$dates[$classname][$key] = new $classname($time, $tzOffset);
+		}
+
+		$date = clone self::$dates[$classname][$key];
+
+		return $date;
 	}
 }

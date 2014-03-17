@@ -26,7 +26,6 @@ JFusion.onSuccess = function (JSONobject) {
             JSONobject.messages.error = [];
         }
         JSONobject.messages.error[JSONobject.messages.error.length] = JSONobject.message;
-        alert(JSONobject.message);
     }
     if (JSONobject.messages) {
         JFusion.renderMessages(JSONobject.messages);

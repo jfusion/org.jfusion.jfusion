@@ -179,7 +179,7 @@ class JFusionForum_gallery2 extends JFusionForum
 	                     * @ignore
 	                     * @var $document JDocumentHTML
 	                     */
-                        $document = JFactory::getDocument();
+                        $document = JFusionFactory::getDocument();
                         $document->addCustomTag($headContent);
                         /* finish Gallery 2 */
                     }

@@ -141,7 +141,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 				// Get the language of the user and store it as variable in the user object
 				$user_params = new JRegistry($result->params);
 
-				$result->language = $user_params->get('language', JFactory::getLanguage()->getTag());
+				$result->language = $user_params->get('language', JFusionFactory::getLanguage()->getTag());
 
 				//unset the activation status if not blocked
 				if ($result->block == 0) {
@@ -514,7 +514,7 @@ class JFusionUser_joomla_int extends JFusionUser {
      */
     function destroySession($userinfo, $options) {
 	    if (!isset($options['clientid'])) {
-		    $mainframe = JFactory::getApplication();
+		    $mainframe = JFusionFactory::getApplication();
 		    if ($mainframe->isAdmin()) {
 		        $options['clientid'] = array(1);
 		    } else {

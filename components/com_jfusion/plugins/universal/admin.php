@@ -327,7 +327,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 	 * @return string
 	 */
 	function js($name, $value, $node, $control_name) {
-		$document = JFactory::getDocument();
+		$document = JFusionFactory::getDocument();
 
 		$list = $this->helper->getField();
 
@@ -536,7 +536,7 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 	 */
 	function showRedirectMod($name, $value, $node, $control_name)
 	{
-		$action = JFactory::getApplication()->input->get('action');
+		$action = JFusionFactory::getApplication()->input->get('action');
 		if ($action == 'redirectcode') {
 			$joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
 			$joomla_itemid = $this->params->get('redirect_itemid');

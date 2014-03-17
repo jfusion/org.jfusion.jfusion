@@ -289,7 +289,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    $create_persistant_cookie = false;
 						    if (!empty($phpbb_allow_autologin)) {
 							    //check for a valid persistent cookie
-							    $persistant_cookie = ($phpbb_allow_autologin) ? JFactory::getApplication()->input->cookie->get($phpbb_cookie_name . '_k', '') : '';
+							    $persistant_cookie = ($phpbb_allow_autologin) ? JFusionFactory::getApplication()->input->cookie->get($phpbb_cookie_name . '_k', '') : '';
 							    if (!empty($persistant_cookie)) {
 								    $query = $jdb->getQuery(true)
 									    ->select('user_id')
@@ -1300,16 +1300,17 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 			    //phpbb variables
 			    $phpbb_cookie_prefix = $this->params->get('cookie_prefix');
-			    $userid_cookie_value = JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_u', '');
-			    $sid_cookie_value = JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_sid', '');
+			    $mainframe = JFusionFactory::getApplication();
+			    $userid_cookie_value = $mainframe->input->cookie->get($phpbb_cookie_prefix . '_u', '');
+			    $sid_cookie_value = $mainframe->input->cookie->get($phpbb_cookie_prefix . '_sid', '');
 			    $phpbb_allow_autologin = $this->params->get('allow_autologin');
-			    $persistant_cookie = ($phpbb_allow_autologin) ? JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_k', '') : '';
+			    $persistant_cookie = ($phpbb_allow_autologin) ? $mainframe->input->cookie->get($phpbb_cookie_prefix . '_k', '') : '';
 			    //joomla variables
 			    $JUser = JFactory::getUser();
 			    if (JPluginHelper::isEnabled ('system', 'remember')) {
 				    jimport('joomla.utilities.utility');
 				    $hash = JFusionFunction::getHash('JLOGIN_REMEMBER');
-				    $joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '', 'raw');
+				    $joomla_persistant_cookie = $mainframe->input->cookie->get($hash, '', 'raw');
 			    } else {
 				    $joomla_persistant_cookie = '';
 			    }

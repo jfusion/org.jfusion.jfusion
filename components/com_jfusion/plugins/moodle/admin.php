@@ -552,7 +552,7 @@ HTML;
             $jname = $this->getJname();
             $db = JFusionFactory::getDatabase($jname);
 
-            $activation = ((JFactory::getApplication()->input->get('activation', 1)) ? 'true' : 'false');
+            $activation = ((JFusionFactory::getApplication()->input->get('activation', 1)) ? 'true' : 'false');
             if ($activation == 'true') {
                 $query = $db->getQuery(true)
                     ->update('#__config_plugins')

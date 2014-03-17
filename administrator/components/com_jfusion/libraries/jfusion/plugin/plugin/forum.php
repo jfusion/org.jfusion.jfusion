@@ -199,7 +199,7 @@ class JFusionForum extends JFusionPlugin
 				//datetime post was last updated
 				$postModified = $threadinfo->modified;
 				//datetime content was last updated
-				$contentModified = JFactory::getDate($contentitem->modified)->toUnix();
+				$contentModified = JFusionFactory::getDate($contentitem->modified)->toUnix();
 
 				$status['debug'][] = 'Thread exists...comparing dates';
 				$status['debug'][] = 'Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified) . ')';
@@ -253,7 +253,7 @@ class JFusionForum extends JFusionPlugin
 		//set some vars
 		$forumid = $dbparams->get('default_forum');
 		$catid = $contentitem->catid;
-		$option = JFactory::getApplication()->input->getCmd('option');
+		$option = JFusionFactory::getApplication()->input->getCmd('option');
 
 		if ($option == 'com_k2' || $option == 'com_content') {
     		//determine default forum
@@ -276,7 +276,7 @@ class JFusionForum extends JFusionPlugin
     		    //let's see if a parent has been assigned a forum
     		    if ($option == 'com_k2') {
     		        //see if a parent category is included
-    		        $db = JFactory::getDBO();
+    		        $db = JFusionFactory::getDBO();
                     $stop = false;
                     $parent_id = $contentitem->category->parent;;
                     while (!$stop) {
@@ -508,7 +508,7 @@ class JFusionForum extends JFusionPlugin
 
 	function loadQuickReplyIncludes() {
 		//using markitup http://markitup.jaysalvat.com/ for bbcode textbox
-		$document = JFactory::getDocument();
+		$document = JFusionFactory::getDocument();
 
 		$path = 'plugins/content/jfusion/discussbot/markitup';
 
@@ -536,7 +536,7 @@ JS;
 	{
 		$html = '';
 		if($showGuestInputs) {
-			$username = JFactory::getApplication()->input->post->get('guest_username', '');
+			$username = JFusionFactory::getApplication()->input->post->get('guest_username', '');
             $jusername = JText::_('USERNAME');
             $html = <<<HTML
             <table>
@@ -554,7 +554,7 @@ JS;
 HTML;
 
 		}
-		$quickReply = JFactory::getApplication()->input->post->get('quickReply', '');
+		$quickReply = JFusionFactory::getApplication()->input->post->get('quickReply', '');
 	   	$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">' . $quickReply . '</textarea><br />';
 	   	return $html;
 	}
@@ -596,7 +596,7 @@ HTML;
 					$theme = $dbparams->get('recaptcha_theme', 'red');
 					$lang = $dbparams->get('recaptcha_lang', 'en');
 
-					$document = JFactory::getDocument();
+					$document = JFusionFactory::getDocument();
 
                     $js = <<<JS
 					var RecaptchaOptions = {
@@ -659,7 +659,7 @@ JS;
 		switch($captcha_mode) {
 			case 'question':
 				//question/answer method
-				$captcha_answer = JFactory::getApplication()->input->post->get('captcha_answer', '');
+				$captcha_answer = JFusionFactory::getApplication()->input->post->get('captcha_answer', '');
 				if(!empty($captcha_answer) && $captcha_answer == $dbparams->get('captcha_answer')) {
 					$captcha_verification = true;
 				}
@@ -669,9 +669,9 @@ JS;
 				$dispatcher = JEventDispatcher::getInstance();
 				$results = $dispatcher->trigger('onCaptchaRequired', array('jfusion.discussion'));
 				if ($results[0]) {
-					$captchaparams = array(JFactory::getApplication()->input->post->get('captchacode', '')
-						, JFactory::getApplication()->input->post->get('captchasuffix', '')
-						, JFactory::getApplication()->input->post->get('captchasessionid', ''));
+					$captchaparams = array(JFusionFactory::getApplication()->input->post->get('captchacode', '')
+						, JFusionFactory::getApplication()->input->post->get('captchasuffix', '')
+						, JFusionFactory::getApplication()->input->post->get('captchasessionid', ''));
 					$results = $dispatcher->trigger('onCaptchaVerify', $captchaparams);
 					if ($results[0]) {
 						$captcha_verification = true;
@@ -687,8 +687,8 @@ JS;
             		}
 
 					$privatekey = $dbparams->get('recaptcha_privatekey');
-					$response_field  = JFactory::getApplication()->input->post->getString('recaptcha_response_field', '');
-					$challenge_field = JFactory::getApplication()->input->post->getString('recaptcha_challenge_field', '');
+					$response_field  = JFusionFactory::getApplication()->input->post->getString('recaptcha_response_field', '');
+					$challenge_field = JFusionFactory::getApplication()->input->post->getString('recaptcha_challenge_field', '');
 
 					$resp = recaptcha_check_answer ($privatekey,
 						$_SERVER['REMOTE_ADDR'],

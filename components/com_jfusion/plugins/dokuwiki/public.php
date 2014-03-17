@@ -82,9 +82,10 @@ class JFusionPublic_dokuwiki extends JFusionPublic
         //setup constants needed by Dokuwiki
         $this->helper->defineConstants();
 
-        $do = JFactory::getApplication()->input->get('do');
+	    $mainframe = JFusionFactory::getApplication();
+
+        $do = $mainframe->input->get('do');
         if ($do == 'logout') {
-            $mainframe = JFactory::getApplication();
             // logout any joomla users
             $mainframe->logout();
             //clean up session
@@ -92,13 +93,10 @@ class JFusionPublic_dokuwiki extends JFusionPublic
             $session->close();
             $session->restart();
         } else if ($do == 'login') {
-            $credentials['username'] = JFactory::getApplication()->input->get('u');
-            $credentials["password"] = JFactory::getApplication()->input->get('p');
+            $credentials['username'] = $mainframe->input->get('u');
+            $credentials["password"] = $mainframe->input->get('p');
             if ($credentials['username'] && $credentials['password']) {
-                $mainframe = JFactory::getApplication();
-                $credentials['username'] = JFactory::getApplication()->input->get('u');
-                $credentials['password'] = JFactory::getApplication()->input->get('p');
-                $options['remember'] = JFactory::getApplication()->input->get('r');
+                $options['remember'] = $mainframe->input->get('r');
                 //                $options["return"] = 'http://.......';
                 //                $options["entry_url"] = 'http://.......';
                 // logout any joomla users
@@ -106,9 +104,9 @@ class JFusionPublic_dokuwiki extends JFusionPublic
             }
         }
         $index_file = $source_path . 'doku.php';
-        if (JFactory::getApplication()->input->get('jfile') == 'detail.php') $index_file = $source_path . 'lib' . DIRECTORY_SEPARATOR . 'exe' . DIRECTORY_SEPARATOR . 'detail.php';
+        if ($mainframe->input->get('jfile') == 'detail.php') $index_file = $source_path . 'lib' . DIRECTORY_SEPARATOR . 'exe' . DIRECTORY_SEPARATOR . 'detail.php';
 
-        if (JFactory::getApplication()->input->get('media')) JFactory::getApplication()->input->set('media', str_replace(':', '-', JFactory::getApplication()->input->get('media')));
+        if ($mainframe->input->get('media')) $mainframe->input->set('media', str_replace(':', '-', $mainframe->input->get('media')));
         require_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'phputf8' . DIRECTORY_SEPARATOR . 'mbstring' . DIRECTORY_SEPARATOR . 'core.php';
 
         define('DOKU_INC', $source_path);
@@ -292,7 +290,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic
             } else {
                 $sefmode = $this->params->get('sefmode');
                 if ($sefmode == 1) {
-                    $url = JFusionFunction::routeURL($url, JFactory::getApplication()->input->getInt('Itemid'));
+                    $url = JFusionFunction::routeURL($url, JFusionFactory::getApplication()->input->getInt('Itemid'));
                 } else {
                     //we can just append both variables
                     $url = $this->data->baseURL . $url;
@@ -318,10 +316,11 @@ class JFusionPublic_dokuwiki extends JFusionPublic
     function replaceForm(&$data) {
         $pattern = '#<form(.*?)action=["\'](.*?)["\'](.*?)>(.*?)</form>#mSsi';
         $getData = '';
-        if (JFactory::getApplication()->input->getInt('Itemid')) $getData.= '<input name="Itemid" value="' . JFactory::getApplication()->input->getInt('Itemid') . '" type="hidden"/>';
-        if (JFactory::getApplication()->input->get('option')) $getData.= '<input name="option" value="' . JFactory::getApplication()->input->get('option') . '" type="hidden"/>';
-        if (JFactory::getApplication()->input->get('jname')) $getData.= '<input name="jname" value="' . JFactory::getApplication()->input->get('jname') . '" type="hidden"/>';
-        if (JFactory::getApplication()->input->get('view')) $getData.= '<input name="view" value="' . JFactory::getApplication()->input->get('view') . '" type="hidden"/>';
+	    $mainframe = JFusionFactory::getApplication();
+        if ($mainframe->input->getInt('Itemid')) $getData.= '<input name="Itemid" value="' . $mainframe->input->getInt('Itemid') . '" type="hidden"/>';
+        if ($mainframe->input->get('option')) $getData.= '<input name="option" value="' . $mainframe->input->get('option') . '" type="hidden"/>';
+        if ($mainframe->input->get('jname')) $getData.= '<input name="jname" value="' . $mainframe->input->get('jname') . '" type="hidden"/>';
+        if ($mainframe->input->get('view')) $getData.= '<input name="view" value="' . $mainframe->input->get('view') . '" type="hidden"/>';
         preg_match_all($pattern, $data->body, $links);
         foreach ($links[2] as $key => $value) {
             $method = '#method=["\']post["\']#mS';
@@ -393,8 +392,9 @@ class JFusionPublic_dokuwiki extends JFusionPublic
      */
     function getPathWay() {
         $pathway = array();
-        if (JFactory::getApplication()->input->get('id')) {
-            $bread = explode(';', JFactory::getApplication()->input->get('id'));
+	    $mainframe = JFusionFactory::getApplication();
+        if ($mainframe->input->get('id')) {
+            $bread = explode(';', $mainframe->input->get('id'));
             $url = '';
             foreach ($bread as $key) {
                 if ($url) {
@@ -407,11 +407,11 @@ class JFusionPublic_dokuwiki extends JFusionPublic
                 $path->url = 'doku.php?id=' . $url;
                 $pathway[] = $path;
             }
-            if (JFactory::getApplication()->input->get('media') || JFactory::getApplication()->input->get('do')) {
-                if (JFactory::getApplication()->input->get('media')) {
-                    $add = JFactory::getApplication()->input->get('media');
+            if ($mainframe->input->get('media') || $mainframe->input->get('do')) {
+                if ($mainframe->input->get('media')) {
+                    $add = $mainframe->input->get('media');
                 } else {
-                    $add = JFactory::getApplication()->input->get('do');
+                    $add = $mainframe->input->get('do');
                 }
                 $pathway[count($pathway) - 1]->title = $pathway[count($pathway) - 1]->title . ' ( ' . $add . ' )';
             }

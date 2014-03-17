@@ -227,6 +227,8 @@ class JFusionController extends JControllerLegacy
         $post = JFactory::getApplication()->input->post->get('params', array(), 'array');
         $jname = JFactory::getApplication()->input->post->getString('jname', '');
 	    $action = JFactory::getApplication()->input->get('action');
+	    $msg = '';
+	    $msgType = 'error';
 	    try {
 		    if (empty($post) || empty($jname)) {
 			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
@@ -265,7 +267,6 @@ class JFusionController extends JControllerLegacy
 		    }
 	    } catch (Exception $e) {
 		    $msg = $jname . ': ' . $e->getMessage();
-		    $msgType = 'error';
 	    }
 	    if ($action == 'apply') {
 		    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $msg, $msgType);
@@ -294,8 +295,6 @@ class JFusionController extends JControllerLegacy
 
 		    $syncdata = array();
 		    if ($db->loadResult()) {
-			    //Load usersync library
-			    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
 			    $syncdata = JFusionUsersync::getSyncdata($syncid);
 			    if (is_array($syncdata)) {
 				    //start the usersync
@@ -328,7 +327,7 @@ class JFusionController extends JControllerLegacy
     {
 	    try {
 		    $syncid = JFactory::getApplication()->input->get->get('syncid', '');
-		    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
+
 		    $syncdata = JFusionUsersync::getSyncdata($syncid);
 		    echo new JResponseJson($syncdata);
 	    } catch (Exception $e) {
@@ -346,8 +345,6 @@ class JFusionController extends JControllerLegacy
     {
 	    $syncid = JFactory::getApplication()->input->post->get('syncid', '');
 	    try {
-		    //Load usersync library
-		    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
 		    $syncError = JFactory::getApplication()->input->post->get('syncError', array(), 'array');
 		    if ($syncError) {
 			    //apply the submitted sync error instructions
@@ -367,8 +364,6 @@ class JFusionController extends JControllerLegacy
      */
     function syncinitiate()
     {
-        //Load usersync library
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         //check to see if the sync has already started
         $syncid = JFactory::getApplication()->input->get('syncid');
         $action = JFactory::getApplication()->input->get('action');

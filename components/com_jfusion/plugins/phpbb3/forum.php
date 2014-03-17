@@ -681,7 +681,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			$phpbbUser = $db->loadObject();
 
 			if ($dbparams->get('use_content_created_date', false)) {
-				$timezone = JFactory::getConfig()->get('offset');
+				$timezone = JFusionFactory::getConfig()->get('offset');
 				$timestamp = strtotime($contentitem->created);
 				//undo Joomla timezone offset
 				$timestamp += ($timezone * 3600);
@@ -842,7 +842,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 
 			$bbcode = $this->helper->bbcode_parser($text);
 
-			$timestamp = $dbparams->get('use_content_created_date', false) ? JFactory::getDate($contentitem->created)->toUnix() : time();
+			$timestamp = $dbparams->get('use_content_created_date', false) ? JFusionFactory::getDate($contentitem->created)->toUnix() : time();
 			$userid = $dbparams->get('default_user');
 
 			$query = $db->getQuery(true)

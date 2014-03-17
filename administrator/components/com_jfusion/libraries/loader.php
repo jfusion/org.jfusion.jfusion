@@ -461,7 +461,7 @@ abstract class JFusionLoader
 	/**
 	 * Load a class based on name and lookup array.
 	 *
-	 * @param   string  $class   The class to be loaded (wihtout prefix).
+	 * @param   string  $class   The class to be loaded (without prefix).
 	 * @param   array   $lookup  The array of base paths to use for finding the class file.
 	 *
 	 * @return  boolean  True if the class was loaded, false otherwise.

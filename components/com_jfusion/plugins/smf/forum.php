@@ -470,7 +470,7 @@ class JFusionForum_smf extends JFusionForum
 		    $db->setQuery($query);
 		    $smfUser = $db->loadObject();
 		    if ($dbparams->get('use_content_created_date', false)) {
-			    $timezone = JFactory::getConfig()->get('offset');
+			    $timezone = JFusionFactory::getConfig()->get('offset');
 			    $timestamp = strtotime($contentitem->created);
 			    //undo Joomla timezone offset
 			    $timestamp += ($timezone * 3600);
@@ -626,9 +626,10 @@ class JFusionForum_smf extends JFusionForum
     function createQuickReply(&$dbparams, $showGuestInputs)
     {
         $html = '';
+	    $mainframe = JFusionFactory::getApplication();
         if ($showGuestInputs) {
-            $username = JFactory::getApplication()->input->post->get('guest_username', '');
-            $email = JFactory::getApplication()->input->post->get('guest_email', '');
+            $username = $mainframe->input->post->get('guest_username', '');
+            $email = $mainframe->input->post->get('guest_email', '');
 
             $j_username = JText::_('USERNAME');
             $j_email = JText::_('EMAIL');
@@ -655,7 +656,7 @@ class JFusionForum_smf extends JFusionForum
                 <br />
 HTML;
         }
-        $quickReply = JFactory::getApplication()->input->post->get('quickReply', '');
+        $quickReply = $mainframe->input->post->get('quickReply', '');
 		$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">' . $quickReply . '</textarea><br />';
         return $html;
     }

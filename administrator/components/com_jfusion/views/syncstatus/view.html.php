@@ -70,9 +70,6 @@ class jfusionViewsyncstatus extends JViewLegacy
         $template = $mainframe->getTemplate();
         $document->addStyleSheet('templates/' . $template . '/css/general.css');
 
-        //Load usersync library
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-
 	    $this->syncid = JFactory::getApplication()->input->get('syncid');
 	    $syncdata = JFusionUsersync::getSyncdata($this->syncid);
 

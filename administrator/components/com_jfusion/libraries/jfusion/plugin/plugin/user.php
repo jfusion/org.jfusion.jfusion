@@ -663,7 +663,7 @@ class JFusionUser extends JFusionPlugin
 				$params = new JRegistry($userinfo->params);
 				$user_lang = $params->get('language');
 			}
-			$userinfo->language = !empty($user_lang) ? $user_lang : JFactory::getLanguage()->getTag();
+			$userinfo->language = !empty($user_lang) ? $user_lang : JFusionFactory::getLanguage()->getTag();
 		}
 		if (!empty($userinfo->language) && isset($existinguser->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
 			try {
@@ -870,7 +870,7 @@ class JFusionUser extends JFusionPlugin
 		// if the curl routines are not used, the same check must be performed in the
 		// create session routine in the user.php file of the plugin concerned.
 		// In version 2.0 we will never reach this point as the user plugin will handle this
-		$jnodeid = strtolower(JFactory::getApplication()->input->get('jnodeid'));
+		$jnodeid = strtolower(JFusionFactory::getApplication()->input->get('jnodeid'));
 		if (!empty($jnodeid)) {
 			if($jnodeid == JFusionFactory::getPluginNodeId($this->getJname())) {
 				// do not create a session, this integration started the log in and the user is already logged in
@@ -1057,7 +1057,7 @@ class JFusionUser extends JFusionPlugin
 		// if the curl routines are not used, the same check must be performed in the
 		// destroysession routine in the user.php file of the plugin concerned.
 		// In version 2.0 we will never reach this point as the user plugin will handle this
-		$jnodeid = strtolower(JFactory::getApplication()->input->get('jnodeid'));
+		$jnodeid = strtolower(JFusionFactory::getApplication()->input->get('jnodeid'));
 		if (!empty($jnodeid)) {
 			if($jnodeid == JFusionFactory::getPluginNodeId($this->getJname())) {
 				// do not delete a session, this integration started the log out and the user is already logged out

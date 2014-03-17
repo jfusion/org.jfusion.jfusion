@@ -87,7 +87,6 @@ class jfusionViewsyncoptions extends JViewLegacy
 
 			    $db->setQuery($query);
 			    if ($db->loadResult()) {
-				    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
 				    $syncdata = JFusionUsersync::getSyncdata($syncid);
 				    $this->syncdata = $syncdata;
 				    $mode = 'resume';

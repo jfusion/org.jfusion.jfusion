@@ -72,7 +72,7 @@ class JFusionCookies {
 		}
 		
 		if ($url) {
-			$mainframe = JFactory::getApplication();
+			$mainframe = JFusionFactory::getApplication();
 			if ( !$mainframe->isAdmin()) {
 				$this->_cookies[$url][] = $cookie;
 			}
@@ -108,11 +108,11 @@ class JFusionCookies {
      * @param string $return
      */
     function executeRedirect($source_url = null, $return = null) {
-    	$mainframe = JFactory::getApplication();
+    	$mainframe = JFusionFactory::getApplication();
     	if (!$mainframe->isAdmin() || !$this->secret) {
 	    	if(count($this->_cookies)) {
 	    		if (empty($return)) {
-                    $return = JFactory::getApplication()->input->getBase64('return', '');
+                    $return = JFusionFactory::getApplication()->input->getBase64('return', '');
 	    			if ($return) {
 	    				$return = base64_decode($return);
 	    				if( stripos($return, 'http://') === false && stripos($return, 'https://') === false ) {

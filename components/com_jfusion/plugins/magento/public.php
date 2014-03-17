@@ -96,7 +96,7 @@ class JFusionPublic_magento extends JFusionPublic {
                 $codes = explode('=', $lang);
                 $joomla_code = $codes[0];
                 $store_code = $codes[1];
-                if ($joomla_code == JFactory::getLanguage()->getTag()) {
+                if ($joomla_code == JFusionFactory::getLanguage()->getTag()) {
                     $cookies_to_set[0] = array('store=' . $store_code);
                     break;
                 }

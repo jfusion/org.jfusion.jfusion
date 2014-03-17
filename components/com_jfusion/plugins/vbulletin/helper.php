@@ -47,7 +47,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
      * @return string
      */
     function encryptApiData($data) {
-        $key = $this->params->get('vb_secret', JFactory::getConfig()->get('secret'));
+        $key = $this->params->get('vb_secret', JFusionFactory::getConfig()->get('secret'));
         $data['jfvbkey'] = $key;
         return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, serialize($data), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
     }
@@ -249,7 +249,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
     {
         $this->backup['globals'] = $GLOBALS;
         //let's take special precautions for Itemid
-        $this->backup['itemid'] = JFactory::getApplication()->input->getInt('Itemid', 0);
+        $this->backup['itemid'] = JFusionFactory::getApplication()->input->getInt('Itemid', 0);
     }
 
     /**
@@ -264,7 +264,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
             $GLOBALS = $this->backup['globals'];
         }
         if (isset($this->backup['itemid'])) {
-	        JFactory::getApplication()->input->set('Itemid', $this->backup['itemid']);
+	        JFusionFactory::getApplication()->input->set('Itemid', $this->backup['itemid']);
             global $Itemid;
             $Itemid = $this->backup['itemid'];
         }

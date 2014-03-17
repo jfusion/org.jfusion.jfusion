@@ -232,6 +232,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     {
     	$session = JFactory::getSession();
     	//detect if phpbb3 is already loaded for dual login
+	    $mainframe = JFusionFactory::getApplication();
     	if (defined('IN_PHPBB')) {
     		//backup any post get vars
     		$backup = array();
@@ -247,7 +248,6 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             //add a variable to ensure refresh
             $uri->setVar('time', time());
             $link = $uri->toString();
-            $mainframe = JFactory::getApplication();
             $mainframe->redirect($link);
             die(' ');
     	}
@@ -266,7 +266,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         $source_url = $this->params->get('source_url');
         $source_path = $this->params->get('source_path');
         //get the filename
-        $jfile = JFactory::getApplication()->input->get('jfile');
+        $jfile = $mainframe->input->get('jfile');
         if (!$jfile) {
             //use the default index.php
             $jfile = 'index.php';
@@ -330,8 +330,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             //change the current directory back to Joomla.
             chdir(JPATH_SITE);
             //show more smileys without the Joomla frame
-            $jfmode = JFactory::getApplication()->input->get('mode');
-            $jfform = JFactory::getApplication()->input->get('form');
+            $jfmode = $mainframe->input->get('mode');
+            $jfform = $mainframe->input->get('form');
             if ($jfmode == 'smilies' || ($jfmode == 'searchuser' && !empty($jfform) || $jfmode == 'contact')) {
                 $pattern = '#<head[^>]*>(.*?)<\/head>.*?<body[^>]*>(.*)<\/body>#si';
                 preg_match($pattern, $jfdata->buffer, $temp);
@@ -380,9 +380,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $replace_body[] = 'popup(\'' . $data->integratedURL . '$1\'';
             $callback_function[] = '';    
             //fix for mcp links
-            $jfile = JFactory::getApplication()->input->get('jfile');
+	        $mainframe = JFusionFactory::getApplication();
+            $jfile = $mainframe->input->get('jfile');
             if ($jfile == 'mcp.php') {
-                $topicid = JFactory::getApplication()->input->getInt('t');
+                $topicid = $mainframe->input->getInt('t');
                 //fix for merge thread
                 $regex_body[] = '#(&|&amp;)to_topic_id#mS';
                 $replace_body[] = '$1t=' . $topicid . '$1to_topic_id';
@@ -511,7 +512,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
             if (!empty($profile_mod_id) && strstr($q, 'i=' . $profile_mod_id)) {
                 $url = 'ucp.php?i=profile&mode=signature';
-                $url = JFusionFunction::routeURL($url, JFactory::getApplication()->input->getInt('Itemid'), $this->getJname());
+                $url = JFusionFunction::routeURL($url, JFusionFactory::getApplication()->input->getInt('Itemid'), $this->getJname());
                 return 'href="' . $url . '"';
             }
         }
@@ -531,7 +532,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = JFusionFunction::routeURL($q, JFactory::getApplication()->input->getInt('Itemid'));
+                $url = JFusionFunction::routeURL($q, JFusionFactory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $url = $baseURL . $q;
@@ -571,7 +572,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 if (!empty($query)) {
                     $redirectURL.= '?' . $query;
                 }
-                $redirectURL = JFusionFunction::routeURL($redirectURL, JFactory::getApplication()->input->getInt('Itemid'));
+                $redirectURL = JFusionFunction::routeURL($redirectURL, JFusionFactory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $redirectURL = $baseURL . $jfile;
@@ -598,7 +599,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		$baseURL = $this->data->baseURL;
 		
         $url = htmlspecialchars_decode($url);
-        $Itemid = JFactory::getApplication()->input->getInt('Itemid');
+	    $mainframe = JFusionFactory::getApplication();
+        $Itemid = $mainframe->input->getInt('Itemid');
         //strip any leading dots
         if (substr($url, 0, 2) == './') {
             $url = substr($url, 2);
@@ -640,8 +642,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         unset($url_variables['option'], $url_variables['jfile'], $url_variables['Itemid']);
         if(!empty($url_variables['mode'])){
             if ($url_variables['mode'] == 'topic_view') {
-                $url_variables['t'] = JFactory::getApplication()->input->get('t');
-                $url_variables['f'] = JFactory::getApplication()->input->get('f');
+                $url_variables['t'] = $mainframe->input->get('t');
+                $url_variables['f'] = $mainframe->input->get('f');
             }
         }
 
@@ -705,7 +707,9 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $pathway = array();
 
-		    $forum_id = JFactory::getApplication()->input->getInt('f');
+		    $mainframe = JFusionFactory::getApplication();
+
+		    $forum_id = $mainframe->input->getInt('f');
 		    if (!empty($forum_id)) {
 			    //get the forum's info
 
@@ -746,7 +750,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 			    }
 		    }
 
-		    $topic_id = JFactory::getApplication()->input->getInt('t');
+		    $topic_id = $mainframe->input->getInt('t');
 		    if (!empty($topic_id)) {
 			    $query = $db->getQuery(true)
 				    ->select('topic_title')

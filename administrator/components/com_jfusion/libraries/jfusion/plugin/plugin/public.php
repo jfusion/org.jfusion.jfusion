@@ -64,7 +64,7 @@ class JFusionPublic extends JFusionPlugin
         if ( isset($data->location) ) {
             $location = str_replace($data->integratedURL, '', $data->location);
 	        $location = $this->fixUrl(array(1 => $location));
-            $mainframe = JFactory::getApplication();
+            $mainframe = JFusionFactory::getApplication();
             $mainframe->redirect($location);
         }
         if ( isset($status['error']) ) {
@@ -335,10 +335,10 @@ JS;
         $jname = $this->getJname();
 
         if (empty($jname)) {
-            $jname = JFactory::getApplication()->input->get('Itemid');
+            $jname = JFusionFactory::getApplication()->input->get('Itemid');
         }
 
-        $document = JFactory::getDocument();
+        $document = JFusionFactory::getDocument();
 
         $sourcepath = JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
         $urlpath = 'components/com_jfusion/css/' . $jname . '/';
@@ -696,7 +696,7 @@ HTML;
             $q = str_replace('?', '&amp;', $q);
             $url = $this->data->baseURL . '&amp;jfile=' . $q;
         } elseif ($this->data->sefmode == 1) {
-            $url = JFusionFunction::routeURL($q, JFactory::getApplication()->input->getInt('Itemid'));
+            $url = JFusionFunction::routeURL($q, JFusionFactory::getApplication()->input->getInt('Itemid'));
         } else {
             //we can just append both variables
             $url = $this->data->baseURL . $q;
@@ -714,7 +714,7 @@ HTML;
         $baseURL = $this->data->baseURL;
 
         $url = htmlspecialchars_decode($url);
-        $Itemid = JFactory::getApplication()->input->getInt('Itemid');
+        $Itemid = JFusionFactory::getApplication()->input->getInt('Itemid');
         //strip any leading dots
         if (substr($url, 0, 2) == './') {
             $url = substr($url, 2);
@@ -790,7 +790,7 @@ HTML;
                 if (!empty($query)) {
                     $url.= '?' . $query;
                 }
-                $url = JFusionFunction::routeURL($url, JFactory::getApplication()->input->getInt('Itemid'));
+                $url = JFusionFunction::routeURL($url, JFusionFactory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $url = $baseURL . $jfile;
@@ -1027,7 +1027,7 @@ HTML;
         //get the url
         $query = ($_GET);
 
-	    $jfile = JFactory::getApplication()->input->get('jfile', 'index.php', 'raw');
+	    $jfile = JFusionFactory::getApplication()->input->get('jfile', 'index.php', 'raw');
 
         unset($query['option'], $query['jfile'], $query['Itemid'], $query['jFusion_Route'], $query['view'], $query['layout'], $query['controller'], $query['lang'], $query['task']);
 
@@ -1055,7 +1055,7 @@ HTML;
 
 		$url = $data->source_url;
 
-		$config = JFactory::getConfig();
+		$config = JFusionFactory::getConfig();
 		$sefenabled = $config->get('sef');
 		if(!empty($sefenabled)) {
 			$uri = JURI::getInstance();
@@ -1070,7 +1070,7 @@ HTML;
 			}
 			$current = ltrim($current , '/');
 		} else {
-			$current = JFactory::getApplication()->input->get('jfile') . '?';
+			$current = JFusionFactory::getApplication()->input->get('jfile') . '?';
 			$current .= $this->curlFramelessBuildUrl('GET');
 		}
 
