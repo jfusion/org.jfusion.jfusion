@@ -21,7 +21,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 jimport('joomla.application.component.controller');
 jimport('joomla.application.component.view');
-require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'import.php';
 require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
 /**
  * JFusion Controller class
@@ -82,18 +82,15 @@ class JFusionController extends JControllerLegacy
 				    $JFusionPlugin->saveParameters($params, true);
 
 				    //make sure the usergroup params are available on first view
-				    $config_status = array();
-				    $config_status['config'] = 0;
-				    $config_status['message'] = JText::_('UNKNOWN');
+				    $status = 0;
 				    try {
-					    $config_status = $JFusionPlugin->checkConfig();
+					    if ($JFusionPlugin->checkConfig()) {
+						    $status = 1;
+					    }
 				    } catch (Exception $e) {
-					    $config_status['message'] = $e->getMessage();
+					    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
 				    }
-				    if (!$config_status['config']) {
-					    JFusionFunction::raiseError($config_status['message'], $JFusionPlugin->getJname());
-				    }
-				    $JFusionPlugin->updateStatus($config_status['config']);
+				    $JFusionPlugin->updateStatus($status);
 				    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, JText::_('WIZARD_SUCCESS'), 'message');
 			    } else {
 				    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname);
@@ -239,20 +236,19 @@ class JFusionController extends JControllerLegacy
 		    if (!$JFusionPlugin->saveParameters($post)) {
 			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 		    } else {
-			    $config_status = array();
-			    $config_status['config'] = 0;
-			    $config_status['message'] = JText::_('UNKNOWN');
-			    //update the status field
+			    $status = 0;
 			    try {
-				    $config_status = $JFusionPlugin->checkConfig();
+				    if ($JFusionPlugin->checkConfig()) {
+					    $status = 1;
+				    }
+				    $JFusionPlugin->updateStatus($status);
 			    } catch (Exception $e) {
-				    $config_status['message'] = $e->getMessage();
+				    $JFusionPlugin->updateStatus($status);
+				    throw $e;
 			    }
-			    $JFusionPlugin->updateStatus($config_status['config']);
+			    $status = 0;
 
-			    if (!$config_status['config']) {
-				    throw new RuntimeException($config_status['message']);
-			    } else {
+			    if ($status) {
 				    $msg = $jname . ': ' . JText::_('SAVE_SUCCESS');
 				    $msgType = 'message';
 				    //check for any custom commands
@@ -925,17 +921,15 @@ JS;
 							    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 						    } else {
 							    //update the status field
-							    $config_status = array();
-							    $config_status['config'] = 0;
-							    $config_status['message'] = JText::_('UNKNOWN');
+							    $status = 0;
 							    try {
-								    $config_status = $JFusionPlugin->checkConfig();
+								    if ($JFusionPlugin->checkConfig()) {
+									    $status = 1;
+								    }
+								    $JFusionPlugin->updateStatus($status);
 							    } catch (Exception $e) {
-								    $config_status['message'] = $e->getMessage();
-							    }
-							    $JFusionPlugin->updateStatus($config_status['config']);
-							    if (!$config_status['config']) {
-								    throw new RuntimeException($config_status['message']);
+								    $JFusionPlugin->updateStatus($status);
+								    throw $e;
 							    }
 						    }
 					    } else {

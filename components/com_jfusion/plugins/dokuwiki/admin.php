@@ -66,10 +66,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
 		} else {
 			throw new RuntimeException(JText::_('WIZARD_FAILURE'));
 		}
-		$status = array();
-		$status['config'] = 1;
-		$status['message'] = JText::_('UNKNOWN');
-		return $status;
+		return true;
 	}
 
 	/**

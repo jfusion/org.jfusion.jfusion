@@ -109,19 +109,20 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    $JFusionPlugin = JFusionFactory::getAdmin($record->name);
 		    $JFusionParam = JFusionFactory::getParams($record->name);
 
-		    if($record->status==1) {
+		    if($record->status == 1) {
 			    //added check for database configuration to prevent error after moving sites
-			    $config_status = array();
-			    $config_status['config'] = 0;
-			    $config_status['message'] = JText::_('UNKNOWN');
-			    try {
-				    $config_status = $JFusionPlugin->checkConfig();
-			    } catch (Exception $e) {}
-			    //do a check to see if the status field is correct
-			    if ($config_status['config'] != $record->status) {
-				    //update the status and deactivate the plugin
 
-				    $JFusionPlugin->updateStatus($config_status['config']);
+			    $status = 0;
+			    try {
+				    if ($JFusionPlugin->checkConfig()) {
+					    $status = 1;
+				    }
+			    } catch (Exception $e) {}
+
+			    //do a check to see if the status field is correct
+			    if ($status != $record->status) {
+				    //update the status and deactivate the plugin
+				    $JFusionPlugin->updateStatus($status);
 			    }
 		    }
 

@@ -929,8 +929,11 @@ HTML;
 
 	private function init() {
 		JFactory::getLanguage()->load('com_jfusion', JPATH_BASE);
-		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
-		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
-		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
+
+		$administrator = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR;
+
+		require_once $administrator . DIRECTORY_SEPARATOR . 'import.php';
+		require_once $administrator . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
+		require_once $administrator . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
 	}
 }

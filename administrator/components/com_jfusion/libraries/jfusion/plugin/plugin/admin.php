@@ -16,8 +16,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractplugin.php';
-
 /**
  * Abstract interface for all JFusion functions that are accessed through the Joomla administrator interface
  *
@@ -131,7 +129,7 @@ class JFusionAdmin extends JFusionPlugin
 	 * Function that checks if the plugin has a valid config
 	 *
 	 * @throws RuntimeException
-	 * @return array result of the config check
+	 * @return boolean return true for success false for error, if you want a message to be included you need to use throw.
 	 */
     function checkConfig()
     {
@@ -198,7 +196,7 @@ class JFusionAdmin extends JFusionPlugin
 	    $status = array();
 	    $status['config'] = 1;
 	    $status['message'] = JText::_('GOOD_CONFIG');
-        return $status;
+        return true;
     }
 
 	/**

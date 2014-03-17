@@ -843,7 +843,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			JLoader::register('JRoute', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'methods.php');
 
 			//load JFusion's libraries
-			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
 		} elseif (!defined('IN_JOOMLA')) {
 			define('IN_JOOMLA', 1);
 			JFusionFunction::reconnectJoomlaDb();

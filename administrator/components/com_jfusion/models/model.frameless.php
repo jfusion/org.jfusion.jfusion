@@ -11,7 +11,7 @@
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
 
 /**
  * Singleton static only class that creates instances for each specific JFusion plugin.
@@ -20,6 +20,8 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
 
 class JFusionFrameless {
 	/**
+	 *
+	 *
 	 * @static
 	 * @param $jname
 	 * @param bool $isPlugin

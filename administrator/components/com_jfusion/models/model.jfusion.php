@@ -1247,7 +1247,7 @@ class JFusionFunction
 	 */
 	public static function raiseMessage($msg, $jname = '') {
 		$app = JFactory::getApplication();
-		if ($msg instanceof RuntimeException) {
+		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {
@@ -1262,7 +1262,7 @@ class JFusionFunction
 	 */
 	public static function raiseNotice($msg, $jname = '') {
 		$app = JFactory::getApplication();
-		if ($msg instanceof RuntimeException) {
+		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {
@@ -1277,7 +1277,7 @@ class JFusionFunction
 	 */
 	public static function raiseWarning($msg, $jname = '') {
 		$app = JFactory::getApplication();
-		if ($msg instanceof RuntimeException) {
+		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {
@@ -1292,7 +1292,7 @@ class JFusionFunction
 	 */
 	public static function raiseError($msg, $jname = '') {
 		$app = JFactory::getApplication();
-		if ($msg instanceof RuntimeException) {
+		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {

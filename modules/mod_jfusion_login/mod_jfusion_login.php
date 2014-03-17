@@ -31,7 +31,7 @@ $type = modjfusionLoginHelper::getType();
 $return = modjfusionLoginHelper::getReturnURL($params, $type);
 $twofactormethods = modjfusionLoginHelper::getTwoFactorMethods();
 //check if the JFusion component is installed
-$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
 try {
 	if (file_exists($factory_file)) {
 	    /**
