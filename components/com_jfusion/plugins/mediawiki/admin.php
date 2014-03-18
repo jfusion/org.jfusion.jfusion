@@ -16,7 +16,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_mediawiki
  */
 
-class JFusionAdmin_mediawiki extends JFusionAdmin
+class JFusionAdmin_mediawiki extends \JFusion\Plugin\Plugin_Admin
 {
 	/**
 	 * @var $helper JFusionHelper_mediawiki
@@ -152,7 +152,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 		    return $usergroups;
 	    } else {

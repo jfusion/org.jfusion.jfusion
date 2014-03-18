@@ -39,7 +39,7 @@ class JFormFieldJFusionItemid extends JFormField
      */
     protected function getInput()
     {
-	    \JFusion\Framework::initJavaScript();
+	    JFusionFunction::initJavaScript();
 
     	$value = $this->value;
 

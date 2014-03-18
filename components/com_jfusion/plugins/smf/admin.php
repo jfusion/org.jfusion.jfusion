@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_smf extends JFusionAdmin
+class JFusionAdmin_smf extends \JFusion\Plugin\Plugin_Admin
 {
     /**
      * returns the name of this JFusion plugin
@@ -181,7 +181,7 @@ class JFusionAdmin_smf extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroup !== null) {

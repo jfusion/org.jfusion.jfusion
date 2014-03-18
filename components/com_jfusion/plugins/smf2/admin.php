@@ -15,7 +15,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractadmin.php
  * @package JFusion_SMF
  */
-class JFusionAdmin_smf2 extends JFusionAdmin{
+class JFusionAdmin_smf2 extends \JFusion\Plugin\Plugin_Admin{
 
     /**
      * @return string
@@ -156,7 +156,7 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
      */
     function getDefaultUsergroup()
     {
-	    $usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroup !== null) {

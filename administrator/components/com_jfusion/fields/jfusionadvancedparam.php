@@ -38,7 +38,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 	 */
 	protected function getInput()
 	{
-		\JFusion\Framework::initJavaScript();
+		JFusionFunction::initJavaScript();
 
 		//used to give unique ids to elements when more than one advanced param is loaded (for example in configuring JoomFish)
 		static $elNum;

@@ -17,7 +17,7 @@ defined('JPATH_PLATFORM') or die;
  * @see         http://php.net/pdo
  * @since       12.1
  */
-class JDatabaseDriverOracle extends JDatabaseDriverPdo
+class Driver_Oracle extends Driver_Pdo
 {
 	/**
 	 * The name of the database driver.
@@ -132,7 +132,7 @@ class JDatabaseDriverOracle extends JDatabaseDriverPdo
 	 * @param   string   $tableName  The name of the database table to drop.
 	 * @param   boolean  $ifExists   Optionally specify that the table must exist before it is dropped.
 	 *
-	 * @return  JDatabaseDriverOracle  Returns this object to support chaining.
+	 * @return  Driver_Oracle  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 */
@@ -454,7 +454,7 @@ class JDatabaseDriverOracle extends JDatabaseDriverPdo
 	 *
 	 * @param   string  $table  The name of the table to unlock.
 	 *
-	 * @return  JDatabaseDriverOracle  Returns this object to support chaining.
+	 * @return  Driver_Oracle  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -474,7 +474,7 @@ class JDatabaseDriverOracle extends JDatabaseDriverPdo
 	 * @param   string  $backup    Not used by Oracle.
 	 * @param   string  $prefix    Not used by Oracle.
 	 *
-	 * @return  JDatabaseDriverOracle  Returns this object to support chaining.
+	 * @return  Driver_Oracle  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -489,7 +489,7 @@ class JDatabaseDriverOracle extends JDatabaseDriverPdo
 	/**
 	 * Unlocks tables in the database.
 	 *
-	 * @return  JDatabaseDriverOracle  Returns this object to support chaining.
+	 * @return  Driver_Oracle  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException

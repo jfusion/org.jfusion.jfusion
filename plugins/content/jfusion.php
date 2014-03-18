@@ -589,6 +589,8 @@ class plgContentJfusion extends JPlugin
 				$html = $this->helper->debugger->getAsHtml(null, false);
 			} else {
 				$html = $this->helper->debugger->getAsHtml();
+				$document = JFactory::getDocument();
+				$document->addStyleSheet(JUri::root(true) . '/components/com_jfusion/css/debugger.css');
 			}
 			if (!$this->ajax_request) {
 				$this->article->text .= <<<HTML

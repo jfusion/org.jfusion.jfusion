@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 
 
-class JFusionAdmin_prestashop extends JFusionAdmin
+class JFusionAdmin_prestashop extends \JFusion\Plugin\Plugin_Admin
 {
 	/**
 	 * @var $helper JFusionHelper_prestashop
@@ -203,7 +203,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroups !== null) {

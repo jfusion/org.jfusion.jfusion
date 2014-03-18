@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAdmin_wordpress extends JFusionAdmin
+class JFusionAdmin_wordpress extends \JFusion\Plugin\Plugin_Admin
 {
 	/**
 	 * @var $helper JFusionHelper_wordpress
@@ -215,7 +215,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 		    $group = array();
 		    foreach ($usergroups as $usergroup) {

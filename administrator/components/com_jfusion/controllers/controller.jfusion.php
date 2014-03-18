@@ -227,8 +227,7 @@ class JFusionController extends JControllerLegacy
         $post = JFactory::getApplication()->input->post->get('params', array(), 'array');
         $jname = JFactory::getApplication()->input->post->getString('jname', '');
 	    $action = JFactory::getApplication()->input->get('action');
-	    $msg = '';
-	    $msgType = 'error';
+	    $msg = $msgType = null;
 	    try {
 		    if (empty($post) || empty($jname)) {
 			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
@@ -248,7 +247,6 @@ class JFusionController extends JControllerLegacy
 				    $JFusionPlugin->updateStatus($status);
 				    throw $e;
 			    }
-			    $status = 0;
 
 			    if ($status) {
 				    $msg = $jname . ': ' . JText::_('SAVE_SUCCESS');
@@ -267,6 +265,7 @@ class JFusionController extends JControllerLegacy
 		    }
 	    } catch (Exception $e) {
 		    $msg = $jname . ': ' . $e->getMessage();
+		    $msgType = 'error';
 	    }
 	    if ($action == 'apply') {
 		    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $msg, $msgType);

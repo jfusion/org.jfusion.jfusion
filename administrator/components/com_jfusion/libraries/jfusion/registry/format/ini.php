@@ -1,4 +1,4 @@
-<?php namespace JFusion\Registry\Format;
+<?php namespace JFusion\Registry;
 /**
  * @package     Joomla.Platform
  * @subpackage  Registry
@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-use JFusion\Registry\RegistryFormat;
+use JFusion\Registry\Format;
 use \stdClass;
 
 defined('JPATH_PLATFORM') or die;
@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Registry
  * @since       11.1
  */
-class RegistryFormatINI extends RegistryFormat
+class Format_INI extends Format
 {
 	/**
 	 * Cache of processed data

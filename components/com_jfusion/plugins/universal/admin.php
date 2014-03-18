@@ -15,7 +15,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractadmin.php
  * @package JFusion_universal
  */
-class JFusionAdmin_universal extends JFusionAdmin
+class JFusionAdmin_universal extends \JFusion\Plugin\Plugin_Admin
 {
 	/**
 	 * @var $helper JFusionHelper_universal

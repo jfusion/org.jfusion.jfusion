@@ -118,7 +118,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$css = '.jfusion table.jfusionlist, table.jfusiontable{ font-size:11px; }';
 		$document->addStyleDeclaration($css);
 
-		\JFusion\Framework::initJavaScript();
+		JFusionFunction::initJavaScript();
 
 		$apply = JText::_('APPLY');
 		$close = JText::_('CLOSE');

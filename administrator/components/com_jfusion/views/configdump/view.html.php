@@ -109,8 +109,8 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
-		$update = \JFusion\Framework::getUpdateUserGroups();
-		$usergroups = \JFusion\Framework::getUserGroups();
+		$update = JFusionFunction::getUpdateUserGroups();
+		$usergroups = JFusionFunction::getUserGroups();
 		$master = \JFusion\Framework::getMaster();
 		if(count($rows) ) {
 			foreach($rows as $row) {

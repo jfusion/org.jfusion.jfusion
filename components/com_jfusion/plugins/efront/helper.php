@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionHelper_efront extends JFusionPlugin {
+class JFusionHelper_efront extends \JFusion\Plugin\Plugin {
 
     /**
      * @return string

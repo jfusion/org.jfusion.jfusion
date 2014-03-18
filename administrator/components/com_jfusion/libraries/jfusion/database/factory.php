@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -7,6 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
+use \RuntimeException;
 defined('JPATH_PLATFORM') or die;
 
 /**
@@ -16,18 +17,18 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-class JDatabaseFactory
+class Factory
 {
 	/**
 	 * Contains the current JDatabaseFactory instance
 	 *
-	 * @var    JDatabaseFactory
+	 * @var    Factory
 	 * @since  12.1
 	 */
 	private static $_instance = null;
 
 	/**
-	 * Method to return a JDatabaseDriver instance based on the given options. There are three global options and then
+	 * Method to return a Driver instance based on the given options. There are three global options and then
 	 * the rest are specific to the database driver. The 'database' option determines which database is to
 	 * be used for the connection. The 'select' option determines whether the connector should automatically select
 	 * the chosen database.
@@ -38,7 +39,7 @@ class JDatabaseFactory
 	 * @param   string  $name     Name of the database driver you'd like to instantiate
 	 * @param   array   $options  Parameters to be passed to the database driver.
 	 *
-	 * @return  JDatabaseDriver  A database driver object.
+	 * @return  Driver  A database driver object.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -51,7 +52,7 @@ class JDatabaseFactory
 		$options['select']   = (isset($options['select'])) ? $options['select'] : true;
 
 		// Derive the class name from the driver.
-		$class = 'JDatabaseDriver' . ucfirst(strtolower($options['driver']));
+		$class = 'Driver' . ucfirst(strtolower($options['driver']));
 
 		// If the class still doesn't exist we have nothing left to do but throw an exception.  We did our best.
 		if (!class_exists($class))
@@ -76,17 +77,17 @@ class JDatabaseFactory
 	 * Gets an exporter class object.
 	 *
 	 * @param   string           $name  Name of the driver you want an exporter for.
-	 * @param   JDatabaseDriver  $db    Optional JDatabaseDriver instance
+	 * @param   Driver  $db    Optional Driver instance
 	 *
-	 * @return  JDatabaseExporter  An exporter object.
+	 * @return  Exporter  An exporter object.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
 	 */
-	public function getExporter($name, JDatabaseDriver $db = null)
+	public function getExporter($name, Driver $db = null)
 	{
 		// Derive the class name from the driver.
-		$class = 'JDatabaseExporter' . ucfirst(strtolower($name));
+		$class = 'Exporter_' . ucfirst(strtolower($name));
 
 		// Make sure we have an exporter class for this driver.
 		if (!class_exists($class))
@@ -97,7 +98,7 @@ class JDatabaseFactory
 
 		$o = new $class;
 
-		if ($db instanceof JDatabaseDriver)
+		if ($db instanceof Driver)
 		{
 			$o->setDbo($db);
 		}
@@ -109,17 +110,17 @@ class JDatabaseFactory
 	 * Gets an importer class object.
 	 *
 	 * @param   string           $name  Name of the driver you want an importer for.
-	 * @param   JDatabaseDriver  $db    Optional JDatabaseDriver instance
+	 * @param   Driver  $db    Optional Driver instance
 	 *
-	 * @return  JDatabaseImporter  An importer object.
+	 * @return  Importer  An importer object.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
 	 */
-	public function getImporter($name, JDatabaseDriver $db = null)
+	public function getImporter($name, Driver $db = null)
 	{
 		// Derive the class name from the driver.
-		$class = 'JDatabaseImporter' . ucfirst(strtolower($name));
+		$class = 'Importer_' . ucfirst(strtolower($name));
 
 		// Make sure we have an importer class for this driver.
 		if (!class_exists($class))
@@ -130,7 +131,7 @@ class JDatabaseFactory
 
 		$o = new $class;
 
-		if ($db instanceof JDatabaseDriver)
+		if ($db instanceof Driver)
 		{
 			$o->setDbo($db);
 		}
@@ -141,27 +142,27 @@ class JDatabaseFactory
 	/**
 	 * Gets an instance of the factory object.
 	 *
-	 * @return  JDatabaseFactory
+	 * @return  Factory
 	 *
 	 * @since   12.1
 	 */
 	public static function getInstance()
 	{
-		return self::$_instance ? self::$_instance : new JDatabaseFactory;
+		return self::$_instance ? self::$_instance : new Factory;
 	}
 
 	/**
 	 * Get the current query object or a new JDatabaseQuery object.
 	 *
 	 * @param   string           $name  Name of the driver you want an query object for.
-	 * @param   JDatabaseDriver  $db    Optional JDatabaseDriver instance
+	 * @param   Driver  $db    Optional Driver instance
 	 *
-	 * @return  JDatabaseQuery  The current query object or a new object extending the JDatabaseQuery class.
+	 * @return  Query  The current query object or a new object extending the JDatabaseQuery class.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
 	 */
-	public function getQuery($name, JDatabaseDriver $db = null)
+	public function getQuery($name, Driver $db = null)
 	{
 		// Derive the class name from the driver.
 		$class = 'JDatabaseQuery' . ucfirst(strtolower($name));
@@ -179,13 +180,13 @@ class JDatabaseFactory
 	/**
 	 * Gets an instance of a factory object to return on subsequent calls of getInstance.
 	 *
-	 * @param   JDatabaseFactory  $instance  A JDatabaseFactory object.
+	 * @param   Factory  $instance  A JDatabaseFactory object.
 	 *
 	 * @return  void
 	 *
 	 * @since   12.1
 	 */
-	public static function setInstance(JDatabaseFactory $instance = null)
+	public static function setInstance(Factory $instance = null)
 	{
 		self::$_instance = $instance;
 	}

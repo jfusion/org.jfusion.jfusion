@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       11.1
  */
-class JDatabaseQuerySqlazure extends JDatabaseQuerySqlsrv
+class Query_Sqlazure extends Query_Sqlsrv
 {
 	/**
 	 * The character(s) used to quote SQL statement names such as table names or field names,

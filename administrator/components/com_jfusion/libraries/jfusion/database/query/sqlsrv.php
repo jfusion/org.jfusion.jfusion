@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       11.1
  */
-class JDatabaseQuerySqlsrv extends JDatabaseQuery implements JDatabaseQueryLimitable
+class Query_Sqlsrv extends Query implements Limitable
 {
 	/**
 	 * The character(s) used to quote SQL statement names such as table names or field names,
@@ -67,7 +67,7 @@ class JDatabaseQuerySqlsrv extends JDatabaseQuery implements JDatabaseQueryLimit
 				$query .= (string) $this->select;
 				$query .= (string) $this->from;
 
-				if ($this instanceof JDatabaseQueryLimitable && ($this->limit > 0 || $this->offset > 0))
+				if ($this instanceof Limitable && ($this->limit > 0 || $this->offset > 0))
 				{
 					if ($this->order)
 					{

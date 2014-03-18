@@ -27,7 +27,7 @@ global $baseURL, $fullURL, $integratedURL, $vbsefmode;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_vbulletin extends JFusionPublic
+class JFusionPublic_vbulletin extends \JFusion\Plugin\Plugin_Public
 {
 	/**
 	 * @var JFusionHelper_vbulletin

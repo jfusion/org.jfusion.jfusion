@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -19,14 +19,14 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-interface JDatabaseQueryLimitable
+interface Query_Limitable
 {
 	/**
 	 * Method to modify a query already in string format with the needed
 	 * additions to make the query limited to a particular number of
 	 * results, or start at a particular offset. This method is used
 	 * automatically by the __toString() method if it detects that the
-	 * query implements the JDatabaseQueryLimitable interface.
+	 * query implements the Limitable interface.
 	 *
 	 * @param   string   $query   The query in string format
 	 * @param   integer  $limit   The limit for the result set
@@ -48,7 +48,7 @@ interface JDatabaseQueryLimitable
 	 * @param   integer  $limit   The limit for the result set
 	 * @param   integer  $offset  The offset for the result set
 	 *
-	 * @return  JDatabaseQuery  Returns this object to allow chaining.
+	 * @return  Query  Returns this object to allow chaining.
 	 *
 	 * @since   12.1
 	 */

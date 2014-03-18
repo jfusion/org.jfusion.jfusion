@@ -28,7 +28,7 @@ $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
  * Require the base controller
  */
 include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . 'controller.jfusion.php';
-\JFusion\Framework::initJavaScript();
+JFusionFunction::initJavaScript();
 
 
 

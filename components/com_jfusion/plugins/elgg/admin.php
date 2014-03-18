@@ -29,7 +29,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_elgg extends JFusionAdmin
+class JFusionAdmin_elgg extends \JFusion\Plugin\Plugin_Admin
 {
     /**
      * returns the name of this JFusion plugin
@@ -172,7 +172,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
     function getDefaultUsergroup()
     {
         //Only seems to be 2 usergroups in elgg (without any acl setup): Administrator, and user.  So just return 'user'
-	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 		    $group = 'user';
 	    } else {

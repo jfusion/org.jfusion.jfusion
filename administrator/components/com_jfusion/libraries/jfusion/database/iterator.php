@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database

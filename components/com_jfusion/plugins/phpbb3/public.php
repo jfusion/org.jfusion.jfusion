@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_phpbb3 extends JFusionPublic
+class JFusionPublic_phpbb3 extends \JFusion\Plugin\Plugin_Public
 {
 
     /**

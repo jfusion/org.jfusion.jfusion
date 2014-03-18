@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @see         http://php.net/manual/en/book.mysqli.php
  * @since       12.1
  */
-class JDatabaseDriverMysqli extends JDatabaseDriver
+class Driver_Mysqli extends Driver
 {
 	/**
 	 * The name of the database driver.
@@ -274,7 +274,7 @@ class JDatabaseDriverMysqli extends JDatabaseDriver
 	 * @param   string   $tableName  The name of the database table to drop.
 	 * @param   boolean  $ifExists   Optionally specify that the table must exist before it is dropped.
 	 *
-	 * @return  JDatabaseDriverMysqli  Returns this object to support chaining.
+	 * @return  Driver_Mysqli  Returns this object to support chaining.
 	 *
 	 * @since   12.2
 	 * @throws  RuntimeException
@@ -494,7 +494,7 @@ class JDatabaseDriverMysqli extends JDatabaseDriver
 	 *
 	 * @param   string  $table  The name of the table to unlock.
 	 *
-	 * @return  JDatabaseDriverMysqli  Returns this object to support chaining.
+	 * @return  Driver_Mysqli  Returns this object to support chaining.
 	 *
 	 * @since   12.2
 	 * @throws  RuntimeException
@@ -619,7 +619,7 @@ class JDatabaseDriverMysqli extends JDatabaseDriver
 	 * @param   string  $backup    Not used by MySQL.
 	 * @param   string  $prefix    Not used by MySQL.
 	 *
-	 * @return  JDatabaseDriverMysqli  Returns this object to support chaining.
+	 * @return  Driver_Mysqli  Returns this object to support chaining.
 	 *
 	 * @since   12.2
 	 * @throws  RuntimeException
@@ -829,7 +829,7 @@ class JDatabaseDriverMysqli extends JDatabaseDriver
 	/**
 	 * Unlocks tables in the database.
 	 *
-	 * @return  JDatabaseDriverMysqli  Returns this object to support chaining.
+	 * @return  Driver_Mysqli  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException

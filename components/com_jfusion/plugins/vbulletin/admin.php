@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_vbulletin extends JFusionAdmin
+class JFusionAdmin_vbulletin extends \JFusion\Plugin\Plugin_Admin
 {
 	static private $mods = array('jfvbtask' => 'JFusion API Plugin - REQUIRED',
 		'redirect' => 'JFusion Redirect Plugin',
@@ -242,7 +242,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	 */
 	function getDefaultUsergroup()
 	{
-		$usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
+		$usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 
 		$group = array();
 		if ($usergroup !== null) {

@@ -7,7 +7,7 @@
 	<authorUrl>http://www.jfusion.org</authorUrl>
 	<copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>2.0.0-013</version>
+	<version>3.0.0-000</version>
 	<revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>Universal User Integration</description>
@@ -23,7 +23,6 @@
         <filename>language/en-GB/en-GB.com_jfusion.ini</filename>
 		<folder>controllers</folder>
 		<folder>css</folder>
-        <folder>js</folder>
 		<folder>helpers</folder>
 		<folder>views</folder>
 		<folder>images</folder>

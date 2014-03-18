@@ -28,7 +28,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_mybb extends JFusionPublic {
+class JFusionPublic_mybb extends \JFusion\Plugin\Plugin_Public
+{
     /**
      * returns the name of this JFusion plugin
      *

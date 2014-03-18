@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-class JDatabaseQueryOracle extends JDatabaseQueryPdo implements JDatabaseQueryPreparable, JDatabaseQueryLimitable
+class Query_Oracle extends Query_Pdo implements JDatabaseQueryPreparable, Limitable
 {
 	/**
 	 * @var    integer  The offset for the result set.

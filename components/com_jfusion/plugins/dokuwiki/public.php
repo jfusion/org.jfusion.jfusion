@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_dokuwiki extends JFusionPublic
+class JFusionPublic_dokuwiki extends \JFusion\Plugin\Plugin_Public
 {
 	/**
 	 * @var $helper JFusionHelper_dokuwiki

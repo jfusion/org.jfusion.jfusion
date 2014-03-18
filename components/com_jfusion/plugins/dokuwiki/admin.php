@@ -17,7 +17,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-
 /**
  * JFusion admin class for DokuWiki
  *
@@ -30,7 +29,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_dokuwiki extends JFusionAdmin
+class JFusionAdmin_dokuwiki extends \JFusion\Plugin\Plugin_Admin
 {
 	/**
 	 * @var $helper JFusionHelper_dokuwiki
@@ -183,7 +182,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
 	 */
 	function getDefaultUsergroup()
 	{
-		$usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
+		$usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 		return $usergroup;
 	}
 

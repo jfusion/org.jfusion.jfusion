@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-interface JDatabaseQueryPreparable
+interface Query_Preparable
 {
 	/**
 	 * Method to add a variable to an internal array that will be bound to a prepared SQL statement before query execution. Also

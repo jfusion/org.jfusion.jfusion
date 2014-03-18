@@ -32,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
 
 
 
-class JFusionAdmin_efront extends JFusionAdmin
+class JFusionAdmin_efront extends \JFusion\Plugin\Plugin_Admin
 {
 	/**
 	 * @var $helper JFusionHelper_efront

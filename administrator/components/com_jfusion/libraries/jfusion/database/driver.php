@@ -8,6 +8,7 @@
  */
 
 use \RuntimeException;
+use \DirectoryIterator;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -40,7 +41,7 @@ interface DatabaseInterface
  * @method      string  q()   q($text, $escape = true)  Alias for quote method
  * @method      string  qn()  qn($name, $as = null)     Alias for quoteName method
  */
-abstract class DatabaseDriver extends Database implements DatabaseInterface
+abstract class Driver extends Database implements DatabaseInterface
 {
 	/**
 	 * The name of the database.
@@ -167,7 +168,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	protected $errorMsg;
 
 	/**
-	 * @var    array  DatabaseDriver instances container.
+	 * @var    array  Driver instances container.
 	 * @since  11.1
 	 */
 	protected static $instances = array();
@@ -218,7 +219,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 			}
 
 			// Derive the class name from the type.
-			$class = str_ireplace('.php', '', 'DatabaseDriver' . ucfirst(trim($fileName)));
+			$class = str_ireplace('.php', '', 'Driver' . ucfirst(trim($fileName)));
 
 			// If the class doesn't exist we have nothing left to do but look at the next type. We did our best.
 			if (!class_exists($class))
@@ -238,8 +239,8 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	}
 
 	/**
-	 * Method to return a DatabaseDriver instance based on the given options.  There are three global options and then
-	 * the rest are specific to the database driver.  The 'driver' option defines which DatabaseDriver class is
+	 * Method to return a Driver instance based on the given options.  There are three global options and then
+	 * the rest are specific to the database driver.  The 'driver' option defines which Driver class is
 	 * used for the connection -- the default is 'mysqli'.  The 'database' option determines which database is to
 	 * be used for the connection.  The 'select' option determines whether the connector should automatically select
 	 * the chosen database.
@@ -249,7 +250,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	 *
 	 * @param   array  $options  Parameters to be passed to the database driver.
 	 *
-	 * @return  DatabaseDriver  A database object.
+	 * @return  Driver  A database object.
 	 *
 	 * @since   11.1
 	 * @throws  RuntimeException
@@ -269,7 +270,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 		{
 
 			// Derive the class name from the driver.
-			$class = 'DatabaseDriver' . ucfirst(strtolower($options['driver']));
+			$class = '\JFusion\Database\Driver_' . ucfirst(strtolower($options['driver']));
 
 			// If the class still doesn't exist we have nothing left to do but throw an exception.  We did our best.
 			if (!class_exists($class))
@@ -277,7 +278,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 				throw new RuntimeException(sprintf('Unable to load Database Driver: %s', $options['driver']));
 			}
 
-			// Create our new DatabaseDriver connector based on the options given.
+			// Create our new Driver connector based on the options given.
 			try
 			{
 				$instance = new $class($options);
@@ -485,7 +486,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	abstract public function disconnect();
 
 	/**
-	 * Adds a function callable just before disconnecting the database. Parameter of the callable is $this DatabaseDriver
+	 * Adds a function callable just before disconnecting the database. Parameter of the callable is $this Driver
 	 *
 	 * @param   callable  $callable  Function to call in disconnect() method just before disconnecting from database
 	 *
@@ -504,7 +505,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	 * @param   string   $table     The name of the database table to drop.
 	 * @param   boolean  $ifExists  Optionally specify that the table must exist before it is dropped.
 	 *
-	 * @return  DatabaseDriver     Returns this object to support chaining.
+	 * @return  Driver     Returns this object to support chaining.
 	 *
 	 * @since   11.4
 	 * @throws  RuntimeException
@@ -756,7 +757,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	/**
 	 * Gets an exporter class object.
 	 *
-	 * @return  JDatabaseExporter  An exporter object.
+	 * @return  Exporter  An exporter object.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -764,7 +765,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	public function getExporter()
 	{
 		// Derive the class name from the driver.
-		$class = 'JDatabaseExporter' . ucfirst($this->name);
+		$class = 'Exporter_' . ucfirst($this->name);
 
 		// Make sure we have an exporter class for this driver.
 		if (!class_exists($class))
@@ -782,7 +783,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	/**
 	 * Gets an importer class object.
 	 *
-	 * @return  JDatabaseImporter  An importer object.
+	 * @return  Importer  An importer object.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -790,7 +791,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	public function getImporter()
 	{
 		// Derive the class name from the driver.
-		$class = 'JDatabaseImporter' . ucfirst($this->name);
+		$class = 'Importer_' . ucfirst($this->name);
 
 		// Make sure we have an importer class for this driver.
 		if (!class_exists($class))
@@ -810,7 +811,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	 *
 	 * @param   boolean  $new  False to return the current query object, True to return a new JDatabaseQuery object.
 	 *
-	 * @return  JDatabaseQuery  The current query object or a new object extending the JDatabaseQuery class.
+	 * @return  Query  The current query object or a new object extending the JDatabaseQuery class.
 	 *
 	 * @since   11.1
 	 * @throws  RuntimeException
@@ -820,7 +821,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 		if ($new)
 		{
 			// Derive the class name from the driver.
-			$class = 'JDatabaseQuery' . ucfirst($this->name);
+			$class = '\JFusion\Database\Query_' . ucfirst($this->name);
 
 			// Make sure we have a query class for this driver.
 			if (!class_exists($class))
@@ -921,7 +922,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	 */
 	public function getUTFSupport()
 	{
-		JLog::add('DatabaseDriver::getUTFSupport() is deprecated. Use DatabaseDriver::hasUTFSupport() instead.', JLog::WARNING, 'deprecated');
+		JLog::add('Driver::getUTFSupport() is deprecated. Use Driver::hasUTFSupport() instead.', JLog::WARNING, 'deprecated');
 		return $this->hasUTFSupport();
 	}
 
@@ -1193,11 +1194,11 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	 *
 	 * @since   11.1
 	 * @throws  RuntimeException
-	 * @deprecated  N/A (CMS)  Use DatabaseDriver::getIterator() instead
+	 * @deprecated  N/A (CMS)  Use Driver::getIterator() instead
 	 */
 	public function loadNextRow()
 	{
-		JLog::add('DatabaseDriver::loadNextRow() is deprecated. Use DatabaseDriver::getIterator() instead.', JLog::WARNING, 'deprecated');
+		JLog::add('Driver::loadNextRow() is deprecated. Use Driver::getIterator() instead.', JLog::WARNING, 'deprecated');
 		$this->connect();
 
 		static $cursor = null;
@@ -1419,7 +1420,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	 *
 	 * @param   string  $tableName  The name of the table to unlock.
 	 *
-	 * @return  DatabaseDriver     Returns this object to support chaining.
+	 * @return  Driver     Returns this object to support chaining.
 	 *
 	 * @since   11.4
 	 * @throws  RuntimeException
@@ -1651,7 +1652,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	 * @param   string  $backup    Table prefix
 	 * @param   string  $prefix    For the table - used to rename constraints in non-mysql databases
 	 *
-	 * @return  DatabaseDriver    Returns this object to support chaining.
+	 * @return  Driver    Returns this object to support chaining.
 	 *
 	 * @since   11.4
 	 * @throws  RuntimeException
@@ -1694,7 +1695,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	 * @param   integer  $offset  The affected row offset to set.
 	 * @param   integer  $limit   The maximum affected rows to set.
 	 *
-	 * @return  DatabaseDriver  This object to support method chaining.
+	 * @return  Driver  This object to support method chaining.
 	 *
 	 * @since   11.1
 	 */
@@ -1702,7 +1703,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	{
 		$this->sql = $query;
 
-		if ($query instanceof JDatabaseQueryLimitable)
+		if ($query instanceof Limitable)
 		{
 			$query->setLimit($limit, $offset);
 		}
@@ -1872,7 +1873,7 @@ abstract class DatabaseDriver extends Database implements DatabaseInterface
 	/**
 	 * Unlocks tables in the database.
 	 *
-	 * @return  DatabaseDriver  Returns this object to support chaining.
+	 * @return  Driver  Returns this object to support chaining.
 	 *
 	 * @since   11.4
 	 * @throws  RuntimeException

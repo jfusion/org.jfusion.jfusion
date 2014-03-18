@@ -68,7 +68,7 @@ class JDatabaseDriverSqlite extends JDatabaseDriverPdo
 	 * @param   string   $tableName  The name of the database table to drop.
 	 * @param   boolean  $ifExists   Optionally specify that the table must exist before it is dropped.
 	 *
-	 * @return  JDatabaseDriverSqlite  Returns this object to support chaining.
+	 * @return  Driver_Sqlite  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 */
@@ -325,7 +325,7 @@ class JDatabaseDriverSqlite extends JDatabaseDriverPdo
 	 *
 	 * @param   string  $table  The name of the table to unlock.
 	 *
-	 * @return  JDatabaseDriverSqlite  Returns this object to support chaining.
+	 * @return  Driver_Sqlite  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -343,7 +343,7 @@ class JDatabaseDriverSqlite extends JDatabaseDriverPdo
 	 * @param   string  $backup    Not used by Sqlite.
 	 * @param   string  $prefix    Not used by Sqlite.
 	 *
-	 * @return  JDatabaseDriverSqlite  Returns this object to support chaining.
+	 * @return  Driver_Sqlite  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -358,7 +358,7 @@ class JDatabaseDriverSqlite extends JDatabaseDriverPdo
 	/**
 	 * Unlocks tables in the database.
 	 *
-	 * @return  JDatabaseDriverSqlite  Returns this object to support chaining.
+	 * @return  Driver_Sqlite  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException

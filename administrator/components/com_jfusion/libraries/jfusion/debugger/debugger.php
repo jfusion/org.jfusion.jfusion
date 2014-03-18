@@ -174,7 +174,7 @@ HTML;
 				$head = '';
 				if ($name != '') {
 					$head =<<<HTML
-						<thead onclick="JFusion.toggleDebugger(event);">
+						<thead>
 							<tr>
 								<th colspan="2" class="title">
 									{$name}
@@ -200,7 +200,7 @@ HTML;
 					$value = $this->getHtml($value, false, $style);
 					$body .=<<<HTML
 					<tr>
-						<td class="{$keyClass}" onclick="JFusion.toggleDebugger(event);" style="{$style}">{$key}</td>
+						<td class="{$keyClass}" style="{$style}">{$key}</td>
 						<td class="value" style="{$style}">{$value}</td>
 					</tr>
 HTML;
@@ -232,14 +232,14 @@ HTML;
 				$str =<<<HTML
 					<div class="debug">
 						<table class="grid" width="100%">
-							<thead onclick="JFusion.toggleDebugger(event);">
+							<thead>
 								<tr>
 									<th class="title">{$name}</th>
 								</tr>
 							</thead>
 						<tbody>
 							<tr>
-								<td class="a_key" onclick="JFusion.toggleDebugger(event);">{$value}</td>
+								<td class="a_key">{$value}</td>
 							</tr>
 						</tbody>
 						</table>
@@ -346,28 +346,20 @@ HTML;
 	 * render the debugging info as HTML-Code directly to the Standard Output.
 	 *
 	 * @param string|null $key
-	 * @param bool $loadresources
 	 *
 	 * @return void
 	 */
-	public function displayHtml($key = null, $loadresources = true) {
-		echo $this->getAsHtml($key, $loadresources);
+	public function displayHtml($key = null) {
+		echo $this->getAsHtml($key);
 	}
 
 
 	/**
 	 * @param string|null $key
-	 * @param bool $loadresources
 	 *
 	 * @return string
 	 */
-	public function getAsHtml($key = null, $loadresources = true) {
-		if ($loadresources) {
-			$document = Factory::getDocument();
-			$document->addStyleSheet(JUri::root(true) . '/components/com_jfusion/css/debugger.css');
-			$document->addScript(JUri::root(true) . '/components/com_jfusion/js/debugger.js');
-		}
-
+	public function getAsHtml($key = null) {
 		if ($key === null) {
 			$data = $this->data;
 		} else {

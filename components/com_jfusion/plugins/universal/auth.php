@@ -15,7 +15,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractauth.php
  * @package JFusion_universal
  */
-class JFusionAuth_universal extends JFusionAuth {
+class JFusionAuth_universal extends \JFusion\Plugin\Plugin_Auth {
 
     /**
      * @return string

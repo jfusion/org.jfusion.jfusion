@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       11.1
  */
-class JDatabaseQueryMysqli extends JDatabaseQuery implements JDatabaseQueryLimitable
+class Query_Mysqli extends Query implements Query_Limitable
 {
 	/**
 	 * @var    integer  The offset for the result set.
@@ -92,7 +92,7 @@ class JDatabaseQueryMysqli extends JDatabaseQuery implements JDatabaseQueryLimit
 	 * @param   integer  $limit   The limit for the result set
 	 * @param   integer  $offset  The offset for the result set
 	 *
-	 * @return  JDatabaseQuery  Returns this object to allow chaining.
+	 * @return  Query  Returns this object to allow chaining.
 	 *
 	 * @since   12.1
 	 */

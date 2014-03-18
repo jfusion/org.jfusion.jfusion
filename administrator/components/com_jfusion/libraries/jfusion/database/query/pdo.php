@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -16,6 +16,6 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-class JDatabaseQueryPdo extends JDatabaseQuery
+class Query_Pdo extends Query
 {
 }

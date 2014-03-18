@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-abstract class JDatabaseImporter
+abstract class Importer
 {
 	/**
 	 * @var    array  An array of cached data.
@@ -27,7 +27,7 @@ abstract class JDatabaseImporter
 	/**
 	 * The database connector to use for exporting structure and/or data.
 	 *
-	 * @var    JDatabaseDriver
+	 * @var    Driver
 	 * @since  13.1
 	 */
 	protected $db = null;
@@ -235,13 +235,13 @@ abstract class JDatabaseImporter
 	/**
 	 * Sets the database connector to use for exporting structure and/or data.
 	 *
-	 * @param   JDatabaseDriver  $db  The database connector.
+	 * @param   Driver  $db  The database connector.
 	 *
 	 * @return  JDatabaseImporter  Method supports chaining.
 	 *
 	 * @since   13.1
 	 */
-	public function setDbo(JDatabaseDriver $db)
+	public function setDbo(Driver $db)
 	{
 		$this->db = $db;
 

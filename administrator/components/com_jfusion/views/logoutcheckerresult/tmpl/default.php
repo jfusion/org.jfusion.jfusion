@@ -15,6 +15,9 @@
  */
 // no direct access
 defined('_JEXEC') or die('Restricted access');
+
+JFactory::getDocument()->addStyleSheet(JUri::root(true) . '/components/com_jfusion/css/debugger.css');
+
 echo JFusionFunctionAdmin::getDonationBanner();
 
 $debugger = \JFusion\Factory::getDebugger('jfusion-logoutcheckerresult');

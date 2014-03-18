@@ -30,7 +30,8 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionPublic_elgg extends JFusionPublic {
+class JFusionPublic_elgg extends \JFusion\Plugin\Plugin_Public
+{
 
     /**
      * returns the name of this JFusion plugin

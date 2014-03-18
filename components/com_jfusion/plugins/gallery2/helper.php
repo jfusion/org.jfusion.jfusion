@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionHelper_gallery2 extends JFusionPlugin
+class JFusionHelper_gallery2 extends \JFusion\Plugin\Plugin
 {
     var $loadedGallery = false;
     var $registry = array();

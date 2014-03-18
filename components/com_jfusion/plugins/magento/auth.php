@@ -27,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_magento extends JFusionAuth
+class JFusionAuth_magento extends \JFusion\Plugin\Plugin_Auth
 {
 	/**
 	 * returns the name of this JFusion plugin

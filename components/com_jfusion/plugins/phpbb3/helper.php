@@ -27,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_phpbb3 extends JFusionPlugin
+class JFusionHelper_phpbb3 extends \JFusion\Plugin\Plugin
 {
     var $bbcode_uid = false;
     var $bbcodes = array();

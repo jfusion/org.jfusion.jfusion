@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @see         http://php.net/pdo
  * @since       12.1
  */
-abstract class JDatabaseDriverPdo extends JDatabaseDriver
+abstract class Driver_Pdo extends Driver
 {
 	/**
 	 * The name of the database driver.
@@ -678,7 +678,7 @@ abstract class JDatabaseDriverPdo extends JDatabaseDriver
 	 * @param   integer  $limit          The maximum affected rows to set.
 	 * @param   array    $driverOptions  The optional PDO driver options
 	 *
-	 * @return  JDatabaseDriver  This object to support method chaining.
+	 * @return  Driver  This object to support method chaining.
 	 *
 	 * @since   12.1
 	 */
@@ -694,7 +694,7 @@ abstract class JDatabaseDriverPdo extends JDatabaseDriver
 			$query = $this->getQuery(true)->setQuery($query);
 		}
 
-		if ($query instanceof JDatabaseQueryLimitable && !is_null($offset) && !is_null($limit))
+		if ($query instanceof Limitable && !is_null($offset) && !is_null($limit))
 		{
 			$query->setLimit($limit, $offset);
 		}

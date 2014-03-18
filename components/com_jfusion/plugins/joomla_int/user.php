@@ -29,7 +29,8 @@ jimport('joomla.user.helper');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_joomla_int extends JFusionUser {
+class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
+{
     /**
      * returns the name of this JFusion plugin
      *

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -6,6 +6,9 @@
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
+
+use \stdClass;
+use \Exception;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -16,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-abstract class JDatabaseExporter
+abstract class Exporter
 {
 	/**
 	 * The type of output format (xml).
@@ -37,7 +40,7 @@ abstract class JDatabaseExporter
 	/**
 	 * The database connector to use for exporting structure and/or data.
 	 *
-	 * @var    JDatabaseDriver
+	 * @var    Driver
 	 * @since  13.1
 	 */
 	protected $db = null;
@@ -110,7 +113,7 @@ abstract class JDatabaseExporter
 	/**
 	 * Set the output option for the exporter to XML format.
 	 *
-	 * @return  DatabaseExporter  Method supports chaining.
+	 * @return  Exporter  Method supports chaining.
 	 *
 	 * @since   13.1
 	 */
@@ -144,7 +147,7 @@ abstract class JDatabaseExporter
 	/**
 	 * Checks if all data and options are in order prior to exporting.
 	 *
-	 * @return  DatabaseDriver  Method supports chaining.
+	 * @return  Driver  Method supports chaining.
 	 *
 	 * @since   13.1
 	 * @throws  Exception if an error is encountered.
@@ -156,7 +159,7 @@ abstract class JDatabaseExporter
 	 *
 	 * @param   mixed  $from  The name of a single table, or an array of the table names to export.
 	 *
-	 * @return  JDatabaseExporter  Method supports chaining.
+	 * @return  Exporter  Method supports chaining.
 	 *
 	 * @since   13.1
 	 * @throws  Exception if input is not a string or array.
@@ -201,13 +204,13 @@ abstract class JDatabaseExporter
 	/**
 	 * Sets the database connector to use for exporting structure and/or data from MySQL.
 	 *
-	 * @param   JDatabaseDriver  $db  The database connector.
+	 * @param   Driver  $db  The database connector.
 	 *
-	 * @return  JDatabaseExporter  Method supports chaining.
+	 * @return  Exporter  Method supports chaining.
 	 *
 	 * @since   13.1
 	 */
-	public function setDbo(JDatabaseDriver $db)
+	public function setDbo(Driver $db)
 	{
 		$this->db = $db;
 
@@ -219,7 +222,7 @@ abstract class JDatabaseExporter
 	 *
 	 * @param   boolean  $setting  True to export the structure, false to not.
 	 *
-	 * @return  JDatabaseExporter  Method supports chaining.
+	 * @return  Exporter  Method supports chaining.
 	 *
 	 * @since   13.1
 	 */

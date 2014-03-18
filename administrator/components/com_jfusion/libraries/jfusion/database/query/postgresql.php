@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       11.3
  */
-class JDatabaseQueryPostgresql extends JDatabaseQuery implements JDatabaseQueryLimitable
+class Query_Postgresql extends Query implements Limitable
 {
 	/**
 	 * @var    object  The FOR UPDATE element used in "FOR UPDATE"  lock

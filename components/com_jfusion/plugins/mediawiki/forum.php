@@ -12,7 +12,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org/
 **/
 
-class JFusionForum_mediawiki extends JFusionForum
+class JFusionForum_mediawiki extends \JFusion\Plugin\Plugin_Forum
 {
     /**
      * returns the name of this JFusion plugin

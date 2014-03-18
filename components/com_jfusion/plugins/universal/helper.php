@@ -17,7 +17,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_universal extends JFusionPlugin {
+class JFusionHelper_universal extends \JFusion\Plugin\Plugin {
 	var $map = array();
 	var $mapraw = null;
 

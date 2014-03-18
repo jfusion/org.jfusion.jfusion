@@ -293,7 +293,7 @@ class Registry implements JsonSerializable
 	public function loadString($data, $format = 'JSON', $options = array())
 	{
 		// Load a string into the given namespace [or default namespace if not given]
-		$handler = RegistryFormat::getInstance($format);
+		$handler = Format::getInstance($format);
 
 		$obj = $handler->stringToObject($data, $options);
 		$this->loadObject($obj);
@@ -410,7 +410,7 @@ class Registry implements JsonSerializable
 	public function toString($format = 'JSON', $options = array())
 	{
 		// Return a namespace in a given format
-		$handler = RegistryFormat::getInstance($format);
+		$handler = Format::getInstance($format);
 
 		return $handler->objectToString($this->data, $options);
 	}

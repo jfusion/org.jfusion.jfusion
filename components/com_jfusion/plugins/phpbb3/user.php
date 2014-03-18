@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_phpbb3 extends JFusionUser
+class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 {
 	/**
 	 * @var $helper JFusionHelper_phpbb3
@@ -1521,7 +1521,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 		$master = \JFusion\Framework::getMaster();
 		if ($master) {
-			$mastergroups = \JFusion\Framework::getUserGroups($master->name);
+			$mastergroups = JFusionFunction::getUserGroups($master->name);
 
 			foreach ($mastergroups as $key => $mastergroup) {
 				if ($mastergroup) {

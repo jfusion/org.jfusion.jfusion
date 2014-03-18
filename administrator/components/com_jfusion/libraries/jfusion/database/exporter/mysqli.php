@@ -97,7 +97,7 @@ class JDatabaseExporterMysqli extends JDatabaseExporter
 	public function check()
 	{
 		// Check if the db connector has been set.
-		if (!($this->db instanceof JDatabaseDriverMysqli))
+		if (!($this->db instanceof Driver_Mysqli))
 		{
 			throw new Exception('JPLATFORM_ERROR_DATABASE_CONNECTOR_WRONG_TYPE');
 		}

@@ -26,7 +26,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_mybb extends JFusionUser {
+class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
+{
     /**
      * @param object $userinfo
      * @return null|stdClass

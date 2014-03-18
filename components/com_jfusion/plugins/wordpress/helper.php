@@ -27,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_wordpress extends JFusionPlugin
+class JFusionHelper_wordpress extends \JFusion\Plugin\Plugin
 {
     /**
      * @return string

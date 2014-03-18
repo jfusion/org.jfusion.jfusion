@@ -15,7 +15,8 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractuser.php
  * @package JFusion_SMF
  */
-class JFusionUser_smf2 extends JFusionUser {
+class JFusionUser_smf2 extends \JFusion\Plugin\Plugin_User
+{
 
     /**
      * @param object $userinfo
@@ -588,7 +589,7 @@ class JFusionUser_smf2 extends JFusionUser {
 
 		$master = \JFusion\Framework::getMaster();
 		if ($master) {
-			$mastergroups = \JFusion\Framework::getUserGroups($master->name);
+			$mastergroups = JFusionFunction::getUserGroups($master->name);
 
 			$groups = array();
 			if ($userinfo) {

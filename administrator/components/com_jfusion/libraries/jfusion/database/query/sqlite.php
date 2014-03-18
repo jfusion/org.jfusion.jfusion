@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-class JDatabaseQuerySqlite extends JDatabaseQueryPdo implements JDatabaseQueryPreparable, JDatabaseQueryLimitable
+class Query_Sqlite extends Query_Pdo implements Query_Preparable, Limitable
 {
 	/**
 	 * @var    integer  The offset for the result set.
@@ -185,7 +185,7 @@ class JDatabaseQuerySqlite extends JDatabaseQueryPdo implements JDatabaseQueryPr
 	 * additions to make the query limited to a particular number of
 	 * results, or start at a particular offset. This method is used
 	 * automatically by the __toString() method if it detects that the
-	 * query implements the JDatabaseQueryLimitable interface.
+	 * query implements the Limitable interface.
 	 *
 	 * @param   string   $query   The query in string format
 	 * @param   integer  $limit   The limit for the result set

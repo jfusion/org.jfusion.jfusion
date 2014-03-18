@@ -14,6 +14,8 @@
  */
 
 use JFusion\Language\Text;
+use JFusion\Event\EventDispatcher;
+
 
 use \stdClass;
 use \Exception;
@@ -1361,41 +1363,6 @@ class Framework
 			}
 		}
 		return $list;
-	}
-
-	/**
-	 * @return void
-	 */
-	public static function initJavaScript() {
-		static $js;
-		if (!$js) {
-			JHtml::_('behavior.framework', true);
-			JHTML::_('behavior.modal');
-			JHTML::_('behavior.tooltip');
-
-			$document = Factory::getDocument();
-			if ( Factory::getApplication()->isAdmin() ) {
-
-				$keys = array('SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETED', 'DELETE_PAIR', 'REMOVE', 'OK');
-
-				$url = JURI::root() . 'administrator/index.php';
-
-
-				$document->addScript('components/com_jfusion/js/jfusion.js');
-
-			} else {
-				$keys = array('SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'OK');
-
-				$url = JURI::root() . 'index.php';
-			}
-
-			static::loadJavascriptLanguage($keys);
-
-			$js=<<<JS
-			JFusion.url = '{$url}';
-JS;
-			$document->addScriptDeclaration($js);
-		}
 	}
 
 	/**

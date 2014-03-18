@@ -74,7 +74,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 			if(empty($jname)) {
 				throw new RuntimeException(JText::_('NO_PLUGIN_SELECT'));
 			} else {
-				\JFusion\Framework::initJavaScript();
+				JFusionFunction::initJavaScript();
 
 				jimport('joomla.user.helper');
 				$hash = \JFusion\Framework::getHash($name . JUserHelper::genRandomPassword());

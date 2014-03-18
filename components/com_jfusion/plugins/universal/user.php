@@ -17,7 +17,7 @@ require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'map.php');
  * For detailed descriptions on these functions please check the model.abstractuser.php
  * @package JFusion_universal
  */
-class JFusionUser_universal extends JFusionUser
+class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 {
 	/**
 	 * @var $helper JFusionHelper_universal

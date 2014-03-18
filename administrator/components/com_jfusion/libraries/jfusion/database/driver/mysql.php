@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -8,6 +8,8 @@
  */
 
 use JFusion\Language\Text;
+
+use \RuntimeException;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -19,7 +21,7 @@ defined('JPATH_PLATFORM') or die;
  * @see         http://dev.mysql.com/doc/
  * @since       12.1
  */
-class JDatabaseDriverMysql extends JDatabaseDriverMysqli
+class Driver_Mysql extends Driver_Mysqli
 {
 	/**
 	 * The name of the database driver.

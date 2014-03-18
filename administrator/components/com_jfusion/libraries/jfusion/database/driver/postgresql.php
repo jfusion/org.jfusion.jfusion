@@ -18,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-class JDatabaseDriverPostgresql extends JDatabaseDriver
+class Driver_Postgresql extends Driver
 {
 	/**
 	 * The database driver name
@@ -596,7 +596,7 @@ class JDatabaseDriverPostgresql extends JDatabaseDriver
 	 *
 	 * @param   string  $tableName  The name of the table to unlock.
 	 *
-	 * @return  JDatabaseDriverPostgresql  Returns this object to support chaining.
+	 * @return  Driver_Postgresql  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -721,7 +721,7 @@ class JDatabaseDriverPostgresql extends JDatabaseDriver
 	 * @param   string  $backup    Not used by PostgreSQL.
 	 * @param   string  $prefix    Not used by PostgreSQL.
 	 *
-	 * @return  JDatabaseDriverPostgresql  Returns this object to support chaining.
+	 * @return  Driver_Postgresql  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -1329,7 +1329,7 @@ class JDatabaseDriverPostgresql extends JDatabaseDriver
 	 * Unlocks tables in the database, this command does not exist in PostgreSQL,
 	 * it is automatically done on commit or rollback.
 	 *
-	 * @return  JDatabaseDriverPostgresql  Returns this object to support chaining.
+	 * @return  Driver_Postgresql  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException

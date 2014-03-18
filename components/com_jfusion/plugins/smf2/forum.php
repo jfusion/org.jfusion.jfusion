@@ -16,7 +16,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_SMF
  */
 
-class JFusionForum_smf2 extends JFusionForum
+class JFusionForum_smf2 extends \JFusion\Plugin\Plugin_Forum
 {
     /**
      * @return string

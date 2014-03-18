@@ -32,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  *
  */
-class JFusionUser_wordpress extends JFusionUser
+class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 {
 	/**
 	 * @var $helper JFusionHelper_wordpress

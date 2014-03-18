@@ -6,6 +6,13 @@
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
+/*
+use JFusion\Registry\Format\INI;
+use JFusion\Registry\Format\JSON;
+use JFusion\Registry\Format\PHP;
+use JFusion\Registry\Format\XML;
+*/
+use \InvalidArgumentException;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -16,7 +23,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Registry
  * @since       11.1
  */
-abstract class RegistryFormat
+abstract class Format
 {
 	/**
 	 * @var    array  RegistryFormat instances container.
@@ -30,10 +37,10 @@ abstract class RegistryFormat
 	 *
 	 * @param   string  $type  The format to load
 	 *
-	 * @return  RegistryFormat  Registry format handler
+	 * @return  Format  Registry format handler
 	 *
 	 * @since   11.1
-	 * @throws  \InvalidArgumentException
+	 * @throws  InvalidArgumentException
 	 */
 	public static function getInstance($type)
 	{
@@ -44,20 +51,14 @@ abstract class RegistryFormat
 		if (!isset(self::$instances[$type]))
 		{
 			// Only load the file if the class does not exist.
-			$class = 'RegistryFormat' . $type;
 
-			if (!class_exists($class))
+			$class = '\JFusion\Registry\Format_' . $type;
+
+			$path = __DIR__ . '/format/' . $type . '.php';
+
+			if (!is_file($path))
 			{
-				$path = __DIR__ . '/format/' . $type . '.php';
-
-				if (is_file($path))
-				{
-					include_once $path;
-				}
-				else
-				{
-					throw new \InvalidArgumentException('Unable to load format class.', 500);
-				}
+				throw new InvalidArgumentException('Unable to load format class.', 500);
 			}
 
 			self::$instances[$type] = new $class;

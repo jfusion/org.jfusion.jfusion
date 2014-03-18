@@ -34,7 +34,8 @@ defined('_JEXEC') or die('Restricted access');
  */
 
 
-class JFusionPublic_prestashop extends JFusionPublic {
+class JFusionPublic_prestashop extends \JFusion\Plugin\Plugin_Public
+{
 	/**
 	 * @var $helper JFusionHelper_prestashop
 	 */

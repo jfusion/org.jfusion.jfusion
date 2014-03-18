@@ -32,7 +32,7 @@ abstract class Database
 	 */
 	public function query()
 	{
-		JLog::add('JDatabase::query() is deprecated, use JDatabaseDriver::execute() instead.', JLog::WARNING, 'deprecated');
+		JLog::add('JDatabase::query() is deprecated, use Driver::execute() instead.', JLog::WARNING, 'deprecated');
 
 		return $this->execute();
 	}
@@ -49,9 +49,9 @@ abstract class Database
 	 */
 	public static function getConnectors()
 	{
-		JLog::add('JDatabase::getConnectors() is deprecated, use JDatabaseDriver::getConnectors() instead.', JLog::WARNING, 'deprecated');
+		JLog::add('JDatabase::getConnectors() is deprecated, use Driver::getConnectors() instead.', JLog::WARNING, 'deprecated');
 
-		return JDatabaseDriver::getConnectors();
+		return Driver::getConnectors();
 	}
 
 	/**
@@ -94,8 +94,8 @@ abstract class Database
 	}
 
 	/**
-	 * Method to return a JDatabaseDriver instance based on the given options.  There are three global options and then
-	 * the rest are specific to the database driver.  The 'driver' option defines which JDatabaseDriver class is
+	 * Method to return a Driver instance based on the given options.  There are three global options and then
+	 * the rest are specific to the database driver.  The 'driver' option defines which Driver class is
 	 * used for the connection -- the default is 'mysqli'.  The 'database' option determines which database is to
 	 * be used for the connection.  The 'select' option determines whether the connector should automatically select
 	 * the chosen database.
@@ -105,16 +105,16 @@ abstract class Database
 	 *
 	 * @param   array  $options  Parameters to be passed to the database driver.
 	 *
-	 * @return  JDatabaseDriver  A database object.
+	 * @return  Driver  A database object.
 	 *
 	 * @since       11.1
 	 * @deprecated  13.1 (Platform) & 4.0 (CMS)
 	 */
 	public static function getInstance($options = array())
 	{
-		JLog::add('JDatabase::getInstance() is deprecated, use JDatabaseDriver::getInstance() instead.', JLog::WARNING, 'deprecated');
+		JLog::add('JDatabase::getInstance() is deprecated, use Driver::getInstance() instead.', JLog::WARNING, 'deprecated');
 
-		return JDatabaseDriver::getInstance($options);
+		return Driver::getInstance($options);
 	}
 
 	/**
@@ -129,9 +129,9 @@ abstract class Database
 	 */
 	public static function splitSql($query)
 	{
-		JLog::add('JDatabase::splitSql() is deprecated, use JDatabaseDriver::splitSql() instead.', JLog::WARNING, 'deprecated');
+		JLog::add('JDatabase::splitSql() is deprecated, use Driver::splitSql() instead.', JLog::WARNING, 'deprecated');
 
-		return JDatabaseDriver::splitSql($query);
+		return Driver::splitSql($query);
 	}
 
 	/**
@@ -165,11 +165,11 @@ abstract class Database
 	 * @return  boolean  True on success, false otherwise.
 	 *
 	 * @since   11.1
-	 * @deprecated  12.3 (Platform) & 4.0 (CMS) - Use JDatabaseDriver::isSupported() instead.
+	 * @deprecated  12.3 (Platform) & 4.0 (CMS) - Use Driver::isSupported() instead.
 	 */
 	public static function test()
 	{
-		JLog::add('JDatabase::test() is deprecated. Use JDatabaseDriver::isSupported() instead.', JLog::WARNING, 'deprecated');
+		JLog::add('JDatabase::test() is deprecated. Use Driver::isSupported() instead.', JLog::WARNING, 'deprecated');
 
 		return static::isSupported();
 	}

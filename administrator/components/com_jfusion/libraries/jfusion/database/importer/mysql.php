@@ -29,7 +29,7 @@ class JDatabaseImporterMysql extends JDatabaseImporterMysqli
 	public function check()
 	{
 		// Check if the db connector has been set.
-		if (!($this->db instanceof JDatabaseDriverMysql))
+		if (!($this->db instanceof Driver_Mysql))
 		{
 			throw new Exception('JPLATFORM_ERROR_DATABASE_CONNECTOR_WRONG_TYPE');
 		}

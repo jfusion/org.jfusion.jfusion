@@ -39,7 +39,8 @@ defined('_JEXEC') or die('Restricted access');
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org */
-class JFusionUser_moodle extends JFusionUser {
+class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
+{
 	/**
 	 * @param $data
 	 *

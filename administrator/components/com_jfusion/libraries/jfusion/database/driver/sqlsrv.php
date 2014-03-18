@@ -257,7 +257,7 @@ class JDatabaseDriverSqlsrv extends JDatabaseDriver
 	 * @param   string   $tableName  The name of the database table to drop.
 	 * @param   boolean  $ifExists   Optionally specify that the table must exist before it is dropped.
 	 *
-	 * @return  JDatabaseDriverSqlsrv  Returns this object to support chaining.
+	 * @return  Driver_Sqlsrv  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 */
@@ -1037,7 +1037,7 @@ class JDatabaseDriverSqlsrv extends JDatabaseDriver
 	 * @param   string  $backup    Table prefix
 	 * @param   string  $prefix    For the table - used to rename constraints in non-mysql databases
 	 *
-	 * @return  JDatabaseDriverSqlsrv  Returns this object to support chaining.
+	 * @return  Driver_Sqlsrv  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -1065,7 +1065,7 @@ class JDatabaseDriverSqlsrv extends JDatabaseDriver
 	 *
 	 * @param   string  $tableName  The name of the table to lock.
 	 *
-	 * @return  JDatabaseDriverSqlsrv  Returns this object to support chaining.
+	 * @return  Driver_Sqlsrv  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
@@ -1078,7 +1078,7 @@ class JDatabaseDriverSqlsrv extends JDatabaseDriver
 	/**
 	 * Unlocks tables in the database.
 	 *
-	 * @return  JDatabaseDriverSqlsrv  Returns this object to support chaining.
+	 * @return  Driver_Sqlsrv  Returns this object to support chaining.
 	 *
 	 * @since   12.1
 	 * @throws  RuntimeException
