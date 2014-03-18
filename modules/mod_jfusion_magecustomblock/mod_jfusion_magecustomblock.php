@@ -55,7 +55,7 @@ try {
 					}
 					echo $output;
 				} else {
-					JFusionFunction::raiseNotice('MODULE_BAD_CONFIGURED: ' . $module->title);
+					\JFusion\Framework::raiseNotice('MODULE_BAD_CONFIGURED: ' . $module->title);
 				}
 			} else {
 				$xml = '<block type="core/text_list" name="content">' . $xml_output . '</block>';
@@ -78,6 +78,6 @@ try {
 		throw new RuntimeException(JText::_('Plugin system magelib not installed or activated!'));
 	}
 } catch (Exception $e) {
-	JFusionFunction::raiseError($e, 'mod_jfusion_magecustomblock');
+	\JFusion\Framework::raiseError($e, 'mod_jfusion_magecustomblock');
 	echo $e->getMessage();
 }

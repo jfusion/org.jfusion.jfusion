@@ -39,7 +39,7 @@ class JFusionUser_zencart extends JFusionUser
                 $identifier = $userinfo->email;
             }
             $osCversion = $this->params->get('osCversion');
-            $db = JFusionFactory::getDatabase($this->getJname());
+            $db = \JFusion\Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('customers_id')
@@ -94,7 +94,7 @@ class JFusionUser_zencart extends JFusionUser
                 }
             }
         } catch (Exception $e) {
-            JFusionFunction::raiseError($e, $this->getJname());
+            \JFusion\Framework::raiseError($e, $this->getJname());
         }
         return null;
     }
@@ -157,7 +157,7 @@ class JFusionUser_zencart extends JFusionUser
 	    }
 	    $salt = substr(md5($existinguser->password), 0, 2);
 	    $existinguser->password = md5($salt . $userinfo->password_clear) . ':' . $salt;
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 	    $modified_date = date('Y-m-d H:i:s', time());
 	    $query1 = $query2 = null;
 	    $query1 = (string)$db->getQuery(true)
@@ -206,7 +206,7 @@ class JFusionUser_zencart extends JFusionUser
         try {
             $osCversion = $this->params->get('osCversion');
             //we need to update the email
-            $db = JFusionFactory::getDatabase($this->getJname());
+            $db = \JFusion\Factory::getDatabase($this->getJname());
             $modified_date = date('Y-m-d H:i:s', time());
             $query1 = $query2 = null;
             $query1 = (string)$db->getQuery(true)
@@ -246,7 +246,7 @@ class JFusionUser_zencart extends JFusionUser
     function createUser($userinfo, &$status)
     {
         try {
-            $db = JFusionFactory::getDatabase($this->getJname());
+            $db = \JFusion\Factory::getDatabase($this->getJname());
             //prepare the variables
             $user = new stdClass;
             $user->customers_id = null;
@@ -344,7 +344,7 @@ class JFusionUser_zencart extends JFusionUser
     {
         $status = array('error' => array(), 'debug' => array());
         try {
-            $db = JFusionFactory::getDatabase($this->getJname());
+            $db = \JFusion\Factory::getDatabase($this->getJname());
             //setup status array to hold debug info and errors
 
             //set the userid
@@ -468,7 +468,7 @@ class JFusionUser_zencart extends JFusionUser
 		    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 	    } else {
 		    $usergroup = $usergroups[0];
-		    $db = JFusionFactory::getDataBase($this->getJname());
+		    $db = \JFusion\Factory::getDataBase($this->getJname());
 		    //set the usergroup in the user table
 		    $query = $db->getQuery(true)
 			    ->update('#__customers')

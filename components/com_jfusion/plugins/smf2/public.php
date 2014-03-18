@@ -89,7 +89,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             }
             $options = array();
             $options['bbcode_patterns'] = $bbcode;
-            $text = JFusionFunction::parseCode($text, 'bbcode', $options);
+            $text = \JFusion\Framework::parseCode($text, 'bbcode', $options);
         } elseif ($for == 'joomla' || ($for == 'activity' && $params->get('parse_text') == 'html')) {
             $options = array();
             //convert smilies so they show up in Joomla as images
@@ -97,7 +97,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             if (!is_array($custom_smileys)) {
                 $custom_smileys = array();
 	            try {
-	                $db = JFusionFactory::getDatabase($this->getJname());
+	                $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		            $query = $db->getQuery(true)
 			            ->select('value, variable')
@@ -121,7 +121,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	                    }
 	                }
 	            } catch (Exception $e) {
-		            JFusionFunction::raiseError($e, $this->getJname());
+		            \JFusion\Framework::raiseError($e, $this->getJname());
 	            }
             }
             $options['custom_smileys'] = $custom_smileys;
@@ -160,9 +160,9 @@ class JFusionPublic_smf2 extends JFusionPublic {
                 $options['html_patterns'][$bb] = array('mode' => 1, 'content' => 0, 'method' => array($this, 'parseCustomBBCode'), 'class' => $class, 'allow_in' => $allow_in);
             }
 
-            $text = JFusionFunction::parseCode($text, 'html', $options);
+            $text = \JFusion\Framework::parseCode($text, 'html', $options);
         } elseif ($for == 'search') {
-            $text = JFusionFunction::parseCode($text, 'plaintext');
+            $text = \JFusion\Framework::parseCode($text, 'plaintext');
         } elseif ($for == 'activity') {
             if ($params->get('parse_text') == 'plaintext') {
                 $options = array();
@@ -171,7 +171,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
                     $status['limit_applied'] = 1;
                     $options['character_limit'] = $params->get('character_limit');
                 }
-                $text = JFusionFunction::parseCode($text, 'plaintext', $options);
+                $text = \JFusion\Framework::parseCode($text, 'plaintext', $options);
             }
         }
         return $status;
@@ -200,7 +200,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
      */
     function getBuffer(&$data)
 	{
-		$mainframe = JFusionFactory::getApplication();
+		$mainframe = \JFusion\Factory::getApplication();
 	    $jFusion_Route = $mainframe->input->get('jFusion_Route', null, 'raw');
         if ($jFusion_Route) {
         	$jFusion_Route = unserialize ($jFusion_Route);
@@ -215,9 +215,9 @@ class JFusionPublic_smf2 extends JFusionPublic {
         }
         $action = $mainframe->input->get('action');
         if ($action == 'register' || $action == 'reminder') {
-            $master = JFusionFunction::getMaster();
+            $master = \JFusion\Framework::getMaster();
             if ($master->name != $this->getJname()) {
-                $JFusionMaster = JFusionFactory::getPublic($master->name);
+                $JFusionMaster = \JFusion\Factory::getPublic($master->name);
                 $source_url = $this->params->get('source_url');
                 $source_url = rtrim($source_url, '/');
 	            try {
@@ -233,11 +233,11 @@ class JFusionPublic_smf2 extends JFusionPublic {
         //handle dual logout
         if ($action == 'logout') {
             //destroy the SMF session first
-	        $JFusionUser = JFusionFactory::getUser($this->getJname());
+	        $JFusionUser = \JFusion\Factory::getUser($this->getJname());
 	        try {
 		        $JFusionUser->destroySession(null, null);
 	        } catch (Exception $e) {
-		        JFusionFunction::raiseError($e, $JFusionUser->getJname());
+		        \JFusion\Framework::raiseError($e, $JFusionUser->getJname());
 	        }
 
             //destroy the Joomla session
@@ -245,7 +245,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $session = JFactory::getSession();
             $session->close();
 
-	        $cookies = JFusionFactory::getCookies();
+	        $cookies = \JFusion\Factory::getCookies();
 	        $cookies->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
             //redirect so the changes are applied
             $mainframe->redirect(str_replace('&amp;', '&', $data->baseURL));
@@ -258,7 +258,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             //$username = $mainframe->input->get('user');
             //$password = $mainframe->input->get('hash_passwrd');
             //get the userinfo directly from SMF
-            //$JFusionUser = JFusionFactory::getUser($this->getJname());
+            //$JFusionUser = \JFusion\Factory::getUser($this->getJname());
             //$userinfo = $JFusionUser->getUser($username);
             //generate the password hash
             //$test_crypt = sha1($userinfo->password . $smf_session_id);
@@ -292,7 +292,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$index_file = $source_path . 'index.php';
 
 		if ( ! is_file($index_file) ) {
-			JFusionFunction::raiseWarning('The path to the SMF index file set in the component preferences does not exist', $this->getJname());
+			\JFusion\Framework::raiseWarning('The path to the SMF index file set in the component preferences does not exist', $this->getJname());
 		} else {
             //add handler to undo changes that plgSystemSef create
             $dispatcher = JEventDispatcher::getInstance();
@@ -332,7 +332,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
             // Log an error if we could not include the file
             if (!$rs) {
-                JFusionFunction::raiseWarning('Could not find SMF in the specified directory', $this->getJname());
+                \JFusion\Framework::raiseWarning('Could not find SMF in the specified directory', $this->getJname());
             }
         }
 	}
@@ -344,7 +344,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
      */
     function onAfterRender()
     {
-	    $buffer = JFusionFactory::getApplication()->getBody();
+	    $buffer = \JFusion\Factory::getApplication()->getBody();
     	
         $base = JURI::base(true) . '/';
 
@@ -353,7 +353,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
         
         $buffer = preg_replace($regex_body, $replace_body, $buffer);
 
-	    JFusionFactory::getApplication()->setBody($buffer);
+	    \JFusion\Factory::getApplication()->setBody($buffer);
         return true;
     }
 
@@ -429,9 +429,9 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		static $regex_header, $replace_header;
 		if ( ! $regex_header || ! $replace_header )
 		{
-			$joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
+			$joomla_url = \JFusion\Factory::getParams('joomla_int')->get('source_url');
 
-			$baseURLnoSef = 'index.php?option=com_jfusion&Itemid=' . JFusionFactory::getApplication()->input->getInt('Itemid');
+			$baseURLnoSef = 'index.php?option=com_jfusion&Itemid=' . \JFusion\Factory::getApplication()->input->getInt('Itemid');
 			if (substr($joomla_url, -1) == '/') $baseURLnoSef = $joomla_url . $baseURLnoSef;
 			else $baseURLnoSef = $joomla_url . '/' . $baseURLnoSef;
 
@@ -484,7 +484,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	        } else {
 	            $sefmode = $this->params->get('sefmode');
 	            if ($sefmode == 1) {
-	                $url = JFusionFunction::routeURL($q, JFusionFactory::getApplication()->input->getInt('Itemid'));
+	                $url = \JFusion\Framework::routeURL($q, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
 	            } else {
 	                //we can just append both variables
 	                $url = $baseURL . $q;
@@ -518,9 +518,9 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$extra = $matches[2];		
 
 		$baseURL = $this->data->baseURL;    	
-        //JFusionFunction::raiseWarning($url, $this->getJname());
+        //\JFusion\Framework::raiseWarning($url, $this->getJname());
         $url = htmlspecialchars_decode($url);
-        $Itemid = JFusionFactory::getApplication()->input->getInt('Itemid');
+        $Itemid = \JFusion\Factory::getApplication()->input->getInt('Itemid');
         $extra = stripslashes($extra);
         $url = str_replace(';', '&amp;', $url);
         if (substr($baseURL, -1) != '/') {
@@ -542,7 +542,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = JFusionFunction::routeURL($url, $Itemid);
+                $url = \JFusion\Framework::routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {
@@ -577,7 +577,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$url = $matches[1];
 		$baseURL = $this->data->baseURL;
 		    	
-        //JFusionFunction::raiseWarning($url, $this->getJname());
+        //\JFusion\Framework::raiseWarning($url, $this->getJname());
         //split up the timeout from url
         $parts = explode(';url=', $url);
         $timeout = $parts[0];
@@ -601,7 +601,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
                 if (!empty($query)) {
                     $redirectURL.= '?' . $query;
                 }
-                $redirectURL = JFusionFunction::routeURL($redirectURL, JFusionFactory::getApplication()->input->getInt('Itemid'));
+                $redirectURL = \JFusion\Framework::routeURL($redirectURL, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $redirectURL = $baseURL . $jfile;
@@ -614,7 +614,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $redirectURL .= '#' . $fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
-        //JFusionFunction::raiseWarning(htmlentities($return), $this->getJname());
+        //\JFusion\Framework::raiseWarning(htmlentities($return), $this->getJname());
         return $return;
     }
 
@@ -625,9 +625,9 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	{
 		$pathway = array();
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
-			$mainframe = JFusionFactory::getApplication();
+			$mainframe = \JFusion\Factory::getApplication();
 
 			list ($board_id ) = explode('.', $mainframe->input->get('board'), 1);
 			list ($topic_id ) = explode('.', $mainframe->input->get('topic'), 1);
@@ -772,7 +772,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 					}
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		}
 		return $pathway;
 	}
@@ -795,7 +795,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
      */
     function getSearchQuery(&$pluginParam)
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 		//need to return threadid, postid, title, text, created, section
 
 		$query = $db->getQuery(true)
@@ -823,15 +823,15 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	function getSearchCriteria(&$where, &$pluginParam, $ordering)
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
-			$userPlugin = JFusionFactory::getUser($this->getJname());
+			$userPlugin = \JFusion\Factory::getUser($this->getJname());
 
 			$user = JFactory::getUser();
 			$userid = $user->get('id');
 
 			if ($userid) {
-				$userlookup = JFusionFunction::lookupUser($this->getJname(), $userid, true);
+				$userlookup = \JFusion\Framework::lookupUser($this->getJname(), $userid, true);
 				$existinguser = $userPlugin->getUser($userlookup);
 				$group_id = $existinguser->group_id;
 			} else {
@@ -879,7 +879,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			}
 			$where .= ' AND p.id_board IN (' . implode(',', $list) . ') ORDER BY ' . $sort;
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		}
 	}
 
@@ -892,7 +892,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
     function filterSearchResults(&$results = array(), &$pluginParam)
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('value')
@@ -902,7 +902,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$db->setQuery($query);
 			$vulgar = $db->loadResult();
 
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('value')
@@ -922,7 +922,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 				}
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		}
 	}
 
@@ -933,7 +933,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
      */
     function getSearchResultLink($post)
 	{
-		$forum = JFusionFactory::getForum($this->getJname());
+		$forum = \JFusion\Factory::getForum($this->getJname());
 		return $forum->getPostURL($post->id_topic, $post->id_msg);
 	}
 
@@ -951,7 +951,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	 **/
 	function getOnlineUserQuery($usergroups = array())
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('DISTINCT u.id_member AS userid, u.member_name AS username, u.real_name AS name, u.email_address as email')
@@ -984,7 +984,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	function getNumberOnlineGuests()
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('COUNT(DISTINCT(ip))')
@@ -994,7 +994,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			return 0;
 		}
 	}
@@ -1007,7 +1007,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	function getNumberOnlineMembers()
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('COUNT(DISTINCT(l.ip))')
@@ -1018,7 +1018,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			return 0 ;
 		}
 	}

@@ -69,14 +69,14 @@ class JFusionPublic_mybb extends JFusionPublic {
         // Get the path
         $source_path = $this->params->get('source_path');
         //get the filename
-        $jfile = JFusionFactory::getApplication()->input->get('jfile', 'index.php');
+        $jfile = \JFusion\Factory::getApplication()->input->get('jfile', 'index.php');
         if (!$jfile) {
             $jfile = 'index.php';
         }
         //combine the path and filename
         $index_file = $source_path . $jfile;
         if (!is_file($index_file)) {
-            JFusionFunction::raiseWarning('The path to the requested does not exist', $this->getJname());
+            \JFusion\Framework::raiseWarning('The path to the requested does not exist', $this->getJname());
         } else {
             //set the current directory to MyBB
             chdir($source_path);

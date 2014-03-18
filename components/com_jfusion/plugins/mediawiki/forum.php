@@ -34,7 +34,7 @@ class JFusionForum_mediawiki extends JFusionForum
     function renderActivityModule($config, $view, $pluginParam) {
 	    $output = '';
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
 
 		    // configuration
@@ -85,16 +85,16 @@ class JFusionForum_mediawiki extends JFusionForum
 					    if ($avatar) {
 						    // retrieve avatar
 						    if(!empty($avatar_software) && $avatar_software != 'jfusion' && !empty($userlookup)) {
-							    $o_avatar = JFusionFunction::getAltAvatar($avatar_software, $userlookup->id);
+							    $o_avatar = \JFusion\Framework::getAltAvatar($avatar_software, $userlookup->id);
 						    }
 						    if(empty($o_avatar)) {
-							    $o_avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+							    $o_avatar = \JFusion\Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 						    }
 						    $maxheight = $avatar_height;
 						    $maxwidth = $avatar_width;
 
 
-						    $size = ($avatar_keep_proportional) ? JFusionFunction::getImageSize($o_avatar) : false;
+						    $size = ($avatar_keep_proportional) ? \JFusion\Framework::getImageSize($o_avatar) : false;
 						    //size the avatar to fit inside the dimensions if larger
 						    if($size!==false && ($size->width > $maxwidth || $size->height > $maxheight)) {
 							    $wscale = $maxwidth/$size->width;
@@ -123,7 +123,7 @@ class JFusionForum_mediawiki extends JFusionForum
 					    } else {
 						    $output .= '<li>';
 					    }
-					    $url = JFusionFunction::routeURL('index.php?title=' . $value->title, $itemid, $this->getJname());
+					    $url = \JFusion\Framework::routeURL('index.php?title=' . $value->title, $itemid, $this->getJname());
 					    if (JString::strlen($value->title) > $display_limit_subject) {
 						    //we need to shorten the subject
 						    $value->pagename = JString::substr($value->title, 0, $display_limit_subject) . '...';
@@ -136,7 +136,7 @@ class JFusionForum_mediawiki extends JFusionForum
 					    if($showdate) {
 						    jimport('joomla.utilities.date');
 						    $JDate =  new JDate($value->created);
-						    $JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
+						    $JDate->setTimezone(new DateTimeZone(\JFusion\Framework::getJoomlaTimezone()));
 						    if (empty($custom_date)) {
 							    $output .= ' ' . $JDate->format(_DATE_FORMAT_LC2, true);
 						    } else {
@@ -152,7 +152,7 @@ class JFusionForum_mediawiki extends JFusionForum
 			    $output .= '</ul>';
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $output;
 	}

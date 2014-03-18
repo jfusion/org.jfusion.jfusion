@@ -122,7 +122,7 @@ class JFusionUser_moodle extends JFusionUser {
 	 */
 	function &getUser($userinfo) {
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			//get the identifier
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
 
@@ -162,7 +162,7 @@ class JFusionUser_moodle extends JFusionUser {
 				}
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			$result = null;
 		}
 		return $result;
@@ -193,7 +193,7 @@ class JFusionUser_moodle extends JFusionUser {
 
         // find out if moodle stores its sessions on disk or in the database
 
-        $db = JFusionFactory::getDatabase($this->getJname());
+        $db = \JFusion\Factory::getDatabase($this->getJname());
         //get the identifier
         $query = $db->getQuery(true)
             ->select('value')
@@ -285,7 +285,7 @@ class JFusionUser_moodle extends JFusionUser {
 		} else {
 			$existinguser->password = md5($userinfo->password_clear);
 		}
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__user')
@@ -323,7 +323,7 @@ class JFusionUser_moodle extends JFusionUser {
 	function updateEmail($userinfo, &$existinguser, &$status) {
 		//TODO ? check for duplicates, or leave it at db error
 		//we need to update the email
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__user')
@@ -348,7 +348,7 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @throws RuntimeException
 	 */
 	function blockUser($userinfo, &$existinguser, &$status) {
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 		$query = $db->getQuery(true)
 			->select('value')
 			->from('#__config')
@@ -382,7 +382,7 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @throws RuntimeException
 	 */
 	function unblockUser($userinfo, &$existinguser, &$status) {
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 		$query = $db->getQuery(true)
 			->select('value')
 			->from('#__config')
@@ -416,7 +416,7 @@ class JFusionUser_moodle extends JFusionUser {
 	 */
 	function activateUser($userinfo, &$existinguser, &$status) {
 		//activate the user
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__user')
@@ -439,7 +439,7 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function inactivateUser($userinfo, &$existinguser, &$status) {
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__user')
@@ -464,7 +464,7 @@ class JFusionUser_moodle extends JFusionUser {
 	function createUser($userinfo, &$status) {
 		try {
 			// first find out if the user already exists, but with deleted flag set
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			//get the identifier
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
 
@@ -486,7 +486,7 @@ class JFusionUser_moodle extends JFusionUser {
 				$db->execute();
 			} else {
 				//find out what usergroup should be used
-				$db = JFusionFactory::getDatabase($this->getJname());
+				$db = \JFusion\Factory::getDatabase($this->getJname());
 
 				$usergroups = $this->getCorrectUserGroups($userinfo);
 				if (empty($usergroups)) {
@@ -614,7 +614,7 @@ class JFusionUser_moodle extends JFusionUser {
 			if (!is_object($userinfo)) {
 				throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
 			}
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->update('#__user')

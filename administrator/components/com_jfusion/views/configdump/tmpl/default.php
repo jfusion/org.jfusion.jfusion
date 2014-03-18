@@ -11,7 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 echo JFusionFunctionAdmin::getDonationBanner();
 
-$debugger = JFusionFactory::getDebugger('jfusion-configdump');
+$debugger = \JFusion\Factory::getDebugger('jfusion-configdump');
 
 $show = '';
 if (JFactory::getApplication()->input->get('show', false)) {

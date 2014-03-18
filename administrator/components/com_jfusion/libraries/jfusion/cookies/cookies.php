@@ -1,18 +1,22 @@
-<?php
+<?php namespace JFusion\Cookies;
 // Check to ensure this file is within the rest of the framework
+
+use JFusion\Factory;
+use JFusion\Language\Text;
+
 defined('JPATH_BASE') or die();
 /**
- * JFusionCookies class
+ * Cookies class
  *
  * @category   JFusion
  * @package    Model
- * @subpackage JFusionCookies
+ * @subpackage Cookies
  * @author     JFusion Team <webmaster@jfusion.org>
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionCookies {
+class Cookies {
 	/**
      * Variable to store cookie data
      */
@@ -72,7 +76,7 @@ class JFusionCookies {
 		}
 		
 		if ($url) {
-			$mainframe = JFusionFactory::getApplication();
+			$mainframe = Factory::getApplication();
 			if ( !$mainframe->isAdmin()) {
 				$this->_cookies[$url][] = $cookie;
 			}
@@ -81,23 +85,23 @@ class JFusionCookies {
 		}
 
         $debug = array();
-        $debug[JText::_('COOKIE')][JText::_('JFUSION_CROSS_DOMAIN_URL')] = $url;
-	    $debug[JText::_('COOKIE')][JText::_('COOKIE_DOMAIN')] = $cookiedomain;
-        $debug[JText::_('COOKIE')][JText::_('NAME')] = $cookie_name;
+        $debug[Text::_('COOKIE')][Text::_('JFUSION_CROSS_DOMAIN_URL')] = $url;
+	    $debug[Text::_('COOKIE')][Text::_('COOKIE_DOMAIN')] = $cookiedomain;
+        $debug[Text::_('COOKIE')][Text::_('NAME')] = $cookie_name;
         if ($mask) {
-            $debug[JText::_('COOKIE')][JText::_('VALUE')] = substr($cookie_value, 0, 6) . '********';
+            $debug[Text::_('COOKIE')][Text::_('VALUE')] = substr($cookie_value, 0, 6) . '********';
         } else {
-            $debug[JText::_('COOKIE')][JText::_('VALUE')] = $cookie_value;
+            $debug[Text::_('COOKIE')][Text::_('VALUE')] = $cookie_value;
         }
         if (($cookie_expires_time) == 0) {
             $cookie_expires_time = 'Session_cookie';
         } else {
             $cookie_expires_time = date('d-m-Y H:i:s', $cookie_expires_time);
         }
-        $debug[JText::_('COOKIE')][JText::_('COOKIE_EXPIRES')] = $cookie_expires_time;
-        $debug[JText::_('COOKIE')][JText::_('COOKIE_PATH')] = $cookiepath;
-        $debug[JText::_('COOKIE')][JText::_('COOKIE_SECURE')] = $cookie_secure;
-        $debug[JText::_('COOKIE')][JText::_('COOKIE_HTTPONLY')] = $cookie_httponly;
+        $debug[Text::_('COOKIE')][Text::_('COOKIE_EXPIRES')] = $cookie_expires_time;
+        $debug[Text::_('COOKIE')][Text::_('COOKIE_PATH')] = $cookiepath;
+        $debug[Text::_('COOKIE')][Text::_('COOKIE_SECURE')] = $cookie_secure;
+        $debug[Text::_('COOKIE')][Text::_('COOKIE_HTTPONLY')] = $cookie_httponly;
         return $debug;
     }
 
@@ -108,11 +112,11 @@ class JFusionCookies {
      * @param string $return
      */
     function executeRedirect($source_url = null, $return = null) {
-    	$mainframe = JFusionFactory::getApplication();
+    	$mainframe = Factory::getApplication();
     	if (!$mainframe->isAdmin() || !$this->secret) {
 	    	if(count($this->_cookies)) {
 	    		if (empty($return)) {
-                    $return = JFusionFactory::getApplication()->input->getBase64('return', '');
+                    $return = Factory::getApplication()->input->getBase64('return', '');
 	    			if ($return) {
 	    				$return = base64_decode($return);
 	    				if( stripos($return, 'http://') === false && stripos($return, 'https://') === false ) {

@@ -86,7 +86,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 //replace plugin with nothing
                 $text = str_replace('{' . $plugin . '}', "", $text);
             }
-            $text = JFusionFunction::parseCode($text, 'bbcode');
+            $text = \JFusion\Framework::parseCode($text, 'bbcode');
         } elseif ($for == 'joomla' || ($for == 'activity' && $params->get('parse_text') == 'html')) {
             //remove phpbb bbcode uids
             $text = preg_replace('#\[(.*?):(.*?)]#si', '[$1]', $text);
@@ -97,7 +97,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             if (strpos($text, 'SMILIES_PATH') !== false) {
                 //must convert smilies
 	            try {
-		            $db = JFusionFactory::getDatabase($this->getJname());
+		            $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		            $query = $db->getQuery(true)
 			            ->select('config_value')
@@ -109,7 +109,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		            $source_url = $this->params->get('source_url');
 		            $text = preg_replace('#<!-- s(.*?) --><img src="\{SMILIES_PATH\}\/(.*?)" alt="(.*?)" title="(.*?)" \/><!-- s\\1 -->#si', "[img]{$source_url}{$smilie_path}/$2[/img]", $text);
 	            } catch (Exception $e) {
-					JFusionFunction::raiseError($e, $this->getJname());
+					\JFusion\Framework::raiseError($e, $this->getJname());
 	            }
             }
             //parse bbcode to html
@@ -119,7 +119,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 $status['limit_applied'] = 1;
                 $options['character_limit'] = $params->get('character_limit');
             }
-            $text = JFusionFunction::parseCode($text, 'html', $options);
+            $text = \JFusion\Framework::parseCode($text, 'html', $options);
         } elseif ($for == 'activity' || $for == 'search') {
             $text = preg_replace('#\[(.*?):(.*?)]#si', '[$1]', $text);
             $text = html_entity_decode($text);
@@ -131,10 +131,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                         $status['limit_applied'] = 1;
                         $options['character_limit'] = $params->get('character_limit');
                     }
-                    $text = JFusionFunction::parseCode($text, 'plaintext', $options);
+                    $text = \JFusion\Framework::parseCode($text, 'plaintext', $options);
                 }
             } else {
-                $text = JFusionFunction::parseCode($text, 'plaintext');
+                $text = \JFusion\Framework::parseCode($text, 'plaintext');
             }
         }
 
@@ -148,7 +148,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 	 */
     function getOnlineUserQuery($usergroups = array())
     {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
         //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $active = strtotime('-5 minutes', time());
@@ -180,7 +180,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    //get a unix time from 5 minutes ago
 		    date_default_timezone_set('UTC');
 		    $active = strtotime('-5 minutes', time());
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('COUNT(DISTINCT(session_ip))')
@@ -191,7 +191,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -205,7 +205,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    //get a unix time from 5 minutes ago
 		    date_default_timezone_set('UTC');
 		    $active = strtotime('-5 minutes', time());
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('COUNT(DISTINCT(session_user_id))')
@@ -217,7 +217,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -232,7 +232,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     {
     	$session = JFactory::getSession();
     	//detect if phpbb3 is already loaded for dual login
-	    $mainframe = JFusionFactory::getApplication();
+	    $mainframe = \JFusion\Factory::getApplication();
     	if (defined('IN_PHPBB')) {
     		//backup any post get vars
     		$backup = array();
@@ -280,7 +280,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         //combine the path and filename
 	    $index_file = $source_path . basename($jfile);
         if (!is_file($index_file)) {
-            JFusionFunction::raiseWarning('The path to the requested does not exist', $this->getJname());
+            \JFusion\Framework::raiseWarning('The path to the requested does not exist', $this->getJname());
         } else {
             //set the current directory to phpBB3
             chdir($source_path);
@@ -380,7 +380,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $replace_body[] = 'popup(\'' . $data->integratedURL . '$1\'';
             $callback_function[] = '';    
             //fix for mcp links
-	        $mainframe = JFusionFactory::getApplication();
+	        $mainframe = \JFusion\Factory::getApplication();
             $jfile = $mainframe->input->get('jfile');
             if ($jfile == 'mcp.php') {
                 $topicid = $mainframe->input->getInt('t');
@@ -496,7 +496,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             if (empty($profile_mod_id)) {
                 //the first item listed in the profile module is the edit profile link so must rewrite it to go to signature instead
 	            try {
-		            $db = JFusionFactory::getDatabase($this->getJname());
+		            $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		            $query = $db->getQuery(true)
 			            ->select('module_id')
@@ -506,13 +506,13 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		            $db->setQuery($query);
 		            $profile_mod_id = $db->loadResult();
 	            } catch (Exception $e) {
-		            JFusionFunction::raiseError($e, $this->getJname());
+		            \JFusion\Framework::raiseError($e, $this->getJname());
 		            $profile_mod_id = null;
 	            }
             }
             if (!empty($profile_mod_id) && strstr($q, 'i=' . $profile_mod_id)) {
                 $url = 'ucp.php?i=profile&mode=signature';
-                $url = JFusionFunction::routeURL($url, JFusionFactory::getApplication()->input->getInt('Itemid'), $this->getJname());
+                $url = \JFusion\Framework::routeURL($url, \JFusion\Factory::getApplication()->input->getInt('Itemid'), $this->getJname());
                 return 'href="' . $url . '"';
             }
         }
@@ -532,7 +532,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = JFusionFunction::routeURL($q, JFusionFactory::getApplication()->input->getInt('Itemid'));
+                $url = \JFusion\Framework::routeURL($q, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $url = $baseURL . $q;
@@ -549,7 +549,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		$url = $matches[1];
 		$baseURL = $this->data->baseURL;
 		    	
-        //JFusionFunction::raiseWarning($url, $this->getJname());
+        //\JFusion\Framework::raiseWarning($url, $this->getJname());
         //split up the timeout from url
         $parts = explode('url=', $url, 2);
         $uri = new JURI($parts[1]);
@@ -572,7 +572,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 if (!empty($query)) {
                     $redirectURL.= '?' . $query;
                 }
-                $redirectURL = JFusionFunction::routeURL($redirectURL, JFusionFactory::getApplication()->input->getInt('Itemid'));
+                $redirectURL = \JFusion\Framework::routeURL($redirectURL, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $redirectURL = $baseURL . $jfile;
@@ -585,7 +585,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $redirectURL .= '#' . $fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $parts[0] . 'url=' . $redirectURL . '">';
-        //JFusionFunction::raiseWarning(htmlentities($return), $this->getJname());
+        //\JFusion\Framework::raiseWarning(htmlentities($return), $this->getJname());
         return $return;
     }
 
@@ -599,7 +599,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		$baseURL = $this->data->baseURL;
 		
         $url = htmlspecialchars_decode($url);
-	    $mainframe = JFusionFactory::getApplication();
+	    $mainframe = \JFusion\Factory::getApplication();
         $Itemid = $mainframe->input->getInt('Itemid');
         //strip any leading dots
         if (substr($url, 0, 2) == './') {
@@ -623,7 +623,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = JFusionFunction::routeURL($url, $Itemid);
+                $url = \JFusion\Framework::routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {
@@ -704,10 +704,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      */
     function getPathWay() {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    $pathway = array();
 
-		    $mainframe = JFusionFactory::getApplication();
+		    $mainframe = \JFusion\Factory::getApplication();
 
 		    $forum_id = $mainframe->input->getInt('f');
 		    if (!empty($forum_id)) {
@@ -768,7 +768,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $pathway = array();
 	    }
 
@@ -790,7 +790,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @return string
      */
     function getSearchQuery(&$pluginParam) {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
         //need to return threadid, postid, title, text, created, section
 	    $query = $db->getQuery(true)
 		    ->select('p.topic_id, p.post_id, p.forum_id, CASE WHEN p.post_subject = "" THEN CONCAT("Re: ",t.topic_title) ELSE p.post_subject END AS title, p.post_text AS text,
@@ -813,13 +813,13 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering) {
         $where.= ' AND p.post_approved = 1';
-        $forum = JFusionFactory::getForum($this->getJname());
+        $forum = \JFusion\Factory::getForum($this->getJname());
         if ($pluginParam->get('forum_mode', 0)) {
             $selected_ids = $pluginParam->get('selected_forums', array());
             $forumids = $forum->filterForumList($selected_ids);
         } else {
 	        try {
-		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $db = \JFusion\Factory::getDatabase($this->getJname());
 		        //no forums were selected so pull them all then filter
 
 		        $query = $db->getQuery(true)
@@ -832,7 +832,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		        $forumids = $db->loadColumn();
 		        $forumids = $forum->filterForumList($forumids);
 	        } catch (Exception $e) {
-		        JFusionFunction::raiseError($e, $this->getJname());
+		        \JFusion\Framework::raiseError($e, $this->getJname());
 		        $forumids = array();
 	        }
 
@@ -867,7 +867,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @return string
      */
     function getSearchResultLink($post) {
-        $forum = JFusionFactory::getForum($this->getJname());
+        $forum = \JFusion\Factory::getForum($this->getJname());
         return $forum->getPostURL($post->topic_id, $post->post_id);
     }
 }

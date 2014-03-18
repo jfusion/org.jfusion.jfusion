@@ -50,7 +50,7 @@ class JFormFieldjfusionsql extends JFormField
 
 	    try {
 		    if($jname) {
-			    $user = JFusionFactory::getUser($jname);
+			    $user = \JFusion\Factory::getUser($jname);
 			    if ($user->isConfigured()) {
 				    $query = (string) $this->element['query'];
 
@@ -108,7 +108,7 @@ class JFormFieldjfusionsql extends JFormField
 					    $results = JFormFieldjfusionsql::buildRecursiveTree(0, '', array(), $children);
 					    $output = JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" ' . $multiple, $key, $val, $this->value, $this->formControl . '_' . $this->group . '_' . $this->fieldname);
 				    } else {
-					    $db = JFusionFactory::getDatabase($jname);
+					    $db = \JFusion\Factory::getDatabase($jname);
 					    $db->setQuery($this->element['query']);
 
 					    $results = $db->loadObjectList();

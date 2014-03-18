@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugin;
 
 /**
  * Abstract admin file
@@ -14,6 +14,14 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Registry\Registry;
+use JFusion\Language\Text;
+
+use \RuntimeException;
+use \Exception;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -26,7 +34,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionAdmin extends JFusionPlugin
+class Plugin_Admin extends Plugin
 {
 	var $helper;
 
@@ -37,7 +45,7 @@ class JFusionAdmin extends JFusionPlugin
 	{
 		parent::__construct();
 		//get the helper object
-		$this->helper = &JFusionFactory::getHelper($this->getJname());
+		$this->helper = & Factory::getHelper($this->getJname());
 	}
 
     /**
@@ -79,7 +87,7 @@ class JFusionAdmin extends JFusionPlugin
      */
     function getDefaultUsergroup()
     {
-        $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+        $usergroups = Framework::getUserGroups($this->getJname(), true);
 
         $groups = array();
         if ($usergroups !== null) {
@@ -135,36 +143,36 @@ class JFusionAdmin extends JFusionPlugin
     {
         //for joomla_int check to see if the source_url does not equal the default
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 	    } catch (Exception $e) {
-		    throw new RuntimeException(JText::_('NO_DATABASE') . ' : ' . $e->getMessage());
+		    throw new RuntimeException(Text::_('NO_DATABASE') . ' : ' . $e->getMessage());
 	    }
 
 	    try {
-		    $jdb = JFusionFactory::getDBO();
+		    $jdb = Factory::getDBO();
 	    } catch (Exception $e) {
-		    throw new RuntimeException($this->getJname() . ' -> joomla_int ' . JText::_('NO_DATABASE') . ' : ' . $e->getMessage());
+		    throw new RuntimeException($this->getJname() . ' -> joomla_int ' . Text::_('NO_DATABASE') . ' : ' . $e->getMessage());
 	    }
 
 	    if (!$db->connected()) {
-		    throw new RuntimeException(JText::_('NO_DATABASE'));
+		    throw new RuntimeException(Text::_('NO_DATABASE'));
 	    } elseif (!$jdb->connected()) {
-		    throw new RuntimeException($this->getJname() . ' -> joomla_int ' . JText::_('NO_DATABASE'));
+		    throw new RuntimeException($this->getJname() . ' -> joomla_int ' . Text::_('NO_DATABASE'));
 	    } else {
 		    //added check for missing files of copied plugins after upgrade
 		    $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR;
 		    if (!file_exists($path . 'admin.php')) {
-			    throw new RuntimeException(JText::_('NO_FILES') . ' admin.php');
+			    throw new RuntimeException(Text::_('NO_FILES') . ' admin.php');
 		    } else if (!file_exists($path . 'user.php')) {
-			    throw new RuntimeException(JText::_('NO_FILES') . ' user.php');
+			    throw new RuntimeException(Text::_('NO_FILES') . ' user.php');
 		    } else {
 			    $cookie_domain = $this->params->get('cookie_domain');
-			    $jfc = JFusionFactory::getCookies();
+			    $jfc = Factory::getCookies();
 			    list($url) = $jfc->getApiUrl($cookie_domain);
 			    if ($url) {
 				    require_once(JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusionapi.php');
 
-				    $api = new JFusionAPI($url, JFusionFactory::getParams('joomla_int')->get('secret'));
+				    $api = new JFusionAPI($url, Factory::getParams('joomla_int')->get('secret'));
 				    if (!$api->ping()) {
 					    list ($message) = $api->getError();
 
@@ -173,7 +181,7 @@ class JFusionAdmin extends JFusionPlugin
 			    }
 			    $source_path = $this->params->get('source_path');
 			    if ($source_path && (strpos($source_path, 'http://') === 0 || strpos($source_path, 'https://') === 0)) {
-				    throw new RuntimeException(JText::_('ERROR_SOURCE_PATH') . ' : ' . $source_path);
+				    throw new RuntimeException(Text::_('ERROR_SOURCE_PATH') . ' : ' . $source_path);
 			    } else {
 				    //get the user table name
 				    $tablename = $this->getTablename();
@@ -181,12 +189,12 @@ class JFusionAdmin extends JFusionPlugin
 				    $table_list = $db->getTableList();
 				    $table_prefix = $db->getPrefix();
 				    if (!is_array($table_list)) {
-					    throw new RuntimeException($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
+					    throw new RuntimeException($table_prefix . $tablename . ': ' . Text::_('NO_TABLE'));
 				    } else {
 					    if (array_search($table_prefix . $tablename, $table_list) === false) {
 						    //do a final check for case insensitive windows servers
 						    if (array_search(strtolower($table_prefix . $tablename), $table_list) === false) {
-							    throw new RuntimeException($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
+							    throw new RuntimeException($table_prefix . $tablename . ': ' . Text::_('NO_TABLE'));
 						    }
 					    }
 				    }
@@ -195,7 +203,7 @@ class JFusionAdmin extends JFusionPlugin
 	    }
 	    $status = array();
 	    $status['config'] = 1;
-	    $status['message'] = JText::_('GOOD_CONFIG');
+	    $status['message'] = Text::_('GOOD_CONFIG');
         return true;
     }
 
@@ -204,7 +212,7 @@ class JFusionAdmin extends JFusionPlugin
 	 */
 	public final function updateStatus($status = 0) {
 		try {
-			$db = JFusionFactory::getDBO();
+			$db = Factory::getDBO();
 			$query = $db->getQuery(true)
 				->update('#__jfusion')
 				->set('status = ' . $db->quote($status))
@@ -213,7 +221,7 @@ class JFusionAdmin extends JFusionPlugin
 			$db->execute();
 		} catch (Exception $e) {
 			//there was an error saving the parameters
-			JFusionFunction::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 		}
 	}
 
@@ -230,7 +238,7 @@ class JFusionAdmin extends JFusionPlugin
 	    $new_registration = $this->allowRegistration();
 
 	    //get the data about the JFusion plugins
-	    $db = JFusionFactory::getDBO();
+	    $db = Factory::getDBO();
 
 	    $query = $db->getQuery(true)
 		    ->select('*')
@@ -241,10 +249,10 @@ class JFusionAdmin extends JFusionPlugin
 	    $plugin = $db->loadObject();
 	    //output a warning to the administrator if the allowRegistration setting is wrong
 	    if ($new_registration && $plugin->slave == 1) {
-		    JFusionFunction::raiseNotice(JText::_('DISABLE_REGISTRATION'), $jname);
+		    Framework::raiseNotice(Text::_('DISABLE_REGISTRATION'), $jname);
 	    }
 	    if (!$new_registration && $plugin->master == 1) {
-		    JFusionFunction::raiseNotice(JText::_('ENABLE_REGISTRATION'), $jname);
+		    Framework::raiseNotice(Text::_('ENABLE_REGISTRATION'), $jname);
 	    }
 	    //most dual login problems are due to incorrect cookie domain settings
 	    //therefore we should check it and output a warning if needed.
@@ -264,7 +272,7 @@ class JFusionAdmin extends JFusionPlugin
 				    $correct_domain = '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
 			    }
 			    if ($correct_domain != $cookie_domain && !$this->allowEmptyCookieDomain()) {
-				    JFusionFunction::raiseNotice(JText::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain, $jname);
+				    Framework::raiseNotice(Text::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain, $jname);
 			    }
 		    }
 	    }
@@ -273,7 +281,7 @@ class JFusionAdmin extends JFusionPlugin
 	    $cookie_path = $this->params->get('cookie_path',-1);
 	    if ($cookie_path!==-1) {
 		    if ($cookie_path != '/' && !$this->allowEmptyCookiePath()) {
-			    JFusionFunction::raiseNotice(JText::_('BEST_COOKIE_PATH') . ' /', $jname);
+			    Framework::raiseNotice(Text::_('BEST_COOKIE_PATH') . ' /', $jname);
 		    }
 	    }
 
@@ -325,7 +333,7 @@ class JFusionAdmin extends JFusionPlugin
         $path = $this->params->get('source_path');
         if (empty($path)) {
             $error = 1;
-            $reason = JText::_('SET_PATH_FIRST');
+            $reason = Text::_('SET_PATH_FIRST');
         }
         //check for trailing slash and generate file path
         if (substr($path, -1) == DIRECTORY_SEPARATOR) {
@@ -336,7 +344,7 @@ class JFusionAdmin extends JFusionPlugin
         //see if the file exists
         if (!file_exists($mod_file) && $error == 0) {
             $error = 1;
-            $reason = JText::_('NO_FILE_FOUND');
+            $reason = Text::_('NO_FILE_FOUND');
         }
         return $mod_file;
     }
@@ -391,7 +399,7 @@ class JFusionAdmin extends JFusionPlugin
     {
         $result = false;
         if ($itemid) {
-            $app = JFusionFactory::getApplication();
+            $app = Factory::getApplication();
             $menus = $app->getMenu('site');
             $params = $menus->getParams($itemid);
             if ($params) {
@@ -454,7 +462,7 @@ JS;
 		$result = false;
 		try {
 			if (!empty($jname)) {
-				$db = JFusionFactory::getDBO();
+				$db = Factory::getDBO();
 
 				if (isset($post['source_url'])) {
 					//check for trailing slash in URL, in order for us not to worry about it later
@@ -475,7 +483,7 @@ JS;
 							$post['source_path'] .= DIRECTORY_SEPARATOR;
 						}
 						if (!is_dir($post['source_path'])) {
-							JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
+							Framework::raiseWarning(Text::_('SOURCE_PATH_NOT_FOUND'));
 						}
 					}
 				}
@@ -490,7 +498,7 @@ JS;
 
 					$db->setQuery($query);
 					$params = $db->loadResult();
-					$params = new JRegistry($params);
+					$params = new Registry($params);
 
 					$existing_params = $params->toArray();
 					if (is_array($existing_params)) {
@@ -498,7 +506,7 @@ JS;
 					}
 				}
 
-				$data = new JRegistry($post);
+				$data = new Registry($post);
 				//set the current parameters in the jfusion table
 
 				$query = $db->getQuery(true)
@@ -511,12 +519,12 @@ JS;
 				$db->execute();
 
 				//reset the params instance for this plugin
-				JFusionFactory::getParams($jname, true);
+				Factory::getParams($jname, true);
 				$result = true;
 			}
 		} catch (Exception $e ) {
 			//there was an error saving the parameters
-			JFusionFunction::raiseError($e, $jname);
+			Framework::raiseError($e, $jname);
 		}
 		return $result;
 	}

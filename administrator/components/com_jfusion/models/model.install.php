@@ -68,10 +68,10 @@ class JFusionModelInstaller extends InstallerModelInstall
 		if ($this->raise) {
 			switch($type) {
 				case 'message':
-					JFusionFunction::raiseMessage($msg, $jname);
+					\JFusion\Framework::raiseMessage($msg, $jname);
 					break;
 				case 'error':
-					JFusionFunction::raiseError($msg, $jname);
+					\JFusion\Framework::raiseError($msg, $jname);
 					break;
 			}
 		}
@@ -295,7 +295,7 @@ class JFusionPluginInstaller extends JObject
 
 	            $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusion.xml';
 	            if (file_exists($file)) {
-		            $jfusionxml = JFusionFunction::getXml($file);
+		            $jfusionxml = \JFusion\Framework::getXml($file);
 	            } else {
 		            $jfusionxml = false;
 	            }
@@ -475,7 +475,7 @@ class JFusionPluginInstaller extends JObject
     {
     	$result['status'] = false;
 	    try {
-		    $JFusionAdmin = JFusionFactory::getAdmin($jname);
+		    $JFusionAdmin = \JFusion\Factory::getAdmin($jname);
 		    if ($JFusionAdmin->isConfigured()) {
 			    //if this plugin had been valid, call its uninstall function if it exists
 			    $success = 0;
@@ -689,7 +689,7 @@ class JFusionPluginInstaller extends JObject
         $this->parent->setPath('manifest', $file);
         // If we cannot load the xml file return null
 
-	    $xml = JFusionFunction::getXml($file);
+	    $xml = \JFusion\Framework::getXml($file);
     	/*
         * Check for a valid XML root tag.
         * @TODO Remove backwards compatibility in a future version

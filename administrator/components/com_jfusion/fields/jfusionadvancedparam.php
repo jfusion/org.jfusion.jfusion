@@ -38,7 +38,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 	 */
 	protected function getInput()
 	{
-		JFusionFunction::initJavaScript();
+		\JFusion\Framework::initJavaScript();
 
 		//used to give unique ids to elements when more than one advanced param is loaded (for example in configuring JoomFish)
 		static $elNum;
@@ -66,7 +66,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 		}
 
 		jimport('joomla.user.helper');
-		$hash = JFusionFunction::getHash($this->name . JUserHelper::genRandomPassword());
+		$hash = \JFusion\Framework::getHash($this->name . JUserHelper::genRandomPassword());
 		$session = JFactory::getSession();
 		$session->set($hash, $this->value);
 

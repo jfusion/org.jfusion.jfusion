@@ -57,7 +57,7 @@ function jfusionBuildRoute(&$query)
     }
 
     if (defined('ROUTED_JNAME')) {
-        $public = JFusionFactory::getPublic(ROUTED_JNAME);
+        $public = \JFusion\Factory::getPublic(ROUTED_JNAME);
         $public->buildRoute($segments);
     }
 
@@ -137,7 +137,7 @@ function jfusionParseRoute($segments)
 		    require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
 	
 	        if (!empty($jname)) {
-	            $public = JFusionFactory::getPublic($jname);
+	            $public = \JFusion\Factory::getPublic($jname);
 	            $public->parseRoute($vars);
 	        }
 

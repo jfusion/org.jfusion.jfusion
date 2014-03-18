@@ -55,7 +55,7 @@ class jfusionViewusergroups extends JViewLegacy {
     {
 	    JHtml::_('Formbehavior.chosen');
 
-	    $plugins = JFusionFactory::getPlugins('all', true);
+	    $plugins = \JFusion\Factory::getPlugins('all', true);
 
         if (!empty($plugins)) {
             //pass the data onto the view
@@ -65,16 +65,16 @@ class jfusionViewusergroups extends JViewLegacy {
 	        $document->addScript('components/com_jfusion/js/File.Upload.js');
 	        $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
-	        JFusionFunction::loadJavascriptLanguage(array('SELECT_ONE'));
+	        \JFusion\Framework::loadJavascriptLanguage(array('SELECT_ONE'));
 
 	        $groups = array();
 
-	        $update = JFusionFunction::getUpdateUserGroups();
+	        $update = \JFusion\Framework::getUpdateUserGroups();
 
-	        $master = JFusionFunction::getMaster();
+	        $master = \JFusion\Framework::getMaster();
 
 	        foreach ($this->plugins as $key => $plugin) {
-		        $admin = JFusionFactory::getAdmin($plugin->name);
+		        $admin = \JFusion\Factory::getAdmin($plugin->name);
 		        $this->plugins[$key]->isMultiGroup = $admin->isMultiGroup();
 		        $this->plugins[$key]->update = false;
 
@@ -90,18 +90,18 @@ class jfusionViewusergroups extends JViewLegacy {
 		        try {
 			        $groups[$plugin->name] = $admin->getUsergroupList();
 		        } catch (Exception $e) {
-			        JFusionFunction::raiseError($e, $admin->getJname());
+			        \JFusion\Framework::raiseError($e, $admin->getJname());
 		        }
 	        }
 
 	        $groups = json_encode($groups);
 	        $plugins = json_encode($this->plugins);
 
-	        $pairs = JFusionFunction::getUserGroups();
+	        $pairs = \JFusion\Framework::getUserGroups();
 	        if ($pairs === false) {
 		        $pairs = new stdClass();
 	        }
-	        $pairs = json_encode(JFusionFunction::getUserGroups());
+	        $pairs = json_encode(\JFusion\Framework::getUserGroups());
 
 	        $js=<<<JS
 	        JFusion.renderPlugin = [];
@@ -113,13 +113,13 @@ JS;
 	        $document->addScriptDeclaration($js);
 
 	        foreach ($this->plugins as $plugin) {
-		        $admin = JFusionFactory::getAdmin($plugin->name);
+		        $admin = \JFusion\Factory::getAdmin($plugin->name);
 		        $document->addScriptDeclaration($admin->getRenderGroup());
 	        }
 
 	        parent::display();
         } else {
-            JFusionFunction::raiseWarning(JText::_('NO_JFUSION_TABLE'));
+            \JFusion\Framework::raiseWarning(JText::_('NO_JFUSION_TABLE'));
         }
     }
 }

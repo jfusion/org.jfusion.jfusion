@@ -64,7 +64,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
         //check if the file exists
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -115,7 +115,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('username, email')
@@ -125,7 +125,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -138,7 +138,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
     {
 	    try {
 	        //getting the connection to the db
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -148,7 +148,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
 	        //getting the results
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }
@@ -172,7 +172,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
     function getDefaultUsergroup()
     {
         //Only seems to be 2 usergroups in elgg (without any acl setup): Administrator, and user.  So just return 'user'
-	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 		    $group = 'user';
 	    } else {

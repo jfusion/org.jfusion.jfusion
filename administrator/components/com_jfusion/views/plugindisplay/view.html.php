@@ -63,7 +63,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {
-		        $xml = JFusionFunction::getXml($VersionDataRaw, false);
+		        $xml = \JFusion\Framework::getXml($VersionDataRaw, false);
 	            if ($xml) {
 		            if ($xml->plugins) {
 			            $VersionData = $xml->plugins->children();
@@ -80,11 +80,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        $document->addScript('components/com_jfusion/js/File.Upload.js');
 	        $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
-	        JFusionFunction::loadJavascriptLanguage(array('COPY_MESSAGE', 'DELETE', 'PLUGIN', 'COPY'));
+	        \JFusion\Framework::loadJavascriptLanguage(array('COPY_MESSAGE', 'DELETE', 'PLUGIN', 'COPY'));
 
 	        parent::display();
         } else {
-            JFusionFunction::raiseWarning(JText::_('NO_JFUSION_TABLE'));
+            \JFusion\Framework::raiseWarning(JText::_('NO_JFUSION_TABLE'));
         }
     }
 
@@ -106,8 +106,8 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    $record = $db->loadObject();
 	    }
 	    try {
-		    $JFusionPlugin = JFusionFactory::getAdmin($record->name);
-		    $JFusionParam = JFusionFactory::getParams($record->name);
+		    $JFusionPlugin = \JFusion\Factory::getAdmin($record->name);
+		    $JFusionParam = \JFusion\Factory::getParams($record->name);
 
 		    if($record->status == 1) {
 			    //added check for database configuration to prevent error after moving sites
@@ -154,7 +154,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    }
 
 		    //set wizard options
-		    $record->wizard = JFusionFunction::hasFeature($record->name, 'wizard');
+		    $record->wizard = \JFusion\Framework::hasFeature($record->name, 'wizard');
 		    if($record->wizard) {
 			    $record->wizardimage = 'components/com_jfusion/images/wizard_icon.png';
 			    $record->wizardscript =  'index.php?option=com_jfusion&task=wizard&jname=' . $record->name;
@@ -247,7 +247,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    //get the default description
 			    $plugin_xml = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $record->name . DIRECTORY_SEPARATOR . 'jfusion.xml';
 			    if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
-				    $xml = JFusionFunction::getXml($plugin_xml);
+				    $xml = \JFusion\Framework::getXml($plugin_xml);
 				    $description = $xml->description;
 				    if(!empty($description)) {
 					    $record->description = (string)$description;
@@ -269,7 +269,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    try {
 				    $record->registration = $JFusionPlugin->allowRegistration();
 			    } catch (Exception $e) {
-				    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+				    \JFusion\Framework::raiseError($e, $JFusionPlugin->getJname());
 				    $record->registration = false;
 			    }
 
@@ -286,7 +286,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    try {
 				    $usergroup = $JFusionPlugin->getDefaultUsergroup();
 			    } catch (Exception $e) {
-				    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+				    \JFusion\Framework::raiseError($e, $JFusionPlugin->getJname());
 				    $usergroup = null;
 			    }
 
@@ -298,7 +298,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				    $record->usergrouptext = $usergroup;
 			    } else {
 				    $record->usergrouptext = '<img src="components/com_jfusion/images/cross.png" border="0" alt="' . JText::_('DISABLED') . '" />' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP') ;
-				    JFusionFunction::raiseWarning(JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP'), $record->name);
+				    \JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP'), $record->name);
 			    }
 		    } else {
 			    $record->usergrouptext = '';
@@ -358,7 +358,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		if ($rows) {
 			//we found plugins now prepare the data
 			foreach($rows as $record) {
-				$JFusionPlugin = JFusionFactory::getAdmin($record->name);
+				$JFusionPlugin = \JFusion\Factory::getAdmin($record->name);
 
 				//output detailed configuration warnings for enabled plugins
 				if ($record->status==1) {
@@ -366,7 +366,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 					$plugin_xml = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $record->name . DIRECTORY_SEPARATOR . 'jfusion.xml';
 					if(!file_exists($plugin_xml)) {
 						$record->status = 0;
-						JFusionFunction::raiseWarning(JText::_('NO_FILES'), $record->name);
+						\JFusion\Framework::raiseWarning(JText::_('NO_FILES'), $record->name);
 					} else {
 						$record->status = 1;
 					}
@@ -375,7 +375,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 						try {
 							$JFusionPlugin->debugConfig();
 						} catch (Exception $e) {
-							JFusionFunction::raiseError($e, $record->name);
+							\JFusion\Framework::raiseError($e, $record->name);
 							$record->status = 0;
 						}
 					}

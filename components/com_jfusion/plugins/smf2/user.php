@@ -29,7 +29,7 @@ class JFusionUser_smf2 extends JFusionUser {
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.member_name', 'a.email_address');
 
 		    // initialise some objects
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('a.id_member as userid, a.member_name as username, a.real_name as name, a.email_address as email, a.passwd as password, a.password_salt as password_salt, a.validation_code as activation, a.is_activated, NULL as reason, a.last_login as lastvisit, a.id_group as group_id, a.id_post_group as postgroup, a.additional_groups')
@@ -92,7 +92,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;
@@ -116,7 +116,7 @@ class JFusionUser_smf2 extends JFusionUser {
 	    try {
 	        //setup status array to hold debug info and errors
 	        $status = array('error' => array(), 'debug' => array());
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__members')
@@ -181,7 +181,7 @@ class JFusionUser_smf2 extends JFusionUser {
 	    try {
 	        $status['debug'][] = $this->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__log_online')
@@ -224,7 +224,7 @@ class JFusionUser_smf2 extends JFusionUser {
     {
 	    $existinguser->password = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
 	    $existinguser->password_salt = substr(md5(rand()), 0, 4);
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__members')
@@ -232,7 +232,7 @@ class JFusionUser_smf2 extends JFusionUser {
 		    ->set('password_salt = ' . $db->quote($existinguser->password_salt))
 		    ->where('id_member = ' . (int)$existinguser->userid);
 
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 	    $db->setQuery($query);
 
 	    $db->execute();
@@ -261,7 +261,7 @@ class JFusionUser_smf2 extends JFusionUser {
     function updateEmail($userinfo, &$existinguser, &$status)
     {
 	    //we need to update the email
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__members')
@@ -298,7 +298,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			    $usergroup->groups = array();
 		    }
 
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->update('#__members')
@@ -376,7 +376,7 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 	    $ban = new stdClass;
 	    $ban->id_ban_group = NULL;
 	    $ban->name = $existinguser->username;
@@ -411,7 +411,7 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->delete('#__ban_groups')
@@ -439,7 +439,7 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function activateUser($userinfo, &$existinguser, &$status)
     {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__members')
@@ -462,7 +462,7 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__members')
@@ -486,7 +486,7 @@ class JFusionUser_smf2 extends JFusionUser {
     {
 	    try {
 		    //we need to create a new SMF user
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
@@ -586,9 +586,9 @@ class JFusionUser_smf2 extends JFusionUser {
 	{
 		$index = 0;
 
-		$master = JFusionFunction::getMaster();
+		$master = \JFusion\Framework::getMaster();
 		if ($master) {
-			$mastergroups = JFusionFunction::getUserGroups($master->name);
+			$mastergroups = \JFusion\Framework::getUserGroups($master->name);
 
 			$groups = array();
 			if ($userinfo) {

@@ -47,7 +47,7 @@ class JFusionFrameless {
 		$data->Itemid = JFactory::getApplication()->input->get('Itemid');
 
 		//Get the base URL to the specific JFusion plugin
-		$data->baseURL = JFusionFunction::getPluginURL($data->Itemid);
+		$data->baseURL = \JFusion\Framework::getPluginURL($data->Itemid);
 
 		//Get the full current URL
 		$query = $uri->getQuery ();
@@ -68,7 +68,7 @@ class JFusionFrameless {
 			}
 		} else {
 			$MenuParam = $menu->getParams($data->Itemid);
-			$JFusionParam = JFusionFactory::getParams($jname);
+			$JFusionParam = \JFusion\Factory::getParams($jname);
 		}
 
 		$data->mParam = $MenuParam;
@@ -145,7 +145,7 @@ class JFusionFrameless {
 			require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php');
 			$JFusionPlugin = new JFusionPublic();
 		} else {
-			$JFusionPlugin = JFusionFactory::getPublic($data->jname);
+			$JFusionPlugin = \JFusion\Factory::getPublic($data->jname);
 
 			if (!$JFusionPlugin->isConfigured()) {
 				throw new RuntimeException($data->jname . ' ' . JText::_('NOT_FOUND'));
@@ -166,7 +166,7 @@ class JFusionFrameless {
 							$u->delVar('jfile');
 						}
 						$url = $u->getQuery();
-						$url = JFusionFunction::routeURL($jfile . '?' . $url, $data->Itemid, '', true, false);
+						$url = \JFusion\Framework::routeURL($jfile . '?' . $url, $data->Itemid, '', true, false);
 						$mainframe->redirect($url);
 					}
 				}
@@ -193,7 +193,7 @@ class JFusionFrameless {
 		}
 
 		//check to see if the Joomla database is still connected in case the plugin messed it up
-		JFusionFunction::reconnectJoomlaDb();
+		\JFusion\Framework::reconnectJoomlaDb();
 
 		if ($data->buffer === 0) {
 			throw new RuntimeException(JText::_('NO_FRAMELESS'));
@@ -288,7 +288,7 @@ class JFusionFrameless {
 				if (is_array($pathway)) {
 					$breadcrumbs = $mainframe->getPathWay();
 					foreach ($pathway as $path) {
-						$breadcrumbs->addItem($path->title, JFusionFunction::routeURL($path->url, JFactory::getApplication()->input->getInt('Itemid')));
+						$breadcrumbs->addItem($path->title, \JFusion\Framework::routeURL($path->url, JFactory::getApplication()->input->getInt('Itemid')));
 					}
 				}
 			}

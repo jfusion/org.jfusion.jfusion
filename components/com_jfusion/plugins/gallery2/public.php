@@ -65,7 +65,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
 	 */
     function getBuffer(&$data) {
         //Handle PHP based Gallery Rewrite
-        $segments = JFusionFactory::getApplication()->input->get('jFusion_Route', null, 'raw');
+        $segments = \JFusion\Factory::getApplication()->input->get('jFusion_Route', null, 'raw');
         if (!empty($segments)) {
             $path_info = '/' . implode('/', unserialize($segments));
             $path_info = str_replace(':', '-', $path_info);
@@ -152,9 +152,9 @@ class JFusionPublic_gallery2 extends JFusionPublic
 		$extra = $matches[2];
 		$baseURL = $this->data->baseURL;
 		    	
-        //JFusionFunction::raiseWarning($url, $this->getJname());
+        //\JFusion\Framework::raiseWarning($url, $this->getJname());
         $url = htmlspecialchars_decode($url);
-        $Itemid = JFusionFactory::getApplication()->input->getInt('Itemid');
+        $Itemid = \JFusion\Factory::getApplication()->input->getInt('Itemid');
         $extra = stripslashes($extra);
         if (substr($baseURL, -1) != '/') {
             //non-SEF mode
@@ -172,7 +172,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = JFusionFunction::routeURL($url, $Itemid);
+                $url = \JFusion\Framework::routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {
@@ -257,7 +257,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
 	                 * @ignore
 	                 * @var $forum JFusionForum_gallery2
 	                 */
-                    $forum = JFusionFactory::getForum($this->getJname());
+                    $forum = \JFusion\Factory::getForum($this->getJname());
                     $info->galleryImage = $forum->renderImageBlock($config, 'image_block', $pluginParam);
 
 //                    list(, $views) = GalleryCoreApi::fetchItemViewCount($array['itemId']);
@@ -280,7 +280,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
 	 */
     function getOnlineUserQuery($usergroups = array())
     {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
         //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
@@ -313,7 +313,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
 		    date_default_timezone_set('UTC');
 		    $now = time();
 		    $active = strtotime('-5 minutes', $now);
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('COUNT(*)')
@@ -324,7 +324,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -339,7 +339,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
 	        date_default_timezone_set('UTC');
 	        $now = time();
 	        $active = strtotime('-5 minutes', $now);
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('COUNT(*)')
@@ -350,7 +350,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
 	        $db->setQuery($query);
 	        $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;

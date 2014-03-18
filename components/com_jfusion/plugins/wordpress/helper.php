@@ -45,7 +45,7 @@ class JFusionHelper_wordpress extends JFusionPlugin
 		    $usergroups = array();
 
 		    try {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 			    $database_prefix = $this->params->get('database_prefix');
 
 			    $query = $db->getQuery(true)
@@ -63,7 +63,7 @@ class JFusionHelper_wordpress extends JFusionPlugin
 				    $usergroups[] = $group;
 			    }
 		    } catch (Exception $e) {
-			    JFusionFunction::raiseError($e, $this->getJname());
+			    \JFusion\Framework::raiseError($e, $this->getJname());
 		    }
 	    }
 		return $usergroups;
@@ -112,7 +112,7 @@ class JFusionHelper_wordpress extends JFusionPlugin
 		static $allroles;
 		if (!isset($allroles)) {
 			try {
-				$db = JFusionFactory::getDatabase($this->getJname());
+				$db = \JFusion\Factory::getDatabase($this->getJname());
 				$database_prefix = $this->params->get('database_prefix');
 
 				$query = $db->getQuery(true)
@@ -124,7 +124,7 @@ class JFusionHelper_wordpress extends JFusionPlugin
 				$roles_ser = $db->loadResult();
 				$allroles = unserialize($roles_ser);
 			} catch (Exception $e) {
-				JFusionFunction::raiseError($e, $this->getJname());
+				\JFusion\Framework::raiseError($e, $this->getJname());
 				$allroles = array();
 			}
 		}

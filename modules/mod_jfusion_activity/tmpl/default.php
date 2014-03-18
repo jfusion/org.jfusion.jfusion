@@ -34,7 +34,7 @@ foreach($results as $r) {
 
 	echo '<a href="' . $output->subject_url . '" target="' . $config['new_window'] . '">' . $output->subject . '</a>';
 	if($output->newpost) :
-	   echo ' <img src="' . JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/new.png" style="margin-left:2px; margin-right:2px;" alt="' . JText::_('NEW') . '"/>';
+	   echo ' <img src="' . \JFusion\Framework::getJoomlaURL() . 'components/com_jfusion/images/new.png" style="margin-left:2px; margin-right:2px;" alt="' . JText::_('NEW') . '"/>';
 	endif;
 
 	if ($config['showuser']):

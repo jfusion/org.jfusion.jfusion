@@ -36,7 +36,7 @@ class JFusionUser_mybb extends JFusionUser {
 		    //get the identifier
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username', 'a.email');
 		    // Get user info from database
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('a.uid as userid, a.username, a.usergroup as group_id, a.username as name, a.email, a.password, a.salt as password_salt, a.usergroup as activation, b.isbannedgroup as block')
@@ -116,7 +116,7 @@ class JFusionUser_mybb extends JFusionUser {
 	            $cookiepath = $this->params->get('cookie_path', '/');
 	            //get myBB uid, loginkey
 
-		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		        $query = $db->getQuery(true)
 			        ->select('uid, loginkey')
@@ -159,7 +159,7 @@ class JFusionUser_mybb extends JFusionUser {
      * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 	    $user = new stdClass;
 	    $user->uid = $existinguser->userid;
 	    $user->gid = 7;
@@ -193,7 +193,7 @@ class JFusionUser_mybb extends JFusionUser {
 	 * @return void
 	 */
     function unblockUser($userinfo, &$existinguser, &$status) {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 	    //found out what the old usergroup was
 
 	    $query = $db->getQuery(true)
@@ -244,7 +244,7 @@ class JFusionUser_mybb extends JFusionUser {
 	    jimport('joomla.user.helper');
 	    $existinguser->password_salt = JUserHelper::genRandomPassword(6);
 	    $existinguser->password = md5(md5($existinguser->password_salt) . md5($userinfo->password_clear));
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -274,7 +274,7 @@ class JFusionUser_mybb extends JFusionUser {
 	    } else {
 		    $usergroup = $usergroups[0];
 		    //update the usergroup
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
@@ -297,7 +297,7 @@ class JFusionUser_mybb extends JFusionUser {
     function createUser($userinfo, &$status) {
 	    try {
 		    //found out what usergroup should be used
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
@@ -351,7 +351,7 @@ class JFusionUser_mybb extends JFusionUser {
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    //we need to update the email
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -378,7 +378,7 @@ class JFusionUser_mybb extends JFusionUser {
 	    } else {
 		    $usergroup = $usergroups[0];
 		    //update the usergroup
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
@@ -402,7 +402,7 @@ class JFusionUser_mybb extends JFusionUser {
 	    //found out what usergroup should be used
 	    $usergroup = $this->params->get('activationgroup');
 	    //update the usergroup
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')

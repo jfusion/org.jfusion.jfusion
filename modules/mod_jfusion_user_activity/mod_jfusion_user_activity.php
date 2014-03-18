@@ -39,7 +39,7 @@ try {
 
 		$view = $params->get('view', 'auto');
 
-		$public = JFusionFactory::getPublic($jname);
+		$public = \JFusion\Factory::getPublic($jname);
 		if($public->isConfigured()) {
 			//configuration
 			$config['itemid'] = $params->get('itemid');
@@ -91,6 +91,6 @@ try {
 		throw new RuntimeException(JText::_('NO_COMPONENT'));
 	}
 } catch (Exception $e) {
-	JFusionFunction::raiseError($e, 'mod_jfusion_user_activity');
+	\JFusion\Framework::raiseError($e, 'mod_jfusion_user_activity');
 	echo $e->getMessage();
 }

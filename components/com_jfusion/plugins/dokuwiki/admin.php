@@ -82,7 +82,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
 		$config = $this->helper->getConf($softwarePath);
 		$params = array();
 		if ($config === false) {
-			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $softwarePath . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+			\JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $softwarePath . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 			return false;
 		} else {
 			if (isset($config['cookie_name'])) {
@@ -117,7 +117,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
 
 		if ($conf) {
 			if ($conf['authtype'] != 'authmysql' && $conf['authtype'] != 'authplain') {
-				JFusionFunction::raiseError(JText::_('UNSUPPORTED_AUTHTYPE') . ': ' . $conf['authtype'], $this->getJname());
+				\JFusion\Framework::raiseError(JText::_('UNSUPPORTED_AUTHTYPE') . ': ' . $conf['authtype'], $this->getJname());
 			}
 		}
 	}
@@ -183,7 +183,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
 	 */
 	function getDefaultUsergroup()
 	{
-		$usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+		$usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
 		return $usergroup;
 	}
 
@@ -273,16 +273,16 @@ if (!defined(\'_JEXEC\'))';
 					break;
 				}
 			case 'enable':
-				$joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
+				$joomla_url = \JFusion\Factory::getParams('joomla_int')->get('source_url');
 				$joomla_itemid = $this->params->get('redirect_itemid');
 
 				//check to see if all vars are set
 				if (empty($joomla_url)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname());
+					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname());
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
+					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
 				} else {
 					if ($error == 0) {
 						//get the joomla path from the file

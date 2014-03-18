@@ -47,7 +47,7 @@ try {
 		}
 		$jname = $parametersInstance->get('jfusionplugin');
 
-		$forum = JFusionFactory::getForum($jname);
+		$forum = \JFusion\Factory::getForum($jname);
 		if($forum->isConfigured()) {
 			$pluginParam = new JRegistry('');
 			$data = $parametersInstance->get($jname);
@@ -109,7 +109,7 @@ try {
 			defined('ACTIVITY_MODE') or define('ACTIVITY_MODE', $config['mode']);
 
 			if($view == 'auto') {
-				$db = JFusionFactory::getDatabase($jname);
+				$db = \JFusion\Factory::getDatabase($jname);
 
 	            if ($config['forum_mode'] == 0 || empty($config['selected_forums'])) {
 	                $selectedforumssql = '';
@@ -182,6 +182,6 @@ try {
 		throw new RuntimeException(JText::_('NO_COMPONENT'));
 	}
 } catch (Exception $e) {
-	JFusionFunction::raiseError($e, 'mod_jfusion_activity');
+	\JFusion\Framework::raiseError($e, 'mod_jfusion_activity');
 	echo $e->getMessage();
 }

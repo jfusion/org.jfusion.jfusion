@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
 	$errorid = JFactory::getApplication()->input->get->get('errorid', '');
 	$error = unserialize($this->synclog[$errorid]->data);
 
-	$debugger = JFusionFactory::getDebugger('jfusion-syncerrordetails');
+	$debugger = \JFusion\Factory::getDebugger('jfusion-syncerrordetails');
 
 	//display the userlist info
 

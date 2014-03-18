@@ -74,7 +74,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 		$params = array();
 		$lines = $this->readFile($myfile);
 		if ($lines === false) {
-			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+			\JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 			return false;
 		} else {
 			//parse the file line by line to get only the config variables
@@ -181,7 +181,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	{
 		try {
 			// initialise some objects
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('username, email')
@@ -191,7 +191,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 			//getting the results
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			$userlist = array();
 		}
 		return $userlist;
@@ -204,7 +204,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	{
 		try {
 			//getting the connection to the db
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('count(*)')
@@ -214,7 +214,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 			//getting the results
 			$no_users = $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			$no_users = 0;
 		}
 		return $no_users;
@@ -226,7 +226,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	function getUsergroupList()
 	{
 		//get the connection to the db
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('usergroupid as id, title as name')
@@ -242,12 +242,12 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	 */
 	function getDefaultUsergroup()
 	{
-		$usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+		$usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
 
 		$group = array();
 		if ($usergroup !== null) {
 			//we want to output the usergroup name
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			if (!isset($usergroup->membergroups)) {
 				$usergroup->membergroups = array($usergroup->defaultgroup);
@@ -274,7 +274,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	{
 		$result = false;
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('value')
@@ -288,7 +288,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 				$result = true;
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		}
 		return $result;
 	}
@@ -367,7 +367,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	{
 		try {
 			try {
-				$db = JFusionFactory::getDatabase($this->getJname());
+				$db = \JFusion\Factory::getDatabase($this->getJname());
 			} catch (Exception $e) {
 				throw new RuntimeException(JText::_('VB_CONFIG_FIRST'));
 			}
@@ -424,7 +424,7 @@ HTML;
 	{
 		try {
 			try {
-				$db = JFusionFactory::getDatabase($this->getJname());
+				$db = \JFusion\Factory::getDatabase($this->getJname());
 			} catch (Exception $e) {
 				throw new RuntimeException(JText::_('VB_CONFIG_FIRST'));
 			}
@@ -494,9 +494,9 @@ HTML;
 	function toggleHook($hook, $action)
 	{
 		try {
-			$params = JFusionFactory::getApplication()->input->get('params', array(), 'array');
+			$params = \JFusion\Factory::getApplication()->input->get('params', array(), 'array');
 			$itemid = $params['plugin_itemid'];
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			if ($hook != 'framelessoptimization') {
 				$hookName = static::$mods[$hook];
 
@@ -514,9 +514,9 @@ HTML;
 					if ($action != 'disable') {
 						$secret = $this->params->get('vb_secret', null);
 						if (empty($secret)) {
-							JFusionFunction::raiseWarning(JText::_('VB_SECRET_EMPTY'));
+							\JFusion\Framework::raiseWarning(JText::_('VB_SECRET_EMPTY'));
 						} else if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
-							JFusionFunction::raiseWarning(JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
+							\JFusion\Framework::raiseWarning(JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
 						} else {
 							//install the hook
 							$php = $this->getHookPHP($hook, $itemid);
@@ -594,7 +594,7 @@ HTML;
 				}
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		}
 	}
 
@@ -621,7 +621,7 @@ HTML;
 		} elseif ($plugin == 'redirect') {
 			$php.= "if (!defined('_JEXEC')){\n";
 			$sefmode = $this->params->get('sefmode', 0);
-			$config = JFusionFactory::getConfig();
+			$config = \JFusion\Factory::getConfig();
 			$sef = $config->get('sef');
 			//get the baseUR
 			$app = JFactory::getApplication('site');
@@ -632,7 +632,7 @@ HTML;
 			 */
 			$uri = $router->build('index.php?option=com_jfusion&Itemid=' . $itemid);
 			$baseURL = $uri->toString();
-			$joomla_url = JFusionFunction::getJoomlaURL();
+			$joomla_url = \JFusion\Framework::getJoomlaURL();
 			if (!strpos($baseURL, '?')) {
 				$baseURL.= '/';
 			}
@@ -675,7 +675,7 @@ HTML;
 		$php.= "if (file_exists(JFUSION_VB_HOOK_FILE)) {\n";
 		$php.= "include_once(JFUSION_VB_HOOK_FILE);\n";
 		$php.= "\$val = '$plugin';\n";
-		$secret = $this->params->get('vb_secret', JFusionFactory::getConfig()->get('secret'));
+		$secret = $this->params->get('vb_secret', \JFusion\Factory::getConfig()->get('secret'));
 		$php.= "\$JFusionHook = new executeJFusionHook('init_startup', \$val, '$secret');\n";
 
 		$version = $this->helper->getVersion();
@@ -691,7 +691,7 @@ HTML;
 
 	function debugConfigExtra()
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('COUNT(*)')
@@ -702,11 +702,11 @@ HTML;
 
 		$db->setQuery($query);
 		if ($db->loadResult() == 0) {
-			JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
+			\JFusion\Framework::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
 		} else {
 			$response = $this->helper->apiCall('ping', array('ping' => 1));
 			if (!$response['success']) {
-				JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
+				\JFusion\Framework::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
 			}
 		}
 	}
@@ -723,7 +723,7 @@ HTML;
 		try {
 			if ($this->isConfigured()) {
 				try {
-					$db = JFusionFactory::getDatabase($this->getJname());
+					$db = \JFusion\Factory::getDatabase($this->getJname());
 				} catch (Exception $e) {
 					throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
 				}
@@ -768,7 +768,7 @@ HTML;
 		$return = false;
 		$reasons = array();
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			$hookNames = array();
 
 			foreach (static::$mods as $mod) {
@@ -815,7 +815,7 @@ HTML;
 	{
 		$jname = $this->getJname();
 
-		JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'DISPLAYGROUP', 'DEFAULT', 'MEMBERGROUPS'));
+		\JFusion\Framework::loadJavascriptLanguage(array('MAIN_USERGROUP', 'DISPLAYGROUP', 'DEFAULT', 'MEMBERGROUPS'));
 		$js = <<<JS
 		JFusion.renderPlugin['{$jname}'] = function(index, plugin, pair) {
 			var usergroups = JFusion.usergroups[plugin.name];

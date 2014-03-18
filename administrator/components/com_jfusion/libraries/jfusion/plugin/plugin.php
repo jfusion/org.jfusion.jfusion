@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugin;
 
 /**
  * Abstract plugin class
@@ -14,6 +14,13 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use \JFusion\Debugger\Debugger;
+use \JFusion\Registry\Registry;
+
+use \Exception;
+use \ReflectionMethod;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -26,18 +33,18 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.orgrg
  */
-class JFusionPlugin
+class Plugin
 {
 	static protected $language = array();
 	static protected $status = array();
 
 	/**
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	var $params;
 
 	/**
-	 * @var JFusionDebugger
+	 * @var Debugger
 	 */
 	var $debugger;
 
@@ -46,17 +53,17 @@ class JFusionPlugin
 	 */
 	function __construct()
 	{
-		JFusionFactory::getLanguage()->load('com_jfusion', JFUSIONPATH_ADMINISTRATOR);
-		JFusionFactory::getLanguage()->load('com_jfusion', JFUSIONPATH_SITE);
+		Factory::getLanguage()->load('com_jfusion', JFUSIONPATH_ADMINISTRATOR);
+		Factory::getLanguage()->load('com_jfusion', JFUSIONPATH_SITE);
 
 		$jname = $this->getJname();
 		if (!empty($jname)) {
 			//get the params object
-			$this->params = &JFusionFactory::getParams($jname);
-			$this->debugger = &JFusionFactory::getDebugger($jname);
+			$this->params = & Factory::getParams($jname);
+			$this->debugger = & Factory::getDebugger($jname);
 
 			if (!isset(static::$language[$jname])) {
-				$db = JFusionFactory::getDBO();
+				$db = Factory::getDBO();
 				$query = $db->getQuery(true)
 					->select('name, original_name')
 					->from('#__jfusion')
@@ -70,7 +77,7 @@ class JFusionPlugin
 					foreach($plugins as $plugin) {
 						$name = $plugin->original_name ? $plugin->original_name : $plugin->name;
 						if (!$loaded) {
-							JFusionFactory::getLanguage()->load('com_jfusion.plg_' . $name, JFUSIONPATH_ADMINISTRATOR);
+							Factory::getLanguage()->load('com_jfusion.plg_' . $name, JFUSIONPATH_ADMINISTRATOR);
 							$loaded = true;
 						}
 						static::$language[$jname] = true;
@@ -81,7 +88,7 @@ class JFusionPlugin
 				}
 			}
 		} else {
-			$this->params = new JRegistry();
+			$this->params = new Registry();
 		}
 	}
 
@@ -134,7 +141,7 @@ class JFusionPlugin
 
 		if (!empty($jname)) {
 			if (!isset(static::$status[$jname])) {
-				$db = JFusionFactory::getDBO();
+				$db = Factory::getDBO();
 				$query = $db->getQuery(true)
 					->select('status')
 					->from('#__jfusion')

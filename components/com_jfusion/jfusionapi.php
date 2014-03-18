@@ -566,7 +566,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 		$joomla = JFusionAPIInternal::getInstance(true);
 		$plugin = isset($this->payload['plugin']) ? $this->payload['plugin'] : 'joomla_int';
 
-		$userPlugin = JFusionFactory::getUser($plugin);
+		$userPlugin = \JFusion\Factory::getUser($plugin);
 		return $userPlugin->getUser($this->payload['username']);
 	}
 
@@ -846,7 +846,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
 		} elseif (!defined('IN_JOOMLA')) {
 			define('IN_JOOMLA', 1);
-			JFusionFunction::reconnectJoomlaDb();
+			\JFusion\Framework::reconnectJoomlaDb();
 		}
 
 		$mainframe = JFactory::getApplication('site');
@@ -968,7 +968,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$user = new stdClass;
 		if ($username) {
 			if ($this->activePlugin) {
-				$lookupUser = JFusionFunction::lookupUser($this->activePlugin, null, false, $username);
+				$lookupUser = \JFusion\Framework::lookupUser($this->activePlugin, null, false, $username);
 				if (!empty($lookupUser)) {
 					$user = JFactory::getUser($lookupUser->id);
 				}
@@ -996,8 +996,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	{
 		$this->getApplication();
 
-		$plugins = JFusionFunction::getSlaves();
-		$plugins[] = JFusionFunction::getMaster();
+		$plugins = \JFusion\Framework::getSlaves();
+		$plugins[] = \JFusion\Framework::getMaster();
 
 		if ($this->activePlugin) {
 			foreach ($plugins as $key => $plugin) {
@@ -1009,7 +1009,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 		foreach ($plugins as $plugin) {
 			try {
-				$PluginUserUpdate = JFusionFactory::getUser($plugin->name);
+				$PluginUserUpdate = \JFusion\Factory::getUser($plugin->name);
 				$existinguser = $PluginUserUpdate->getUser($userinfo);
 
 				if(!$existinguser) {
@@ -1043,8 +1043,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	{
 		$this->getApplication();
 
-		$plugins = JFusionFunction::getSlaves();
-		$plugins[] = JFusionFunction::getMaster();
+		$plugins = \JFusion\Framework::getSlaves();
+		$plugins[] = \JFusion\Framework::getMaster();
 
 		foreach ($plugins as $key => $plugin) {
 			if (!array_key_exists($plugin->name, $userinfo)) {
@@ -1053,11 +1053,11 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		}
 		foreach ($plugins as $plugin) {
 			try {
-				$PluginUserUpdate = JFusionFactory::getUser($plugin->name);
+				$PluginUserUpdate = \JFusion\Factory::getUser($plugin->name);
 				$updateinfo = $userinfo[$plugin->name];
 
 				if (get_class($updateinfo) == 'stdClass') {
-					$lookupUser = JFusionFunction::lookupUser($plugin->name, '', false, $updateinfo->username);
+					$lookupUser = \JFusion\Framework::lookupUser($plugin->name, '', false, $updateinfo->username);
 
 					if($lookupUser) {
 						$existinguser = $PluginUserUpdate->getUser($updateinfo->username);

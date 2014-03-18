@@ -66,7 +66,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 	public function getUserList($limitstart = 0, $limit = 0)
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('username, email')
@@ -75,7 +75,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 			$db->setQuery($query, $limitstart, $limit);
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			$userlist = array();
 		}
 		return $userlist;
@@ -88,7 +88,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 	public function getUserCount()
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('count(*)')
@@ -98,7 +98,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 			//getting the results
 			return $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			return 0;
 		}
 	}
@@ -110,7 +110,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 	 */
 	public function getUsergroupList()
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('id, title as name')
@@ -133,7 +133,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 	function getUsergroupName($jname, $gid)
 	{
 		try {
-			$db = JFusionFactory::getDatabase($jname);
+			$db = \JFusion\Factory::getDatabase($jname);
 
 			//we want to output the usergroup name
 
@@ -145,7 +145,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 			$db->setQuery($query);
 			$group = $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $jname);
+			\JFusion\Framework::raiseError($e, $jname);
 			$group = '';
 		}
 		return $group;
@@ -186,7 +186,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 		$params = array();
 		$lines = $this->readFile($configfile);
 		if ($lines === false) {
-			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $configfile . ' ' . JText::_('WIZARD_MANUAL'));
+			\JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $configfile . ' ' . JText::_('WIZARD_MANUAL'));
 			return false;
 		} else {
 			//parse the file line by line to get only the config variables
@@ -231,7 +231,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 	public function allowRegistration()
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			//we want to output the usergroup name
 			$query = $db->getQuery(true)
@@ -246,7 +246,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 			// Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
 			return ($params->get('allowUserRegistration', false) ? true : false);
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			return false;
 		}
 	}

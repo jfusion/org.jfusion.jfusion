@@ -62,7 +62,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
             $initParams['loginRedirect'] = JRoute::_('index.php?option=com_user&view=login');
             $initParams['fullInit'] = $fullInit;
             if (!is_file($index_file)) {
-                JFusionFunction::raiseWarning('The path to the Gallery2(path: ' . $index_file . ') embed file set in the component preferences does not exist', $this->getJname());
+                \JFusion\Framework::raiseWarning('The path to the Gallery2(path: ' . $index_file . ') embed file set in the component preferences does not exist', $this->getJname());
             } else {
                 if (!class_exists('GalleryEmbed')) {
                     require_once $index_file;
@@ -73,17 +73,17 @@ class JFusionHelper_gallery2 extends JFusionPlugin
                 }
                 $ret = GalleryEmbed::init($initParams);
                 if ($ret) {
-                    JFusionFunction::raiseWarning('Error while initialising Gallery2 API', $this->getJname());
+                    \JFusion\Framework::raiseWarning('Error while initialising Gallery2 API', $this->getJname());
                 } else {
                     $ret = GalleryCoreApi::setPluginParameter('module', 'core', 'cookie.path', '/');
                     if ($ret) {
-                        JFusionFunction::raiseWarning('Error while setting cookie path', $this->getJname());
+                        \JFusion\Framework::raiseWarning('Error while setting cookie path', $this->getJname());
                     } else {
                         if ($fullInit) {
                             $user = JFactory::getUser();
                             if ($user->id != 0) {
 	                            try {
-		                            $userPlugin = JFusionFactory::getUser($this->getJname());
+		                            $userPlugin = \JFusion\Factory::getUser($this->getJname());
 		                            $g2_user = $userPlugin->getUser($user);
 		                            $options = array();
 		                            $options['noframework'] = true;
@@ -123,7 +123,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
      * @return string
      */
     function getEmbedUri($itemId = null) {
-        $mainframe = JFusionFactory::getApplication();
+        $mainframe = \JFusion\Factory::getApplication();
         $router = $mainframe->getRouter();
         $id = $mainframe->input->get('Itemid', -1);
         if ($itemId !== null) {
@@ -147,7 +147,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
             $uri = $path;
         }
         if ($router->getMode() == JROUTER_MODE_SEF) {
-            if (JFusionFactory::getConfig()->get('sef_suffix')) {
+            if (\JFusion\Factory::getConfig()->get('sef_suffix')) {
                 $uri = str_replace('.html', '', $uri);
             }
             if (!strpos($uri, '?')) {
@@ -193,7 +193,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
 	     * @var $it GalleryItem
 	     */
         $entities = array();
-        $mainframe = JFusionFactory::getApplication();
+        $mainframe = \JFusion\Factory::getApplication();
         $urlGenerator = $gallery->getUrlGenerator();
         $itemId = (int)GalleryUtilities::getRequestVariables('itemId');
         $userId = $gallery->getActiveUserId();
@@ -233,7 +233,7 @@ class JFusionHelper_gallery2 extends JFusionPlugin
             }
         }
         $breadcrumbs = $mainframe->getPathWay();
-        $document = JFusionFactory::getDocument();
+        $document = \JFusion\Factory::getDocument();
         /* check permissions and push */
         $i = 1;
         $limit = count($parentSequence);

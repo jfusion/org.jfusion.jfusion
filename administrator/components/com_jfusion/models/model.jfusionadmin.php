@@ -63,21 +63,21 @@ class JFusionFunctionAdmin
         $userPlugin = true;
         $authPlugin = true;
         if (!static::isPluginInstalled('jfusion', 'authentication', false)) {
-            JFusionFunction::raiseWarning(JText::_('FUSION_MISSING_AUTH'));
+            \JFusion\Framework::raiseWarning(JText::_('FUSION_MISSING_AUTH'));
             $authPlugin = false;
         }
         if (!static::isPluginInstalled('jfusion', 'user', false)) {
-            JFusionFunction::raiseWarning(JText::_('FUSION_MISSING_USER'));
+            \JFusion\Framework::raiseWarning(JText::_('FUSION_MISSING_USER'));
             $userPlugin = false;
         }
         if ($authPlugin && $userPlugin) {
             $jAuth = static::isPluginInstalled('jfusion', 'user', true);
             $jUser = static::isPluginInstalled('jfusion', 'authentication', true);
             if (!$jAuth) {
-                JFusionFunction::raiseNotice(JText::_('FUSION_READY_TO_USE_AUTH'));
+                \JFusion\Framework::raiseNotice(JText::_('FUSION_READY_TO_USE_AUTH'));
             }
             if (!$jUser) {
-                JFusionFunction::raiseNotice(JText::_('FUSION_READY_TO_USE_USER'));
+                \JFusion\Framework::raiseNotice(JText::_('FUSION_READY_TO_USE_USER'));
             }
         }
     }
@@ -139,12 +139,12 @@ class JFusionFunctionAdmin
 		if (!$db->loadResult()) {
 			$result = false;
 			$task = 'plugindisplay';
-			JFusionFunction::raiseWarning(JText::_('NO_MASTER_WARNING'));
-		} else if (JFusionFunction::getUserGroups() === false) {
+			\JFusion\Framework::raiseWarning(JText::_('NO_MASTER_WARNING'));
+		} else if (\JFusion\Framework::getUserGroups() === false) {
 			// Prevent to loginchecker without any usergroups configured.
 			$result = false;
 			$task = 'usergroups';
-			JFusionFunction::raiseWarning(JText::_('NO_USERGROUPS_ERROR'));
+			\JFusion\Framework::raiseWarning(JText::_('NO_USERGROUPS_ERROR'));
 		}
 
 		if ($result === false) {
@@ -217,7 +217,7 @@ HTML;
             curl_close($crl);
             if ($FileInfo['http_code'] != 200) {
                 //there was an error
-                JFusionFunction::raiseWarning($FileInfo['http_code'] . ' error for file:' . $url);
+                \JFusion\Framework::raiseWarning($FileInfo['http_code'] . ' error for file:' . $url);
                 $FileData = false;
             }
         } else {
@@ -226,7 +226,7 @@ HTML;
             if (!empty($fopen_check)) {
                 $FileData = file_get_contents($url);
             } else {
-                JFusionFunction::raiseWarning(JText::_('CURL_DISABLED'));
+                \JFusion\Framework::raiseWarning(JText::_('CURL_DISABLED'));
                 $FileData = false;
             }
         }
@@ -266,7 +266,7 @@ HTML;
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
 
-	        $xml = JFusionFunction::getXml($filename);
+	        $xml = \JFusion\Framework::getXml($filename);
 
             $VersionCurrent = (string)$xml->version;
 

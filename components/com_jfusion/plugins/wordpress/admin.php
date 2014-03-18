@@ -93,7 +93,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+			\JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
 		} else {
 			//parse the file line by line to get only the config variables
@@ -161,7 +161,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	{
 		try {
 			//getting the connection to the db
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('user_login as username, user_email as email')
@@ -172,7 +172,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			//getting the results
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			$userlist = array();
 		}
 		return $userlist;
@@ -185,7 +185,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     {
 	    try {
 			//getting the connection to the db
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -195,7 +195,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			//getting the results
 			$no_users = $db->loadResult();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		    $no_users = 0;
 		}
 		return $no_users;
@@ -215,7 +215,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 		    $group = array();
 		    foreach ($usergroups as $usergroup) {
@@ -234,7 +234,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     {
 	    $result = false;
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('option_value')
@@ -246,7 +246,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 
 		    $result = ($auths == '1');
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
 	    return $result;
 	}

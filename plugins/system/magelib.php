@@ -14,7 +14,7 @@ $factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIREC
 if(file_exists($factory_file)):
 	require_once $factory_file;
 else:
-	JFusionFunction::raiseWarning('MageLib: The file ' . $factory_file . ' doesn\'t exists. Please install JFusion component or update it.');
+	\JFusion\Framework::raiseWarning('MageLib: The file ' . $factory_file . ' doesn\'t exists. Please install JFusion component or update it.');
 endif;
 
 /**
@@ -39,8 +39,8 @@ class plgSystemMagelib {
 		$this->params = new JRegistry($plugin->params);
 		
 		$mage_plugin = $this->params->get('mage_plugin', 'magento');
-		$mage_path = JFusionFactory::getParams($mage_plugin )->get('source_path', false);
-		$this->mage_url = JFusionFactory::getParams($mage_plugin)->get('source_url', false);
+		$mage_path = \JFusion\Factory::getParams($mage_plugin )->get('source_path', false);
+		$this->mage_url = \JFusion\Factory::getParams($mage_plugin)->get('source_url', false);
 		
 		if (! $mage_path) {
 			$this->mage_path = $this->params->get('mage_path');
@@ -84,12 +84,12 @@ class plgSystemMagelib {
 		//@todo perform for a plugin name different of 'magento' in the getPluginNodeId()
 
 
-		if (JFactory::getApplication()->input->get('jnodeid', null) != JFusionFactory::getPluginNodeId('magento')) {
+		if (JFactory::getApplication()->input->get('jnodeid', null) != \JFusion\Factory::getPluginNodeId('magento')) {
 			
 			$defaultStore = null;
 			
             $mage_plugin = $this->params->get ('mage_plugin', 'magento');
-            $language_store_view = JFusionFactory::getParams($mage_plugin)->get('language_store_view', '');
+            $language_store_view = \JFusion\Factory::getParams($mage_plugin)->get('language_store_view', '');
 
             if (strlen($language_store_view ) > 0) {
                 // we define and set the default store (and language if set correctly by the administrator)
@@ -111,7 +111,7 @@ class plgSystemMagelib {
 
 				$error_message = get_class($this) . '::loadAndStartMagentoBootstrap - ' . $error_message;
 
-				JFusionFunction::raiseWarning($error_message);
+				\JFusion\Framework::raiseWarning($error_message);
 				return false;
 			}
 			

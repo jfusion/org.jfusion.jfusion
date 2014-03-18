@@ -107,10 +107,10 @@ class plgContentJfusion extends JPlugin
 			$JoomlaTemplateOverride = JPATH_BASE . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR  . $app->getTemplate() . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'plg_content_jfusion' . DIRECTORY_SEPARATOR;
 			if (file_exists($JoomlaTemplateOverride)) {
 				define('DISCUSSION_TEMPLATE_PATH', $JoomlaTemplateOverride);
-				define('DISCUSSION_TEMPLATE_URL', JFusionFunction::getJoomlaURL() . 'templates/' . $app->getTemplate() . '/html/plg_content_jfusion/');
+				define('DISCUSSION_TEMPLATE_URL', \JFusion\Framework::getJoomlaURL() . 'templates/' . $app->getTemplate() . '/html/plg_content_jfusion/');
 			} else {
 				define('DISCUSSION_TEMPLATE_PATH', JPATH_BASE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'discussbot' . DIRECTORY_SEPARATOR . 'tmpl' . DIRECTORY_SEPARATOR . $this->template . DIRECTORY_SEPARATOR);
-				define('DISCUSSION_TEMPLATE_URL', JFusionFunction::getJoomlaURL() . 'plugins/content/jfusion/discussbot/tmpl/' . $this->template . '/');
+				define('DISCUSSION_TEMPLATE_URL', \JFusion\Framework::getJoomlaURL() . 'plugins/content/jfusion/discussbot/tmpl/' . $this->template . '/');
 			}
 		}
 
@@ -179,16 +179,16 @@ class plgContentJfusion extends JPlugin
 									$placeholder->threadid = 0;
 									$placeholder->forumid = 0;
 									$placeholder->postid = 0;
-									JFusionFunction::updateDiscussionBotLookup($this->article->id, $placeholder, $this->jname);
+									\JFusion\Framework::updateDiscussionBotLookup($this->article->id, $placeholder, $this->jname);
 								}
 							}
 						} elseif ($this->mode == 'test' && empty($manually_plugged)) {
 							//recheck validity without stipulation
 							$this->helper->debug('In test mode thus not creating the article');
-							$JFusionForum = JFusionFactory::getForum($this->jname);
+							$JFusionForum = \JFusion\Factory::getForum($this->jname);
 							$content = '<u>' . $this->article->title . '</u><br />';
 							if ($threadinfo->valid) {
-								$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
+								$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="' . \JFusion\Framework::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
 								if ($threadinfo->published) {
 									$content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_PUBLISHED') . '<br />';
 								} else {
@@ -210,11 +210,11 @@ class plgContentJfusion extends JPlugin
 							} else {
 								$valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
 								if (!$this->valid) {
-									$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/x.png" style="margin-left:5px;"><br/>';
+									$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="' . \JFusion\Framework::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/x.png" style="margin-left:5px;"><br/>';
 									$content .= JText::_('VALID') . ': ' . $valid . '<br />';
 									$content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
 								} else {
-									$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;2><br/>';
+									$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . \JFusion\Framework::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;2><br/>';
 									$content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
 									$content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
 									$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
@@ -223,7 +223,7 @@ class plgContentJfusion extends JPlugin
 									$content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
 								}
 							}
-							JFusionFunction::raiseNotice($content);
+							\JFusion\Framework::raiseNotice($content);
 						} else {
 							$this->helper->debug('In manual mode...checking to see if article has been initialized');
 							if ($threadinfo->valid && $threadinfo->published == 1 && $threadinfo->manual == 1) {
@@ -239,7 +239,7 @@ class plgContentJfusion extends JPlugin
 				}
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
+			\JFusion\Framework::raiseError($e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
 		}
 	}
 
@@ -268,7 +268,7 @@ class plgContentJfusion extends JPlugin
 
 				//check to see if a valid $content object was passed on
 				if (!is_object($this->article)){
-					JFusionFunction::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+					\JFusion\Framework::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
 				} else {
 					//make sure there is a plugin
 					if (!empty($this->jname)) {
@@ -325,9 +325,9 @@ class plgContentJfusion extends JPlugin
 										$data->error = false;
 									} else if ($show_discussion !== '') {
 										$data->error = false;
-										JFusionFunction::raiseNotice('jfusion.discussion.visibility set to ' . $show_discussion);
+										\JFusion\Framework::raiseNotice('jfusion.discussion.visibility set to ' . $show_discussion);
 									} else {
-										JFusionFunction::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
+										\JFusion\Framework::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
 									}
 									$this->renderJSONResponce($data);
 								}
@@ -351,7 +351,7 @@ class plgContentJfusion extends JPlugin
 				echo new JResponseJson(null, JText::_('DISCUSSBOT_ERROR') . ': ' . $e->getMessage(), true);
 				exit();
 			} else {
-				JFusionFunction::raiseError($e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
+				\JFusion\Framework::raiseError($e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
 			}
 		}
 	}
@@ -425,7 +425,7 @@ class plgContentJfusion extends JPlugin
 
 		$content = '';
 		//get the jfusion forum object
-		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$JFusionForum = \JFusion\Factory::getForum($this->jname);
 
 		//find any {jfusion_discuss...} to manually plug
 		$this->helper->debug('Finding all manually added plugs');
@@ -516,7 +516,7 @@ class plgContentJfusion extends JPlugin
 				$content  = '<div class="jfusionclearfix" style="border:1px solid #ECF8FD; background-color:#ECF8FD; margin-top:10px; margin-bottom:10px;">';
 
 				if ($threadinfo->valid) {
-					$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
+					$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . \JFusion\Framework::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
 					if ($threadinfo->published) {
 						$content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_PUBLISHED') . '<br />';
 					} else {
@@ -538,11 +538,11 @@ class plgContentJfusion extends JPlugin
 				} else {
 					$valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
 					if (!$this->valid) {
-						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/x.png" style="margin-left:5px;"><br/>';
+						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . \JFusion\Framework::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/x.png" style="margin-left:5px;"><br/>';
 						$content .= JText::_('VALID') . ': ' . $valid . '<br />';
 						$content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
 					} else {
-						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
+						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . \JFusion\Framework::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
 						$content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
 						$content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
 						$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
@@ -637,10 +637,10 @@ HTML;
 					$status = $this->helper->checkThreadExists(1);
 
 					if (!empty($status['error'])) {
-						JFusionFunction::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
+						\JFusion\Framework::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
 					} else {
 						$data->error = false;
-						JFusionFunction::raiseMessage(JText::sprintf('THREAD_CREATED_SUCCESSFULLY', $this->article->title), JText::_('SUCCESS'));
+						\JFusion\Framework::raiseMessage(JText::sprintf('THREAD_CREATED_SUCCESSFULLY', $this->article->title), JText::_('SUCCESS'));
 					}
 				} else {
 					throw new RuntimeException(JText::_('ARTICLE_MICH_MACH'));
@@ -667,7 +667,7 @@ HTML;
 	{
 		$data = $this->prepareJSONResponce();
 		$JoomlaUser = JFactory::getUser();
-		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$JFusionForum = \JFusion\Factory::getForum($this->jname);
 
 		//define some variables
 		$allowGuests = $this->params->get('quickreply_allow_guests', 0);
@@ -688,7 +688,7 @@ HTML;
 				if ($allowGuests && $JoomlaUser->guest) {
 					$captcha_verification = $JFusionForum->verifyCaptcha($this->params);
 				} else {
-					$JFusionUser = JFusionFactory::getUser($this->jname);
+					$JFusionUser = \JFusion\Factory::getUser($this->jname);
 					try {
 						$userinfo = $JFusionUser->getUser($JoomlaUser);
 						$userinfo->guest = 0;
@@ -711,7 +711,7 @@ HTML;
 						$status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo, $postinfo);
 
 						if (!empty($status['error'])) {
-							JFusionFunction::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
+							\JFusion\Framework::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
 						} else {
 							$threadinfo = $this->helper->getThreadInfo(true);
 
@@ -743,7 +743,7 @@ HTML;
 							} else {
 								$msg = JText::_('SUCCESSFUL_POST');
 							}
-							JFusionFunction::raiseMessage($msg, JText::_('SUCCESS'));
+							\JFusion\Framework::raiseMessage($msg, JText::_('SUCCESS'));
 						}
 					} else {
 						throw new RuntimeException(JText::_('THREADID_NOT_FOUND'));
@@ -784,7 +784,7 @@ HTML;
 
 					if ($threadinfo->valid) {
 						//created by discussion bot thus update the look up table
-						JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 0, $threadinfo->manual);
+						\JFusion\Framework::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 0, $threadinfo->manual);
 					} else {
 						//manually plugged thus remove any db plugin tags
 						$db = JFactory::getDBO();
@@ -845,7 +845,7 @@ HTML;
 			if ($this->valid) {
 				if ($submittedArticleId == $this->article->id) {
 					$threadinfo = $this->helper->getThreadInfo();
-					JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $threadinfo->manual);
+					\JFusion\Framework::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $threadinfo->manual);
 
 					$data->error = false;
 				} else {
@@ -925,11 +925,11 @@ HTML;
 		$threadinfo = $this->helper->getThreadInfo();
 
 		//setup parameters
-		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$JFusionForum = \JFusion\Factory::getForum($this->jname);
 		$allowGuests = $this->params->get('quickreply_allow_guests', 0);
 		$JoomlaUser = JFactory::getUser();
 		//make sure the user exists in the software before displaying the quick reply
-		$JFusionUser = JFusionFactory::getUser($this->jname);
+		$JFusionUser = \JFusion\Factory::getUser($this->jname);
 		$JFusionUserinfo = $JFusionUser->getUser($JoomlaUser);
 		$action_url = $this->helper->getArticleUrl();
 		$this->helper->output = array();
@@ -1204,18 +1204,18 @@ HTML;
 			//create the discuss this link
 			if ($threadinfo->valid || $this->manual) {
 				if ($link_mode != 'never') {
-					$JFusionForum = JFusionFactory::getForum($this->jname);
+					$JFusionForum = \JFusion\Factory::getForum($this->jname);
 
 					if ($view == $this->view()) {
 						if ($link_mode == 'article' || $link_mode == 'always') {
-							$this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
+							$this->helper->output['buttons']['discuss']['href'] = \JFusion\Framework::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
 							$this->helper->output['buttons']['discuss']['text'] = $linkHTML;
 							$this->helper->output['buttons']['discuss']['target'] = $linkTarget;
 
 							if ($this->params->get('enable_comment_in_forum_button', 0)) {
 								$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
 								$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
-								$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
+								$this->helper->output['buttons']['comment_in_forum']['href'] = \JFusion\Framework::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
 								$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
 								$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
 							}
@@ -1236,7 +1236,7 @@ HTML;
 							$this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(' . $this->article->id . ', \'' . $discuss_link . '\');';
 							$this->helper->output['buttons']['discuss']['target'] = '_self';
 						} else {
-							$this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
+							$this->helper->output['buttons']['discuss']['href'] = \JFusion\Framework::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
 							$this->helper->output['buttons']['discuss']['target'] = $linkTarget;
 						}
 
@@ -1245,7 +1245,7 @@ HTML;
 						if ($this->params->get('enable_comment_in_forum_button', 0)) {
 							$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
 							$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
-							$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
+							$this->helper->output['buttons']['comment_in_forum']['href'] = \JFusion\Framework::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
 							$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
 							$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
 						}
@@ -1278,7 +1278,7 @@ HTML;
 HTML;
 			}
 		} catch(Exception $e) {
-			JFusionFunction::raiseError($e);
+			\JFusion\Framework::raiseError($e);
 			$button_output = $e->getMessage();
 		}
 		return $button_output;
@@ -1291,7 +1291,7 @@ HTML;
 	{
 		$post_output = array();
 
-		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$JFusionForum = \JFusion\Factory::getForum($this->jname);
 		$threadinfo = $this->helper->getThreadInfo();
 
 		$sort = $this->params->get('sort_posts', 'ASC');
@@ -1325,9 +1325,9 @@ HTML;
 		$userlink_custom = $this->params->get('userlink_custom', false);
 		$character_limit = (int) $this->params->get('character_limit');
 		$itemid = $this->params->get('itemid');
-		$JFusionPublic = JFusionFactory::getPublic($this->jname);
+		$JFusionPublic = \JFusion\Factory::getPublic($this->jname);
 
-		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$JFusionForum = \JFusion\Factory::getForum($this->jname);
 		$columns = $JFusionForum->getDiscussionColumns();
 		if (empty($columns)) return '';
 
@@ -1348,21 +1348,21 @@ HTML;
 			$post_output[$i]->guest = $guest;
 
 			//get Joomla id
-			$userlookup = JFusionFunction::lookupUser($JFusionForum->getJname(), $userid, false, $p->{$columns->username});
+			$userlookup = \JFusion\Framework::lookupUser($JFusionForum->getJname(), $userid, false, $p->{$columns->username});
 
 			//avatar
 			if ($showavatar){
 				if (!empty($avatar_software) && $avatar_software != 'jfusion' && !empty($userlookup)) {
-					$post_output[$i]->avatar_src = JFusionFunction::getAltAvatar($avatar_software, $userlookup->id);
+					$post_output[$i]->avatar_src = \JFusion\Framework::getAltAvatar($avatar_software, $userlookup->id);
 				} else {
 					$post_output[$i]->avatar_src = $JFusionForum->getAvatar($userid);
 				}
 
 				if (empty($post_output[$i]->avatar_src)) {
-					$post_output[$i]->avatar_src = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+					$post_output[$i]->avatar_src = \JFusion\Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 				}
 
-				$size = ($resize_avatar) ? JFusionFunction::getImageSize($post_output[$i]->avatar_src) : false;
+				$size = ($resize_avatar) ? \JFusion\Framework::getImageSize($post_output[$i]->avatar_src) : false;
 				$maxheight = $this->params->get('avatar_height', 80);
 				$maxwidth = $this->params->get('avatar_width', 60);
 				//size the avatar to fit inside the dimensions if larger
@@ -1388,7 +1388,7 @@ HTML;
 			}
 
 			//post title
-			$post_output[$i]->subject_url = JFusionFunction::routeURL($JFusionForum->getPostURL($threadid, $postid), $itemid);
+			$post_output[$i]->subject_url = \JFusion\Framework::routeURL($JFusionForum->getPostURL($threadid, $postid), $itemid);
 			if (!empty($posttitle)) {
 				$post_output[$i]->subject = $posttitle;
 			} elseif (!empty($threadtitle)) {
@@ -1404,7 +1404,7 @@ HTML;
 					if ($link_software == 'custom' && !empty($userlink_custom)  && !empty($userlookup)) {
 						$post_output[$i]->username_url = $userlink_custom . $userlookup->id;
 					} else {
-						$post_output[$i]->username_url = JFusionFunction::routeURL($JFusionForum->getProfileURL($userid), $itemid);
+						$post_output[$i]->username_url = \JFusion\Framework::routeURL($JFusionForum->getProfileURL($userid), $itemid);
 					}
 				}
 				$post_output[$i]->username = $username;
@@ -1417,7 +1417,7 @@ HTML;
 			if ($showdate){
 				jimport('joomla.utilities.date');
 				$JDate =  new JDate($dateline);
-				$JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
+				$JDate->setTimezone(new DateTimeZone(\JFusion\Framework::getJoomlaTimezone()));
 				$post_output[$i]->date = $JDate->format($date_format, true);
 			} else {
 				$post_output[$i]->date = '';

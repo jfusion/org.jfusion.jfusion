@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugin;
 
 /**
  * abstract authentication file
@@ -14,6 +14,8 @@
  */
 
 // no direct access
+use JFusion\Factory;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -26,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionAuth extends JFusionPlugin
+class Plugin_Auth extends Plugin
 {
 	var $helper;
 
@@ -37,7 +39,7 @@ class JFusionAuth extends JFusionPlugin
 	{
 		parent::__construct();
 		//get the helper object
-		$this->helper = &JFusionFactory::getHelper($this->getJname());
+		$this->helper = & Factory::getHelper($this->getJname());
 	}
 
     /**

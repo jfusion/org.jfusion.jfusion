@@ -89,7 +89,7 @@ class JFusionUser_dokuwiki extends JFusionUser
 				    }
 				    //check for advanced usergroup sync
 
-				    if (JFusionFunction::updateUsergroups($this->getJname())) {
+				    if (\JFusion\Framework::updateUsergroups($this->getJname())) {
 					    $usergroups = $this->getCorrectUserGroups($userinfo);
 					    if (!empty($usergroups)) {
 						    if (!$this->compareUserGroups($existinguser, $usergroups)) {

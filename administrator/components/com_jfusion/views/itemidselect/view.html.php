@@ -91,8 +91,8 @@ class jfusionViewitemidselect extends JViewLegacy
 	        if (is_array($jPluginParam)) {
 		        $row->jfusionplugin = $jPluginParam['jfusionplugin'];
 	        }
-	        $user = JFusionFactory::getUser($row->jfusionplugin);
-            if (!$user->isConfigured() || !JFusionFunction::hasFeature($row->jfusionplugin, $feature, $row->id)) {
+	        $user = \JFusion\Factory::getUser($row->jfusionplugin);
+            if (!$user->isConfigured() || !\JFusion\Framework::hasFeature($row->jfusionplugin, $feature, $row->id)) {
                 unset($menuitems[$key]);
             }
         }
@@ -109,8 +109,8 @@ class jfusionViewitemidselect extends JViewLegacy
         $directlinks = $db->loadObjectList();
 
         foreach ($directlinks as $key => &$row) {
-            if (JFusionFunction::hasFeature($row->name, $feature)) {
-                $row->params = JFusionFactory::getParams($row->name);
+            if (\JFusion\Framework::hasFeature($row->name, $feature)) {
+                $row->params = \JFusion\Factory::getParams($row->name);
             } else {
                 unset($directlinks[$key]);
             }

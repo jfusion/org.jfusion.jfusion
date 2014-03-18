@@ -162,7 +162,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
 
 	    try {
 		    $source_path = $this->params->get('source_path');
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    if (!defined('IN_PHPBB')) {
 			    define('IN_PHPBB', true);
 		    }
@@ -194,7 +194,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
 			    $this->parse_bbcode($text);
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 	    }
 
         $bbcode = new stdClass;
@@ -213,7 +213,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
         static $smilie_match, $smilie_replace;
         if (!is_array($smilie_match)) {
             $smilie_match = $smilie_replace = array();
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	        $query = $db->getQuery(true)
 		        ->select('*')
@@ -251,7 +251,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
 	            'email'         => array('bbcode_id' => 10, 'regexp' => array('#\[email=?(.*?)?\](.*?)\[/email\]#ise' => "\$this->validate_email('\$1', '\$2')")),
 	            'flash'         => array('bbcode_id' => 11, 'regexp' => array('#\[flash=([0-9]+),([0-9]+)\](.*?)\[/flash\]#ie' => "\$this->bbcode_flash('\$1', '\$2', '\$3')")));
 
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	        $query = $db->getQuery(true)
 		        ->select('*')

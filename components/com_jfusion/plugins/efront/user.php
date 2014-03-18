@@ -39,7 +39,7 @@ class JFusionUser_efront extends JFusionUser
      */
     function getUser($userinfo) {
 	    try {
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 	        //get the identifier
 	        list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'login', 'email');
 	        if ($identifier_type == 'login') {
@@ -70,7 +70,7 @@ class JFusionUser_efront extends JFusionUser
 	            $result->block = !$result->active;
 	        }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;
@@ -101,7 +101,7 @@ class JFusionUser_efront extends JFusionUser
             $cookiepath = $this->params->get('cookie_path', '/');
             $httponly = $this->params->get('httponly', 0);
             $secure = $this->params->get('secure', false);
-            $db = JFusionFactory::getDatabase($this->getJname());
+            $db = \JFusion\Factory::getDatabase($this->getJname());
 	        $status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'));
 
             $expires = $this->params->get('secure', false);
@@ -145,7 +145,7 @@ class JFusionUser_efront extends JFusionUser
 		        }
 	        }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $status;
     }
@@ -163,7 +163,7 @@ class JFusionUser_efront extends JFusionUser
                         throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
                     } else {
                         //get cookiedomain, cookiepath
-                        $db = JFusionFactory::getDatabase($this->getJname());
+                        $db = \JFusion\Factory::getDatabase($this->getJname());
                          $cookiedomain = $this->params->get('cookie_domain', '');
                          $cookiepath = $this->params->get('cookie_path', '/');
                          $httponly = $this->params->get('httponly', 0);
@@ -230,7 +230,7 @@ class JFusionUser_efront extends JFusionUser
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    $md5_key = $this->params->get('md5_key');
 	    $existinguser->password = md5($userinfo->password_clear . $md5_key);
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -262,7 +262,7 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -283,7 +283,7 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -305,7 +305,7 @@ class JFusionUser_efront extends JFusionUser
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
 	    //unblock the user
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -325,7 +325,7 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -346,7 +346,7 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -371,7 +371,7 @@ class JFusionUser_efront extends JFusionUser
         */
         $status = array('error' => array(), 'debug' => array());
 	    try {
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 	        //prepare the variables
 	        $user = new stdClass;
 	        $user->id = null;
@@ -584,7 +584,7 @@ class JFusionUser_efront extends JFusionUser
 		    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 	    } else {
 		    $usergroup = $usergroups[0];
-		    $db = JFusionFactory::getDataBase($this->getJname());
+		    $db = \JFusion\Factory::getDataBase($this->getJname());
 		    if ($usergroup< 3) {
 			    $user_type = $this->helper->groupIdToName($usergroup);
 			    $user_types_ID = 0;

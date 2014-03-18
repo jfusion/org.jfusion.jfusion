@@ -50,7 +50,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin
         $params = array();
          //try to open the file
         if ( !file_exists($myfile) ) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             $wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
@@ -88,7 +88,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin
     {
 	    try {
 		    // initialise some objects
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('user_name as username, user_email as email')
@@ -99,7 +99,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin
 
 		    return $userlist;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
 	    return $userlist;
@@ -112,7 +112,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -123,7 +123,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin
 		    //getting the results
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }
@@ -152,7 +152,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 		    return $usergroups;
 	    } else {

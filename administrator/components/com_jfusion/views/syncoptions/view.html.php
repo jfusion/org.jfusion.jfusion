@@ -75,8 +75,8 @@ class jfusionViewsyncoptions extends JViewLegacy
 
 		    //find out what the JFusion master and slaves are
 		    $db = JFactory::getDBO();
-		    $master = JFusionFunction::getMaster();
-		    $slaves = JFusionFunction::getSlaves();
+		    $master = \JFusion\Framework::getMaster();
+		    $slaves = \JFusion\Framework::getSlaves();
 		    //were we redirected here for a sync resume?
 		    $syncid = JFactory::getApplication()->input->get->get('syncid', '');
 		    if (!empty($syncid)) {
@@ -107,26 +107,26 @@ class jfusionViewsyncoptions extends JViewLegacy
 				    $sync_active = JFusionUsersync::getSyncStatus($syncid);
 			    }
 			    //get the master data
-			    $JFusionPlugin = JFusionFactory::getAdmin($master->name);
+			    $JFusionPlugin = \JFusion\Factory::getAdmin($master->name);
 			    $master_data = $slave_data = array();
 
 			    try {
 				    $master_data['total'] = $JFusionPlugin->getUserCount();
 			    } catch(Exception $e) {
 				    $master_data['total'] = 0;
-				    JFusionFunction::raiseWarning($e, $JFusionPlugin->getJname());
+				    \JFusion\Framework::raiseWarning($e, $JFusionPlugin->getJname());
 			    }
 			    $master_data['jname'] = $master->name;
 
 			    //get the slave data
 			    foreach ($slaves as $slave) {
-				    $JFusionSlave = JFusionFactory::getAdmin($slave->name);
+				    $JFusionSlave = \JFusion\Factory::getAdmin($slave->name);
 				    $slave_data[$slave->name]['total'] = $JFusionSlave->getUserCount();
 				    try {
 					    $slave_data[$slave->name]['total'] = $JFusionSlave->getUserCount();
 				    } catch(Exception $e) {
 					    $slave_data[$slave->name]['total'] = 0;
-					    JFusionFunction::raiseWarning($e, $JFusionSlave->getJname());
+					    \JFusion\Framework::raiseWarning($e, $JFusionSlave->getJname());
 				    }
 
 
@@ -141,7 +141,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 			    $this->syncid = $syncid;
 			    $this->sync_active = $sync_active;
 
-			    JFusionFunction::loadJavascriptLanguage(array('SYNC_PROGRESS', 'SYNC_USERS_TODO', 'CLICK_FOR_MORE_DETAILS', 'CONFLICTS',
+			    \JFusion\Framework::loadJavascriptLanguage(array('SYNC_PROGRESS', 'SYNC_USERS_TODO', 'CLICK_FOR_MORE_DETAILS', 'CONFLICTS',
 				                                            'UNCHANGED', 'FINISHED', 'PAUSE', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START', 'UPDATED', 'PLUGIN', 'USER', 'USERS',
 				                                            'NAME', 'CREATED', 'RESUME', 'SYNC_NODATA'));
 
@@ -168,7 +168,7 @@ JS;
 
 			    parent::display();
 		    } else {
-			    JFusionFunction::raiseWarning(JText::_('SYNC_NOCONFIG'));
+			    \JFusion\Framework::raiseWarning(JText::_('SYNC_NOCONFIG'));
 		    }
 	    }
     }

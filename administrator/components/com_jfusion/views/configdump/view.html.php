@@ -109,9 +109,9 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
-		$update = JFusionFunction::getUpdateUserGroups();
-		$usergroups = JFusionFunction::getUserGroups();
-		$master = JFusionFunction::getMaster();
+		$update = \JFusion\Framework::getUpdateUserGroups();
+		$usergroups = \JFusion\Framework::getUserGroups();
+		$master = \JFusion\Framework::getMaster();
 		if(count($rows) ) {
 			foreach($rows as $row) {
 				$row->params = new JRegistry($row->params);
@@ -517,7 +517,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 	{
 		if (file_exists($filename)) {
 			//get the version number
-			$xml = JFusionFunction::getXml($filename);
+			$xml = \JFusion\Framework::getXml($filename);
 
 			$this->jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . (string)$xml->version . ' ';
 			$revision = $xml->revision;

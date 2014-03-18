@@ -67,14 +67,14 @@ class plgAuthenticationjfusion extends JPlugin
 	    global $JFusionLoginCheckActive;
 	    $mainframe = JFactory::getApplication();
 	    // Initialize variables
-	    $debugger = JFusionFactory::getDebugger('jfusion-authentication');
+	    $debugger = \JFusion\Factory::getDebugger('jfusion-authentication');
 	    $debugger->set(null, array());
 
 	    $db = JFactory::getDBO();
 	    //get the JFusion master
-	    $master = JFusionFunction::getMaster();
+	    $master = \JFusion\Framework::getMaster();
 	    if (!empty($master)) {
-		    $JFusionMaster = JFusionFactory::getUser($master->name);
+		    $JFusionMaster = \JFusion\Factory::getUser($master->name);
 		    try {
 			    $userinfo = $JFusionMaster->getUser($credentials['username']);
 		    } catch (Exception $e) {
@@ -83,7 +83,7 @@ class plgAuthenticationjfusion extends JPlugin
 		    //check if a user was found
 		    if (!empty($userinfo)) {
 			    //check to see if the login checker wanted a skip password
-			    $debug = JFusionFunction::isAdministrator();
+			    $debug = \JFusion\Framework::isAdministrator();
 			    if (!empty($options['skip_password_check']) && $debug === true) {
 				    $debugger->add('debug', JText::_('SKIPPED') . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK'));
 				    $response->status = JAuthentication::STATUS_SUCCESS;
@@ -102,12 +102,12 @@ class plgAuthenticationjfusion extends JPlugin
 					    //apply the clear text password to the user object
 					    $userinfo->password_clear = $credentials['password'];
 					    //check the master plugin for a valid password
-					    $model = JFusionFactory::getAuth($master->name);
+					    $model = \JFusion\Factory::getAuth($master->name);
 
 					    try {
 						    $check = $model->checkPassword($userinfo);
 					    } catch (Exception $e) {
-						    JFusionFunction::raiseError($e, $model->getJname());
+						    \JFusion\Framework::raiseError($e, $model->getJname());
 						    $check = false;
 					    }
 					    if ($check) {
@@ -139,8 +139,8 @@ class plgAuthenticationjfusion extends JPlugin
 						    foreach ($auth_models as $auth_model) {
 							    try {
 								    //Generate an encrypted password for comparison
-								    $model = JFusionFactory::getAuth($auth_model->name);
-								    $JFusionSlave = JFusionFactory::getUser($auth_model->name);
+								    $model = \JFusion\Factory::getAuth($auth_model->name);
+								    $JFusionSlave = \JFusion\Factory::getUser($auth_model->name);
 								    $slaveuserinfo = $JFusionSlave->getUser($userinfo);
 								    // add in the clear password to be able to generate the hash
 								    if (!empty($slaveuserinfo)) {
@@ -161,7 +161,7 @@ class plgAuthenticationjfusion extends JPlugin
 									    $response->error_message = '';
 									    $response->userinfo = $userinfo;
 									    //update the password format to what the master expects
-									    $JFusionMaster = JFusionFactory::getUser($master->name);
+									    $JFusionMaster = \JFusion\Factory::getUser($master->name);
 									    //make sure that the password_clear is not already hashed which may be the case for some dual login plugins
 
 									    if (strlen($userinfo->password_clear) != 32) {
@@ -177,7 +177,7 @@ class plgAuthenticationjfusion extends JPlugin
 											    foreach($status['error'] as $error) {
 												    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') . ': ' . $error);
 											    }
-											    JFusionFunction::raise('error', $status['error'], $master->name. ' ' .JText::_('PASSWORD') . ' ' . JText::_('UPDATE'));
+											    \JFusion\Framework::raise('error', $status['error'], $master->name. ' ' .JText::_('PASSWORD') . ' ' . JText::_('UPDATE'));
 										    } else {
 											    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('SUCCESS'));
 										    }
@@ -193,13 +193,13 @@ class plgAuthenticationjfusion extends JPlugin
 									    }
 								    }
 							    } catch (Exception $e) {
-								    JFusionFunction::raiseError($e);
+								    \JFusion\Framework::raiseError($e);
 							    }
 						    }
 
 						    if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
 							    //Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour
-							    JFusionFunction::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
+							    \JFusion\Framework::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
 							    $debugger->add('debug', JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED'));
 						    }
 
@@ -214,7 +214,7 @@ class plgAuthenticationjfusion extends JPlugin
 		    } else {
 			    if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
 				    //Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour
-				    JFusionFunction::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
+				    \JFusion\Framework::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
 				    $debugger->add('debug', JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED'));
 			    }
 
@@ -228,7 +228,7 @@ class plgAuthenticationjfusion extends JPlugin
 			    // Check the two factor authentication
 			    if ($response->status == JAuthentication::STATUS_SUCCESS)
 			    {
-				    $joomla = JFusionFactory::getUser('joomla_int');
+				    $joomla = \JFusion\Factory::getUser('joomla_int');
 
 				    $joomlauser = $joomla->getUser($credentials['username']);
 
@@ -365,7 +365,7 @@ class plgAuthenticationjfusion extends JPlugin
 		    }
 	    } else {
 		    //we have to call the main Joomla plugin as we have no master
-		    JFusionFunction::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
+		    \JFusion\Framework::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
 		    $debugger->add('debug', JText::_('JOOMLA_AUTH_PLUGIN_USED_NO_MASTER'));
 	    }
     }

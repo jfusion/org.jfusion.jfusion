@@ -76,7 +76,7 @@ class JFusionForum_mybb extends JFusionForum {
 	        $where = (!empty($usedforums)) ? 'a.fid IN (' . $usedforums . ')' : '';
 		    $limiter = ' LIMIT 0,' . $result_limit;
 
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $q = $db->getQuery(true)
 			    ->select('a.tid AS threadid, b.pid AS postid, b.username, b.uid AS userid, a.subject, b.dateline')
@@ -113,7 +113,7 @@ class JFusionForum_mybb extends JFusionForum {
 
 		    $query[LCP] = (string)$q . $limiter;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $query;
     }
@@ -124,7 +124,7 @@ class JFusionForum_mybb extends JFusionForum {
      */
     function getThread($threadid) {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('tid AS threadid, fid AS forumid, firstpost AS postid')
@@ -134,7 +134,7 @@ class JFusionForum_mybb extends JFusionForum {
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $results = null;
 	    }
         return $results;
@@ -146,7 +146,7 @@ class JFusionForum_mybb extends JFusionForum {
      */
     function getReplyCount($existingthread) {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('replies')
@@ -156,7 +156,7 @@ class JFusionForum_mybb extends JFusionForum {
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -168,7 +168,7 @@ class JFusionForum_mybb extends JFusionForum {
     function getForumList() {
 	    try {
 		    //get the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('fid as id, name')
@@ -178,7 +178,7 @@ class JFusionForum_mybb extends JFusionForum {
 		    //getting the results
 		    return $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -191,7 +191,7 @@ class JFusionForum_mybb extends JFusionForum {
 	    try {
 		    if ($userid) {
 			    //get the connection to the db
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
 				    ->select('totalpms, unreadpms')
@@ -204,7 +204,7 @@ class JFusionForum_mybb extends JFusionForum {
 			    return array('unread' => $pminfo->unreadpms, 'total' => $pminfo->totalpms);
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return array('unread' => 0, 'total' => 0);
     }
@@ -230,7 +230,7 @@ class JFusionForum_mybb extends JFusionForum {
     function getAvatar($userid) {
 	    try {
 		    //get the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    // read unread count
 
 		    $query = $db->getQuery(true)
@@ -244,7 +244,7 @@ class JFusionForum_mybb extends JFusionForum {
 
 		    $url = $this->params->get('source_url') . $avatar;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $url = '';
 	    }
         return $url;

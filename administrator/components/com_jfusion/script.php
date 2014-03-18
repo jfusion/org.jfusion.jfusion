@@ -247,7 +247,7 @@ class com_jfusionInstallerScript
 			foreach ($files2delete as $f) {
 				if (file_exists($f)) {
 					if (!JFile::delete($f)) {
-						JFusionFunction::raiseWarning(JText::sprintf('UPGRADE_UNABLE_TO_REMOVE_FILE', $f));
+						\JFusion\Framework::raiseWarning(JText::sprintf('UPGRADE_UNABLE_TO_REMOVE_FILE', $f));
 					}
 				}
 			}
@@ -537,7 +537,7 @@ class com_jfusionInstallerScript
 		$this->_uninstallPlugin('module', 'mod_jfusion_whosonline', '', 'JFusion Whos Online Module');
 
 		//see if any mods from jfusion plugins need to be removed
-		$plugins = JFusionFactory::getPlugins('all', true, false);
+		$plugins = \JFusion\Factory::getPlugins('all', true, false);
 		foreach($plugins as $plugin) {
 			$model = new JFusionModelInstaller();
 			$result = $model->uninstall($plugin->name);
@@ -702,7 +702,7 @@ HTML;
 		$installer = JInstaller::getInstance();
 		$manifest = $installer->getPath('manifest');
 
-		$parser = JFusionFunction::getXML($manifest);
+		$parser = \JFusion\Framework::getXML($manifest);
 
 		if ($parser->version) {
 			$version = $parser->version;

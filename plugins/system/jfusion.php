@@ -68,7 +68,7 @@ class plgSystemJfusion extends JPlugin
      */
     function onAfterInitialise()
     {
-        //JFusionFunction::raiseNotice('system plugin called');
+        //\JFusion\Framework::raiseNotice('system plugin called');
         $session = JFactory::getSession();
         //initialise some vars
         ob_start();
@@ -90,7 +90,7 @@ class plgSystemJfusion extends JPlugin
                 $_REQUEST = $_REQUEST + $backup['request'];
                 $session->clear('JFusionVarBackup');
                 if ($debug) {
-                    JFusionFunction::raiseNotice('Form variables restored.');
+                    \JFusion\Framework::raiseNotice('Form variables restored.');
                 }
             }
         } else {
@@ -100,37 +100,37 @@ class plgSystemJfusion extends JPlugin
             $mainframe = JFactory::getApplication();
             if ($mainframe->isSite() && !empty($syncsessions) && $task != 'logout' && $task != 'user.logout') {
                 //for master if not joomla_int
-                $master = JFusionFunction::getMaster();
+                $master = \JFusion\Framework::getMaster();
                 if (!empty($master) && $master->name != 'joomla_int' && $master->dual_login) {
-                    $JFusionUser = JFusionFactory::getUser($master->name);
+                    $JFusionUser = \JFusion\Factory::getUser($master->name);
 	                try {
 		                $changed = $JFusionUser->syncSessions($keepalive);
 		                if (!empty($changed)) {
 			                if ($debug) {
-				                JFusionFunction::raiseNotice('session changed', $master->name);
+				                \JFusion\Framework::raiseNotice('session changed', $master->name);
 			                }
 			                $refresh = true;
 		                }
 	                } catch (Exception $e) {
-		                JFusionFunction::raiseError($e, $JFusionUser->getJname());
+		                \JFusion\Framework::raiseError($e, $JFusionUser->getJname());
 	                }
                 }
                 //slave plugins
-                $plugins = JFusionFactory::getPlugins('both');
+                $plugins = \JFusion\Factory::getPlugins('both');
                 foreach ($plugins as $plugin) {
                     //only call keepAlive if the plugin is activated for dual login
                     if ($plugin->dual_login) {
-                        $JFusionUser = JFusionFactory::getUser($plugin->name);
+                        $JFusionUser = \JFusion\Factory::getUser($plugin->name);
 	                    try {
 		                    $changed = $JFusionUser->syncSessions($keepalive);
 		                    if (!empty($changed)) {
 			                    if ($debug) {
-				                    JFusionFunction::raiseNotice('session changed', $plugin->name);
+				                    \JFusion\Framework::raiseNotice('session changed', $plugin->name);
 			                    }
 			                    $refresh = true;
 		                    }
 	                    } catch (Exception $e) {
-		                    JFusionFunction::raiseError($e, $JFusionUser->getJname());
+		                    \JFusion\Framework::raiseError($e, $JFusionUser->getJname());
 	                    }
                     }
                 }
@@ -157,7 +157,7 @@ class plgSystemJfusion extends JPlugin
                 $backup['files'] = $_FILES;
                 $session->set('JFusionVarBackup', $backup);
                 if ($debug) {
-                    JFusionFunction::raiseNotice('Refresh is true');
+                    \JFusion\Framework::raiseNotice('Refresh is true');
                 }
                 $uri = JURI::getInstance();
                 //add a variable to ensure refresh
@@ -181,33 +181,33 @@ class plgSystemJfusion extends JPlugin
 			// The instance of the user is not obligatory. Without to be logged, the user can change the language of the integrated software
 			// if those implement it.
 			$userinfo = JFactory::getUser();
-			$master = JFusionFunction::getMaster();
-			$JFusionMasterPublic = JFusionFactory::getPublic($master->name);
+			$master = \JFusion\Framework::getMaster();
+			$JFusionMasterPublic = \JFusion\Factory::getPublic($master->name);
 			if (method_exists($JFusionMasterPublic, 'setLanguageFrontEnd')) {
 				try {
 					$status = $JFusionMasterPublic->setLanguageFrontEnd($userinfo);
 					if (!empty($status['error'])) {
 						//could not set the language
-						JFusionFunction::raise('error', $status['error'], $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
+						\JFusion\Framework::raise('error', $status['error'], $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
 					}
 				} catch (Exception $e) {
-					JFusionFunction::raiseError($e, $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
+					\JFusion\Framework::raiseError($e, $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
 				}
 			} else {
 				$status['debug'][] = JText::_('METHOD_NOT_IMPLEMENTED') . ': ' . $master->name;
 			}
-			$slaves = JFusionFunction::getSlaves();
+			$slaves = \JFusion\Framework::getSlaves();
 			foreach($slaves as $slave) {
-				$JFusionSlavePublic = JFusionFactory::getPublic($slave->name);
+				$JFusionSlavePublic = \JFusion\Factory::getPublic($slave->name);
 				if (method_exists($JFusionSlavePublic, 'setLanguageFrontEnd')) {
 					try {
 						$status = $JFusionSlavePublic->setLanguageFrontEnd($userinfo);
 						if (!empty($status['error'])) {
 							//could not set the language
-							JFusionFunction::raise('error', $status['error'], $slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
+							\JFusion\Framework::raise('error', $status['error'], $slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
 						}
 					} catch (Exception $e) {
-						JFusionFunction::raiseError($e, $slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
+						\JFusion\Framework::raiseError($e, $slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
 					}
 				} else {
 					$status['debug'][] = JText::_('METHOD_NOT_IMPLEMENTED') . ': ' . $slave->name;

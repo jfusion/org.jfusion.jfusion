@@ -46,7 +46,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    $username = $this->filterUsername($userinfo->username);
 
 		    // initialise some objects
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('user_id as userid, user_name as username, user_token, user_real_name as name, user_email as email, user_password as password, NULL as password_salt, NULL as activation, TRUE as is_activated, NULL as reason, user_touched as lastvisit')
@@ -92,7 +92,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $result->activation = '';
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;
@@ -115,7 +115,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 	        //setup status array to hold debug info and errors
 	        $status = array('error' => array(), 'debug' => array());
 
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__user')
@@ -230,7 +230,7 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    $existinguser->password = ':A:' . md5($userinfo->password_clear);
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__user')
@@ -265,7 +265,7 @@ class JFusionUser_mediawiki extends JFusionUser {
     function updateEmail($userinfo, &$existinguser, &$status)
     {
 	    //we need to update the email
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 	    $query = $db->getQuery(true)
 		    ->update('#__user')
 		    ->set('user_email = ' . $db->quote($userinfo->email))
@@ -291,7 +291,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 		if (empty($usergroups)) {
 			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		} else {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			try {
 				$query = $db->getQuery(true)
 					->delete('#__user_groups')
@@ -323,7 +323,7 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 	    $ban = new stdClass;
 	    $ban->ipb_id = NULL;
 	    $ban->ipb_address = NULL;
@@ -360,7 +360,7 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->delete('#__ipblocks')
@@ -374,7 +374,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 /*
     function activateUser($userinfo, &$existinguser, &$status)
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
+        $db = \JFusion\Factory::getDatabase($this->getJname());
 	    $query = $db->getQuery(true)
 		    ->update('#__user')
 		    ->set('is_activated = 1')
@@ -388,7 +388,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
+        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__user')
@@ -412,7 +412,7 @@ class JFusionUser_mediawiki extends JFusionUser {
     {
 	    try {
 		    //we need to create a new SMF user
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {

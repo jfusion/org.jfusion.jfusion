@@ -51,7 +51,7 @@ class jfusionViewwizard extends JViewLegacy
 	        $this->jname = $jname;
             parent::display($tpl);
         } else {
-            JFusionFunction::raiseWarning(JText::_('NONE_SELECTED'));
+            \JFusion\Framework::raiseWarning(JText::_('NONE_SELECTED'));
         }
     }
 }

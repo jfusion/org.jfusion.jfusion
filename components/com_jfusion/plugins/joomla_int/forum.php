@@ -51,7 +51,7 @@ class JFusionForum_joomla_int extends JFusionForum
 	{
 		$url = '';
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			if ($userid) {
 				$query = $db->getQuery(true)
 					->select('id')
@@ -102,7 +102,7 @@ class JFusionForum_joomla_int extends JFusionForum
 	function getAvatar($uid)
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			$source_url = $this->params->get('source_url', '/');
 			try {
 				$query = $db->getQuery(true)
@@ -143,7 +143,7 @@ class JFusionForum_joomla_int extends JFusionForum
 				}
 			}
 		} catch (Exception $e) {
-			$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+			$avatar = \JFusion\Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 		}
 		return $avatar;
 	}

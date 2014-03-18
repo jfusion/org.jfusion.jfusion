@@ -56,7 +56,7 @@ class plgSearchJfusion extends JPlugin
 	{
 		static $areas = array();
 		//get the software with search enabled
-		$plugins = JFusionFactory::getPlugins('both');
+		$plugins = \JFusion\Factory::getPlugins('both');
 		$searchplugin = JPluginHelper::getPlugin('search', 'jfusion');
 		$params = new JRegistry($searchplugin->params);
 		$enabledPlugins = unserialize(base64_decode($params->get('JFusionPluginParam')));
@@ -129,7 +129,7 @@ class plgSearchJfusion extends JPlugin
 		}
 
 		foreach ($searchPlugins AS $jname) {
-			$searchMe = JFusionFactory::getPublic($jname);
+			$searchMe = \JFusion\Factory::getPublic($jname);
 			if (is_array($pluginParamValue)) {
 				$pluginParam = new JRegistry('');
 				$pluginParam->loadArray($pluginParamValue[$jname]);
@@ -140,7 +140,7 @@ class plgSearchJfusion extends JPlugin
 			try {
 				$results = $searchMe->getSearchResults($text, $phrase, $pluginParam, $itemid, $ordering);
 			} catch (Exception $e) {
-				JFusionFunction::raiseError($e,$searchMe->getJname());
+				\JFusion\Framework::raiseError($e,$searchMe->getJname());
 				$results = array();
 			}
 			if (is_array($results)) {

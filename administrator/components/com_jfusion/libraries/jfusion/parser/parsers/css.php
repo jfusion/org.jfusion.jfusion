@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Parser\Parsers;
 /**
  * cssparser class
  *
@@ -10,7 +10,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class cssparser {
+class CssParser {
 	var $css = array();
 	var $media = array();
 	var $url = null;
@@ -24,7 +24,7 @@ class cssparser {
     /**
      * @param null $prefix
      */
-    function cssparser($prefix = null) {
+    function __onstructor($prefix = null) {
 		$this->prefix = $prefix;
 	    $this->Clear();
 	}

@@ -80,7 +80,7 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 	public function getUserList($limitstart = 0, $limit = 0)
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('username, email')
@@ -89,7 +89,7 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 			$db->setQuery($query, $limitstart, $limit);
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			$userlist = array();
 		}
 		return $userlist;
@@ -102,7 +102,7 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 	public function getUserCount()
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('count(*)')
@@ -112,7 +112,7 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 			//getting the results
 			return $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			return 0;
 		}
 	}
@@ -125,8 +125,8 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 	 */
 	public function getDefaultUsergroup()
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
 
 		$group = array();
 		if ($usergroups !== null) {
@@ -150,7 +150,7 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 	 */
 	public function getUsergroupList()
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('id, title as name')
@@ -172,7 +172,7 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 	function getUsergroupName($jname, $gid)
 	{
 		try {
-			$db = JFusionFactory::getDatabase($jname);
+			$db = \JFusion\Factory::getDatabase($jname);
 
 			//we want to output the usergroup name
 
@@ -184,7 +184,7 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 			$db->setQuery($query);
 			$group = $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $jname);
+			\JFusion\Framework::raiseError($e, $jname);
 			$group = '';
 		}
 		return $group;

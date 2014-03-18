@@ -64,7 +64,7 @@ class JFusionController extends JControllerLegacy
 	    if ($jname && $post) {
 		    try {
 			    //Initialize the forum
-			    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+			    $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
 
 			    if (substr($post['source_path'], -1) != DIRECTORY_SEPARATOR) {
 				    $post['source_path'] .= DIRECTORY_SEPARATOR;
@@ -73,7 +73,7 @@ class JFusionController extends JControllerLegacy
 			    try {
 				    $params = $JFusionPlugin->setupFromPath($post['source_path']);
 			    } catch (Exception $e) {
-				    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+				    \JFusion\Framework::raiseError($e, $JFusionPlugin->getJname());
 				    $params = array();
 			    }
 
@@ -88,7 +88,7 @@ class JFusionController extends JControllerLegacy
 						    $status = 1;
 					    }
 				    } catch (Exception $e) {
-					    JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+					    \JFusion\Framework::raiseError($e, $JFusionPlugin->getJname());
 				    }
 				    $JFusionPlugin->updateStatus($status);
 				    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, JText::_('WIZARD_SUCCESS'), 'message');
@@ -234,7 +234,7 @@ class JFusionController extends JControllerLegacy
 			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 		    }
 
-		    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+		    $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
 		    if (!$JFusionPlugin->saveParameters($post)) {
 			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 		    } else {
@@ -258,7 +258,7 @@ class JFusionController extends JControllerLegacy
 				    if (!empty($customcommand)) {
 					    $customarg1 = JFactory::getApplication()->input->getString('customarg1', null);
 					    $customarg2 = JFactory::getApplication()->input->getString('customarg2', null);
-					    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+					    $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
 					    if (method_exists($JFusionPlugin, $customcommand)) {
 						    $JFusionPlugin->$customcommand($customarg1, $customarg2);
 					    }
@@ -396,9 +396,9 @@ class JFusionController extends JControllerLegacy
 		    if (!$db->loadResult()) {
 			    //sync has not started, lets get going :)
 			    $slaves = JFactory::getApplication()->input->get('slave', array(), 'array');
-			    $master_plugin = JFusionFunction::getMaster();
+			    $master_plugin = \JFusion\Framework::getMaster();
 			    $master = $master_plugin->name;
-			    $JFusionMaster = JFusionFactory::getAdmin($master);
+			    $JFusionMaster = \JFusion\Factory::getAdmin($master);
 			    if (empty($slaves)) {
 				    throw new RuntimeException(JText::_('SYNC_NODATA'));
 			    } else {
@@ -409,7 +409,7 @@ class JFusionController extends JControllerLegacy
 					    if ($slave['perform_sync'] == $jname) {
 						    $temp_data = array();
 						    $temp_data['jname'] = $jname;
-						    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+						    $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
 						    if ($action == 'master') {
 							    $temp_data['total'] = $JFusionPlugin->getUserCount();
 						    } else {
@@ -441,10 +441,10 @@ class JFusionController extends JControllerLegacy
 			    throw new RuntimeException(JText::_('SYNC_CANNOT_START'));
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    \JFusion\Framework::raiseError($e);
 	    }
 
-	    $syncdata['messages'] = JFusionFunction::renderMessage();
+	    $syncdata['messages'] = \JFusion\Framework::renderMessage();
         die(json_encode($syncdata));
     }
 
@@ -555,7 +555,7 @@ class JFusionController extends JControllerLegacy
 		    if ($exsist) {
 			    throw new RuntimeException($new_jname . ' ' . JText::_('ALREADY_IN_USE'));
 		    } else if ($jname && $new_jname && $record) {
-			    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+			    $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
 			    if ($JFusionPlugin->multiInstance()) {
 				    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
 				    $model = new JFusionModelInstaller();
@@ -673,7 +673,7 @@ class JFusionController extends JControllerLegacy
         $db = JFactory::getDBO();
         $syncid = JFactory::getApplication()->input->get('syncid', array(), 'array');
         if(!is_array($syncid) || empty($syncid)) {
-            JFusionFunction::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
+            \JFusion\Framework::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
         } else {
             foreach ($syncid as $key => $value) {
 	            $query = $db->getQuery(true)
@@ -703,7 +703,7 @@ class JFusionController extends JControllerLegacy
     {
         $syncid = JFactory::getApplication()->input->get('syncid', array(), 'array');
         if(!is_array($syncid) || empty($syncid)) {
-            JFusionFunction::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
+            \JFusion\Framework::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
 	        $this->setRedirect('index.php?option=com_jfusion&task=synchistory');
         } else {
             foreach ($syncid as $key => $value) {
@@ -815,7 +815,7 @@ JS;
 			    $filename = base64_decode($filename);
 			    $ConfigFile = JFusionFunctionAdmin::getFileData($filename);
 			    if (!empty($ConfigFile)) {
-				    $xml = JFusionFunction::getXml($ConfigFile, false);
+				    $xml = \JFusion\Framework::getXml($ConfigFile, false);
 			    }
 		    } else if($file['error'] > 0) {
 			    switch ($file['error']) {
@@ -846,7 +846,7 @@ JS;
 			    throw new RuntimeException( JText::_('ERROR') . ': ' . $error);
 		    } else {
 			    $filename = $file['tmp_name'];
-			    $xml = JFusionFunction::getXml($filename);
+			    $xml = \JFusion\Framework::getXml($filename);
 		    }
 		    if(!$xml) {
 			    throw new RuntimeException(JText::_('ERROR_LOADING_FILE') . ': ' . $filename);
@@ -911,7 +911,7 @@ JS;
 						    if( !empty($database_password) ) $conf['database_password'] = $database_password;
 						    if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
 
-						    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+						    $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
 						    if (!$JFusionPlugin->saveParameters($conf)) {
 							    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 						    } else {
@@ -937,7 +937,7 @@ JS;
 		    }
 		    $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $jname . ': ' . JText::_('IMPORT_SUCCESS'));
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e, $jname);
+		    \JFusion\Framework::raiseWarning($e, $jname);
 		    $mainframe->redirect('index.php?option=com_jfusion&task=importexport&jname=' . $jname);
 	    }
         exit();
@@ -948,7 +948,7 @@ JS;
         $jname = JFactory::getApplication()->input->get('jname');
         $dbinfo = JFactory::getApplication()->input->get('dbinfo');
 
-        $params = JFusionFactory::getParams($jname);
+        $params = \JFusion\Factory::getParams($jname);
         $params = $params->toObject();
         jimport('joomla.utilities.simplexml');
 
@@ -960,7 +960,7 @@ JS;
             $arr[$key] = $val;
         }
 
-	    $xml = JFusionFunction::getXml('<jfusionconfig></jfusionconfig>', false);
+	    $xml = \JFusion\Framework::getXml('<jfusionconfig></jfusionconfig>', false);
 
         $info = $xml->addChild('info');
 
@@ -973,7 +973,7 @@ JS;
         $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
-	        $element = JFusionFunction::getXml($filename);
+	        $element = \JFusion\Framework::getXml($filename);
 
             $info->addAttribute('pluginversion', (string)$element->version);
         } else {
@@ -1043,15 +1043,15 @@ JS;
 			}
 		}
 
-		$master = JFusionFunction::getMaster();
+		$master = \JFusion\Framework::getMaster();
 
 		foreach ($groups as $jname => $plugin) {
 			foreach ($plugin as $index => $group) {
 				if ($group === null) {
 					if ($index == 0) {
-						JFusionFunction::raiseError(JText::_('NO_DEFAULT_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
+						\JFusion\Framework::raiseError(JText::_('NO_DEFAULT_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
 					} else if (($master && $master->name == $jname) || (isset($updateusergroups[$jname]) && $updateusergroups[$jname])) {
-						JFusionFunction::raiseError(JText::_('NO_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
+						\JFusion\Framework::raiseError(JText::_('NO_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
 					}
 				}
 			}
@@ -1071,13 +1071,13 @@ JS;
 		$table->bind($post);
 		// pre-save checks
 		if (!$table->check()) {
-			JFusionFunction::raiseWarning($table->getError());
+			\JFusion\Framework::raiseWarning($table->getError());
 		} else {
 			// save the changes
 			if (!$table->store()) {
-				JFusionFunction::raiseWarning($table->getError());
+				\JFusion\Framework::raiseWarning($table->getError());
 			} else {
-				JFusionFunction::raiseMessage(JText::_('USERGROUPS_SAVED'));
+				\JFusion\Framework::raiseMessage(JText::_('USERGROUPS_SAVED'));
 			}
 		}
 		$this->setRedirect('index.php?option=com_jfusion&task=usergroups');

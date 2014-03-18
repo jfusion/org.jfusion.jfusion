@@ -52,7 +52,7 @@ class JFusionUser_prestashop extends JFusionUser
 			    $identifier = $userinfo->email;
 		    }
 		    // Get user info from database
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('id_customer as userid, email, email as username, passwd as password, firstname, lastname, active')
@@ -83,11 +83,11 @@ class JFusionUser_prestashop extends JFusionUser
 				   $result->activation = '';
 			   } else {
 				   jimport('joomla.user.helper');
-				   $result->activation = JFusionFunction::getHash(JUserHelper::genRandomPassword());
+				   $result->activation = \JFusion\Framework::getHash(JUserHelper::genRandomPassword());
 			   }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         // read through params for cookie key (the salt used)
@@ -119,7 +119,7 @@ class JFusionUser_prestashop extends JFusionUser
 		    if (is_object($userinfo)) {
 			    $identifier = $userinfo->id_customer;
 		    }
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->update('#__customer')
@@ -143,7 +143,7 @@ class JFusionUser_prestashop extends JFusionUser
 	 */
 	function destroySession($userinfo, $options) {
 		$status = array('error' => array(), 'debug' => array());
-		$params = JFusionFactory::getParams($this->getJname());
+		$params = \JFusion\Factory::getParams($this->getJname());
 
 		$status = $this->curlLogout($userinfo, $options, $params->get('logout_type'));
 		return $status;
@@ -159,7 +159,7 @@ class JFusionUser_prestashop extends JFusionUser
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
 			$status['error'][] = JText::_('FUSION_BLOCKED_USER');
 		} else {
-			$params = JFusionFactory::getParams($this->getJname());
+			$params = \JFusion\Factory::getParams($this->getJname());
 			$status = $this->curlLogin($userinfo, $options, $params->get('brute_force'));
 		}
 		return $status;
@@ -177,7 +177,7 @@ class JFusionUser_prestashop extends JFusionUser
 
 	    $existinguser->password = Tools::encrypt($userinfo->password_clear);
 
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__customer')
@@ -198,7 +198,7 @@ class JFusionUser_prestashop extends JFusionUser
      */
     function createUser($userinfo, &$status) {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
@@ -308,7 +308,7 @@ class JFusionUser_prestashop extends JFusionUser
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    //we need to update the email
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__customer')
@@ -330,7 +330,7 @@ class JFusionUser_prestashop extends JFusionUser
      */
     function activateUser($userinfo, &$existinguser, &$status) {
 	    /* change the 'active' field of the customer in the ps_customer table to 1 */
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__customer')
@@ -352,7 +352,7 @@ class JFusionUser_prestashop extends JFusionUser
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
 	    /* change the 'active' field of the customer in the ps_customer table to 0 */
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__customer')
@@ -378,7 +378,7 @@ class JFusionUser_prestashop extends JFusionUser
 		if (empty($usergroups)) {
 			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		} else {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			// now delete the user
 			$query = $db->getQuery(true)
 				->delete('#__customer_group')

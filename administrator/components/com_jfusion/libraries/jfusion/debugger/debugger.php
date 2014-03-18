@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Debugger;
 
 /**
  * PHP version 5
@@ -11,6 +11,7 @@
  * @link      http://www.jfusion.org
  */
 
+use JFusion\Factory;
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -24,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionDebugger {
+class Debugger {
 	private $data = array();
 	private $title = '';
 	private $callback = null;
@@ -362,7 +363,7 @@ HTML;
 	 */
 	public function getAsHtml($key = null, $loadresources = true) {
 		if ($loadresources) {
-			$document = JFusionFactory::getDocument();
+			$document = Factory::getDocument();
 			$document->addStyleSheet(JUri::root(true) . '/components/com_jfusion/css/debugger.css');
 			$document->addScript(JUri::root(true) . '/components/com_jfusion/js/debugger.js');
 		}

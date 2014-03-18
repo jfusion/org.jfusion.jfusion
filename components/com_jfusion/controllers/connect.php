@@ -37,7 +37,7 @@ class JFusionControllerConnect extends JControllerLegacy {
 		
 		//perform a secret key check
 		$secret = JFactory::getApplication()->input->get('secret');
-		$params = JFusionFactory::getParams('joomla_int');
+		$params = \JFusion\Factory::getParams('joomla_int');
 		$module = new stdClass();
 		
 		if (! $params->get('allow_connections', 0)) {

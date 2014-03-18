@@ -43,7 +43,7 @@ class JFusionUser_elgg extends JFusionUser {
 			    $identifier = $userinfo->username;
 		    }
 		    // Get user info from database
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('guid as userid, username, name, name as lastname, email, password, salt as password_salt,banned as block')
@@ -74,7 +74,7 @@ class JFusionUser_elgg extends JFusionUser {
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;
@@ -145,7 +145,7 @@ class JFusionUser_elgg extends JFusionUser {
 	    try {
 		    $this->destroySession(null, null);
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         $status = array('error' => array(), 'debug' => array());
 
@@ -213,7 +213,7 @@ class JFusionUser_elgg extends JFusionUser {
 	    jimport('joomla.user.helper');
 	    $existinguser->password_salt = JUserHelper::genRandomPassword(8);
 	    $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users_entity')
@@ -283,7 +283,7 @@ class JFusionUser_elgg extends JFusionUser {
 			        //                $new_user->admin_created = true;
 			        if (empty($userinfo->password_clear)) {
 				        //we need to update the password
-				        $db = JFusionFactory::getDatabase($this->getJname());
+				        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 				        $query = $db->getQuery(true)
 					        ->update('#__users_entity')
@@ -319,7 +319,7 @@ class JFusionUser_elgg extends JFusionUser {
     function updateEmail($userinfo, &$existinguser, &$status)
     {
 	    //we need to update the email
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users_entity')

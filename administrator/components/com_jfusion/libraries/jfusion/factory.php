@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion;
 
 /**
  * Factory model that can generate any jfusion objects or classes
@@ -12,6 +12,28 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
+
+//use JFusion\Cookies;
+use JFusion\Cookies\Cookies;
+use JFusion\Database\DatabaseDriver;
+use JFusion\Registry\Registry;
+use JFusion\Debugger\Debugger;
+use JFusion\Language\Language;
+use JFusion\Language\Text;
+use JFusion\Date\Date;
+
+use JFusion\Plugin\Plugin_Public;
+use JFusion\Plugin\Plugin_Admin;
+use JFusion\Plugin\Plugin_Auth;
+use JFusion\Plugin\Plugin_User;
+use JFusion\Plugin\Plugin_Forum;
+
+
+use \RuntimeException;
+use \Exception;
+use \DateTimeZone;
+
+
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
@@ -38,12 +60,12 @@ jimport('joomla.html.parameter');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionFactory
+class Factory
 {
 	/**
 	 * Global database object
 	 *
-	 * @var    JDatabaseDriver
+	 * @var    DatabaseDriver
 	 * @since  11.1
 	 */
 	public static $database = null;
@@ -59,7 +81,7 @@ class JFusionFactory
 	/**
 	 * Global configuration object
 	 *
-	 * @var    JRegistry
+	 * @var    Registry
 	 * @since  11.1
 	 */
 	public static $config = null;
@@ -75,7 +97,7 @@ class JFusionFactory
 	/**
 	 * Global language object
 	 *
-	 * @var    JLanguage
+	 * @var    Language
 	 * @since  11.1
 	 */
 	public static $language = null;
@@ -93,7 +115,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JFusionPublic object for the JFusion plugin
+     * @return Plugin_Public object for the JFusion plugin
      */
     public static function &getPublic($jname)
     {
@@ -120,7 +142,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JFusionAdmin object for the JFusion plugin
+     * @return Plugin_Admin object for the JFusion plugin
      */
     public static function &getAdmin($jname)
     {
@@ -150,7 +172,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JFusionAuth JFusion Authentication class for the JFusion plugin
+     * @return Plugin_Auth JFusion Authentication class for the JFusion plugin
      */
     public static function &getAuth($jname)
     {
@@ -178,7 +200,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JFusionUser JFusion User class for the JFusion plugin
+     * @return Plugin_User JFusion User class for the JFusion plugin
      */
     public static function &getUser($jname)
     {
@@ -206,7 +228,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JFusionForum JFusion Thread class for the JFusion plugin
+     * @return Plugin_Forum JFusion Thread class for the JFusion plugin
      */
     public static function &getForum($jname)
     {
@@ -262,7 +284,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JDatabaseDriver Database connection for the JFusion plugin
+     * @return DatabaseDriver Database connection for the JFusion plugin
      * @throws  RuntimeException
      */
     public static function &getDatabase($jname)
@@ -284,7 +306,7 @@ class JFusionFactory
      * @param string  $jname name of the JFusion plugin used
      * @param boolean $reset switch to force a recreate of the instance
      *
-     * @return JRegistry JParam object for the JFusion plugin
+     * @return Registry JParam object for the JFusion plugin
      */
     public static function &getParams($jname, $reset = false)
     {
@@ -305,7 +327,7 @@ class JFusionFactory
 	 * @param string $jname name of the JFusion plugin used
 	 *
 	 * @throws RuntimeException
-	 * @return JRegistry JParam object for the JFusion plugin
+	 * @return Registry JParam object for the JFusion plugin
 	 */
     public static function &createParams($jname)
     {
@@ -322,12 +344,12 @@ class JFusionFactory
         $params = $db->loadResult();
         //get the parameters from the XML file
         //$file = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
-        //$parametersInstance = new JRegistry('', $file );
+        //$parametersInstance = new Registry('', $file );
         //now load params without XML files, as this creates overhead when only values are needed
-        $parametersInstance = new JRegistry($params);
+        $parametersInstance = new Registry($params);
 
         if (!is_object($parametersInstance)) {
-	        throw new RuntimeException(JText::_('NO_FORUM_PARAMETERS'));
+	        throw new RuntimeException(Text::_('NO_FORUM_PARAMETERS'));
         }
         return $parametersInstance;
     }
@@ -336,7 +358,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JDatabaseDriver database object
+     * @return DatabaseDriver database object
      * @throws  RuntimeException
      */
     public static function &createDatabase($jname)
@@ -358,21 +380,21 @@ class JFusionFactory
             //added extra code to prevent error when $driver is incorrect
             if ($driver != 'mysql' && $driver != 'mysqli') {
                 //invalid driver
-	            throw new RuntimeException(JText::_('INVALID_DRIVER'));
+	            throw new RuntimeException(Text::_('INVALID_DRIVER'));
             } else {
 	            $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
 
 	            jimport('joomla.database.database');
 	            jimport('joomla.database.table');
 
-	            $db = JDatabaseDriver::getInstance($options);
+	            $db = DatabaseDriver::getInstance($options);
 
 	            //add support for UTF8
 	            $db->setQuery('SET names ' . $db->quote($charset));
 	            $db->execute();
 
 	            //get the debug configuration setting
-	            $db->setDebug(JFusionFactory::getConfig()->get('debug'));
+	            $db->setDebug(self::getConfig()->get('debug'));
             }
         }
         return $db;
@@ -393,7 +415,7 @@ class JFusionFactory
 	    if (!isset($instances)) {
 		    $instances = array();
 	    }
-	    $db = JFusionFactory::getDBO();
+	    $db = self::getDBO();
 
 	    $query = $db->getQuery(true)
 		    ->select('id, name, status, dual_login')
@@ -486,13 +508,13 @@ class JFusionFactory
     /**
      * Gets an JFusion cross domain cookie object
      *
-     * @return JFusionCookies object for the JFusion cookies
+     * @return Cookies object for the JFusion cookies
      */
     public static function &getCookies() {
     	static $instance;
     	//only create a new plugin instance if it has not been created before
     	if (!isset($instance)) {
-		    $instance = new JFusionCookies(static::getParams('joomla_int')->get('secret'));
+		    $instance = new Cookies(static::getParams('joomla_int')->get('secret'));
     	}
     	return $instance;
     }
@@ -500,7 +522,7 @@ class JFusionFactory
 	/**
 	 * @param string $jname
 	 *
-	 * @return JFusionDebugger
+	 * @return Debugger
 	 */
 	public static function &getDebugger($jname)
 	{
@@ -511,7 +533,7 @@ class JFusionFactory
 		}
 
 		if (!isset($instances[$jname])) {
-			$instances[$jname] = new JFusionDebugger();
+			$instances[$jname] = new Debugger();
 		}
 		return $instances[$jname];
 	}
@@ -546,11 +568,11 @@ class JFusionFactory
 	/**
 	 * Get a database object.
 	 *
-	 * Returns the global {@link JDatabaseDriver} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link \JDatabaseDriver} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  JDatabaseDriver
+	 * @return  \JDatabaseDriver
 	 *
-	 * @see     JDatabaseDriver
+	 * @see     \JDatabaseDriver
 	 * @since   11.1
 	 */
 	public static function getDbo()
@@ -595,15 +617,15 @@ class JFusionFactory
 	/**
 	 * Get a configuration object
 	 *
-	 * Returns the global {@link JRegistry} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link Registry} object, only creating it if it doesn't already exist.
 	 *
 	 * @param   string  $file       The path to the configuration file
 	 * @param   string  $type       The type of the configuration file
 	 * @param   string  $namespace  The namespace of the configuration file
 	 *
-	 * @return  JRegistry
+	 * @return  Registry
 	 *
-	 * @see     JRegistry
+	 * @see     Registry
 	 * @since   11.1
 	 */
 	public static function getConfig($file = null, $type = 'PHP', $namespace = '')
@@ -644,9 +666,9 @@ class JFusionFactory
 	 *
 	 * Returns the global {@link JLanguage} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  JLanguage object
+	 * @return  Language object
 	 *
-	 * @see     JLanguage
+	 * @see     Language
 	 * @since   11.1
 	 */
 	public static function getLanguage()
@@ -666,7 +688,7 @@ class JFusionFactory
 	 * @param   mixed  $time      The initial time for the JDate object
 	 * @param   mixed  $tzOffset  The timezone offset.
 	 *
-	 * @return  JDate object
+	 * @return  Date object
 	 *
 	 * @see     JDate
 	 * @since   11.1
@@ -691,13 +713,13 @@ class JFusionFactory
 				if (!class_exists($classname))
 				{
 					// The class does not exist, default to JDate
-					$classname = 'JDate';
+					$classname = 'Date';
 				}
 			}
 			else
 			{
 				// No tag, so default to JDate
-				$classname = 'JDate';
+				$classname = 'Date';
 			}
 		}
 

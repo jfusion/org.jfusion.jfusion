@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugin;
 
 /**
  * Abstract user class
@@ -14,6 +14,16 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Registry\Registry;
+
+
+use \RuntimeException;
+use \Exception;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -26,7 +36,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.orgrg
  */
-class JFusionUser extends JFusionPlugin
+class Plugin_User extends Plugin
 {
 	var $helper;
 
@@ -37,7 +47,7 @@ class JFusionUser extends JFusionPlugin
 	{
 		parent::__construct();
 		//get the helper object
-		$this->helper = &JFusionFactory::getHelper($this->getJname());
+		$this->helper = & Factory::getHelper($this->getJname());
 	}
 
     /**
@@ -191,14 +201,14 @@ class JFusionUser extends JFusionPlugin
 	    try {
 		    //check to see if a valid $userinfo object was passed on
 		    if (!is_object($userinfo)) {
-			    throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
+			    throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
 		    } else {
 			    //get the user
 			    $existinguser = $this->getUser($userinfo);
 			    if (!empty($existinguser)) {
 				    $changed = false;
 				    //a matching user has been found
-				    $this->debugger->add('debug', JText::_('USER_DATA_FOUND'));
+				    $this->debugger->add('debug', Text::_('USER_DATA_FOUND'));
 
 				    if($this->doUpdateEmail($userinfo, $existinguser, $overwrite)) {
 					    $changed = true;
@@ -256,17 +266,17 @@ class JFusionUser extends JFusionPlugin
 		$changed = false;
 		//check for advanced usergroup sync
 		if (!$userinfo->block && empty($userinfo->activation)) {
-			if (JFusionFunction::updateUsergroups($this->getJname())) {
+			if (Framework::updateUsergroups($this->getJname())) {
 				$status = array('error' => array(), 'debug' => array());
 				try {
 					$usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $status);
 					if ($usergroup_updated) {
 						$changed = true;
 					} else {
-						$this->debugger->add('debug', JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID'));
+						$this->debugger->add('debug', Text::_('SKIPPED_GROUP_UPDATE') . ':' . Text::_('GROUP_VALID'));
 					}
 				} catch (Exception $e) {
-					$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+					$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 				}
 				$this->mergeStatus($status);
 			}
@@ -313,24 +323,24 @@ class JFusionUser extends JFusionPlugin
 			$existinguser->password_clear = $userinfo->password_clear;
 			//check if the password needs to be updated
 			try {
-				$model = JFusionFactory::getAuth($this->getJname());
+				$model = Factory::getAuth($this->getJname());
 				if (!$model->checkPassword($existinguser)) {
 					try {
 						$status = array('error' => array(), 'debug' => array());
 						$this->updatePassword($userinfo, $existinguser, $status);
 						$changed = true;
 					} catch (Exception $e) {
-						$this->debugger->add('error', JText::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
+						$this->debugger->add('error', Text::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
 					}
 					$this->mergeStatus($status);
 				} else {
-					$this->debugger->add('debug', JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . JText::_('PASSWORD_VALID'));
+					$this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ':' . Text::_('PASSWORD_VALID'));
 				}
 			} catch (Exception $e) {
-				$this->debugger->add('error', JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . $e->getMessage());
+				$this->debugger->add('error', Text::_('SKIPPED_PASSWORD_UPDATE') . ':' . $e->getMessage());
 			}
 		} else {
-			$this->debugger->add('debug', JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE'));
+			$this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE'));
 		}
 		return $changed;
 	}
@@ -380,24 +390,24 @@ class JFusionUser extends JFusionPlugin
 	{
 		$changed = false;
 		if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
-			$this->debugger->add('debug', JText::_('EMAIL_CONFLICT'));
+			$this->debugger->add('debug', Text::_('EMAIL_CONFLICT'));
 			$update_email = $this->params->get('update_email', false);
 			if ($update_email || $overwrite) {
-				$this->debugger->add('debug', JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
+				$this->debugger->add('debug', Text::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
 				try {
 					$status = array('error' => array(), 'debug' => array());
 					$this->updateEmail($userinfo, $existinguser, $status);
 					$changed = true;
 				} catch (Exception $e) {
-					$this->debugger->add('error', JText::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage());
+					$this->debugger->add('error', Text::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage());
 				}
 				$this->mergeStatus($status);
 			} else {
 				//return a email conflict
-				$this->debugger->add('debug', JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
+				$this->debugger->add('debug', Text::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
 
 				$this->debugger->set('userinfo', $existinguser);
-				throw new RuntimeException(JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+				throw new RuntimeException(Text::_('EMAIL') . ' ' . Text::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 			}
 		}
 		return $changed;
@@ -456,7 +466,7 @@ class JFusionUser extends JFusionPlugin
 						$this->blockUser($userinfo, $existinguser, $status);
 						$changed = true;
 					} catch (Exception $e) {
-						$this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
+						$this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
 					}
 					$this->mergeStatus($status);
 					$changed = true;
@@ -467,13 +477,13 @@ class JFusionUser extends JFusionPlugin
 						$this->unblockUser($userinfo, $existinguser, $status);
 						$changed = true;
 					} catch (Exception $e) {
-						$this->debugger->add('error', JText::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
+						$this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
 					}
 					$this->mergeStatus($status);
 				}
 			} else {
 				//return a debug to inform we skipped this step
-				$this->debugger->add('debug', JText::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+				$this->debugger->add('debug', Text::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 			}
 		}
 		return $changed;
@@ -534,7 +544,7 @@ class JFusionUser extends JFusionPlugin
 							$this->inactivateUser($userinfo, $existinguser, $status);
 							$changed = true;
 						} catch (Exception $e) {
-							$this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
+							$this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
 						}
 						$this->mergeStatus($status);
 					} else {
@@ -544,13 +554,13 @@ class JFusionUser extends JFusionPlugin
 							$this->activateUser($userinfo, $existinguser, $status);
 							$changed = true;
 						} catch (Exception $e) {
-							$this->debugger->add('error', JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
+							$this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
 						}
 						$this->mergeStatus($status);
 					}
 				} else {
 					//return a debug to inform we skipped this step
-					$this->debugger->add('debug', JText::_('SKIPPED_ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+					$this->debugger->add('debug', Text::_('SKIPPED_ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 				}
 			}
 		}
@@ -599,11 +609,11 @@ class JFusionUser extends JFusionPlugin
 		$create_blocked = $this->params->get('create_blocked', 1);
 		if ((empty($create_inactive) && !empty($userinfo->activation)) || (empty($create_blocked) && !empty($userinfo->block))) {
 			//block user creation
-			$this->debugger->add('debug', JText::_('SKIPPED_USER_CREATION'));
+			$this->debugger->add('debug', Text::_('SKIPPED_USER_CREATION'));
 			$this->debugger->set('debug', 'unchanged');
 			$this->debugger->set('userinfo', null);
 		} else {
-			$this->debugger->add('debug', JText::_('NO_USER_FOUND_CREATING_ONE'));
+			$this->debugger->add('debug', Text::_('NO_USER_FOUND_CREATING_ONE'));
 			try {
 				$status = array('error' => array(), 'debug' => array());
 				$this->createUser($userinfo, $status);
@@ -612,7 +622,7 @@ class JFusionUser extends JFusionPlugin
 					$this->debugger->set('action', 'created');
 				}
 			} catch (Exception $e) {
-				$this->debugger->add('error', JText::_('USER_CREATION_ERROR') . $e->getMessage());
+				$this->debugger->add('error', Text::_('USER_CREATION_ERROR') . $e->getMessage());
 			}
 		}
 	}
@@ -643,7 +653,7 @@ class JFusionUser extends JFusionPlugin
     {
         //setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
-        $status['error'][] = JText::_('DELETE_FUNCTION_MISSING');
+        $status['error'][] = Text::_('DELETE_FUNCTION_MISSING');
         return $status;
     }
 
@@ -660,26 +670,26 @@ class JFusionUser extends JFusionPlugin
 		if (empty($userinfo->language)) {
 			$user_lang = '';
 			if (!empty($userinfo->params)) {
-				$params = new JRegistry($userinfo->params);
+				$params = new Registry($userinfo->params);
 				$user_lang = $params->get('language');
 			}
-			$userinfo->language = !empty($user_lang) ? $user_lang : JFusionFactory::getLanguage()->getTag();
+			$userinfo->language = !empty($user_lang) ? $user_lang : Factory::getLanguage()->getTag();
 		}
 		if (!empty($userinfo->language) && isset($existinguser->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
 			try {
 				$status = array('error' => array(), 'debug' => array());
 				$this->updateUserLanguage($userinfo, $existinguser, $status);
 				$existinguser->language = $userinfo->language;
-				$this->debugger->add('debug', JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
+				$this->debugger->add('debug', Text::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
 
 				$changed = true;
 			} catch (Exception $e) {
-				$this->debugger->add('error', JText::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->add('error', Text::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
 			}
 			$this->mergeStatus($status);
 		} else {
 			//return a debug to inform we skipped this step
-			$this->debugger->add('debug', JText::_('LANGUAGE_NOT_UPDATED'));
+			$this->debugger->add('debug', Text::_('LANGUAGE_NOT_UPDATED'));
 		}
 		return $changed;
 	}
@@ -755,9 +765,9 @@ class JFusionUser extends JFusionPlugin
 	{
 		$index = 0;
 
-		$master = JFusionFunction::getMaster();
+		$master = Framework::getMaster();
 		if ($master) {
-			$mastergroups = JFusionFunction::getUserGroups($master->name);
+			$mastergroups = Framework::getUserGroups($master->name);
 
 			$groups = array();
 			if ($userinfo) {
@@ -850,7 +860,7 @@ class JFusionUser extends JFusionPlugin
 		// only perform local joomla login when received this post. We define being a host if we have
 		// at least one slave.
 
-		$plugins = JFusionFactory::getPlugins('slave');
+		$plugins = Factory::getPlugins('slave');
 		if (count($plugins) > 2 ) {
 			$jhost = true;
 		} else {
@@ -870,11 +880,11 @@ class JFusionUser extends JFusionPlugin
 		// if the curl routines are not used, the same check must be performed in the
 		// create session routine in the user.php file of the plugin concerned.
 		// In version 2.0 we will never reach this point as the user plugin will handle this
-		$jnodeid = strtolower(JFusionFactory::getApplication()->input->get('jnodeid'));
+		$jnodeid = strtolower(Factory::getApplication()->input->get('jnodeid'));
 		if (!empty($jnodeid)) {
-			if($jnodeid == JFusionFactory::getPluginNodeId($this->getJname())) {
+			if($jnodeid == Factory::getPluginNodeId($this->getJname())) {
 				// do not create a session, this integration started the log in and the user is already logged in
-				$status['debug'][] = JText::_('ALREADY_LOGGED_IN');
+				$status['debug'][] = Text::_('ALREADY_LOGGED_IN');
 				return $status;
 			}
 		}
@@ -912,7 +922,7 @@ class JFusionUser extends JFusionPlugin
 		switch ($type) {
 			case 'url':
 //              $status = JFusionCurl::RemoteLoginUrl($curl_options);
-				$status['error'][] = JText::_('CURL_LOGINTYPE_NOT_SUPPORTED');
+				$status['error'][] = Text::_('CURL_LOGINTYPE_NOT_SUPPORTED');
 				break;
 			case 'brute_force':
 				$curl_options['brute_force'] = $type;
@@ -921,7 +931,7 @@ class JFusionUser extends JFusionPlugin
 			default:
 				$status = JFusionCurl::RemoteLogin($curl_options);
 		}
-		$status['debug'][] = JText::_('CURL_LOGINTYPE') . '=' . $type;
+		$status['debug'][] = Text::_('CURL_LOGINTYPE') . '=' . $type;
 		return $status;
 	}
 
@@ -1037,7 +1047,7 @@ class JFusionUser extends JFusionPlugin
 		// at least one slave.
 
 
-		$plugins = JFusionFactory::getPlugins('slave');
+		$plugins = Factory::getPlugins('slave');
 		if (count($plugins) > 2 ) {
 			$jhost = true;
 		} else {
@@ -1057,11 +1067,11 @@ class JFusionUser extends JFusionPlugin
 		// if the curl routines are not used, the same check must be performed in the
 		// destroysession routine in the user.php file of the plugin concerned.
 		// In version 2.0 we will never reach this point as the user plugin will handle this
-		$jnodeid = strtolower(JFusionFactory::getApplication()->input->get('jnodeid'));
+		$jnodeid = strtolower(Factory::getApplication()->input->get('jnodeid'));
 		if (!empty($jnodeid)) {
-			if($jnodeid == JFusionFactory::getPluginNodeId($this->getJname())) {
+			if($jnodeid == Factory::getPluginNodeId($this->getJname())) {
 				// do not delete a session, this integration started the log out and the user is already logged out
-				$status['debug'][] = JText::_('ALREADY_LOGGED_OUT');
+				$status['debug'][] = Text::_('ALREADY_LOGGED_OUT');
 				return $status;
 			}
 		}
@@ -1097,7 +1107,7 @@ class JFusionUser extends JFusionPlugin
 			default:
 				$status = JFusionCurl::RemoteLogout($curl_options);
 		}
-		$status['debug'][] = JText::_('CURL_LOGOUTTYPE') . '=' . $type;
+		$status['debug'][] = Text::_('CURL_LOGOUTTYPE') . '=' . $type;
 		return $status;
 	}
 
@@ -1113,13 +1123,13 @@ class JFusionUser extends JFusionPlugin
 		$jname = $this->getJname();
 		$group = array();
 
-		$master = JFusionFunction::getMaster();
+		$master = Framework::getMaster();
 		if ($master->name == $jname) {
-			$group = JFusionFunction::getUserGroups($master->name, true);
+			$group = Framework::getUserGroups($master->name, true);
 		} else {
-			$slavegroups = JFusionFunction::getUserGroups($jname);
+			$slavegroups = Framework::getUserGroups($jname);
 
-			$user = JFusionFactory::getUser($master->name);
+			$user = Factory::getUser($master->name);
 			$index = $user->getUserGroupIndex($userinfo);
 
 			if (isset($slavegroups[$index])) {
@@ -1156,7 +1166,7 @@ class JFusionUser extends JFusionPlugin
 	 */
 	final public function addCookie($name, $value, $expires, $path, $domain, $secure = false, $httponly = false, $mask = false)
 	{
-		$cookies = JFusionFactory::getCookies();
+		$cookies = Factory::getCookies();
 		return $cookies->addCookie($name, $value, $expires, $path, $domain, $secure, $httponly, $mask);
 	}
 }

@@ -315,7 +315,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		 * @param $string
 		 */
 		function debug($string) {
-			JFusionFunction::raiseWarning($string, $this->helper->getJname());
+			\JFusion\Framework::raiseWarning($string, $this->helper->getJname());
 		}
 
 

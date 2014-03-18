@@ -20,11 +20,4 @@ if (!class_exists('JFusionLoader'))
 // Setup the autoloaders.
 JFusionLoader::setup();
 
-JFusionLoader::register('JFusionPublic', JFUSIONPATH_PLATFORM . '/jfusion/plugin/plugin/public.php');
-JFusionLoader::register('JFusionAdmin', JFUSIONPATH_PLATFORM . '/jfusion/plugin/plugin/admin.php');
-JFusionLoader::register('JFusionAuth', JFUSIONPATH_PLATFORM . '/jfusion/plugin/plugin/auth.php');
-JFusionLoader::register('JFusionForum', JFUSIONPATH_PLATFORM . '/jfusion/plugin/plugin/forum.php');
-JFusionLoader::register('JFusionUser', JFUSIONPATH_PLATFORM . '/jfusion/plugin/plugin/user.php');
-
-// Import the base Jfusion Platform libraries.
-JFusionLoader::import('jfusion.factory');
+JFusionLoader::registerNamespace('JFusion', JFUSIONPATH_PLATFORM);

@@ -67,7 +67,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         //try to open the file
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
             //get the default parameters object
         } else {
@@ -119,7 +119,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     {
 	    try {
 	        // initialise some objects
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('g_userName as username, g_email as email, g_id as userid')
@@ -129,7 +129,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	        $db->setQuery($query, $limitstart, $limit);
 	        $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 		}
         return $userlist;
@@ -142,7 +142,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     {
 	    try {
 	        //getting the connection to the db
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -153,7 +153,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	        //getting the results
 	        $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		    $no_users = 0;
 		}
         return $no_users;
@@ -165,7 +165,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     function getUsergroupList()
     {
 	    //getting the connection to the db
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('g_id as id, g_groupName as name')
@@ -181,11 +181,11 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroups !== null) {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    foreach($usergroups as $usergroup) {
 			    $query = $db->getQuery(true)
@@ -206,7 +206,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     {
 	    $result = false;
 	    try {
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('g_active')
@@ -220,7 +220,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		}
 	    return $result;
     }

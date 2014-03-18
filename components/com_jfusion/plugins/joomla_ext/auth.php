@@ -104,7 +104,7 @@ class JFusionAuth_joomla_ext extends JFusionAuth
 
 		// If we have a match and rehash = true, rehash the password with the current algorithm.
 		if ($match && $rehash) {
-			$user = JFusionFactory::getUser($this->getJname());
+			$user = \JFusion\Factory::getUser($this->getJname());
 			$old = $user->getUser($userinfo);
 			if ($old) {
 				$status = array('error' => array(), 'debug' => array());

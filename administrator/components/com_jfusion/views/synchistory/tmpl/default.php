@@ -58,7 +58,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 			$row_count = 0;
 			if (empty($this->rows)) {
 			    $this->rows = array();
-			    JFusionFunction::raiseWarning(JText::_('NO_USERSYNC_DATA'));
+			    \JFusion\Framework::raiseWarning(JText::_('NO_USERSYNC_DATA'));
 			}
 			foreach ($this->rows as $record) {
 			    ?><tr class="row<?php echo ($row_count % 2);?>"><?php

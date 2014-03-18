@@ -41,7 +41,7 @@ class JFormFieldGalleries extends JFormField {
          * @ignore
          * @var $helper JFusionHelper_gallery2
          */
-        $helper = JFusionFactory::getHelper($jname);
+        $helper = \JFusion\Factory::getHelper($jname);
         $helper->loadGallery2Api(true);
         list($ret, $tree) = GalleryCoreApi::fetchAlbumTree();
         $output = array();

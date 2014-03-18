@@ -49,13 +49,13 @@ class jfusionViewlanguages extends JViewLegacy
 
 	    $document = JFactory::getDocument();
 	    $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
-	    JFusionFunction::loadJavascriptLanguage(array('INSTALL_UPGRADE_LANGUAGE_PACKAGE', 'INSTALL', 'UNINSTALL_UPGRADE_LANGUAGE_PACKAGE', 'UNINSTALL'));
+	    \JFusion\Framework::loadJavascriptLanguage(array('INSTALL_UPGRADE_LANGUAGE_PACKAGE', 'INSTALL', 'UNINSTALL_UPGRADE_LANGUAGE_PACKAGE', 'UNINSTALL'));
 
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
         $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/jfusion/joomla/?version=' . $jversion->getShortVersion());
 
-	    $xml = JFusionFunction::getXml($data, false);
+	    $xml = \JFusion\Framework::getXml($data, false);
         if ($xml) {
 	        if ($xml->languages) {
 		        $languages = $xml->languages->children();

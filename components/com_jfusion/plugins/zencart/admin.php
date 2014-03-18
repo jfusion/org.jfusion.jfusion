@@ -60,7 +60,7 @@ class JFusionAdmin_zencart extends JFusionAdmin
         $params['source_path'] = $softwarePath;
 
         if (!file_exists($myfile)) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
             return false;
         } else {
             include_once($myfile);
@@ -114,7 +114,7 @@ class JFusionAdmin_zencart extends JFusionAdmin
     {
         try {
             //getting the connection to the db
-            $db = JFusionFactory::getDatabase($this->getJname());
+            $db = \JFusion\Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('customers_email_address as username, customers_email_address as email')
@@ -124,7 +124,7 @@ class JFusionAdmin_zencart extends JFusionAdmin
             //getting the results
             $userlist = $db->loadObjectList();
         } catch (Exception $e) {
-            JFusionFunction::raiseError($e, $this->getJname());
+            \JFusion\Framework::raiseError($e, $this->getJname());
             $userlist = array();
         }
         return $userlist;
@@ -137,7 +137,7 @@ class JFusionAdmin_zencart extends JFusionAdmin
     {
         try {
             //getting the connection to the db
-            $db = JFusionFactory::getDatabase($this->getJname());
+            $db = \JFusion\Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('count(*)')
@@ -147,7 +147,7 @@ class JFusionAdmin_zencart extends JFusionAdmin
             //getting the results
             $no_users = $db->loadResult();
         } catch (Exception $e) {
-            JFusionFunction::raiseError($e, $this->getJname());
+            \JFusion\Framework::raiseError($e, $this->getJname());
             $no_users = 0;
         }
         return $no_users;
@@ -158,7 +158,7 @@ class JFusionAdmin_zencart extends JFusionAdmin
      */
     function getUsergroupList()
     {
-	    $db = JFusionFactory::getDataBase($this->getJname());
+	    $db = \JFusion\Factory::getDataBase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('group_id as id, group_name as name')

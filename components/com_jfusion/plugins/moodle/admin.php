@@ -60,7 +60,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $params = array();
         $lines = $this->readFile($myfile);
         if ($lines === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
             return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -121,7 +121,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
     {
         try {
             //getting the connection to the db
-            $db = JFusionFactory::getDatabase($this->getJname());
+            $db = \JFusion\Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('username, email')
@@ -133,7 +133,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
             $userlist = $db->loadObjectList();
             return $userlist;
         } catch (Exception $e) {
-            JFusionFunction::raiseError($e, $this->getJname());
+            \JFusion\Framework::raiseError($e, $this->getJname());
             return array();
         }
     }
@@ -145,7 +145,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
     {
         try {
             //getting the connection to the db
-            $db = JFusionFactory::getDatabase($this->getJname());
+            $db = \JFusion\Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('count(*)')
@@ -155,7 +155,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
             //getting the results
             $no_users = $db->loadResult();
         } catch (Exception $e) {
-            JFusionFunction::raiseError($e, $this->getJname());
+            \JFusion\Framework::raiseError($e, $this->getJname());
             $no_users = 0;
         }
         return $no_users;
@@ -167,7 +167,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
     function getUsergroupList()
     {
 	    //get the connection to the db
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('id, shortname as name')
@@ -185,7 +185,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
     {
         $result = false;
         try {
-            $db = JFusionFactory::getDatabase($this->getJname());
+            $db = \JFusion\Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('value')
@@ -199,7 +199,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
                 $result = true;
             }
         } catch (Exception $e) {
-            JFusionFunction::raiseError($e, $this->getJname());
+            \JFusion\Framework::raiseError($e, $this->getJname());
         }
         return $result;
     }
@@ -228,7 +228,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $jname = $this->getJname();
         try {
             try {
-                JFusionFactory::getDatabase($jname);
+                \JFusion\Factory::getDatabase($jname);
             } catch (Exception $e) {
                 throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
             }
@@ -276,7 +276,7 @@ HTML;
         $status = array('error' => array(), 'debug' => array());
         $jname = $this->getJname();
         try {
-            $db = JFusionFactory::getDatabase($jname);
+            $db = \JFusion\Factory::getDatabase($jname);
             $source_path = $this->params->get('source_path');
             jimport('joomla.filesystem.archive');
             jimport('joomla.filesystem.file');
@@ -302,7 +302,7 @@ HTML;
             JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
 
             if ($ret) {
-                $joomla_baseurl = JFusionFactory::getParams('joomla_int')->get('source_url');
+                $joomla_baseurl = \JFusion\Factory::getParams('joomla_int')->get('source_url');
                 $joomla_source_path = JPATH_ROOT . DIRECTORY_SEPARATOR;
 
                 // now set all relevant parameters in Moodles database
@@ -351,11 +351,11 @@ HTML;
             jimport('joomla.filesystem.folder');
 
             $jname = $this->getJname();
-            $db = JFusionFactory::getDatabase($jname);
+            $db = \JFusion\Factory::getDatabase($jname);
             $source_path = $this->params->get('source_path');
             $xmlfile = realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
-            $listfiles = JFusionFunction::getXml($xmlfile);
+            $listfiles = \JFusion\Framework::getXml($xmlfile);
             $files = $listfiles->file;
 
             /**
@@ -486,7 +486,7 @@ HTML;
         $html = JText::_('MOODLE_CONFIG_FIRST');
         try {
             $jname = $this->getJname();
-            $db = JFusionFactory::getDatabase($jname);
+            $db = \JFusion\Factory::getDatabase($jname);
 
             $source_path = $this->params->get('source_path');
             $jfusion_auth = $source_path . 'auth' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'auth.php';
@@ -538,7 +538,7 @@ HTML;
 HTML;
             }
         } catch (Exception $e) {
-            JFusionFunction::raiseError($e, $this->getJname());
+            \JFusion\Framework::raiseError($e, $this->getJname());
         }
         return $html;
     }
@@ -550,9 +550,9 @@ HTML;
     {
         try {
             $jname = $this->getJname();
-            $db = JFusionFactory::getDatabase($jname);
+            $db = \JFusion\Factory::getDatabase($jname);
 
-            $activation = ((JFusionFactory::getApplication()->input->get('activation', 1)) ? 'true' : 'false');
+            $activation = ((\JFusion\Factory::getApplication()->input->get('activation', 1)) ? 'true' : 'false');
             if ($activation == 'true') {
                 $query = $db->getQuery(true)
                     ->update('#__config_plugins')

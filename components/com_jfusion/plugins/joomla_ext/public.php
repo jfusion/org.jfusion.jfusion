@@ -86,7 +86,7 @@ class JFusionPublic_joomla_ext extends JFusionPublic
 	 */
 	public function getOnlineUserQuery($usergroups = array())
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('DISTINCT u.id AS userid, u.username, u.name, u.email')
@@ -114,7 +114,7 @@ class JFusionPublic_joomla_ext extends JFusionPublic
 	 */
 	public function getNumberOnlineGuests()
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('COUNT(*)')
@@ -133,7 +133,7 @@ class JFusionPublic_joomla_ext extends JFusionPublic
 	 */
 	public function getNumberOnlineMembers()
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('COUNT(DISTINCT userid) AS c')
@@ -158,11 +158,11 @@ class JFusionPublic_joomla_ext extends JFusionPublic
 	public function setLanguageFrontEnd($userinfo = null)
 	{
 		$status = array('error' => '', 'debug' => '');
-		$user = JFusionFactory::getUser($this->getJname());
+		$user = \JFusion\Factory::getUser($this->getJname());
 		$existinguser = (isset($userinfo)) ? $user->getUser($userinfo) : null;
 		// If the user is connected we change his account parameter in function of the language front end
 		if ($existinguser) {
-			$userinfo->language = JFusionFactory::getLanguage()->getTag();
+			$userinfo->language = \JFusion\Factory::getLanguage()->getTag();
 
 			$user->updateUserLanguage($userinfo, $existinguser, $status);
 		} else {

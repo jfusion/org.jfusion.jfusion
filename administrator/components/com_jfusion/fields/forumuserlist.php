@@ -40,7 +40,7 @@ class JFormFieldForumUserList extends JFormField
         global $jname;
 	    try {
 		    if ($jname) {
-			    $JFusionForum = JFusionFactory::getAdmin($jname);
+			    $JFusionForum = \JFusion\Factory::getAdmin($jname);
 			    if ($JFusionForum->isConfigured()) {
 				    $users = $JFusionForum->getUserList();
 				    if (!empty($users)) {

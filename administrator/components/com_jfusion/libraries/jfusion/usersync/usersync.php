@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Usersync;
 
 /**
  * Model that handles the usersync
@@ -13,6 +13,14 @@
  * @link      http://www.jfusion.org
  */
 
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+
+use \stdClass;
+use \Exception;
+use \RuntimeException;
+
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -22,6 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 ob_start();
 set_time_limit(0);
 ini_set('memory_limit', '256M');
+
 ini_set('upload_max_filesize', '128M');
 ini_set('post_max_size', '256M');
 ini_set('max_input_time', '7200');
@@ -40,7 +49,7 @@ ob_end_clean();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionUsersync
+class Usersync
 {
     /**
      * Retrieve log data
@@ -56,15 +65,15 @@ class JFusionUsersync
      */
     public static function getLogData($syncid, $type = 'all', $limitstart = null, $limit = null, $sort = 'id', $dir = '')
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
         if (empty($limit)) {
-            $mainframe = JFactory::getApplication();
-            $client = JFactory::getApplication()->input->getWord('filter_client', 'site');
-            $option = JFactory::getApplication()->input->getCmd('option');
+            $mainframe = Factory::getApplication();
+            $client = Factory::getApplication()->input->getWord('filter_client', 'site');
+            $option = Factory::getApplication()->input->getCmd('option');
             $sort = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order', 'filter_order', 'id', 'cmd');
             $dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
-            $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', JFactory::getConfig()->get('list_limit'), 'int');
+            $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', Factory::getConfig()->get('list_limit'), 'int');
             $limitstart = 0;
         }
 
@@ -96,7 +105,7 @@ class JFusionUsersync
      */
     public static function countLogData($syncid, $type = 'all')
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
 	    $query = $db->getQuery(true)
 		    ->select('COUNT(*)')
@@ -121,7 +130,7 @@ class JFusionUsersync
     {
         //serialize the $syncdata to allow storage in a SQL field
         $serialized = base64_encode(serialize($syncdata));
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
 	    $data = new stdClass;
 	    $data->syncdata = $serialized;
@@ -144,7 +153,7 @@ class JFusionUsersync
         //serialize the $syncdata to allow storage in a SQL field
         $serialized = base64_encode(serialize($syncdata));
         //find out if the syncid already exists
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
 	    $query = $db->getQuery(true)
 		    ->update('#__jfusion_sync')
@@ -164,7 +173,7 @@ class JFusionUsersync
      */
     public static function getSyncdata($syncid)
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
 	    $query = $db->getQuery(true)
 		    ->select('syncdata')
@@ -196,26 +205,26 @@ class JFusionUsersync
 			    if (isset($error['action']) && isset($synclog[$id]) && $error['action']) {
 				    $data = unserialize($synclog[$id]->data);
 				    if ($error['action'] == '1') {
-					    $userinfo = JFusionFactory::getUser($data['conflict']['jname'])->getUser($data['conflict']['userinfo']);
+					    $userinfo = Factory::getUser($data['conflict']['jname'])->getUser($data['conflict']['userinfo']);
 
-					    $status = JFusionFactory::getUser($data['user']['jname'])->updateUser($userinfo, 1);
+					    $status = Factory::getUser($data['user']['jname'])->updateUser($userinfo, 1);
 					    if (!empty($status['error'])) {
-						    JFusionFunction::raise('error', $status['error'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
+						    Framework::raise('error', $status['error'], $data['user']['jname'] . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
 					    } else {
-						    JFusionFunction::raiseMessage(JText::_('USER') . ' ' . $userinfo->username . ' ' . JText::_('UPDATE'), $data['user']['jname']);
+						    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $data['user']['jname']);
 						    static::markResolved($id);
-						    JFusionFunction::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
+						    Framework::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
 					    }
 				    } elseif ($error['action'] == '2') {
-					    $userinfo = JFusionFactory::getUser($data['user']['jname'])->getUser($data['user']['userinfo']);
+					    $userinfo = Factory::getUser($data['user']['jname'])->getUser($data['user']['userinfo']);
 
-					    $status = JFusionFactory::getUser($data['conflict']['jname'])->updateUser($userinfo, 1);
+					    $status = Factory::getUser($data['conflict']['jname'])->updateUser($userinfo, 1);
 					    if (!empty($status['error'])) {
-						    JFusionFunction::raise('error', $status['error'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
+						    Framework::raise('error', $status['error'], $data['conflict']['jname'] . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
 					    } else {
-						    JFusionFunction::raiseMessage(JText::_('USER') . ' ' . $userinfo->username . ' ' . JText::_('UPDATE'), $data['conflict']['jname']);
+						    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $data['conflict']['jname']);
 						    static::markResolved($id);
-						    JFusionFunction::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
+						    Framework::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
 					    }
 				    } elseif ($error['action'] == '3') {
 					    //delete the first entity
@@ -223,31 +232,31 @@ class JFusionUsersync
 					    global $JFusionActive;
 					    $JFusionActive = 1;
 
-					    $status = JFusionFactory::getUser($error['user_jname'])->deleteUser($data['user']['userinfo']);
+					    $status = Factory::getUser($error['user_jname'])->deleteUser($data['user']['userinfo']);
 					    if (!empty($status['error'])) {
-						    JFusionFunction::raise('error', $status['error'], $error['user_jname'] . ' ' . JText::_('ERROR') . ' ' .  JText::_('DELETING') . ' ' . JText::_('USER') . ' ' . $error['user_username']);
+						    Framework::raise('error', $status['error'], $error['user_jname'] . ' ' . Text::_('ERROR') . ' ' .  Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username']);
 					    } else {
 						    static::markResolved($id);
-						    JFusionFunction::raiseMessage(JText::_('SUCCESS') . ' ' . JText::_('DELETING') . ' ' . JText::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
-						    JFusionFunction::updateLookup($data['user']['userinfo'], 0, $error['conflict_jname'], true);
+						    Framework::raiseMessage(Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
+						    Framework::updateLookup($data['user']['userinfo'], 0, $error['conflict_jname'], true);
 					    }
 				    } elseif ($error['action'] == '4') {
 					    //delete the second entity (conflicting plugin)
 					    //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
 					    global $JFusionActive;
 					    $JFusionActive = 1;
-					    $status = JFusionFactory::getUser($error['conflict_jname'])->deleteUser($data['conflict']['userinfo']);
+					    $status = Factory::getUser($error['conflict_jname'])->deleteUser($data['conflict']['userinfo']);
 					    if (!empty($status['error'])) {
-						    JFusionFunction::raise('error', $status['error'], $error['conflict_jname'] . ' ' . JText::_('ERROR') . ' ' . JText::_('DELETING') . ' ' .  JText::_('USER') . ' ' . $error['conflict_username']);
+						    Framework::raise('error', $status['error'], $error['conflict_jname'] . ' ' . Text::_('ERROR') . ' ' . Text::_('DELETING') . ' ' .  Text::_('USER') . ' ' . $error['conflict_username']);
 					    } else {
 						    static::markResolved($id);
-						    JFusionFunction::raiseMessage(JText::_('SUCCESS') . ' ' . JText::_('DELETING') . ' ' . JText::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);
-						    JFusionFunction::updateLookup($data['conflict']['userinfo'], 0, $error['conflict_jname'], true);
+						    Framework::raiseMessage(Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);
+						    Framework::updateLookup($data['conflict']['userinfo'], 0, $error['conflict_jname'], true);
 					    }
 				    }
 			    }
 		    } catch (Exception $e) {
-			    JFusionFunction::raiseError($e);
+			    Framework::raiseError($e);
 		    }
 	    }
     }
@@ -257,7 +266,7 @@ class JFusionUsersync
      * @param $id
      */
 	public static function markResolved($id) {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
 		$query = $db->getQuery(true)
 			->update('#__jfusion_sync_details')
@@ -283,12 +292,12 @@ class JFusionUsersync
 	    try {
 		    if (empty($syncdata['completed'])) {
 			    //setup some variables
-			    $MasterPlugin = JFusionFactory::getAdmin($syncdata['master']);
-			    $MasterUser = JFusionFactory::getUser($syncdata['master']);
+			    $MasterPlugin = Factory::getAdmin($syncdata['master']);
+			    $MasterUser = Factory::getUser($syncdata['master']);
 
 			    $syncid = $syncdata['syncid'];
 			    $sync_active = static::getSyncStatus($syncid);
-			    $db = JFactory::getDBO();
+			    $db = Factory::getDBO();
 			    if (!$sync_active) {
 				    //tell JFusion a sync is in progress
 				    static::changeSyncStatus($syncid, 1);
@@ -307,8 +316,8 @@ class JFusionUsersync
 						    //get a list of users
 						    $jname = $syncdata['slave_data'][$i]['jname'];
 						    if ($jname) {
-							    $SlavePlugin = JFusionFactory::getAdmin($jname);
-							    $SlaveUser = JFusionFactory::getUser($jname);
+							    $SlavePlugin = Factory::getAdmin($jname);
+							    $SlaveUser = Factory::getUser($jname);
 							    if ($action == 'master') {
 								    $userlist = $SlavePlugin->getUserList($user_offset, $syncdata['userbatch']);
 								    $action_name = $jname;
@@ -379,10 +388,10 @@ class JFusionUsersync
 									    $sync_log->email = isset($status['userinfo']->email) ? $status['userinfo']->email : $userinfo->email;
 									    //update the lookup table
 									    if ($action == 'master') {
-										    JFusionFunction::updateLookup($userinfo, 0, $jname);
+										    Framework::updateLookup($userinfo, 0, $jname);
 									    } else {
 										    try {
-											    JFusionFunction::updateLookup($SlaveUser->getUser($userlist[$j]), 0, $jname);
+											    Framework::updateLookup($SlaveUser->getUser($userlist[$j]), 0, $jname);
 										    } catch (Exception $e) {
 											    throw new RuntimeException($jname . ': ' . $e->getMessage());
 										    }
@@ -440,7 +449,7 @@ class JFusionUsersync
 					    static::updateSyncdata($syncdata);
 
 					    //update the finish time
-					    $db = JFactory::getDBO();
+					    $db = Factory::getDBO();
 
 					    $query = $db->getQuery(true)
 						    ->update('#__jfusion_sync')
@@ -455,7 +464,7 @@ class JFusionUsersync
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    Framework::raiseError($e);
 	    }
     }
 
@@ -465,7 +474,7 @@ class JFusionUsersync
      * @param $status
      */
     public static function changeSyncStatus($syncid, $status) {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
 	    $query = $db->getQuery(true)
 		    ->update('#__jfusion_sync')
@@ -483,7 +492,7 @@ class JFusionUsersync
      */
     public static function getSyncStatus($syncid = '') {
         if (!empty($syncid)) {
-            $db = JFactory::getDBO();
+            $db = Factory::getDBO();
 
 	        $query = $db->getQuery(true)
 		        ->select('active')

@@ -18,9 +18,9 @@ defined('_JEXEC') or die('Restricted access');
 //please support JFusion
 echo JFusionFunctionAdmin::getDonationBanner();
 
-$joomlaid = JFusionFactory::getDebugger('jfusion-loginchecker')->get('joomlaid');
+$joomlaid = \JFusion\Factory::getDebugger('jfusion-loginchecker')->get('joomlaid');
 
-$debugger = JFusionFactory::getDebugger('jfusion-logincheckerresult');
+$debugger = \JFusion\Factory::getDebugger('jfusion-logincheckerresult');
 
 /**
  * Output information about the server for future support queries
@@ -75,7 +75,7 @@ $debugger = JFusionFactory::getDebugger('jfusion-logincheckerresult');
 		</div>
 		<?php
 
-		$authenticationDebugger = JFusionFactory::getDebugger('jfusion-authentication');
+		$authenticationDebugger = \JFusion\Factory::getDebugger('jfusion-authentication');
 
 		if (!$authenticationDebugger->isEmpty('debug')) {
 			$authenticationDebugger->setTitle($title);

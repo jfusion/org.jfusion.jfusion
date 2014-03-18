@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugin;
 
 /**
  * Abstract forum file
@@ -14,6 +14,12 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -26,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionForum extends JFusionPlugin
+class Plugin_Forum extends Plugin
 {
 	var $helper;
 
@@ -37,7 +43,7 @@ class JFusionForum extends JFusionPlugin
 	{
 		parent::__construct();
 		//get the helper object
-		$this->helper = &JFusionFactory::getHelper($this->getJname());
+		$this->helper = & Factory::getHelper($this->getJname());
 	}
 
     /**
@@ -199,7 +205,7 @@ class JFusionForum extends JFusionPlugin
 				//datetime post was last updated
 				$postModified = $threadinfo->modified;
 				//datetime content was last updated
-				$contentModified = JFusionFactory::getDate($contentitem->modified)->toUnix();
+				$contentModified = Factory::getDate($contentitem->modified)->toUnix();
 
 				$status['debug'][] = 'Thread exists...comparing dates';
 				$status['debug'][] = 'Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified) . ')';
@@ -224,7 +230,7 @@ class JFusionForum extends JFusionPlugin
 	            }
 	        }
 		} else {
-			$status['error'][] = JText::_('FORUM_NOT_CONFIGURED');
+			$status['error'][] = Text::_('FORUM_NOT_CONFIGURED');
 		}
 	}
 
@@ -253,7 +259,7 @@ class JFusionForum extends JFusionPlugin
 		//set some vars
 		$forumid = $dbparams->get('default_forum');
 		$catid = $contentitem->catid;
-		$option = JFusionFactory::getApplication()->input->getCmd('option');
+		$option = Factory::getApplication()->input->getCmd('option');
 
 		if ($option == 'com_k2' || $option == 'com_content') {
     		//determine default forum
@@ -276,7 +282,7 @@ class JFusionForum extends JFusionPlugin
     		    //let's see if a parent has been assigned a forum
     		    if ($option == 'com_k2') {
     		        //see if a parent category is included
-    		        $db = JFusionFactory::getDBO();
+    		        $db = Factory::getDBO();
                     $stop = false;
                     $parent_id = $contentitem->category->parent;;
                     while (!$stop) {
@@ -365,7 +371,7 @@ class JFusionForum extends JFusionPlugin
 	{
 		if($dbparams->get('use_article_userid', 1)) {
 			//find this user in the forum
-			$userinfo = JFusionFunction::lookupUser($this->getJname(), $contentitem->created_by);
+			$userinfo = Framework::lookupUser($this->getJname(), $contentitem->created_by);
 
 			if(empty($userinfo->userid)) {
 				$id = $dbparams->get('default_userid');
@@ -453,7 +459,7 @@ class JFusionForum extends JFusionPlugin
 		if($show_link || $post_body == 'none') {
 			$link_text = $dbparams->get('first_post_link_text');
 			if(empty($link_text)) {
-				$link_text = JText::_('DEFAULT_ARTICLE_LINK_TEXT');
+				$link_text = Text::_('DEFAULT_ARTICLE_LINK_TEXT');
 			} else {
 				if($dbparams->get('first_post_link_type') == 'image') {
 					$link_text = '<img src="' . $link_text . '">';
@@ -461,11 +467,11 @@ class JFusionForum extends JFusionPlugin
 			}
 
 			$text .= (!empty($text)) ? '<br /><br />' : '';
-			$text .= JFusionFunction::createJoomlaArticleURL($contentitem, $link_text);
+			$text .= Framework::createJoomlaArticleURL($contentitem, $link_text);
 		}
 
 		//prepare the content
-        $public = JFusionFactory::getPublic($this->getJname());
+        $public = Factory::getPublic($this->getJname());
 		$public->prepareText($text, 'forum');
 
 		return $text;
@@ -508,14 +514,14 @@ class JFusionForum extends JFusionPlugin
 
 	function loadQuickReplyIncludes() {
 		//using markitup http://markitup.jaysalvat.com/ for bbcode textbox
-		$document = JFusionFactory::getDocument();
+		$document = Factory::getDocument();
 
 		$path = 'plugins/content/jfusion/discussbot/markitup';
 
-		$document->addScript(JFusionFunction::getJoomlaURL() . $path . '/jquery.markitup.js');
-		$document->addScript(JFusionFunction::getJoomlaURL() . $path . '/sets/bbcode/set.js');
-		$document->addStylesheet(JFusionFunction::getJoomlaURL() . $path . '/skins/simple/style.css');
-		$document->addStylesheet(JFusionFunction::getJoomlaURL() . $path . '/sets/bbcode/style.css');
+		$document->addScript(Framework::getJoomlaURL() . $path . '/jquery.markitup.js');
+		$document->addScript(Framework::getJoomlaURL() . $path . '/sets/bbcode/set.js');
+		$document->addStylesheet(Framework::getJoomlaURL() . $path . '/skins/simple/style.css');
+		$document->addStylesheet(Framework::getJoomlaURL() . $path . '/sets/bbcode/style.css');
 
 		$js = <<<JS
 		JFusion.loadMarkitup = true;
@@ -536,8 +542,8 @@ JS;
 	{
 		$html = '';
 		if($showGuestInputs) {
-			$username = JFusionFactory::getApplication()->input->post->get('guest_username', '');
-            $jusername = JText::_('USERNAME');
+			$username = Factory::getApplication()->input->post->get('guest_username', '');
+            $jusername = Text::_('USERNAME');
             $html = <<<HTML
             <table>
                 <tr>
@@ -554,7 +560,7 @@ JS;
 HTML;
 
 		}
-		$quickReply = JFusionFactory::getApplication()->input->post->get('quickReply', '');
+		$quickReply = Factory::getApplication()->input->post->get('quickReply', '');
 	   	$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">' . $quickReply . '</textarea><br />';
 	   	return $html;
 	}
@@ -596,7 +602,7 @@ HTML;
 					$theme = $dbparams->get('recaptcha_theme', 'red');
 					$lang = $dbparams->get('recaptcha_lang', 'en');
 
-					$document = JFusionFactory::getDocument();
+					$document = Factory::getDocument();
 
                     $js = <<<JS
 					var RecaptchaOptions = {
@@ -639,7 +645,7 @@ JS;
      */
 	function createCustomCaptcha(&$dbparams)
 	{
-		JFusionFunction::raiseError(JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'), $this->getJname());
+		Framework::raiseError(Text::_('DISCUSSBOT_ERROR') . ': ' . Text::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'), $this->getJname());
 		return '';
 	}
 
@@ -659,7 +665,7 @@ JS;
 		switch($captcha_mode) {
 			case 'question':
 				//question/answer method
-				$captcha_answer = JFusionFactory::getApplication()->input->post->get('captcha_answer', '');
+				$captcha_answer = Factory::getApplication()->input->post->get('captcha_answer', '');
 				if(!empty($captcha_answer) && $captcha_answer == $dbparams->get('captcha_answer')) {
 					$captcha_verification = true;
 				}
@@ -669,9 +675,9 @@ JS;
 				$dispatcher = JEventDispatcher::getInstance();
 				$results = $dispatcher->trigger('onCaptchaRequired', array('jfusion.discussion'));
 				if ($results[0]) {
-					$captchaparams = array(JFusionFactory::getApplication()->input->post->get('captchacode', '')
-						, JFusionFactory::getApplication()->input->post->get('captchasuffix', '')
-						, JFusionFactory::getApplication()->input->post->get('captchasessionid', ''));
+					$captchaparams = array(Factory::getApplication()->input->post->get('captchacode', '')
+						, Factory::getApplication()->input->post->get('captchasuffix', '')
+						, Factory::getApplication()->input->post->get('captchasessionid', ''));
 					$results = $dispatcher->trigger('onCaptchaVerify', $captchaparams);
 					if ($results[0]) {
 						$captcha_verification = true;
@@ -687,8 +693,8 @@ JS;
             		}
 
 					$privatekey = $dbparams->get('recaptcha_privatekey');
-					$response_field  = JFusionFactory::getApplication()->input->post->getString('recaptcha_response_field', '');
-					$challenge_field = JFusionFactory::getApplication()->input->post->getString('recaptcha_challenge_field', '');
+					$response_field  = Factory::getApplication()->input->post->getString('recaptcha_response_field', '');
+					$challenge_field = Factory::getApplication()->input->post->getString('recaptcha_challenge_field', '');
 
 					$resp = recaptcha_check_answer ($privatekey,
 						$_SERVER['REMOTE_ADDR'],
@@ -719,7 +725,7 @@ JS;
      */
 	function verifyCustomCaptcha(&$dbparams)
 	{
-		JFusionFunction::raiseError(JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'), $this->getJname());
+		Framework::raiseError(Text::_('DISCUSSBOT_ERROR') . ': ' . Text::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'), $this->getJname());
 		return false;
 	}
 
@@ -737,7 +743,7 @@ JS;
 	function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
 	{
         $status = array('error' => array(), 'debug' => array());
-        $status['debug'] = JText::_('METHOD_NOT_IMPLEMENTED');
+        $status['debug'] = Text::_('METHOD_NOT_IMPLEMENTED');
 		return $status;
 	}
 
@@ -760,6 +766,6 @@ JS;
      */
     function renderActivityModule($config, $view, $params)
     {
-        return JText::_('METHOD_NOT_IMPLEMENTED');
+        return Text::_('METHOD_NOT_IMPLEMENTED');
     }
 }

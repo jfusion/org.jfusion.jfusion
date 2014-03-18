@@ -88,12 +88,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 $text = str_replace('{' . $plugin . '}', "", $text);
             }
             $text = html_entity_decode($text);
-            $text = JFusionFunction::parseCode($text, 'bbcode');
+            $text = \JFusion\Framework::parseCode($text, 'bbcode');
         } elseif ($for == 'joomla' || ($for == 'activity' && $params->get('parse_text') == 'html')) {
             static $custom_smileys, $vb_bbcodes;
 	        $options = array();
 	        try {
-		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		        //parse smilies
 		        if (!is_array($custom_smileys)) {
@@ -113,7 +113,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 			        }
 		        }
 	        } catch (Exception $e) {
-				JFusionFunction::raiseError($e, $this->getJname());
+				\JFusion\Framework::raiseError($e, $this->getJname());
 	        }
 
             $options['custom_smileys'] = $custom_smileys;
@@ -123,7 +123,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
             if (!is_array($vb_bbcodes)) {
                 $vb_bbcodes = array();
 	            try {
-		            $db = JFusionFactory::getDatabase($this->getJname());
+		            $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		            $query = $db->getQuery(true)
 			            ->select('bbcodetag, bbcodereplacement, twoparams')
@@ -142,7 +142,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 			            $vb_bbcodes[$bb->bbcodetag] = array('mode' => 4, 'template' => $template, 'class' => 'inline', 'allow_in' => array('block', 'inline', 'link', 'list', 'listitem', 'columns', 'image'));
 		            }
 	            } catch (Exception $e) {
-		            JFusionFunction::raiseError($e, $this->getJname());
+		            \JFusion\Framework::raiseError($e, $this->getJname());
 	            }
             }
 
@@ -153,7 +153,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 $status['limit_applied'] = 1;
                 $options['character_limit'] = $params->get('character_limit');
             }
-            $text = JFusionFunction::parseCode($text, 'html', $options);
+            $text = \JFusion\Framework::parseCode($text, 'html', $options);
 
             //remove the post id from any quote heads
             $text = preg_replace('#<div class="bbcode_quote_head">(.*?);(.*?) (.*?):</div>#', '<div class="bbcode_quote_head">$1 $3:</div>', $text);
@@ -161,7 +161,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
             static $vb_bbcodes_plain;
             $options = array();
 	        try {
-		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		        //add custom bbcode rules
 		        if (!is_array($vb_bbcodes_plain)) {
@@ -175,7 +175,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 			        $vb_bbcodes_plain = $db->loadColumn();
 		        }
 	        } catch (Exception $e) {
-		        JFusionFunction::raiseError($e, $this->getJname());
+		        \JFusion\Framework::raiseError($e, $this->getJname());
 	        }
 
             if (!empty($vb_bbcodes_plain)) {
@@ -190,10 +190,10 @@ class JFusionPublic_vbulletin extends JFusionPublic
                         $status['limit_applied'] = 1;
                         $options['character_limit'] = $params->get('character_limit');
                     }
-                    $text = JFusionFunction::parseCode($text, 'plaintext', $options);
+                    $text = \JFusion\Framework::parseCode($text, 'plaintext', $options);
                 }
             } else {
-                $text = JFusionFunction::parseCode($text, 'plaintext');
+                $text = \JFusion\Framework::parseCode($text, 'plaintext');
             }
         }
         return $status;
@@ -212,7 +212,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 	 */
     function getOnlineUserQuery($usergroups = array())
     {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
         $name_field = $this->params->get('name_field');
 
@@ -248,7 +248,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
     function getNumberOnlineGuests()
     {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('COUNT(DISTINCT(host))')
@@ -258,7 +258,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }
@@ -270,7 +270,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
     function getNumberOnlineMembers()
     {
 	    try {
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('COUNT(DISTINCT(userid))')
@@ -280,7 +280,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 	        $db->setQuery($query);
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 			return 0;
 		}
     }
@@ -302,12 +302,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
         //frameless integration is only supported for 3.x
         $version = $this->helper->getVersion();
         if ((int) substr($version, 0, 1) > 3) {
-            JFusionFunction::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED', $version), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED', $version), $this->getJname());
         } else {
 
 	        try {
 		        //check to make sure the frameless hook is installed
-		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		        $query = $db->getQuery(true)
 			        ->select('active')
@@ -318,12 +318,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
 		        $db->setQuery($query);
 		        $active = $db->loadResult();
 	        } catch (Exception $e) {
-		        JFusionFunction::raiseError($e, $this->getJname());
+		        \JFusion\Framework::raiseError($e, $this->getJname());
 		        $active = 0;
 	        }
 
             if ($active != '1') {
-                JFusionFunction::raiseWarning(JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'), $this->getJname());
+                \JFusion\Framework::raiseWarning(JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'), $this->getJname());
             } else {
                 //have to clear this as it shows up in some text boxes
                 unset($q);
@@ -332,12 +332,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 $source_path = $this->params->get('source_path');
                 $baseURL = $jfdata->baseURL;
                 $integratedURL = $jfdata->integratedURL;
-                $config = JFusionFactory::getConfig();
+                $config = \JFusion\Factory::getConfig();
                 $vbsefenabled = $config->get('sef');
                 $hookFile = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
                 if ($vbsefmode) {
                     //need to set the base tag as vB JS/ajax requires it to function
-                    $document = JFusionFactory::getDocument();
+                    $document = \JFusion\Factory::getDocument();
                     $document->setBase($jfdata->baseURL);
                 }
                 //get the jname to be used in the hook file
@@ -368,19 +368,19 @@ class JFusionPublic_vbulletin extends JFusionPublic
                         } else {
                             if ($r == 'sendmessage.php') {
                                 //only redirect if sending an IM
-                                $do = JFusionFactory::getApplication()->input->get('do');
+                                $do = \JFusion\Factory::getApplication()->input->get('do');
                                 if ($do != 'im') {
                                     continue;
                                 }
                             }
                             $url = $integratedURL . substr($url, strpos($url, $r));
                         }
-                        $mainframe = JFusionFactory::getApplication();
+                        $mainframe = \JFusion\Factory::getApplication();
                         $mainframe->redirect($url);
                     }
                 }
                 //get the filename
-                $jfile = JFusionFactory::getApplication()->input->get('jfile');
+                $jfile = \JFusion\Factory::getApplication()->input->get('jfile');
                 if (!$jfile) {
                     //use the default index.php
                     $jfile = 'index.php';
@@ -392,7 +392,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                     $index_file = $source_path . DIRECTORY_SEPARATOR . $jfile;
                 }
                 if (!is_file($index_file)) {
-                    JFusionFunction::raiseWarning('The path to the requested does not exist', $this->getJname());
+                    \JFusion\Framework::raiseWarning('The path to the requested does not exist', $this->getJname());
                 } else {
                     //set the current directory to vBulletin
                     chdir($source_path);
@@ -433,7 +433,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $fullURL = $data->fullURL;
         $integratedURL = $data->integratedURL;
         $vbsefmode = $this->params->get('sefmode', 0);
-        $config = JFusionFactory::getConfig();
+        $config = \JFusion\Factory::getConfig();
         $vbsefenabled = $config->get('sef');
         //fix for form actions
         //cannot use preg_replace here because it adds unneeded slashes which messes up JS
@@ -486,7 +486,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $fullURL = $data->fullURL;
         $integratedURL = $data->integratedURL;
         $vbsefmode = $this->params->get('sefmode', 0);
-        $config = JFusionFactory::getConfig();
+        $config = \JFusion\Factory::getConfig();
         $vbsefenabled = $config->get('sef');
         $js = '<script type="text/javascript">';
         $js .= <<<JS
@@ -496,7 +496,7 @@ JS;
 
         //we need to find and change the call to vb yahoo connection file to our own customized one
         //that adds the source url to the ajax calls
-        $yuiURL = JFusionFunction::getJoomlaURL() . JFUSION_PLUGIN_DIR_URL . $this->getJname();
+        $yuiURL = \JFusion\Framework::getJoomlaURL() . JFUSION_PLUGIN_DIR_URL . $this->getJname();
         $data->header = preg_replace('#\<script type="text\/javascript" src="(.*?)(connection-min.js|connection.js)\?v=(.*?)"\>#mS', "$js <script type=\"text/javascript\" src=\"$yuiURL/yui/connection/connection.js?v=$3\">", $data->header);
         //convert relative links into absolute links
         $url_search = '#(src="|background="|href="|url\("|url\(\'?)(?!http)(.*?)("\)|\'\)|"?)#mS';
@@ -516,9 +516,9 @@ JS;
     {
 	    $pathway = array();
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    //let's get the jfile
-		    $mainframe = JFusionFactory::getApplication();
+		    $mainframe = \JFusion\Factory::getApplication();
 		    $jfile = $mainframe->input->get('jfile');
 		    //we are viewing a forum
 		    if ($mainframe->input->get('f', false) !== false) {
@@ -713,7 +713,7 @@ JS;
 			    $pathway[] = $crumb;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $pathway;
     }
@@ -729,28 +729,28 @@ JS;
         $url = '';
 	    try {
 		    if (!empty($profile_plugin)) {
-			    $user = JFusionFactory::getUser($profile_plugin);
+			    $user = \JFusion\Factory::getUser($profile_plugin);
 			    if ($user->isConfigured()) {
 				    $juri = new JURI($vb_url);
 				    $vbUid = $juri->getVar('u');
 				    if (!empty($vbUid)) {
 					    //first get Joomla id for the vBulletin user
-					    $vbUser = JFusionFactory::getUser($this->getJname());
+					    $vbUser = \JFusion\Factory::getUser($this->getJname());
 					    $userinfo = $vbUser->getUser($vbUid, 'userid');
-					    $vb_userlookup = JFusionFunction::lookupUser($this->getJname(), $vbUid, false, $userinfo->username);
+					    $vb_userlookup = \JFusion\Framework::lookupUser($this->getJname(), $vbUid, false, $userinfo->username);
 					    //now get the id of the selected plugin based on Joomla id
 					    if (!empty($vb_userlookup)) {
-						    $profile_userlookup = JFusionFunction::lookupUser($profile_plugin, $vb_userlookup->id);
+						    $profile_userlookup = \JFusion\Framework::lookupUser($profile_plugin, $vb_userlookup->id);
 						    //get the profile link
 
-						    $forum = JFusionFactory::getForum($this->getJname());
+						    $forum = \JFusion\Factory::getForum($this->getJname());
 						    $url = $forum->getProfileURL($profile_userlookup->userid);
 					    }
 				    }
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $url;
     }
@@ -773,7 +773,7 @@ JS;
      */
     function getSearchQuery(&$pluginParam)
     {
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
         //need to return threadid, postid, title, text, created, section
 	    $query = $db->getQuery(true)
 		    ->select('p.userid, p.threadid, p.postid, f.forumid, CASE WHEN p.title = "" THEN CONCAT("Re: ",t.title) ELSE p.title END AS title, p.pagetext AS text,
@@ -836,7 +836,7 @@ JS;
      */
     function filterSearchResults(&$results, &$pluginParam)
     {
-        $plugin = JFusionFactory::getForum($this->getJname());
+        $plugin = \JFusion\Factory::getForum($this->getJname());
         $plugin->filterActivityResults($results, 0, 'forumid', true);
     }
 
@@ -847,7 +847,7 @@ JS;
      */
     function getSearchResultLink($post)
     {
-        $forum = JFusionFactory::getForum($this->getJname());
+        $forum = \JFusion\Factory::getForum($this->getJname());
         return $forum->getPostURL($post->threadid, $post->postid);
     }
 
@@ -887,7 +887,7 @@ JS;
             $jfile = basename($url_details['path']);
         }
 
-        $actionURL = JFusionFunction::routeURL($jfile, JFusionFactory::getApplication()->input->getInt('Itemid'));
+        $actionURL = \JFusion\Framework::routeURL($jfile, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
         $replacement = 'action=\'' . $actionURL . '\'' . $extra . '>';
 
         unset($url_variables['option']);
@@ -986,7 +986,7 @@ JS;
             $url = $baseURL . '&amp;jfile=' . $url;
         } else {
             if ($vbsefmode) {
-                $url = JFusionFunction::routeURL($url, $plugin_itemid);
+                $url = \JFusion\Framework::routeURL($url, $plugin_itemid);
             } else {
                 //we can just append both variables
                 $url = $baseURL . $url;
@@ -1030,7 +1030,7 @@ JS;
             $url = $baseURL . '&jfile=' . $url;
         } else {
             if ($vbsefmode) {
-                $url = JFusionFunction::routeURL($url, $plugin_itemid);
+                $url = \JFusion\Framework::routeURL($url, $plugin_itemid);
             } else {
                 //we can just append both variables
                 $url = $baseURL . $url;

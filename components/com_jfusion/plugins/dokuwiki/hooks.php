@@ -52,9 +52,9 @@ class JFusionDokuWikiHook
     function _ACTION_SHOW_REDIRECT(&$event, $param) {
         $event->data['id'] = str_replace(':', ';', $event->data['id']);
 
-	    $Itemid = JFusionFactory::getApplication('site')->getMenu()->getActive()->id;
+	    $Itemid = \JFusion\Factory::getApplication('site')->getMenu()->getActive()->id;
 
-        $baseURL = JFusionFunction::getPluginURL($Itemid, false);
+        $baseURL = \JFusion\Framework::getPluginURL($Itemid, false);
         if (is_array($event->data['preact'])) {
             $q = 'doku.php?id=' . $event->data['id'];
         } else {
@@ -66,9 +66,9 @@ class JFusionDokuWikiHook
             $url = $baseURL . '&jfile=' . $q;
         } else {
             global $jname;
-            $sefmode = JFusionFactory::getParams($jname)->get('sefmode');
+            $sefmode = \JFusion\Factory::getParams($jname)->get('sefmode');
             if ($sefmode == 1) {
-                $url = JFusionFunction::routeURL($q, $Itemid);
+                $url = \JFusion\Framework::routeURL($q, $Itemid);
             } else {
                 //we can just append both variables
                 $url = $baseURL . $q;

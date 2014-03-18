@@ -118,7 +118,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$css = '.jfusion table.jfusionlist, table.jfusiontable{ font-size:11px; }';
 		$document->addStyleDeclaration($css);
 
-		JFusionFunction::initJavaScript();
+		\JFusion\Framework::initJavaScript();
 
 		$apply = JText::_('APPLY');
 		$close = JText::_('CLOSE');
@@ -171,7 +171,7 @@ HTML;
 		$rows = $db->loadObjectList();
 
 		foreach ($rows as $key => &$row) {
-			if (!JFusionFunction::hasFeature($row->name, $feature)) {
+			if (!\JFusion\Framework::hasFeature($row->name, $feature)) {
 				unset($rows[$key]);
 			}
 		}
@@ -207,7 +207,7 @@ HTML;
 			$xml_path = (JFile::exists($path)) ? $path : $defaultPath;
 			$form = false;
 			if (JFile::exists($xml_path)) {
-				$xml = JFusionFunction::getXml($xml_path);
+				$xml = \JFusion\Framework::getXml($xml_path);
 				if ($xml) {
 					if ($xml->form) {
 						/**
@@ -249,7 +249,7 @@ HTML;
 		$rows = $db->loadObjectList();
 
 		foreach ($rows as $key => &$row) {
-			if (!JFusionFunction::hasFeature($row->name, $feature)) {
+			if (!\JFusion\Framework::hasFeature($row->name, $feature)) {
 				unset($rows[$key]);
 			}
 		}
@@ -320,10 +320,10 @@ HTML;
 				if (!array_key_exists($newPlugin, $value)) {
 					$value[$newPlugin] = array('jfusionplugin' => $newPlugin);
 				} else {
-					JFusionFunction::raiseError(JText::_('NOT_ADDED_TWICE'), $newPlugin);
+					\JFusion\Framework::raiseError(JText::_('NOT_ADDED_TWICE'), $newPlugin);
 				}
 			} else {
-				JFusionFunction::raiseError(JText::_('MUST_SELLECT_PLUGIN'));
+				\JFusion\Framework::raiseError(JText::_('MUST_SELLECT_PLUGIN'));
 			}
 			$this->saveParam($value);
 		} else if ($task == 'remove') {
@@ -331,7 +331,7 @@ HTML;
 			if (array_key_exists($rmPlugin, $value)) {
 				unset($value[$rmPlugin]);
 			} else {
-				JFusionFunction::raiseError(JText::_('NOT_PLUGIN_REMOVE'));
+				\JFusion\Framework::raiseError(JText::_('NOT_PLUGIN_REMOVE'));
 			}
 			$this->saveParam($value);
 		}
@@ -343,7 +343,7 @@ HTML;
 				$path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
 				$defaultPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $option . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'advancedparam' . DIRECTORY_SEPARATOR . 'paramfiles' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
 				$xml_path = (file_exists($path)) ? $path : $defaultPath;
-				$xml = JFusionFunction::getXml($xml_path);
+				$xml = \JFusion\Framework::getXml($xml_path);
 				if ($xml) {
 					if ($xml->form) {
 						/**

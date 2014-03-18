@@ -72,7 +72,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
         $config = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -133,7 +133,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('email as email, id_customer as userid')
@@ -145,7 +145,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -158,7 +158,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     {
 	    try {
 	        //getting the connection to the db
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -170,7 +170,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 	        //getting the results
 	        $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		    $no_users = 0;
 		}
         return $no_users;
@@ -182,7 +182,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     function getUsergroupList()
     {
 	    //get the connection to the db
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    //prestashop uses two group categories which are employees and customers, each have there own groups to access either the front or back end
 	    /*
@@ -203,7 +203,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroups !== null) {

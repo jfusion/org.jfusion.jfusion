@@ -68,7 +68,7 @@ class JFusionAdmin_efront extends JFusionAdmin
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -90,7 +90,7 @@ class JFusionAdmin_efront extends JFusionAdmin
 
             $lines = $this->readFile($myfile);
             if ($lines === false) {
-                JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+                \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	            return false;
             } else {
                 //parse the file line by line to get only the config variables
@@ -129,7 +129,7 @@ class JFusionAdmin_efront extends JFusionAdmin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('login AS username, email')
@@ -139,7 +139,7 @@ class JFusionAdmin_efront extends JFusionAdmin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -152,7 +152,7 @@ class JFusionAdmin_efront extends JFusionAdmin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    // eFront does not have a single user id field in its userdatabase.
 		    // jFusion needs one, so add it here. This routine runs once
@@ -181,7 +181,7 @@ class JFusionAdmin_efront extends JFusionAdmin
 		    //getting the results
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }
@@ -201,7 +201,7 @@ class JFusionAdmin_efront extends JFusionAdmin
     function allowRegistration()
     {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('value')
@@ -216,7 +216,7 @@ class JFusionAdmin_efront extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = false;
 	    }
 	    return $result;
@@ -241,12 +241,12 @@ class JFusionAdmin_efront extends JFusionAdmin
     function debugConfigExtra()
     {
         // see if we have an api user in Magento
-        $db = JFusionFactory::getDataBase($this->getJname());
+        $db = \JFusion\Factory::getDataBase($this->getJname());
         // check if we have valid parameters  for apiuser and api key
         $apiuser = $this->params->get('apiuser');
         $apikey = $this->params->get('apikey');
         if (!$apiuser || !$apikey) {
-                JFusionFunction::raiseWarning(JText::_('EFRONT_NO_API_DATA'), $this->getJname());
+                \JFusion\Framework::raiseWarning(JText::_('EFRONT_NO_API_DATA'), $this->getJname());
         } else {
             //check if the apiuser and apikey are valid
 	        $query = $db->getQuery(true)
@@ -259,12 +259,12 @@ class JFusionAdmin_efront extends JFusionAdmin
             $md5_key = $this->params->get('md5_key');
             $params_hash = md5($apikey . $md5_key);
             if ($params_hash != $api_key) {
-                JFusionFunction::raiseWarning(JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
+                \JFusion\Framework::raiseWarning(JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
             }
         }
         // we need to have the curl library installed
         if (!extension_loaded('curl')) {
-            JFusionFunction::raiseWarning(JText::_('CURL_NOTINSTALLED'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('CURL_NOTINSTALLED'), $this->getJname());
         }
     }
 

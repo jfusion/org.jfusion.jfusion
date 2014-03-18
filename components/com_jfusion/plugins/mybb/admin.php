@@ -61,7 +61,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
         $params = array();
         //include config file
         if (!file_exists($myfile)) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             $config = array();
@@ -128,7 +128,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    $query = $db->getQuery(true)
 			    ->select('username, email')
 			    ->from('#__users');
@@ -136,7 +136,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 		    $db->setQuery($query, $limitstart, $limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -149,7 +149,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
     {
 	    try {
 	        //getting the connection to the db
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -159,7 +159,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	        //getting the results
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    return 0;
 		}
     }
@@ -170,7 +170,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
     function getUsergroupList()
     {
 	    //getting the connection to the db
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('gid as id, title as name')
@@ -186,12 +186,12 @@ class JFusionAdmin_mybb extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
 
 	    $group = '';
 	    if ($usergroups !== null) {
 		    //we want to output the usergroup name
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('title')
@@ -211,7 +211,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
     {
 	    $result = false;
 	    try {
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('value')
@@ -224,7 +224,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	            $result = true;
 	        }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $result;
     }

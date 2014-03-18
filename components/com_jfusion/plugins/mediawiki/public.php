@@ -58,7 +58,7 @@ class JFusionPublic_mediawiki extends JFusionPublic {
      */
     function getSearchQuery(&$pluginParam)
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
+		$db = \JFusion\Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('p.page_id , p.page_title AS title, t.old_text as text,

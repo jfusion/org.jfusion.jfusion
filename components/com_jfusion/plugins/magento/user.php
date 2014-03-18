@@ -88,7 +88,7 @@ class JFusionUser_magento extends JFusionUser {
 		static $eav_entity_types;
 		try {
 			if (!isset($eav_entity_types)) {
-				$db = JFusionFactory::getDataBase($this->getJname());
+				$db = \JFusion\Factory::getDataBase($this->getJname());
 
 				$query = $db->getQuery(true)
 					->select('entity_type_id, entity_type_code')
@@ -103,7 +103,7 @@ class JFusionUser_magento extends JFusionUser {
 			}
 			return $eav_entity_types[$eav_entity_code];
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			return false;
 		}
 	}
@@ -125,7 +125,7 @@ class JFusionUser_magento extends JFusionUser {
 			if (!isset($eav_attributes[$entity_type_code])) {
 				// first get the entity_type_id to access the attribute table
 				$entity_type_id = $this->getMagentoEntityTypeID('customer');
-				$db = JFusionFactory::getDataBase($this->getJname());
+				$db = \JFusion\Factory::getDataBase($this->getJname());
 				// Get a database object
 				$query = $db->getQuery(true)
 					->select('attribute_id, attribute_code, backend_type')
@@ -143,7 +143,7 @@ class JFusionUser_magento extends JFusionUser {
 			}
 			return $eav_attributes[$entity_type_code];
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			return false;
 		}
 
@@ -182,7 +182,7 @@ class JFusionUser_magento extends JFusionUser {
 				 *       for now I'm trying to get this working. optimising comes next
 				 */
 				$filled_object = array();
-				$db = JFusionFactory::getDataBase($this->getJname());
+				$db = \JFusion\Factory::getDataBase($this->getJname());
 				for ($i = 0;$i < count($result);$i++) {
 					$query = $db->getQuery(true)
 						->where('entity_id = ' . (int)$entity_id)
@@ -204,7 +204,7 @@ class JFusionUser_magento extends JFusionUser {
 				$result = $filled_object;
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		}
 		return $result;
 	}
@@ -219,7 +219,7 @@ class JFusionUser_magento extends JFusionUser {
 		}
 
 		// Get the user id
-		$db = JFusionFactory::getDataBase($this->getJname());
+		$db = \JFusion\Factory::getDataBase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('entity_id')
@@ -350,7 +350,7 @@ class JFusionUser_magento extends JFusionUser {
 	 */
 	function update_create_Magentouser($user, $entity_id) {
 		try {
-			$db = JFusionFactory::getDataBase($this->getJname());
+			$db = \JFusion\Factory::getDataBase($this->getJname());
 			$sqlDateTime = date('Y-m-d H:i:s', time());
 			// transactional handling of this update is a necessarily
 			if (!$entity_id) { //create an (almost) empty user
@@ -493,7 +493,7 @@ class JFusionUser_magento extends JFusionUser {
 			$status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . JText::_('USERGROUP_MISSING');
 		} else {
 			$usergroup = $usergroups[0];
-			$db = JFusionFactory::getDataBase($this->getJname());
+			$db = \JFusion\Factory::getDataBase($this->getJname());
 			//prepare the variables
 			// first get some default stuff from Magento
 /*
@@ -755,7 +755,7 @@ class JFusionUser_magento extends JFusionUser {
 		} else {
 			$usergroup = $usergroups[0];
 			//set the usergroup in the user table
-			$db = JFusionFactory::getDataBase($this->getJname());
+			$db = \JFusion\Factory::getDataBase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->update('#__customer_entity')

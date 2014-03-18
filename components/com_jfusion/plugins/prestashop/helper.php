@@ -43,7 +43,7 @@ class JFusionHelper_prestashop extends JFusionPlugin
 	 */
 	function loadFramework()
 	{
-		$params = JFusionFactory::getParams($this->getJname());
+		$params = \JFusion\Factory::getParams($this->getJname());
 		$source_path = $params->get('source_path');
 
 		require_once($source_path . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php');
@@ -82,7 +82,7 @@ class JFusionHelper_prestashop extends JFusionPlugin
 	 * @param $class
 	 */
 	function loadClass($class) {
-		$params = JFusionFactory::getParams($this->getJname());
+		$params = \JFusion\Factory::getParams($this->getJname());
 		$source_path = $params->get('source_path');
 
 		require_once($source_path . 'classes' . DIRECTORY_SEPARATOR . $class . '.php');
@@ -97,7 +97,7 @@ class JFusionHelper_prestashop extends JFusionPlugin
 	function getDefaultLanguage() {
 		static $default_language;
 		if (!isset($default_language)) {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('value')
@@ -119,7 +119,7 @@ class JFusionHelper_prestashop extends JFusionPlugin
 	function getGroupName($id) {
 		static $groupname;
 		if (!isset($groupname[$id])) {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			$query = $db->getQuery(true)
 				->select('name')
 				->from('#__group_lang')

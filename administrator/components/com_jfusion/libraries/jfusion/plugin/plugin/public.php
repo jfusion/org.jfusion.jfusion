@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugin;
 
 /**
  * Abstract public class for JFusion
@@ -14,6 +14,14 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Parser\Parsers\CssParser;
+use JFusion\Registry\Registry;
+use JFusion\Language\Text;
+
+use \RuntimeException;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -26,7 +34,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionPublic extends JFusionPlugin
+class Plugin_Public extends Plugin
 {
 	var $helper;
 
@@ -46,7 +54,7 @@ class JFusionPublic extends JFusionPlugin
 	{
 		parent::__construct();
 		//get the helper object
-		$this->helper = &JFusionFactory::getHelper($this->getJname());
+		$this->helper = &Factory::getHelper($this->getJname());
 	}
 
     /**
@@ -64,12 +72,12 @@ class JFusionPublic extends JFusionPlugin
         if ( isset($data->location) ) {
             $location = str_replace($data->integratedURL, '', $data->location);
 	        $location = $this->fixUrl(array(1 => $location));
-            $mainframe = JFusionFactory::getApplication();
+            $mainframe = Factory::getApplication();
             $mainframe->redirect($location);
         }
         if ( isset($status['error']) ) {
             foreach ($status['error'] as $value) {
-                JFusionFunction::raiseWarning($value, $this->getJname());
+	            Framework::raiseWarning($value, $this->getJname());
             }
         }
     }
@@ -335,10 +343,10 @@ JS;
         $jname = $this->getJname();
 
         if (empty($jname)) {
-            $jname = JFusionFactory::getApplication()->input->get('Itemid');
+            $jname = Factory::getApplication()->input->get('Itemid');
         }
 
-        $document = JFusionFactory::getDocument();
+        $document = Factory::getDocument();
 
         $sourcepath = JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
         $urlpath = 'components/com_jfusion/css/' . $jname . '/';
@@ -367,7 +375,7 @@ JS;
 		                    $filenamesource = $sourcepath . $filename;
 
 		                    if ( !JFile::exists($filenamesource) ) {
-			                    $cssparser = new cssparser('#jfusionframeless');
+			                    $cssparser = new CssParser('#jfusionframeless');
 			                    $result = $cssparser->ParseUrl($cssUrlRaw);
 			                    if ($result !== false ) {
 				                    $content = $cssparser->GetCSS();
@@ -397,7 +405,7 @@ JS;
                     }
 
                     if ( !JFile::exists($filenamesource) ) {
-                        $cssparser = new cssparser('#jfusionframeless');
+                        $cssparser = new CssParser('#jfusionframeless');
                         $cssparser->setUrl($data->integratedURL);
                         $cssparser->ParseStr($values);
                         $content = $cssparser->GetCSS();
@@ -499,7 +507,7 @@ JS;
      *                                  forum (to be published in a thread or post; used by discussion bot)
      *                                  activity (displayed in activity module; used by the activity module)
      *                                  search (displayed as search results; used by search plugin)
-     * @param JRegistry $params        (optional) Joomla parameter object passed in by JFusion's module/plugin
+     * @param Registry $params        (optional) Joomla parameter object passed in by JFusion's module/plugin
      * @param mixed $object             (optional) Object with information for the specific element the text is from
      *
      * @return array  $status           Information passed back to calling script such as limit_applied
@@ -519,11 +527,11 @@ JS;
             $options = array();
             if (!empty($params) && $params->get('character_limit', false)) {
                 $status['limit_applied'] = 1;
-                $options['character_limit'] = $params->get('character_limit');
+	                            $options['character_limit'] = $params->get('character_limit');
             }
-            $text = JFusionFunction::parseCode($text, 'html', $options);
+            $text = Framework::parseCode($text, 'html', $options);
         } elseif ($for == 'search') {
-            $text = JFusionFunction::parseCode($text, 'plaintext');
+            $text = Framework::parseCode($text, 'plaintext');
         } elseif ($for == 'activity') {
             if ($params->get('parse_text') == 'plaintext') {
                 $options = array();
@@ -532,14 +540,14 @@ JS;
                     $status['limit_applied'] = 1;
                     $options['character_limit'] = $params->get('character_limit');
                 }
-                $text = JFusionFunction::parseCode($text, 'plaintext', $options);
+                $text = Framework::parseCode($text, 'plaintext', $options);
             }
         }
         return $status;
     }
 
     /**
-     * Parses custom BBCode defined in $this->prepareText() and called by the nbbc parser via JFusionFunction::parseCode()
+     * Parses custom BBCode defined in $this->prepareText() and called by the nbbc parser via Framework::parseCode()
      *
      * @param mixed $bbcode
      * @param int $action
@@ -696,7 +704,7 @@ HTML;
             $q = str_replace('?', '&amp;', $q);
             $url = $this->data->baseURL . '&amp;jfile=' . $q;
         } elseif ($this->data->sefmode == 1) {
-            $url = JFusionFunction::routeURL($q, JFusionFactory::getApplication()->input->getInt('Itemid'));
+            $url = Framework::routeURL($q, Factory::getApplication()->input->getInt('Itemid'));
         } else {
             //we can just append both variables
             $url = $this->data->baseURL . $q;
@@ -714,7 +722,7 @@ HTML;
         $baseURL = $this->data->baseURL;
 
         $url = htmlspecialchars_decode($url);
-        $Itemid = JFusionFactory::getApplication()->input->getInt('Itemid');
+        $Itemid = Factory::getApplication()->input->getInt('Itemid');
         //strip any leading dots
         if (substr($url, 0, 2) == './') {
             $url = substr($url, 2);
@@ -735,7 +743,7 @@ HTML;
         } else {
             if ($this->data->sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = JFusionFunction::routeURL($url, $Itemid);
+                $url = Framework::routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {
@@ -790,7 +798,7 @@ HTML;
                 if (!empty($query)) {
                     $url.= '?' . $query;
                 }
-                $url = JFusionFunction::routeURL($url, JFusionFactory::getApplication()->input->getInt('Itemid'));
+                $url = Framework::routeURL($url, Factory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $url = $baseURL . $jfile;
@@ -802,7 +810,7 @@ HTML;
         if (!empty($fragment)) {
             $url .= '#' . $fragment;
         }
-        //JFusionFunction::raiseWarning(htmlentities($return), $this->getJname());
+        //Framework::raiseWarning(htmlentities($return), $this->getJname());
         return $timeout . $url;
     }
 
@@ -822,7 +830,7 @@ HTML;
      *
      * @param string &$text        string text to be searched
      * @param string &$phrase      string how the search should be performed exact, all, or any
-     * @param JRegistry &$pluginParam custom plugin parameters in search.xml
+     * @param Registry &$pluginParam custom plugin parameters in search.xml
      * @param int    $itemid       what menu item to use when creating the URL
      * @param string $ordering     ordering sent by Joomla: null, oldest, popular, category, alpha, or newest
      *
@@ -831,7 +839,7 @@ HTML;
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid, $ordering)
     {
 	    //initialize plugin database
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 	    //get the query used to search
 	    $query = $this->getSearchQuery($pluginParam);
 	    //assign specific table columns to title and text
@@ -869,7 +877,7 @@ HTML;
 	    if (is_array($results)) {
 		    foreach ($results as $result) {
 			    //add a link
-			    $href = JFusionFunction::routeURL($this->getSearchResultLink($result), $itemid, $this->getJname(), false);
+			    $href = Framework::routeURL($this->getSearchResultLink($result), $itemid, $this->getJname(), false);
 			    $result->href = $href;
 			    //open link in same window
 			    $result->browsernav = 2;
@@ -988,7 +996,7 @@ HTML;
     function setLanguageFrontEnd($userinfo = null)
     {
         $status = array('error' => '', 'debug' => '');
-        $status['debug'] = JText::_('METHOD_NOT_IMPLEMENTED');
+        $status['debug'] = Text::_('METHOD_NOT_IMPLEMENTED');
         return $status;
     }
 
@@ -1001,7 +1009,7 @@ HTML;
      */
     function renderUserActivityModule($config, $view, $params)
     {
-        return JText::_('METHOD_NOT_IMPLEMENTED');
+        return Text::_('METHOD_NOT_IMPLEMENTED');
     }
 
     /**
@@ -1013,7 +1021,7 @@ HTML;
      */
     function renderWhosOnlineModule($config, $view, $params)
     {
-        return JText::_('METHOD_NOT_IMPLEMENTED');
+        return Text::_('METHOD_NOT_IMPLEMENTED');
     }
 
     /**
@@ -1027,7 +1035,7 @@ HTML;
         //get the url
         $query = ($_GET);
 
-	    $jfile = JFusionFactory::getApplication()->input->get('jfile', 'index.php', 'raw');
+	    $jfile = Factory::getApplication()->input->get('jfile', 'index.php', 'raw');
 
         unset($query['option'], $query['jfile'], $query['Itemid'], $query['jFusion_Route'], $query['view'], $query['layout'], $query['controller'], $query['lang'], $query['task']);
 
@@ -1055,7 +1063,7 @@ HTML;
 
 		$url = $data->source_url;
 
-		$config = JFusionFactory::getConfig();
+		$config = Factory::getConfig();
 		$sefenabled = $config->get('sef');
 		if(!empty($sefenabled)) {
 			$uri = JURI::getInstance();
@@ -1070,7 +1078,7 @@ HTML;
 			}
 			$current = ltrim($current , '/');
 		} else {
-			$current = JFusionFactory::getApplication()->input->get('jfile') . '?';
+			$current = Factory::getApplication()->input->get('jfile') . '?';
 			$current .= $this->curlFramelessBuildUrl('GET');
 		}
 
@@ -1159,7 +1167,7 @@ HTML;
 
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 
-		$cookies = JFusionFactory::getCookies();
+		$cookies = Factory::getCookies();
 
 		$_COOKIE['jfusionframeless'] = true;
 		curl_setopt($ch, CURLOPT_COOKIE, $cookies->buildCookie());
@@ -1181,7 +1189,7 @@ HTML;
 		}
 
 		if (curl_error($ch)) {
-			$status['error'][] = JText::_('CURL_ERROR_MSG') . ': ' . curl_error($ch) . ' URL:' . $url;
+			$status['error'][] = Text::_('CURL_ERROR_MSG') . ': ' . curl_error($ch) . ' URL:' . $url;
 			curl_close($ch);
 			return $status;
 		}

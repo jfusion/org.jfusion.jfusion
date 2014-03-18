@@ -64,7 +64,7 @@ class JFusionForum_vbulletin extends JFusionForum
     function getThread($threadid)
     {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('threadid, forumid, firstpostid AS postid')
@@ -74,7 +74,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $results = null;
 	    }
         return $results;
@@ -88,7 +88,7 @@ class JFusionForum_vbulletin extends JFusionForum
     function getThreadLockedStatus($threadid)
     {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('open')
@@ -99,7 +99,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $open = $db->loadResult();
 		    $locked = ($open) ? false : true;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $locked = true;
 	    }
         return $locked;
@@ -122,7 +122,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
         $useContentDate = $dbparams->get('use_content_created_date', false);
         if ($useContentDate) {
-            $timezone = JFusionFactory::getConfig()->get('offset');
+            $timezone = \JFusion\Factory::getConfig()->get('offset');
             $timestamp = strtotime($contentitem->created);
             //undo Joomla timezone offset
             $timestamp += ($timezone * 3600);
@@ -150,8 +150,8 @@ class JFusionForum_vbulletin extends JFusionForum
             //if using the content date, manually update the forum's stats
             if ($useContentDate) {
 	            try {
-	                $db = JFusionFactory::getDatabase($this->getJname());
-	                $user = JFusionFactory::getUser($this->getJname());
+	                $db = \JFusion\Factory::getDatabase($this->getJname());
+	                $user = \JFusion\Factory::getUser($this->getJname());
 	                $userinfo = $user->getUser($userid, 'userid');
 
 		            $query = $db->getQuery(true)
@@ -212,7 +212,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    if (empty($userinfo->username)) {
 				    throw new RuntimeException(JTEXT::_('GUEST_FIELDS_MISSING'));
 			    } else {
-				    $db = JFusionFactory::getDatabase($this->getJname());
+				    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 				    $query = $db->getQuery(true)
 					    ->select('COUNT(*)')
@@ -250,7 +250,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $threadinfo = $this->getThreadInfo($ids->threadid, $params);
 			    $post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $params->get('moderate_guests', 1))) ? 0 : 1;
 			    $title = 'Re: ' . $threadinfo['title'];
-			    $public = JFusionFactory::getPublic($this->getJname());
+			    $public = \JFusion\Factory::getPublic($this->getJname());
 			    $public->prepareText($title);
 
 			    $apidata = array(
@@ -324,7 +324,7 @@ class JFusionForum_vbulletin extends JFusionForum
     {
 	    try {
 		    $threadid = intval($id);
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('if (visible = 2, 1, 0) AS isdeleted, thread.*')
@@ -334,7 +334,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $db->setQuery($query);
 		    $threadinfo = $db->loadAssoc();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $threadinfo = null;
 	    }
         return $threadinfo;
@@ -347,7 +347,7 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getForumInfo($id) {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('*')
@@ -385,7 +385,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
 		    $foruminfo['depth'] = substr_count($foruminfo['parentlist'], ',') - 1;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $foruminfo = array();
 	    }
 
@@ -404,7 +404,7 @@ class JFusionForum_vbulletin extends JFusionForum
     function getPosts($dbparams, $existingthread, $start, $limit, $sort)
     {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    //set the query
 		    if (empty($name_field)) {
@@ -445,7 +445,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
 		    $posts = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $posts = array();
 	    }
         return $posts;
@@ -459,7 +459,7 @@ class JFusionForum_vbulletin extends JFusionForum
     function getReplyCount($existingthread)
     {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('replycount')
@@ -469,7 +469,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -535,7 +535,7 @@ class JFusionForum_vbulletin extends JFusionForum
 	    $pmcount = array('total' => 0, 'unread' => 0);
 	    try {
 		    // initialise some objects
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('pmtotal, pmunread')
@@ -547,7 +547,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $pmcount['total'] = $vbPMData->pmtotal;
 		    $pmcount['unread'] = $vbPMData->pmunread;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $pmcount;
     }
@@ -578,7 +578,7 @@ class JFusionForum_vbulletin extends JFusionForum
         $url = false;
 	    try {
 		    if ($userid) {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
 				    ->select('u.avatarid, u.avatarrevision, avatarpath, NOT ISNULL(c.userid) AS usecustom, c.dateline')
@@ -624,7 +624,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    }
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $url;
     }
@@ -647,7 +647,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
         if ($numargs > 3) {
 	        try {
-		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $db = \JFusion\Factory::getDatabase($this->getJname());
 		        $filters = func_get_args();
 		        for ($i = 3; $i < $numargs; $i++) {
 			        if ($filters[$i][0] == 'userid') {
@@ -655,7 +655,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			        }
 		        }
 	        } catch (Exception $e) {
-				JFusionFunction::raiseError($e, $this->getJname());
+				\JFusion\Framework::raiseError($e, $this->getJname());
 	        }
         }
 
@@ -714,8 +714,8 @@ class JFusionForum_vbulletin extends JFusionForum
 			    static $marktimes;
 			    if (!is_array($marktimes)) {
 				    $marktimes = array();
-				    $db = JFusionFactory::getDatabase($this->getJname());
-				    $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
+				    $db = \JFusion\Factory::getDatabase($this->getJname());
+				    $userlookup = \JFusion\Framework::lookupUser($this->getJname(), $JUser->id);
 				    if (!empty($userlookup)) {
 					    $query = $db->getQuery(true)
 						    ->select('threadid, readtime')
@@ -756,7 +756,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $newstatus = ($marktime !== false && $post->lastpost > $marktime) ? 1 : 0;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $newstatus;
     }
@@ -770,7 +770,7 @@ class JFusionForum_vbulletin extends JFusionForum
 	    $results = array();
 	    try {
 		    //get the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('forumid as id, title_clean as name, options')
@@ -795,7 +795,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $results = $array;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $results;
     }
@@ -814,7 +814,7 @@ class JFusionForum_vbulletin extends JFusionForum
 				    $JoomlaUser = JFactory::getUser();
 				    //get the vb user
 				    if (!$JoomlaUser->guest) {
-					    $user = JFusionFunction::lookupUser($this->getJname(), $JoomlaUser->id);
+					    $user = \JFusion\Framework::lookupUser($this->getJname(), $JoomlaUser->id);
 					    if (!empty($user)) {
 						    $userid = $user->userid;
 					    } else {
@@ -831,7 +831,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    defined('CAN_VIEW_OTHERS_THREADS') OR define('CAN_VIEW_OTHERS_THREADS', 2);
 			    defined('CAN_SEARCH_FORUM') OR define('CAN_SEARCH_FORUM', 4);
 			    //get the usergroup permissions
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 			    if ($userid != 0) {
 				    $query = $db->getQuery(true)
 					    ->select('u.usergroupid AS gid, u.membergroupids, g.forumpermissions AS perms')
@@ -930,7 +930,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $forumPerms = array();
 		    $groupPerms = null;
 	    }
@@ -952,7 +952,7 @@ class JFusionForum_vbulletin extends JFusionForum
         $JoomlaUser = JFactory::getUser();
         //get the vb user
         if (!$JoomlaUser->guest) {
-            $user = JFusionFunction::lookupUser($this->getJname(), $JoomlaUser->id);
+            $user = \JFusion\Framework::lookupUser($this->getJname(), $JoomlaUser->id);
             if (!empty($user)) {
                 $userid = $user->userid;
             } else {

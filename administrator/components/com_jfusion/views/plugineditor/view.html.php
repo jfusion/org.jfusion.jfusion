@@ -57,8 +57,8 @@ class jfusionViewplugineditor extends JViewLegacy
         //find out the submitted name of the JFusion module
         $jname = JFactory::getApplication()->input->get('jname');
         if ($jname) {
-	        // Keep the idea of instanciate the parameters only with the parameters of the XML file from the plugin needed but with a centralized method (JFusionFactory::createParams)
-	        $parametersInstance = JFusionFactory::createParams($jname);
+	        // Keep the idea of instanciate the parameters only with the parameters of the XML file from the plugin needed but with a centralized method (\JFusion\Factory::createParams)
+	        $parametersInstance = \JFusion\Factory::createParams($jname);
 
 	        $file = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
 	        $form = new JForm($jname);
@@ -68,7 +68,7 @@ class jfusionViewplugineditor extends JViewLegacy
 
 		        $content = str_replace('<fieldset name="FRAMELESS_OPTIONS"/>', $this->getFramelessOptions(), $content);
 
-		        $xml = JFusionFunction::getXML($content, false);
+		        $xml = \JFusion\Framework::getXML($content, false);
 
 		        $fields = $xml->form;
 		        jimport('joomla.form.form');
@@ -87,12 +87,12 @@ class jfusionViewplugineditor extends JViewLegacy
 	        $this->form = $form;
 	        $this->jname = $jname;
 	        //output detailed configuration warnings for the plugin
-	        $JFusionPlugin = JFusionFactory::getAdmin($jname);
+	        $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
 	        if ($JFusionPlugin->isConfigured()) {
 		        try {
 			        $JFusionPlugin->debugConfig();
 		        } catch (Exception $e) {
-			        JFusionFunction::raiseError($e, $JFusionPlugin->getJname());
+			        \JFusion\Framework::raiseError($e, $JFusionPlugin->getJname());
 		        }
 	        }
             //render view

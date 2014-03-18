@@ -895,7 +895,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 */
 		function debug($string) {
 			if(!$this->getConf('debug')) return;
-			JFusionFunction::raiseWarning($string, $this->helper->getJname());
+			\JFusion\Framework::raiseWarning($string, $this->helper->getJname());
 		}
 
 		/**

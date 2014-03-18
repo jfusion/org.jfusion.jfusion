@@ -73,7 +73,7 @@ class jfusionViewversioncheck extends JViewLegacy
 		$document = JFactory::getDocument();
 		$document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
-		JFusionFunction::loadJavascriptLanguage(array('UPGRADE_CONFIRM_PLUGIN', 'UPGRADE_CONFIRM_BUILD', 'UPGRADE_CONFIRM_GIT', 'UPGRADE_CONFIRM_RELEASE', 'UPGRADE'));
+		\JFusion\Framework::loadJavascriptLanguage(array('UPGRADE_CONFIRM_PLUGIN', 'UPGRADE_CONFIRM_BUILD', 'UPGRADE_CONFIRM_GIT', 'UPGRADE_CONFIRM_RELEASE', 'UPGRADE'));
 
 		$db = JFactory::getDBO();
 
@@ -92,7 +92,7 @@ class jfusionViewversioncheck extends JViewLegacy
 		$jfusionurl->jnames = array();
 		$urls[md5($jfusionurl->url)] = $jfusionurl;
 		foreach ($plugins as $plugin) {
-			$xml = JFusionFunction::getXml(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name . DIRECTORY_SEPARATOR . 'jfusion.xml');
+			$xml = \JFusion\Framework::getXml(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name . DIRECTORY_SEPARATOR . 'jfusion.xml');
 			if($xml) {
 				$update = $xml->update;
 				if ($update) {
@@ -120,7 +120,7 @@ class jfusionViewversioncheck extends JViewLegacy
 
 		foreach ($urls as &$url) {
 			$url->data = JFusionFunctionAdmin::getFileData($url->url);
-			$xml = JFusionFunction::getXml($url->data, false);
+			$xml = \JFusion\Framework::getXml($url->data, false);
 			if ($xml) {
 				if ($url->url == $jfusionurl->url) {
 					$php = new stdClass;
@@ -251,7 +251,7 @@ JS;
 
 		if (file_exists($filename) && is_readable($filename)) {
 			//get the version number
-			$xml = JFusionFunction::getXml($filename);
+			$xml = \JFusion\Framework::getXml($filename);
 
 			$output->oldversion = (string)$xml->version;
 			if ($xml->revision) {
@@ -271,7 +271,7 @@ JS;
 
 			//cleanup for the next function call
 		} else {
-			JFusionFunction::raiseError(JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), $name);
+			\JFusion\Framework::raiseError(JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), $name);
 		}
 		return $output;
 	}

@@ -67,7 +67,7 @@ class JFusionAdmin_smf extends JFusionAdmin
         //try to open the file
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -108,7 +108,7 @@ class JFusionAdmin_smf extends JFusionAdmin
     {
 	    try {
 		    // initialise some objects
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('memberName as username, emailAddress as email')
@@ -117,7 +117,7 @@ class JFusionAdmin_smf extends JFusionAdmin
 		    $db->setQuery($query, $limitstart, $limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 			$userlist = array();
 	    }
         return $userlist;
@@ -132,7 +132,7 @@ class JFusionAdmin_smf extends JFusionAdmin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -142,7 +142,7 @@ class JFusionAdmin_smf extends JFusionAdmin
 		    //getting the results
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }
@@ -155,7 +155,7 @@ class JFusionAdmin_smf extends JFusionAdmin
     function getUsergroupList()
     {
 	    //getting the connection to the db
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('ID_GROUP as id, groupName as name')
@@ -181,11 +181,11 @@ class JFusionAdmin_smf extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroup !== null) {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    if (isset($usergroup->groups)) {
 			    $groups = $usergroup->groups;
@@ -223,7 +223,7 @@ class JFusionAdmin_smf extends JFusionAdmin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('ID_GROUP as id, groupName as name')
@@ -233,7 +233,7 @@ class JFusionAdmin_smf extends JFusionAdmin
 		    $db->setQuery($query);
 		    return $db->loadObjectList();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -247,7 +247,7 @@ class JFusionAdmin_smf extends JFusionAdmin
     {
 	    $result = false;
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('value')
@@ -260,7 +260,7 @@ class JFusionAdmin_smf extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
 	    return $result;
     }
@@ -335,16 +335,16 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
 					break;
 				}
 			case 'enable':
-				$joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
+				$joomla_url = \JFusion\Factory::getParams('joomla_int')->get('source_url');
 				$joomla_itemid = $this->params->get('redirect_itemid');
 
 				//check to see if all vars are set
 				if (empty($joomla_url)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname(), $this->getJname());
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname(), $this->getJname());
 				} else if($error == 0) {
 					//get the joomla path from the file
 					jimport('joomla.filesystem.file');
@@ -455,7 +455,7 @@ HTML;
 	{
 		$jname = $this->getJname();
 
-		JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS', 'POSTGROUP'));
+		\JFusion\Framework::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS', 'POSTGROUP'));
 
 		$postgroups = json_encode($this->getUserpostgroupList());
 

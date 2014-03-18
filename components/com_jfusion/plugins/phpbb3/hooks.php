@@ -138,7 +138,7 @@ class JFusionHook {
         //we need to change the $user->page array as it does not detect some POST values
         global $user;
         //set our current phpBB3 filename
-	    $mainframe = JFusionFactory::getApplication();
+	    $mainframe = \JFusion\Factory::getApplication();
 
         $jfile = $mainframe->input->get('jfile');
         if (empty($jfile)) {
@@ -172,7 +172,7 @@ class JFusionHook {
         //set the script path to allow for email notifications with correct URLs
         $Itemid = $mainframe->input->getInt('Itemid');
         //Get the base URL to the specific JFusion plugin
-        $baseURL = JFusionFunction::getPluginURL($Itemid, false);
+        $baseURL = \JFusion\Framework::getPluginURL($Itemid, false);
         if (substr($baseURL, -1) != '/') {
             //non-SEF mode
             global $source_url;
@@ -203,7 +203,7 @@ class JFusionHook {
      */
     public static function template_display($hook, $handle, $include_once = true) {
         global $template, $jname;
-        $params = JFusionFactory::getParams($jname);
+        $params = \JFusion\Factory::getParams($jname);
         $lostpassword_url = $params->get('lostpassword_url');
         $register_url = $params->get('register_url');
         if (!empty($lostpassword_url)) {

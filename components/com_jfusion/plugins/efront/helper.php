@@ -100,7 +100,7 @@ class JFusionHelper_efront extends JFusionPlugin {
 	    try {
 		    // correct id
 		    $group_id = $group_id - 2;
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    if (!empty($db)) {
 			    $query = $db->getQuery(true)
 				    ->select('name, basic_user_type')
@@ -112,7 +112,7 @@ class JFusionHelper_efront extends JFusionPlugin {
 			    return $user_type['name'] . ' (' . $user_type['basic_user_type'] . ')';
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return false;
     }
@@ -158,7 +158,7 @@ class JFusionHelper_efront extends JFusionPlugin {
 
 		try {
 	        //get the connection to the db
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('id, name, basic_user_type')
@@ -175,7 +175,7 @@ class JFusionHelper_efront extends JFusionPlugin {
 		        $user_types[] = $group;
 	        }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 		}
         return $user_types;
     }
@@ -191,7 +191,7 @@ class JFusionHelper_efront extends JFusionPlugin {
     function send_to_api($curl_options, $status) {
         $status = array('error' => array(), 'debug' => array());
 
-        $source_url = JFusionFactory::getParams($this->getJname())->get('source_url');
+        $source_url = \JFusion\Factory::getParams($this->getJname())->get('source_url');
         // prevent user error by not supplying trailing backslash.
         if (!(substr($source_url, -1) == '/')) {
             $source_url = $source_url . '/';

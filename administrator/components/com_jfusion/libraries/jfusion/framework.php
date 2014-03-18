@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion;
 
 /**
  * Model for all jfusion related function
@@ -13,6 +13,12 @@
  * @link      http://www.jfusion.org
  */
 
+use JFusion\Language\Text;
+
+use \stdClass;
+use \Exception;
+use \RuntimeException;
+
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -26,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionFunction
+class Framework
 {
 	/**
 	 * Returns the JFusion plugin name of the software that is currently the master of user management
@@ -37,7 +43,7 @@ class JFusionFunction
 	{
 		static $jfusion_master;
 		if (!isset($jfusion_master)) {
-			$db = JFactory::getDBO();
+			$db = Factory::getDBO();
 
 			$query = $db->getQuery(true)
 				->select('*')
@@ -60,7 +66,7 @@ class JFusionFunction
 	{
 		static $jfusion_slaves;
 		if (!isset($jfusion_slaves)) {
-			$db = JFactory::getDBO();
+			$db = Factory::getDBO();
 
 			$query = $db->getQuery(true)
 				->select('*')
@@ -84,7 +90,7 @@ class JFusionFunction
      */
 	public static function getPluginStatus($element, $folder) {
 		//get joomla specs
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
 		$query = $db->getQuery(true)
 			->select('published')
@@ -118,7 +124,7 @@ class JFusionFunction
                 }
             } else {
                 //we need to create direct link to the plugin
-                $params = JFusionFactory::getParams($itemid);
+                $params = Factory::getParams($itemid);
                 $url = $params->get('source_url') . $url;
                 if ($xhtml) {
                     $url = str_replace('&', '&amp;', $url);
@@ -144,13 +150,13 @@ class JFusionFunction
                 }
             }
             //make the URL relative so that external software can use this function
-            $params = JFusionFactory::getParams($jname);
+            $params = Factory::getParams($jname);
             $source_url = $params->get('source_url');
             $url = str_replace($source_url, '', $url);
 
-            $config = JFactory::getConfig();
+            $config = Factory::getConfig();
             $sefenabled = $config->get('sef');
-            $params = JFusionFactory::getParams($jname);
+            $params = Factory::getParams($jname);
             $sefmode = $params->get('sefmode', 1);
             if ($sefenabled && !$sefmode) {
                 //otherwise just tak on the
@@ -199,7 +205,7 @@ class JFusionFunction
             $base_url = 'index.php?option=com_jfusion&amp;Itemid=-1&amp;view=' . $view . '&amp;jname=' . $jname;
         }
         if ($view == 'direct') {
-            $params = JFusionFactory::getParams($jname);
+            $params = Factory::getParams($jname);
             $url = $params->get('source_url') . $url;
         } elseif ($view == 'wrapper') {
             //use base64_encode to encode the URL for passing.  But, base64_code uses / which throws off SEF urls.  Thus slashes
@@ -232,7 +238,7 @@ class JFusionFunction
     public static function updateLookup($userinfo, $joomla_id, $jname = '', $delete = false)
     {
 	    if ($userinfo) {
-		    $db = JFactory::getDBO();
+		    $db = Factory::getDBO();
 		    //we don't need to update the lookup for internal joomla unless deleting a user
 		    if ($jname == 'joomla_int') {
 			    if ($delete) {
@@ -292,7 +298,7 @@ class JFusionFunction
 				    foreach ($jnames as $j) {
 					    if ($j->name != 'joomla_int') {
 						    try {
-							    $user = JFusionFactory::getUser($j->name);
+							    $user = Factory::getUser($j->name);
 							    $puserinfo = $user->getUser($userinfo);
 							    if ($delete) {
 								    $queries[] = '(id = ' . $joomla_id . ' AND jname = ' . $db->quote($j->name) . ')';
@@ -357,7 +363,7 @@ class JFusionFunction
     public static function lookupUser($jname, $userid, $isJoomlaId = true, $username = '')
     {
         //initialise some vars
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
         $result = '';
         if (!empty($userid)) {
             $column = ($isJoomlaId) ? 'a.id' : 'a.userid';
@@ -416,10 +422,10 @@ class JFusionFunction
                 //get the plugin userinfo - specifically we need the userid which it will provide
 	            $existinguser = null;
 	            try {
-		            $user = JFusionFactory::getUser($jname);
+		            $user = Factory::getUser($jname);
 		            $existinguser = $user->getUser($result);
 	            } catch (Exception $e) {
-					JfusionFunction::raiseError($e, $jname);
+					static::raiseError($e, $jname);
 	            }
 
                 if (!empty($existinguser)) {
@@ -455,7 +461,7 @@ class JFusionFunction
     public static function removeUser($userinfo)
     {
         //Delete old user data in the lookup table
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
 	    $query = $db->getQuery(true)
 		    ->delete('#__jfusion_users')
@@ -518,9 +524,9 @@ class JFusionFunction
 	 */
 	public static function updateDiscussionBotLookup($contentid, &$threadinfo, $jname, $published = 1, $manual = 0)
 	{
-		$fdb = JFactory::getDBO();
-		$modified = JFactory::getDate()->toUnix();
-        $option = JFactory::getApplication()->input->getCmd('option');
+		$fdb = Factory::getDBO();
+		$modified = Factory::getDate()->toUnix();
+        $option = Factory::getApplication()->input->getCmd('option');
 
         //populate threadinfo with other fields if necessary for content generation purposes
         //mainly used if the thread was just created
@@ -558,8 +564,8 @@ class JFusionFunction
      */
     public static function createJoomlaArticleURL(&$contentitem, $text, $jname='')
     {
-        $mainframe = JFactory::getApplication();
-        $option = JFactory::getApplication()->input->get('option');
+        $mainframe = Factory::getApplication();
+        $option = Factory::getApplication()->input->get('option');
 
         if ($option == 'com_k2') {
             include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
@@ -568,7 +574,7 @@ class JFusionFunction
         } else {
             if (empty($contentitem->slug) || empty($contentitem->catslug)) {
                 //article was edited and saved from editor
-                $db = JFactory::getDBO();
+                $db = Factory::getDBO();
 
 	            $query = $db->getQuery(true)
 		            ->select('CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(":", a.id, a.alias) ELSE a.id END as slug, CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug')
@@ -591,7 +597,7 @@ class JFusionFunction
 
         if ($mainframe->isAdmin()) {
             //setup JRoute to use the frontend router
-	        $app = JFactory::getApplication('site');
+	        $app = Factory::getApplication('site');
             $router = $app->getRouter();
             /**
              * @ignore
@@ -660,7 +666,7 @@ class JFusionFunction
     }
 
     /**
-     * Used by the JFusionFunction::parseCode function to parse various tags when parsing to bbcode.
+     * Used by the Framework::parseCode function to parse various tags when parsing to bbcode.
      * For example, some Joomla editors like to use an empty paragraph tag for line breaks which gets
      * parsed into a lot of unnecessary line breaks
      *
@@ -703,10 +709,10 @@ class JFusionFunction
     public static function reconnectJoomlaDb()
     {
         //check to see if the Joomla database is still connected
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
         jimport('joomla.database.database');
         jimport('joomla.database.table');
-        $conf = JFactory::getConfig();
+        $conf = Factory::getConfig();
         $database = $conf->get('db');
         $connected = true;
         if (!method_exists($db, 'connected')){
@@ -750,7 +756,7 @@ class JFusionFunction
 	public static function getAltAvatar($software, $uid, $isPluginUid = false, $jname = '', $username = '')
 	{
 		try {
-			$db = JFactory::getDBO();
+			$db = Factory::getDBO();
 			if ($isPluginUid && !empty($jname)) {
 				$userlookup = static::lookupUser($jname, $uid, false, $username);
 				if (!empty($userlookup)) {
@@ -791,7 +797,7 @@ class JFusionFunction
     {
         static $joomla_source_url;
         if (empty($joomla_source_url)) {
-            $params = JFusionFactory::getParams('joomla_int');
+            $params = Factory::getParams('joomla_int');
             $joomla_source_url = $params->get('source_url', '/');
         }
         return $joomla_source_url;
@@ -881,7 +887,7 @@ class JFusionFunction
      */
     public static function isAdministrator()
     {
-        $mainframe = JFactory::getApplication();
+        $mainframe = Factory::getApplication();
         if ($mainframe->isAdmin()) {
             //we are on admin side, lets confirm that the user has access to user manager
             $juser = JFactory::getUser();
@@ -924,7 +930,7 @@ class JFusionFunction
     {
         static $timezone;
         if (!isset($timezone)) {
-            $timezone = JFactory::getConfig()->get('offset');
+            $timezone = Factory::getConfig()->get('offset');
 
             $JUser = JFactory::getUser();
             if (!$JUser->guest) {
@@ -1016,7 +1022,7 @@ class JFusionFunction
 	    }
 
         if (!isset($data[$jname][$table])) {
-            $db = JFusionFactory::getDatabase($jname);
+            $db = Factory::getDatabase($jname);
             $query = 'SHOW FULL FIELDS FROM ' . $table;
             $db->setQuery($query);
             $fields = $db->loadObjectList();
@@ -1071,10 +1077,10 @@ class JFusionFunction
      */
     public static function hasFeature($jname, $feature, $itemid = null) {
         $return = false;
-	    $admin = JFusionFactory::getAdmin($jname);
-	    $public = JFusionFactory::getPublic($jname);
-	    $forum = JFusionFactory::getForum($jname);
-	    $user = JFusionFactory::getUser($jname);
+	    $admin = Factory::getAdmin($jname);
+	    $public = Factory::getPublic($jname);
+	    $forum = Factory::getForum($jname);
+	    $user = Factory::getUser($jname);
         switch ($feature) {
             //Admin Features
             case 'wizard':
@@ -1163,7 +1169,7 @@ class JFusionFunction
                 break;
             case 'redirect_itemid':
                 if ($itemid) {
-                    $app = JFactory::getApplication();
+                    $app = Factory::getApplication();
                     $menus = $app->getMenu('site');
                     $item = $menus->getItem($itemid);
                     if ($item && $item->params->get('visual_integration') == 'frameless') {
@@ -1205,7 +1211,7 @@ class JFusionFunction
 		}
 
 		if ($xml === false) {
-			static::raiseError(JText::_('JLIB_UTIL_ERROR_XML_LOAD'));
+			static::raiseError(Text::_('JLIB_UTIL_ERROR_XML_LOAD'));
 
 			if ($isFile) {
 				static::raiseError($data);
@@ -1244,7 +1250,7 @@ class JFusionFunction
 	 * @param string           $jname
 	 */
 	public static function raiseMessage($msg, $jname = '') {
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
@@ -1259,7 +1265,7 @@ class JFusionFunction
 	 * @param string           $jname
 	 */
 	public static function raiseNotice($msg, $jname = '') {
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
@@ -1274,7 +1280,7 @@ class JFusionFunction
 	 * @param string           $jname
 	 */
 	public static function raiseWarning($msg, $jname = '') {
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
@@ -1289,7 +1295,7 @@ class JFusionFunction
 	 * @param string           $jname
 	 */
 	public static function raiseError($msg, $jname = '') {
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
@@ -1339,7 +1345,7 @@ class JFusionFunction
 	 * @return array
 	 */
 	public static function renderMessage() {
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$messages = $app->getMessageQueue();
 
@@ -1367,8 +1373,8 @@ class JFusionFunction
 			JHTML::_('behavior.modal');
 			JHTML::_('behavior.tooltip');
 
-			$document = JFactory::getDocument();
-			if ( JFactory::getApplication()->isAdmin() ) {
+			$document = Factory::getDocument();
+			if ( Factory::getApplication()->isAdmin() ) {
 
 				$keys = array('SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETED', 'DELETE_PAIR', 'REMOVE', 'OK');
 
@@ -1397,14 +1403,14 @@ JS;
 	 */
 	public static function loadJavascriptLanguage($keys) {
 		if (!empty($keys)) {
-			$document = JFactory::getDocument();
+			$document = Factory::getDocument();
 
 			if (is_array($keys)) {
 				foreach($keys as $key) {
-					JText::script($key);
+					Text::script($key);
 				}
 			} else {
-				JText::script($keys);
+				Text::script($keys);
 			}
 		}
 	}
@@ -1550,6 +1556,6 @@ JS;
 	 */
 	public static function getHash($seed)
 	{
-		return md5(JFactory::getConfig()->get('secret') . $seed);
+		return md5(Factory::getConfig()->get('secret') . $seed);
 	}
 }

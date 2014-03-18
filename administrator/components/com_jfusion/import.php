@@ -6,9 +6,9 @@ require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
 
 
 
-JFusionFactory::$config = JFactory::getConfig();
-JFusionFactory::$language = JFactory::getLanguage();
-JFusionFactory::$database = JFactory::getDbo();
-JFusionFactory::$document = JFactory::getDocument();
-JFusionFactory::$application = JFactory::getApplication();
+\JFusion\Factory::$config = JFactory::getConfig();
+\JFusion\Factory::$language = JFactory::getLanguage();
+\JFusion\Factory::$database = JFactory::getDbo();
+\JFusion\Factory::$document = JFactory::getDocument();
+\JFusion\Factory::$application = JFactory::getApplication();
 

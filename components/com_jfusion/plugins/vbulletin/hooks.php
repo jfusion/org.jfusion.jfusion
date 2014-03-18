@@ -49,7 +49,7 @@ class executeJFusionHook
 
         if (!defined('_JFVB_PLUGIN_VERIFIED') && $hook != 'init_startup' && defined('_VBJNAME') && defined('_JEXEC') && empty($_POST['logintype'])) {
             define('_JFVB_PLUGIN_VERIFIED', 1);
-	        $user = JFusionFactory::getUser(_VBJNAME);
+	        $user = \JFusion\Factory::getUser(_VBJNAME);
             if (!$user->isConfigured()) {
                 die('JFusion plugin is invalid.  Reinstall desired plugins in JFusions config for vBulletin.');
             }
@@ -236,7 +236,7 @@ class executeJFusionHook
                 } else {
                     $expire = 0;
                 }
-                $cookies = JFusionFactory::getCookies();
+                $cookies = \JFusion\Factory::getCookies();
                 $cookies->addCookie(COOKIE_PREFIX . 'userid', $vbulletin->userinfo['userid'], $expire, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
                 $cookies->addCookie(COOKIE_PREFIX . 'password', md5($vbulletin->userinfo['password'] . COOKIE_SALT), $expire, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
             }
@@ -244,7 +244,7 @@ class executeJFusionHook
             //we need to update the session table
 	        if (defined('_VBJNAME')) {
 		        try {
-			        $vdb = JFusionFactory::getDatabase(_VBJNAME);
+			        $vdb = \JFusion\Factory::getDatabase(_VBJNAME);
 			        $vars = & $vbulletin->session->vars;
 			        if ($vbulletin->session->created) {
 				        $bypass = ($vars['bypass']) ? 1 : 0;
@@ -323,7 +323,7 @@ class executeJFusionHook
                     $show['nojs_link'] = $url;
                     $show['nojs_link'].= (substr($url, -1) != '/') ? '/nojs,1/' : 'nojs,1/';
                 } else {
-	                $jfile = JFusionFactory::getApplication()->input->get('jfile', false);
+	                $jfile = \JFusion\Factory::getApplication()->input->get('jfile', false);
                     $jfile = ($jfile) ? $jfile : 'index.php';
                     $show['nojs_link'] = $jfile . '?nojs=1';
                 }
@@ -390,7 +390,7 @@ class executeJFusionHook
                     $this->vars = str_replace($baseURL, $integratedURL, $this->vars);
                 }
             } else {
-                $this->vars = str_replace(JFusionFunction::getJoomlaURL(), $integratedURL, $this->vars);
+                $this->vars = str_replace(\JFusion\Framework::getJoomlaURL(), $integratedURL, $this->vars);
             }
             //convert &amp; to & so the redirect is correct
             $this->vars = str_replace('&amp;', '&', $this->vars);
@@ -400,7 +400,7 @@ class executeJFusionHook
         $testURL = (substr($baseURL, -1) == '/') ? substr($baseURL, 0, -1) : $baseURL;
         if (strpos(strtolower($this->vars['url']), strtolower($testURL)) === false) {
             $url = basename($this->vars);
-            $url = JFusionFunction::routeURL($url, JFusionFactory::getApplication()->input->getInt('Itemid'));
+            $url = \JFusion\Framework::routeURL($url, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
             $this->vars = $url;
         }
         //convert &amp; to & so the redirect is correct
@@ -434,7 +434,7 @@ class executeJFusionHook
 	        if (defined('_VBJNAME')) {
 		        $JFusionActivePlugin =  _VBJNAME;
 	        }
-            $baseURL = (class_exists('JFusionFunction')) ? JFusionFunction::getJoomlaURL() : JURI::root();
+            $baseURL = (class_exists('JFusionFunction')) ? \JFusion\Framework::getJoomlaURL() : JURI::root();
             $loginURL = JRoute::_($baseURL . 'index.php?option=com_user&task=login', false);
             $credentials = array('username' => $vbulletin->userinfo['username'], 'password' => $password, 'password_salt' => $vbulletin->userinfo['salt']);
             $options = array('entry_url' => $loginURL);
@@ -462,7 +462,7 @@ class executeJFusionHook
         if (defined('_JEXEC')) {
             //we are in frameless mode and need to kill the cookies to prevent getting stuck logged in
             global $vbulletin;
-	        $cookies = JFusionFactory::getCookies();
+	        $cookies = \JFusion\Factory::getCookies();
 	        $cookies->addCookie(COOKIE_PREFIX . 'userid', 0, 0, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
 	        $cookies->addCookie(COOKIE_PREFIX . 'password', 0, 0, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
             //prevent global_complete from recreating the cookies
@@ -516,7 +516,7 @@ class executeJFusionHook
         global $vbsefmode, $vbsefenabled, $baseURL;
         static $profileurlSet;
         if (!empty($this->vars['profileurl']) && $profileurlSet !== true) {
-            $uid = JFusionFactory::getApplication()->input->get('u');
+            $uid = \JFusion\Factory::getApplication()->input->get('u');
             if ($vbsefenabled && $vbsefmode) {
                 $this->vars['profileurl'] = str_replace('member.php?u=' . $uid, '', $this->vars['profileurl']);
             } else {
@@ -542,7 +542,7 @@ class executeJFusionHook
         $testURL = (substr($baseURL, -1) == '/') ? substr($baseURL, 0, -1) : $baseURL;
         if (strpos(strtolower($this->vars['url']), strtolower($testURL)) === false) {
             $url = basename($this->vars['url']);
-            $url = JFusionFunction::routeURL($url, JFusionFactory::getApplication()->input->getInt('Itemid'));
+            $url = \JFusion\Framework::routeURL($url, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
 
             //convert &amp; to & so the redirect is correct
             $url = str_replace('&amp;', '&', $url);
@@ -565,14 +565,14 @@ class executeJFusionHook
 
         //parse AJAX output
 	    if (defined('_VBJNAME')) {
-		    $public = JFusionFactory::getPublic(_VBJNAME);
-		    $params = JFusionFactory::getParams(_VBJNAME);
+		    $public = \JFusion\Factory::getPublic(_VBJNAME);
+		    $params = \JFusion\Factory::getParams(_VBJNAME);
 
 		    $jdata = new stdClass();
 		    $jdata->body = & $this->vars;
 		    $jdata->Itemid = $params->get('plugin_itemid');
 		    //Get the base URL to the specific JFusion plugin
-		    $jdata->baseURL = JFusionFunction::getPluginURL($jdata->Itemid);
+		    $jdata->baseURL = \JFusion\Framework::getPluginURL($jdata->Itemid);
 		    //Get the integrated URL
 		    $jdata->integratedURL = $params->get('source_url');
 		    $public->parseBody($jdata);

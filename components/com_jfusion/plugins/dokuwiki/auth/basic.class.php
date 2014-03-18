@@ -236,7 +236,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 * @param $string
 		 */
 		function debug($string) {
-			JFusionFunction::raiseWarning($string);
+			\JFusion\Framework::raiseWarning($string);
 		}
 	}
 }

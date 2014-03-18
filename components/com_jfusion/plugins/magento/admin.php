@@ -101,9 +101,9 @@ class JFusionAdmin_magento extends JFusionAdmin
         $xmlfile = $softwarePath . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'local.xml';
         $params = array();
         if (file_exists($xmlfile)) {
-	        $xml = JFusionFunction::getXml($xmlfile);
+	        $xml = \JFusion\Framework::getXml($xmlfile);
             if (!$xml) {
-                JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+                \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	            return false;
             } else {
                 //save the parameters into array
@@ -117,7 +117,7 @@ class JFusionAdmin_magento extends JFusionAdmin
             }
             unset($xml);
         } else {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         }
         
@@ -137,7 +137,7 @@ class JFusionAdmin_magento extends JFusionAdmin
     function getUserList($limitstart = 0, $limit = 0)
     {
         //getting the connection to the db
-        $db = JFusionFactory::getDataBase($this->getJname());
+        $db = \JFusion\Factory::getDataBase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('email as username, email')
@@ -154,7 +154,7 @@ class JFusionAdmin_magento extends JFusionAdmin
     function getUserCount()
     {
         //getting the connection to the db
-        $db = JFusionFactory::getDataBase($this->getJname());
+        $db = \JFusion\Factory::getDataBase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('count(*)')
@@ -172,7 +172,7 @@ class JFusionAdmin_magento extends JFusionAdmin
     function getUsergroupList()
     {
         //get the connection to the db
-        $db = JFusionFactory::getDataBase($this->getJname());
+        $db = \JFusion\Factory::getDataBase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('customer_group_id as id, customer_group_code as name')
@@ -202,7 +202,7 @@ class JFusionAdmin_magento extends JFusionAdmin
     function debugConfigExtra()
     {
 	    // see if we have an api user in Magento
-	    $db = JFusionFactory::getDataBase($this->getJname());
+	    $db = \JFusion\Factory::getDataBase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('count(*)')
@@ -211,14 +211,14 @@ class JFusionAdmin_magento extends JFusionAdmin
 	    $db->setQuery($query);
 	    $no_users = $db->loadResult();
 	    if ($no_users <= 0) {
-		    JFusionFunction::raiseWarning(JText::_('MAGENTO_NEED_API_USER'), $this->getJname());
+		    \JFusion\Framework::raiseWarning(JText::_('MAGENTO_NEED_API_USER'), $this->getJname());
 	    } else {
 		    // check if we have valid parameters  for apiuser and api key
 		    $apipath = $this->params->get('source_url') . 'index.php/api/?wsdl';
 		    $apiuser = $this->params->get('apiuser');
 		    $apikey = $this->params->get('apikey');
 		    if (!$apiuser || !$apikey) {
-			    JFusionFunction::raiseWarning(JText::_('MAGENTO_NO_API_DATA'), $this->getJname());
+			    \JFusion\Framework::raiseWarning(JText::_('MAGENTO_NO_API_DATA'), $this->getJname());
 		    } else {
 			    //finally check if the apiuser and apikey are valid
 			    try {
@@ -237,7 +237,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 				    }
 			    } catch (Soapfault $fault) {
 				    /** @noinspection PhpUndefinedFieldInspection */
-				    JFusionFunction::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
+				    \JFusion\Framework::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
 			    }
 			    /*
 				$query = $db->getQuery(true)
@@ -258,7 +258,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 					$params_hash_sha256 = hash('sha256', $apikey);
 				}
 				if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
-					JFusionFunction::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
+					\JFusion\Framework::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
 				}
 			*/
 		    }
@@ -273,11 +273,11 @@ class JFusionAdmin_magento extends JFusionAdmin
 		    $db->setQuery($query);
 		    $value = $db->loadResult();
 		    if ($value) {
-			    JFusionFunction::raiseWarning(JText::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'), $this->getJname());
+			    \JFusion\Framework::raiseWarning(JText::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'), $this->getJname());
 		    }
 		    // we need to have the curl library installed
 		    if (!extension_loaded('curl')) {
-			    JFusionFunction::raiseWarning(JText::_('CURL_NOTINSTALLED'), $this->getJname());
+			    \JFusion\Framework::raiseWarning(JText::_('CURL_NOTINSTALLED'), $this->getJname());
 		    }
 	    } catch (Exception $e) {
 

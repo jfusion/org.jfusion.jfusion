@@ -1,5 +1,4 @@
-<?php
-
+<?php namespace JFusion\Parser;
 /**
  * Model for all jfusion parse related function
  *
@@ -12,6 +11,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
+
+use JFusion\Factory;
+use JFusion\Framework;
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
@@ -26,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionParse
+class Parser
 {
     /**
      * Parses text from bbcode to html, html to bbcode, or html to plaintext
@@ -61,7 +63,7 @@ class JFusionParse
              * @ignore
              * @var $bbcode BBCode_Parser
              */
-            $bbcode = JFusionFactory::getCodeParser();
+            $bbcode = Factory::getCodeParser();
             $bbcode->SetPlainMode(true);
             if (isset($options['plain_tags']) && is_array($options['plain_tags'])) {
                 foreach ($options['plain_tags'] as $tag) {
@@ -96,7 +98,7 @@ class JFusionParse
             //Encode html entities added by the plugin prepareText function
             $text = htmlentities($text);
 
-            $bbcode = JFusionFactory::getCodeParser();
+            $bbcode = Factory::getCodeParser();
 
             //do not parse & into &amp;
             $bbcode->SetAllowAmpersand(true);
@@ -108,7 +110,7 @@ class JFusionParse
             }
 
             if (!empty($options['parse_smileys'])) {
-                $bbcode->SetSmileyURL(JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/smileys');
+                $bbcode->SetSmileyURL(Framework::getJoomlaURL() . 'components/com_jfusion/images/smileys');
             } else {
                 $bbcode->SetEnableSmileys(false);
             }
@@ -251,7 +253,7 @@ class JFusionParse
                 $return = $text . "\n\n";
             }
         } elseif ($tag == 'img') {
-            $joomla_url = JFusionFunction::getJoomlaURL();
+            $joomla_url = Framework::getJoomlaURL();
             $juri = new JURI($joomla_url);
             $path = $juri->getPath();
             if ($path != '/'){
@@ -320,6 +322,6 @@ class JFusionParse
      */
     public function __url($matches)
     {
-    	return '[url=' . JRoute::_(JFusionFunction::getJoomlaURL() . $matches[1]) . ']' . $matches[2] . '[/url]';
+    	return '[url=' . JRoute::_(Framework::getJoomlaURL() . $matches[1]) . ']' . $matches[2] . '[/url]';
     }
 }

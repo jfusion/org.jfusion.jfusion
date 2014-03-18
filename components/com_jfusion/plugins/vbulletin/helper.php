@@ -47,7 +47,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
      * @return string
      */
     function encryptApiData($data) {
-        $key = $this->params->get('vb_secret', JFusionFactory::getConfig()->get('secret'));
+        $key = $this->params->get('vb_secret', \JFusion\Factory::getConfig()->get('secret'));
         $data['jfvbkey'] = $key;
         return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, serialize($data), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
     }
@@ -191,7 +191,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
                 $vbulletin->db->query_first('SET names \'' . $this->params->get('database_charset', 'utf8') . '\'');
                 $GLOBALS['db'] = $vbulletin->db;
             } else {
-                JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'), $this->getJname());
+                \JFusion\Framework::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'), $this->getJname());
                 $return = false;
             }
         } elseif (defined('VB_AREA') && VB_AREA == 'JFusion') {
@@ -249,7 +249,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
     {
         $this->backup['globals'] = $GLOBALS;
         //let's take special precautions for Itemid
-        $this->backup['itemid'] = JFusionFactory::getApplication()->input->getInt('Itemid', 0);
+        $this->backup['itemid'] = \JFusion\Factory::getApplication()->input->getInt('Itemid', 0);
     }
 
     /**
@@ -264,13 +264,13 @@ class JFusionHelper_vbulletin extends JFusionPlugin
             $GLOBALS = $this->backup['globals'];
         }
         if (isset($this->backup['itemid'])) {
-	        JFusionFactory::getApplication()->input->set('Itemid', $this->backup['itemid']);
+	        \JFusion\Factory::getApplication()->input->set('Itemid', $this->backup['itemid']);
             global $Itemid;
             $Itemid = $this->backup['itemid'];
         }
         $this->backup = array();
         //make sure Joomla db object is still connected
-        JFusionFunction::reconnectJoomlaDb();
+        \JFusion\Framework::reconnectJoomlaDb();
     }
 
     /**
@@ -283,7 +283,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
         static $jfusion_vb_version;
 	    try {
 		    if(empty($jfusion_vb_version)) {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
 				    ->select('value')
@@ -314,7 +314,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
 		    $allow_sef = $this->params->get('allow_sef', 1);
 		    $vbversion = $this->getVersion();
 		    if (!empty($allow_sef) && (int) substr($vbversion, 0, 1) > 3) {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 			    if (!defined('JFVB_FRIENDLYURL')) {
 				    $query = $db->getQuery(true)
@@ -406,7 +406,7 @@ class JFusionHelper_vbulletin extends JFusionPlugin
 			    }
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $url;
     }

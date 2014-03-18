@@ -51,7 +51,7 @@ class JFusionDiscussBotHelper {
 	 * @param $mode
 	 */
 	public function __construct(&$params, $mode) {
-		$this->debugger = JFusionFactory::getDebugger('jfusion-content-plugin');
+		$this->debugger = \JFusion\Factory::getDebugger('jfusion-content-plugin');
 		$this->debugger->setTitle('Discussion bot debug info');
 
 		$this->params = $params;
@@ -120,7 +120,7 @@ class JFusionDiscussBotHelper {
 		if ($threadinfo) {
 			$threadinfo->valid = false;
 			//make sure the forum and thread still exists
-			$Forum = JFusionFactory::getForum($this->jname);
+			$Forum = \JFusion\Factory::getForum($this->jname);
 
 			$forumlist = $this->getForumList();
 			if (in_array($threadinfo->forumid, $forumlist)) {
@@ -154,7 +154,7 @@ class JFusionDiscussBotHelper {
 	{
 		$this->debug('Checking if thread exists');
 
-		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$JFusionForum = \JFusion\Factory::getForum($this->jname);
 
 		if ($force_new) {
 			$threadinfo = $this->setThreadInfo(null);
@@ -174,7 +174,7 @@ class JFusionDiscussBotHelper {
 
 		$JFusionForum->checkThreadExists($this->params, $this->article, $threadinfo, $status);
 		if (!empty($status['error'])) {
-			JFusionFunction::raise('error', $status['error'], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
+			\JFusion\Framework::raise('error', $status['error'], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
 		} else {
 			if ($status['action'] != 'unchanged') {
 				if ($status['action'] == 'created') {
@@ -184,7 +184,7 @@ class JFusionDiscussBotHelper {
 				//catch in case plugins screwed up
 				if (!empty($threadinfo->threadid)) {
 					//update the lookup table
-					JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $manually_created);
+					\JFusion\Framework::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $manually_created);
 
 					//set the status to true since it was just created
 				}
@@ -249,7 +249,7 @@ class JFusionDiscussBotHelper {
 		static $lists_instance;
 
 		if (!isset($lists_instance)) {
-			$JFusionForum = JFusionFactory::getForum($this->jname);
+			$JFusionForum = \JFusion\Factory::getForum($this->jname);
 			$full_list = $JFusionForum->getForumList();
 			$lists_instance = array();
 			foreach ($full_list as $a) {
@@ -296,7 +296,7 @@ class JFusionDiscussBotHelper {
 			if ($this->params->get('default_userid', false) === false) {
 				$responce = array(0, JText::_('REASON_NO_DEFAULT_USER'));
 			} else {
-				$JFusionForum = JFusionFactory::getForum($this->jname);
+				$JFusionForum = \JFusion\Factory::getForum($this->jname);
 				$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
 				if (empty($forumid)) {
 					$responce = array(0, JText::_('REASON_NO_FORUM_FOUND'));
@@ -550,7 +550,7 @@ class JFusionDiscussBotHelper {
 				JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
 JS;
 
-			JFusionFunction::loadJavascriptLanguage(array('BUTTON_CANCEL', 'BUTTON_INITIATE',
+			\JFusion\Framework::loadJavascriptLanguage(array('BUTTON_CANCEL', 'BUTTON_INITIATE',
 				'BUTTON_PUBLISH_NEW_DISCUSSION', 'BUTTON_REPUBLISH_DISCUSSION', 'BUTTON_UNPUBLISH_DISCUSSION',
 				'CONFIRM_THREAD_CREATION', 'CONFIRM_UNPUBLISH_DISCUSSION', 'CONFIRM_PUBLISH_DISCUSSION',
 				'DISCUSSBOT_ERROR', 'HIDE_REPLIES', 'JYES', 'SHOW_REPLIES', 'SUBMITTING_QUICK_REPLY'));
@@ -562,7 +562,7 @@ JS;
 
 			//Load quick reply includes if enabled
 			if ($this->params->get('enable_quickreply')) {
-				$JFusionForum = JFusionFactory::getForum($this->jname);
+				$JFusionForum = \JFusion\Factory::getForum($this->jname);
 				$this->debug('Quick reply is enabled and thus loading any includes (js, css, etc).');
 				$js .= $JFusionForum->loadQuickReplyIncludes();
 			}

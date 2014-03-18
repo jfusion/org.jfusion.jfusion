@@ -61,7 +61,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -90,7 +90,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 		        $db = JDatabaseDriver::getInstance($options);
 
 		        if (!$db) {
-			        JFusionFunction::raiseWarning(JText::_('NO_DATABASE'), $this->getJname());
+			        \JFusion\Framework::raiseWarning(JText::_('NO_DATABASE'), $this->getJname());
 			        return false;
 		        } else {
 			        $query = $db->getQuery(true)
@@ -125,7 +125,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 			        }
 		        }
 	        } catch (Exception $e) {
-		        JFusionFunction::raiseWarning(JText::_('NO_DATABASE') . ' ' . $e->getMessage(), $this->getJname());
+		        \JFusion\Framework::raiseWarning(JText::_('NO_DATABASE') . ' ' . $e->getMessage(), $this->getJname());
 		        return false;
 	        }
         }
@@ -145,7 +145,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('username_clean as username, user_email as email, user_id as userid')
@@ -157,7 +157,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -170,7 +170,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -182,7 +182,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 		    //getting the results
 		    $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $no_users = 0;
 	    }
         return $no_users;
@@ -194,7 +194,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     function getUsergroupList()
     {
 	    //get the connection to the db
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('group_id as id, group_name as name')
@@ -210,12 +210,12 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroup !== null) {
 		    //we want to output the usergroup name
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    if (!isset($usergroup->groups)) {
 			    $usergroup->groups = array($usergroup->defaultgroup);
@@ -243,7 +243,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     {
 	    $result = false;
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('config_value')
@@ -257,7 +257,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
 	    return $result;
     }
@@ -296,7 +296,7 @@ if (isset($_GET[\'jfile\'])) {
 		    $allow_mods = $this->params->get('mod_ids');
 		    if (!empty($allow_mods)) {
 			    //get a userlist of mod ids
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
 				    ->select('b.user_id, a.group_name')
@@ -329,7 +329,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
 //JFUSION REDIRECT END';
 		    return $redirect_code;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    return '';
 	    }
     }
@@ -365,16 +365,16 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
 					break;
 				}
 			case 'enable':
-				$joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
+				$joomla_url = \JFusion\Factory::getParams('joomla_int')->get('source_url');
 				$joomla_itemid = $this->params->get('redirect_itemid');
 
 				//check to see if all vars are set
 				if (empty($joomla_url)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname());
+					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname());
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
+					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
 				} else if ($error == 0) {
 					//get the joomla path from the file
 					jimport('joomla.filesystem.file');
@@ -447,7 +447,7 @@ HTML;
     {
 	    try {
 		    //do a database check to avoid fatal error with incorrect database settings
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $error = 0;
 		    $reason = '';
@@ -528,7 +528,7 @@ HTML;
 		    if (file_exists($auth_file)) {
 			    try {
 				    //check to see if the mod is enabled
-				    $db = JFusionFactory::getDatabase($this->getJname());
+				    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 				    $query = $db->getQuery(true)
 					    ->select('config_value')
@@ -548,12 +548,12 @@ HTML;
 				    }
 			    } catch (Exception $e) {
 				    //there was an error saving the parameters
-				    JFusionFunction::raiseWarning($e, $this->getJname());
+				    \JFusion\Framework::raiseWarning($e, $this->getJname());
 			    }
 		    } else {
 			    try {
 				    //safety catch to make sure we use phpBB default to prevent lockout from phpBB
-				    $db = JFusionFactory::getDatabase($this->getJname());
+				    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
@@ -564,13 +564,13 @@ HTML;
 				    $db->execute();
 			    } catch (Exception $e) {
 				    //there was an error saving the parameters
-				    JFusionFunction::raiseWarning($e, $this->getJname());
+				    \JFusion\Framework::raiseWarning($e, $this->getJname());
 			    }
 		    }
 		    //clear the config cache so that phpBB recognizes the change
 		    $this->clearConfigCache();
 	    } else {
-		    JFusionFunction::raiseWarning('FAILED_TO_COPY_AUTHFILE' . $auth_file, $this->getJname());
+		    \JFusion\Framework::raiseWarning('FAILED_TO_COPY_AUTHFILE' . $auth_file, $this->getJname());
 	    }
     }
 
@@ -582,7 +582,7 @@ HTML;
         $return = true;
 	    try {
 		    //check to see if the mod is enabled
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->update('#__config')
@@ -608,7 +608,7 @@ HTML;
 			    throw new RuntimeException('Cash not cleared!');
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e, $this->getJname());
+		    \JFusion\Framework::raiseWarning($e, $this->getJname());
 		    $return = false;
 	    }
         return $return;
@@ -768,7 +768,7 @@ HTML;
 	{
 		$jname = $this->getJname();
 
-		JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS'));
+		\JFusion\Framework::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS'));
 		$js = <<<JS
 		JFusion.renderPlugin['{$jname}'] = function(index, plugin, pair) {
 			var usergroups = JFusion.usergroups[plugin.name];

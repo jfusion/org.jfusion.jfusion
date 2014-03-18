@@ -59,7 +59,7 @@ class JFusionUser_wordpress extends JFusionUser
 		    //get the identifier
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'user_login', 'user_email');
 		    // Get a database object
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    //make the username case insensitive
 		    if ($identifier_type == 'user_login') {
 			    $identifier = $this->filterUsername($identifier);
@@ -95,7 +95,7 @@ class JFusionUser_wordpress extends JFusionUser
 			    $result = $jFusionUserObject;
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
 	    return $result;
 	}
@@ -302,7 +302,7 @@ class JFusionUser_wordpress extends JFusionUser
 	    $t_hasher = new PasswordHashOrg(8, true);
 	    $existinguser->password = $t_hasher->HashPassword($userinfo->password_clear);
 	    unset($t_hasher);
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -335,7 +335,7 @@ class JFusionUser_wordpress extends JFusionUser
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    //we need to update the email
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -380,7 +380,7 @@ class JFusionUser_wordpress extends JFusionUser
      */
     function activateUser($userinfo, &$existinguser, &$status) {
 	    //activate the user
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -401,7 +401,7 @@ class JFusionUser_wordpress extends JFusionUser
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
 	    //set activation key
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -423,7 +423,7 @@ class JFusionUser_wordpress extends JFusionUser
     function createUser($userinfo, &$status) {
 	    try {
 		    //find out what usergroup should be used
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
@@ -532,7 +532,7 @@ class JFusionUser_wordpress extends JFusionUser
 			    throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
 		    }
 
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    $reassign = $this->params->get('reassign_blogs');
 		    $reassign_to = $this->params->get('reassign_username');
 		    $user_id = $userinfo->userid;
@@ -654,7 +654,7 @@ class JFusionUser_wordpress extends JFusionUser
 		if (empty($usergroups)) {
 			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		} else {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$database_prefix = $this->params->get('database_prefix');
 

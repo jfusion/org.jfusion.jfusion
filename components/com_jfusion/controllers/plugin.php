@@ -27,7 +27,7 @@ class JFusionControllerPlugin extends JControllerLegacy
         $userid = JFactory::getApplication()->input->get('userid');
         $username = JFactory::getApplication()->input->get('username');
         require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionpublic.php');
-        $user = JFusionFunction::lookupUser($jname, $userid, false, $username);
+        $user = \JFusion\Framework::lookupUser($jname, $userid, false, $username);
 
         die(print_r($user));
 	}

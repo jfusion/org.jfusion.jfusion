@@ -202,7 +202,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 
 		if (empty($options['show_unsensored'])) {
 			//hide sensitive data
-			$auth_userinfo = JFusionFunction::anonymizeUserinfo($auth_userinfo);
+			$auth_userinfo = \JFusion\Framework::anonymizeUserinfo($auth_userinfo);
 
 		}
 		if (!empty($response->error_message)) {
@@ -248,7 +248,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 
 					$result = new stdClass;
 					$result->result = $results;
-					$result->debug = JFusionFactory::getDebugger('jfusion-loginchecker')->get();
+					$result->debug = \JFusion\Factory::getDebugger('jfusion-loginchecker')->get();
 
 					$this->auth_results[$plugin_name] = $result;
 				}

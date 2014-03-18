@@ -97,7 +97,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 	    $url = false;
 	    try {
 		    if ($puser_id) {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
 				    ->select('user_avatar, user_avatar_type')
@@ -135,7 +135,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $url = false;
 	    }
 	    return $url;
@@ -151,7 +151,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 	    try {
 		    if ($puser_id) {
 			    // read pm counts
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 			    // read unread count
 			    $query = $db->getQuery(true)
@@ -175,7 +175,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    $totalCount = $db->loadResult();
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 	    }
 
         return array('unread' => $unreadCount, 'total' => $totalCount);
@@ -198,7 +198,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 	            $forumids = array(0);
 	        }
 
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    $where = 'a.forum_id IN (' . implode(',', $forumids) . ') AND a.topic_approved = 1 AND b.post_approved = 1';
 
 		    $numargs = func_num_args();
@@ -253,7 +253,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 
 		    $query[LCP] = (string)$q . $limiter;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $query;
     }
@@ -272,9 +272,9 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    static $marktimes;
 			    if (!is_array($marktimes)) {
 				    $marktimes = array();
-				    $db = JFusionFactory::getDatabase($this->getJname());
+				    $db = \JFusion\Factory::getDatabase($this->getJname());
 
-				    $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
+				    $userlookup = \JFusion\Framework::lookupUser($this->getJname(), $JUser->id);
 				    if (!empty($userlookup)) {
 					    $query = $db->getQuery(true)
 						    ->select('topic_id, mark_time')
@@ -314,7 +314,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    $newstatus = ($marktime !== false && $post->last_post_dateline > $marktime) ? 1 : 0;
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 	    }
         return $newstatus;
     }
@@ -325,7 +325,7 @@ class JFusionForum_phpbb3 extends JFusionForum
     function getForumList() {
 	    try {
 		    //get the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('forum_id as id, forum_name as name')
@@ -337,7 +337,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 		    //getting the results
 		    return $db->loadObjectList('id');
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -351,7 +351,7 @@ class JFusionForum_phpbb3 extends JFusionForum
     {
 	    try {
 		    if (empty($forumids)) {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 			    //no forums were selected so pull them all
 
 			    $query = $db->getQuery(true)
@@ -366,7 +366,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    $forumids = explode(',', $forumids);
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $forumids = array();
 	    }
 
@@ -392,7 +392,7 @@ class JFusionForum_phpbb3 extends JFusionForum
         static $phpbb_acl;
 	    try {
 		    if (!is_array($phpbb_acl)) {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $db = \JFusion\Factory::getDatabase($this->getJname());
 			    $phpbb_acl = array();
 
 			    //get permissions for all forums in case more than one module/plugin is present with different settings
@@ -415,7 +415,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    if ($userid == 'find') {
 				    $JUser = JFactory::getUser();
 				    if (!$JUser->guest) {
-					    $userinfo = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
+					    $userinfo = \JFusion\Framework::lookupUser($this->getJname(), $JUser->id);
 					    if (!empty($userinfo)) {
 						    $userid = $userinfo->userid;
 
@@ -585,7 +585,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $phpbb_acl = array();
 	    }
         return $phpbb_acl;
@@ -634,7 +634,7 @@ class JFusionForum_phpbb3 extends JFusionForum
     function getThread($threadid)
     {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('topic_id AS threadid, forum_id AS forumid, topic_first_post_id AS postid')
@@ -664,7 +664,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 		try {
 			//setup some variables
 			$userid = $this->getThreadAuthor($dbparams, $contentitem);
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			$subject = trim(strip_tags($contentitem->title));
 
 			//prepare the content body
@@ -681,7 +681,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			$phpbbUser = $db->loadObject();
 
 			if ($dbparams->get('use_content_created_date', false)) {
-				$timezone = JFusionFactory::getConfig()->get('offset');
+				$timezone = \JFusion\Factory::getConfig()->get('offset');
 				$timestamp = strtotime($contentitem->created);
 				//undo Joomla timezone offset
 				$timestamp += ($timezone * 3600);
@@ -834,7 +834,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			$postid = $existingthread->postid;
 
 			//setup some variables
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			$subject = trim(strip_tags($contentitem->title));
 
 			//prepare the content body
@@ -842,7 +842,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 
 			$bbcode = $this->helper->bbcode_parser($text);
 
-			$timestamp = $dbparams->get('use_content_created_date', false) ? JFusionFactory::getDate($contentitem->created)->toUnix() : time();
+			$timestamp = $dbparams->get('use_content_created_date', false) ? \JFusion\Factory::getDate($contentitem->created)->toUnix() : time();
 			$userid = $dbparams->get('default_user');
 
 			$query = $db->getQuery(true)
@@ -893,7 +893,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 	{
         $status = array('error' => array(), 'debug' => array());
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 			if($userinfo->guest) {
 				$userinfo->username = $postinfo->username;
 				$userinfo->userid = 1;
@@ -901,7 +901,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 				if(empty($userinfo->username)) {
 					throw new RuntimeException(JTEXT::_('GUEST_FIELDS_MISSING'));
 				} else {
-					$user = JFusionFactory::getUser($this->getJname());
+					$user = \JFusion\Factory::getUser($this->getJname());
 					$username_clean = $user->filterUsername($userinfo->username);
 
 					$query = $db->getQuery(true)
@@ -922,7 +922,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			}
 			//setup some variables
 			$userid = $userinfo->userid;
-			$public = JFusionFactory::getPublic($this->getJname());
+			$public = \JFusion\Factory::getPublic($this->getJname());
 			//strip out html from post
 			$text = strip_tags($postinfo->text);
 
@@ -1107,7 +1107,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 	function getPosts($dbparams, $existingthread, $start, $limit, $sort)
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			//set the query
 			$query = $db->getQuery(true)
@@ -1123,7 +1123,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 
 			$posts = $db->loadObjectList();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			$posts = array();
 		}
 		return $posts;
@@ -1137,7 +1137,7 @@ class JFusionForum_phpbb3 extends JFusionForum
     function getReplyCount($existingthread)
 	{
 		try {
-			$db = JFusionFactory::getDatabase($this->getJname());
+			$db = \JFusion\Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('count(*)')
@@ -1149,7 +1149,7 @@ class JFusionForum_phpbb3 extends JFusionForum
 			$db->setQuery($query);
 			$result = $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
+			\JFusion\Framework::raiseError($e, $this->getJname());
 			$result = 0;
 		}
 		return $result;

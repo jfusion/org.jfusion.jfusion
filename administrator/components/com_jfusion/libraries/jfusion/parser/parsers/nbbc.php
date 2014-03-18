@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Parser\Parsers;
 /**
  * nbbc parser
  *

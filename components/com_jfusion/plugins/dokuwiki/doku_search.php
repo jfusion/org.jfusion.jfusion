@@ -30,13 +30,13 @@ if ( !class_exists('DokuWikiSearch') ) {
          */
         function __construct($jname)
         {
-            $params = JFusionFactory::getParams($jname);
+            $params = \JFusion\Factory::getParams($jname);
 
             /**
              * @ignore
              * @var $helper JFusionHelper_dokuwiki
              */
-            $helper = JFusionFactory::getHelper($jname);
+            $helper = \JFusion\Factory::getHelper($jname);
             $this->path = $params->get('source_path');
             if (substr($this->path, -1) != DIRECTORY_SEPARATOR) {
                 $this->path .= DIRECTORY_SEPARATOR;

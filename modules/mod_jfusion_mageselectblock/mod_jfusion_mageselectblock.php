@@ -37,6 +37,6 @@ try {
 		throw new RuntimeException(JText::_('Plugin system magelib not installed or activated!'));
 	}
 } catch (Exception $e) {
-	JFusionFunction::raiseError($e, 'mod_jfusion_mageselectblock');
+	\JFusion\Framework::raiseError($e, 'mod_jfusion_mageselectblock');
 	echo $e->getMessage();
 }

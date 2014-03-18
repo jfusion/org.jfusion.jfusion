@@ -45,7 +45,7 @@ try {
 				$pluginParam->loadArray($value);
 				$view = $pluginParam->get('view', 'auto');
 
-				$public = JFusionFactory::getPublic($jname);
+				$public = \JFusion\Factory::getPublic($jname);
 				if($public->isConfigured()) {
 					$output = new stdClass();
 					$title = $pluginParam->get('title', NULL);
@@ -78,7 +78,7 @@ try {
 					}
 
 					if($view == 'auto') {
-						$db = JFusionFactory::getDatabase($jname);
+						$db = \JFusion\Factory::getDatabase($jname);
 						$query = $public->getOnlineUserQuery($config['group_limit']);
 						$db->setQuery($query, 0, $config['member_limit']);
 						$output->online_users = $db->loadObjectList();
@@ -105,6 +105,6 @@ try {
 		throw new RuntimeException(JText::_('NO_COMPONENT'));
 	}
 } catch (Exception $e) {
-	JFusionFunction::raiseError($e, 'mod_jfusion_whosonline');
+	\JFusion\Framework::raiseError($e, 'mod_jfusion_whosonline');
 	echo $e->getMessage();
 }

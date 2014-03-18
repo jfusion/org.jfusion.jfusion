@@ -36,14 +36,14 @@ class modjfusionUserActivityHelper {
     public static function prepareAutoOutput($jname, $config, $params) {
 		$output = new stdClass();
 
-	    $forum = JFusionFactory::getForum($jname);
+	    $forum = \JFusion\Factory::getForum($jname);
 	    try {
 		    $joomlaUser = JFactory::getUser();
 	    } catch (Exception $e) {
 		    $joomlaUser = null;
 	    }
 
-	    $PluginUser = JFusionFactory::getUser($jname);
+	    $PluginUser = \JFusion\Factory::getUser($jname);
 	    try {
 		    $userinfo = $PluginUser->getUser($joomlaUser);
 	    } catch (Exception $e) {
@@ -54,7 +54,7 @@ class modjfusionUserActivityHelper {
 		if ($config['avatar']) {
 			//retrieve avatar
 			if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion') {
-				$avatar = JFusionFunction::getAltAvatar($config['avatar_software'], $joomlaUser->id);
+				$avatar = \JFusion\Framework::getAltAvatar($config['avatar_software'], $joomlaUser->id);
 			} else if ($userinfo) {
 				$avatar = $forum->getAvatar($userinfo->userid);
 			} else {
@@ -62,12 +62,12 @@ class modjfusionUserActivityHelper {
 			}
 
 			if (empty($avatar)) {
-				$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+				$avatar = \JFusion\Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 			}
 
 			$maxheight = $config['avatar_height'];
 			$maxwidth = $config['avatar_width'];
-			$size = ($config['avatar_keep_proportional']) ? JFusionFunction::getImageSize($avatar) : false;
+			$size = ($config['avatar_keep_proportional']) ? \JFusion\Framework::getImageSize($avatar) : false;
 				//size the avatar to fit inside the dimensions if larger
 			if ($size !== false && ($size->width > $maxwidth || $size->height > $maxheight)) {
 				$wscale = $maxwidth/$size->width;
@@ -96,7 +96,7 @@ class modjfusionUserActivityHelper {
 
 		//get the PM count of the logged in user
 		if($userinfo && $config['pmcount'] ) {
-			$output->pm_url = JFusionFunction::routeURL($forum->getPrivateMessageURL(), $config['itemid'], $jname);
+			$output->pm_url = \JFusion\Framework::routeURL($forum->getPrivateMessageURL(), $config['itemid'], $jname);
 			$output->pm_count = $forum->getPrivateMessageCounts($userinfo->userid);
 		} else {
 			$output->pm_url = '';
@@ -105,7 +105,7 @@ class modjfusionUserActivityHelper {
 
 		//get the new message url
 		if ($config['viewnewmessages']) {
-			$output->newmessages_url = JFusionFunction::routeURL($forum->getViewNewMessagesURL(), $config['itemid'], $jname);
+			$output->newmessages_url = \JFusion\Framework::routeURL($forum->getViewNewMessagesURL(), $config['itemid'], $jname);
 		} else {
 			$output->newmessages_url = '';
 		}

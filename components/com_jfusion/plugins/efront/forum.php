@@ -45,7 +45,7 @@ class JFusionForum_efront extends JFusionForum {
     function getAvatar($userid) {
 	    try {
 		    //get the connection to the db
-		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    // read unread count
 
 		    $query = $db->getQuery(true)
@@ -65,7 +65,7 @@ class JFusionForum_efront extends JFusionForum {
 		    $avatar = $db->loadResult();
 		    $url = $this->params->get('avatar_url') . $avatar;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $url = '';
 	    }
 

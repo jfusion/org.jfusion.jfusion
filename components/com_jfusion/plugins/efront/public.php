@@ -73,7 +73,7 @@ class JFusionPublic_efront extends JFusionPublic
         date_default_timezone_set('UTC');
         //$active = strtotime('-5 minutes', time());
 
-	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $db = \JFusion\Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('DISTINCT u.id AS userid, u.login as username, u.login as username_clean, concat(u.name,\' \', u.surname) AS name, u.email as email')
@@ -99,7 +99,7 @@ class JFusionPublic_efront extends JFusionPublic
 	        //get a unix time from 5 minutes ago
 	        date_default_timezone_set('UTC');
 	        // $active = strtotime('-5 minutes', time());
-	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db = \JFusion\Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('COUNT(*)')
@@ -108,7 +108,7 @@ class JFusionPublic_efront extends JFusionPublic
 	        $db->setQuery($query);
 	        $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e, $this->getJname());
+		    \JFusion\Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;

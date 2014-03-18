@@ -38,7 +38,7 @@ class JFormFieldJFusionPair extends JFormField
 	 */
 	protected function getInput()
 	{
-		JFusionFunction::initJavaScript();
+		\JFusion\Framework::initJavaScript();
 
 		$delete = JText::_('DELETE_PAIR');
 		$add = JText::_('ADD_PAIR');

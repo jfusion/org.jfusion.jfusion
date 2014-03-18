@@ -676,7 +676,7 @@ class JFusionCurl
 	public static function addCookie($name, $value = '', $expires = 0, $cookiepath = '', $cookiedomain = '', $secure = 0, $httponly  = 0)
 	{
 		if (strpos($cookiedomain, 'http://') === 0 || strpos($cookiedomain, 'https://') === 0) {
-			$jc = JFusionFactory::getCookies();
+			$jc = \JFusion\Factory::getCookies();
 			$now = time();
 			if ($expires) {
 				if ($expires>$now) {

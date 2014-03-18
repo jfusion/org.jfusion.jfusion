@@ -43,30 +43,30 @@ class modjfusionActivityHelper
 
     public static function appendAutoOutput(&$results, $jname, &$config, &$params)
     {
-        $forum = JFusionFactory::getForum($jname);
-        $public = JFusionFactory::getPublic($jname);
+        $forum = \JFusion\Factory::getForum($jname);
+        $public = \JFusion\Factory::getPublic($jname);
         if (is_array($results)) {
             foreach ($results as $r) {
 	            $r->output = new stdClass();
                 //get the Joomla userid
-                $userlookup = JFusionFunction::lookupUser($jname, $r->userid, false, $r->username);
+                $userlookup = \JFusion\Framework::lookupUser($jname, $r->userid, false, $r->username);
 
                 //get the avatar of the logged in user
                 if ($config['avatar']) {
                     // retrieve avatar
                     if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion' && !empty($userlookup)) {
-                        $avatar = JFusionFunction::getAltAvatar($config['avatar_software'], $userlookup->id);
+                        $avatar = \JFusion\Framework::getAltAvatar($config['avatar_software'], $userlookup->id);
                     } else {
                         $avatar = $forum->getAvatar($r->userid);
                     }
 
                     if (empty($avatar)) {
-                        $avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+                        $avatar = \JFusion\Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
                     }
 
                     $maxheight = $config['avatar_height'];
                     $maxwidth = $config['avatar_width'];
-                    $size = ($config['avatar_keep_proportional']) ? JFusionFunction::getImageSize($avatar) : false;
+                    $size = ($config['avatar_keep_proportional']) ? \JFusion\Framework::getImageSize($avatar) : false;
 
                     //size the avatar to fit inside the dimensions if larger
                     if ($size!==false && ($size->width > $maxwidth || $size->height > $maxheight)) {
@@ -99,7 +99,7 @@ class modjfusionActivityHelper
                     if ($config['userlink_software'] == 'custom' && !empty($config['userlink_custom'])  && !empty($userlookup)) {
                         $user_url = $config['userlink_custom'] . $userlookup->id;
                     } else {
-                        $user_url = JFusionFunction::routeURL($forum->getProfileURL($r->userid), $config['itemid'], $jname);
+                        $user_url = \JFusion\Framework::routeURL($forum->getProfileURL($r->userid), $config['itemid'], $jname);
                     }
 
                     if (empty($user_url)) {
@@ -120,7 +120,7 @@ class modjfusionActivityHelper
                     } else {
                     jimport('joomla.utilities.date');
                         $JDate =  new JDate($r->dateline);
-	                    $JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
+	                    $JDate->setTimezone(new DateTimeZone(\JFusion\Framework::getJoomlaTimezone()));
                         if (empty($config['date_format'])) {
                             $r->output->date = $JDate->toISO8601(true);
                         } else {
@@ -146,9 +146,9 @@ class modjfusionActivityHelper
 
                 //combine all info into an url string
                 if ($config['linktype'] == LINKPOST) {
-                    $r->output->subject_url = JFusionFunction::routeURL($forum->getPostURL($r->threadid, $r->postid), $config['itemid'], $jname);
+                    $r->output->subject_url = \JFusion\Framework::routeURL($forum->getPostURL($r->threadid, $r->postid), $config['itemid'], $jname);
                 } else {
-                    $r->output->subject_url = JFusionFunction::routeURL($forum->getThreadURL($r->threadid), $config['itemid'], $jname);
+                    $r->output->subject_url = \JFusion\Framework::routeURL($forum->getThreadURL($r->threadid), $config['itemid'], $jname);
                 }
 
                 if ($config['mode'] == LAT) {
@@ -176,7 +176,7 @@ class modjfusionActivityHelper
 	            try {
 		            $r->output->newpost = $forum->checkReadStatus($r);
 	            } catch (Exception $e) {
-		            JFusionFunction::raiseError($e, $forum->getJname());
+		            \JFusion\Framework::raiseError($e, $forum->getJname());
 	            }
 
                 $r->output->body = $r->body;

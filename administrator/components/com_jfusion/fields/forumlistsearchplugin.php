@@ -61,7 +61,7 @@ class JFormFieldForumListSearchPlugin extends JFormField
 	        }
 
 	        if (!empty($jname)) {
-		        $JFusionPlugin = JFusionFactory::getForum($jname);
+		        $JFusionPlugin = \JFusion\Factory::getForum($jname);
 		        if ($JFusionPlugin->isConfigured()) {
 			        if (!isset($jPluginParamRaw[$jname])) {
 				        $jPluginParamRaw[$jname] = array();
