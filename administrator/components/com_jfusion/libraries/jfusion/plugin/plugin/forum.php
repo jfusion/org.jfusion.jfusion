@@ -17,6 +17,7 @@
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\Language\Text;
+use JFusion\Registry\Registry;
 
 use \stdClass;
 
@@ -189,7 +190,7 @@ class Plugin_Forum extends Plugin
     /**
      * Checks to see if a thread already exists for the content item and calls the appropriate function
      *
-     * @param JRegistry 	&$dbparams		object with discussion bot parameters
+     * @param Registry 	&$dbparams		object with discussion bot parameters
      * @param object 	&$contentitem 	object containing content information
      * @param object|int 	&$threadinfo 	object with threadinfo from lookup table
      * @param array 	&$status        object with debug, error, and action static
@@ -249,7 +250,7 @@ class Plugin_Forum extends Plugin
     /**
      * Retrieves the default forum based on section/category stipulations or default set in the plugins config
      *
-     * @param JRegistry &$dbparams    discussion bot parameters
+     * @param Registry &$dbparams    discussion bot parameters
      * @param object &$contentitem object containing content information
      *
      * @return int Returns id number of the forum
@@ -362,7 +363,7 @@ class Plugin_Forum extends Plugin
      * Function that determines the author of an article or returns the default user if one is not found
      * For the discussion bot
      *
-     * @param JRegistry &$dbparams    object with discussion bot parameters
+     * @param Registry &$dbparams    object with discussion bot parameters
      * @param object &$contentitem contentitem
      *
      * @return int forum's userid
@@ -433,7 +434,7 @@ class Plugin_Forum extends Plugin
 	/**
 	 * Prepares the body for the first post in a thread
 	 *
-	 * @param JRegistry &$dbparams 		object with discussion bot parameters
+	 * @param Registry &$dbparams 		object with discussion bot parameters
 	 * @param object	$contentitem 	object containing content information
 	 *
 	 * @return string
@@ -480,7 +481,7 @@ class Plugin_Forum extends Plugin
 	/**
 	 * Retrieves the posts to be displayed in the content item if enabled
 	 *
-	 * @param JRegistry $dbparams
+	 * @param Registry $dbparams
 	 * @param object $existingthread object with forumid, threadid, and postid (first post in thread)
 	 * @param int $start
 	 * @param int $limit
@@ -533,7 +534,7 @@ JS;
     /**
      * Returns HTML of a quick reply
      *
-     * @param JRegistry &$dbparams       object with discussion bot parameters
+     * @param Registry &$dbparams       object with discussion bot parameters
      * @param boolean $showGuestInputs toggles whether to show guest inputs or not
      *
      * @return string of html
@@ -568,7 +569,7 @@ HTML;
     /**
      * Creates the html for the selected captcha for the discussion bot
      *
-     * @param JRegistry $dbparams object with discussion bot parameters
+     * @param Registry $dbparams object with discussion bot parameters
      *
      * @return string
      */
@@ -652,7 +653,7 @@ JS;
     /**
      * Verifies captcha of a guest post submitted by the discussion bot
      *
-     * @param JRegistry &$dbparams object with discussion bot parameters
+     * @param Registry &$dbparams object with discussion bot parameters
      *
      * @return boolean
      */
@@ -732,7 +733,7 @@ JS;
 	/**
 	 * Creates a post from the quick reply
 	 *
-	 * @param JRegistry $params      object with discussion bot parameters
+	 * @param Registry $params      object with discussion bot parameters
 	 * @param stdClass $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
 	 * @param object $contentitem object of content item
 	 * @param object $userinfo    object info of the forum user
@@ -760,7 +761,7 @@ JS;
     /**
      * @param array $config
      * @param $view
-     * @param JRegistry $params
+     * @param Registry $params
      *
      * @return string
      */

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -7,6 +7,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
+use \Exception;
+use \SimpleXMLElement;
 defined('JPATH_PLATFORM') or die;
 
 /**
@@ -16,12 +18,12 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       11.1
  */
-class JDatabaseImporterMysqli extends JDatabaseImporter
+class Importer_Mysqli extends Importer
 {
 	/**
 	 * Checks if all data and options are in order prior to exporting.
 	 *
-	 * @return  JDatabaseImporterMysqli  Method supports chaining.
+	 * @return  Importer_Mysqli  Method supports chaining.
 	 *
 	 * @since   11.1
 	 * @throws  Exception if an error is encountered.

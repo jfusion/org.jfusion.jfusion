@@ -271,8 +271,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
                 $success = $mainframe->login($credentials, $options);
 
                 // clean up the joomla session object before continuing
-                $session = JFactory::getSession();
-                $session->close();
+	            JFactory::getSession()->close();
             }
 
             $this->stopJoomla();

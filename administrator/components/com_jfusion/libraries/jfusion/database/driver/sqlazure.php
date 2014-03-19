@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -17,7 +17,7 @@ defined('JPATH_PLATFORM') or die;
  * @see         http://msdn.microsoft.com/en-us/library/ee336279.aspx
  * @since       12.1
  */
-class JDatabaseDriverSqlazure extends JDatabaseDriverSqlsrv
+class Driver_Sqlazure extends Driver_Sqlsrv
 {
 	/**
 	 * The name of the database driver.

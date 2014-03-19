@@ -11,7 +11,6 @@
  * @link      http://www.jfusion.org
  */
 
-use JFusion\Factory;
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -7,6 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
+use \Exception;
 defined('JPATH_PLATFORM') or die;
 
 /**
@@ -16,7 +17,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-class JDatabaseExporterPostgresql extends JDatabaseExporter
+class Exporter_Postgresql extends Exporter
 {
 	/**
 	 * Builds the XML data for the tables to export.
@@ -111,7 +112,7 @@ class JDatabaseExporterPostgresql extends JDatabaseExporter
 	public function check()
 	{
 		// Check if the db connector has been set.
-		if (!($this->db instanceof JDatabaseDriverPostgresql))
+		if (!($this->db instanceof Driver_Postgresql))
 		{
 			throw new Exception('JPLATFORM_ERROR_DATABASE_CONNECTOR_WRONG_TYPE');
 		}

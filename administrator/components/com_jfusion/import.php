@@ -33,6 +33,12 @@ $config->set('language', JFactory::getConfig()->get('language'));
 $config->set('debug_lang', JFactory::getConfig()->get('debug_lang'));
 
 /**
+ * Uri settings
+ */
+$config->set('live_site', JFactory::getConfig()->get('live_site'));
+
+
+/**
  * Framework settings
  */
 $config->set('updateusergroups', $params->get('updateusergroups', new stdClass()));

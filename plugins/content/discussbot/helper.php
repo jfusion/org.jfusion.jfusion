@@ -38,7 +38,7 @@ class JFusionDiscussBotHelper {
 	var $threadinfo = array();
 
 	/**
-	 * @var JFusionDebugger
+	 * @var \JFusion\Debugger\Debugger
 	 */
 	var $debugger;
 	var $output;

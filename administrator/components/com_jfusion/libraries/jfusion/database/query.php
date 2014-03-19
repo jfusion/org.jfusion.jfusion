@@ -764,6 +764,7 @@ abstract class Query
 	 * This method is provided for use where the query object is passed to a function for modification.
 	 * If you have direct access to the database object, it is recommended you use the getDateFormat method directly.
 	 *
+	 * @throws \RuntimeException
 	 * @return  string  The format string.
 	 *
 	 * @since   11.1
@@ -1193,8 +1194,9 @@ abstract class Query
 	 * Usage:
 	 * $query->where('modified_date <> '.$query->nullDate());
 	 *
-	 * @param   boolean  $quoted  Optionally wraps the null date in database quotes (true by default).
+	 * @param   boolean $quoted Optionally wraps the null date in database quotes (true by default).
 	 *
+	 * @throws \RuntimeException
 	 * @return  string  Null or zero representation of a timestamp.
 	 *
 	 * @since   11.1

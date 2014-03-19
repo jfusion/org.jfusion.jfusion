@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       13.1
  */
-class JDatabaseIteratorPostgresql extends JDatabaseIterator
+class Iterator_Postgresql extends Iterator_Iterator
 {
 	/**
 	 * Get the number of rows in the result set for the executed SQL given by the cursor.

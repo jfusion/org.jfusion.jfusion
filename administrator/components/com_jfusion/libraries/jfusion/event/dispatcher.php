@@ -54,7 +54,7 @@ class Dispatcher extends Object
 	/**
 	 * Stores the singleton instance of the dispatcher.
 	 *
-	 * @var    EventDispatcher
+	 * @var    Dispatcher
 	 * @since  11.3
 	 */
 	protected static $instance = null;
@@ -63,7 +63,7 @@ class Dispatcher extends Object
 	 * Returns the global Event Dispatcher object, only creating it
 	 * if it doesn't already exist.
 	 *
-	 * @return  EventDispatcher  The EventDispatcher object.
+	 * @return  Dispatcher  The EventDispatcher object.
 	 *
 	 * @since   11.1
 	 */

@@ -10,11 +10,16 @@ use \JFusion\Event\Event;
 use \JFusion\Event\Dispatcher;
 use \JFusion\Event\Interface_Language;
 use \JFusion\Event\Interface_Application;
+use \JFusion\Event\Interface_Session;
+use \JFusion\Event\Interface_Router;
+
+use Jfusion\Uri\Uri;
+
 
 /**
  * Class JFusionFramework
  */
-class JFusionEventHook extends Event implements Interface_Language, Interface_Application {
+class JFusionEventHook extends Event implements Interface_Language, Interface_Application, Interface_Session, Interface_Router {
 	/**
 	 * @param Dispatcher $subject
 	 */
@@ -137,5 +142,40 @@ class JFusionEventHook extends Event implements Interface_Language, Interface_Ap
 	public function onApplicationIsAdmin()
 	{
 		return JFactory::getApplication()->isAdmin();
+	}
+
+	/**
+	 * Loads a language file for framework
+	 *
+	 * @return  boolean if loaded or not
+	 */
+	function onSessionClose()
+	{
+		JFactory::getSession()->close();
+	}
+
+	/**
+	 * Restart an expired or locked session.
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function onSessionRestart()
+	{
+		return JFactory::getSession()->restart();
+	}
+
+	/**
+	 * Function to convert an internal URI to a route
+	 *
+	 * @param   string $url The internal URL
+	 *
+	 * @return  Uri  The absolute search engine friendly URL
+	 */
+	function  onRouterBuild($url)
+	{
+		$juri = JFactory::getApplication('site')->getRouter()->build($url);
+
+		$uri = new Uri((string) $juri);
+		return $uri;
 	}
 }

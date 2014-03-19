@@ -89,7 +89,7 @@ class JFusionPublic_dokuwiki extends \JFusion\Plugin\Plugin_Public
             // logout any joomla users
             $mainframe->logout();
             //clean up session
-            $session = JFactory::getSession();
+            $session = \JFusion\Factory::getSession();
             $session->close();
             $session->restart();
         } else if ($do == 'login') {

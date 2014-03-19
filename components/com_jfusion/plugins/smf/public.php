@@ -264,8 +264,7 @@ class JFusionPublic_smf extends \JFusion\Plugin\Plugin_Public
 
             //destroy the Joomla session
             $mainframe->logout();
-            $session = JFactory::getSession();
-            $session->close();
+	        \JFusion\Factory::getSession()->close();
 
 	        $cookies = \JFusion\Factory::getCookies();
 	        $cookies->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));

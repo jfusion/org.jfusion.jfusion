@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -8,6 +8,13 @@
  */
 
 use JFusion\Language\Text;
+
+use \PDOStatement;
+use \Exception;
+use \RuntimeException;
+use \PDOException;
+use \PDO;
+use \ReflectionClass;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -401,7 +408,7 @@ abstract class Driver_Pdo extends Driver
 		if ($this->prepared instanceof PDOStatement)
 		{
 			// Bind the variables:
-			if ($this->sql instanceof JDatabaseQueryPreparable)
+			if ($this->sql instanceof Query_Preparable)
 			{
 				$bounded =& $this->sql->getBounded();
 				foreach ($bounded as $key => $obj)
@@ -694,7 +701,7 @@ abstract class Driver_Pdo extends Driver
 			$query = $this->getQuery(true)->setQuery($query);
 		}
 
-		if ($query instanceof Limitable && !is_null($offset) && !is_null($limit))
+		if ($query instanceof Query_Limitable && !is_null($offset) && !is_null($limit))
 		{
 			$query->setLimit($limit, $offset);
 		}

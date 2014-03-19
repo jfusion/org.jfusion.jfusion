@@ -23,6 +23,8 @@ use JFusion\Language\Text;
 use JFusion\Date\Date;
 use JFusion\Event\Dispatcher;
 use JFusion\Application\Application;
+use JFusion\Session\Session;
+
 
 use JFusion\Plugin\Plugin_Public;
 use JFusion\Plugin\Plugin_Admin;
@@ -32,7 +34,6 @@ use JFusion\Plugin\Plugin_Forum;
 
 
 use \RuntimeException;
-use \Exception;
 use \DateTimeZone;
 
 
@@ -67,7 +68,7 @@ class Factory
 	/**
 	 * Global database object
 	 *
-	 * @var    DatabaseDriver
+	 * @var    Driver
 	 * @since  11.1
 	 */
 	public static $database = null;
@@ -79,6 +80,12 @@ class Factory
 	 * @since  11.1
 	 */
 	public static $application = null;
+
+	/**
+	 * @var    Session  The session object.
+	 * @since  11.3
+	 */
+	public static $session;
 
 	/**
 	 * Global configuration object
@@ -582,11 +589,11 @@ class Factory
 	/**
 	 * Get a database object.
 	 *
-	 * Returns the global {@link \JDatabaseDriver} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link Driver} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  \JDatabaseDriver
+	 * @return  Driver
 	 *
-	 * @see     \JDatabaseDriver
+	 * @see     Driver
 	 * @since   11.1
 	 */
 	public static function getDbo()
@@ -756,5 +763,37 @@ class Factory
 			self::$dispatcher = Dispatcher::getInstance();
 		}
 		return self::$dispatcher;
+	}
+
+	/**
+	 * Method to get the application session object.
+	 *
+	 * @return  Session  The session object
+	 *
+	 * @since   11.3
+	 */
+	public static function getSession()
+	{
+		if (!self::$session)
+		{
+			self::$session = Session::getInstance();
+		}
+		return self::$session;
+	}
+
+	/**
+	 * Method to get the application session object.
+	 *
+	 * @return  Session  The session object
+	 *
+	 * @since   11.3
+	 */
+	public static function getRouter()
+	{
+		if (!self::$session)
+		{
+			self::$session = Session::getInstance();
+		}
+		return self::$session;
 	}
 }

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -6,6 +6,11 @@
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
+
+use \PDO;
+use \SQLite3;
+
+use \RuntimeException;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -17,7 +22,7 @@ defined('JPATH_PLATFORM') or die;
  * @see         http://php.net/pdo
  * @since       12.1
  */
-class JDatabaseDriverSqlite extends JDatabaseDriverPdo
+class Driver_Sqlite extends Driver_Pdo
 {
 	/**
 	 * The name of the database driver.

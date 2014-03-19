@@ -7,6 +7,9 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
+use \stdClass;
+use \PDO;
+
 defined('JPATH_PLATFORM') or die;
 
 /**
@@ -16,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-class Query_Oracle extends Query_Pdo implements JDatabaseQueryPreparable, Limitable
+class Query_Oracle extends Query_Pdo implements Query_Preparable, Query_Limitable
 {
 	/**
 	 * @var    integer  The offset for the result set.
@@ -48,7 +51,7 @@ class Query_Oracle extends Query_Pdo implements JDatabaseQueryPreparable, Limita
 	 * @param   integer         $length         The length of the variable. Usually required for OUTPUT parameters.
 	 * @param   array           $driverOptions  Optional driver options to be used.
 	 *
-	 * @return  JDatabaseQueryOracle
+	 * @return  Query_Oracle
 	 *
 	 * @since   12.1
 	 */
@@ -116,7 +119,7 @@ class Query_Oracle extends Query_Pdo implements JDatabaseQueryPreparable, Limita
 	 *
 	 * @param   string  $clause  Optionally, the name of the clause to clear, or nothing to clear the whole query.
 	 *
-	 * @return  JDatabaseQueryOracle  Returns this object to allow chaining.
+	 * @return  Query_Oracle  Returns this object to allow chaining.
 	 *
 	 * @since   12.1
 	 */
@@ -190,7 +193,7 @@ class Query_Oracle extends Query_Pdo implements JDatabaseQueryPreparable, Limita
 	 * @param   integer  $limit   The limit for the result set
 	 * @param   integer  $offset  The offset for the result set
 	 *
-	 * @return  JDatabaseQueryOracle  Returns this object to allow chaining.
+	 * @return  Query_Oracle  Returns this object to allow chaining.
 	 *
 	 * @since   12.1
 	 */

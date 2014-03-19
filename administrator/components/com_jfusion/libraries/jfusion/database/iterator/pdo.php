@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -6,6 +6,8 @@
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
+
+use \PDOStatement;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -16,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-class JDatabaseIteratorPdo extends JDatabaseIterator
+class Iterator_Pdo extends Iterator_Iterator
 {
 	/**
 	 * Get the number of rows in the result set for the executed SQL given by the cursor.

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -16,6 +16,6 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-class JDatabaseIteratorAzure extends JDatabaseIteratorSqlsrv
+class Iterator_Azure extends Iterator_Sqlsrv
 {
 }

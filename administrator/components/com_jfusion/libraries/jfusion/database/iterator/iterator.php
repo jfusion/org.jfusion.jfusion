@@ -7,6 +7,10 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
+use \Countable;
+use \Iterator;
+use \InvalidArgumentException;
+
 defined('JPATH_PLATFORM') or die;
 
 /**
@@ -16,7 +20,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Database
  * @since       12.1
  */
-abstract class JDatabaseIterator implements Countable, Iterator
+abstract class Iterator_Iterator implements Countable, Iterator
 {
 	/**
 	 * The database cursor.

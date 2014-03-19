@@ -9,6 +9,9 @@
 
 use JFusion\Event\Dispatcher;
 use JFusion\Input\Input;
+use JFusion\Session\Session;
+
+
 
 defined('_JEXEC') or die;
 
@@ -28,24 +31,10 @@ class Application
 	protected $document;
 
 	/**
-	 * @var    JSession  The application session object.
-	 * @since  11.3
-	 */
-	protected $session;
-
-	/**
 	 * @var    Application  The application instance.
 	 * @since  11.3
 	 */
 	protected static $instance;
-
-	/**
-	 * Currently active template
-	 *
-	 * @var    object
-	 * @since  3.2
-	 */
-	protected $dispatcher = null;
 
 	/**
 	 * Class constructor.
@@ -68,7 +57,7 @@ class Application
 			$this->input = new Input;
 		}
 
-		$this->dispatcher = Dispatcher::getInstance();
+		$this->session = Session::getInstance();
 	}
 
 	/**
@@ -83,7 +72,7 @@ class Application
 	 */
 	public function enqueueMessage($msg, $type = 'message')
 	{
-		$this->dispatcher->trigger('onApplicationEnqueueMessage', array($msg, $type));
+		Dispatcher::getInstance()->trigger('onApplicationEnqueueMessage', array($msg, $type));
 	}
 
 	/**
@@ -111,7 +100,7 @@ class Application
 	 */
 	public function isAdmin()
 	{
-		$responces = $this->dispatcher->trigger('onApplicationIsAdmin');
+		$responces = Dispatcher::getInstance()->trigger('onApplicationIsAdmin');
 		if ($responces) {
 			foreach ($responces as $responce) {
 				if ($responce == true) {
@@ -143,7 +132,7 @@ class Application
 	 */
 	public function login($credentials, $options = array())
 	{
-		$responces = $this->dispatcher->trigger('onApplicationLogin', array($credentials, $options));
+		$responces = Dispatcher::getInstance()->trigger('onApplicationLogin', array($credentials, $options));
 		if ($responces) {
 			foreach ($responces as $responce) {
 				if ($responce == true) {
@@ -172,7 +161,7 @@ class Application
 	 */
 	public function logout($userid = null)
 	{
-		$responces = $this->dispatcher->trigger('onApplicationLogout', array($userid));
+		$responces = Dispatcher::getInstance()->trigger('onApplicationLogout', array($userid));
 		if ($responces) {
 			foreach ($responces as $responce) {
 				if ($responce == true) {
@@ -199,7 +188,7 @@ class Application
 	 */
 	public function redirect($url, $moved = false)
 	{
-		$this->dispatcher->trigger('onApplicationRedirect', array($url, $moved));
+		Dispatcher::getInstance()->trigger('onApplicationRedirect', array($url, $moved));
 	}
 
 	/**
@@ -212,17 +201,5 @@ class Application
 	public function getDocument()
 	{
 		return $this->document;
-	}
-
-	/**
-	 * Method to get the application session object.
-	 *
-	 * @return  JSession  The session object
-	 *
-	 * @since   11.3
-	 */
-	public function getSession()
-	{
-		return $this->session;
 	}
 }

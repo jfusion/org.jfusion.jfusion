@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Database;
 /**
  * @package     Joomla.Platform
  * @subpackage  Database
@@ -8,6 +8,9 @@
  */
 
 use JFusion\Language\Text;
+
+use \RuntimeException;
+use \Exception;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -19,7 +22,7 @@ defined('JPATH_PLATFORM') or die;
  * @see         http://msdn.microsoft.com/en-us/library/cc296152(SQL.90).aspx
  * @since       12.1
  */
-class JDatabaseDriverSqlsrv extends JDatabaseDriver
+class Driver_Sqlsrv extends Driver
 {
 	/**
 	 * The name of the database driver.
@@ -577,7 +580,7 @@ class JDatabaseDriverSqlsrv extends JDatabaseDriver
 		// Take a local copy so that we don't modify the original query and cause issues later
 		$query = $this->replacePrefix((string) $this->sql);
 
-		if (!($this->sql instanceof JDatabaseQuery) && ($this->limit > 0 || $this->offset > 0))
+		if (!($this->sql instanceof Query) && ($this->limit > 0 || $this->offset > 0))
 		{
 			$query = $this->limit($query, $this->limit, $this->offset);
 		}

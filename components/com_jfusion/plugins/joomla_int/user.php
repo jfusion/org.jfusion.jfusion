@@ -532,8 +532,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 			    // Hit the user last visit field
 			    $my->setLastVisit();
 			    // Destroy the php session for this user
-			    $session = JFactory::getSession();
-			    $session->destroy();
+			    JFactory::getSession()->destroy();
 		    }
 		    //destroy the Joomla session but do so directly based on what $options is
 		    $table = JTable::getInstance('session');

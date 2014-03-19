@@ -624,7 +624,7 @@ HTML;
 			$config = \JFusion\Factory::getConfig();
 			$sef = $config->get('sef');
 			//get the baseUR
-			$app = JFactory::getApplication('site');
+			$app = \JFusion\Factory::getRouter();
 			$router = $app->getRouter();
 			/**
 			 * @ignore
