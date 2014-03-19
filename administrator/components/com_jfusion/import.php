@@ -8,10 +8,16 @@ use \JFusion\Factory;
 use \JFusion\Registry\Registry;
 
 jimport('joomla.application.component.helper');
+/**
+ * TODO: This results in error if com_jfusion is not installed yet. create a manual query ?
+ */
 $params = JComponentHelper::getParams('com_jfusion');
 
 $config = new Registry();
 
+/**
+ * Database settings
+ */
 $config->set('host', JFactory::getConfig()->get('host'));
 $config->set('user', JFactory::getConfig()->get('user'));
 $config->set('password', JFactory::getConfig()->get('password'));
@@ -20,12 +26,22 @@ $config->set('dbprefix', JFactory::getConfig()->get('dbprefix'));
 $config->set('dbtype', JFactory::getConfig()->get('dbtype'));
 $config->set('debug', JFactory::getConfig()->get('debug'));
 
+/**
+ * Database language
+ */
+$config->set('language', JFactory::getConfig()->get('language'));
+$config->set('debug_lang', JFactory::getConfig()->get('debug_lang'));
+
+/**
+ * Framework settings
+ */
 $config->set('updateusergroups', $params->get('updateusergroups', new stdClass()));
 $config->set('usergroups', $params->get('usergroups', false));
 
 Factory::$config = $config;
 
-Factory::$language = JFactory::getLanguage();
 Factory::$document = JFactory::getDocument();
-Factory::$application = JFactory::getApplication();
 
+require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.eventhook.php');
+
+$event = new JFusionEventHook(Factory::getDispatcher());

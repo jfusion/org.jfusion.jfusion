@@ -21,6 +21,8 @@ use JFusion\Debugger\Debugger;
 use JFusion\Language\Language;
 use JFusion\Language\Text;
 use JFusion\Date\Date;
+use JFusion\Event\Dispatcher;
+use JFusion\Application\Application;
 
 use JFusion\Plugin\Plugin_Public;
 use JFusion\Plugin\Plugin_Admin;
@@ -73,7 +75,7 @@ class Factory
 	/**
 	 * Global application object
 	 *
-	 * @var    JApplicationCms
+	 * @var    Application
 	 * @since  11.1
 	 */
 	public static $application = null;
@@ -103,13 +105,20 @@ class Factory
 	public static $language = null;
 
 	/**
-	 * Container for JDate instances
+	 * Container for Date instances
 	 *
-	 * @var    array
+	 * @var    array[Date]
 	 * @since  11.3
 	 */
 	public static $dates = array();
 
+	/**
+	 * Container for Dispatcher instances
+	 *
+	 * @var    Dispatcher
+	 * @since  11.3
+	 */
+	public static $dispatcher = null;
 
 
 
@@ -608,26 +617,14 @@ class Factory
 	 *
 	 * Returns the global {@link JApplicationCms} object, only creating it if it doesn't already exist.
 	 *
-	 * @param   mixed   $id      A client identifier or name.
-	 * @param   array   $config  An optional associative array of configuration settings.
-	 * @param   string  $prefix  Application prefix
-	 *
-	 * @return  JApplicationCms object
-	 *
-	 * @see     JApplication
-	 * @since   11.1
-	 * @throws  Exception
+	 * @return  Application object
 	 */
-	public static function getApplication($id = null, array $config = array(), $prefix = 'J')
+	public static function getApplication()
 	{
 		if (!self::$application)
 		{
-			throw new Exception('Application Instantiation Error', 500);
-			/**
-			 * TODO CREATE Application
-			 */
+			self::$application = Application::getInstance();
 		}
-
 		return self::$application;
 	}
 
@@ -682,9 +679,10 @@ class Factory
 	{
 		if (!self::$language)
 		{
-			/**
-			 * TODO CREATE Config
-			 */
+			$conf = self::getConfig();
+			$locale = $conf->get('language');
+			$debug = $conf->get('debug_lang');
+			self::$language = Language::getInstance($locale, $debug);
 		}
 		return self::$language;
 	}
@@ -697,7 +695,7 @@ class Factory
 	 *
 	 * @return  Date object
 	 *
-	 * @see     JDate
+	 * @see     Date
 	 * @since   11.1
 	 */
 	public static function getDate($time = 'now', $tzOffset = null)
@@ -740,5 +738,23 @@ class Factory
 		$date = clone self::$dates[$classname][$key];
 
 		return $date;
+	}
+
+	/**
+	 * Get a dispatcher object
+	 *
+	 * Returns the global {@link Dispatcher} object, only creating it if it doesn't already exist.
+	 *
+	 * @return  Dispatcher
+	 *
+	 * @see     Dispatcher
+	 */
+	public static function getDispatcher()
+	{
+		if (!self::$dispatcher)
+		{
+			self::$dispatcher = Dispatcher::getInstance();
+		}
+		return self::$dispatcher;
 	}
 }

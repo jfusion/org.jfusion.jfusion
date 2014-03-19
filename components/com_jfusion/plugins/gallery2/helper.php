@@ -124,7 +124,6 @@ class JFusionHelper_gallery2 extends \JFusion\Plugin\Plugin
      */
     function getEmbedUri($itemId = null) {
         $mainframe = \JFusion\Factory::getApplication();
-        $router = $mainframe->getRouter();
         $id = $mainframe->input->get('Itemid', -1);
         if ($itemId !== null) {
             $id = $itemId;
@@ -146,14 +145,12 @@ class JFusionHelper_gallery2 extends \JFusion\Plugin\Plugin
         } else {
             $uri = $path;
         }
-        if ($router->getMode() == JROUTER_MODE_SEF) {
-            if (\JFusion\Factory::getConfig()->get('sef_suffix')) {
-                $uri = str_replace('.html', '', $uri);
-            }
-            if (!strpos($uri, '?')) {
-                $uri .= '/';
-            }
-        }
+	    if (\JFusion\Factory::getConfig()->get('sef_suffix')) {
+		    $uri = str_replace('.html', '', $uri);
+	    }
+	    if (!strpos($uri, '?')) {
+		    $uri .= '/';
+	    }
         return $uri;
     }
 

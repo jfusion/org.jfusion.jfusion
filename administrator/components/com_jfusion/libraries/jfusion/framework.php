@@ -514,47 +514,6 @@ class Framework
         return $phpinfo;
     }
 
-	/**
-	 * Updates the discussion bot lookup table
-	 * @param int $contentid
-	 * @param mixed &$threadinfo object with postid, threadid, and forumid
-     * @param string $jname
-	 * @param int $published
-	 * @param int $manual
-     *
-     * @return void
-	 */
-	public static function updateDiscussionBotLookup($contentid, &$threadinfo, $jname, $published = 1, $manual = 0)
-	{
-		$fdb = Factory::getDBO();
-		$modified = Factory::getDate()->toUnix();
-        $option = Factory::getApplication()->input->getCmd('option');
-
-        //populate threadinfo with other fields if necessary for content generation purposes
-        //mainly used if the thread was just created
-        if (empty($threadinfo->component)) {
-            $threadinfo->contentid = $contentid;
-            $threadinfo->component = $option;
-            $threadinfo->modified = $modified;
-            $threadinfo->jname = $jname;
-            $threadinfo->published = $published;
-            $threadinfo->manual = $manual;
-        }
-
-		$query = 'REPLACE INTO #__jfusion_discussion_bot SET
-					contentid = ' . $contentid . ',
-					component = ' . $fdb->quote($option) . ',
-					forumid = ' . $threadinfo->forumid . ',
-					threadid = ' . $threadinfo->threadid . ',
-					postid = ' . $threadinfo->postid . ',
-					modified = ' . $fdb->quote($modified) . ',
-					jname = ' . $fdb->quote($jname) . ',
-					published = ' . $published . ',
-					manual = ' . $manual;
-		$fdb->setQuery($query);
-		$fdb->execute();
-	}
-
     /**
      * Parses text from bbcode to html, html to bbcode, or html to plaintext
      * $options include:

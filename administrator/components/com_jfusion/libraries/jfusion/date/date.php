@@ -9,7 +9,7 @@
 
 use Jfusion\Factory;
 use Jfusion\Language\Text;
-use Jfusion\Database\DatabaseDriver;
+use Jfusion\Database\Driver;
 
 use \DateTime;
 use \DateTimeZone;
@@ -253,6 +253,7 @@ class Date extends DateTime
 			case 6:
 				return $abbr ? Text::_('SAT') : Text::_('SATURDAY');
 		}
+		return null;
 	}
 
 	/**
@@ -387,6 +388,7 @@ class Date extends DateTime
 			case 12:
 				return $abbr ? Text::_('DECEMBER_SHORT') : Text::_('DECEMBER');
 		}
+		return null;
 	}
 
 	/**
@@ -426,14 +428,14 @@ class Date extends DateTime
 	 * Gets the date as an SQL datetime string.
 	 *
 	 * @param   boolean          $local  True to return the date string in the local time zone, false to return it in GMT.
-	 * @param   DatabaseDriver  $db     The database driver or null to use JFactory::getDbo()
+	 * @param   Driver  $db     The database driver or null to use JFactory::getDbo()
 	 *
 	 * @return  string     The date string in SQL datetime format.
 	 *
 	 * @link    http://dev.mysql.com/doc/refman/5.0/en/datetime.html
 	 * @since   11.4
 	 */
-	public function toSql($local = false, DatabaseDriver $db = null)
+	public function toSql($local = false, Driver $db = null)
 	{
 		if ($db === null)
 		{

@@ -53,8 +53,7 @@ class Plugin
 	 */
 	function __construct()
 	{
-		Factory::getLanguage()->load('com_jfusion', JFUSIONPATH_ADMINISTRATOR);
-		Factory::getLanguage()->load('com_jfusion', JFUSIONPATH_SITE);
+		Factory::getDispatcher()->trigger('onLanguageLoadFramework');
 
 		$jname = $this->getJname();
 		if (!empty($jname)) {
@@ -77,7 +76,7 @@ class Plugin
 					foreach($plugins as $plugin) {
 						$name = $plugin->original_name ? $plugin->original_name : $plugin->name;
 						if (!$loaded) {
-							Factory::getLanguage()->load('com_jfusion.plg_' . $name, JFUSIONPATH_ADMINISTRATOR);
+							Factory::getDispatcher()->trigger('onLanguageLoadPlugin', array($name));
 							$loaded = true;
 						}
 						static::$language[$jname] = true;

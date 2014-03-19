@@ -25,7 +25,7 @@ defined('JPATH_PLATFORM') or die;
  * @see         JPlugin
  * @since       12.1
  */
-class EventDispatcher extends Object
+class Dispatcher extends Object
 {
 	/**
 	 * An array of Observer objects to notify
@@ -230,7 +230,7 @@ class EventDispatcher extends Object
 			}
 
 			$this->_observers[] = $observer;
-			$methods = array_diff(get_class_methods($observer), get_class_methods('JPlugin'));
+			$methods = array_diff(get_class_methods($observer), get_class_methods('\JFusion\Event\Event'));
 		}
 
 		$key = key($this->_observers);

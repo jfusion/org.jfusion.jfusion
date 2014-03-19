@@ -52,7 +52,7 @@ class JFusionDokuWikiHook
     function _ACTION_SHOW_REDIRECT(&$event, $param) {
         $event->data['id'] = str_replace(':', ';', $event->data['id']);
 
-	    $Itemid = \JFusion\Factory::getApplication('site')->getMenu()->getActive()->id;
+	    $Itemid = \JFactory::getApplication('site')->getMenu()->getActive()->id;
 
         $baseURL = \JFusion\Framework::getPluginURL($Itemid, false);
         if (is_array($event->data['preact'])) {

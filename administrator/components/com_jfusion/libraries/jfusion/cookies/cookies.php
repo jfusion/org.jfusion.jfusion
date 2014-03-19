@@ -77,7 +77,7 @@ class Cookies {
 		
 		if ($url) {
 			$mainframe = Factory::getApplication();
-			if ( !$mainframe->isAdmin()) {
+			if ( !$mainframe->isAdmin() ) {
 				$this->_cookies[$url][] = $cookie;
 			}
 		} else {

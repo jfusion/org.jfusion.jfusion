@@ -206,4 +206,3 @@ endlocal & goto :EOF
 
 :end
 echo Complete
-pause >nul

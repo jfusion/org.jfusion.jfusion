@@ -31,7 +31,7 @@ abstract class Event extends Object
 	/**
 	 * Constructor
 	 *
-	 * @param   object  &$subject  The object to observe.
+	 * @param   Dispatcher  &$subject  The object to observe.
 	 *
 	 * @since   11.3
 	 */

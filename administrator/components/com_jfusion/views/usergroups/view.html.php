@@ -69,7 +69,7 @@ class jfusionViewusergroups extends JViewLegacy {
 
 	        $groups = array();
 
-	        $update = JFusionFunction::getUpdateUserGroups();
+	        $update = \JFusion\Framework::getUpdateUserGroups();
 
 	        $master = \JFusion\Framework::getMaster();
 
