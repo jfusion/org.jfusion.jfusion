@@ -50,102 +50,116 @@ echo Invalid Choice
 goto start
 
 :CLEAR_ALL
-echo Clearing All Packages
-goto CLEAR_MAIN
-goto CLEAR_PACKAGES
+	echo Clearing All Packages
+	call :clearMain
+	call :clearackages
 goto end
 
-:CLEAR_PACKAGES
-echo Remove module and plugin packages
-del "%FULLPATH%administrator\components\com_jfusion\packages\*.zip"
-IF "%action%"=="5" goto end
+:clearackages
+	echo Remove module and plugin packages
+	del "%FULLPATH%administrator\components\com_jfusion\packages\*.zip"
+endlocal & goto :EOF
 
 :CLEAR_MAIN
-echo Remove main packages
-del *.zip
-IF "%action%"=="4" goto end
+	call :clearMain
+goto end
 
 :CREATE_ALL
-goto create_packages
-goto create_main
+	call :createPackages
+	call :createMain
 goto end
 
 :CREATE_PACKAGES
-del "%FULLPATH%administrator\components\com_jfusion\packages\*.zip"
-
-echo Create the new packages for the plugins and module
-
-call :CreatePackage modules\mod_jfusion_activity\* administrator\components\com_jfusion\packages\jfusion_mod_activity.zip mod_jfusion_activity
-call :CreatePackage modules\mod_jfusion_login\* administrator\components\com_jfusion\packages\jfusion_mod_login.zip mod_jfusion_login
-call :CreatePackage modules\mod_jfusion_whosonline\* administrator\components\com_jfusion\packages\jfusion_mod_whosonline.zip mod_jfusion_whosonline
-call :CreatePackage modules\mod_jfusion_user_activity\* administrator\components\com_jfusion\packages\jfusion_mod_user_activity.zip mod_jfusion_user_activity
-
-call :CreatePackage plugins\authentication\* administrator\components\com_jfusion\packages\jfusion_plugin_auth.zip
-call :CreatePackage plugins\user\* administrator\components\com_jfusion\packages\jfusion_plugin_user.zip
-call :CreatePackage plugins\search\* administrator\components\com_jfusion\packages\jfusion_plugin_search.zip
-call :CreatePackage plugins\content\* administrator\components\com_jfusion\packages\jfusion_plugin_content.zip
-call :CreatePackage plugins\system\jfusion.* administrator\components\com_jfusion\packages\jfusion_plugin_system.zip
-
-
-echo Create the jfusion plugin packages
-
-FOR /f "tokens=*" %%G IN ('dir /d /b /a:d components\com_jfusion\plugins\') DO (
-   	if exist %FULLPATH%components\com_jfusion\plugins\%%G\jfusion.xml (
-		call :CreatePackage components\com_jfusion\plugins\%%G pluginpackages\jfusion_%%G.zip
-   	) else (
-       	echo Error: %FULLPATH%components\com_jfusion\plugins\%%G\jfusion.xml was not found
-   	)
-)
-
-echo "create the new packages for the Magento Integration"
-
-call :CreatePackage modules\mod_jfusion_magecart\* side_projects\magento\jfusion_mod_magecart.zip mod_jfusion_magecart
-call :CreatePackage modules\mod_jfusion_mageselectblock\* side_projects\magento\jfusion_mod_mageselectblock.zip mod_jfusion_mageselectblock
-call :CreatePackage modules\mod_jfusion_magecustomblock\* side_projects\magento\jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
-call :CreatePackage plugins\system\magelib.* side_projects\magento\jfusion_plugin_magelib.zip magelib
-
-IF "%action%"=="2" goto end
+	call :createPackages
+goto end
 
 :CREATE_MAIN
+	call :createMain
+goto end
 
-echo Prepare the files for packaging
-md tmp
-md tmp\admin
-c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%administrator\components\com_jfusion\*.*" "%FULLPATH%\tmp\admin" > NUL
-c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%pluginpackages\*.*" "%FULLPATH%tmp\admin\packages\" > NUL
-del "%FULLPATH%tmp\admin\jfusion.xml"
 
-md tmp\admin\language
-c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%administrator\language\en-GB\*.*" "%FULLPATH%tmp\admin\language\en-GB\" > NUL
+:clearMain
+	del *.zip
+endlocal & goto :EOF
 
-md tmp\front
-c:\windows\system32\xcopy /E /C /V /Y /EXCLUDE:%FULLPATH%exclude.txt "%FULLPATH%components\com_jfusion\*.*" "%FULLPATH%tmp\front" > NUL
+:createPackages
+	if exist %FULLPATH%administrator\components\com_jfusion\packages\*.zip (
+		del "%FULLPATH%administrator\components\com_jfusion\packages\*.zip"
+	)
+	if exist %FULLPATH%pluginpackages\*.zip (
+		del "%FULLPATH%pluginpackages\*.zip"
+	)
 
-md tmp\front\language
-c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%language\en-GB\*.*" "%FULLPATH%tmp\front\language\en-GB\" > NUL
+	echo Create the new packages for the plugins and module
 
-copy "%FULLPATH%administrator\components\com_jfusion\jfusion.xml" "%FULLPATH%tmp" /V /Y > NUL
-copy "%FULLPATH%administrator\components\com_jfusion\script.php" "%FULLPATH%\tmp" /V /Y > NUL
+	call :CreatePackage modules\mod_jfusion_activity\* administrator\components\com_jfusion\packages\jfusion_mod_activity.zip mod_jfusion_activity
+	call :CreatePackage modules\mod_jfusion_login\* administrator\components\com_jfusion\packages\jfusion_mod_login.zip mod_jfusion_login
+	call :CreatePackage modules\mod_jfusion_whosonline\* administrator\components\com_jfusion\packages\jfusion_mod_whosonline.zip mod_jfusion_whosonline
+	call :CreatePackage modules\mod_jfusion_user_activity\* administrator\components\com_jfusion\packages\jfusion_mod_user_activity.zip mod_jfusion_user_activity
 
-echo Update the revision number
+	call :CreatePackage plugins\authentication\* administrator\components\com_jfusion\packages\jfusion_plugin_auth.zip
+	call :CreatePackage plugins\user\* administrator\components\com_jfusion\packages\jfusion_plugin_user.zip
+	call :CreatePackage plugins\search\* administrator\components\com_jfusion\packages\jfusion_plugin_search.zip
+	call :CreatePackage plugins\content\* administrator\components\com_jfusion\packages\jfusion_plugin_content.zip
+	call :CreatePackage plugins\system\jfusion.* administrator\components\com_jfusion\packages\jfusion_plugin_system.zip
 
-echo Revision set to %REVISION%
-echo Timestamp set to %TIMESTAMP%
-call :CreateXml %FULLPATH%tmp\jfusion
 
-echo Create the new master package
+	echo Create the jfusion plugin packages
 
-del %FULLPATH%*.zip
+	FOR /f "tokens=*" %%G IN ('dir /d /b /a:d components\com_jfusion\plugins\') DO (
+		if exist %FULLPATH%components\com_jfusion\plugins\%%G\jfusion.xml (
+			call :CreatePackage components\com_jfusion\plugins\%%G pluginpackages\jfusion_%%G.zip
+		) else (
+			echo Error: %FULLPATH%components\com_jfusion\plugins\%%G\jfusion.xml was not found
+		)
+	)
 
-7za a "%FULLPATH%jfusion_package.zip" .\tmp\* -xr!*.svn* > NUL
+	echo "create the new packages for the Magento Integration"
 
-RMDIR "%FULLPATH%tmp" /S /Q
+	call :CreatePackage modules\mod_jfusion_magecart\* side_projects\magento\jfusion_mod_magecart.zip mod_jfusion_magecart
+	call :CreatePackage modules\mod_jfusion_mageselectblock\* side_projects\magento\jfusion_mod_mageselectblock.zip mod_jfusion_mageselectblock
+	call :CreatePackage modules\mod_jfusion_magecustomblock\* side_projects\magento\jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
+	call :CreatePackage plugins\system\magelib.* side_projects\magento\jfusion_plugin_magelib.zip magelib
 
-IF "%action%"=="1" goto end
+	IF "%action%"=="2" goto end
+endlocal & goto :EOF
 
-:end
-echo Complete
-pause>nul
+:createMain
+	echo Prepare the files for packaging
+	md tmp
+	md tmp\admin
+	c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%administrator\components\com_jfusion\*.*" "%FULLPATH%\tmp\admin" > NUL
+	c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%pluginpackages\*.*" "%FULLPATH%tmp\admin\packages\" > NUL
+	del "%FULLPATH%tmp\admin\jfusion.xml"
+
+	md tmp\admin\language
+	c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%administrator\language\en-GB\*.*" "%FULLPATH%tmp\admin\language\en-GB\" > NUL
+
+	md tmp\front
+	c:\windows\system32\xcopy /E /C /V /Y /EXCLUDE:%FULLPATH%exclude.txt "%FULLPATH%components\com_jfusion\*.*" "%FULLPATH%tmp\front" > NUL
+
+	md tmp\front\language
+	c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%language\en-GB\*.*" "%FULLPATH%tmp\front\language\en-GB\" > NUL
+
+	copy "%FULLPATH%administrator\components\com_jfusion\jfusion.xml" "%FULLPATH%tmp" /V /Y > NUL
+	copy "%FULLPATH%administrator\components\com_jfusion\script.php" "%FULLPATH%\tmp" /V /Y > NUL
+
+	echo Update the revision number
+
+	echo Revision set to %REVISION%
+	echo Timestamp set to %TIMESTAMP%
+	call :CreateXml %FULLPATH%tmp\jfusion
+
+	echo Create the new master package
+
+	if exist %FULLPATH%*.zip (
+		del %FULLPATH%*.zip
+	)
+
+	7za a "%FULLPATH%jfusion_package.zip" .\tmp\* -xr!*.svn* > NUL
+
+	RMDIR "%FULLPATH%tmp" /S /Q
+endlocal & goto :EOF
 
 :GetTimeStamp
 	setlocal enableextensions
@@ -189,3 +203,7 @@ endlocal & goto :EOF
 
 	del %FILE%.tmp
 endlocal & goto :EOF
+
+:end
+echo Complete
+pause >nul
