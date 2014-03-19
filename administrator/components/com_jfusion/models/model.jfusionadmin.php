@@ -140,7 +140,7 @@ class JFusionFunctionAdmin
 			$result = false;
 			$task = 'plugindisplay';
 			\JFusion\Framework::raiseWarning(JText::_('NO_MASTER_WARNING'));
-		} else if (JFusionFunction::getUserGroups() === false) {
+		} else if (\JFusion\Framework::getUserGroups() === false) {
 			// Prevent to loginchecker without any usergroups configured.
 			$result = false;
 			$task = 'usergroups';

@@ -625,7 +625,7 @@ class JFusionUser_smf extends \JFusion\Plugin\Plugin_User
 
 		$master = \JFusion\Framework::getMaster();
 		if ($master) {
-			$mastergroups = JFusionFunction::getUserGroups($master->name);
+			$mastergroups = \JFusion\Framework::getUserGroups($master->name);
 
 			$groups = array();
 			if ($userinfo) {

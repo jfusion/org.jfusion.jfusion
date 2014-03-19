@@ -110,6 +110,11 @@ class Factory
 	 */
 	public static $dates = array();
 
+
+
+
+
+
 	/**
 	 * Gets an Fusion front object
 	 *
@@ -579,9 +584,21 @@ class Factory
 	{
 		if (!self::$database)
 		{
-			/*
-			 * TODO CREATE DBO
-			 */
+			$conf = self::getConfig();
+
+			$host = $conf->get('host');
+			$user = $conf->get('user');
+			$password = $conf->get('password');
+			$database = $conf->get('db');
+			$prefix = $conf->get('dbprefix');
+			$driver = $conf->get('dbtype');
+			$debug = $conf->get('debug');
+
+			$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
+
+			self::$database = Driver::getInstance($options);
+
+			self::$database->setDebug($debug);
 		}
 		return self::$database;
 	}
@@ -619,23 +636,13 @@ class Factory
 	 *
 	 * Returns the global {@link Registry} object, only creating it if it doesn't already exist.
 	 *
-	 * @param   string  $file       The path to the configuration file
-	 * @param   string  $type       The type of the configuration file
-	 * @param   string  $namespace  The namespace of the configuration file
-	 *
 	 * @return  Registry
 	 *
 	 * @see     Registry
 	 * @since   11.1
 	 */
-	public static function getConfig($file = null, $type = 'PHP', $namespace = '')
+	public static function getConfig()
 	{
-		if (!self::$config)
-		{
-			/**
-			 * TODO CREATE Config
-			 */
-		}
 		return self::$config;
 	}
 

@@ -1248,7 +1248,7 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 
 		$master = \JFusion\Framework::getMaster();
 		if ($master) {
-			$mastergroups = JFusionFunction::getUserGroups($master->name);
+			$mastergroups = \JFusion\Framework::getUserGroups($master->name);
 
 			foreach ($mastergroups as $key => $mastergroup) {
 				if ($mastergroup) {

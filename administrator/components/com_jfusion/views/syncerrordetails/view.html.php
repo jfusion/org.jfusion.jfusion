@@ -64,8 +64,8 @@ class jfusionViewsyncerrordetails extends JViewLegacy
 
         //check to see if the sync has already started
         $syncid = JFactory::getApplication()->input->get('syncid');
-        $syncdata = JFusionUsersync::getSyncdata($syncid);
-        $synclog = JFusionUsersync::getLogData($syncid, 'error');
+        $syncdata = \JFusion\Usersync\Usersync::getSyncdata($syncid);
+        $synclog = \JFusion\Usersync\Usersync::getLogData($syncid, 'error');
 	    $this->syncdata = $syncdata;
 	    $this->synclog = $synclog;
 	    $this->syncid = $syncid;

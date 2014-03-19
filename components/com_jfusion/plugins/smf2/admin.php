@@ -156,7 +156,7 @@ class JFusionAdmin_smf2 extends \JFusion\Plugin\Plugin_Admin{
      */
     function getDefaultUsergroup()
     {
-	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroup !== null) {

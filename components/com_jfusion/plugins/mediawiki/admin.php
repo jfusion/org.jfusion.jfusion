@@ -152,7 +152,7 @@ class JFusionAdmin_mediawiki extends \JFusion\Plugin\Plugin_Admin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 		    return $usergroups;
 	    } else {

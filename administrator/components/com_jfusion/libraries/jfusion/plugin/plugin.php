@@ -1,17 +1,17 @@
 <?php namespace JFusion\Plugin;
 
-/**
- * Abstract plugin class
- *
- * PHP version 5
- *
- * @category  JFusion
- * @package   Models
- * @author    JFusion Team <webmaster@jfusion.org>
- * @copyright 2008 JFusion. All rights reserved.
- * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
- * @link      http://www.jfusion.org
- */
+	/**
+	 * Abstract plugin class
+	 *
+	 * PHP version 5
+	 *
+	 * @category  JFusion
+	 * @package   Models
+	 * @author    JFusion Team <webmaster@jfusion.org>
+	 * @copyright 2008 JFusion. All rights reserved.
+	 * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
+	 * @link      http://www.jfusion.org
+	 */
 
 // no direct access
 use JFusion\Factory;
@@ -113,7 +113,12 @@ class Plugin
 		$name = get_class($this);
 
 		//if the class name is the abstract class then return false
-		$abstractClassNames = array('JFusionAdmin', 'JFusionAuth', 'JFusionForum', 'JFusionPublic', 'JFusionUser', 'JFusionPlugin');
+		$abstractClassNames = array('JFusion\Plugin\Plugin_Admin',
+			'JFusion\Plugin\Plugin_Auth',
+			'JFusion\Plugin\Plugin_Forum',
+			'JFusion\Plugin\Plugin_Public',
+			'JFusion\Plugin\Plugin_User',
+			'JFusion\Plugin\Plugin');
 		$return = false;
 		if (!in_array($name, $abstractClassNames)) {
 			try {

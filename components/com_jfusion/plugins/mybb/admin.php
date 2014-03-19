@@ -186,7 +186,7 @@ class JFusionAdmin_mybb extends \JFusion\Plugin\Plugin_Admin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
 
 	    $group = '';
 	    if ($usergroups !== null) {

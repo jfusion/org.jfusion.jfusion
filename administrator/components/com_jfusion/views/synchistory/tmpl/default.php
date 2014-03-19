@@ -97,7 +97,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 				    }
 					//get the total errors
 					?>
-					<td><?php echo JFusionUsersync::countLogData($record->syncid, 'error'); ?></td>
+					<td><?php echo \JFusion\Usersync\Usersync::countLogData($record->syncid, 'error'); ?></td>
 				    <td>
 					    <a class="btn" href="index.php?option=com_jfusion&amp;task=syncstatus&amp;syncid=<?php echo $record->syncid; ?>">
 						    <?php echo JText::_('CLICK_FOR_MORE_DETAILS'); ?>

@@ -71,7 +71,7 @@ class jfusionViewsyncstatus extends JViewLegacy
         $document->addStyleSheet('templates/' . $template . '/css/general.css');
 
 	    $this->syncid = JFactory::getApplication()->input->get('syncid');
-	    $syncdata = JFusionUsersync::getSyncdata($this->syncid);
+	    $syncdata = \JFusion\Usersync\Usersync::getSyncdata($this->syncid);
 
         //append log
         $mainframe = JFactory::getApplication();
@@ -81,7 +81,7 @@ class jfusionViewsyncstatus extends JViewLegacy
         $filter_order_Dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
         $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', JFactory::getConfig()->get('list_limit'), 'int');
         $limitstart = (int)$mainframe->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
-        $syncdata['log'] = JFusionUsersync::getLogData($this->syncid, 'all', $limitstart, $limit, $filter_order, $filter_order_Dir);
+        $syncdata['log'] = \JFusion\Usersync\Usersync::getLogData($this->syncid, 'all', $limitstart, $limit, $filter_order, $filter_order_Dir);
 
         $db = JFactory::getDBO();
 
@@ -98,7 +98,7 @@ class jfusionViewsyncstatus extends JViewLegacy
 	    $this->filter = array('order' => $filter_order, 'dir' => $filter_order_Dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);
 	    $this->syncdata = $syncdata;
 
-	    $this->errorCount = JFusionUsersync::countLogData($this->syncid, 'error');
+	    $this->errorCount = \JFusion\Usersync\Usersync::countLogData($this->syncid, 'error');
         parent::display($tpl);
     }
 }

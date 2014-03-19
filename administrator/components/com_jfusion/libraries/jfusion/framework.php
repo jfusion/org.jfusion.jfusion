@@ -556,92 +556,6 @@ class Framework
 	}
 
     /**
-     * Creates the URL of a Joomla article
-     *
-     * @param stdClass &$contentitem contentitem
-     * @param string $text         string to place as the link
-     * @param string $jname        jname
-     *
-     * @return string link
-     */
-    public static function createJoomlaArticleURL(&$contentitem, $text, $jname='')
-    {
-        $mainframe = Factory::getApplication();
-        $option = Factory::getApplication()->input->get('option');
-
-        if ($option == 'com_k2') {
-            include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
-	        /** @noinspection PhpUndefinedClassInspection */
-	        $article_url = urldecode(K2HelperRoute::getItemRoute($contentitem->id . ':' . urlencode($contentitem->alias), $contentitem->catid . ':' . urlencode($contentitem->category->alias)));
-        } else {
-            if (empty($contentitem->slug) || empty($contentitem->catslug)) {
-                //article was edited and saved from editor
-                $db = Factory::getDBO();
-
-	            $query = $db->getQuery(true)
-		            ->select('CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(":", a.id, a.alias) ELSE a.id END as slug, CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug')
-		            ->from('#__content AS a')
-	                ->leftJoin('#__categories AS cc ON a.catid = cc.id')
-		            ->where('a.id = ' . $contentitem->id);
-
-                $db->setQuery($query);
-                $result = $db->loadObject();
-
-                if (!empty($result)) {
-                    $contentitem->slug = $result->slug;
-                    $contentitem->catslug = $result->catslug;
-                }
-            }
-
-            include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_content'  . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
-	        $article_url = ContentHelperRoute::getArticleRoute($contentitem->slug, $contentitem->catslug);
-        }
-
-        if ($mainframe->isAdmin()) {
-            //setup JRoute to use the frontend router
-	        $app = Factory::getApplication('site');
-            $router = $app->getRouter();
-            /**
-             * @ignore
-             * @var $uri JUri
-             */
-            $uri = $router->build($article_url);
-            $article_url = $uri->toString();
-            //remove /administrator from path
-            $article_url = str_replace('/administrator', '', $article_url);
-        } else {
-            $article_url = JRoute::_($article_url);
-        }
-
-        //make the URL absolute and clean it up a bit
-        $joomla_url = static::getJoomlaURL();
-
-        $juri = new JURI($joomla_url);
-        $path = $juri->getPath();
-        if ($path != '/') {
-            $article_url = str_replace($path, '', $article_url);
-        }
-
-        if (substr($joomla_url, -1) == '/') {
-            if ($article_url[0] == '/') {
-                $article_url = substr($joomla_url, 0, -1) . $article_url;
-            } else {
-                $article_url = $joomla_url . $article_url;
-            }
-        } else {
-            if ($article_url[0] == '/') {
-                $article_url = $joomla_url . $article_url;
-            } else {
-                $article_url = $joomla_url . '/' . $article_url;
-            }
-        }
-
-        $link = '<a href="' . $article_url . '">' . $text . '</a>';
-
-        return $link;
-    }
-
-    /**
      * Parses text from bbcode to html, html to bbcode, or html to plaintext
      * $options include:
      * strip_all_html - if $to==bbcode, strips all unsupported html from text (default is false)
@@ -883,29 +797,6 @@ class Framework
     }
 
     /**
-     * checks if the user is an admin
-     *
-     * @return boolean to indicate admin status
-     */
-    public static function isAdministrator()
-    {
-        $mainframe = Factory::getApplication();
-        if ($mainframe->isAdmin()) {
-            //we are on admin side, lets confirm that the user has access to user manager
-            $juser = JFactory::getUser();
-
-	        if ($juser->authorise('core.manage', 'com_users')) {
-		        $debug = true;
-	        } else {
-		        $debug = false;
-	        }
-        } else {
-            $debug = false;
-        }
-        return $debug;
-    }
-
-    /**
      * Converts a string to all ascii characters
      *
      * @param string $input str to convert
@@ -940,68 +831,6 @@ class Framework
             }
         }
         return $timezone;
-    }
-
-	/**
-	 * @param string $jname
-	 * @param bool   $default
-	 *
-	 * @return mixed;
-	 */
-	public static function getUserGroups($jname = '', $default = false) {
-		jimport('joomla.application.component.helper');
-		$params = JComponentHelper::getParams('com_jfusion');
-		$usergroups = $params->get('usergroups', false);
-
-		if ($jname) {
-			if (isset($usergroups->{$jname})) {
-				$usergroups = $usergroups->{$jname};
-
-				if ($default) {
-					if (isset($usergroups[0])) {
-						$usergroups = $usergroups[0];
-					} else {
-						$usergroups = null;
-					}
-				}
-			} else {
-				if ($default) {
-					$usergroups = null;
-				} else {
-					$usergroups = array();
-				}
-			}
-		}
-		return $usergroups;
-	}
-
-	/**
-	 * @return stdClass;
-	 */
-	public static function getUpdateUserGroups() {
-		jimport('joomla.application.component.helper');
-		$params = JComponentHelper::getParams('com_jfusion');
-		$usergroupmodes = $params->get('updateusergroups', new stdClass());
-		return $usergroupmodes;
-	}
-
-    /**
-     * returns true / false if the plugin is in advanced usergroup mode or not...
-     *
-     * @param string $jname plugin name
-     *
-     * @return boolean
-     */
-    public static function updateUsergroups($jname) {
-	    $updateusergroups = static::getUpdateUserGroups();
-	    $advanced = false;
-        if (isset($updateusergroups->{$jname}) && $updateusergroups->{$jname}) {
-	        $master = static::getMaster();
-	        if ($master->name != $jname) {
-		        $advanced = true;
-	        }
-        }
-        return $advanced;
     }
 
 	/**
@@ -1223,28 +1052,6 @@ class Framework
 			}
 		}
 		return $xml;
-	}
-
-	/**
-	 * @return plgAuthenticationJoomla
-	 */
-	public static function getJoomlaAuth() {
-		$dispatcher = JEventDispatcher::getInstance();
-
-		$db = JFactory::getDbo();
-		$query = $db->getQuery(true)
-			->select('folder, type, element AS name, params')
-			->from('#__extensions')
-			->where('element = ' . $db->quote('joomla'))
-			->where('type =' . $db->quote('plugin'))
-			->where('folder =' . $db->quote('authentication'));
-
-		$plugin = $db->setQuery($query)->loadObject();
-		$plugin->type = $plugin->folder;
-
-		require_once JPATH_PLUGINS . '/authentication/joomla/joomla.php';
-
-		return new plgAuthenticationJoomla($dispatcher, (array) ($plugin));
 	}
 
 	/**
@@ -1524,5 +1331,89 @@ class Framework
 	public static function getHash($seed)
 	{
 		return md5(Factory::getConfig()->get('secret') . $seed);
+	}
+
+
+
+	/**
+	 * @param string $jname
+	 * @param bool   $default
+	 *
+	 * @return mixed;
+	 */
+	public static function getUserGroups($jname = '', $default = false) {
+		jimport('joomla.application.component.helper');
+		$params = Factory::getConfig();
+		$usergroups = $params->get('usergroups', false);
+
+		if ($jname) {
+			if (isset($usergroups->{$jname})) {
+				$usergroups = $usergroups->{$jname};
+
+				if ($default) {
+					if (isset($usergroups[0])) {
+						$usergroups = $usergroups[0];
+					} else {
+						$usergroups = null;
+					}
+				}
+			} else {
+				if ($default) {
+					$usergroups = null;
+				} else {
+					$usergroups = array();
+				}
+			}
+		}
+		return $usergroups;
+	}
+
+	/**
+	 * @return stdClass;
+	 */
+	public static function getUpdateUserGroups() {
+		jimport('joomla.application.component.helper');
+		$params = Factory::getConfig();
+		$usergroupmodes = $params->get('updateusergroups', new stdClass());
+		return $usergroupmodes;
+	}
+
+	/**
+	 * returns true / false if the plugin is in advanced usergroup mode or not...
+	 *
+	 * @param string $jname plugin name
+	 *
+	 * @return boolean
+	 */
+	public static function updateUsergroups($jname) {
+		$updateusergroups = static::getUpdateUserGroups();
+		$advanced = false;
+		if (isset($updateusergroups->{$jname}) && $updateusergroups->{$jname}) {
+			$master = Framework::getMaster();
+			if ($master->name != $jname) {
+				$advanced = true;
+			}
+		}
+		return $advanced;
+	}
+
+	/**
+	 * authenticate a user/password
+	 *
+	 * @param string $username username
+	 * @param string $password password
+	 *
+	 * @return boolean
+	 */
+	public static function authenticate($username, $password) {
+		$updateusergroups = static::getUpdateUserGroups();
+		$advanced = false;
+		if (isset($updateusergroups->{$jname}) && $updateusergroups->{$jname}) {
+			$master = Framework::getMaster();
+			if ($master->name != $jname) {
+				$advanced = true;
+			}
+		}
+		return $advanced;
 	}
 }

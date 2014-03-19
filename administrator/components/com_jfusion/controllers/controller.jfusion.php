@@ -294,7 +294,7 @@ class JFusionController extends JControllerLegacy
 
 		    $syncdata = array();
 		    if ($db->loadResult()) {
-			    $syncdata = JFusionUsersync::getSyncdata($syncid);
+			    $syncdata = \JFusion\Usersync\Usersync::getSyncdata($syncid);
 			    if (is_array($syncdata)) {
 				    //start the usersync
 				    $plugin_offset = (!empty($syncdata['plugin_offset'])) ? $syncdata['plugin_offset'] : 0;
@@ -303,7 +303,7 @@ class JFusionController extends JControllerLegacy
 				    if (JFactory::getApplication()->input->get('userbatch')) {
 					    $syncdata['userbatch'] = JFactory::getApplication()->input->get('userbatch');
 				    }
-				    JFusionUsersync::syncExecute($syncdata, $syncdata['action'], $plugin_offset, $user_offset);
+				    \JFusion\Usersync\Usersync::syncExecute($syncdata, $syncdata['action'], $plugin_offset, $user_offset);
 			    } else {
 				    throw new RuntimeException(JText::_('SYNC_FAILED_TO_LOAD_SYNC_DATA'));
 			    }
@@ -327,7 +327,7 @@ class JFusionController extends JControllerLegacy
 	    try {
 		    $syncid = JFactory::getApplication()->input->get->get('syncid', '');
 
-		    $syncdata = JFusionUsersync::getSyncdata($syncid);
+		    $syncdata = \JFusion\Usersync\Usersync::getSyncdata($syncid);
 		    echo new JResponseJson($syncdata);
 	    } catch (Exception $e) {
 		    echo new JResponseJson($e);
@@ -347,7 +347,7 @@ class JFusionController extends JControllerLegacy
 		    $syncError = JFactory::getApplication()->input->post->get('syncError', array(), 'array');
 		    if ($syncError) {
 			    //apply the submitted sync error instructions
-			    JFusionUsersync::syncError($syncid, $syncError);
+			    \JFusion\Usersync\Usersync::syncError($syncid, $syncError);
 		    }
 		    $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid=' . $syncid);
 	    } catch (Exception $e) {
@@ -368,7 +368,7 @@ class JFusionController extends JControllerLegacy
         $action = JFactory::getApplication()->input->get('action');
         if (!empty($syncid)) {
             //clear sync in progress catch in case we manually stopped the sync so that the sync will continue
-            JFusionUsersync::changeSyncStatus($syncid, 0);
+	        \JFusion\Usersync\Usersync::changeSyncStatus($syncid, 0);
         }
         $syncdata = array();
         $syncdata['completed'] = false;
@@ -432,9 +432,9 @@ class JFusionController extends JControllerLegacy
 				    $syncdata['master'] = $master;
 				    $syncdata['slave_data'] = $slave_data;
 				    //save the submitted syncdata in order for AJAX updates to work
-				    JFusionUsersync::saveSyncdata($syncdata);
+				    \JFusion\Usersync\Usersync::saveSyncdata($syncdata);
 				    //start the usersync
-				    JFusionUsersync::syncExecute($syncdata, $action, 0, 0);
+				    \JFusion\Usersync\Usersync::syncExecute($syncdata, $action, 0, 0);
 			    }
 		    } else {
 			    throw new RuntimeException(JText::_('SYNC_CANNOT_START'));

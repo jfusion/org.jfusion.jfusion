@@ -263,7 +263,7 @@ class plgUserJfusion extends JPlugin
 	        JFactory::getApplication()->input->set('Itemid', $Itemid_backup);
         }
         //return output if allowed
-        $isAdministrator = \JFusion\Framework::isAdministrator();
+        $isAdministrator = JFusionFunction::isAdministrator();
         if ($isAdministrator === true) {
 	        $this->raise('notice', $debug_info);
 	        $this->raise('error', $error_info);
@@ -308,7 +308,7 @@ class plgUserJfusion extends JPlugin
 		    $debugger->set('init', array());
 
 		    //determine if overwrites are allowed
-		    $isAdministrator = \JFusion\Framework::isAdministrator();
+		    $isAdministrator = JFusionFunction::isAdministrator();
 		    if (!empty($options['overwrite']) && $isAdministrator === true) {
 			    $overwrite = 1;
 		    } else {
@@ -876,7 +876,7 @@ class plgUserJfusion extends JPlugin
 		    $db->setQuery($query);
 		    $db->execute();
 		    //return output if allowed
-		    $isAdministrator = \JFusion\Framework::isAdministrator();
+		    $isAdministrator = JFusionFunction::isAdministrator();
 		    if ($isAdministrator === true) {
 			    $this->raise('notice', $debug_info);
 			    $this->raise('error', $error_info);

@@ -182,7 +182,7 @@ class JFusionAdmin_dokuwiki extends \JFusion\Plugin\Plugin_Admin
 	 */
 	function getDefaultUsergroup()
 	{
-		$usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+		$usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
 		return $usergroup;
 	}
 

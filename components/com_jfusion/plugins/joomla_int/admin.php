@@ -126,7 +126,7 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 	public function getDefaultUsergroup()
 	{
 		$db = \JFusion\Factory::getDatabase($this->getJname());
-		$usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+		$usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
 
 		$group = array();
 		if ($usergroups !== null) {

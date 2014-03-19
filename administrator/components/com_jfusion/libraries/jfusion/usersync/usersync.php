@@ -185,7 +185,7 @@ class Usersync
         $syncdata = unserialize(base64_decode($serialized));
         //note we do not want to append the errors as then it gets saved to the database as well in syncExecute
         //get the errors and append it
-        //$syncdata['errors'] = JFusionUsersync::getLogData($syncid);
+        //$syncdata['errors'] = \JFusion\Usersync\Usersync::getLogData($syncid);
         return $syncdata;
     }
 

@@ -607,68 +607,6 @@ class JFusionFunction
 	}
 
 	/**
-	 * @param string $jname
-	 * @param bool   $default
-	 *
-	 * @return mixed;
-	 */
-	public static function getUserGroups($jname = '', $default = false) {
-		jimport('joomla.application.component.helper');
-		$params = JComponentHelper::getParams('com_jfusion');
-		$usergroups = $params->get('usergroups', false);
-
-		if ($jname) {
-			if (isset($usergroups->{$jname})) {
-				$usergroups = $usergroups->{$jname};
-
-				if ($default) {
-					if (isset($usergroups[0])) {
-						$usergroups = $usergroups[0];
-					} else {
-						$usergroups = null;
-					}
-				}
-			} else {
-				if ($default) {
-					$usergroups = null;
-				} else {
-					$usergroups = array();
-				}
-			}
-		}
-		return $usergroups;
-	}
-
-	/**
-	 * @return stdClass;
-	 */
-	public static function getUpdateUserGroups() {
-		jimport('joomla.application.component.helper');
-		$params = JComponentHelper::getParams('com_jfusion');
-		$usergroupmodes = $params->get('updateusergroups', new stdClass());
-		return $usergroupmodes;
-	}
-
-	/**
-	 * returns true / false if the plugin is in advanced usergroup mode or not...
-	 *
-	 * @param string $jname plugin name
-	 *
-	 * @return boolean
-	 */
-	public static function updateUsergroups($jname) {
-		$updateusergroups = static::getUpdateUserGroups();
-		$advanced = false;
-		if (isset($updateusergroups->{$jname}) && $updateusergroups->{$jname}) {
-			$master = Framework::getMaster();
-			if ($master->name != $jname) {
-				$advanced = true;
-			}
-		}
-		return $advanced;
-	}
-
-	/**
 	 * Convert a utf-8 joomla string in to a valid encoding matching the table/filed it will be sent to
 	 *
 	 * @static
@@ -853,28 +791,6 @@ class JFusionFunction
 				break;
 		}
 		return $return;
-	}
-
-	/**
-	 * @return plgAuthenticationJoomla
-	 */
-	public static function getJoomlaAuth() {
-		$dispatcher = JEventDispatcher::getInstance();
-
-		$db = JFactory::getDbo();
-		$query = $db->getQuery(true)
-			->select('folder, type, element AS name, params')
-			->from('#__extensions')
-			->where('element = ' . $db->quote('joomla'))
-			->where('type =' . $db->quote('plugin'))
-			->where('folder =' . $db->quote('authentication'));
-
-		$plugin = $db->setQuery($query)->loadObject();
-		$plugin->type = $plugin->folder;
-
-		require_once JPATH_PLUGINS . '/authentication/joomla/joomla.php';
-
-		return new plgAuthenticationJoomla($dispatcher, (array) ($plugin));
 	}
 
 	/**

@@ -97,11 +97,11 @@ class jfusionViewusergroups extends JViewLegacy {
 	        $groups = json_encode($groups);
 	        $plugins = json_encode($this->plugins);
 
-	        $pairs = JFusionFunction::getUserGroups();
+	        $pairs = \JFusion\Framework::getUserGroups();
 	        if ($pairs === false) {
 		        $pairs = new stdClass();
 	        }
-	        $pairs = json_encode(JFusionFunction::getUserGroups());
+	        $pairs = json_encode(\JFusion\Framework::getUserGroups());
 
 	        $js=<<<JS
 	        JFusion.renderPlugin = [];
