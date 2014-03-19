@@ -14,10 +14,10 @@
  */
 
 use JFusion\Language\Text;
-use JFusion\Event\EventDispatcher;
 
 
 use \stdClass;
+use \SimpleXMLElement;
 use \Exception;
 use \RuntimeException;
 
@@ -1148,28 +1148,6 @@ class Framework
 					break;
 			}
 		}
-	}
-
-	/**
-	 * @return array
-	 */
-	public static function renderMessage() {
-		$app = Factory::getApplication();
-
-		$messages = $app->getMessageQueue();
-
-		$list = array();
-		if (is_array($messages) && !empty($messages))
-		{
-			foreach ($messages as $msg)
-			{
-				if (isset($msg['type']) && isset($msg['message']))
-				{
-					$list[$msg['type']][] = $msg['message'];
-				}
-			}
-		}
-		return $list;
 	}
 
 	/**

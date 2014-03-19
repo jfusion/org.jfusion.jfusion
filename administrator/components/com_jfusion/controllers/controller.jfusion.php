@@ -363,27 +363,27 @@ class JFusionController extends JControllerLegacy
      */
     function syncinitiate()
     {
-        //check to see if the sync has already started
-        $syncid = JFactory::getApplication()->input->get('syncid');
-        $action = JFactory::getApplication()->input->get('action');
-        if (!empty($syncid)) {
-            //clear sync in progress catch in case we manually stopped the sync so that the sync will continue
-	        \JFusion\Usersync\Usersync::changeSyncStatus($syncid, 0);
-        }
-        $syncdata = array();
-        $syncdata['completed'] = false;
-        $syncdata['sync_errors'] = 0;
-        $syncdata['total_to_sync'] = 0;
-        $syncdata['synced_users'] = 0;
-        $syncdata['userbatch'] = JFactory::getApplication()->input->getInt('userbatch', 100);
-	    if ($syncdata['userbatch'] < 1 ) {
-		    $syncdata['userbatch'] = 1;
-	    }
-        $syncdata['user_offset'] = 0;
-        $syncdata['syncid'] = $syncid;
-        $syncdata['action'] = $action;
-
 	    try {
+	        //check to see if the sync has already started
+	        $syncid = JFactory::getApplication()->input->get('syncid');
+	        $action = JFactory::getApplication()->input->get('action');
+	        if (!empty($syncid)) {
+	            //clear sync in progress catch in case we manually stopped the sync so that the sync will continue
+		        \JFusion\Usersync\Usersync::changeSyncStatus($syncid, 0);
+	        }
+	        $syncdata = array();
+	        $syncdata['completed'] = false;
+	        $syncdata['sync_errors'] = 0;
+	        $syncdata['total_to_sync'] = 0;
+	        $syncdata['synced_users'] = 0;
+	        $syncdata['userbatch'] = JFactory::getApplication()->input->getInt('userbatch', 100);
+		    if ($syncdata['userbatch'] < 1 ) {
+			    $syncdata['userbatch'] = 1;
+		    }
+	        $syncdata['user_offset'] = 0;
+	        $syncdata['syncid'] = $syncid;
+	        $syncdata['action'] = $action;
+
 		    $db = JFactory::getDBO();
 
 		    $query = $db->getQuery(true)
@@ -439,12 +439,11 @@ class JFusionController extends JControllerLegacy
 		    } else {
 			    throw new RuntimeException(JText::_('SYNC_CANNOT_START'));
 		    }
+		    echo new JResponseJson($syncdata);
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e);
+		    echo new JResponseJson($e);
 	    }
-
-	    $syncdata['messages'] = \JFusion\Framework::renderMessage();
-        die(json_encode($syncdata));
+	    exit();
     }
 
     /**
