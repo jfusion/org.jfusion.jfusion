@@ -631,8 +631,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 	 */
 	public function updatePassword($userinfo, &$existinguser, &$status)
 	{
-		if (strlen($userinfo->password_clear) > 55)
-		{
+		if (strlen($userinfo->password_clear) > 55) {
 			throw new Exception(JText::_('JLIB_USER_ERROR_PASSWORD_TOO_LONG'));
 		} else {
 			/**
