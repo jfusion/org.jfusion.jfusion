@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\wordpress;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -30,10 +30,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAdmin_wordpress extends \JFusion\Plugin\Plugin_Admin
+class Admin extends \JFusion\Plugin\Plugin_Admin
 {
 	/**
-	 * @var $helper JFusionHelper_wordpress
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -93,7 +93,7 @@ class JFusionAdmin_wordpress extends \JFusion\Plugin\Plugin_Admin
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-			\JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+			\JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
 		} else {
 			//parse the file line by line to get only the config variables

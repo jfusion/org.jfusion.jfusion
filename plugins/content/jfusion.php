@@ -1327,7 +1327,7 @@ HTML;
 		$userlink_custom = $this->params->get('userlink_custom', false);
 		$character_limit = (int) $this->params->get('character_limit');
 		$itemid = $this->params->get('itemid');
-		$JFusionPublic = \JFusion\Factory::getPublic($this->jname);
+		$JFusionPublic = \JFusion\Factory::getFront($this->jname);
 
 		$JFusionForum = \JFusion\Factory::getForum($this->jname);
 		$columns = $JFusionForum->getDiscussionColumns();

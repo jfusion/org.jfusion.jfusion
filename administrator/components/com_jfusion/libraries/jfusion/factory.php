@@ -26,7 +26,7 @@ use JFusion\Application\Application;
 use JFusion\Session\Session;
 
 
-use JFusion\Plugin\Plugin_Public;
+use JFusion\Plugin\Plugin_Front;
 use JFusion\Plugin\Plugin_Admin;
 use JFusion\Plugin\Plugin_Auth;
 use JFusion\Plugin\Plugin_User;
@@ -136,9 +136,9 @@ class Factory
 	 *
 	 * @param string $jname name of the JFusion plugin used
 	 *
-	 * @return Plugin_Public object for the JFusion plugin
+	 * @return Plugin_Front object for the JFusion plugin
 	 */
-	public static function &getPublic($jname)
+	public static function &getFront($jname)
 	{
 		static $instances;
 		if (!isset($instances)) {
@@ -146,13 +146,9 @@ class Factory
 		}
 		//only create a new plugin instance if it has not been created before
 		if (!isset($instances[$jname])) {
-			$filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'public.php';
-			if (file_exists($filename)) {
-				//load the plugin class itself
-				require_once $filename;
-				$class = 'JFusionPublic_' . $jname;
-			} else {
-				$class = '\JFusion\Plugin\Plugin_Public';
+			$class = '\JFusion\Plugins\\'.$jname.'\Front';
+			if (!class_exists($class)) {
+				$class = '\JFusion\Plugin\Plugin_Front';
 			}
 			$instances[$jname] = new $class;
 		}
@@ -173,14 +169,8 @@ class Factory
 		}
 		//only create a new plugin instance if it has not been created before
 		if (!isset($instances[$jname])) {
-			$filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'admin.php';
-			if (file_exists($filename)) {
-				//load the plugin class itself
-				$jn = $jname;
-				require_once $filename;
-				$jname = $jn; // (stop gap bug #: some plugins seems to alter $jname, have to find put why
-				$class = 'JFusionAdmin_' . $jname;
-			} else {
+			$class = '\JFusion\Plugins\\'.$jname.'\Admin';
+			if (!class_exists($class)) {
 				$class = '\JFusion\Plugin\Plugin_Admin';
 			}
 			$instances[$jname] = new $class;
@@ -203,12 +193,8 @@ class Factory
 		}
 		//only create a new authentication instance if it has not been created before
 		if (!isset($instances[$jname])) {
-			$filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'auth.php';
-			if (file_exists($filename)) {
-				//load the plugin class itself
-				require_once $filename;
-				$class = 'JFusionAuth_' . $jname;
-			} else {
+			$class = '\JFusion\Plugins\\'.$jname.'\Auth';
+			if (!class_exists($class)) {
 				$class = '\JFusion\Plugin\Plugin_Auth';
 			}
 			$instances[$jname] = new $class;
@@ -231,12 +217,8 @@ class Factory
 		}
 		//only create a new user instance if it has not been created before
 		if (!isset($instances[$jname])) {
-			$filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'user.php';
-			if (file_exists($filename)) {
-				//load the plugin class itself
-				require_once $filename;
-				$class = 'JFusionUser_' . $jname;
-			} else {
+			$class = '\JFusion\Plugins\\'.$jname.'\User';
+			if (!class_exists($class)) {
 				$class = '\JFusion\Plugin\Plugin_User';
 			}
 			$instances[$jname] = new $class;
@@ -259,12 +241,8 @@ class Factory
 		}
 		//only create a new thread instance if it has not been created before
 		if (!isset($instances[$jname])) {
-			$filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'forum.php';
-			if (file_exists($filename)) {
-				//load the plugin class itself
-				require_once $filename;
-				$class = 'JFusionForum_' . $jname;
-			} else {
+			$class = '\JFusion\Plugins\\'.$jname.'\Forum';
+			if (!class_exists($class)) {
 				$class = '\JFusion\Plugin\Plugin_Forum';
 			}
 			$instances[$jname] = new $class;
@@ -287,14 +265,11 @@ class Factory
 		}
 		//only create a new thread instance if it has not been created before
 		if (!isset($instances[$jname])) {
-			$filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'helper.php';
-			if (file_exists($filename)) {
-				//load the plugin class itself
-				require_once $filename;
-				$class = 'JFusionHelper_' . $jname;
-				$instances[$jname] = new $class;
-			} else {
+			$class = '\JFusion\Plugins\\'.$jname.'\Helper';
+			if (!class_exists($class)) {
 				$instances[$jname] = false;
+			} else {
+				$instances[$jname] = new $class;
 			}
 		}
 		return $instances[$jname];

@@ -565,7 +565,7 @@ class executeJFusionHook
 
         //parse AJAX output
 	    if (defined('_VBJNAME')) {
-		    $public = \JFusion\Factory::getPublic(_VBJNAME);
+		    $public = \JFusion\Factory::getFront(_VBJNAME);
 		    $params = \JFusion\Factory::getParams(_VBJNAME);
 
 		    $jdata = new stdClass();

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\efront;
 
 /**
  * 
@@ -14,6 +14,12 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Plugin\Plugin_Forum;
+
+use \Exception;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,7 +34,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionForum_efront extends \JFusion\Plugin\Plugin_Forum
+class Forum extends Plugin_Forum
 {
     /**
      * returns the name of this JFusion plugin
@@ -46,7 +52,7 @@ class JFusionForum_efront extends \JFusion\Plugin\Plugin_Forum
     function getAvatar($userid) {
 	    try {
 		    //get the connection to the db
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    // read unread count
 
 		    $query = $db->getQuery(true)
@@ -66,7 +72,7 @@ class JFusionForum_efront extends \JFusion\Plugin\Plugin_Forum
 		    $avatar = $db->loadResult();
 		    $url = $this->params->get('avatar_url') . $avatar;
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $url = '';
 	    }
 

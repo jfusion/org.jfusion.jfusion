@@ -868,7 +868,7 @@ class Framework
     public static function hasFeature($jname, $feature, $itemid = null) {
         $return = false;
 	    $admin = Factory::getAdmin($jname);
-	    $public = Factory::getPublic($jname);
+	    $public = Factory::getFront($jname);
 	    $forum = Factory::getForum($jname);
 	    $user = Factory::getUser($jname);
         switch ($feature) {

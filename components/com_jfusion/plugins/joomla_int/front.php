@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\joomla_int;
 
 /**
  * 
@@ -6,7 +6,7 @@
  * 
  * @category   JFusion
  * @package    JFusionPlugins
- * @subpackage JoomlaExt 
+ * @subpackage JoomlaInt 
  * @author     JFusion Team <webmaster@jfusion.org>
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -14,33 +14,35 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_Front;
+
+use \RuntimeException;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * JFusion Public Class for an external Joomla database
- * For detailed descriptions on these functions please check the model.abstractpublic.php
+ * JFusion Public Class for the internal Joomla database
+ * For detailed descriptions on these functions please check the model.abstractapublic.php
  * 
  * @category   JFusion
  * @package    JFusionPlugins
- * @subpackage Joomla_ext
+ * @subpackage Joomla_int
  * @author     JFusion Team <webmaster@jfusion.org>
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_joomla_ext extends \JFusion\Plugin\Plugin_Public
+class Front extends Plugin_Front
 {
-	/**
-	 * @var $helper JFusionHelper_joomla_ext
-	 */
-	var $helper;
-
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
      */
-    function getJname() {
-        return 'joomla_ext';
+    function getJname() 
+    {
+        return 'joomla_int';
     }
 
 	/**
@@ -86,7 +88,7 @@ class JFusionPublic_joomla_ext extends \JFusion\Plugin\Plugin_Public
 	 */
 	public function getOnlineUserQuery($usergroups = array())
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('DISTINCT u.id AS userid, u.username, u.name, u.email')
@@ -114,7 +116,7 @@ class JFusionPublic_joomla_ext extends \JFusion\Plugin\Plugin_Public
 	 */
 	public function getNumberOnlineGuests()
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('COUNT(*)')
@@ -133,7 +135,7 @@ class JFusionPublic_joomla_ext extends \JFusion\Plugin\Plugin_Public
 	 */
 	public function getNumberOnlineMembers()
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('COUNT(DISTINCT userid) AS c')
@@ -158,15 +160,15 @@ class JFusionPublic_joomla_ext extends \JFusion\Plugin\Plugin_Public
 	public function setLanguageFrontEnd($userinfo = null)
 	{
 		$status = array('error' => '', 'debug' => '');
-		$user = \JFusion\Factory::getUser($this->getJname());
+		$user = Factory::getUser($this->getJname());
 		$existinguser = (isset($userinfo)) ? $user->getUser($userinfo) : null;
 		// If the user is connected we change his account parameter in function of the language front end
 		if ($existinguser) {
-			$userinfo->language = \JFusion\Factory::getLanguage()->getTag();
+			$userinfo->language = Factory::getLanguage()->getTag();
 
 			$user->updateUserLanguage($userinfo, $existinguser, $status);
 		} else {
-			$status['debug'] = JText::_('NO_USER_DATA_FOUND');
+			$status['debug'] = Text::_('NO_USER_DATA_FOUND');
 		}
 		return $status;
 	}

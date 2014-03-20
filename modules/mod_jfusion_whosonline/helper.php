@@ -50,7 +50,7 @@ class modjfusionWhosOnlineHelper {
 			$output->error = JText::_('NO_MENU_ITEM');
 		} else{
 			$forum_links = \JFusion\Factory::getForum($link_jname);
-			$public_users = \JFusion\Factory::getPublic($jname);
+			$public_users = \JFusion\Factory::getFront($jname);
 			if(!$public_users->isConfigured()) {
 				$output->error = $jname . ': ' . JText::_('NOT_CONFIGURED');
 			} else {

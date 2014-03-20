@@ -59,7 +59,7 @@ try {
 	        $link_jname = $link_itemid;
 	    }
 	    //get the default URLs if no custom URL specified
-	    $LinkPlugin = \JFusion\Factory::getPublic($link_jname);
+	    $LinkPlugin = \JFusion\Factory::getFront($link_jname);
 	    if (empty($lostpassword_url) && method_exists($LinkPlugin, 'getLostPasswordURL')) {
 	        $lostpassword_url = \JFusion\Framework::routeURL($LinkPlugin->getLostPasswordURL(), $link_itemid);
 	    }
@@ -146,7 +146,7 @@ try {
 	        $pmcount = $url_viewnewmessages = false;
 	    }
 	}
-	$public = \JFusion\Factory::getPublic('joomla_int');
+	$public = \JFusion\Factory::getFront('joomla_int');
 	//use the Joomla default if JFusion specified none
 	if (empty($lostpassword_url)) {
 	    $lostpassword_url = JRoute::_($public->getLostPasswordURL());

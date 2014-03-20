@@ -4,8 +4,8 @@ require_once __DIR__ . '/libraries/import.php';
 
 require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php');
 
-use \JFusion\Factory;
-use \JFusion\Registry\Registry;
+use JFusion\Factory;
+use JFusion\Registry\Registry;
 
 jimport('joomla.application.component.helper');
 /**

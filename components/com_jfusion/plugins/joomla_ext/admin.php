@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\joomla_ext;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -15,6 +15,14 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+
+use \JRegistry;
+use \Exception;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -30,10 +38,10 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
+class JFusionAdmin_joomla_ext extends Plugin_Admin
 {
 	/**
-	 * @var $helper JFusionHelper_joomla_ext
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -66,7 +74,7 @@ class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
 	public function getUserList($limitstart = 0, $limit = 0)
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('username, email')
@@ -75,7 +83,7 @@ class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
 			$db->setQuery($query, $limitstart, $limit);
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			$userlist = array();
 		}
 		return $userlist;
@@ -88,7 +96,7 @@ class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
 	public function getUserCount()
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('count(*)')
@@ -98,7 +106,7 @@ class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
 			//getting the results
 			return $db->loadResult();
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			return 0;
 		}
 	}
@@ -110,7 +118,7 @@ class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
 	 */
 	public function getUsergroupList()
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('id, title as name')
@@ -133,7 +141,7 @@ class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
 	function getUsergroupName($jname, $gid)
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($jname);
+			$db = Factory::getDatabase($jname);
 
 			//we want to output the usergroup name
 
@@ -145,7 +153,7 @@ class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
 			$db->setQuery($query);
 			$group = $db->loadResult();
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $jname);
+			Framework::raiseError($e, $jname);
 			$group = '';
 		}
 		return $group;
@@ -186,7 +194,7 @@ class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
 		$params = array();
 		$lines = $this->readFile($configfile);
 		if ($lines === false) {
-			\JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $configfile . ' ' . JText::_('WIZARD_MANUAL'));
+			Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $configfile . ' ' . Text::_('WIZARD_MANUAL'));
 			return false;
 		} else {
 			//parse the file line by line to get only the config variables
@@ -231,7 +239,7 @@ class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
 	public function allowRegistration()
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			//we want to output the usergroup name
 			$query = $db->getQuery(true)
@@ -246,7 +254,7 @@ class JFusionAdmin_joomla_ext extends \JFusion\Plugin\Plugin_Admin
 			// Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
 			return ($params->get('allowUserRegistration', false) ? true : false);
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			return false;
 		}
 	}

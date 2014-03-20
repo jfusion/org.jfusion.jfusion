@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\dokuwiki;
 
 /**
  * file containing public function for the jfusion plugin
@@ -15,6 +15,12 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_Front;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,10 +34,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_dokuwiki extends \JFusion\Plugin\Plugin_Public
+class Front extends Plugin_Front
 {
 	/**
-	 * @var $helper JFusionHelper_dokuwiki
+	 * @var $helper Helper
 	 */
 	var $helper;
     /**
@@ -82,14 +88,14 @@ class JFusionPublic_dokuwiki extends \JFusion\Plugin\Plugin_Public
         //setup constants needed by Dokuwiki
         $this->helper->defineConstants();
 
-	    $mainframe = \JFusion\Factory::getApplication();
+	    $mainframe = Factory::getApplication();
 
         $do = $mainframe->input->get('do');
         if ($do == 'logout') {
             // logout any joomla users
             $mainframe->logout();
             //clean up session
-            $session = \JFusion\Factory::getSession();
+            $session = Factory::getSession();
             $session->close();
             $session->restart();
         } else if ($do == 'login') {
@@ -115,7 +121,7 @@ class JFusionPublic_dokuwiki extends \JFusion\Plugin\Plugin_Public
 
         require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
         if (!is_file($index_file)) {
-            \JFusion\Framework::raiseWarning('The path to the DokuWiki index file set in the component preferences does not exist', $this->getJname());
+            Framework::raiseWarning('The path to the DokuWiki index file set in the component preferences does not exist', $this->getJname());
         } else {
             //set the current directory to dokuwiki
             chdir($source_path);
@@ -139,7 +145,7 @@ class JFusionPublic_dokuwiki extends \JFusion\Plugin\Plugin_Public
             chdir(JPATH_SITE);
             // Log an error if we could not include the file
             if (!$rs) {
-                \JFusion\Framework::raiseWarning('Could not find DokuWiki in the specified directory', $this->getJname());
+                Framework::raiseWarning('Could not find DokuWiki in the specified directory', $this->getJname());
             }
         }
     }
@@ -290,7 +296,7 @@ class JFusionPublic_dokuwiki extends \JFusion\Plugin\Plugin_Public
             } else {
                 $sefmode = $this->params->get('sefmode');
                 if ($sefmode == 1) {
-                    $url = \JFusion\Framework::routeURL($url, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
+                    $url = Framework::routeURL($url, Factory::getApplication()->input->getInt('Itemid'));
                 } else {
                     //we can just append both variables
                     $url = $this->data->baseURL . $url;
@@ -316,7 +322,7 @@ class JFusionPublic_dokuwiki extends \JFusion\Plugin\Plugin_Public
     function replaceForm(&$data) {
         $pattern = '#<form(.*?)action=["\'](.*?)["\'](.*?)>(.*?)</form>#mSsi';
         $getData = '';
-	    $mainframe = \JFusion\Factory::getApplication();
+	    $mainframe = Factory::getApplication();
         if ($mainframe->input->getInt('Itemid')) $getData.= '<input name="Itemid" value="' . $mainframe->input->getInt('Itemid') . '" type="hidden"/>';
         if ($mainframe->input->get('option')) $getData.= '<input name="option" value="' . $mainframe->input->get('option') . '" type="hidden"/>';
         if ($mainframe->input->get('jname')) $getData.= '<input name="jname" value="' . $mainframe->input->get('jname') . '" type="hidden"/>';
@@ -366,13 +372,13 @@ class JFusionPublic_dokuwiki extends \JFusion\Plugin\Plugin_Public
         $pos = 0;
 
         foreach ($results as $key => $index) {
-            $rows[$pos]->title = JText::_($key);
+            $rows[$pos]->title = Text::_($key);
             $rows[$pos]->text = $search->getPage($key);
             $rows[$pos]->created = $search->getPageModifiedDateTime($key);
             //dokuwiki doesn't track hits
             $rows[$pos]->hits = 0;
-            $rows[$pos]->href = \JFusion\Framework::routeURL(str_replace(':', ';', $this->getSearchResultLink($key)), $itemid);
-            $rows[$pos]->section = JText::_($key);
+            $rows[$pos]->href = Framework::routeURL(str_replace(':', ';', $this->getSearchResultLink($key)), $itemid);
+            $rows[$pos]->section = Text::_($key);
             $pos++;
         }
         return $rows;
@@ -392,7 +398,7 @@ class JFusionPublic_dokuwiki extends \JFusion\Plugin\Plugin_Public
      */
     function getPathWay() {
         $pathway = array();
-	    $mainframe = \JFusion\Factory::getApplication();
+	    $mainframe = Factory::getApplication();
         if ($mainframe->input->get('id')) {
             $bread = explode(';', $mainframe->input->get('id'));
             $url = '';

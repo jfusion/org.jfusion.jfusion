@@ -1,65 +1,62 @@
-<?php
+<?php namespace JFusion\Plugins\wordpress;
 
 /**
- * JFusion Public Class for elgg
- * 
+ *
  * PHP version 5
- * 
+ *
  * @category   JFusion
  * @package    JFusionPlugins
- * @subpackage Elgg 
- * @author     JFusion Team <webmaster@jfusion.org>
- * @copyright  2008 JFusion. All rights reserved.
+ * @subpackage wordpress
+ * @author     JFusion Team -- Henk Wevers <webmaster@jfusion.org>
+ * @copyright  2010 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
- * @link       http://www.jfusion.org 
+ * @link       http://www.jfusion.org
  */
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * JFusion Public Class for Elgg
+ * JFusion Public Class for phpBB3
  * For detailed descriptions on these functions please check the model.abstractpublic.php
- * 
+ *
  * @category   JFusion
  * @package    JFusionPlugins
- * @subpackage Elgg 
- * @author     JFusion Team <webmaster@jfusion.org>
- * @copyright  2008 JFusion. All rights reserved.
+ * @subpackage Wordpress
+ * @author     JFusion Team -- Henk Wevers <webmaster@jfusion.org>
+ * @copyright  2010 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-
-class JFusionPublic_elgg extends \JFusion\Plugin\Plugin_Public
+class Front extends \JFusion\Plugin\Plugin_Front
 {
-
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
-     */    
-    function getJname() 
+     */
+    function getJname()
     {
-        return 'elgg';
+        return 'wordpress';
     }
 
     /**
      * @return string
      */
     function getRegistrationURL() {
-        return 'account/register.php';
+        return 'wp-login.php?action=register';
     }
 
     /**
      * @return string
      */
     function getLostPasswordURL() {
-        return 'account/forgotten_password.php';
+        return 'wp-login.php?action=lostpassword';
     }
 
     /**
      * @return string
      */
     function getLostUsernameURL() {
-        return '';
+        return 'wp-login.php?action=lostpassword';
     }
-}
+ }

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\joomla_int;
 
 /**
  * 
@@ -12,6 +12,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
+
+use JFusion\Factory;
+use JFusion\Plugin\Plugin_Auth;
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
@@ -28,7 +31,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_joomla_int extends \JFusion\Plugin\Plugin_Auth
+class Auth extends Plugin_Auth
 {
 	/**
 	 * returns the name of this JFusion plugin
@@ -51,9 +54,9 @@ class JFusionAuth_joomla_int extends \JFusion\Plugin\Plugin_Auth
 	{
 		jimport('joomla.user.helper');
 		if (jimport('phpass.passwordhash')) {
-			$testcrypt = JUserHelper::hashPassword($userinfo->password_clear);
+			$testcrypt = \JUserHelper::hashPassword($userinfo->password_clear);
 		} else {
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex');
+			$testcrypt = \JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex');
 		}
 		return $testcrypt;
 	}
@@ -72,12 +75,12 @@ class JFusionAuth_joomla_int extends \JFusion\Plugin\Plugin_Auth
 		// If we are using phpass
 		if (strpos($userinfo->password, '$P$') === 0) {
 			// Use PHPass's portable hashes with a cost of 10.
-			$phpass = new PasswordHash(10, true);
+			$phpass = new \PasswordHash(10, true);
 
 			$match = $phpass->CheckPassword($userinfo->password_clear, $userinfo->password);
 		} elseif ($userinfo->password[0] == '$') {
 			// JCrypt::hasStrongPasswordSupport() includes a fallback for us in the worst case
-			JCrypt::hasStrongPasswordSupport();
+			\JCrypt::hasStrongPasswordSupport();
 			$match = password_verify($userinfo->password_clear, $userinfo->password);
 
 			// Uncomment this line if we actually move to bcrypt.
@@ -85,7 +88,7 @@ class JFusionAuth_joomla_int extends \JFusion\Plugin\Plugin_Auth
 			$rehash = true;
 		} elseif (substr($userinfo->password, 0, 8) == '{SHA256}') {
 			// Check the password
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'sha256', true);
+			$testcrypt = \JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'sha256', true);
 
 			$match = $this->comparePassword($userinfo->password, $testcrypt);
 
@@ -93,14 +96,14 @@ class JFusionAuth_joomla_int extends \JFusion\Plugin\Plugin_Auth
 		} else {
 			$rehash = true;
 
-			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex', false);
+			$testcrypt = \JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex', false);
 
 			$match = $this->comparePassword($userinfo->password, $testcrypt);
 		}
 
 		// If we have a match and rehash = true, rehash the password with the current algorithm.
 		if ($match && $rehash) {
-			$user = \JFusion\Factory::getUser($this->getJname());
+			$user = Factory::getUser($this->getJname());
 			$old = $user->getUser($userinfo);
 			if ($old) {
 				$status = array('error' => array(), 'debug' => array());
@@ -123,10 +126,10 @@ class JFusionAuth_joomla_int extends \JFusion\Plugin\Plugin_Auth
 	{
 		jimport('joomla.user.helper');
 		if (jimport('phpass.passwordhash')) {
-			$password = JUserHelper::hashPassword($userinfo->password_clear);
+			$password = \JUserHelper::hashPassword($userinfo->password_clear);
 		} else {
-			$salt = JUserHelper::genRandomPassword(32);
-			$password = JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'md5-hex') . ':' . $salt;
+			$salt = \JUserHelper::genRandomPassword(32);
+			$password = \JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'md5-hex') . ':' . $salt;
 		}
 		return $password;
 	}

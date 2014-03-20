@@ -1,4 +1,5 @@
-<?php
+<?php namespace JFusion\Plugins\wordpress;
+
 /**
  * file containing helper functions for Wordpress 3
  *
@@ -27,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_wordpress extends \JFusion\Plugin\Plugin
+class Helper extends \JFusion\Plugin\Plugin
 {
     /**
      * @return string

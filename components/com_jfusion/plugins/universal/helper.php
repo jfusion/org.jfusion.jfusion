@@ -1,4 +1,5 @@
-<?php
+<?php namespace JFusion\Plugins\universal;
+
 /**
  * @package JFusion
  * @subpackage Models
@@ -17,7 +18,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_universal extends \JFusion\Plugin\Plugin {
+class Helper extends \JFusion\Plugin\Plugin
+{
 	var $map = array();
 	var $mapraw = null;
 
@@ -242,7 +244,7 @@ class JFusionHelper_universal extends \JFusion\Plugin\Plugin {
 		if ( !is_array($fields) ) {
 			$defaulttype = new stdClass;
 			$defaulttype->id = '';
-			$defaulttype->name = JText::_('CHANGE_ME');
+			$defaulttype->name = Text::_('CHANGE_ME');
 
 			$fields = array();
 			$type = new stdClass;

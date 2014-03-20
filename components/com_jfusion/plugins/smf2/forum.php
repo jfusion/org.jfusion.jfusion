@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\smf2;
 
 /**
 * @package JFusion_SMF
@@ -16,7 +16,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_SMF
  */
 
-class JFusionForum_smf2 extends \JFusion\Plugin\Plugin_Forum
+class Forum extends \JFusion\Plugin\Plugin_Forum
 {
     /**
      * @return string
@@ -467,8 +467,8 @@ class JFusionForum_smf2 extends \JFusion\Plugin\Plugin_Forum
             $username = $mainframe->input->post->get('guest_username', '');
             $email = $mainframe->input->post->get('guest_email', '');
 
-            $j_username = JText::_('USERNAME');
-            $j_email = JText::_('EMAIL');
+            $j_username = Text::_('USERNAME');
+            $j_email = Text::_('EMAIL');
             $html = <<<HTML
                 <table>
                     <tr>
@@ -517,20 +517,20 @@ HTML;
 				$userinfo->email = $postinfo->email;
 				$userinfo->userid = 0;
 				if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
-					throw new RuntimeException(JText::_('GUEST_FIELDS_MISSING'));
+					throw new RuntimeException(Text::_('GUEST_FIELDS_MISSING'));
 				} else {
 					//check to see if user exists to prevent user hijacking
 					$JFusionUser = \JFusion\Factory::getUser($this->getJname());
 					define('OVERRIDE_IDENTIFIER', 3);
 					$existinguser = $JFusionUser->getUser($userinfo->username);
 					if(!empty($existinguser)) {
-						throw new RuntimeException(JText::_('USERNAME_IN_USE'));
+						throw new RuntimeException(Text::_('USERNAME_IN_USE'));
 					}
 
 					//check for email
 					$existinguser = $JFusionUser->getUser($userinfo->email);
 					if(!empty($existinguser)) {
-						throw new RuntimeException(JText::_('EMAIL_IN_USE'));
+						throw new RuntimeException(Text::_('EMAIL_IN_USE'));
 					}
 				}
 			}
@@ -538,7 +538,7 @@ HTML;
 			//setup some variables
 			$userid = $userinfo->userid;
 			$db = \JFusion\Factory::getDatabase($this->getJname());
-	        $public = \JFusion\Factory::getPublic($this->getJname());
+	        $public = \JFusion\Factory::getFront($this->getJname());
 			//strip out html from post
 			$text = strip_tags($postinfo->text);
 

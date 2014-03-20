@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\vbulletin;
 
 /**
  *
@@ -28,10 +28,10 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
+class User extends \JFusion\Plugin\Plugin_User
 {
 	/**
-	 * @var $helper JFusionHelper_vbulletin
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -157,10 +157,10 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 		$response = $this->helper->apiCall('deleteUser', $apidata);
 
 		if ($response['success']) {
-			$status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->userid;
+			$status['debug'][] = Text::_('USER_DELETION') . ' ' . $userinfo->userid;
 		}
 		foreach ($response['errors'] as $error) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $error;
+			$status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $error;
 		}
 		foreach ($response['debug'] as $debug) {
 			$status['debug'][] = $debug;
@@ -195,12 +195,12 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 
 			$session_user = $mainframe->input->cookie->get($cookie_prefix . 'userid', '');
 			if (empty($session_user)) {
-				$status['debug'][] = JText::_('VB_COOKIE_USERID_NOT_FOUND');
+				$status['debug'][] = Text::_('VB_COOKIE_USERID_NOT_FOUND');
 			}
 
 			$session_hash = $mainframe->input->cookie->get($cookie_prefix . 'sessionhash', '');
 			if (empty($session_hash)) {
-				$status['debug'][] = JText::_('VB_COOKIE_HASH_NOT_FOUND');
+				$status['debug'][] = Text::_('VB_COOKIE_HASH_NOT_FOUND');
 			}
 
 			//If blocking a user in Joomla User Manager, Joomla will initiate a logout.
@@ -260,7 +260,7 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 		try {
 			//do not create sessions for blocked users
 			if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-				throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
+				throw new RuntimeException(Text::_('FUSION_BLOCKED_USER'));
 			} else {
 				require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 				//first check to see if striking is enabled to prevent further strikes
@@ -288,7 +288,7 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 					$strikes = $db->loadResult();
 
 					if ($strikes >= 5) {
-						throw new RuntimeException(JText::_('VB_TOO_MANY_STRIKES'));
+						throw new RuntimeException(Text::_('VB_TOO_MANY_STRIKES'));
 					}
 				}
 
@@ -338,12 +338,12 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 					$status['debug'][] = $cookies->addCookie($cookie_prefix . 'userid', $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
 					$status['debug'][] = $cookies->addCookie($cookie_prefix . 'password', $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
 				} else {
-					$status['debug'][] = JText::_('VB_SESSION_ALREADY_ACTIVE');
+					$status['debug'][] = Text::_('VB_SESSION_ALREADY_ACTIVE');
 					/*
 				 * do not want to output as it indicate the cookies are set when they are not.
-				$status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'userid', JText::_('VALUE') => $cookie_userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-				$status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'password', JText::_('VALUE') => substr($cookie_password, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-				$status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'sessionhash', JText::_('VALUE') => $cookie_sessionhash, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+				$status['debug'][Text::_('COOKIES')][] = array(Text::_('NAME') => $cookie_prefix.'userid', Text::_('VALUE') => $cookie_userid, Text::_('EXPIRES') => $debug_expiration, Text::_('COOKIE_PATH') => $cookie_path, Text::_('COOKIE_DOMAIN') => $cookie_domain);
+				$status['debug'][Text::_('COOKIES')][] = array(Text::_('NAME') => $cookie_prefix.'password', Text::_('VALUE') => substr($cookie_password, 0, 6) . '********, ', Text::_('EXPIRES') => $debug_expiration, Text::_('COOKIE_PATH') => $cookie_path, Text::_('COOKIE_DOMAIN') => $cookie_domain);
+				$status['debug'][Text::_('COOKIES')][] = array(Text::_('NAME') => $cookie_prefix.'sessionhash', Text::_('VALUE') => $cookie_sessionhash, Text::_('EXPIRES') => $debug_expiration, Text::_('COOKIE_PATH') => $cookie_path, Text::_('COOKIE_DOMAIN') => $cookie_domain);
 				*/
 				}
 			}
@@ -380,7 +380,7 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+		$status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	}
 
 	/**
@@ -396,10 +396,10 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 		$response = $this->helper->apiCall('updateEmail', $apidata);
 
 		if($response['success']) {
-			$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+			$status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 		}
 		foreach ($response['errors'] as $error) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ' ' . $error;
+			$status['error'][] = Text::_('EMAIL_UPDATE_ERROR') . ' ' . $error;
 		}
 		foreach ($response['debug'] as $debug) {
 			$status['debug'][] = $debug;
@@ -458,7 +458,7 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 			$db->insertObject('#__userban', $ban, 'userid');
 		}
 
-		$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 
 		//note that blockUser has been called
 		if (empty($status['aec'])) {
@@ -523,10 +523,10 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 		}
 
 		if ($response['success']) {
-			$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+			$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 		}
 		foreach ($response['errors'] as $error) {
-			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $error;
+			$status['error'][] = Text::_('BLOCK_UPDATE_ERROR') . ': ' . $error;
 		}
 		foreach ($response['debug'] as $debug) {
 			$status['debug'][] = $debug;
@@ -565,7 +565,7 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	}
 
 	/**
@@ -617,16 +617,16 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 			$apidata = array('existinguser' => $existinguser);
 			$response = $this->helper->apiCall('inactivateUser', $apidata);
 			if ($response['success']) {
-				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+				$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 			}
 			foreach ($response['errors'] as $error) {
-				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $error;
+				$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $error;
 			}
 			foreach ($response['debug'] as $debug) {
 				$status['debug'][] = $debug;
 			}
 		} else {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		}
 	}
 
@@ -644,7 +644,7 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 
 			//return if we are in advanced user group mode but the master did not pass in a group_id
 			if (empty($usergroups)) {
-				throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
+				throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
 			} else {
 				$usergroup = $usergroups[0];
 				if (empty($userinfo->activation)) {
@@ -698,7 +698,7 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 							$db->setQuery($query);
 							$db->execute();
 						} catch (Exception $e) {
-							$status['debug'][] = JText::_('USER_CREATION_ERROR') . '. '. JText::_('USERID') . ' ' . $userdmid . ': ' . JText::_('MASTER_PASSWORD_NOT_COPIED');
+							$status['debug'][] = Text::_('USER_CREATION_ERROR') . '. '. Text::_('USERID') . ' ' . $userdmid . ': ' . Text::_('MASTER_PASSWORD_NOT_COPIED');
 						}
 					}
 
@@ -714,17 +714,17 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 					}
 
 					//return the good news
-					$status['debug'][] = JText::_('USER_CREATION') . '. '. JText::_('USERID') . ' ' . $userdmid;
+					$status['debug'][] = Text::_('USER_CREATION') . '. '. Text::_('USERID') . ' ' . $userdmid;
 				}
 				foreach ($response['errors'] as $error) {
-					$status['error'][] = JText::_('USER_CREATION_ERROR') . ' ' . $error;
+					$status['error'][] = Text::_('USER_CREATION_ERROR') . ' ' . $error;
 				}
 				foreach ($response['debug'] as $debug) {
 					$status['debug'][] = $debug;
 				}
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('ERROR_CREATE_USER') . ': ' . $e->getMessage();
+			$status['error'][] = Text::_('ERROR_CREATE_USER') . ': ' . $e->getMessage();
 		}
 	}
 
@@ -785,7 +785,7 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 		//check to see if we have a group_id in the $userinfo, if not return
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
+			throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
 		} else {
 			$usergroup = $usergroups[0];
 			$defaultgroup = $usergroup->defaultgroup;
@@ -802,10 +802,10 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 			$response = $this->helper->apiCall('updateUsergroup', $apidata);
 
 			if ($response['success']) {
-				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup->defaultgroup;;
+				$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup->defaultgroup;;
 			}
 			foreach ($response['errors'] AS $error) {
-				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+				$status['error'][] = Text::_('GROUP_UPDATE_ERROR') . ' ' . $error;
 			}
 			foreach ($response['debug'] as $debug) {
 				$status['debug'][] = $debug;
@@ -1129,10 +1129,10 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 					$response = $this->helper->apiCall('unblockUser', $apidata);
 
 					if ($response['success']) {
-						$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $settings['vb_expiration_groupid'];
+						$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $settings['vb_expiration_groupid'];
 					}
 					foreach ($response['errors'] AS $error) {
-						$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+						$status['error'][] = Text::_('GROUP_UPDATE_ERROR') . ' ' . $error;
 					}
 					foreach ($response['debug'] as $debug) {
 						$status['debug'][] = $debug;
@@ -1182,10 +1182,10 @@ class JFusionUser_vbulletin extends \JFusion\Plugin\Plugin_User
 					$response = $this->helper->apiCall('unblockUser', $apidata);
 
 					if ($response['success']) {
-						$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $settings['vb_subscription_groupid'];
+						$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $settings['vb_subscription_groupid'];
 					}
 					foreach ($response['errors'] AS $error) {
-						$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+						$status['error'][] = Text::_('GROUP_UPDATE_ERROR') . ' ' . $error;
 					}
 					foreach ($response['debug'] as $debug) {
 						$status['debug'][] = $debug;

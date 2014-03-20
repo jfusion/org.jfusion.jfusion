@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\universal;
 
 /**
 * @package JFusion_universal
@@ -15,7 +15,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractpublic.php
  * @package JFusion_universal
  */
-class JFusionPublic_universal extends \JFusion\Plugin\Plugin_Public
+class Front extends \JFusion\Plugin\Plugin_Front
 {
     /**
      * @return string

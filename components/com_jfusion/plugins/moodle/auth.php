@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\moodle;
 
 /**
  * 
@@ -60,7 +60,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_moodle extends \JFusion\Plugin\Plugin_Auth
+class Auth extends \JFusion\Plugin\Plugin_Auth
 {
 	/**
 	 * returns the name of this JFusion plugin

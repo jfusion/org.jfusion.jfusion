@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\magento;
 
 /**
  *
@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_magento extends \JFusion\Plugin\Plugin_User
+class User extends \JFusion\Plugin\Plugin_User
 {
 	/**
 	 * Magento does not have usernames.
@@ -321,7 +321,7 @@ class JFusionUser_magento extends \JFusion\Plugin\Plugin_User
 	function createSession($userinfo, $options) {
 /*		$status = array('error' => array(), 'debug' => array());
 		if ($userinfo->block)=="1" || !empty($userinfo->activation)) {
-			$status['error'][] = JText::_('FUSION_BLOCKED_USER');
+			$status['error'][] = Text::_('FUSION_BLOCKED_USER');
 		} else {
 			$status = $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
 		}
@@ -491,7 +491,7 @@ class JFusionUser_magento extends \JFusion\Plugin\Plugin_User
 
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			$status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . JText::_('USERGROUP_MISSING');
+			$status['error'][] = Text::_('ERROR_CREATING_USER') . ': ' . Text::_('USERGROUP_MISSING');
 		} else {
 			$usergroup = $usergroups[0];
 			$db = \JFusion\Factory::getDataBase($this->getJname());
@@ -582,10 +582,10 @@ class JFusionUser_magento extends \JFusion\Plugin\Plugin_User
 			//now append the new user data
 			$errors = $this->update_create_Magentouser($magento_user, 0);
 			if ($errors) {
-				$status['error'][] = JText::_('USER_CREATION_ERROR') . $errors;
+				$status['error'][] = Text::_('USER_CREATION_ERROR') . $errors;
 			} else {
 				//return the good news
-				$status['debug'][] = JText::_('USER_CREATION');
+				$status['debug'][] = Text::_('USER_CREATION');
 				$status['userinfo'] = $this->getUser($userinfo);
 			}
 		}
@@ -611,9 +611,9 @@ class JFusionUser_magento extends \JFusion\Plugin\Plugin_User
 		}
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
 		if ($errors) {
-			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR');
+			$status['error'][] = Text::_('PASSWORD_UPDATE_ERROR');
 		} else {
-			$status['debug'][] = JText::_('PASSWORD_UPDATE');
+			$status['debug'][] = Text::_('PASSWORD_UPDATE');
 		}
 	}
 
@@ -641,9 +641,9 @@ class JFusionUser_magento extends \JFusion\Plugin\Plugin_User
 		$this->fillMagentouser($magento_user, 'is_active', 1);
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
 		if ($errors) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
+			$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
 		} else {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') ;
+			$status['debug'][] = Text::_('ACTIVATION_UPDATE') ;
 		}
 	}
 
@@ -659,9 +659,9 @@ class JFusionUser_magento extends \JFusion\Plugin\Plugin_User
         $this->fillMagentouser($magento_user, 'is_active', 0);
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
 		if ($errors) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
+			$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
 		} else {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') ;
+			$status['debug'][] = Text::_('ACTIVATION_UPDATE') ;
 		}
 	}
 
@@ -676,7 +676,7 @@ class JFusionUser_magento extends \JFusion\Plugin\Plugin_User
 		//set the userid
 		//check to see if a valid $userinfo object was passed on
 		if (!is_object($userinfo)) {
-			$status['error'][] = JText::_('NO_USER_DATA_FOUND');
+			$status['error'][] = Text::_('NO_USER_DATA_FOUND');
 		} else {
 			$existinguser = $this->getUser($userinfo);
 			if (!empty($existinguser)) {
@@ -752,7 +752,7 @@ class JFusionUser_magento extends \JFusion\Plugin\Plugin_User
 	public function updateUsergroup($userinfo, &$existinguser, &$status) {
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		} else {
 			$usergroup = $usergroups[0];
 			//set the usergroup in the user table
@@ -765,7 +765,7 @@ class JFusionUser_magento extends \JFusion\Plugin\Plugin_User
 
 			$db->setQuery($query);
 			$db->execute();
-			$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+			$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 		}
 	}
 }

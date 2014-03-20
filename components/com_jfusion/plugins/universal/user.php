@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\universal;
 
 /**
  * @package JFusion_universal
@@ -17,10 +17,10 @@ require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'map.php');
  * For detailed descriptions on these functions please check the model.abstractuser.php
  * @package JFusion_universal
  */
-class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
+class User extends \JFusion\Plugin\Plugin_User
 {
 	/**
-	 * @var $helper JFusionHelper_universal
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -118,7 +118,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 		try {
 			$userid = $this->helper->getFieldType('USERID');
 			if (!$userid) {
-				$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' . JText::_('UNIVERSAL_NO_USERID_SET');
+				$status['error'][] = Text::_('USER_DELETION_ERROR') . ': ' . Text::_('UNIVERSAL_NO_USERID_SET');
 			} else {
 				$db = \JFusion\Factory::getDatabase($this->getJname());
 
@@ -152,11 +152,11 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 					}
 					$db->setQuery($query);
 					$db->execute();
-					$status['debug'][] = JText::_('USER_DELETION') . ': ' . $userinfo->username;
+					$status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 				}
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' . $e->getMessage();
+			$status['error'][] = Text::_('USER_DELETION_ERROR') . ': ' . $e->getMessage();
 		}
 		return $status;
 	}
@@ -187,7 +187,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 		$status = array('error' => array(), 'debug' => array());
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-			$status['error'][] = JText::_('FUSION_BLOCKED_USER');
+			$status['error'][] = Text::_('FUSION_BLOCKED_USER');
 		} else {
 			$cookie_backup = $_COOKIE;
 			$_COOKIE = array();
@@ -214,9 +214,9 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 		$userid = $this->helper->getFieldType('USERID');
 		$password = $this->helper->getFieldType('PASSWORD');
 		if (!$userid) {
-			throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 		} elseif (!$password) {
-			throw new RuntimeException(JText::_('UNIVERSAL_NO_PASSWORD_SET'));
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_PASSWORD_SET'));
 		} else {
 			$query = $db->getQuery(true)
 				->update('#__' . $this->helper->getTable());
@@ -243,7 +243,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+			$status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 		}
 	}
 
@@ -271,9 +271,9 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 		$userid = $this->helper->getFieldType('USERID');
 		$email = $this->helper->getFieldType('EMAIL');
 		if (!$userid) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_USERID_SET');
+			$status['error'][] = Text::_('EMAIL_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_USERID_SET');
 		} else if (!$email) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_EMAIL_SET');
+			$status['error'][] = Text::_('EMAIL_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_EMAIL_SET');
 		} else {
 			$db = \JFusion\Factory::getDatabase($this->getJname());
 
@@ -285,7 +285,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+			$status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 		}
 	}
 
@@ -302,7 +302,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 		//get the usergroup and determine if working in advanced or simple mode
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
+			throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		} else {
 			$db = \JFusion\Factory::getDatabase($this->getJname());
 
@@ -319,9 +319,9 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 				$type = 'group';
 			}
 			if ( !isset($userid) ) {
-				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . JText::_('NO_USERID_MAPPED');
+				$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_USERID_MAPPED');
 			} else if ( !isset($group) ) {
-				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . JText::_('NO_GROUP_MAPPED');
+				$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_GROUP_MAPPED');
 			} else if ($type == 'user') {
 				$usergroup = $usergroups[0];
 
@@ -333,7 +333,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 
-				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+				$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
 			} else {
 				$maped = $this->helper->getMap('group');
 
@@ -377,7 +377,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 					}
 					$db->insertObject('#__' . $this->helper->getTable('group'), $addgroup );
 
-					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+					$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
 				}
 			}
 		}
@@ -398,9 +398,9 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 		$inactive = $this->helper->getFieldType('INACTIVE');
 
 		if (!$userid) {
-			throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 		} else if (!$active && !$inactive) {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
+			$status['debug'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
 		} else {
 			$userStatus = null;
 			if ($userinfo->block) {
@@ -429,7 +429,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 
-				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+				$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 			}
 		}
 	}
@@ -448,9 +448,9 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 		$active = $this->helper->getFieldType('ACTIVE');
 		$inactive = $this->helper->getFieldType('INACTIVE');
 		if (!$userid) {
-			throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 		} else if (!$active && !$inactive) {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
+			$status['debug'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
 		} else {
 			$userStatus = null;
 			if ( isset($inactive) ) $userStatus = $inactive->value['off'];
@@ -465,7 +465,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 
 			$db->setQuery($query);
 			$db->execute();
-			$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+			$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 		}
 	}
 
@@ -482,9 +482,9 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 		$userid = $this->helper->getFieldType('USERID');
 		$activecode = $this->helper->getFieldType('ACTIVECODE');
 		if (!$userid) {
-			throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 		} else if (!$activecode) {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_ACTIVECODE_SET');
+			$status['debug'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_ACTIVECODE_SET');
 		} else {
 			$db = \JFusion\Factory::getDatabase($this->getJname());
 
@@ -496,7 +496,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		}
 	}
 
@@ -513,9 +513,9 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 		$userid = $this->helper->getFieldType('USERID');
 		$activecode = $this->helper->getFieldType('ACTIVECODE');
 		if (!$userid) {
-			throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 		} else if (!$activecode) {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('UNIVERSAL_NO_ACTIVECODE_SET');
+			$status['debug'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_ACTIVECODE_SET');
 		} else {
 			$db = \JFusion\Factory::getDatabase($this->getJname());
 
@@ -526,7 +526,7 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 
 			$db->setQuery($query);
 			$db->execute();
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		}
 	}
 
@@ -541,21 +541,21 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 		try {
 			$usergroups = $this->getCorrectUserGroups($userinfo);
 			if(empty($usergroups)) {
-				throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+				throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 			} else {
 				$usergroup = $usergroups[0];
 
 				$userid = $this->helper->getFieldType('USERID');
 				if(empty($userid)) {
-					throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
+					throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 				} else {
 					$password = $this->helper->getFieldType('PASSWORD');
 					if(empty($password)) {
-						throw new RuntimeException(JText::_('UNIVERSAL_NO_PASSWORD_SET'));
+						throw new RuntimeException(Text::_('UNIVERSAL_NO_PASSWORD_SET'));
 					} else {
 						$email = $this->helper->getFieldType('EMAIL');
 						if(empty($email)) {
-							throw new RuntimeException(JText::_('UNIVERSAL_NO_EMAIL_SET'));
+							throw new RuntimeException(Text::_('UNIVERSAL_NO_EMAIL_SET'));
 						} else {
 							$user = new stdClass;
 							$maped = $this->helper->getMap();
@@ -648,9 +648,9 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 								$groupuserid = $this->helper->getFieldType('USERID', 'group');
 								$group = $this->helper->getFieldType('GROUP', 'group');
 								if ( !isset($groupuserid) ) {
-									$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . JText::_('NO_USERID_MAPPED');
+									$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_USERID_MAPPED');
 								} else if ( !isset($group) ) {
-									$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . JText::_('NO_GROUP_MAPPED');
+									$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_GROUP_MAPPED');
 								} else {
 									$addgroup = new stdClass;
 
@@ -676,14 +676,14 @@ class JFusionUser_universal extends \JFusion\Plugin\Plugin_User
 								}
 							}
 							//return the good news
-							$status['debug'][] = JText::_('USER_CREATION');
+							$status['debug'][] = Text::_('USER_CREATION');
 							$status['userinfo'] = $this->getUser($userinfo);
 						}
 					}
 				}
 			}
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
+			$status['error'][] = Text::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
 		}
 	}
 }

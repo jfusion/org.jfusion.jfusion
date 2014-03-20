@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\dokuwiki;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -15,6 +15,13 @@
  */
 
 // no direct access
+use JFusion\Framework;
+use JFusion\Plugin\Plugin_User;
+use JFusion\Language\Text;
+use \Exception;
+use \RuntimeException;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,10 +35,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_dokuwiki extends \JFusion\Plugin\Plugin_User
+class JFusionUser_dokuwiki extends Plugin_User
 {
 	/**
-	 * @var $helper JFusionHelper_dokuwiki
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -48,57 +55,57 @@ class JFusionUser_dokuwiki extends \JFusion\Plugin\Plugin_User
         //check to see if a valid $userinfo object was passed on
 	    try {
 		    if (!is_object($userinfo)) {
-			    throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
+			    throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
 		    } else {
 			    //find out if the user already exists
 			    $existinguser = $this->getUser($userinfo);
 			    if (!empty($existinguser)) {
 				    $changes = array();
 				    //a matching user has been found
-				    $status['debug'][] = JText::_('USER_DATA_FOUND');
+				    $status['debug'][] = Text::_('USER_DATA_FOUND');
 				    if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
-					    $status['debug'][] = JText::_('EMAIL_CONFLICT');
+					    $status['debug'][] = Text::_('EMAIL_CONFLICT');
 					    $update_email = $this->params->get('update_email', false);
 					    if ($update_email || $overwrite) {
-						    $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED');
+						    $status['debug'][] = Text::_('EMAIL_CONFLICT_OVERWITE_ENABLED');
 						    $changes['mail'] = $userinfo->email;
-						    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+						    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 					    } else {
 						    //return a email conflict
-						    $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED');
+						    $status['debug'][] = Text::_('EMAIL_CONFLICT_OVERWITE_DISABLED');
 						    $status['userinfo'] = $existinguser;
-						    throw new RuntimeException(JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+						    throw new RuntimeException(Text::_('EMAIL') . ' ' . Text::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 					    }
 				    }
 				    if ($existinguser->name != $userinfo->name) {
 					    $changes['name'] = $userinfo->name;
 				    } else {
-					    $status['debug'][] = JText::_('SKIPPED_NAME_UPDATE');
+					    $status['debug'][] = Text::_('SKIPPED_NAME_UPDATE');
 				    }
 				    if (isset($userinfo->password_clear) && strlen($userinfo->password_clear)) {
 					    if (!$this->helper->auth->verifyPassword($userinfo->password_clear, $existinguser->password)) {
 						    // add password_clear to existinguser for the Joomla helper routines
 						    $existinguser->password_clear = $userinfo->password_clear;
 						    $changes['pass'] = $userinfo->password_clear;
-						    $status['debug'][] = JText::_('PASSWORD_UPDATE')  . ': ' . substr($userinfo->password_clear, 0, 6) . '********';
+						    $status['debug'][] = Text::_('PASSWORD_UPDATE')  . ': ' . substr($userinfo->password_clear, 0, 6) . '********';
 					    } else {
-						    $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_VALID');
+						    $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_VALID');
 					    }
 				    } else {
-					    $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
+					    $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE');
 				    }
 				    //check for advanced usergroup sync
 
-				    if (\JFusion\Framework::updateUsergroups($this->getJname())) {
+				    if (Framework::updateUsergroups($this->getJname())) {
 					    $usergroups = $this->getCorrectUserGroups($userinfo);
 					    if (!empty($usergroups)) {
 						    if (!$this->compareUserGroups($existinguser, $usergroups)) {
 							    $changes['grps'] = $usergroups;
 						    } else {
-							    $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ': ' . JText::_('GROUP_VALID');
+							    $status['debug'][] = Text::_('SKIPPED_GROUP_UPDATE') . ': ' . Text::_('GROUP_VALID');
 						    }
 					    } else {
-						    throw new RuntimeException(JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING'));
+						    throw new RuntimeException(Text::_('GROUP_UPDATE_ERROR') . ': ' . Text::_('USERGROUP_MISSING'));
 					    }
 				    }
 				    if (count($changes)) {
@@ -109,7 +116,7 @@ class JFusionUser_dokuwiki extends \JFusion\Plugin\Plugin_User
 				    $status['userinfo'] = $existinguser;
 				    $status['action'] = 'updated';
 			    } else {
-				    $status['debug'][] = JText::_('NO_USER_FOUND_CREATING_ONE');
+				    $status['debug'][] = Text::_('NO_USER_FOUND_CREATING_ONE');
 				    $this->createUser($userinfo, $status);
 				    if (empty($status['error'])) {
 					    $status['action'] = 'created';
@@ -186,9 +193,9 @@ class JFusionUser_dokuwiki extends \JFusion\Plugin\Plugin_User
         $user[$username] = $username;
 
         if (!$this->helper->auth->deleteUsers($user)) {
-            $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . 'No User Deleted';
+            $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . 'No User Deleted';
         } else {
-            $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
+            $status['debug'][] = Text::_('USER_DELETION') . ' ' . $username;
         }
         return $status;
     }
@@ -276,7 +283,7 @@ class JFusionUser_dokuwiki extends \JFusion\Plugin\Plugin_User
 	    try {
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
-			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		    } else {
 			    if (isset($userinfo->password_clear)) {
 				    $pass = $userinfo->password_clear;
@@ -294,11 +301,11 @@ class JFusionUser_dokuwiki extends \JFusion\Plugin\Plugin_User
 					throw new RuntimeException();
 			    }
 			    //return the good news
-			    $status['debug'][] = JText::_('USER_CREATION');
+			    $status['debug'][] = Text::_('USER_CREATION');
 			    $status['userinfo'] = $this->getUser($userinfo);
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
+		    $status['error'][] = Text::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
 	    }
     }
 

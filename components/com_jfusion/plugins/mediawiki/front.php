@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\mediawiki;
 
 /**
 * @package JFusion_mediawiki
@@ -15,7 +15,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractpublic.php
  * @package JFusion_mediawiki
  */
-class JFusionPublic_mediawiki extends \JFusion\Plugin\Plugin_Public
+class Front extends \JFusion\Plugin\Plugin_Front
 {
     /**
      * @return string

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\dokuwiki;
 
 /**
  *
@@ -14,6 +14,8 @@
  */
 
 // no direct access
+use JFusion\Plugin\Plugin;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -27,7 +29,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_dokuwiki extends\JFusion\Plugin\Plugin
+class Helper extends Plugin
 {
     /**
      * @var Jfusion_DokuWiki_Basic|Jfusion_DokuWiki_Plain|Jfusion_DokuWiki_Mysql

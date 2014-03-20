@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\smf;
 
 /**
  * file containing public function for the jfusion plugin
@@ -27,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_smf extends \JFusion\Plugin\Plugin_Public
+class Front extends \JFusion\Plugin\Plugin_Front
 {
     /**
      * @var $callbackdata object
@@ -239,7 +239,7 @@ class JFusionPublic_smf extends \JFusion\Plugin\Plugin_Public
         if ($action == 'register' || $action == 'reminder') {
             $master = \JFusion\Framework::getMaster();
             if ($master->name != $this->getJname()) {
-                $JFusionMaster = \JFusion\Factory::getPublic($master->name);
+                $JFusionMaster = \JFusion\Factory::getFront($master->name);
                 $source_url = $this->params->get('source_url');
                 $source_url = rtrim($source_url, '/');
 	            try {

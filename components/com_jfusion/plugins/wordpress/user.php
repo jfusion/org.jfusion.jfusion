@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\wordpress;
 
 /**
  *
@@ -32,10 +32,10 @@ defined('_JEXEC') or die('Restricted access');
 /**
  *
  */
-class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
+class User extends \JFusion\Plugin\Plugin_User
 {
 	/**
-	 * @var $helper JFusionHelper_wordpress
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -208,7 +208,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 		
 		$remotedata = $curl->ReadPage();
 		if (!empty($curl->status['error'])) {
-			$curl->status['debug'][] = JText::_('CURL_COULD_NOT_READ_PAGE: ') . $curl->options['post_url'];
+			$curl->status['debug'][] = Text::_('CURL_COULD_NOT_READ_PAGE: ') . $curl->options['post_url'];
 		} else {
 	        // get _wpnonce security value
 	        preg_match('/action=logout.+?_wpnonce=([\w\s-]*)["\']/i', $remotedata, $wpnonce);
@@ -217,7 +217,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 				$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
 	        } else {
 	          // non wpnonce, we are probably not on the logout page. Just report
-	          $status['debug'][] = JText::_('NO_WPNONCE_FOUND: ');
+	          $status['debug'][] = Text::_('NO_WPNONCE_FOUND: ');
 
 	          //try to delete all cookies
 	          $cookie_name = $this->params->get('cookie_name');
@@ -253,7 +253,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
         $status = array('error' => array(), 'debug' => array());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
+            $status['error'][] = Text::_('FUSION_BLOCKED_USER');
         } else {
             $status = $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
         }
@@ -312,7 +312,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	}
 
     /**
@@ -345,7 +345,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 	}
 
 	/**
@@ -389,7 +389,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	}
 
     /**
@@ -411,7 +411,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	}
 
     /**
@@ -426,7 +426,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
-			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		    } else {
 			    $update_activation = $this->params->get('update_activation');
 			    $default_role_id = $usergroups[0];
@@ -513,10 +513,10 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 			    }
 			    //return the good news
 			    $status['userinfo'] = $this->getUser($userinfo);
-			    $status['debug'][] = JText::_('USER_CREATION');
+			    $status['debug'][] = Text::_('USER_CREATION');
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
+		    $status['error'][] = Text::_('USER_CREATION_ERROR') . $e->getMessage();
 	    }
 	}
 
@@ -529,7 +529,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
         $status = array('error' => array(), 'debug' => array());
 	    try {
 		    if (!is_object($userinfo)) {
-			    throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
+			    throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
 		    }
 
 		    $db = \JFusion\Factory::getDatabase($this->getJname());
@@ -652,7 +652,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 	public function updateUsergroup($userinfo, &$existinguser, &$status) {
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		} else {
 			$db = \JFusion\Factory::getDatabase($this->getJname());
 
@@ -675,7 +675,7 @@ class JFusionUser_wordpress extends \JFusion\Plugin\Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
+			$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
 		}
 	}
 }

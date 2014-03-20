@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\wordpress;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAdmin_zencart extends \JFusion\Plugin\Plugin_Admin
+class Admin extends \JFusion\Plugin\Plugin_Admin
 {
     /**
      * returns the name of this JFusion plugin
@@ -60,7 +60,7 @@ class JFusionAdmin_zencart extends \JFusion\Plugin\Plugin_Admin
         $params['source_path'] = $softwarePath;
 
         if (!file_exists($myfile)) {
-            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
             return false;
         } else {
             include_once($myfile);

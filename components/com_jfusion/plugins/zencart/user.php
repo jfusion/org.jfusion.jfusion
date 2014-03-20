@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\wordpress;
 
 /**
  *
@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_zencart extends \JFusion\Plugin\Plugin_User
+class User extends \JFusion\Plugin\Plugin_User
 {
     /**
      * @param object $userinfo
@@ -178,7 +178,7 @@ class JFusionUser_zencart extends \JFusion\Plugin\Plugin_User
 	    $db->execute();
 
 	    $db->transactionCommit();
-	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
     /**
@@ -233,7 +233,7 @@ class JFusionUser_zencart extends \JFusion\Plugin\Plugin_User
             if (isset($db)) {
                 $db->transactionRollback();
             }
-            $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
+            $status['error'][] = Text::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
         }
     }
 
@@ -282,7 +282,7 @@ class JFusionUser_zencart extends \JFusion\Plugin\Plugin_User
             $usergroups = $this->getCorrectUserGroups($userinfo);
             //    $user->customers_newsletter = null;
             if (empty($usergroups)) {
-                throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+                throw new RuntimeException(Text::_('USERGROUP_MISSING'));
             }
             $user->customers_group_pricing = $usergroups[0];
             //        $user->customers_paypal_ec = '0';   // must be an unique number?????.
@@ -322,7 +322,7 @@ class JFusionUser_zencart extends \JFusion\Plugin\Plugin_User
                         $ok = $db->insertObject('#__customers_info', $user_1, 'customers_info_id');
                         if ($ok) {
                             $db->transactionCommit();
-                            $status['debug'][] = JText::_('USER_CREATION');
+                            $status['debug'][] = Text::_('USER_CREATION');
                             $status['userinfo'] = $this->getUser($userinfo);
                         }
                     }
@@ -332,7 +332,7 @@ class JFusionUser_zencart extends \JFusion\Plugin\Plugin_User
             if (isset($db)) {
                 $db->transactionRollback();
             }
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $e->getMessage();
+            $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . $e->getMessage();
         }
     }
 
@@ -350,7 +350,7 @@ class JFusionUser_zencart extends \JFusion\Plugin\Plugin_User
             //set the userid
             //check to see if a valid $userinfo object was passed on
             if (!is_object($userinfo)) {
-                throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
+                throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
             }
             $existinguser = $this->getUser($userinfo);
             if (!empty($existinguser)) {
@@ -465,7 +465,7 @@ class JFusionUser_zencart extends \JFusion\Plugin\Plugin_User
     {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
-		    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 	    } else {
 		    $usergroup = $usergroups[0];
 		    $db = \JFusion\Factory::getDataBase($this->getJname());
@@ -478,7 +478,7 @@ class JFusionUser_zencart extends \JFusion\Plugin\Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+		    $status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 	    }
     }
 }

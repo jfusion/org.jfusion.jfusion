@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\prestashop;
 
 
  /*
@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionAuth_prestashop extends \JFusion\Plugin\Plugin_Auth
 {
 	/**
-	 * @var $helper JFusionHelper_prestashop
+	 * @var $helper Helper
 	 */
 	var $helper;
 

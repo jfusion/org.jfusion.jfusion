@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\prestashop;
 
 
 /**
@@ -32,10 +32,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_prestashop extends \JFusion\Plugin\Plugin_User
+class User extends \JFusion\Plugin\Plugin_User
 {
 	/**
-	 * @var $helper JFusionHelper_prestashop
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -157,7 +157,7 @@ class JFusionUser_prestashop extends \JFusion\Plugin\Plugin_User
 	 */
 	function createSession($userinfo, $options) {
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-			$status['error'][] = JText::_('FUSION_BLOCKED_USER');
+			$status['error'][] = Text::_('FUSION_BLOCKED_USER');
 		} else {
 			$params = \JFusion\Factory::getParams($this->getJname());
 			$status = $this->curlLogin($userinfo, $options, $params->get('brute_force'));
@@ -187,7 +187,7 @@ class JFusionUser_prestashop extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 
 	    $db->execute();
-	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
     /**
@@ -290,12 +290,12 @@ class JFusionUser_prestashop extends \JFusion\Plugin\Plugin_User
 
 				    $db->insertObject('#__address', $ps_address);
 
-				    $status['debug'][] = JText::_('USER_CREATION');
+				    $status['debug'][] = Text::_('USER_CREATION');
 				    $status['userinfo'] = $this->getUser($userinfo);
 			    }
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USER_CREATION_ERROR') . ' ' . $e->getMessage();
+		    $status['error'][] = Text::_('USER_CREATION_ERROR') . ' ' . $e->getMessage();
 	    }
     }
 
@@ -318,7 +318,7 @@ class JFusionUser_prestashop extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
 
     /**
@@ -340,7 +340,7 @@ class JFusionUser_prestashop extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
     /**
@@ -362,7 +362,7 @@ class JFusionUser_prestashop extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
 	/**
@@ -376,7 +376,7 @@ class JFusionUser_prestashop extends \JFusion\Plugin\Plugin_User
 	public function updateUsergroup($userinfo, &$existinguser, &$status) {
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		} else {
 			$db = \JFusion\Factory::getDatabase($this->getJname());
 			// now delete the user
@@ -402,7 +402,7 @@ class JFusionUser_prestashop extends \JFusion\Plugin\Plugin_User
 				$group->id_group = $value;
 				$db->insertObject('#__customer_group', $group);
 			}
-			$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
+			$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
 		}
     }
 }

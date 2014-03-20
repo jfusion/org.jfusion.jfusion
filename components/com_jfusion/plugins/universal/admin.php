@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\universal;
 
 /**
  * @package JFusion_universal
@@ -15,10 +15,10 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractadmin.php
  * @package JFusion_universal
  */
-class JFusionAdmin_universal extends \JFusion\Plugin\Plugin_Admin
+class Admin extends \JFusion\Plugin\Plugin_Admin
 {
 	/**
-	 * @var $helper JFusionHelper_universal
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -183,7 +183,7 @@ class JFusionAdmin_universal extends \JFusion\Plugin\Plugin_Admin
 			try {
 				$db = \JFusion\Factory::getDatabase($jname);
 			} catch (Exception $e) {
-				throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+				throw new Exception(Text::_('SAVE_CONFIG_FIRST'));
 			}
 
 			$tabelslist = $db->getTableList();
@@ -195,7 +195,7 @@ class JFusionAdmin_universal extends \JFusion\Plugin\Plugin_Admin
 
 				$table = new stdClass;
 				$table->id = null;
-				$table->name = JText::_('UNSET');
+				$table->name = Text::_('UNSET');
 				$tl[] = $table;
 
 				$firstTable = null;
@@ -237,7 +237,7 @@ class JFusionAdmin_universal extends \JFusion\Plugin\Plugin_Admin
 						$output .= '<div>Name: ' . $val->Field . '</div>';
 						$output .= '<div>Type: ' . $val->Type . '</div>';
 						$output .= '<div>Default: "' . $val->Default . '" </div>';
-						$null = $val->Null ? JText::_('YES') : JText::_('NO');
+						$null = $val->Null ? Text::_('YES') : Text::_('NO');
 						$output .= '<div>Null: ' . $null . '</div>';
 						$output .= '<div>Extra: "' . $val->Extra . '" </div></td><td>';
 						if ( isset($value->field->{$val->Field}) ) {
@@ -311,7 +311,7 @@ class JFusionAdmin_universal extends \JFusion\Plugin\Plugin_Admin
 				$output .= '</td></tr>';
 				$output .= '</table>';
 			} else {
-				throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+				throw new Exception(Text::_('SAVE_CONFIG_FIRST'));
 			}
 		} catch (Exception $e) {
 			$output = $e->getMessage();
@@ -543,11 +543,11 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 
 			//check to see if all vars are set
 			if (empty($joomla_url)) {
-				\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname());
+				\JFusion\Framework::raiseWarning(Text::_('MISSING') . ' Joomla URL', $this->getJname());
 			} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-				\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
+				\JFusion\Framework::raiseWarning(Text::_('MISSING') . ' ItemID', $this->getJname());
 			} else if (!$this->isValidItemID($joomla_itemid)) {
-				\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
+				\JFusion\Framework::raiseWarning(Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
 			} else {
 				header('Content-disposition: attachment; filename=jfusion_' . $this->getJname() . '_redirectcode.txt');
 				header('Pragma: no-cache');
@@ -559,7 +559,7 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 			}
 		}
 
-		$output = ' <a href="index.php?option=com_jfusion&amp;task=plugineditor&amp;jname=' . $this->getJname() . '&amp;action=redirectcode">' . JText::_('MOD_ENABLE_MANUALLY') . '</a>';
+		$output = ' <a href="index.php?option=com_jfusion&amp;task=plugineditor&amp;jname=' . $this->getJname() . '&amp;action=redirectcode">' . Text::_('MOD_ENABLE_MANUALLY') . '</a>';
 		return $output;
 	}
 
@@ -595,15 +595,15 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 			$email = $this->helper->getFieldType('EMAIL');
 
 			if ( !$userid ) {
-				\JFusion\Framework::raiseWarning(JText::_('NO_USERID_DEFINED'), $this->getJname());
+				\JFusion\Framework::raiseWarning(Text::_('NO_USERID_DEFINED'), $this->getJname());
 			}
 
 			if ( !$email ) {
-				\JFusion\Framework::raiseWarning(JText::_('NO_EMAIL_DEFINED'), $this->getJname());
+				\JFusion\Framework::raiseWarning(Text::_('NO_EMAIL_DEFINED'), $this->getJname());
 			}
 
 			if ( !$username ) {
-				\JFusion\Framework::raiseWarning(JText::_('NO_USERNAME_DEFINED'), $this->getJname());
+				\JFusion\Framework::raiseWarning(Text::_('NO_USERNAME_DEFINED'), $this->getJname());
 			}
 			$grouptable = $this->helper->getTable('group');
 			if ($grouptable) {
@@ -611,18 +611,18 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 				$group_group = $this->helper->getFieldType('GROUP', 'group');
 
 				if ( !$group_userid ) {
-					\JFusion\Framework::raiseWarning(JText::_('NO_GROUP_USERID_DEFINED'), $this->getJname());
+					\JFusion\Framework::raiseWarning(Text::_('NO_GROUP_USERID_DEFINED'), $this->getJname());
 				}
 				if ( !$group_group ) {
-					\JFusion\Framework::raiseWarning(JText::_('NO_GROUP_GROUPID_DEFINED'), $this->getJname());
+					\JFusion\Framework::raiseWarning(Text::_('NO_GROUP_GROUPID_DEFINED'), $this->getJname());
 				}
 			}
 			$grouplist = $this->getUsergroupList();
 			if (empty($grouplist)) {
-				\JFusion\Framework::raiseWarning(JText::_('NO_GROUPS_MAPPED'), $this->getJname());
+				\JFusion\Framework::raiseWarning(Text::_('NO_GROUPS_MAPPED'), $this->getJname());
 			}
 		} else {
-			\JFusion\Framework::raiseWarning(JText::_('NO_USERTABLE_DEFINED'), $this->getJname());
+			\JFusion\Framework::raiseWarning(Text::_('NO_USERTABLE_DEFINED'), $this->getJname());
 		}
 	}
 }

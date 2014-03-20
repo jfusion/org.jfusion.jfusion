@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\mediawiki;
 
 /**
 * @package JFusion_mediawiki
@@ -27,7 +27,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
+class User extends \JFusion\Plugin\Plugin_User
 {
 
     /**
@@ -132,9 +132,9 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
+		    $status['debug'][] = Text::_('USER_DELETION') . ' ' . $userinfo->username;
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' .  $e->getMessage();
+		    $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' .  $e->getMessage();
 	    }
 		return $status;
     }
@@ -180,7 +180,7 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
+            $status['error'][] = Text::_('FUSION_BLOCKED_USER');
 		} else {
             $cookie_path = $this->params->get('cookie_path');
             $cookie_domain = $this->params->get('cookie_domain');
@@ -241,7 +241,7 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
     /**
@@ -275,7 +275,7 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
 
 	/**
@@ -290,7 +290,7 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		} else {
 			$db = \JFusion\Factory::getDatabase($this->getJname());
 			try {
@@ -310,7 +310,7 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 
 				$db->insertObject('#__user_groups', $ug, 'ug_user' );
 
-				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+				$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 			}
 		}
 	}
@@ -349,7 +349,7 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 	    //now append the new user data
 	    $db->insertObject('#__ipblocks', $ban, 'ipb_id' );
 
-	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 
     /**
@@ -370,7 +370,7 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 /*
     function activateUser($userinfo, &$existinguser, &$status)
@@ -384,7 +384,7 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 
         $db->setQuery($query);
 		$db->execute():
-		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
     function inactivateUser($userinfo, &$existinguser, &$status)
@@ -399,7 +399,7 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 
         $db->setQuery($query);
 		$db->execute();
-		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 */
 
@@ -417,7 +417,7 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
-			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		    } else {
 			    //prepare the user variables
 			    $user = new stdClass;
@@ -497,11 +497,11 @@ class JFusionUser_mediawiki extends \JFusion\Plugin\Plugin_User
 				    $db->insertObject('#__user_groups', $ug, 'ug_user' );
 			    }
 			    //return the good news
-			    $status['debug'][] = JText::_('USER_CREATION');
+			    $status['debug'][] = Text::_('USER_CREATION');
 			    $status['userinfo'] = $this->getUser($userinfo);
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
+		    $status['error'][] = Text::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
 	    }
     }
 }

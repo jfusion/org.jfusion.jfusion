@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\joomla_ext;
 
 /**
  * 
@@ -14,6 +14,13 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Plugin\Plugin_Forum;
+
+use \JRoute;
+use \Exception;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,10 +35,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionForum_joomla_ext extends \JFusion\Plugin\Plugin_Forum
+class JFusionForum_joomla_ext extends Plugin_Forum
 {
 	/**
-	 * @var $helper JFusionHelper_joomla_ext
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -56,7 +63,7 @@ class JFusionForum_joomla_ext extends \JFusion\Plugin\Plugin_Forum
 	{
 		$url = '';
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 			if ($userid) {
 				$query = $db->getQuery(true)
 					->select('id')
@@ -107,7 +114,7 @@ class JFusionForum_joomla_ext extends \JFusion\Plugin\Plugin_Forum
 	function getAvatar($uid)
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 			$source_url = $this->params->get('source_url', '/');
 			try {
 				$query = $db->getQuery(true)
@@ -148,7 +155,7 @@ class JFusionForum_joomla_ext extends \JFusion\Plugin\Plugin_Forum
 				}
 			}
 		} catch (Exception $e) {
-			$avatar = \JFusion\Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+			$avatar = Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 		}
 		return $avatar;
 	}

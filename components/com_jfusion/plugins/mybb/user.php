@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\mybb;
 
 /**
  * PHP version 5
@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
+class User extends \JFusion\Plugin\Plugin_User
 {
     /**
      * @param object $userinfo
@@ -110,7 +110,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
         //do not create sessions for blocked users
 	    try {
 	        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-	            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
+	            $status['error'][] = Text::_('FUSION_BLOCKED_USER');
 	        } else {
 	            //get cookiedomain, cookiepath (theIggs solution)
 	            $cookiedomain = $this->params->get('cookie_domain', '');
@@ -182,7 +182,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 
 	/**
@@ -220,7 +220,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 		    }
 	    }
 	    if (empty($oldgroup)) {
-		    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 	    } else {
 		    //restore the usergroup
 		    $query = $db->getQuery(true)
@@ -230,7 +230,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 	    }
     }
 
@@ -256,7 +256,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
 	/**
@@ -271,7 +271,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
     {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
-		    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 	    } else {
 		    $usergroup = $usergroups[0];
 		    //update the usergroup
@@ -285,7 +285,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+		    $status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 	    }
     }
 
@@ -301,7 +301,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 		    $db = \JFusion\Factory::getDatabase($this->getJname());
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
-			    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
+			    $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . Text::_('USERGROUP_MISSING');
 		    } else {
 			    $usergroup = $usergroups[0];
 			    //prepare the variables
@@ -335,11 +335,11 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 			    $db->insertObject('#__users', $user, 'uid');
 
 			    //return the good news
-			    $status['debug'][] = JText::_('USER_CREATION');
+			    $status['debug'][] = Text::_('USER_CREATION');
 			    $status['userinfo'] = $this->getUser($userinfo);
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
+		    $status['error'][] = Text::_('USER_CREATION_ERROR') . $e->getMessage();
 	    }
     }
 
@@ -361,7 +361,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
 
     /**
@@ -375,7 +375,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 	    //found out what usergroup should be used
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
-		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
+		    $status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('USERGROUP_MISSING');
 	    } else {
 		    $usergroup = $usergroups[0];
 		    //update the usergroup
@@ -388,7 +388,7 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	    }
     }
 
@@ -412,6 +412,6 @@ class JFusionUser_mybb extends \JFusion\Plugin\Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 }

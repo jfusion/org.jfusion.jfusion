@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\gallery2;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -15,6 +15,14 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+
+use \Exception;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -29,10 +37,10 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
+class Admin extends Plugin_Admin
 {
 	/**
-	 * @var $helper JFusionHelper_gallery2
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -67,7 +75,7 @@ class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
         //try to open the file
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
             //get the default parameters object
         } else {
@@ -119,7 +127,7 @@ class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 	        // initialise some objects
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('g_userName as username, g_email as email, g_id as userid')
@@ -129,7 +137,7 @@ class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
 	        $db->setQuery($query, $limitstart, $limit);
 	        $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 		}
         return $userlist;
@@ -142,7 +150,7 @@ class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 	        //getting the connection to the db
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -153,7 +161,7 @@ class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
 	        //getting the results
 	        $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 		    $no_users = 0;
 		}
         return $no_users;
@@ -165,7 +173,7 @@ class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
     function getUsergroupList()
     {
 	    //getting the connection to the db
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('g_id as id, g_groupName as name')
@@ -181,11 +189,11 @@ class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroups = Framework::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroups !== null) {
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    foreach($usergroups as $usergroup) {
 			    $query = $db->getQuery(true)
@@ -206,7 +214,7 @@ class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
     {
 	    $result = false;
 	    try {
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('g_active')
@@ -220,7 +228,7 @@ class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		}
 	    return $result;
     }
@@ -267,7 +275,7 @@ class JFusionAdmin_gallery2 extends \JFusion\Plugin\Plugin_Admin
             // Fetch the details for this item
 	        /**
 	         * @ignore
-	         * @var $helper JFusionHelper_gallery2
+	         * @var $helper Helper
 	         * @var $user GalleryUser
 	         * @var $entity GalleryItem
 	         */

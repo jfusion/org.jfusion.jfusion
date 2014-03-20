@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\gallery2;
 
 /**
  * 
@@ -14,6 +14,9 @@
  */
 
 // no direct access
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_Forum;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,10 +31,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org 
  */
-class JFusionForum_gallery2 extends \JFusion\Plugin\Plugin_Forum
+class Forum extends Plugin_Forum
 {
 	/**
-	 * @var $helper JFusionHelper_gallery2
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -59,7 +62,7 @@ class JFusionForum_gallery2 extends \JFusion\Plugin\Plugin_Forum
                 return $this->renderSideBar($config, $view, $pluginParam);
             break;
             default:
-                return JText::_('NOT IMPLEMENTED YET');
+                return Text::_('NOT IMPLEMENTED YET');
         }
     }
 
@@ -143,11 +146,11 @@ class JFusionForum_gallery2 extends \JFusion\Plugin\Plugin_Forum
                 /* Load the module list */
                 list($ret, $moduleStatus) = GalleryCoreApi::fetchPluginStatus('module');
                 if ($ret) {
-                    $content .= JTEXT::_('ERROR_LOADING_GALLERY_MODULES');
+                    $content .= Text::_('ERROR_LOADING_GALLERY_MODULES');
                     $error = true;
                 }
                 if (!isset($moduleStatus['imageframe']) || empty($moduleStatus['imageframe']['active'])) {
-                    $content .= JTEXT::_('ERROR_IMAGEFRAME_NOT_READY');
+                    $content .= Text::_('ERROR_IMAGEFRAME_NOT_READY');
                     $error = true;
                 }
             }

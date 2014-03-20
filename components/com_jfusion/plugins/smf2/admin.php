@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\smf2;
 
 /**
 * @package JFusion_SMF
@@ -15,7 +15,8 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractadmin.php
  * @package JFusion_SMF
  */
-class JFusionAdmin_smf2 extends \JFusion\Plugin\Plugin_Admin{
+class _Admin extends \JFusion\Plugin\Plugin_Admin
+{
 
     /**
      * @return string
@@ -46,7 +47,7 @@ class JFusionAdmin_smf2 extends \JFusion\Plugin\Plugin_Admin{
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
 	        $config = array();
@@ -309,11 +310,11 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 
 				//check to see if all vars are set
 				if (empty($joomla_url)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(Text::_('MISSING') . ' Joomla URL', $this->getJname(), $this->getJname());
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(Text::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname(), $this->getJname());
 				} else if($error == 0) {
 					//get the joomla path from the file
 					jimport('joomla.filesystem.file');
@@ -353,24 +354,24 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 			//compare it with our joomla path
 			if(empty($matches[1][0])){
 	        	$error = 1;
-	        	$reason = JText::_('MOD_NOT_ENABLED');
+	        	$reason = Text::_('MOD_NOT_ENABLED');
 			}
 		}
 
 		//add the javascript to enable buttons
         if ($error == 0) {
             //return success
-            $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-            $disable = JText::_('MOD_DISABLE');
-            $update = JText::_('MOD_UPDATE');
+            $text = Text::_('REDIRECTION_MOD') . ' ' . Text::_('ENABLED');
+            $disable = Text::_('MOD_DISABLE');
+            $update = Text::_('MOD_UPDATE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'disable');">{$disable}</a>
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'reenable');">{$update}</a>
 HTML;
         } else {
-            $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $enable = JText::_('MOD_ENABLE');
+            $text = Text::_('REDIRECTION_MOD') . ' ' . Text::_('DISABLED') . ': ' . $reason;
+            $enable = Text::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'enable');">{$enable}</a>
@@ -388,7 +389,7 @@ HTML;
     {
 	    $error = $this->redirectMod('disable');
         if (!empty($error)) {
-           $reason = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
+           $reason = Text::_('REDIRECT_MOD_UNINSTALL_FAILED');
            return array(false, $reason);
         }
 

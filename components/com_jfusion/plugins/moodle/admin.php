@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\moodle;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_moodle extends \JFusion\Plugin\Plugin_Admin
+class Admin extends \JFusion\Plugin\Plugin_Admin
 {
     /**
      * returns the name of this JFusion plugin
@@ -60,7 +60,7 @@ class JFusionAdmin_moodle extends \JFusion\Plugin\Plugin_Admin
         $params = array();
         $lines = $this->readFile($myfile);
         if ($lines === false) {
-            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
             return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -230,12 +230,12 @@ class JFusionAdmin_moodle extends \JFusion\Plugin\Plugin_Admin
             try {
                 \JFusion\Factory::getDatabase($jname);
             } catch (Exception $e) {
-                throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
+                throw new RuntimeException(Text::_('MOODLE_CONFIG_FIRST'));
             }
 
             $source_path = $this->params->get('source_path', '');
             if (!file_exists($source_path . 'admin' . DIRECTORY_SEPARATOR . 'auth.php')) {
-                return JText::_('MOODLE_CONFIG_SOURCE_PATH');
+                return Text::_('MOODLE_CONFIG_SOURCE_PATH');
             }
 
             $mod_exists = false;
@@ -246,11 +246,11 @@ class JFusionAdmin_moodle extends \JFusion\Plugin\Plugin_Admin
             if ($mod_exists) {
                 $src = 'components/com_jfusion/images/tick.png';
                 $mod = 'uninstallModule';
-                $text = JText::_('MODULE_UNINSTALL_BUTTON');
+                $text = Text::_('MODULE_UNINSTALL_BUTTON');
             } else {
                 $src = 'components/com_jfusion/images/cross.png';
                 $mod = 'installModule';
-                $text = JText::_('MODULE_INSTALL_BUTTON');
+                $text = Text::_('MODULE_INSTALL_BUTTON');
             }
 
             $html = <<<HTML
@@ -330,9 +330,9 @@ HTML;
                     $db->setQuery($query);
                     $db->execute();
                 }
-                $status['message'] = $jname . ': ' . JText::_('INSTALL_MODULE_SUCCESS');
+                $status['message'] = $jname . ': ' . Text::_('INSTALL_MODULE_SUCCESS');
             } else {
-                throw new RuntimeException(JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $source_path));
+                throw new RuntimeException(Text::sprintf('INSTALL_MODULE_ERROR', $src_archive, $source_path));
             }
         } catch (Exception $e) {
             $status['error'] = $jname . ': ' . $e->getMessage();
@@ -451,7 +451,7 @@ HTML;
                 $db->execute();
             }
 
-            $status['message'] = $jname . ': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
+            $status['message'] = $jname . ': ' . Text::_('UNINSTALL_MODULE_SUCCESS');
 
             // remove jfusion as active plugin
             $query = $db->getQuery(true)
@@ -483,7 +483,7 @@ HTML;
      */
     public function moduleActivation()
     {
-        $html = JText::_('MOODLE_CONFIG_FIRST');
+        $html = Text::_('MOODLE_CONFIG_FIRST');
         try {
             $jname = $this->getJname();
             $db = \JFusion\Factory::getDatabase($jname);
@@ -520,10 +520,10 @@ HTML;
 
                 if ($activated) {
                     $src = 'components/com_jfusion/images/tick.png';
-                    $text = JText::_('MODULE_DEACTIVATION_BUTTON');
+                    $text = Text::_('MODULE_DEACTIVATION_BUTTON');
                 } else {
                     $src = 'components/com_jfusion/images/cross.png';
-                    $text = JText::_('MODULE_ACTIVATION_BUTTON');
+                    $text = Text::_('MODULE_ACTIVATION_BUTTON');
                 }
 
                 $html = <<<HTML

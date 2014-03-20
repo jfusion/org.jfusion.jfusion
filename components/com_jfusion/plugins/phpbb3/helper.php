@@ -1,4 +1,4 @@
-<?php
+<?php namespace jfusion\plugins\phpbb3;
 
 /**
  *
@@ -14,6 +14,12 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Plugin\Plugin;
+use \Exception;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -27,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_phpbb3 extends \JFusion\Plugin\Plugin
+class Helper extends Plugin
 {
     var $bbcode_uid = false;
     var $bbcodes = array();
@@ -162,7 +168,7 @@ class JFusionHelper_phpbb3 extends \JFusion\Plugin\Plugin
 
 	    try {
 		    $source_path = $this->params->get('source_path');
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    if (!defined('IN_PHPBB')) {
 			    define('IN_PHPBB', true);
 		    }
@@ -194,7 +200,7 @@ class JFusionHelper_phpbb3 extends \JFusion\Plugin\Plugin
 			    $this->parse_bbcode($text);
 		    }
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 	    }
 
         $bbcode = new stdClass;
@@ -213,7 +219,7 @@ class JFusionHelper_phpbb3 extends \JFusion\Plugin\Plugin
         static $smilie_match, $smilie_replace;
         if (!is_array($smilie_match)) {
             $smilie_match = $smilie_replace = array();
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 	        $query = $db->getQuery(true)
 		        ->select('*')
@@ -251,7 +257,7 @@ class JFusionHelper_phpbb3 extends \JFusion\Plugin\Plugin
 	            'email'         => array('bbcode_id' => 10, 'regexp' => array('#\[email=?(.*?)?\](.*?)\[/email\]#ise' => "\$this->validate_email('\$1', '\$2')")),
 	            'flash'         => array('bbcode_id' => 11, 'regexp' => array('#\[flash=([0-9]+),([0-9]+)\](.*?)\[/flash\]#ie' => "\$this->bbcode_flash('\$1', '\$2', '\$3')")));
 
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 	        $query = $db->getQuery(true)
 		        ->select('*')

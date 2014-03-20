@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\mybb;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_mybb extends \JFusion\Plugin\Plugin_Admin
+class Auth extends \JFusion\Plugin\Plugin_Admin
 {
     /**
      * returns the name of this JFusion plugin
@@ -61,7 +61,7 @@ class JFusionAdmin_mybb extends \JFusion\Plugin\Plugin_Admin
         $params = array();
         //include config file
         if (!file_exists($myfile)) {
-            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             $config = array();

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\elgg;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -15,6 +15,14 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+
+use \Exception;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -29,7 +37,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_elgg extends \JFusion\Plugin\Plugin_Admin
+class Admin extends Plugin_Admin
 {
     /**
      * returns the name of this JFusion plugin
@@ -64,7 +72,7 @@ class JFusionAdmin_elgg extends \JFusion\Plugin\Plugin_Admin
         //check if the file exists
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile. ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -115,7 +123,7 @@ class JFusionAdmin_elgg extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('username, email')
@@ -125,7 +133,7 @@ class JFusionAdmin_elgg extends \JFusion\Plugin\Plugin_Admin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -138,7 +146,7 @@ class JFusionAdmin_elgg extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 	        //getting the connection to the db
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -148,7 +156,7 @@ class JFusionAdmin_elgg extends \JFusion\Plugin\Plugin_Admin
 	        //getting the results
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }
@@ -172,7 +180,7 @@ class JFusionAdmin_elgg extends \JFusion\Plugin\Plugin_Admin
     function getDefaultUsergroup()
     {
         //Only seems to be 2 usergroups in elgg (without any acl setup): Administrator, and user.  So just return 'user'
-	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroups = Framework::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 		    $group = 'user';
 	    } else {

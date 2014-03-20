@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\joomla_int;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -13,6 +13,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
+
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+
+use \RuntimeException;
+use \Exception;
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
@@ -30,7 +38,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
+class Admin extends Plugin_Admin {
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -61,11 +69,11 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 		//for joomla_int check to see if the source_url does not equal the default
 		$source_url = $this->params->get('source_url');
 		if (empty($source_url)) {
-			throw new RuntimeException(JText::_('EMPTY_URL'));
+			throw new RuntimeException(Text::_('EMPTY_URL'));
 		}
 		$status = array();
 		$status['config'] = 1;
-		$status['message'] = JText::_('GOOD_CONFIG');
+		$status['message'] = Text::_('GOOD_CONFIG');
 		return $status;
 	}
 
@@ -80,7 +88,7 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 	public function getUserList($limitstart = 0, $limit = 0)
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('username, email')
@@ -89,7 +97,7 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 			$db->setQuery($query, $limitstart, $limit);
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			$userlist = array();
 		}
 		return $userlist;
@@ -102,7 +110,7 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 	public function getUserCount()
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('count(*)')
@@ -112,7 +120,7 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 			//getting the results
 			return $db->loadResult();
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			return 0;
 		}
 	}
@@ -125,8 +133,8 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 	 */
 	public function getDefaultUsergroup()
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
-		$usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+		$db = Factory::getDatabase($this->getJname());
+		$usergroups = Framework::getUserGroups($this->getJname(), true);
 
 		$group = array();
 		if ($usergroups !== null) {
@@ -150,7 +158,7 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 	 */
 	public function getUsergroupList()
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('id, title as name')
@@ -172,7 +180,7 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 	function getUsergroupName($jname, $gid)
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($jname);
+			$db = Factory::getDatabase($jname);
 
 			//we want to output the usergroup name
 
@@ -184,7 +192,7 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 			$db->setQuery($query);
 			$group = $db->loadResult();
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $jname);
+			Framework::raiseError($e, $jname);
 			$group = '';
 		}
 		return $group;
@@ -223,7 +231,7 @@ class JFusionAdmin_joomla_int extends \JFusion\Plugin\Plugin_Admin {
 	 */
 	public function allowRegistration()
 	{
-		$params = JComponentHelper::getParams('com_users');
+		$params = \JComponentHelper::getParams('com_users');
 		// Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
 		return ($params->get('allowUserRegistration', false) ? true : false);
 	}

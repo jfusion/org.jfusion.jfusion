@@ -5,13 +5,14 @@
  * Date: 18-03-14
  * Time: 14:24
  */
-use \JFusion\Factory;
-use \JFusion\Event\Event;
-use \JFusion\Event\Dispatcher;
-use \JFusion\Event\Interface_Language;
-use \JFusion\Event\Interface_Application;
-use \JFusion\Event\Interface_Session;
-use \JFusion\Event\Interface_Router;
+use JFusion\Factory;
+
+use JFusion\Event\Event;
+use JFusion\Event\Dispatcher;
+use JFusion\Event\Interface_Language;
+use JFusion\Event\Interface_Application;
+use JFusion\Event\Interface_Session;
+use JFusion\Event\Interface_Router;
 
 use Jfusion\Uri\Uri;
 

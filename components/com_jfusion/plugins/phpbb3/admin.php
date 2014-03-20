@@ -1,4 +1,4 @@
-<?php
+<?php namespace jfusion\plugins\phpbb3;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -15,6 +15,14 @@
  */
 
 // no direct access
+use JFusion\Database\Driver;
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+use \Exception;
+use \RuntimeException;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -30,7 +38,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
+class Admin extends Plugin_Admin
 {
     /**
      * returns the name of this JFusion plugin
@@ -61,7 +69,7 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -87,10 +95,10 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
             $options = array('driver' => $params['database_type'], 'host' => $params['database_host'], 'user' => $params['database_user'], 'password' => $params['database_password'], 'database' => $params['database_name'], 'prefix' => $params['database_prefix']);
             //Get configuration settings stored in the database
 	        try {
-		        $db = JDatabaseDriver::getInstance($options);
+		        $db = Driver::getInstance($options);
 
 		        if (!$db) {
-			        \JFusion\Framework::raiseWarning(JText::_('NO_DATABASE'), $this->getJname());
+			        Framework::raiseWarning(Text::_('NO_DATABASE'), $this->getJname());
 			        return false;
 		        } else {
 			        $query = $db->getQuery(true)
@@ -125,7 +133,7 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
 			        }
 		        }
 	        } catch (Exception $e) {
-		        \JFusion\Framework::raiseWarning(JText::_('NO_DATABASE') . ' ' . $e->getMessage(), $this->getJname());
+		        Framework::raiseWarning(Text::_('NO_DATABASE') . ' ' . $e->getMessage(), $this->getJname());
 		        return false;
 	        }
         }
@@ -145,7 +153,7 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('username_clean as username, user_email as email, user_id as userid')
@@ -157,7 +165,7 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -170,7 +178,7 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -182,7 +190,7 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
 		    //getting the results
 		    $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $no_users = 0;
 	    }
         return $no_users;
@@ -194,7 +202,7 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
     function getUsergroupList()
     {
 	    //get the connection to the db
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('group_id as id, group_name as name')
@@ -210,12 +218,12 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
      */
     function getDefaultUsergroup()
     {
-	    $usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroup = Framework::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroup !== null) {
 		    //we want to output the usergroup name
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    if (!isset($usergroup->groups)) {
 			    $usergroup->groups = array($usergroup->defaultgroup);
@@ -243,7 +251,7 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
     {
 	    $result = false;
 	    try {
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('config_value')
@@ -257,7 +265,7 @@ class JFusionAdmin_phpbb3 extends \JFusion\Plugin\Plugin_Admin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 	    }
 	    return $result;
     }
@@ -296,7 +304,7 @@ if (isset($_GET[\'jfile\'])) {
 		    $allow_mods = $this->params->get('mod_ids');
 		    if (!empty($allow_mods)) {
 			    //get a userlist of mod ids
-			    $db = \JFusion\Factory::getDatabase($this->getJname());
+			    $db = Factory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
 				    ->select('b.user_id, a.group_name')
@@ -329,7 +337,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
 //JFUSION REDIRECT END';
 		    return $redirect_code;
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    return '';
 	    }
     }
@@ -365,16 +373,16 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
 					break;
 				}
 			case 'enable':
-				$joomla_url = \JFusion\Factory::getParams('joomla_int')->get('source_url');
+				$joomla_url = Factory::getParams('joomla_int')->get('source_url');
 				$joomla_itemid = $this->params->get('redirect_itemid');
 
 				//check to see if all vars are set
 				if (empty($joomla_url)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname());
+					Framework::raiseWarning(Text::_('MISSING') . ' Joomla URL', $this->getJname());
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
+					Framework::raiseWarning(Text::_('MISSING') . ' ItemID', $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
+					Framework::raiseWarning(Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
 				} else if ($error == 0) {
 					//get the joomla path from the file
 					jimport('joomla.filesystem.file');
@@ -411,23 +419,23 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
             //compare it with our joomla path
             if (empty($matches[1][0])) {
                 $error = 1;
-                $reason = JText::_('MOD_NOT_ENABLED');
+                $reason = Text::_('MOD_NOT_ENABLED');
             }
         }
         //add the javascript to enable buttons
         if ($error == 0) {
             //return success
-            $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-            $disable = JText::_('MOD_DISABLE');
-            $update = JText::_('MOD_UPDATE');
+            $text = Text::_('REDIRECTION_MOD') . ' ' . Text::_('ENABLED');
+            $disable = Text::_('MOD_DISABLE');
+            $update = Text::_('MOD_UPDATE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'disable')">{$disable}</a>
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'reenable')">{$update}</a>
 HTML;
         } else {
-            $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $enable = JText::_('MOD_ENABLE');
+            $text = Text::_('REDIRECTION_MOD') . ' ' . Text::_('DISABLED') . ': ' . $reason;
+            $enable = Text::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'enable')">{$enable}</a>
@@ -447,7 +455,7 @@ HTML;
     {
 	    try {
 		    //do a database check to avoid fatal error with incorrect database settings
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $error = 0;
 		    $reason = '';
@@ -460,7 +468,7 @@ HTML;
 				    //compare it with our joomla path
 				    if ($matches[1][0] != '\'' . JPATH_SITE . '\'') {
 					    $error = 1;
-					    $reason = JText::_('PATH') . ' ' . JText::_('INVALID');
+					    $reason = Text::_('PATH') . ' ' . Text::_('INVALID');
 				    }
 			    }
 		    }
@@ -475,22 +483,22 @@ HTML;
 			    $auth_method = $db->loadResult();
 			    if ($auth_method != 'jfusion') {
 				    $error = 1;
-				    $reason = JText::_('MOD_NOT_ENABLED');
+				    $reason = Text::_('MOD_NOT_ENABLED');
 			    }
 		    }
 		    //add the javascript to enable buttons
 		    if ($error == 0) {
 			    //return success
-			    $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('ENABLED');
-			    $disable = JText::_('MOD_DISABLE');
+			    $text = Text::_('AUTHENTICATION_MOD') . ' ' . Text::_('ENABLED');
+			    $disable = Text::_('MOD_DISABLE');
 			    $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('disableAuthMod')">{$disable}</a>
 HTML;
 			    return $output;
 		    } else {
-			    $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-			    $enable = JText::_('MOD_ENABLE');
+			    $text = Text::_('AUTHENTICATION_MOD') . ' ' . Text::_('DISABLED') . ': ' . $reason;
+			    $enable = Text::_('MOD_ENABLE');
 			    $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableAuthMod')">{$enable}</a>
@@ -528,7 +536,7 @@ HTML;
 		    if (file_exists($auth_file)) {
 			    try {
 				    //check to see if the mod is enabled
-				    $db = \JFusion\Factory::getDatabase($this->getJname());
+				    $db = Factory::getDatabase($this->getJname());
 
 				    $query = $db->getQuery(true)
 					    ->select('config_value')
@@ -548,12 +556,12 @@ HTML;
 				    }
 			    } catch (Exception $e) {
 				    //there was an error saving the parameters
-				    \JFusion\Framework::raiseWarning($e, $this->getJname());
+				    Framework::raiseWarning($e, $this->getJname());
 			    }
 		    } else {
 			    try {
 				    //safety catch to make sure we use phpBB default to prevent lockout from phpBB
-				    $db = \JFusion\Factory::getDatabase($this->getJname());
+				    $db = Factory::getDatabase($this->getJname());
 
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
@@ -564,13 +572,13 @@ HTML;
 				    $db->execute();
 			    } catch (Exception $e) {
 				    //there was an error saving the parameters
-				    \JFusion\Framework::raiseWarning($e, $this->getJname());
+				    Framework::raiseWarning($e, $this->getJname());
 			    }
 		    }
 		    //clear the config cache so that phpBB recognizes the change
 		    $this->clearConfigCache();
 	    } else {
-		    \JFusion\Framework::raiseWarning('FAILED_TO_COPY_AUTHFILE' . $auth_file, $this->getJname());
+		    Framework::raiseWarning('FAILED_TO_COPY_AUTHFILE' . $auth_file, $this->getJname());
 	    }
     }
 
@@ -582,7 +590,7 @@ HTML;
         $return = true;
 	    try {
 		    //check to see if the mod is enabled
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->update('#__config')
@@ -608,7 +616,7 @@ HTML;
 			    throw new RuntimeException('Cash not cleared!');
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseWarning($e, $this->getJname());
+		    Framework::raiseWarning($e, $this->getJname());
 		    $return = false;
 	    }
         return $return;
@@ -634,22 +642,22 @@ HTML;
             //compare it with our joomla path
             if (!isset($matches[0][0])) {
                 $error = 1;
-                $reason = JText::_('MOD') . ' ' . JText::_('DISABLED');
+                $reason = Text::_('MOD') . ' ' . Text::_('DISABLED');
             }
         }
         //add the javascript to enable buttons
         if ($error == 0) {
             //return success
-            $text = JText::_('QUICKTOOLS') . ' ' . JText::_('ENABLED');
-            $disable = JText::_('MOD_DISABLE');
+            $text = Text::_('QUICKTOOLS') . ' ' . Text::_('ENABLED');
+            $disable = Text::_('MOD_DISABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('quickMod', 'disable')">{$disable}</a>
 HTML;
             return $output;
         } else {
-            $text = JText::_('QUICKTOOLS') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $enable = JText::_('MOD_ENABLE');
+            $text = Text::_('QUICKTOOLS') . ' ' . Text::_('DISABLED') . ': ' . $reason;
+            $enable = Text::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('quickMod', 'enable')">{$enable}</a>
@@ -723,7 +731,7 @@ HTML;
 
         $error = $this->disableAuthMod();
         if (!$error) {
-            $reasons[] = JText::_('AUTH_MOD_UNINSTALL_FAILED');
+            $reasons[] = Text::_('AUTH_MOD_UNINSTALL_FAILED');
             $return = false;
         }
 
@@ -732,7 +740,7 @@ HTML;
 
         $error = $this->redirectMod('disable');
         if (!empty($error)) {
-           $reasons[] = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
+           $reasons[] = Text::_('REDIRECT_MOD_UNINSTALL_FAILED');
            $return = false;
         }
 
@@ -768,7 +776,7 @@ HTML;
 	{
 		$jname = $this->getJname();
 
-		\JFusion\Framework::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS'));
+		Framework::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS'));
 		$js = <<<JS
 		JFusion.renderPlugin['{$jname}'] = function(index, plugin, pair) {
 			var usergroups = JFusion.usergroups[plugin.name];

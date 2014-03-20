@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\mediawiki;
 
 /**
 * @package JFusion_mediawiki
@@ -16,7 +16,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_mediawiki
  */
 
-class JFusionAdmin_mediawiki extends \JFusion\Plugin\Plugin_Admin
+class Admin extends \JFusion\Plugin\Plugin_Admin
 {
 	/**
 	 * @var $helper JFusionHelper_mediawiki
@@ -50,7 +50,7 @@ class JFusionAdmin_mediawiki extends \JFusion\Plugin\Plugin_Admin
         $params = array();
          //try to open the file
         if ( !file_exists($myfile) ) {
-            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             $wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';

@@ -73,7 +73,7 @@ class jfusionViewPlugin extends JViewLegacy {
 
         $data = JFusionFrameless::initData($this->jname);
 
-        $JFusionPlugin = \JFusion\Factory::getPublic($data->jname);
+        $JFusionPlugin = \JFusion\Factory::getFront($data->jname);
 
 	    if (!$JFusionPlugin->isConfigured()) {
 		    throw new RuntimeException($data->jname . ' ' . JText::_('NOT_FOUND'));

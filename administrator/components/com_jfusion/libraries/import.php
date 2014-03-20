@@ -21,3 +21,4 @@ if (!class_exists('JFusionLoader'))
 JFusionLoader::setup();
 
 JFusionLoader::registerNamespace('JFusion', JFUSIONPATH_PLATFORM);
+JFusionLoader::registerNamespace('JFusion', JFUSION_PLUGIN_AUTOLOADER_PATH);

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\joomla_ext;
 
 /**
  *
@@ -14,6 +14,11 @@
  */
 
 // no direct access
+use JFusion\Plugin\Plugin;
+
+use \JCrypt;
+use \PasswordHash;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -27,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_joomla_ext extends \JFusion\Plugin\Plugin
+class Helper extends Plugin
 {
     /**
      * Returns the name for this plugin

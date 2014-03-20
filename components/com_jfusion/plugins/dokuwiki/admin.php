@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\dokuwiki;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -15,6 +15,12 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use \RuntimeException;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -29,10 +35,10 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_dokuwiki extends \JFusion\Plugin\Plugin_Admin
+class Admin extends \JFusion\Plugin\Plugin_Admin
 {
 	/**
-	 * @var $helper JFusionHelper_dokuwiki
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -60,10 +66,10 @@ class JFusionAdmin_dokuwiki extends \JFusion\Plugin\Plugin_Admin
 
 		if ($config !== false) {
 			if (!isset($config['authtype']) || $config['authtype'] != 'authmysql' && $config['authtype'] != 'authplain') {
-				throw new RuntimeException(JText::_('UNSUPPORTED_AUTHTYPE') . ': ' . $config['authtype']);
+				throw new RuntimeException(Text::_('UNSUPPORTED_AUTHTYPE') . ': ' . $config['authtype']);
 			}
 		} else {
-			throw new RuntimeException(JText::_('WIZARD_FAILURE'));
+			throw new RuntimeException(Text::_('WIZARD_FAILURE'));
 		}
 		return true;
 	}
@@ -81,7 +87,7 @@ class JFusionAdmin_dokuwiki extends \JFusion\Plugin\Plugin_Admin
 		$config = $this->helper->getConf($softwarePath);
 		$params = array();
 		if ($config === false) {
-			\JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $softwarePath . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+			Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $softwarePath . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 			return false;
 		} else {
 			if (isset($config['cookie_name'])) {
@@ -116,7 +122,7 @@ class JFusionAdmin_dokuwiki extends \JFusion\Plugin\Plugin_Admin
 
 		if ($conf) {
 			if ($conf['authtype'] != 'authmysql' && $conf['authtype'] != 'authplain') {
-				\JFusion\Framework::raiseError(JText::_('UNSUPPORTED_AUTHTYPE') . ': ' . $conf['authtype'], $this->getJname());
+				Framework::raiseError(Text::_('UNSUPPORTED_AUTHTYPE') . ': ' . $conf['authtype'], $this->getJname());
 			}
 		}
 	}
@@ -182,7 +188,7 @@ class JFusionAdmin_dokuwiki extends \JFusion\Plugin\Plugin_Admin
 	 */
 	function getDefaultUsergroup()
 	{
-		$usergroup = \JFusion\Framework::getUserGroups($this->getJname(), true);
+		$usergroup = Framework::getUserGroups($this->getJname(), true);
 		return $usergroup;
 	}
 
@@ -272,16 +278,16 @@ if (!defined(\'_JEXEC\'))';
 					break;
 				}
 			case 'enable':
-				$joomla_url = \JFusion\Factory::getParams('joomla_int')->get('source_url');
+				$joomla_url = Factory::getParams('joomla_int')->get('source_url');
 				$joomla_itemid = $this->params->get('redirect_itemid');
 
 				//check to see if all vars are set
 				if (empty($joomla_url)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname());
+					Framework::raiseWarning(Text::_('MISSING') . ' Joomla URL', $this->getJname());
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
+					Framework::raiseWarning(Text::_('MISSING') . ' ItemID', $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
+					Framework::raiseWarning(Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
 				} else {
 					if ($error == 0) {
 						//get the joomla path from the file
@@ -324,23 +330,23 @@ if (!defined(\'_JEXEC\'))';
 			//compare it with our joomla path
 			if (empty($matches[1][0])) {
 				$error = 1;
-				$reason = JText::_('MOD_NOT_ENABLED');
+				$reason = Text::_('MOD_NOT_ENABLED');
 			}
 		}
 		//add the javascript to enable buttons
 		if ($error == 0) {
 			//return success
-			$text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-			$disable = JText::_('MOD_DISABLE');
-			$update = JText::_('MOD_UPDATE');
+			$text = Text::_('REDIRECTION_MOD') . ' ' . Text::_('ENABLED');
+			$disable = Text::_('MOD_DISABLE');
+			$update = Text::_('MOD_UPDATE');
 			$output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'disable')">{$disable}</a>
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'reenable')">{$update}</a>
 HTML;
 		} else {
-			$text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-			$enable = JText::_('MOD_ENABLE');
+			$text = Text::_('REDIRECTION_MOD') . ' ' . Text::_('DISABLED') . ': ' . $reason;
+			$enable = Text::_('MOD_ENABLE');
 			$output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'enable')">{$enable}</a>
@@ -373,15 +379,15 @@ HTML;
 		jimport('joomla.filesystem.folder');
 		if (!JFolder::exists($plugindir . DIRECTORY_SEPARATOR . 'jfusion') || empty($conf['jfusion'])) {
 			$error = 1;
-			$reason = JText::_('MOD_NOT_ENABLED');
+			$reason = Text::_('MOD_NOT_ENABLED');
 		}
 
 		//add the javascript to enable buttons
 		if ($error == 0) {
 			//return success
-			$text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('ENABLED');
-			$disable = JText::_('MOD_DISABLE');
-			$update = JText::_('MOD_UPDATE');
+			$text = Text::_('AUTHENTICATION_MOD') . ' ' . Text::_('ENABLED');
+			$disable = Text::_('MOD_DISABLE');
+			$update = Text::_('MOD_UPDATE');
 
 			$output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
@@ -389,8 +395,8 @@ HTML;
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('authMod', 'reenable')">{$update}</a>
 HTML;
 		} else {
-			$text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-			$enable = JText::_('MOD_ENABLE');
+			$text = Text::_('AUTHENTICATION_MOD') . ' ' . Text::_('DISABLED') . ': ' . $reason;
+			$enable = Text::_('MOD_ENABLE');
 			$output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('authMod', 'enable')">{$enable}</a>
@@ -499,13 +505,13 @@ PHP;
 
 		$error = $this->redirectMod('disable');
 		if (!empty($error)) {
-			$reasons[] = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
+			$reasons[] = Text::_('REDIRECT_MOD_UNINSTALL_FAILED');
 			$return = false;
 		}
 
 		$error = $this->authMod('disable');
 		if ($error) {
-			$reasons[] = JText::_('AUTH_MOD_UNINSTALL_FAILED');
+			$reasons[] = Text::_('AUTH_MOD_UNINSTALL_FAILED');
 			$return = false;
 		}
 

@@ -145,7 +145,7 @@ class JFusionFrameless {
 			require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php');
 			$JFusionPlugin = new JFusionPublic();
 		} else {
-			$JFusionPlugin = \JFusion\Factory::getPublic($data->jname);
+			$JFusionPlugin = \JFusion\Factory::getFront($data->jname);
 
 			if (!$JFusionPlugin->isConfigured()) {
 				throw new RuntimeException($data->jname . ' ' . JText::_('NOT_FOUND'));

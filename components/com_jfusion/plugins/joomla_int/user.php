@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\joomla_int;
 
 /**
  *
@@ -13,6 +13,16 @@
  * @link       http://www.jfusion.org
  */
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_User;
+
+
+use \Exception;
+use \RuntimeException;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 //require the standard joomla user functions
@@ -29,7 +39,7 @@ jimport('joomla.user.helper');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
     /**
      * returns the name of this JFusion plugin
@@ -51,8 +61,8 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	public function getUser($userinfo)
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
-			$JFusionUser = \JFusion\Factory::getUser($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
+			$JFusionUser = Factory::getUser($this->getJname());
 			list($identifier_type, $identifier) = $JFusionUser->getUserIdentifier($userinfo, 'username', 'email');
 			if ($identifier_type == 'username') {
 				$query = $db->getQuery(true)
@@ -90,7 +100,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 						try {
 							$db->execute();
 						} catch (Exception $e) {
-							\JFusion\Framework::raiseWarning($e, $this->getJname());
+							Framework::raiseWarning($e, $this->getJname());
 						}
 					}
 				}
@@ -140,9 +150,9 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 				}
 
 				// Get the language of the user and store it as variable in the user object
-				$user_params = new JRegistry($result->params);
+				$user_params = new \JRegistry($result->params);
 
-				$result->language = $user_params->get('language', \JFusion\Factory::getLanguage()->getTag());
+				$result->language = $user_params->get('language', Factory::getLanguage()->getTag());
 
 				//unset the activation status if not blocked
 				if ($result->block == 0) {
@@ -182,7 +192,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 				}
 			}
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			$result = null;
 		}
 		return $result;
@@ -200,9 +210,9 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	public function updateUsername($userinfo, &$existinguser, &$status)
 	{
 		//generate the filtered integration username
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 		$username_clean = $this->filterUsername($userinfo->username);
-		$this->debugger->add('debug', JText::_('USERNAME') . ': ' . $userinfo->username . ' -> ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean);
+		$this->debugger->add('debug', Text::_('USERNAME') . ': ' . $userinfo->username . ' -> ' . Text::_('FILTERED_USERNAME') . ':' . $username_clean);
 
 		$query = $db->getQuery(true)
 			->update('#__users')
@@ -216,7 +226,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', JText::_('USERNAME_UPDATE') . ': ' . $username_clean);
+		$this->debugger->add('debug', Text::_('USERNAME_UPDATE') . ': ' . $username_clean);
 	}
 
 	/**
@@ -224,12 +234,12 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	 */
 	function doCreateUser($userinfo)
 	{
-		$this->debugger->add('debug', JText::_('NO_USER_FOUND_CREATING_ONE'));
+		$this->debugger->add('debug', Text::_('NO_USER_FOUND_CREATING_ONE'));
 		try {
 			$this->createUser($userinfo, $status);
 			$this->debugger->set('action', 'created');
 		} catch (Exception $e) {
-			$this->debugger->add('error', JText::_('USER_CREATION_ERROR') . $e->getMessage());
+			$this->debugger->add('error', Text::_('USER_CREATION_ERROR') . $e->getMessage());
 		}
 	}
 
@@ -247,10 +257,10 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		//get the default user group and determine if we are using simple or advanced
 		//check to make sure that if using the advanced group mode, $userinfo->group_id exists
 		if (empty($usergroups)) {
-			throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		} else {
 			//load the database
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 			//joomla does not allow duplicate email addresses, check to see if the email is unique
 			$query = $db->getQuery(true)
 				->select('id as userid, username, email')
@@ -279,16 +289,16 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 
 					$db->setQuery($query);
 				}
-				$this->debugger->add('debug', JText::_('USERNAME') . ': ' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ': ' . $username_clean);
+				$this->debugger->add('debug', Text::_('USERNAME') . ': ' . $userinfo->username . ' ' . Text::_('FILTERED_USERNAME') . ': ' . $username_clean);
 
 				//create a Joomla password hash if password_clear is available
-				$userinfo->password_salt = JUserHelper::genRandomPassword(32);
+				$userinfo->password_salt = \JUserHelper::genRandomPassword(32);
 				if (!empty($userinfo->password_clear)) {
 					/**
 					 * @ignore
-					 * @var $auth JFusionAuth_joomla_int
+					 * @var $auth Auth
 					 */
-					$auth = \JFusion\Factory::getAuth($this->getJname());
+					$auth = Factory::getAuth($this->getJname());
 					$password = $auth->hashPassword($userinfo);
 				} else if (isset($userinfo->password_salt)) {
 					$password = $userinfo->password . ':' . $userinfo->password_salt;
@@ -296,7 +306,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 					$password = $userinfo->password;
 				}
 
-				$instance = new JUser();
+				$instance = new \JUser();
 				$instance->set('name', $userinfo->name);
 				$instance->set('username', $username_clean);
 				$instance->set('password', $password);
@@ -343,7 +353,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 				try {
 					$db->execute();
 				} catch (Exception $e) {
-					\JFusion\Framework::raiseWarning($e, $this->getJname());
+					Framework::raiseWarning($e, $this->getJname());
 				}
 
 				//check to see if the user exists now
@@ -351,15 +361,15 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 				if ($joomla_user) {
 					//report back success
 					$this->debugger->set('userinfo', $joomla_user);
-					$this->debugger->add('debug', JText::_('USER_CREATION'));
+					$this->debugger->add('debug', Text::_('USER_CREATION'));
 				} else {
-					throw new RuntimeException(JText::_('COULD_NOT_CREATE_USER'));
+					throw new RuntimeException(Text::_('COULD_NOT_CREATE_USER'));
 				}
 			} else {
 				//Joomla does not allow duplicate emails report error
-				$this->debugger->add('debug', JText::_('USERNAME') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->username . ' -> ' . $userinfo->username);
+				$this->debugger->add('debug', Text::_('USERNAME') . ' ' . Text::_('CONFLICT') . ': ' . $existinguser->username . ' -> ' . $userinfo->username);
 				$this->debugger->set('userinfo', $existinguser);
-				throw new RuntimeException(JText::_('EMAIL_CONFLICT') . '. UserID: ' . $existinguser->userid . ' JFusionPlugin: ' . $this->getJname());
+				throw new RuntimeException(Text::_('EMAIL_CONFLICT') . '. UserID: ' . $existinguser->userid . ' JFusionPlugin: ' . $this->getJname());
 			}
 		}
 	}
@@ -371,7 +381,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
      */
     function deleteUser($userinfo) {
         //get the database ready
-        $db = JFactory::getDBO();
+        $db = \JFactory::getDBO();
         //setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
         $username = $userinfo->username;
@@ -387,7 +397,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
         $userid = $db->loadResult();
         if ($userid) {
             //this user was created by JFusion and we need to delete them from the joomla user and jfusion lookup table
-            $user = JUser::getInstance($userid);
+            $user = \JUser::getInstance($userid);
             $user->delete();
 
 	        $query = $db->getQuery(true)
@@ -403,7 +413,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 
 	        $db->setQuery($query);
             $db->execute();
-            $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
+            $status['debug'][] = Text::_('USER_DELETION') . ' ' . $username;
         } else {
             //this user was NOT create by JFusion. Therefore we need to delete it in the Joomla user table only
 
@@ -423,12 +433,12 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	            $db->setQuery($query);
                 $db->execute();
                 //delete it from the Joomla usertable
-                $user = JUser::getInstance($userid);
+                $user = \JUser::getInstance($userid);
                 $user->delete();
-                $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
+                $status['debug'][] = Text::_('USER_DELETION') . ' ' . $username;
             } else {
                 //could not find user and return an error
-                $status['error'][] = JText::_('ERROR_DELETE') . $username;
+                $status['error'][] = Text::_('ERROR_DELETE') . $username;
             }
         }
         return $status;
@@ -443,18 +453,18 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
     function createSession($userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
+            $status['error'][] = Text::_('FUSION_BLOCKED_USER');
         } else {
 	        jimport('joomla.user.helper');
-	        $instance = JUser::getInstance();
+	        $instance = \JUser::getInstance();
 
 	        // If _getUser returned an error, then pass it back.
 	        if (!$instance->load($userinfo->userid)) {
-		        $status['error'][] = JText::_('FUSION_ERROR_LOADING_USER');
+		        $status['error'][] = Text::_('FUSION_ERROR_LOADING_USER');
 	        } else {
 		        // If the user is blocked, redirect with an error
 		        if ($instance->get('block') == 1) {
-			        $status['error'][] = JText::_('JERROR_NOLOGIN_BLOCKED');
+			        $status['error'][] = Text::_('JERROR_NOLOGIN_BLOCKED');
 		        } else {
 			        // Authorise the user based on the group information
 			        if (!isset($options['group'])) {
@@ -468,18 +478,18 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 			        // Check the user can login.
 			        $result	= $instance->authorise($options['action']);
 			        if (!$result) {
-				        $status['error'][] = JText::_('JERROR_LOGIN_DENIED');
+				        $status['error'][] = Text::_('JERROR_LOGIN_DENIED');
 			        } else {
 				        // Mark the user as logged in
 				        $instance->set('guest', 0);
 
 				        // Register the needed session variables
-				        $session = JFactory::getSession();
+				        $session = \JFactory::getSession();
 				        $session->set('user', $instance);
 
 				        // Update the user related fields for the Joomla sessions table.
 				        try {
-					        $db = JFactory::getDBO();
+					        $db = \JFactory::getDBO();
 
 					        $query = $db->getQuery(true)
 						        ->update('#__session')
@@ -515,7 +525,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
      */
     function destroySession($userinfo, $options) {
 	    if (!isset($options['clientid'])) {
-		    $mainframe = \JFusion\Factory::getApplication();
+		    $mainframe = Factory::getApplication();
 		    if ($mainframe->isAdmin()) {
 		        $options['clientid'] = array(1);
 		    } else {
@@ -527,15 +537,15 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		}
 
 	    if ($userinfo->id) {
-		    $my = JFactory::getUser();
+		    $my = \JFactory::getUser();
 		    if ($my->id == $userinfo->id) {
 			    // Hit the user last visit field
 			    $my->setLastVisit();
 			    // Destroy the php session for this user
-			    JFactory::getSession()->destroy();
+			    \JFactory::getSession()->destroy();
 		    }
 		    //destroy the Joomla session but do so directly based on what $options is
-		    $table = JTable::getInstance('session');
+		    $table = \JTable::getInstance('session');
 		    $table->destroy($userinfo->id, $options['clientid']);
 	    }
         return array();
@@ -556,18 +566,18 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		//make sure the group exists
 		if (empty($usergroups)) {
-			throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
+			throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		} else {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
-			$dispatcher = JEventDispatcher::getInstance();
+			$db = Factory::getDatabase($this->getJname());
+			$dispatcher = \JEventDispatcher::getInstance();
 
 			jimport('joomla.user.helper');
 
 			if ($fire_user_plugins) {
 				// Get the old user
-				$old = new JUser($existinguser->userid);
+				$old = new \JUser($existinguser->userid);
 				//Fire the onBeforeStoreUser event.
-				JPluginHelper::importPlugin('user');
+				\JPluginHelper::importPlugin('user');
 				$dispatcher->trigger('onBeforeStoreUser', array($old->getProperties(), false));
 			}
 
@@ -586,10 +596,10 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 
 				$db->insertObject('#__user_usergroup_map', $temp);
 			}
-			$this->debugger->add('debug', JText::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups));
+			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups));
 			if ($fire_user_plugins) {
 				//Fire the onAfterStoreUser event
-				$updated = new JUser($existinguser->userid);
+				$updated = new \JUser($existinguser->userid);
 				$dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
 			}
 		}
@@ -606,7 +616,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	 */
 	public function updateEmail($userinfo, &$existinguser, &$status)
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__users')
@@ -616,7 +626,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+		$this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 	}
 
 	/**
@@ -632,16 +642,16 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	public function updatePassword($userinfo, &$existinguser, &$status)
 	{
 		if (strlen($userinfo->password_clear) > 55) {
-			throw new Exception(JText::_('JLIB_USER_ERROR_PASSWORD_TOO_LONG'));
+			throw new Exception(Text::_('JLIB_USER_ERROR_PASSWORD_TOO_LONG'));
 		} else {
 			/**
 			 * @ignore
-			 * @var $auth JFusionAuth_joomla_int
+			 * @var $auth Auth
 			 */
-			$auth = \JFusion\Factory::getAuth($this->getJname());
+			$auth = Factory::getAuth($this->getJname());
 			$password = $auth->hashPassword($userinfo);
 
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->update('#__users')
@@ -651,7 +661,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', JText::_('PASSWORD_UPDATE')  . ': ' . substr($password, 0, 6) . '********');
+			$this->debugger->add('debug', Text::_('PASSWORD_UPDATE')  . ': ' . substr($password, 0, 6) . '********');
 		}
 	}
 
@@ -667,7 +677,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	public function blockUser($userinfo, &$existinguser, &$status)
 	{
 		//block the user
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__users')
@@ -677,7 +687,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+		$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 	}
 
 	/**
@@ -692,7 +702,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	public function unblockUser($userinfo, &$existinguser, &$status)
 	{
 		//unblock the user
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__users')
@@ -702,7 +712,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+		$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 	}
 
 	/**
@@ -717,7 +727,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	public function activateUser($userinfo, &$existinguser, &$status)
 	{
 		//unblock the user
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__users')
@@ -728,7 +738,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
@@ -743,7 +753,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	public function inactivateUser($userinfo, &$existinguser, &$status)
 	{
 		//unblock the user
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__users')
@@ -754,7 +764,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
@@ -769,7 +779,7 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		//check to see if additional username filtering need to be applied
 		$added_filter = $this->params->get('username_filter');
 		if ($added_filter && $added_filter != $this->getJname()) {
-			$JFusionPlugin = \JFusion\Factory::getUser($added_filter);
+			$JFusionPlugin = Factory::getUser($added_filter);
 			$filteredUsername = $JFusionPlugin->filterUsername($username);
 		}
 		//make sure the filtered username isn't empty
@@ -799,16 +809,16 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 			try {
 				$this->updateUserLanguage($userinfo, $existinguser, $status);
 				$existinguser->language = $userinfo->language;
-				$this->debugger->add('debug', JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
+				$this->debugger->add('debug', Text::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
 
 				$existinguser->language = $userinfo->language;
 				$changed = true;
 			} catch (Exception $e) {
-				$this->debugger->add('error', JText::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->add('error', Text::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
 			}
 		} else {
 			//return a debug to inform we skipped this step
-			$this->debugger->add('debug', JText::_('LANGUAGE_NOT_UPDATED'));
+			$this->debugger->add('debug', Text::_('LANGUAGE_NOT_UPDATED'));
 		}
 		return $changed;
 	}
@@ -826,8 +836,8 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 	 */
 	public function updateUserLanguage($userinfo, &$existinguser, &$status)
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
-		$params = new JRegistry($existinguser->params);
+		$db = Factory::getDatabase($this->getJname());
+		$params = new \JRegistry($existinguser->params);
 		$params->set('language', $userinfo->language);
 
 		$query = $db->getQuery(true)
@@ -838,6 +848,6 @@ class JFusionUser_joomla_int extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 
 		$db->execute();
-		$this->debugger->add('debug', JText::_('LANGUAGE_UPDATE') . ' ' . $existinguser->language);
+		$this->debugger->add('debug', Text::_('LANGUAGE_UPDATE') . ' ' . $existinguser->language);
 	}
 }

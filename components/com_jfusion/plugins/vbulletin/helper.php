@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\vbulletin;
 
 /**
  *
@@ -27,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_vbulletin extends \JFusion\Plugin\Plugin
+class Helper extends \JFusion\Plugin\Plugin
 {
     var $vb_data;
     var $backup;
@@ -93,13 +93,13 @@ class JFusionHelper_vbulletin extends \JFusion\Plugin\Plugin
                 //detect redirects as the post data gets lots
                 $curlinfo = curl_getinfo($ch);
                 if ($curlinfo['url'] != $url) {
-                    $status['errors'][] = JText::_('VB_API_REDIRECT') . ': ' . $url . '->' . $curlinfo['url'];
+                    $status['errors'][] = Text::_('VB_API_REDIRECT') . ': ' . $url . '->' . $curlinfo['url'];
                 } else {
                     $curl_response = trim($curl_response);
                     if (strpos($curl_response, '{') !== 0) {
                         if (strpos($curl_response, '<!DOCTYPE') !== false) {
                             //the page was rendered rather than the hook catching
-                            $status['errors'][] = JText::_('VB_API_HOOK_NOT_INSTALLED');
+                            $status['errors'][] = Text::_('VB_API_HOOK_NOT_INSTALLED');
 	                        $status['debug'][] = htmlspecialchars($curl_response);
                         } else {
                             //there is probably a php error or warning
@@ -114,7 +114,7 @@ class JFusionHelper_vbulletin extends \JFusion\Plugin\Plugin
                             } else {
 	                            $status['debug'][] = htmlspecialchars($curl_response);
                                 if (empty($curl_response)) {
-                                    $curl_response = JText::_('VB_API_HOOK_NOT_INSTALLED');
+                                    $curl_response = Text::_('VB_API_HOOK_NOT_INSTALLED');
                                 }
                                 $status['errors'][] = $curl_response;
                             }
@@ -191,7 +191,7 @@ class JFusionHelper_vbulletin extends \JFusion\Plugin\Plugin
                 $vbulletin->db->query_first('SET names \'' . $this->params->get('database_charset', 'utf8') . '\'');
                 $GLOBALS['db'] = $vbulletin->db;
             } else {
-                \JFusion\Framework::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'), $this->getJname());
+                \JFusion\Framework::raiseWarning(Text::_('SOURCE_PATH_NOT_FOUND'), $this->getJname());
                 $return = false;
             }
         } elseif (defined('VB_AREA') && VB_AREA == 'JFusion') {

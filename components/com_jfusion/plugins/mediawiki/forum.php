@@ -1,4 +1,5 @@
-<?php
+<?php namespace JFusion\Plugins\mediawiki;
+
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -12,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org/
 **/
 
-class JFusionForum_mediawiki extends \JFusion\Plugin\Plugin_Forum
+class Forum extends \JFusion\Plugin\Plugin_Forum
 {
     /**
      * returns the name of this JFusion plugin

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\gallery2;
 
 /**
  * 
@@ -14,6 +14,14 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Plugin\Plugin_Front;
+
+use \Exception;
+use \RuntimeException;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -27,10 +35,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_gallery2 extends \JFusion\Plugin\Plugin_Public
+class Front extends Plugin_Front
 {
 	/**
-	 * @var $helper JFusionHelper_gallery2
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -65,7 +73,7 @@ class JFusionPublic_gallery2 extends \JFusion\Plugin\Plugin_Public
 	 */
     function getBuffer(&$data) {
         //Handle PHP based Gallery Rewrite
-        $segments = \JFusion\Factory::getApplication()->input->get('jFusion_Route', null, 'raw');
+        $segments = Factory::getApplication()->input->get('jFusion_Route', null, 'raw');
         if (!empty($segments)) {
             $path_info = '/' . implode('/', unserialize($segments));
             $path_info = str_replace(':', '-', $path_info);
@@ -154,7 +162,7 @@ class JFusionPublic_gallery2 extends \JFusion\Plugin\Plugin_Public
 		    	
         //\JFusion\Framework::raiseWarning($url, $this->getJname());
         $url = htmlspecialchars_decode($url);
-        $Itemid = \JFusion\Factory::getApplication()->input->getInt('Itemid');
+        $Itemid = Factory::getApplication()->input->getInt('Itemid');
         $extra = stripslashes($extra);
         if (substr($baseURL, -1) != '/') {
             //non-SEF mode
@@ -172,7 +180,7 @@ class JFusionPublic_gallery2 extends \JFusion\Plugin\Plugin_Public
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = \JFusion\Framework::routeURL($url, $Itemid);
+                $url = Framework::routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {
@@ -255,9 +263,9 @@ class JFusionPublic_gallery2 extends \JFusion\Plugin\Plugin_Public
 
 	                /**
 	                 * @ignore
-	                 * @var $forum JFusionForum_gallery2
+	                 * @var $forum Forum
 	                 */
-                    $forum = \JFusion\Factory::getForum($this->getJname());
+                    $forum = Factory::getForum($this->getJname());
                     $info->galleryImage = $forum->renderImageBlock($config, 'image_block', $pluginParam);
 
 //                    list(, $views) = GalleryCoreApi::fetchItemViewCount($array['itemId']);
@@ -280,7 +288,7 @@ class JFusionPublic_gallery2 extends \JFusion\Plugin\Plugin_Public
 	 */
     function getOnlineUserQuery($usergroups = array())
     {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
         //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
@@ -313,7 +321,7 @@ class JFusionPublic_gallery2 extends \JFusion\Plugin\Plugin_Public
 		    date_default_timezone_set('UTC');
 		    $now = time();
 		    $active = strtotime('-5 minutes', $now);
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('COUNT(*)')
@@ -324,7 +332,7 @@ class JFusionPublic_gallery2 extends \JFusion\Plugin\Plugin_Public
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -339,7 +347,7 @@ class JFusionPublic_gallery2 extends \JFusion\Plugin\Plugin_Public
 	        date_default_timezone_set('UTC');
 	        $now = time();
 	        $active = strtotime('-5 minutes', $now);
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('COUNT(*)')
@@ -350,7 +358,7 @@ class JFusionPublic_gallery2 extends \JFusion\Plugin\Plugin_Public
 	        $db->setQuery($query);
 	        $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;

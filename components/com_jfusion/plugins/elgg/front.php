@@ -1,45 +1,39 @@
-<?php
-
+<?php namespace JFusion\Plugins\elgg;
 
 /**
- * JFusion Public Class for PrestaShop
+ * JFusion Public Class for elgg
  * 
  * PHP version 5
  * 
  * @category   JFusion
  * @package    JFusionPlugins
- * @subpackage PrestaShop
+ * @subpackage Elgg 
  * @author     JFusion Team <webmaster@jfusion.org>
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org 
  */
 
-
 // no direct access
+use JFusion\Plugin\Plugin_Front;
+
 defined('_JEXEC') or die('Restricted access');
 
-
 /**
- * JFusion Public Class for PrestaShop
+ * JFusion Public Class for Elgg
  * For detailed descriptions on these functions please check the model.abstractpublic.php
  * 
  * @category   JFusion
  * @package    JFusionPlugins
- * @subpackage PrestaShop
+ * @subpackage Elgg 
  * @author     JFusion Team <webmaster@jfusion.org>
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
 
-
-class JFusionPublic_prestashop extends \JFusion\Plugin\Plugin_Public
+class Front extends Plugin_Front
 {
-	/**
-	 * @var $helper JFusionHelper_prestashop
-	 */
-	var $helper;
 
     /**
      * returns the name of this JFusion plugin
@@ -47,21 +41,21 @@ class JFusionPublic_prestashop extends \JFusion\Plugin\Plugin_Public
      */    
     function getJname() 
     {
-        return 'prestashop';
+        return 'elgg';
     }
 
     /**
      * @return string
      */
     function getRegistrationURL() {
-        return 'authentication.php';
+        return 'account/register.php';
     }
 
     /**
      * @return string
      */
     function getLostPasswordURL() {
-        return 'password.php';
+        return 'account/forgotten_password.php';
     }
 
     /**

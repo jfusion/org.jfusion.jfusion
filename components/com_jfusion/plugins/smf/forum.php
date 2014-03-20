@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\smf;
 
 /**
  * file containing forum function for the jfusion plugin
@@ -27,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionForum_smf extends \JFusion\Plugin\Plugin_Forum
+class Forum extends \JFusion\Plugin\Plugin_Forum
 {
 
     /**
@@ -631,8 +631,8 @@ class JFusionForum_smf extends \JFusion\Plugin\Plugin_Forum
             $username = $mainframe->input->post->get('guest_username', '');
             $email = $mainframe->input->post->get('guest_email', '');
 
-            $j_username = JText::_('USERNAME');
-            $j_email = JText::_('EMAIL');
+            $j_username = Text::_('USERNAME');
+            $j_email = Text::_('EMAIL');
             $html = <<<HTML
                 <table>
                     <tr>
@@ -682,7 +682,7 @@ HTML;
 			    $userinfo->email = $postinfo->email;
 			    $userinfo->userid = 0;
 			    if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
-				    throw new RuntimeException(JText::_('GUEST_FIELDS_MISSING'));
+				    throw new RuntimeException(Text::_('GUEST_FIELDS_MISSING'));
 			    } else {
 				    $query = $db->getQuery(true)
 					    ->select('COUNT(*)')
@@ -697,13 +697,13 @@ HTML;
 				    $db->setQuery($query);
 				    $result = $db->loadResult();
 				    if (!empty($result)) {
-					    throw new RuntimeException(JText::_('USERNAME_IN_USE'));
+					    throw new RuntimeException(Text::_('USERNAME_IN_USE'));
 				    }
 			    }
 		    }
 		    //setup some variables
 		    $userid = $userinfo->userid;
-		    $public = \JFusion\Factory::getPublic($this->getJname());
+		    $public = \JFusion\Factory::getFront($this->getJname());
 		    //strip out html from post
 		    $text = strip_tags($postinfo->text);
 

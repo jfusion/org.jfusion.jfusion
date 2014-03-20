@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\smf2;
 
 /**
 * @package JFusion_SMF
@@ -15,7 +15,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractpublic.php
  * @package JFusion_SMF
  */
-class JFusionPublic_smf2 extends \JFusion\Plugin\Plugin_Public
+class Front extends \JFusion\Plugin\Plugin_Front
 {
     /**
      * @var $callbackdata object
@@ -218,7 +218,7 @@ class JFusionPublic_smf2 extends \JFusion\Plugin\Plugin_Public
         if ($action == 'register' || $action == 'reminder') {
             $master = \JFusion\Framework::getMaster();
             if ($master->name != $this->getJname()) {
-                $JFusionMaster = \JFusion\Factory::getPublic($master->name);
+                $JFusionMaster = \JFusion\Factory::getFront($master->name);
                 $source_url = $this->params->get('source_url');
                 $source_url = rtrim($source_url, '/');
 	            try {

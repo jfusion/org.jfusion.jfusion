@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\smf;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_smf extends \JFusion\Plugin\Plugin_Admin
+class Admin extends \JFusion\Plugin\Plugin_Admin
 {
     /**
      * returns the name of this JFusion plugin
@@ -67,7 +67,7 @@ class JFusionAdmin_smf extends \JFusion\Plugin\Plugin_Admin
         //try to open the file
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -340,11 +340,11 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
 
 				//check to see if all vars are set
 				if (empty($joomla_url)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(Text::_('MISSING') . ' Joomla URL', $this->getJname(), $this->getJname());
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(Text::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					\JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ItemID ' . JText::_('MUST BE') . ' ' . $this->getJname(), $this->getJname(), $this->getJname());
+					\JFusion\Framework::raiseWarning(Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname(), $this->getJname());
 				} else if($error == 0) {
 					//get the joomla path from the file
 					jimport('joomla.filesystem.file');
@@ -384,24 +384,24 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
 			//compare it with our joomla path
 			if(empty($matches[1][0])) {
 				$error = 1;
-				$reason = JText::_('MOD_NOT_ENABLED');
+				$reason = Text::_('MOD_NOT_ENABLED');
 			}
 		}
 
 		//add the javascript to enable buttons
 		if ($error == 0) {
 			//return success
-			$text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-			$disable = JText::_('MOD_DISABLE');
-			$update = JText::_('MOD_UPDATE');
+			$text = Text::_('REDIRECTION_MOD') . ' ' . Text::_('ENABLED');
+			$disable = Text::_('MOD_DISABLE');
+			$update = Text::_('MOD_UPDATE');
 			$output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'disable');">{$disable}</a>
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'reenable');">{$update}</a>
 HTML;
 		} else {
-			$text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-			$enable = JText::_('MOD_ENABLE');
+			$text = Text::_('REDIRECTION_MOD') . ' ' . Text::_('DISABLED') . ': ' . $reason;
+			$enable = Text::_('MOD_ENABLE');
 			$output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'enable');">{$enable}</a>
@@ -419,7 +419,7 @@ HTML;
     {
     	$error = $this->redirectMod('disable');
     	if (!empty($error)) {
-    	   $reason = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
+    	   $reason = Text::_('REDIRECT_MOD_UNINSTALL_FAILED');
     	   return array(false, $reason);
     	}
 

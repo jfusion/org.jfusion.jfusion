@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\elgg;
 
 /**
  * JFusion User Class for elgg
@@ -15,6 +15,15 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_User;
+
+use \Exception;
+use \RuntimeException;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -30,7 +39,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
+class JFusionUser_elgg extends Plugin_User
 {
     /**
      * @param object $userinfo
@@ -45,7 +54,7 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
 			    $identifier = $userinfo->username;
 		    }
 		    // Get user info from database
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('guid as userid, username, name, name as lastname, email, password, salt as password_salt,banned as block')
@@ -76,7 +85,7 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
 			    }
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;
@@ -106,12 +115,12 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
         $user = get_user_by_username($userinfo->username);
         if($user) {
         	if ($user->delete()) {
-            	$status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
+            	$status['debug'][] = Text::_('USER_DELETION') . ' ' . $userinfo->username;
         	} else {
-        		$status['error'][] = JText::_('USER_DELETION_ERROR');
+        		$status['error'][] = Text::_('USER_DELETION_ERROR');
         	}
         } else {
-        	$status['error'][] = JText::_('USER_DELETION_ERROR');
+        	$status['error'][] = Text::_('USER_DELETION_ERROR');
 		}
 		return $status;
     }
@@ -147,12 +156,12 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
 	    try {
 		    $this->destroySession(null, null);
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 	    }
         $status = array('error' => array(), 'debug' => array());
 
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
+            $status['error'][] = Text::_('FUSION_BLOCKED_USER');
         } else {
             if (defined('externalpage')) {
                 define('externalpage', true);
@@ -215,7 +224,7 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
 	    jimport('joomla.user.helper');
 	    $existinguser->password_salt = JUserHelper::genRandomPassword(8);
 	    $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users_entity')
@@ -226,7 +235,7 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 
 	    $db->execute();
-	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
     /**
@@ -240,7 +249,7 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
 	        //found out what usergroup should be used
 	        $usergroups = $this->getCorrectUserGroups($userinfo);
 	        if (empty($usergroups)) {
-		        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		        throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 	        } else {
 	            $usergroup = $usergroups[0];
 	            //prepare the variables
@@ -285,7 +294,7 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
 			        //                $new_user->admin_created = true;
 			        if (empty($userinfo->password_clear)) {
 				        //we need to update the password
-				        $db = \JFusion\Factory::getDatabase($this->getJname());
+				        $db = Factory::getDatabase($this->getJname());
 
 				        $query = $db->getQuery(true)
 					        ->update('#__users_entity')
@@ -297,7 +306,7 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
 				        $db->execute();
 			        }
 			        //return the good news
-			        $status['debug'][] = JText::_('USER_CREATION');
+			        $status['debug'][] = Text::_('USER_CREATION');
 			        $status['userinfo'] = $this->getUser($userinfo);
 			        //notify_user($new_user->guid, $CONFIG->site->guid, elgg_echo('useradd:subject'), sprintf(elgg_echo('useradd:body'), $name, $CONFIG->site->name, $CONFIG->site->url, $username, $password));
 			        //system_message(sprintf(elgg_echo('adduser:ok'), $CONFIG->sitename));
@@ -307,7 +316,7 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
 		        }
 	        }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USER_CREATION_ERROR') . ' : ' . $e->getMessage();
+		    $status['error'][] = Text::_('USER_CREATION_ERROR') . ' : ' . $e->getMessage();
 	    }
     }
 
@@ -321,7 +330,7 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
     function updateEmail($userinfo, &$existinguser, &$status)
     {
 	    //we need to update the email
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users_entity')
@@ -331,7 +340,7 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
     
     /**
@@ -354,12 +363,12 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
         $user = get_user_by_username($existinguser->username);
         if($user) {
         	if ($user->ban()) {
-				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+				$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
         	} else {
-        		$status['error'][] = JText::_('BLOCK_UPDATE_ERROR');
+        		$status['error'][] = Text::_('BLOCK_UPDATE_ERROR');
         	}
         } else {
-        	$status['error'][] = JText::_('BLOCK_UPDATE_ERROR');
+        	$status['error'][] = Text::_('BLOCK_UPDATE_ERROR');
 		}
     }
 
@@ -385,12 +394,12 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
         $user = get_user_by_username($existinguser->username);
         if($user) {
         	if ($user->unban()) {
-				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+				$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
         	} else {
-        		$status['error'][] = JText::_('BLOCK_UPDATE_ERROR');
+        		$status['error'][] = Text::_('BLOCK_UPDATE_ERROR');
         	}
         } else {
-        	$status['error'][] = JText::_('BLOCK_UPDATE_ERROR');
+        	$status['error'][] = Text::_('BLOCK_UPDATE_ERROR');
 		}
     }
 
@@ -411,12 +420,12 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
         $user = get_user_by_username($existinguser->username);
         if($user) {
         	if (elgg_set_user_validation_status($user->guid, 1, 'validated:jfusion')) {
-				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+				$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         	} else {
-        		$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
+        		$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
         	}
         } else {
-        	$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
+        	$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
 		}    
     }
 
@@ -437,12 +446,12 @@ class JFusionUser_elgg extends \JFusion\Plugin\Plugin_User
         $user = get_user_by_username($existinguser->username);
         if($user) {
         	if (elgg_set_user_validation_status($user->guid, 0)) {
-				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+				$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         	} else {
-        		$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
+        		$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
         	}
         } else {
-        	$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
+        	$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
 		}    
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-use \JFusion\Factory;
-use \JFusion\Framework;
+use JFusion\Factory;
+use JFusion\Framework;
 
 /**
  * Model for all jfusion related function
@@ -682,7 +682,7 @@ class JFusionFunction
 	public static function hasFeature($jname, $feature, $itemid = null) {
 		$return = false;
 		$admin = Factory::getAdmin($jname);
-		$public = Factory::getPublic($jname);
+		$public = Factory::getFront($jname);
 		$forum = Factory::getForum($jname);
 		$user = Factory::getUser($jname);
 		switch ($feature) {

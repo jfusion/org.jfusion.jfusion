@@ -34,7 +34,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class Plugin_Public extends Plugin
+class Plugin_Front extends Plugin
 {
 	var $helper;
 

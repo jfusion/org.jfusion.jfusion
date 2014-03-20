@@ -45,7 +45,7 @@ try {
 				$pluginParam->loadArray($value);
 				$view = $pluginParam->get('view', 'auto');
 
-				$public = \JFusion\Factory::getPublic($jname);
+				$public = \JFusion\Factory::getFront($jname);
 				if($public->isConfigured()) {
 					$output = new stdClass();
 					$title = $pluginParam->get('title', NULL);

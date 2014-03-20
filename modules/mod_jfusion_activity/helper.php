@@ -44,7 +44,7 @@ class modjfusionActivityHelper
     public static function appendAutoOutput(&$results, $jname, &$config, &$params)
     {
         $forum = \JFusion\Factory::getForum($jname);
-        $public = \JFusion\Factory::getPublic($jname);
+        $public = \JFusion\Factory::getFront($jname);
         if (is_array($results)) {
             foreach ($results as $r) {
 	            $r->output = new stdClass();

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\vbulletin;
 
 /**
  *
@@ -28,10 +28,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionForum_vbulletin extends \JFusion\Plugin\Plugin_Forum
+class Forum extends \JFusion\Plugin\Plugin_Forum
 {
     /**
-     * @var $helper JFusionHelper_vbulletin
+     * @var $helper Helper
      */
     var $helper;
 
@@ -210,7 +210,7 @@ class JFusionForum_vbulletin extends \JFusion\Plugin\Plugin_Forum
 			    $userinfo->username = $postinfo->username;
 			    $userinfo->userid = 0;
 			    if (empty($userinfo->username)) {
-				    throw new RuntimeException(JTEXT::_('GUEST_FIELDS_MISSING'));
+				    throw new RuntimeException(Text::_('GUEST_FIELDS_MISSING'));
 			    } else {
 				    $db = \JFusion\Factory::getDatabase($this->getJname());
 
@@ -223,7 +223,7 @@ class JFusionForum_vbulletin extends \JFusion\Plugin\Plugin_Forum
 				    $db->setQuery($query);
 				    $result = $db->loadResult();
 				    if (!empty($result)) {
-					    throw new RuntimeException(JTEXT::_('USERNAME_IN_USE'));
+					    throw new RuntimeException(Text::_('USERNAME_IN_USE'));
 				    }
 
 				    $name_field = $this->params->get('name_field');
@@ -237,7 +237,7 @@ class JFusionForum_vbulletin extends \JFusion\Plugin\Plugin_Forum
 					    $db->setQuery($query);
 					    $result = $db->loadResult();
 					    if (!empty($result)) {
-						    throw new RuntimeException(JTEXT::_('USERNAME_IN_USE'));
+						    throw new RuntimeException(Text::_('USERNAME_IN_USE'));
 					    }
 				    }
 			    }
@@ -250,7 +250,7 @@ class JFusionForum_vbulletin extends \JFusion\Plugin\Plugin_Forum
 			    $threadinfo = $this->getThreadInfo($ids->threadid, $params);
 			    $post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $params->get('moderate_guests', 1))) ? 0 : 1;
 			    $title = 'Re: ' . $threadinfo['title'];
-			    $public = \JFusion\Factory::getPublic($this->getJname());
+			    $public = \JFusion\Factory::getFront($this->getJname());
 			    $public->prepareText($title);
 
 			    $apidata = array(
@@ -280,7 +280,7 @@ class JFusionForum_vbulletin extends \JFusion\Plugin\Plugin_Forum
 			    $status['post_moderated'] = ($post_approved) ? 0 : 1;
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USERNAME_IN_USE');
+		    $status['error'][] = Text::_('USERNAME_IN_USE');
 	    }
         return $status;
     }

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\smf;
 
 /**
  * file containing auth function for the jfusion plugin
@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_smf extends \JFusion\Plugin\Plugin_Auth
+class Auth extends \JFusion\Plugin\Plugin_Auth
 {
 	/**
 	 * returns the name of this JFusion plugin

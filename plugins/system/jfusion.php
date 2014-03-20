@@ -182,7 +182,7 @@ class plgSystemJfusion extends JPlugin
 			// if those implement it.
 			$userinfo = JFactory::getUser();
 			$master = \JFusion\Framework::getMaster();
-			$JFusionMasterPublic = \JFusion\Factory::getPublic($master->name);
+			$JFusionMasterPublic = \JFusion\Factory::getFront($master->name);
 			if (method_exists($JFusionMasterPublic, 'setLanguageFrontEnd')) {
 				try {
 					$status = $JFusionMasterPublic->setLanguageFrontEnd($userinfo);
@@ -198,7 +198,7 @@ class plgSystemJfusion extends JPlugin
 			}
 			$slaves = \JFusion\Framework::getSlaves();
 			foreach($slaves as $slave) {
-				$JFusionSlavePublic = \JFusion\Factory::getPublic($slave->name);
+				$JFusionSlavePublic = \JFusion\Factory::getFront($slave->name);
 				if (method_exists($JFusionSlavePublic, 'setLanguageFrontEnd')) {
 					try {
 						$status = $JFusionSlavePublic->setLanguageFrontEnd($userinfo);

@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\magento;
 
 /**
  * 
@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_magento extends \JFusion\Plugin\Plugin_Public
+class Front extends \JFusion\Plugin\Plugin_Front
 {
     /**
      * returns the name of this JFusion plugin
@@ -71,7 +71,7 @@ class JFusionPublic_magento extends \JFusion\Plugin\Plugin_Public
 	    $status = array('error' => '', 'debug' => '');
         // The language is selected by the library magelib when the magento framework is started
         /*if (JPluginHelper::isEnabled('system', 'magelib')) {
-            $status['debug'] = JText::_('STEP_SKIPPED_MAGELIB_INSTALLED');
+            $status['debug'] = Text::_('STEP_SKIPPED_MAGELIB_INSTALLED');
             return $status;
         }*/
         $cookies_to_set = array();
@@ -87,7 +87,7 @@ class JFusionPublic_magento extends \JFusion\Plugin\Plugin_Public
 
         $language_store_view = $this->params->get('language_store_view', '');
         if (strlen($language_store_view) <= 0) {
-            $status['debug'] = JText::_('NO_STORE_LANGUAGE_LIST');
+            $status['debug'] = Text::_('NO_STORE_LANGUAGE_LIST');
         } else {
 	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 

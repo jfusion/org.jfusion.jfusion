@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\vbulletin;
 
 /**
  *
@@ -27,10 +27,10 @@ global $baseURL, $fullURL, $integratedURL, $vbsefmode;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_vbulletin extends \JFusion\Plugin\Plugin_Public
+class Front extends \JFusion\Plugin\Plugin_Front
 {
 	/**
-	 * @var JFusionHelper_vbulletin
+	 * @var Helper
 	 */
 	var $helper;
 
@@ -302,7 +302,7 @@ class JFusionPublic_vbulletin extends \JFusion\Plugin\Plugin_Public
         //frameless integration is only supported for 3.x
         $version = $this->helper->getVersion();
         if ((int) substr($version, 0, 1) > 3) {
-            \JFusion\Framework::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED', $version), $this->getJname());
+            \JFusion\Framework::raiseWarning(Text::sprintf('VB_FRAMELESS_NOT_SUPPORTED', $version), $this->getJname());
         } else {
 
 	        try {
@@ -323,7 +323,7 @@ class JFusionPublic_vbulletin extends \JFusion\Plugin\Plugin_Public
 	        }
 
             if ($active != '1') {
-                \JFusion\Framework::raiseWarning(JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'), $this->getJname());
+                \JFusion\Framework::raiseWarning(Text::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'), $this->getJname());
             } else {
                 //have to clear this as it shows up in some text boxes
                 unset($q);

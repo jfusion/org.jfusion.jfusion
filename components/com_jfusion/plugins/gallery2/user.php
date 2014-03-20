@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\gallery2;
 
 /**
  * 
@@ -14,6 +14,12 @@
  */
 
 // no direct access
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_User;
+
+use \RuntimeException;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -27,10 +33,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_gallery2 extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
 	/**
-	 * @var $helper JFusionHelper_gallery2
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -220,24 +226,24 @@ class JFusionUser_gallery2 extends \JFusion\Plugin\Plugin_User
         //Fetch GalleryUser
         list($ret, $user) = GalleryCoreApi::fetchUserByUserName($username);
         if ($ret) {
-            $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
+            $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
         } else {
             //Get Write Lock
             list($ret, $lockId) = GalleryCoreApi::acquireWriteLock($user->getId());
             if ($ret) {
-                $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
+                $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
             } else {
                 //Delete User name
                 $ret = $user->delete();
                 if ($ret) {
-                    $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
+                    $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
                 } else {
                     //Release Lock
                     $ret = GalleryCoreApi::releaseLocks($lockId);
                     if ($ret) {
-                        $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
+                        $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
                     } else {
-                        $status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
+                        $status['debug'][] = Text::_('USER_DELETION') . ' ' . $userinfo->username;
                     }
                 }
             }
@@ -255,7 +261,7 @@ class JFusionUser_gallery2 extends \JFusion\Plugin\Plugin_User
 	    $this->helper->loadGallery2Api(false);
         $usergroups = $this->getCorrectUserGroups($userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ': ' . JText::_('USERGROUP_MISSING');
+            $status['error'][] = Text::_('ERROR_CREATE_USER') . ': ' . Text::_('USERGROUP_MISSING');
         } else {
 	        /**
 	         * @ignore
@@ -263,14 +269,14 @@ class JFusionUser_gallery2 extends \JFusion\Plugin\Plugin_User
 	         */
 	        list($ret, $user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
             if ($ret) {
-                $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $userinfo->username;
+                $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . $userinfo->username;
             } else {
                 if (!isset($user)) {
-                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
+                    $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
                 }
                 $ret = $user->create($userinfo->username);
                 if ($ret) {
-                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
+                    $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
                 } else {
                     $testcrypt = $userinfo->password;
                     if (isset($userinfo->password_clear)) {
@@ -282,12 +288,12 @@ class JFusionUser_gallery2 extends \JFusion\Plugin\Plugin_User
 	                $user->setFullName($userinfo->name);
                     $ret = $user->save();
                     if ($ret) {
-                        $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
+                        $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
                     } else {
                         foreach ($usergroups as $group) {
                             $ret = GalleryCoreApi::addUserToGroup($user->id, (int)$group);
                             if ($ret) {
-                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $ret->getErrorMessage();
+                                $status['error'][] = Text::_('GROUP_UPDATE_ERROR') . ': ' . $ret->getErrorMessage();
                             }
                         }
                         $status['userinfo'] = $this->_getUser($user);
@@ -313,7 +319,7 @@ class JFusionUser_gallery2 extends \JFusion\Plugin\Plugin_User
 	    $this->helper->loadGallery2Api(false);
         $usergroups = $this->getCorrectUserGroups($userinfo);
         if (empty($usergroups)) {
-	        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+	        throw new RuntimeException(Text::_('USERGROUP_MISSING'));
         } else {
             foreach($existinguser->groups as $group) {
                 if (!in_array($group, $usergroups, true)) {
@@ -331,7 +337,7 @@ class JFusionUser_gallery2 extends \JFusion\Plugin\Plugin_User
                     }
                 }
             }
-            $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
+            $status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
         }
         GalleryEmbed::done();
     }
@@ -366,10 +372,10 @@ class JFusionUser_gallery2 extends \JFusion\Plugin\Plugin_User
 	            $user->setHashedPassword($testcrypt);
                 $changed = true;
             } else {
-                $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . JText::_('PASSWORD_VALID');
+                $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ':' . Text::_('PASSWORD_VALID');
             }
         } else {
-            $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
+            $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE');
         }
         if ($changed) {
             $ret = $user->save();

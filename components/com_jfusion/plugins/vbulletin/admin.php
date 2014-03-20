@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\vbulletin;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_vbulletin extends \JFusion\Plugin\Plugin_Admin
+class Admin extends \JFusion\Plugin\Plugin_Admin
 {
 	static private $mods = array('jfvbtask' => 'JFusion API Plugin - REQUIRED',
 		'redirect' => 'JFusion Redirect Plugin',
@@ -39,7 +39,7 @@ class JFusionAdmin_vbulletin extends \JFusion\Plugin\Plugin_Admin
 		'globalfix' => 'JFusion Global Fix Plugin');
 
 	/**
-	 * @var $helper JFusionHelper_vbulletin
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -74,7 +74,7 @@ class JFusionAdmin_vbulletin extends \JFusion\Plugin\Plugin_Admin
 		$params = array();
 		$lines = $this->readFile($myfile);
 		if ($lines === false) {
-			\JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+			\JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 			return false;
 		} else {
 			//parse the file line by line to get only the config variables
@@ -369,11 +369,11 @@ class JFusionAdmin_vbulletin extends \JFusion\Plugin\Plugin_Admin
 			try {
 				$db = \JFusion\Factory::getDatabase($this->getJname());
 			} catch (Exception $e) {
-				throw new RuntimeException(JText::_('VB_CONFIG_FIRST'));
+				throw new RuntimeException(Text::_('VB_CONFIG_FIRST'));
 			}
 			$secret = $this->params->get('vb_secret', null);
 			if (empty($secret)) {
-				throw new RuntimeException(JText::_('VB_SECRET_EMPTY'));
+				throw new RuntimeException(Text::_('VB_SECRET_EMPTY'));
 			}
 
 			$query = $db->getQuery(true)
@@ -388,9 +388,9 @@ class JFusionAdmin_vbulletin extends \JFusion\Plugin\Plugin_Admin
 
 			if ($check) {
 				//return success
-				$enabled = JText::_('ENABLED');
-				$disable = JText::_('DISABLE_THIS_PLUGIN');
-				$reenable = JText::_('REENABLE_THIS_PLUGIN');
+				$enabled = Text::_('ENABLED');
+				$disable = Text::_('DISABLE_THIS_PLUGIN');
+				$reenable = Text::_('REENABLE_THIS_PLUGIN');
 				$output = <<<HTML
                     <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
                     <span style="float: left; margin-left: 5px;">{$enabled}</span>
@@ -398,8 +398,8 @@ class JFusionAdmin_vbulletin extends \JFusion\Plugin\Plugin_Admin
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return JFusion.Plugin.module('toggleHook', '{$name}', 'reenable');">{$reenable}</a>
 HTML;
 			} else {
-				$disabled = JText::_('DISABLED');
-				$enable = JText::_('ENABLE_THIS_PLUGIN');
+				$disabled = Text::_('DISABLED');
+				$enable = Text::_('ENABLE_THIS_PLUGIN');
 				$output = <<<HTML
                     <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
                     <span style="float: left; margin-left: 5px;">{$disabled}</span>
@@ -426,7 +426,7 @@ HTML;
 			try {
 				$db = \JFusion\Factory::getDatabase($this->getJname());
 			} catch (Exception $e) {
-				throw new RuntimeException(JText::_('VB_CONFIG_FIRST'));
+				throw new RuntimeException(Text::_('VB_CONFIG_FIRST'));
 			}
 
 			//let's first check the default icon
@@ -459,8 +459,8 @@ HTML;
 			}
 			if ($check) {
 				//return success
-				$complete = JText::_('COMPLETE');
-				$undo = JText::_('VB_UNDO_OPTIMIZATION');
+				$complete = Text::_('COMPLETE');
+				$undo = Text::_('VB_UNDO_OPTIMIZATION');
 				$output = <<<HTML
 		                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
 		                    <span style="float: left; margin-left: 5px;">{$complete}</span>
@@ -468,8 +468,8 @@ HTML;
 HTML;
 				return $output;
 			} else {
-				$incomplete = JText::_('INCOMPLETE');
-				$do = JText::_('VB_DO_OPTIMIZATION');
+				$incomplete = Text::_('INCOMPLETE');
+				$do = Text::_('VB_DO_OPTIMIZATION');
 				$output = <<<HTML
 		                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
 		                    <span style="float: left; margin-left: 5px;">{$incomplete}</span>
@@ -514,9 +514,9 @@ HTML;
 					if ($action != 'disable') {
 						$secret = $this->params->get('vb_secret', null);
 						if (empty($secret)) {
-							\JFusion\Framework::raiseWarning(JText::_('VB_SECRET_EMPTY'));
+							\JFusion\Framework::raiseWarning(Text::_('VB_SECRET_EMPTY'));
 						} else if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
-							\JFusion\Framework::raiseWarning(JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
+							\JFusion\Framework::raiseWarning(Text::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
 						} else {
 							//install the hook
 							$php = $this->getHookPHP($hook, $itemid);
@@ -702,11 +702,11 @@ HTML;
 
 		$db->setQuery($query);
 		if ($db->loadResult() == 0) {
-			\JFusion\Framework::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
+			\JFusion\Framework::raiseWarning(Text::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
 		} else {
 			$response = $this->helper->apiCall('ping', array('ping' => 1));
 			if (!$response['success']) {
-				\JFusion\Framework::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
+				\JFusion\Framework::raiseWarning(Text::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
 			}
 		}
 	}
@@ -725,7 +725,7 @@ HTML;
 				try {
 					$db = \JFusion\Factory::getDatabase($this->getJname());
 				} catch (Exception $e) {
-					throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
+					throw new RuntimeException(Text::_('SAVE_CONFIG_FIRST'));
 				}
 
 				//get a list of field names for custom profile fields
@@ -753,7 +753,7 @@ HTML;
 
 				return JHTML::_('select.genericlist', $vb_options, $control_name . '[' . $name . ']', 'class="inputbox"', 'id', 'name', $value);
 			} else {
-				throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
+				throw new RuntimeException(Text::_('SAVE_CONFIG_FIRST'));
 			}
 		} catch (Exception $e) {
 			return $e->getMessage();

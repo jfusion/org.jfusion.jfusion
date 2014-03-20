@@ -15,8 +15,8 @@
 
 // no direct access
 use JFusion\Factory;
-use \JFusion\Debugger\Debugger;
-use \JFusion\Registry\Registry;
+use\JFusion\Debugger\Debugger;
+use\JFusion\Registry\Registry;
 
 use \Exception;
 use \ReflectionMethod;

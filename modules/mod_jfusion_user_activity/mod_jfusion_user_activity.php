@@ -39,7 +39,7 @@ try {
 
 		$view = $params->get('view', 'auto');
 
-		$public = \JFusion\Factory::getPublic($jname);
+		$public = \JFusion\Factory::getFront($jname);
 		if($public->isConfigured()) {
 			//configuration
 			$config['itemid'] = $params->get('itemid');

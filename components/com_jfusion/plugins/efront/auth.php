@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\efront;
 
 /**
  *
@@ -14,6 +14,8 @@
  */
 
 // no direct access
+use JFusion\Plugin\Plugin_Auth;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -25,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_efront extends \JFusion\Plugin\Plugin_Auth
+class Auth extends Plugin_Auth
 {
     /**
      * @param array|object $userinfo

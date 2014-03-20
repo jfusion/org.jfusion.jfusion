@@ -1,4 +1,5 @@
-<?php
+<?php namespace JFusion\Plugins\efront;
+
 /**
  * file containing helper functions for eFront
  * 
@@ -14,6 +15,13 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Plugin\Plugin;
+
+use \Exception;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,7 +36,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionHelper_efront extends \JFusion\Plugin\Plugin {
+class Helper extends Plugin {
 
     /**
      * @return string
@@ -100,7 +108,7 @@ class JFusionHelper_efront extends \JFusion\Plugin\Plugin {
 	    try {
 		    // correct id
 		    $group_id = $group_id - 2;
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    if (!empty($db)) {
 			    $query = $db->getQuery(true)
 				    ->select('name, basic_user_type')
@@ -112,7 +120,7 @@ class JFusionHelper_efront extends \JFusion\Plugin\Plugin {
 			    return $user_type['name'] . ' (' . $user_type['basic_user_type'] . ')';
 		    }
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 	    }
         return false;
     }
@@ -158,7 +166,7 @@ class JFusionHelper_efront extends \JFusion\Plugin\Plugin {
 
 		try {
 	        //get the connection to the db
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('id, name, basic_user_type')
@@ -175,7 +183,7 @@ class JFusionHelper_efront extends \JFusion\Plugin\Plugin {
 		        $user_types[] = $group;
 	        }
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 		}
         return $user_types;
     }
@@ -191,7 +199,7 @@ class JFusionHelper_efront extends \JFusion\Plugin\Plugin {
     function send_to_api($curl_options, $status) {
         $status = array('error' => array(), 'debug' => array());
 
-        $source_url = \JFusion\Factory::getParams($this->getJname())->get('source_url');
+        $source_url = Factory::getParams($this->getJname())->get('source_url');
         // prevent user error by not supplying trailing backslash.
         if (!(substr($source_url, -1) == '/')) {
             $source_url = $source_url . '/';
@@ -200,7 +208,7 @@ class JFusionHelper_efront extends \JFusion\Plugin\Plugin {
         ltrim($source_url);
         $apipath = $source_url . 'api.php?action=';
         $post_url = $apipath . $curl_options['action'] . $curl_options['parms'];
- //       $status['debug'][] = JText::_('EFRONT_API_POST') . ' post url: ' . $post_url;
+ //       $status['debug'][] = Text::_('EFRONT_API_POST') . ' post url: ' . $post_url;
         
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);

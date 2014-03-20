@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\efront;
 
 /**
  *
@@ -14,6 +14,14 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use \Exception;
+use \RuntimeException;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -25,10 +33,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
 	/**
-	 * @var $helper JFusionHelper_efront
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -39,7 +47,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
      */
     function getUser($userinfo) {
 	    try {
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 	        //get the identifier
 	        list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'login', 'email');
 	        if ($identifier_type == 'login') {
@@ -70,7 +78,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 	            $result->block = !$result->active;
 	        }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;
@@ -101,7 +109,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
             $cookiepath = $this->params->get('cookie_path', '/');
             $httponly = $this->params->get('httponly', 0);
             $secure = $this->params->get('secure', false);
-            $db = \JFusion\Factory::getDatabase($this->getJname());
+            $db = Factory::getDatabase($this->getJname());
 	        $status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'));
 
             $expires = $this->params->get('secure', false);
@@ -145,7 +153,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 		        }
 	        }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 	    }
         return $status;
     }
@@ -160,10 +168,10 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
                 try {
                     //do not create sessions for blocked users
                     if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-                        throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
+                        throw new RuntimeException(Text::_('FUSION_BLOCKED_USER'));
                     } else {
                         //get cookiedomain, cookiepath
-                        $db = \JFusion\Factory::getDatabase($this->getJname());
+                        $db = Factory::getDatabase($this->getJname());
                          $cookiedomain = $this->params->get('cookie_domain', '');
                          $cookiepath = $this->params->get('cookie_path', '/');
                          $httponly = $this->params->get('httponly', 0);
@@ -230,7 +238,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    $md5_key = $this->params->get('md5_key');
 	    $existinguser->password = md5($userinfo->password_clear . $md5_key);
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -240,7 +248,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 
 	    $db->execute();
-	    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
     }
 
     /**
@@ -262,7 +270,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -272,7 +280,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
     }
 
     /**
@@ -283,7 +291,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
      * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -293,7 +301,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 
     /**
@@ -305,7 +313,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
 	    //unblock the user
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -314,7 +322,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 
     /**
@@ -325,7 +333,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
      * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -335,7 +343,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
     /**
@@ -346,7 +354,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -356,7 +364,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 
     /**
@@ -371,7 +379,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
         */
         $status = array('error' => array(), 'debug' => array());
 	    try {
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 	        //prepare the variables
 	        $user = new stdClass;
 	        $user->id = null;
@@ -393,7 +401,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 
 	        $usergroups = $this->getCorrectUserGroups($userinfo);
 	        if (empty($usergroups)) {
-		        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		        throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 	        } else {
 	            $usergroup = $usergroups[0];
 	            $user_types_ID = 0;
@@ -486,11 +494,11 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 	                // not sure I should implemented it, anyway I have only the community version to work on
                 }
                 //return the good news
-                $status['debug'][] = JText::_('USER_CREATION');
+                $status['debug'][] = Text::_('USER_CREATION');
                 $status['userinfo'] = $this->getUser($userinfo);
 	        }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ERROR_CREATE_USER') . ': ' . $e->getMessage();
+		    $status['error'][] = Text::_('ERROR_CREATE_USER') . ': ' . $e->getMessage();
 	    }
     }
 
@@ -509,7 +517,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
     	// check apiuser existence
         $status = array('error' => array(), 'debug' => array());
         if (!is_object($userinfo)) {
-            $status['error'][] = JText::_('NO_USER_DATA_FOUND');
+            $status['error'][] = Text::_('NO_USER_DATA_FOUND');
         } else {
 	        try {
 		        $existinguser = $this->getUser($userinfo);
@@ -522,7 +530,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
                 $login = $existinguser->username;
                 $jname = $this->getJname();
                 if (!$apiuser || !$apikey) {
-                    $status['error'][] = JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION');
+                    $status['error'][] = Text::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION');
                 } else {
                     // get token
                     $curl_options['action'] = 'token';
@@ -561,7 +569,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
                                     return $errorstatus;
                                 }
                             }
-                            $status['debug'][] = JText::_('DELETED') . ' ' . JTEXT::_('USER') . ' ' . $login;
+                            $status['debug'][] = Text::_('DELETED') . ' ' . Text::_('USER') . ' ' . $login;
                         }
                     }
                 }
@@ -581,10 +589,10 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
-		    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 	    } else {
 		    $usergroup = $usergroups[0];
-		    $db = \JFusion\Factory::getDataBase($this->getJname());
+		    $db = Factory::getDataBase($this->getJname());
 		    if ($usergroup< 3) {
 			    $user_type = $this->helper->groupIdToName($usergroup);
 			    $user_types_ID = 0;
@@ -608,7 +616,7 @@ class JFusionUser_efront extends \JFusion\Plugin\Plugin_User
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+		    $status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 	    }
     }
 }

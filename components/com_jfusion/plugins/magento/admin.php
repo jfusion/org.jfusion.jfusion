@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\magento;
 
 /**
  * file containing administrator function for the jfusion plugin
@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_magento extends \JFusion\Plugin\Plugin_Admin
+class Admin extends \JFusion\Plugin\Plugin_Admin
 {
     /**
      * returns the name of this JFusion plugin
@@ -103,7 +103,7 @@ class JFusionAdmin_magento extends \JFusion\Plugin\Plugin_Admin
         if (file_exists($xmlfile)) {
 	        $xml = \JFusion\Framework::getXml($xmlfile);
             if (!$xml) {
-                \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+                \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	            return false;
             } else {
                 //save the parameters into array
@@ -117,7 +117,7 @@ class JFusionAdmin_magento extends \JFusion\Plugin\Plugin_Admin
             }
             unset($xml);
         } else {
-            \JFusion\Framework::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         }
         
@@ -211,14 +211,14 @@ class JFusionAdmin_magento extends \JFusion\Plugin\Plugin_Admin
 	    $db->setQuery($query);
 	    $no_users = $db->loadResult();
 	    if ($no_users <= 0) {
-		    \JFusion\Framework::raiseWarning(JText::_('MAGENTO_NEED_API_USER'), $this->getJname());
+		    \JFusion\Framework::raiseWarning(Text::_('MAGENTO_NEED_API_USER'), $this->getJname());
 	    } else {
 		    // check if we have valid parameters  for apiuser and api key
 		    $apipath = $this->params->get('source_url') . 'index.php/api/?wsdl';
 		    $apiuser = $this->params->get('apiuser');
 		    $apikey = $this->params->get('apikey');
 		    if (!$apiuser || !$apikey) {
-			    \JFusion\Framework::raiseWarning(JText::_('MAGENTO_NO_API_DATA'), $this->getJname());
+			    \JFusion\Framework::raiseWarning(Text::_('MAGENTO_NO_API_DATA'), $this->getJname());
 		    } else {
 			    //finally check if the apiuser and apikey are valid
 			    try {
@@ -237,7 +237,7 @@ class JFusionAdmin_magento extends \JFusion\Plugin\Plugin_Admin
 				    }
 			    } catch (Soapfault $fault) {
 				    /** @noinspection PhpUndefinedFieldInspection */
-				    \JFusion\Framework::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
+				    \JFusion\Framework::raiseWarning(Text::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
 			    }
 			    /*
 				$query = $db->getQuery(true)
@@ -258,7 +258,7 @@ class JFusionAdmin_magento extends \JFusion\Plugin\Plugin_Admin
 					$params_hash_sha256 = hash('sha256', $apikey);
 				}
 				if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
-					\JFusion\Framework::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
+					\JFusion\Framework::raiseWarning(Text::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
 				}
 			*/
 		    }
@@ -273,11 +273,11 @@ class JFusionAdmin_magento extends \JFusion\Plugin\Plugin_Admin
 		    $db->setQuery($query);
 		    $value = $db->loadResult();
 		    if ($value) {
-			    \JFusion\Framework::raiseWarning(JText::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'), $this->getJname());
+			    \JFusion\Framework::raiseWarning(Text::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'), $this->getJname());
 		    }
 		    // we need to have the curl library installed
 		    if (!extension_loaded('curl')) {
-			    \JFusion\Framework::raiseWarning(JText::_('CURL_NOTINSTALLED'), $this->getJname());
+			    \JFusion\Framework::raiseWarning(Text::_('CURL_NOTINSTALLED'), $this->getJname());
 		    }
 	    } catch (Exception $e) {
 

@@ -472,7 +472,7 @@ class Plugin_Forum extends Plugin
 		}
 
 		//prepare the content
-        $public = Factory::getPublic($this->getJname());
+        $public = Factory::getFront($this->getJname());
 		$public->prepareText($text, 'forum');
 
 		return $text;

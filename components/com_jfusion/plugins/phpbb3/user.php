@@ -1,4 +1,4 @@
-<?php
+<?php namespace jfusion\plugins\phpbb3;
 
 /**
  *
@@ -14,6 +14,14 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use \Exception;
+use \RuntimeException;
+use \stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,10 +36,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
 	/**
-	 * @var $helper JFusionHelper_phpbb3
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -44,7 +52,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 		    //get the identifier
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email');
 		    // Get a database object
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    //make the username case insensitive
 		    if ($identifier_type == 'a.username_clean') {
 			    $identifier = $this->filterUsername($identifier);
@@ -108,7 +116,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 			    }
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
 
@@ -133,7 +141,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
     {
 	    $status = array('error' => array(), 'debug' => array());
 	    try {
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 	        //get the cookie parameters
 	        $phpbb_cookie_name = $this->params->get('cookie_prefix');
 	        $phpbb_cookie_path = $this->params->get('cookie_path');
@@ -197,9 +205,9 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 	    try {
 		    //do not create sessions for blocked users
 		    if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-			    throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
+			    throw new RuntimeException(Text::_('FUSION_BLOCKED_USER'));
 		    } else {
-			    $jdb = \JFusion\Factory::getDatabase($this->getJname());
+			    $jdb = Factory::getDatabase($this->getJname());
 			    $userid = $userinfo->userid;
 			    if ($userid && !empty($userid) && ($userid > 0)) {
 				    //check if we need to let phpbb3 handle the login
@@ -242,18 +250,18 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 						    }
 						    $result = $auth->login($userinfo->username, $userinfo->password_clear, $remember, 1, 0);
 						    if ($result['status'] == LOGIN_SUCCESS) {
-							    $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('PHPBB') . ' ' . JText::_('SESSION');
+							    $status['debug'][] = Text::_('CREATED') . ' ' . Text::_('PHPBB') . ' ' . Text::_('SESSION');
 						    } else {
-							    $status['debug'][] = JText::_('ERROR') . ' ' . JText::_('PHPBB') . ' ' . JText::_('SESSION');
+							    $status['debug'][] = Text::_('ERROR') . ' ' . Text::_('PHPBB') . ' ' . Text::_('SESSION');
 						    }
 						    //change the current directory back to Joomla.
 						    chdir(JPATH_SITE);
 					    } else {
-						    throw new RuntimeException(JText::sprintf('UNABLE_TO_FIND_FILE', 'common.php'));
+						    throw new RuntimeException(Text::sprintf('UNABLE_TO_FIND_FILE', 'common.php'));
 					    }
 				    } else {
 					    jimport('joomla.user.helper');
-					    $session_key = \JFusion\Framework::getHash(JUserHelper::genRandomPassword(32));
+					    $session_key = Framework::getHash(JUserHelper::genRandomPassword(32));
 					    //Check for admin access
 					    $query = $jdb->getQuery(true)
 						    ->select('b.group_name')
@@ -289,7 +297,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 						    $create_persistant_cookie = false;
 						    if (!empty($phpbb_allow_autologin)) {
 							    //check for a valid persistent cookie
-							    $persistant_cookie = ($phpbb_allow_autologin) ? \JFusion\Factory::getApplication()->input->cookie->get($phpbb_cookie_name . '_k', '') : '';
+							    $persistant_cookie = ($phpbb_allow_autologin) ? Factory::getApplication()->input->cookie->get($phpbb_cookie_name . '_k', '') : '';
 							    if (!empty($persistant_cookie)) {
 								    $query = $jdb->getQuery(true)
 									    ->select('user_id')
@@ -299,7 +307,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 								    $jdb->setQuery($query);
 								    $persistant_cookie_userid = $jdb->loadResult();
 								    if ($persistant_cookie_userid == $userinfo->userid) {
-									    $status['debug'][] = JText::_('SKIPPED_CREATING_PERSISTANT_COOKIE');
+									    $status['debug'][] = Text::_('SKIPPED_CREATING_PERSISTANT_COOKIE');
 									    $create_persistant_cookie = false;
 									    //going to assume that since a persistent cookie exists, $options['remember'] was originally set
 									    //$options['remember'] does not get set if Joomla remember me plugin reinitiated the login
@@ -363,11 +371,11 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 							    $_COOKIE[$phpbb_cookie_name . '_k'] = $key_id;
 						    }
 					    } else {
-						    throw new RuntimeException(JText::_('INVALID_COOKIENAME'));
+						    throw new RuntimeException(Text::_('INVALID_COOKIENAME'));
 					    }
 				    }
 			    } else {
-				    throw new RuntimeException(JText::_('INVALID_USERID'));
+				    throw new RuntimeException(Text::_('INVALID_USERID'));
 			    }
 		    }
 	    } catch (Exception $e) {
@@ -396,12 +404,12 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    /**
 	     * @ignore
-	     * @var $auth JFusionAuth_phpbb3
+	     * @var $auth Auth
 	     */
-	    $auth = \JFusion\Factory::getAuth($this->getJname());
+	    $auth = Factory::getAuth($this->getJname());
 	    $existinguser->password = $auth->HashPassword($userinfo->password_clear);
 
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -412,7 +420,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
+	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
@@ -434,7 +442,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    //we need to update the email
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -444,7 +452,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
 	/**
@@ -458,7 +466,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 	public function updateUsergroup($userinfo, &$existinguser, &$status) {
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
+			throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		} else {
 			$usergroup = $usergroups[0];
 
@@ -468,7 +476,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 				$usergroup->groups[] = $usergroup->defaultgroup;
 			}
 
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 			$user = new stdClass;
 			$user->user_id = $existinguser->userid;
 			$user->group_id = $usergroup->defaultgroup;
@@ -506,7 +514,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 			} catch (Exception $e) {
-				$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			}
 
 			foreach($usergroup->groups as $group) {
@@ -529,7 +537,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 			} catch (Exception $e) {
-				$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			}
 
 			try {
@@ -542,7 +550,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 			} catch (Exception $e) {
-				$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			}
 
 			try {
@@ -554,7 +562,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 			} catch (Exception $e) {
-				$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			}
 
 			$query = $db->getQuery(true)
@@ -574,11 +582,11 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 					$db->setQuery($query);
 					$db->execute();
 				} catch (Exception $e) {
-					$this->debugger->add('error', JText::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+					$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 				}
 			}
 			//log the group change success
-			$this->debugger->add('debug', JText::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroup->groups));
+			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroup->groups));
 		}
     }
 
@@ -630,7 +638,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
      */
     function blockUser($userinfo, &$existinguser, &$status) {
 	    //block the user
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $ban = new stdClass;
 	    $ban->ban_userid = $existinguser->userid;
@@ -638,7 +646,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 
 	    $db->insertObject('#__banlist', $ban);
 
-	    $this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -650,7 +658,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
 	    //unblock the user
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 	    $query = $db->getQuery(true)
 		    ->delete('#__banlist')
 		    ->where('ban_userid = ' . (int)$existinguser->userid);
@@ -658,7 +666,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -670,7 +678,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
      */
     function activateUser($userinfo, &$existinguser, &$status) {
 	    //activate the user
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -682,7 +690,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
@@ -694,7 +702,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
 	    //set activation key
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -706,7 +714,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
@@ -718,12 +726,12 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
     function createUser($userinfo, &$status) {
 	    try {
 		    //found out what usergroup should be used
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    $update_block = $this->params->get('update_block');
 		    $update_activation = $this->params->get('update_activation');
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
-			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		    } else {
 			    $usergroup = $usergroups[0];
 
@@ -747,9 +755,9 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 				    if (isset($userinfo->password_clear)) {
 					    /**
 					     * @ignore
-					     * @var $auth JFusionAuth_phpbb3
+					     * @var $auth Auth
 					     */
-					    $auth = \JFusion\Factory::getAuth($this->getJname());
+					    $auth = Factory::getAuth($this->getJname());
 					    $user->user_password = $auth->HashPassword($userinfo->password_clear);
 				    } else {
 					    $user->user_password = $userinfo->password;
@@ -898,16 +906,16 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 
 						    $db->insertObject('#__banlist', $ban);
 					    } catch (Exception $e) {
-							throw new RuntimeException(JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage());
+							throw new RuntimeException(Text::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage());
 					    }
 				    }
 				    //return the good news
-				    $this->debugger->add('debug', JText::_('USER_CREATION'));
+				    $this->debugger->add('debug', Text::_('USER_CREATION'));
 				    $this->debugger->set('userinfo', $this->getUser($userinfo));
 			    }
 		    }
 	    } catch (Exception $e) {
-		    $this->debugger->add('error', JText::_('ERROR_CREATE_USER') . ' ' . $e->getMessage());
+		    $this->debugger->add('error', Text::_('ERROR_CREATE_USER') . ' ' . $e->getMessage());
 	    }
     }
 
@@ -920,7 +928,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 	    $status = array('error' => array(), 'debug' => array());
 	    try {
 		    //retreive the database object
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    //set the userid
 		    $user_id = $userinfo->userid;
 		    // Before we begin, we will remove the reports the user issued.
@@ -1272,9 +1280,9 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 				    $db->execute();
 			    }
 		    }
-		    $status['debug'][] = JText::_('USER_DELETION') . ' ' . $user_id;
+		    $status['debug'][] = Text::_('USER_DELETION') . ' ' . $user_id;
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USER_DELETION_ERROR') . $e->getMessage();
+		    $status['error'][] = Text::_('USER_DELETION_ERROR') . $e->getMessage();
 	    }
         return $status;
     }
@@ -1292,7 +1300,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 		    $login_type = $this->params->get('login_type');
 		    if ($login_type == 1) {
 			    if ($debug) {
-				    \JFusion\Framework::raiseNotice('syncSessions called', $this->getJname());
+				    Framework::raiseNotice('syncSessions called', $this->getJname());
 			    }
 
 			    $options = array();
@@ -1300,16 +1308,16 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 
 			    //phpbb variables
 			    $phpbb_cookie_prefix = $this->params->get('cookie_prefix');
-			    $mainframe = \JFusion\Factory::getApplication();
+			    $mainframe = Factory::getApplication();
 			    $userid_cookie_value = $mainframe->input->cookie->get($phpbb_cookie_prefix . '_u', '');
 			    $sid_cookie_value = $mainframe->input->cookie->get($phpbb_cookie_prefix . '_sid', '');
 			    $phpbb_allow_autologin = $this->params->get('allow_autologin');
 			    $persistant_cookie = ($phpbb_allow_autologin) ? $mainframe->input->cookie->get($phpbb_cookie_prefix . '_k', '') : '';
 			    //joomla variables
 			    $JUser = JFactory::getUser();
-			    if (JPluginHelper::isEnabled ('system', 'remember')) {
+			    if (\JPluginHelper::isEnabled ('system', 'remember')) {
 				    jimport('joomla.utilities.utility');
-				    $hash = \JFusion\Framework::getHash('JLOGIN_REMEMBER');
+				    $hash = Framework::getHash('JLOGIN_REMEMBER');
 				    $joomla_persistant_cookie = $mainframe->input->cookie->get($hash, '', 'raw');
 			    } else {
 				    $joomla_persistant_cookie = '';
@@ -1321,24 +1329,24 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 				    if (!empty($phpbb_allow_autologin) && !empty($persistant_cookie) && !empty($sid_cookie_value)) {
 					    //we have a persistent cookie set so let phpBB handle the session renewal
 					    if ($debug) {
-						    \JFusion\Framework::raiseNotice('persistant cookie enabled and set so let phpbb handle renewal', $this->getJname());
+						    Framework::raiseNotice('persistant cookie enabled and set so let phpbb handle renewal', $this->getJname());
 					    }
 				    } else {
 					    if ($debug) {
-						    \JFusion\Framework::raiseNotice('Joomla user is logged in', $this->getJname());
+						    Framework::raiseNotice('Joomla user is logged in', $this->getJname());
 					    }
 
 					    //check to see if the userid cookie is empty or if it contains the anonymous user, or if sid cookie is empty or missing
 					    if (empty($userid_cookie_value) || $userid_cookie_value == '1' || empty($sid_cookie_value)) {
 						    if ($debug) {
-							    \JFusion\Framework::raiseNotice('has a guest session', $this->getJname());
+							    Framework::raiseNotice('has a guest session', $this->getJname());
 						    }
 						    //find the userid attached to Joomla userid
 						    $joomla_userid = $JUser->get('id');
-						    $userlookup = \JFusion\Framework::lookupUser($this->getJname(), $joomla_userid);
+						    $userlookup = Framework::lookupUser($this->getJname(), $joomla_userid);
 						    //get the user's info
 						    if (!empty($userlookup)) {
-							    $db = \JFusion\Factory::getDatabase($this->getJname());
+							    $db = Factory::getDatabase($this->getJname());
 
 							    $query = $db->getQuery(true)
 								    ->select('username_clean AS username, user_email as email')
@@ -1352,7 +1360,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 
 						    if (!empty($userinfo) && (!empty($keepalive) || !empty($joomla_persistant_cookie))) {
 							    if ($debug) {
-								    \JFusion\Framework::raiseNotice('keep alive enabled or Joomla persistant cookie found, and found a valid phpbb3 user so calling createSession', $this->getJname());
+								    Framework::raiseNotice('keep alive enabled or Joomla persistant cookie found, and found a valid phpbb3 user so calling createSession', $this->getJname());
 							    }
 							    //enable remember me as this is a keep alive function anyway
 							    $options['remember'] = 1;
@@ -1361,18 +1369,18 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 							    try {
 								    $status = $this->createSession($userinfo, $options);
 								    if ($debug) {
-									    \JFusion\Framework::raise('notice', $status, $this->getJname());
+									    Framework::raise('notice', $status, $this->getJname());
 								    }
 							    } catch (Exception $e) {
-								    JfusionFunction::raiseError($e, $this->getJname());
+								    Framework::raiseError($e, $this->getJname());
 							    }
 							    //signal that session was changed
 							    $return = 1;
 						    } else {
 							    if ($debug) {
-								    \JFusion\Framework::raiseNotice('keep alive disabled or no persistant session found so calling Joomla\'s destorySession', $this->getJname());
+								    Framework::raiseNotice('keep alive disabled or no persistant session found so calling Joomla\'s destorySession', $this->getJname());
 							    }
-							    $JoomlaUser = \JFusion\Factory::getUser('joomla_int');
+							    $JoomlaUser = Factory::getUser('joomla_int');
 
 							    $userinfo = new stdClass;
 							    $userinfo->id = $JUser->id;
@@ -1390,20 +1398,20 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 							    try {
 								    $status = $JoomlaUser->destroySession($userinfo, $options);
 								    if ($debug) {
-									    \JFusion\Framework::raise('notice', $status, $this->getJname());
+									    Framework::raise('notice', $status, $this->getJname());
 								    }
 							    } catch (Exception $e) {
-									\JFusion\Framework::raiseError($e, $JoomlaUser->getJname());
+									Framework::raiseError($e, $JoomlaUser->getJname());
 							    }
 						    }
 					    } else {
 						    if ($debug) {
-							    \JFusion\Framework::raiseNotice('user logged in', $this->getJname());
+							    Framework::raiseNotice('user logged in', $this->getJname());
 						    }
 					    }
 				    }
 			    } elseif ((!empty($sid_cookie_value) || !empty($persistant_cookie)) && $userid_cookie_value != '1') {
-				    $db = \JFusion\Factory::getDatabase($this->getJname());
+				    $db = Factory::getDatabase($this->getJname());
 				    $query = $db->getQuery(true)
 					    ->select('b.group_name')
 					    ->from('#__users as a')
@@ -1414,16 +1422,16 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 				    $group_name = $db->loadresult();
 				    if ($group_name !== 'BOTS') {
 					    if ($debug) {
-						    \JFusion\Framework::raiseNotice('Joomla has a guest session', $this->getJname());
+						    Framework::raiseNotice('Joomla has a guest session', $this->getJname());
 					    }
 					    //the user is not logged into Joomla and we have an active phpBB session
 					    if (!empty($joomla_persistant_cookie)) {
 						    if ($debug) {
-							    \JFusion\Framework::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal', $this->getJname());
+							    Framework::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal', $this->getJname());
 						    }
 					    } elseif (empty($keepalive)) {
 						    if ($debug) {
-							    \JFusion\Framework::raiseNotice('Keep alive disabled so kill phpBBs session', $this->getJname());
+							    Framework::raiseNotice('Keep alive disabled so kill phpBBs session', $this->getJname());
 						    }
 						    //something fishy or person chose not to use remember me so let's destroy phpBBs session
 						    $phpbb_cookie_name = $this->params->get('cookie_prefix');
@@ -1439,7 +1447,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 						    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
 						    $return = 1;
 					    } elseif ($debug) {
-						    \JFusion\Framework::raiseNotice('Keep alive enabled so renew Joomla\'s session', $this->getJname());
+						    Framework::raiseNotice('Keep alive enabled so renew Joomla\'s session', $this->getJname());
 					    } else {
 						    if (!empty($persistant_cookie)) {
 							    $query = $db->getQuery(true)
@@ -1448,7 +1456,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 								    ->where('key_id = ' . $db->quote(md5($persistant_cookie)));
 
 							    if ($debug) {
-								    \JFusion\Framework::raiseNotice('Using phpBB persistant cookie to find user', $this->getJname());
+								    Framework::raiseNotice('Using phpBB persistant cookie to find user', $this->getJname());
 							    }
 						    } else {
 							    $query = $db->getQuery(true)
@@ -1457,15 +1465,15 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 								    ->where('session_id = ' . $db->quote($sid_cookie_value));
 
 							    if ($debug) {
-								    \JFusion\Framework::raiseNotice('Using phpBB sid cookie to find user', $this->getJname());
+								    Framework::raiseNotice('Using phpBB sid cookie to find user', $this->getJname());
 							    }
 						    }
 						    $db->setQuery($query);
 						    $userid = $db->loadresult();
-						    $userlookup = \JFusion\Framework::lookupUser($this->getJname(), $userid, false);
+						    $userlookup = Framework::lookupUser($this->getJname(), $userid, false);
 						    if (!empty($userlookup)) {
 							    if ($debug) {
-								    \JFusion\Framework::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.', $this->getJname());
+								    Framework::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.', $this->getJname());
 							    }
 							    //get the user's info
 							    $jdb = JFactory::getDBO();
@@ -1477,7 +1485,7 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 
 							    $jdb->setQuery($query);
 							    $user_identifiers = $jdb->loadObject();
-							    $JoomlaUser = \JFusion\Factory::getUser('joomla_int');
+							    $JoomlaUser = Factory::getUser('joomla_int');
 							    $userinfo = $JoomlaUser->getUser($user_identifiers);
 							    if (!empty($userinfo)) {
 								    global $JFusionActivePlugin;
@@ -1486,10 +1494,10 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 								    try {
 									    $status = $JoomlaUser->createSession($userinfo, $options);
 									    if ($debug) {
-										    \JFusion\Framework::raise('notice', $status, $JoomlaUser->getJname());
+										    Framework::raise('notice', $status, $JoomlaUser->getJname());
 									    }
 								    } catch (Exception $e) {
-									    JfusionFunction::raiseError($e, $JoomlaUser->getJname());
+									    Framework::raiseError($e, $JoomlaUser->getJname());
 								    }
 								    //no need to signal refresh as Joomla will recognize this anyway
 							    }
@@ -1499,11 +1507,11 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 			    }
 		    } else {
 			    if ($debug) {
-				    \JFusion\Framework::raiseNotice('syncSessions do not work in this login mode.', $this->getJname());
+				    Framework::raiseNotice('syncSessions do not work in this login mode.', $this->getJname());
 			    }
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 	    }
         return $return;
     }
@@ -1519,9 +1527,9 @@ class JFusionUser_phpbb3 extends \JFusion\Plugin\Plugin_User
 	{
 		$index = 0;
 
-		$master = \JFusion\Framework::getMaster();
+		$master = Framework::getMaster();
 		if ($master) {
-			$mastergroups = \JFusion\Framework::getUserGroups($master->name);
+			$mastergroups = Framework::getUserGroups($master->name);
 
 			foreach ($mastergroups as $key => $mastergroup) {
 				if ($mastergroup) {

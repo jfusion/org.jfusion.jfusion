@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\wordpress;
 
 /**
  *
@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_zencart extends \JFusion\Plugin\Plugin_Public
+class Front extends \JFusion\Plugin\Plugin_Front
 {
     /**
      * returns the name of this JFusion plugin

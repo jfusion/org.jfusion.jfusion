@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\efront;
 
 /**
  * 
@@ -14,6 +14,12 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Plugin\Plugin_Front;
+
+use \Exception;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -25,7 +31,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_efront extends \JFusion\Plugin\Plugin_Public
+class Front extends Plugin_Front
 {
     /**
      * returns the name of this JFusion plugin
@@ -73,7 +79,7 @@ class JFusionPublic_efront extends \JFusion\Plugin\Plugin_Public
         date_default_timezone_set('UTC');
         //$active = strtotime('-5 minutes', time());
 
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('DISTINCT u.id AS userid, u.login as username, u.login as username_clean, concat(u.name,\' \', u.surname) AS name, u.email as email')
@@ -99,7 +105,7 @@ class JFusionPublic_efront extends \JFusion\Plugin\Plugin_Public
 	        //get a unix time from 5 minutes ago
 	        date_default_timezone_set('UTC');
 	        // $active = strtotime('-5 minutes', time());
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('COUNT(*)')
@@ -108,7 +114,7 @@ class JFusionPublic_efront extends \JFusion\Plugin\Plugin_Public
 	        $db->setQuery($query);
 	        $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;

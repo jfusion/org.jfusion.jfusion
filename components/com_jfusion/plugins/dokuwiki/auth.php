@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\dokuwiki;
 
 /**
  * file containing auth function for the jfusion plugin
@@ -28,10 +28,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_dokuwiki extends \JFusion\Plugin\Plugin_Auth
+class Auth extends \JFusion\Plugin\Plugin_Auth
 {
 	/**
-	 * @var $helper JFusionHelper_dokuwiki
+	 * @var $helper Helper
 	 */
 	var $helper;
 

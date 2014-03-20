@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\joomla_ext;
 
 /**
  * 
@@ -14,6 +14,11 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Plugin\Plugin_Auth;
+
+use \PasswordHash;
+use \JCrypt;
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,10 +33,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_joomla_ext extends \JFusion\Plugin\Plugin_Auth
+class JFusionAuth_joomla_ext extends Plugin_Auth
 {
 	/**
-	 * @var $helper JFusionHelper_joomla_ext
+	 * @var $helper Helper
 	 */
 	var $helper;
 
@@ -104,7 +109,7 @@ class JFusionAuth_joomla_ext extends \JFusion\Plugin\Plugin_Auth
 
 		// If we have a match and rehash = true, rehash the password with the current algorithm.
 		if ($match && $rehash) {
-			$user = \JFusion\Factory::getUser($this->getJname());
+			$user = Factory::getUser($this->getJname());
 			$old = $user->getUser($userinfo);
 			if ($old) {
 				$status = array('error' => array(), 'debug' => array());

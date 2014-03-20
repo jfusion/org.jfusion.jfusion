@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\moodle;
 
 /**
  *
@@ -39,7 +39,7 @@ defined('_JEXEC') or die('Restricted access');
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org */
-class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
+class User extends \JFusion\Plugin\Plugin_User
 {
 	/**
 	 * @param $data
@@ -263,9 +263,9 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 		// check if the login was successful
 		if (!empty($status['cURL']['moodle'])) {
 			$loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);
-			$status['debug'][] = JText::_('CURL_MOODLE_USER') . " " . $loggedin_user;
+			$status['debug'][] = Text::_('CURL_MOODLE_USER') . " " . $loggedin_user;
 			if ($loggedin_user != $userinfo->username) {
-				$status['debug'][] = JText::_('CURL_LOGIN_FAILURE');
+				$status['debug'][] = Text::_('CURL_LOGIN_FAILURE');
 			}
 		}
 		return $status;
@@ -296,7 +296,7 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+		$status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	}
 
 	/**
@@ -334,7 +334,7 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+		$status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 	}
 
 	/**
@@ -365,9 +365,9 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+			$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 		} else {
-			throw new RuntimeException(JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET'));
+			throw new RuntimeException(Text::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET'));
 		}
 	}
 
@@ -400,9 +400,9 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+			$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 		} else {
-			throw new RuntimeException(JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET'));
+			throw new RuntimeException(Text::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET'));
 		}
 	}
 
@@ -427,7 +427,7 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	}
 
 	/**
@@ -450,7 +450,7 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	}
 
 	/**
@@ -491,7 +491,7 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 
 				$usergroups = $this->getCorrectUserGroups($userinfo);
 				if (empty($usergroups)) {
-					throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
+					throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
 				} else {
 					// get some config items
 					$query = $db->getQuery(true)
@@ -593,9 +593,9 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 
 			//return the good news
 			$status['userinfo'] = $this->getUser($userinfo);
-			$status['debug'][] = JText::_('USER_CREATION');
+			$status['debug'][] = Text::_('USER_CREATION');
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
+			$status['error'][] = Text::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
 		}
 	}
 
@@ -613,7 +613,7 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 		try {
 			//setup status array to hold debug info and errors
 			if (!is_object($userinfo)) {
-				throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
+				throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
 			}
 			$db = \JFusion\Factory::getDatabase($this->getJname());
 
@@ -625,9 +625,9 @@ class JFusionUser_moodle extends \JFusion\Plugin\Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = JText::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;
+			$status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;
 		} catch (Exception $e) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' . $e->getMessage();
+			$status['error'][] = Text::_('USER_DELETION_ERROR') . ': ' . $e->getMessage();
 		}
 		return $status;
 	}
