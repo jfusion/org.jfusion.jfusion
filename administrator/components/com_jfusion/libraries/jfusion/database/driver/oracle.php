@@ -669,7 +669,8 @@ class Driver_Oracle extends Driver_Pdo
 
 		if (!$asSavepoint || !$this->transactionDepth)
 		{
-			return parent::transactionStart($asSavepoint);
+			parent::transactionStart($asSavepoint);
+			return;
 		}
 
 		$savepoint = 'SP_' . $this->transactionDepth;

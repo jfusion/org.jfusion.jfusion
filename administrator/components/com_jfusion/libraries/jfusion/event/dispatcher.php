@@ -183,7 +183,7 @@ class Dispatcher extends Object
 	/**
 	 * Attach an observer object
 	 *
-	 * @param   object  $observer  An observer object to attach
+	 * @param   callable  $observer  An observer object to attach
 	 *
 	 * @return  void
 	 *
