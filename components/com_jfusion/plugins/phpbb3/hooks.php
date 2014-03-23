@@ -176,7 +176,7 @@ class JFusionHook {
         if (substr($baseURL, -1) != '/') {
             //non-SEF mode
             global $source_url;
-            $uri = new JURI($source_url);
+            $uri = new JUri($source_url);
             $path = $uri->getPath();
             if (substr($path, -1) != '/') {
                 $path.= '/';
@@ -186,11 +186,11 @@ class JFusionHook {
             $user->host = $uri->getHost();
         } else {
             //SEF mode
-            $uri = new JURI($baseURL);
+            $uri = new JUri($baseURL);
             $path = $uri->getPath();
             $user->page['script_path'] = $path;
             $user->page['root_script_path'] = $path;
-            $uri = new JURI(JURI::base());
+            $uri = new JUri(JUri::base());
             $user->host = $uri->getHost();
         }
     }

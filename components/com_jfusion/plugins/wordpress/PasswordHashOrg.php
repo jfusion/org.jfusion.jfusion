@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\wordpress;
 /**
  * Portable PHP password hashing framework.
  *

@@ -14,6 +14,8 @@
  */
  
 // no direct access
+use JFusion\Plugin\Plugin_Auth;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,17 +30,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Auth extends \JFusion\Plugin\Plugin_Auth
+class Auth extends Plugin_Auth
 {
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'wordpress';
-    }
-
 /*
  * NOTE
  * In Wordpress 2.5 and up the password has generation is done by a public domain
@@ -57,10 +50,6 @@ class Auth extends \JFusion\Plugin\Plugin_Auth
      * @return string
      */
     function generateEncryptedPassword($userinfo) {
-        // get the encryption PHP file
-        if (!class_exists('PasswordHashOrg')) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
-        }
         $t_hasher = new PasswordHashOrg(8, true);
         $check = $t_hasher->CheckPassword($userinfo->password_clear, $userinfo->password);
         //$check will be true or false if the passwords match

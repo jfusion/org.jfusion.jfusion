@@ -14,6 +14,14 @@
  */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin;
+use Joomla\Uri\Uri;
+use JFusionFunction;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -27,27 +35,17 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Helper extends \JFusion\Plugin\Plugin
+class Helper extends Plugin
 {
     var $vb_data;
     var $backup;
-
-    /**
-     * Returns the name for this plugin
-     *
-     * @return string
-     */
-    function getJname()
-    {
-        return 'vbulletin';
-    }
 
     /**
      * @param $data
      * @return string
      */
     function encryptApiData($data) {
-        $key = $this->params->get('vb_secret', \JFusion\Factory::getConfig()->get('secret'));
+        $key = $this->params->get('vb_secret', Factory::getConfig()->get('secret'));
         $data['jfvbkey'] = $key;
         return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, serialize($data), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
     }
@@ -191,7 +189,7 @@ class Helper extends \JFusion\Plugin\Plugin
                 $vbulletin->db->query_first('SET names \'' . $this->params->get('database_charset', 'utf8') . '\'');
                 $GLOBALS['db'] = $vbulletin->db;
             } else {
-                \JFusion\Framework::raiseWarning(Text::_('SOURCE_PATH_NOT_FOUND'), $this->getJname());
+                Framework::raiseWarning(Text::_('SOURCE_PATH_NOT_FOUND'), $this->getJname());
                 $return = false;
             }
         } elseif (defined('VB_AREA') && VB_AREA == 'JFusion') {
@@ -249,7 +247,7 @@ class Helper extends \JFusion\Plugin\Plugin
     {
         $this->backup['globals'] = $GLOBALS;
         //let's take special precautions for Itemid
-        $this->backup['itemid'] = \JFusion\Factory::getApplication()->input->getInt('Itemid', 0);
+        $this->backup['itemid'] = Factory::getApplication()->input->getInt('Itemid', 0);
     }
 
     /**
@@ -264,13 +262,13 @@ class Helper extends \JFusion\Plugin\Plugin
             $GLOBALS = $this->backup['globals'];
         }
         if (isset($this->backup['itemid'])) {
-	        \JFusion\Factory::getApplication()->input->set('Itemid', $this->backup['itemid']);
+	        Factory::getApplication()->input->set('Itemid', $this->backup['itemid']);
             global $Itemid;
             $Itemid = $this->backup['itemid'];
         }
         $this->backup = array();
         //make sure Joomla db object is still connected
-        \JFusion\Framework::reconnectJoomlaDb();
+	    JFusionFunction::reconnectJoomlaDb();
     }
 
     /**
@@ -283,7 +281,7 @@ class Helper extends \JFusion\Plugin\Plugin
         static $jfusion_vb_version;
 	    try {
 		    if(empty($jfusion_vb_version)) {
-			    $db = \JFusion\Factory::getDatabase($this->getJname());
+			    $db = Factory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
 				    ->select('value')
@@ -314,7 +312,7 @@ class Helper extends \JFusion\Plugin\Plugin
 		    $allow_sef = $this->params->get('allow_sef', 1);
 		    $vbversion = $this->getVersion();
 		    if (!empty($allow_sef) && (int) substr($vbversion, 0, 1) > 3) {
-			    $db = \JFusion\Factory::getDatabase($this->getJname());
+			    $db = Factory::getDatabase($this->getJname());
 
 			    if (!defined('JFVB_FRIENDLYURL')) {
 				    $query = $db->getQuery(true)
@@ -327,7 +325,7 @@ class Helper extends \JFusion\Plugin\Plugin
 				    define('JFVB_FRIENDLYURL', (int) $sefmode);
 			    }
 
-			    $uri = new JURI($url);
+			    $uri = new Uri($url);
 
 			    switch ($type) {
 				    case 'members':
@@ -406,7 +404,7 @@ class Helper extends \JFusion\Plugin\Plugin
 			    }
 		    }
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 	    }
         return $url;
     }

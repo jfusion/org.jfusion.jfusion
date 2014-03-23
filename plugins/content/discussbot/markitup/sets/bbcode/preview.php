@@ -14,7 +14,7 @@ if(!class_exists('BBCode_Parser')) {
 	}
 }
 
-$bbcode = new BBCode_Parser();
+$bbcode = new \JFusion\Parser\Nbbc();
 define('_JEXEC', 1);
 
 $url = (!empty($_SERVER['HTTPS'])) ? 'https://' . $_SERVER['SERVER_NAME'] : 'http://' . $_SERVER['SERVER_NAME'];

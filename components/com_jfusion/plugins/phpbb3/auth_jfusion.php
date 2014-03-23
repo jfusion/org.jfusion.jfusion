@@ -76,7 +76,7 @@ function login_jfusion(&$username, &$password) {
 					$redirect = $url . "&jfile=" . $redirect;
 				} else {
 					//redirect to prevent fatal errors on some servers
-					$uri = JURI::getInstance();
+					$uri = JUri::getInstance();
 					//remove sid from URL
 					$query = $uri->getQuery(true);
 					if (isset($query['sid'])) {
@@ -138,7 +138,7 @@ function logout_jfusion(&$data) {
         $link = null;
         if (FORCE_REDIRECT_AFTER_LOGOUT) {
             //redirect to prevent fatal errors on some servers
-            $uri = JURI::getInstance();
+            $uri = JUri::getInstance();
             //remove sid from URL
             $query = $uri->getQuery(true);
             if (isset($query['sid'])) {

@@ -17,7 +17,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
 use \JRegistry;
@@ -44,14 +44,6 @@ class JFusionAdmin_joomla_ext extends Plugin_Admin
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-    /**
-     * @return string
-     */
-    function getJname()
-	{
-		return 'joomla_ext';
-	}
 
 	/**
 	 * returns the name of user table of integrated software

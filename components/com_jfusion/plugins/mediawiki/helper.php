@@ -1,6 +1,8 @@
 <?php namespace JFusion\Plugins\mediawiki;
 
 // no direct access
+use JFusion\Plugin\Plugin;
+
 defined('_JEXEC') or die('Restricted access');
 /**
  * JFusionHelper_mediawiki class
@@ -13,22 +15,12 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Helper extends \JFusion\Plugin\Plugin
+class Helper extends Plugin
 {
     var $joomlaSessionName = '';
     var $joomlaSessionId = '';
     var $joomlaSessionUseCookies = '';
     var $joomlaSessionCookieParams = '';
-
-    /**
-     * Returns the name for this plugin
-     *
-     * @return string
-     */
-    function getJname()
-    {
-        return 'mediawiki';
-    }
 
     /**
      * @return string

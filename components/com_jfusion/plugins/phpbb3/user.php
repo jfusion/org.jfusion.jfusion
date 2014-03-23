@@ -14,9 +14,10 @@
  */
 
 // no direct access
+use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use \Exception;
 use \RuntimeException;
@@ -107,7 +108,7 @@ class User extends Plugin_User
 					    if (empty($result->activation)) {
 						    //user not active generate a random code
 						    jimport('joomla.user.helper');
-						    $result->activation = JUserHelper::genRandomPassword(13);
+						    $result->activation = Framework::genRandomPassword(13);
 					    }
 				    } else {
 					    //active user, make sure no activation code is set
@@ -121,14 +122,6 @@ class User extends Plugin_User
 	    }
 
         return $result;
-    }
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'phpbb3';
     }
 
     /**
@@ -261,7 +254,7 @@ class User extends Plugin_User
 					    }
 				    } else {
 					    jimport('joomla.user.helper');
-					    $session_key = Framework::getHash(JUserHelper::genRandomPassword(32));
+					    $session_key = Framework::getHash(Framework::genRandomPassword(32));
 					    //Check for admin access
 					    $query = $jdb->getQuery(true)
 						    ->select('b.group_name')
@@ -830,7 +823,7 @@ class User extends Plugin_User
 				    $user->user_notify_type = 0;
 				    //generate a unique id
 				    jimport('joomla.user.helper');
-				    $user->user_form_salt = JUserHelper::genRandomPassword(13);
+				    $user->user_form_salt = Framework::genRandomPassword(13);
 
 				    //update the user colour, avatar, etc to the groups if applicable
 				    $query = $db->getQuery(true)

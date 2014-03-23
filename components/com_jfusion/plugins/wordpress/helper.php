@@ -15,6 +15,12 @@
  */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Plugin\Plugin;
+use stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,15 +34,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Helper extends \JFusion\Plugin\Plugin
+class Helper extends Plugin
 {
-    /**
-     * @return string
-     */
-    function getJname()	{
-		return 'wordpress';
-	}
-
     /**
      * @return array
      */
@@ -46,7 +45,7 @@ class Helper extends \JFusion\Plugin\Plugin
 		    $usergroups = array();
 
 		    try {
-			    $db = \JFusion\Factory::getDatabase($this->getJname());
+			    $db = Factory::getDatabase($this->getJname());
 			    $database_prefix = $this->params->get('database_prefix');
 
 			    $query = $db->getQuery(true)
@@ -64,7 +63,7 @@ class Helper extends \JFusion\Plugin\Plugin
 				    $usergroups[] = $group;
 			    }
 		    } catch (Exception $e) {
-			    \JFusion\Framework::raiseError($e, $this->getJname());
+			    Framework::raiseError($e, $this->getJname());
 		    }
 	    }
 		return $usergroups;
@@ -113,7 +112,7 @@ class Helper extends \JFusion\Plugin\Plugin
 		static $allroles;
 		if (!isset($allroles)) {
 			try {
-				$db = \JFusion\Factory::getDatabase($this->getJname());
+				$db = Factory::getDatabase($this->getJname());
 				$database_prefix = $this->params->get('database_prefix');
 
 				$query = $db->getQuery(true)
@@ -125,7 +124,7 @@ class Helper extends \JFusion\Plugin\Plugin
 				$roles_ser = $db->loadResult();
 				$allroles = unserialize($roles_ser);
 			} catch (Exception $e) {
-				\JFusion\Framework::raiseError($e, $this->getJname());
+				Framework::raiseError($e, $this->getJname());
 				$allroles = array();
 			}
 		}

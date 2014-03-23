@@ -47,7 +47,10 @@ abstract class LoggerInterfaceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->getLogs());
     }
 
-    public function provideLevelsAndMessages()
+	/**
+	 * @return array
+	 */
+	public function provideLevelsAndMessages()
     {
         return array(
             LogLevel::EMERGENCY => array(LogLevel::EMERGENCY, 'message of level emergency with context: {user}'),
@@ -125,6 +128,11 @@ abstract class LoggerInterfaceTest extends \PHPUnit_Framework_TestCase
     }
 }
 
+/**
+ * Class DummyTest
+ *
+ * @package Psr\Log\Test
+ */
 class DummyTest
 {
 }

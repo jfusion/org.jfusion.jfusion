@@ -34,15 +34,6 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Helper extends Plugin
 {
-    /**
-     * Returns the name for this plugin
-     *
-     * @return string
-     */
-    function getJname() {
-        return 'joomla_ext';
-    }
-
 	/**
 	 * Formats a password using the current encryption.
 	 *

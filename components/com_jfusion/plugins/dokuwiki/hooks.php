@@ -1,6 +1,6 @@
-<?php
+<?php namespace JFusion\Plugins\dokuwiki;
 
-/**
+	/**
  * file containing hook function for dokuwiki
  *
  * PHP version 5
@@ -15,6 +15,9 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,14 +31,14 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionDokuWikiHook
+class Hooks
 {
     /**
      * Register its handlers with the DokuWiki's event controller
      *
      * show off @method
      *
-     * @param Doku_Event_Handler &$controller
+     * @param \Doku_Event_Handler &$controller
      */
     function register(&$controller) {
         $controller->register_hook('ACTION_SHOW_REDIRECT', 'BEFORE', $this, '_ACTION_SHOW_REDIRECT');
@@ -52,9 +55,9 @@ class JFusionDokuWikiHook
     function _ACTION_SHOW_REDIRECT(&$event, $param) {
         $event->data['id'] = str_replace(':', ';', $event->data['id']);
 
-	    $Itemid = JFactory::getApplication('site')->getMenu()->getActive()->id;
+	    $Itemid = \JFactory::getApplication('site')->getMenu()->getActive()->id;
 
-        $baseURL = \JFusion\Framework::getPluginURL($Itemid, false);
+        $baseURL = Framework::getPluginURL($Itemid, false);
         if (is_array($event->data['preact'])) {
             $q = 'doku.php?id=' . $event->data['id'];
         } else {
@@ -66,9 +69,9 @@ class JFusionDokuWikiHook
             $url = $baseURL . '&jfile=' . $q;
         } else {
             global $jname;
-            $sefmode = \JFusion\Factory::getParams($jname)->get('sefmode');
+            $sefmode = Factory::getParams($jname)->get('sefmode');
             if ($sefmode == 1) {
-                $url = \JFusion\Framework::routeURL($q, $Itemid);
+                $url = Framework::routeURL($q, $Itemid);
             } else {
                 //we can just append both variables
                 $url = $baseURL . $q;
@@ -94,9 +97,3 @@ class JFusionDokuWikiHook
         global $ID;
     }
 }
-$hook = new JFusionDokuWikiHook();
-/**
- * @ignore
- * @var $EVENT_HANDLER Doku_Event_Handler
- */
-$hook->register($EVENT_HANDLER);

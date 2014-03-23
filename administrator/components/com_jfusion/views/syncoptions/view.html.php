@@ -141,7 +141,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 			    $this->syncid = $syncid;
 			    $this->sync_active = $sync_active;
 
-			    \JFusion\Framework::loadJavascriptLanguage(array('SYNC_PROGRESS', 'SYNC_USERS_TODO', 'CLICK_FOR_MORE_DETAILS', 'CONFLICTS',
+			    JFusionFunction::loadJavascriptLanguage(array('SYNC_PROGRESS', 'SYNC_USERS_TODO', 'CLICK_FOR_MORE_DETAILS', 'CONFLICTS',
 				                                            'UNCHANGED', 'FINISHED', 'PAUSE', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START', 'UPDATED', 'PLUGIN', 'USER', 'USERS',
 				                                            'NAME', 'CREATED', 'RESUME', 'SYNC_NODATA'));
 

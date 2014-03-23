@@ -14,6 +14,9 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Plugin\Plugin;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -27,23 +30,14 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Helper extends \JFusion\Plugin\Plugin
+class Helper extends Plugin
 {
-    /**
-     * Returns the name for this plugin
-     *
-     * @return string
-     */
-    function getJname() {
-        return 'prestashop';
-    }
-
 	/**
 	 * Load Framework
 	 */
 	function loadFramework()
 	{
-		$params = \JFusion\Factory::getParams($this->getJname());
+		$params = Factory::getParams($this->getJname());
 		$source_path = $params->get('source_path');
 
 		require_once($source_path . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php');
@@ -82,7 +76,7 @@ class Helper extends \JFusion\Plugin\Plugin
 	 * @param $class
 	 */
 	function loadClass($class) {
-		$params = \JFusion\Factory::getParams($this->getJname());
+		$params = Factory::getParams($this->getJname());
 		$source_path = $params->get('source_path');
 
 		require_once($source_path . 'classes' . DIRECTORY_SEPARATOR . $class . '.php');
@@ -97,7 +91,7 @@ class Helper extends \JFusion\Plugin\Plugin
 	function getDefaultLanguage() {
 		static $default_language;
 		if (!isset($default_language)) {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('value')
@@ -119,7 +113,7 @@ class Helper extends \JFusion\Plugin\Plugin
 	function getGroupName($id) {
 		static $groupname;
 		if (!isset($groupname[$id])) {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 			$query = $db->getQuery(true)
 				->select('name')
 				->from('#__group_lang')

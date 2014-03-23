@@ -8,6 +8,18 @@
 */
 
 // no direct access
+use Exception;
+use JEventDispatcher;
+use JFactory;
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Plugin\Plugin_Front;
+
+use Joomla\Uri\Uri;
+
+use JRegistry;
+use stdClass;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 /**
@@ -15,7 +27,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractpublic.php
  * @package JFusion_SMF
  */
-class Front extends \JFusion\Plugin\Plugin_Front
+class Front extends Plugin_Front
 {
     /**
      * @var $callbackdata object
@@ -25,15 +37,6 @@ class Front extends \JFusion\Plugin\Plugin_Front
      * @var bool $callbackbypass
      */
     var $callbackbypass = null;
-
-
-    /**
-     * @return string
-     */
-    function getJname()
-	{
-		return 'smf2';
-	}
 
     /**
      * @return string
@@ -90,7 +93,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
             }
             $options = array();
             $options['bbcode_patterns'] = $bbcode;
-            $text = \JFusion\Framework::parseCode($text, 'bbcode', $options);
+            $text = Framework::parseCode($text, 'bbcode', $options);
         } elseif ($for == 'joomla' || ($for == 'activity' && $params->get('parse_text') == 'html')) {
             $options = array();
             //convert smilies so they show up in Joomla as images
@@ -98,7 +101,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
             if (!is_array($custom_smileys)) {
                 $custom_smileys = array();
 	            try {
-	                $db = \JFusion\Factory::getDatabase($this->getJname());
+	                $db = Factory::getDatabase($this->getJname());
 
 		            $query = $db->getQuery(true)
 			            ->select('value, variable')
@@ -122,7 +125,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 	                    }
 	                }
 	            } catch (Exception $e) {
-		            \JFusion\Framework::raiseError($e, $this->getJname());
+		            Framework::raiseError($e, $this->getJname());
 	            }
             }
             $options['custom_smileys'] = $custom_smileys;
@@ -161,9 +164,9 @@ class Front extends \JFusion\Plugin\Plugin_Front
                 $options['html_patterns'][$bb] = array('mode' => 1, 'content' => 0, 'method' => array($this, 'parseCustomBBCode'), 'class' => $class, 'allow_in' => $allow_in);
             }
 
-            $text = \JFusion\Framework::parseCode($text, 'html', $options);
+            $text = Framework::parseCode($text, 'html', $options);
         } elseif ($for == 'search') {
-            $text = \JFusion\Framework::parseCode($text, 'plaintext');
+            $text = Framework::parseCode($text, 'plaintext');
         } elseif ($for == 'activity') {
             if ($params->get('parse_text') == 'plaintext') {
                 $options = array();
@@ -172,7 +175,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
                     $status['limit_applied'] = 1;
                     $options['character_limit'] = $params->get('character_limit');
                 }
-                $text = \JFusion\Framework::parseCode($text, 'plaintext', $options);
+                $text = Framework::parseCode($text, 'plaintext', $options);
             }
         }
         return $status;
@@ -201,7 +204,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
      */
     function getBuffer(&$data)
 	{
-		$mainframe = \JFusion\Factory::getApplication();
+		$mainframe = Factory::getApplication();
 	    $jFusion_Route = $mainframe->input->get('jFusion_Route', null, 'raw');
         if ($jFusion_Route) {
         	$jFusion_Route = unserialize ($jFusion_Route);
@@ -216,9 +219,9 @@ class Front extends \JFusion\Plugin\Plugin_Front
         }
         $action = $mainframe->input->get('action');
         if ($action == 'register' || $action == 'reminder') {
-            $master = \JFusion\Framework::getMaster();
+            $master = Framework::getMaster();
             if ($master->name != $this->getJname()) {
-                $JFusionMaster = \JFusion\Factory::getFront($master->name);
+                $JFusionMaster = Factory::getFront($master->name);
                 $source_url = $this->params->get('source_url');
                 $source_url = rtrim($source_url, '/');
 	            try {
@@ -234,18 +237,18 @@ class Front extends \JFusion\Plugin\Plugin_Front
         //handle dual logout
         if ($action == 'logout') {
             //destroy the SMF session first
-	        $JFusionUser = \JFusion\Factory::getUser($this->getJname());
+	        $JFusionUser = Factory::getUser($this->getJname());
 	        try {
 		        $JFusionUser->destroySession(null, null);
 	        } catch (Exception $e) {
-		        \JFusion\Framework::raiseError($e, $JFusionUser->getJname());
+		        Framework::raiseError($e, $JFusionUser->getJname());
 	        }
 
             //destroy the Joomla session
             $mainframe->logout();
-	        \JFusion\Factory::getSession()->close();
+	        Factory::getSession()->close();
 
-	        $cookies = \JFusion\Factory::getCookies();
+	        $cookies = Factory::getCookies();
 	        $cookies->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
             //redirect so the changes are applied
             $mainframe->redirect(str_replace('&amp;', '&', $data->baseURL));
@@ -292,7 +295,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 		$index_file = $source_path . 'index.php';
 
 		if ( ! is_file($index_file) ) {
-			\JFusion\Framework::raiseWarning('The path to the SMF index file set in the component preferences does not exist', $this->getJname());
+			Framework::raiseWarning('The path to the SMF index file set in the component preferences does not exist', $this->getJname());
 		} else {
             //add handler to undo changes that plgSystemSef create
             $dispatcher = JEventDispatcher::getInstance();
@@ -332,7 +335,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 
             // Log an error if we could not include the file
             if (!$rs) {
-                \JFusion\Framework::raiseWarning('Could not find SMF in the specified directory', $this->getJname());
+                Framework::raiseWarning('Could not find SMF in the specified directory', $this->getJname());
             }
         }
 	}
@@ -344,16 +347,16 @@ class Front extends \JFusion\Plugin\Plugin_Front
      */
     function onAfterRender()
     {
-	    $buffer = \JFusion\Factory::getApplication()->getBody();
+	    $buffer = Factory::getApplication()->getBody();
     	
-        $base = JURI::base(true) . '/';
+        $base = Uri::base(true) . '/';
 
         $regex_body  = '#src="' . preg_quote($base, '#') . '%#mSsi';
         $replace_body= 'src="%';
         
         $buffer = preg_replace($regex_body, $replace_body, $buffer);
 
-	    \JFusion\Factory::getApplication()->setBody($buffer);
+	    Factory::getApplication()->setBody($buffer);
         return true;
     }
 
@@ -429,9 +432,9 @@ class Front extends \JFusion\Plugin\Plugin_Front
 		static $regex_header, $replace_header;
 		if ( ! $regex_header || ! $replace_header )
 		{
-			$joomla_url = \JFusion\Factory::getParams('joomla_int')->get('source_url');
+			$joomla_url = Factory::getParams('joomla_int')->get('source_url');
 
-			$baseURLnoSef = 'index.php?option=com_jfusion&Itemid=' . \JFusion\Factory::getApplication()->input->getInt('Itemid');
+			$baseURLnoSef = 'index.php?option=com_jfusion&Itemid=' . Factory::getApplication()->input->getInt('Itemid');
 			if (substr($joomla_url, -1) == '/') $baseURLnoSef = $joomla_url . $baseURLnoSef;
 			else $baseURLnoSef = $joomla_url . '/' . $baseURLnoSef;
 
@@ -484,7 +487,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 	        } else {
 	            $sefmode = $this->params->get('sefmode');
 	            if ($sefmode == 1) {
-	                $url = \JFusion\Framework::routeURL($q, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
+	                $url = Framework::routeURL($q, Factory::getApplication()->input->getInt('Itemid'));
 	            } else {
 	                //we can just append both variables
 	                $url = $baseURL . $q;
@@ -520,7 +523,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 		$baseURL = $this->data->baseURL;    	
         //\JFusion\Framework::raiseWarning($url, $this->getJname());
         $url = htmlspecialchars_decode($url);
-        $Itemid = \JFusion\Factory::getApplication()->input->getInt('Itemid');
+        $Itemid = Factory::getApplication()->input->getInt('Itemid');
         $extra = stripslashes($extra);
         $url = str_replace(';', '&amp;', $url);
         if (substr($baseURL, -1) != '/') {
@@ -542,7 +545,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = \JFusion\Framework::routeURL($url, $Itemid);
+                $url = Framework::routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {
@@ -581,7 +584,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
         //split up the timeout from url
         $parts = explode(';url=', $url);
         $timeout = $parts[0];
-        $uri = new JURI($parts[1]);
+        $uri = new Uri($parts[1]);
         $jfile = $uri->getPath();
         $jfile = basename($jfile);
         $query = $uri->getQuery(false);
@@ -601,7 +604,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
                 if (!empty($query)) {
                     $redirectURL.= '?' . $query;
                 }
-                $redirectURL = \JFusion\Framework::routeURL($redirectURL, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
+                $redirectURL = Framework::routeURL($redirectURL, Factory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $redirectURL = $baseURL . $jfile;
@@ -625,9 +628,9 @@ class Front extends \JFusion\Plugin\Plugin_Front
 	{
 		$pathway = array();
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
-			$mainframe = \JFusion\Factory::getApplication();
+			$mainframe = Factory::getApplication();
 
 			list ($board_id ) = explode('.', $mainframe->input->get('board'), 1);
 			list ($topic_id ) = explode('.', $mainframe->input->get('topic'), 1);
@@ -772,7 +775,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 					}
 			}
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 		}
 		return $pathway;
 	}
@@ -795,7 +798,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
      */
     function getSearchQuery(&$pluginParam)
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 		//need to return threadid, postid, title, text, created, section
 
 		$query = $db->getQuery(true)
@@ -823,15 +826,15 @@ class Front extends \JFusion\Plugin\Plugin_Front
 	function getSearchCriteria(&$where, &$pluginParam, $ordering)
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
-			$userPlugin = \JFusion\Factory::getUser($this->getJname());
+			$userPlugin = Factory::getUser($this->getJname());
 
 			$user = JFactory::getUser();
 			$userid = $user->get('id');
 
 			if ($userid) {
-				$userlookup = \JFusion\Framework::lookupUser($this->getJname(), $userid, true);
+				$userlookup = Framework::lookupUser($this->getJname(), $userid, true);
 				$existinguser = $userPlugin->getUser($userlookup);
 				$group_id = $existinguser->group_id;
 			} else {
@@ -879,7 +882,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 			}
 			$where .= ' AND p.id_board IN (' . implode(',', $list) . ') ORDER BY ' . $sort;
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 		}
 	}
 
@@ -892,7 +895,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
     function filterSearchResults(&$results = array(), &$pluginParam)
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('value')
@@ -902,7 +905,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 			$db->setQuery($query);
 			$vulgar = $db->loadResult();
 
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('value')
@@ -922,7 +925,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 				}
 			}
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 		}
 	}
 
@@ -933,7 +936,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
      */
     function getSearchResultLink($post)
 	{
-		$forum = \JFusion\Factory::getForum($this->getJname());
+		$forum = Factory::getForum($this->getJname());
 		return $forum->getPostURL($post->id_topic, $post->id_msg);
 	}
 
@@ -951,7 +954,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 	 **/
 	function getOnlineUserQuery($usergroups = array())
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('DISTINCT u.id_member AS userid, u.member_name AS username, u.real_name AS name, u.email_address as email')
@@ -984,7 +987,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 	function getNumberOnlineGuests()
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('COUNT(DISTINCT(ip))')
@@ -994,7 +997,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			return 0;
 		}
 	}
@@ -1007,7 +1010,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 	function getNumberOnlineMembers()
 	{
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('COUNT(DISTINCT(l.ip))')
@@ -1018,7 +1021,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			return 0 ;
 		}
 	}

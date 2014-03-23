@@ -7,52 +7,46 @@
  */
 use JFusion\Factory;
 
-use JFusion\Event\Event;
-use JFusion\Event\Dispatcher;
-use JFusion\Event\Interface_Language;
-use JFusion\Event\Interface_Application;
-use JFusion\Event\Interface_Session;
-use JFusion\Event\Interface_Router;
+use Joomla\Event\Event;
+use JFusion\Event\LanguageInterface;
+use JFusion\Event\ApplicationInterface;
+use JFusion\Event\SessionInterface;
+use JFusion\Event\RouterInterface;
+use JFusion\Event\InstallerInterface;
 
-use Jfusion\Uri\Uri;
+use Joomla\Uri\Uri;
 
 
 /**
  * Class JFusionFramework
  */
-class JFusionEventHook extends Event implements Interface_Language, Interface_Application, Interface_Session, Interface_Router {
-	/**
-	 * @param Dispatcher $subject
-	 */
-	function __construct($subject)
-	{
-		parent::__construct($subject);
-	}
-
+class JFusionEventHook implements LanguageInterface, ApplicationInterface, SessionInterface, RouterInterface, InstallerInterface {
 	/**
 	 * Loads a language file for framework
 	 *
-	 * @return  boolean if loaded or not
+	 * @param Event $event
+	 *
+	 * @return bool|void
 	 */
-	public function onLanguageLoadFramework()
+	public function onLanguageLoadFramework($event)
 	{
 		JFactory::getLanguage()->load('com_jfusion', JFUSIONPATH_ADMINISTRATOR);
 		JFactory::getLanguage()->load('com_jfusion', JFUSIONPATH_SITE);
 
 		Factory::getLanguage()->load('com_jfusion', JFUSIONPATH_ADMINISTRATOR);
 		Factory::getLanguage()->load('com_jfusion', JFUSIONPATH_SITE);
-		return true;
 	}
 
 	/**
 	 * Loads a language file for plugin
 	 *
-	 * @param   string  $jname Plugin name
+	 * @param Event $event
 	 *
 	 * @return  boolean if loaded or not
 	 */
-	public function onLanguageLoadPlugin($jname)
+	public function onLanguageLoadPlugin($event)
 	{
+		$jname = $event->getArgument('jname', null);
 		JFactory::getLanguage()->load('com_jfusion.plg_' . $jname, JFUSIONPATH_ADMINISTRATOR);
 		Factory::getLanguage()->load('com_jfusion.plg_' . $jname, JFUSIONPATH_ADMINISTRATOR);
 		return true;
@@ -65,13 +59,14 @@ class JFusionEventHook extends Event implements Interface_Language, Interface_Ap
 	 * or "303 See Other" code in the header pointing to the new location. If the headers have already been
 	 * sent this will be accomplished using a JavaScript statement.
 	 *
-	 * @param   string   $url    The URL to redirect to. Can only be http/https URL
-	 * @param   boolean  $moved  True if the page is 301 Permanently Moved, otherwise 303 See Other is assumed.
+	 * @param Event $event
 	 *
 	 * @return  void
 	 */
-	function onApplicationRedirect($url, $moved = false)
+	function onApplicationRedirect($event)
 	{
+		$url = $event->getArgument('url', null);
+		$moved = $event->getArgument('moved', null);
 		JFactory::getApplication()->redirect($url, $moved);
 	}
 
@@ -85,13 +80,17 @@ class JFusionEventHook extends Event implements Interface_Language, Interface_Ap
 	 * should be done in the plugin as this provides the ability to give
 	 * much more information about why the routine may have failed.
 	 *
-	 * @param   integer $userid The user to load - Can be an integer or string - If string, it is converted to ID automatically
+	 * @param Event $event
 	 *
-	 * @return  boolean  True on success
+	 * @return  void
 	 */
-	function onApplicationLogout($userid = null)
+	function onApplicationLogout($event)
 	{
-		JFactory::getApplication()->logout($userid);
+		$userid = $event->getArgument('userid', null);
+
+		$status = JFactory::getApplication()->logout($userid);
+
+		$event->setArgument('status', ($status === true));
 	}
 
 	/**
@@ -106,51 +105,52 @@ class JFusionEventHook extends Event implements Interface_Language, Interface_Ap
 	 * validation.  Successful validation will update the current session with
 	 * the user details.
 	 *
-	 * @param   array $credentials Array('username' => string, 'password' => string)
-	 * @param   array $options     Array('remember' => boolean)
+	 * @param Event $event
 	 *
-	 * @return  boolean  True on success.
-	 *
-	 * @since   3.2
+	 * @return  void
 	 */
-	public function onApplicationLogin($credentials, $options = array())
+	public function onApplicationLogin($event)
 	{
-		JFactory::getApplication()->login($credentials, $options);
+		$credentials = $event->getArgument('credentials', array());
+		$options = $event->getArgument('options', array());
+
+		$status = JFactory::getApplication()->login($credentials, $options);
+
+		$event->setArgument('status', ($status === true));
 	}
 
 	/**
 	 * Enqueue a system message.
 	 *
-	 * @param   string $msg  The message to enqueue.
-	 * @param   string $type The message type. Default is message.
-	 *
+	 * @param   Event $event
 	 * @return  void
-	 *
-	 * @since   3.2
 	 */
-	public function onApplicationEnqueueMessage($msg, $type = 'message')
+	public function onApplicationEnqueueMessage($event)
 	{
+		$msg = $event->getArgument('messsage', null);
+		$type = $event->getArgument('type', 'error');
+
 		JFactory::getApplication()->enqueueMessage($msg, $type);
 	}
 
 	/**
 	 * Is admin interface?
 	 *
-	 * @return  boolean  True if this application is administrator.
-	 *
-	 * @since   3.2
+	 * @param   Event $event
+	 * @return  void
 	 */
-	public function onApplicationIsAdmin()
+	public function onApplicationIsAdmin($event)
 	{
-		return JFactory::getApplication()->isAdmin();
+		$event->addArgument('admin', JFactory::getApplication()->isAdmin());
 	}
 
 	/**
 	 * Loads a language file for framework
 	 *
-	 * @return  boolean if loaded or not
+	 * @param   Event $event
+	 * @return  void
 	 */
-	function onSessionClose()
+	function onSessionClose($event)
 	{
 		JFactory::getSession()->close();
 	}
@@ -158,25 +158,57 @@ class JFusionEventHook extends Event implements Interface_Language, Interface_Ap
 	/**
 	 * Restart an expired or locked session.
 	 *
-	 * @return  boolean  True on success
+	 * @param   Event $event
+	 * @return  void
 	 */
-	public function onSessionRestart()
+	function onSessionRestart($event)
 	{
-		return JFactory::getSession()->restart();
+		$status = JFactory::getSession()->restart();
+		$event->getArgument('status', $status);
 	}
 
 	/**
 	 * Function to convert an internal URI to a route
 	 *
-	 * @param   string $url The internal URL
+	 * @param   Event $event
 	 *
-	 * @return  Uri  The absolute search engine friendly URL
+	 * @return  void
 	 */
-	function  onRouterBuild($url)
+	function  onRouterBuild($event)
 	{
+		$url = $event->getArgument('url', null);
 		$juri = JFactory::getApplication('site')->getRouter()->build($url);
 
 		$uri = new Uri((string) $juri);
-		return $uri;
+		$event->getArgument('uri', $uri);
+	}
+
+	/**
+	 * get default url
+	 *
+	 * @param   Event $event
+	 *
+	 * @return  void
+	 */
+	public function onApplicationGetDefaultAvatar($event)
+	{
+		$event->addArgument('avatar', JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png');
+	}
+
+	/**
+	 * @param   Event $event
+	 *
+	 * @return  void
+	 */
+	function onInstallerPluginUninstall($event)
+	{
+		$jname = $event->getArgument('jname', null);
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->delete('#__jfusion_discussion_bot')
+			->where('jname = ' . $db->quote($jname));
+		$db->setQuery($query);
+		$db->execute();
 	}
 }

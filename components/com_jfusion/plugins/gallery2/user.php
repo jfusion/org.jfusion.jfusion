@@ -14,7 +14,12 @@
  */
 
 // no direct access
-use JFusion\Language\Text;
+use GalleryCoreApi;
+use GalleryEmbed;
+use GalleryStatus;
+use GalleryUser;
+use GalleryUtilities;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 
 use \RuntimeException;
@@ -98,15 +103,6 @@ class User extends Plugin_User
         $userinfo->activation = null;
         return $userinfo;
     }
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'gallery2';
-    }
 
     /**
      * @param object $userinfo
@@ -116,9 +112,9 @@ class User extends Plugin_User
      */
     function destroySession($userinfo, $options) {
 	    $this->helper->loadGallery2Api(false);
-        GalleryInitSecondPass();
+	    GalleryInitSecondPass();
         GalleryEmbed::logout();
-        GalleryEmbed::done();
+	    GalleryEmbed::done();
         $status = array('error' => array(), 'debug' => array());
         return $status;        
     }
@@ -372,7 +368,7 @@ class User extends Plugin_User
 	            $user->setHashedPassword($testcrypt);
                 $changed = true;
             } else {
-                $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ':' . Text::_('PASSWORD_VALID');
+                $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_VALID');
             }
         } else {
             $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE');

@@ -42,22 +42,14 @@ class Auth extends Plugin_Auth
     var $portable_hashes;
     var $random_state;
 
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'phpbb3';
-    }
-
-    /**
-     * @param int $iteration_count_log2
-     * @param bool $portable_hashes
-     */
-    function __construct($iteration_count_log2 = 8, $portable_hashes = true)
-    {
-	    parent::__construct();
+	/**
+	 * @param string $instance instance name of this plugin
+	 */
+	function __construct($instance)
+	{
+	    parent::__construct($instance);
+	    $iteration_count_log2 = 8;
+	    $portable_hashes = true;
 
         $this->itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         if ($iteration_count_log2 < 4 || $iteration_count_log2 > 31) $iteration_count_log2 = 8;

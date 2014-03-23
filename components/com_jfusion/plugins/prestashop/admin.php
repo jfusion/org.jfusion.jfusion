@@ -16,6 +16,12 @@
 
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+
 defined('_JEXEC') or die('Restricted access');
 
 
@@ -33,21 +39,12 @@ defined('_JEXEC') or die('Restricted access');
  */
 
 
-class JFusionAdmin_prestashop extends \JFusion\Plugin\Plugin_Admin
+class JFusionAdmin_prestashop extends Plugin_Admin
 {
 	/**
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'prestashop';
-    }
 
     /**
      * @return string
@@ -72,7 +69,7 @@ class JFusionAdmin_prestashop extends \JFusion\Plugin\Plugin_Admin
         $config = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -133,7 +130,7 @@ class JFusionAdmin_prestashop extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('email as email, id_customer as userid')
@@ -145,7 +142,7 @@ class JFusionAdmin_prestashop extends \JFusion\Plugin\Plugin_Admin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -158,7 +155,7 @@ class JFusionAdmin_prestashop extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 	        //getting the connection to the db
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -170,7 +167,7 @@ class JFusionAdmin_prestashop extends \JFusion\Plugin\Plugin_Admin
 	        //getting the results
 	        $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 		    $no_users = 0;
 		}
         return $no_users;
@@ -182,7 +179,7 @@ class JFusionAdmin_prestashop extends \JFusion\Plugin\Plugin_Admin
     function getUsergroupList()
     {
 	    //get the connection to the db
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    //prestashop uses two group categories which are employees and customers, each have there own groups to access either the front or back end
 	    /*
@@ -203,7 +200,7 @@ class JFusionAdmin_prestashop extends \JFusion\Plugin\Plugin_Admin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroups = Framework::getUserGroups($this->getJname(), true);
 
 	    $group = array();
 	    if ($usergroups !== null) {

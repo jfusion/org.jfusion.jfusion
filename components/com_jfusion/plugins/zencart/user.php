@@ -14,6 +14,14 @@
  */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use RuntimeException;
+use stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -25,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class User extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
     /**
      * @param object $userinfo
@@ -39,7 +47,7 @@ class User extends \JFusion\Plugin\Plugin_User
                 $identifier = $userinfo->email;
             }
             $osCversion = $this->params->get('osCversion');
-            $db = \JFusion\Factory::getDatabase($this->getJname());
+            $db = Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('customers_id')
@@ -94,18 +102,9 @@ class User extends \JFusion\Plugin\Plugin_User
                 }
             }
         } catch (Exception $e) {
-            \JFusion\Framework::raiseError($e, $this->getJname());
+            Framework::raiseError($e, $this->getJname());
         }
         return null;
-    }
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'zencart';
     }
 
     /**
@@ -157,7 +156,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	    }
 	    $salt = substr(md5($existinguser->password), 0, 2);
 	    $existinguser->password = md5($salt . $userinfo->password_clear) . ':' . $salt;
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 	    $modified_date = date('Y-m-d H:i:s', time());
 	    $query1 = $query2 = null;
 	    $query1 = (string)$db->getQuery(true)
@@ -206,7 +205,7 @@ class User extends \JFusion\Plugin\Plugin_User
         try {
             $osCversion = $this->params->get('osCversion');
             //we need to update the email
-            $db = \JFusion\Factory::getDatabase($this->getJname());
+            $db = Factory::getDatabase($this->getJname());
             $modified_date = date('Y-m-d H:i:s', time());
             $query1 = $query2 = null;
             $query1 = (string)$db->getQuery(true)
@@ -246,7 +245,7 @@ class User extends \JFusion\Plugin\Plugin_User
     function createUser($userinfo, &$status)
     {
         try {
-            $db = \JFusion\Factory::getDatabase($this->getJname());
+            $db = Factory::getDatabase($this->getJname());
             //prepare the variables
             $user = new stdClass;
             $user->customers_id = null;
@@ -344,7 +343,7 @@ class User extends \JFusion\Plugin\Plugin_User
     {
         $status = array('error' => array(), 'debug' => array());
         try {
-            $db = \JFusion\Factory::getDatabase($this->getJname());
+            $db = Factory::getDatabase($this->getJname());
             //setup status array to hold debug info and errors
 
             //set the userid
@@ -468,7 +467,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 	    } else {
 		    $usergroup = $usergroups[0];
-		    $db = \JFusion\Factory::getDataBase($this->getJname());
+		    $db = Factory::getDataBase($this->getJname());
 		    //set the usergroup in the user table
 		    $query = $db->getQuery(true)
 			    ->update('#__customers')

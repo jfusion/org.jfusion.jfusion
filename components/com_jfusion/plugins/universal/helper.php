@@ -7,6 +7,10 @@
  * @copyright Copyright (C) 2008 JFusion -- Morten Hundevad. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin;
+use stdClass;
+
 /**
  * JFusionHelper_universal class
  *
@@ -18,17 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Helper extends \JFusion\Plugin\Plugin
+class Helper extends Plugin
 {
 	var $map = array();
 	var $mapraw = null;
-
-	/**
-	 * @return string
-	 */
-	function getJname() {
-		return 'universal';
-	}
 
 	/**
 	 * @param string $type
@@ -41,6 +38,7 @@ class Helper extends \JFusion\Plugin\Plugin
 
 	/**
 	 * @param string $type
+	 *
 	 * @return bool|stdClass
 	 */
 	function getMapRaw($type = 'user') {

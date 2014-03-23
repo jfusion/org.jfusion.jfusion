@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Plugins\magento;
 
 /**
  *
@@ -15,47 +15,44 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-if (!class_exists('MagentoSoapClient')) {
+/**
+ * Class Soapclient
+ *
+ */
+class Soapclient extends \SoapClient {
 	/**
-	 * Class MagentoSoapClients
-	 *
+	 * @var $sessionId
 	 */
-	class MagentoSoapClient extends SoapClient {
-		/**
-		 * @var $sessionId
-		 */
-		private $sessionId;
+	private $sessionId;
 
-		/**
-		 * @param string $user
-		 * @param string $key
-		 *
-		 * @return bool
-		 */
-		function login($user, $key) {
-			/** @noinspection PhpUndefinedMethodInspection */
-			$this->sessionId = parent::login($user, $key);
-			return true;
-		}
+	/**
+	 * @param string $user
+	 * @param string $key
+	 *
+	 * @return bool
+	 */
+	function login($user, $key) {
+		/** @noinspection PhpUndefinedMethodInspection */
+		$this->sessionId = parent::login($user, $key);
+		return true;
+	}
 
-		/**
-		 * End session
-		 */
-		function endSession() {
-			/** @noinspection PhpUndefinedMethodInspection */
-			parent::endSession($this->sessionId);
-		}
+	/**
+	 * End session
+	 */
+	function endSession() {
+		/** @noinspection PhpUndefinedMethodInspection */
+		parent::endSession($this->sessionId);
+	}
 
-		/**
-		 * @param string $function
-		 * @param array $args
-		 *
-		 * @return mixed
-		 */
-		function call($function, $args) {
-			/** @noinspection PhpUndefinedMethodInspection */
-			return parent::call($this->sessionId, $function, $args);
-		}
+	/**
+	 * @param string $function
+	 * @param array $args
+	 *
+	 * @return mixed
+	 */
+	function call($function, $args) {
+		/** @noinspection PhpUndefinedMethodInspection */
+		return parent::call($this->sessionId, $function, $args);
 	}
 }
-

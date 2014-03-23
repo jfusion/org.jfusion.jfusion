@@ -15,12 +15,17 @@
  */
 
 // no direct access
+use GalleryCoreApi;
+use GalleryItem;
+use GalleryUrlGenerator;
+use GalleryUser;
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
 use \Exception;
+use JRegistry;
 use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -43,15 +48,6 @@ class Admin extends Plugin_Admin
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'gallery2';
-    }
 
     /**
      * @return string

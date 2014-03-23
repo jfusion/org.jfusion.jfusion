@@ -26,6 +26,14 @@
  */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use RuntimeException;
+use stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -39,7 +47,7 @@ defined('_JEXEC') or die('Restricted access');
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org */
-class User extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
 	/**
 	 * @param $data
@@ -123,7 +131,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	 */
 	function &getUser($userinfo) {
 		try {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 			//get the identifier
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
 
@@ -163,18 +171,10 @@ class User extends \JFusion\Plugin\Plugin_User
 				}
 			}
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			$result = null;
 		}
 		return $result;
-	}
-	/**
-	 * returns the name of this JFusion plugin
-	 * @return string name of current JFusion plugin
-	 */
-	function getJname()
-	{
-		return 'moodle';
 	}
 
 	/**
@@ -194,7 +194,7 @@ class User extends \JFusion\Plugin\Plugin_User
 
         // find out if moodle stores its sessions on disk or in the database
 
-        $db = \JFusion\Factory::getDatabase($this->getJname());
+        $db = Factory::getDatabase($this->getJname());
         //get the identifier
         $query = $db->getQuery(true)
             ->select('value')
@@ -286,7 +286,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		} else {
 			$existinguser->password = md5($userinfo->password_clear);
 		}
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__user')
@@ -324,7 +324,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	function updateEmail($userinfo, &$existinguser, &$status) {
 		//TODO ? check for duplicates, or leave it at db error
 		//we need to update the email
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__user')
@@ -349,7 +349,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	 * @throws RuntimeException
 	 */
 	function blockUser($userinfo, &$existinguser, &$status) {
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 		$query = $db->getQuery(true)
 			->select('value')
 			->from('#__config')
@@ -383,7 +383,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	 * @throws RuntimeException
 	 */
 	function unblockUser($userinfo, &$existinguser, &$status) {
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 		$query = $db->getQuery(true)
 			->select('value')
 			->from('#__config')
@@ -417,7 +417,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	 */
 	function activateUser($userinfo, &$existinguser, &$status) {
 		//activate the user
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__user')
@@ -440,7 +440,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function inactivateUser($userinfo, &$existinguser, &$status) {
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->update('#__user')
@@ -465,7 +465,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	function createUser($userinfo, &$status) {
 		try {
 			// first find out if the user already exists, but with deleted flag set
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 			//get the identifier
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
 
@@ -487,7 +487,7 @@ class User extends \JFusion\Plugin\Plugin_User
 				$db->execute();
 			} else {
 				//find out what usergroup should be used
-				$db = \JFusion\Factory::getDatabase($this->getJname());
+				$db = Factory::getDatabase($this->getJname());
 
 				$usergroups = $this->getCorrectUserGroups($userinfo);
 				if (empty($usergroups)) {
@@ -615,7 +615,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			if (!is_object($userinfo)) {
 				throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
 			}
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->update('#__user')

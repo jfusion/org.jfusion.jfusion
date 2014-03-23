@@ -14,6 +14,8 @@
  */
 
 // Check to ensure this file is included in Joomla!
+use JFusion\Factory;
+
 defined('_JEXEC') or die();
 /**
  * JFormFieldGalleries class
@@ -39,9 +41,9 @@ class JFormFieldGalleries extends JFormField {
         $value = $this->value;
         /**
          * @ignore
-         * @var $helper JFusionHelper_gallery2
+         * @var $helper \JFusion\Plugins\gallery2\Helper
          */
-        $helper = \JFusion\Factory::getHelper($jname);
+        $helper = Factory::getHelper($jname);
         $helper->loadGallery2Api(true);
         list($ret, $tree) = GalleryCoreApi::fetchAlbumTree();
         $output = array();

@@ -14,8 +14,15 @@
  */
 
 // no direct access
-use JFusion\Language\Text;
+use GalleryCoreApi;
+use GalleryEmbed;
+use GalleryStatus;
+use GalleryUrlGenerator;
+use JDocumentHTML;
+use JFactory;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Forum;
+use JRegistry;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -37,15 +44,6 @@ class Forum extends Plugin_Forum
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'gallery2';
-    }
 
     /**
      * @param $config
@@ -70,6 +68,7 @@ class Forum extends Plugin_Forum
      * @param $config
      * @param $view
      * @param JRegistry $pluginParam
+     *
      * @return mixed|string
      */
     function renderImageBlock($config, $view, $pluginParam) {
@@ -182,7 +181,7 @@ class Forum extends Plugin_Forum
 	                     * @ignore
 	                     * @var $document JDocumentHTML
 	                     */
-                        $document = \JFusion\Factory::getDocument();
+                        $document = JFactory::getDocument();
                         $document->addCustomTag($headContent);
                         /* finish Gallery 2 */
                     }

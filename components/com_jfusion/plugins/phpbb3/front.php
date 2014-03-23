@@ -14,11 +14,14 @@
  */
 
 // no direct access
+use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\Plugin\Plugin_Front;
 
 use \Exception;
+use Joomla\Uri\Uri;
+use JRegistry;
 use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -37,16 +40,6 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Front extends Plugin_Front
 {
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {	
-        return 'phpbb3';
-    }
-
     /**
      * @return string
      */
@@ -251,7 +244,7 @@ class Front extends Plugin_Front
     		//refresh the page to avoid phpbb3 error
     		//this happens as the phpbb3 config file can not be loaded twice
     		//and phpbb3 always uses include instead of include_once
-            $uri = JURI::getInstance();
+            $uri = Uri::getInstance();
             //add a variable to ensure refresh
             $uri->setVar('time', time());
             $link = $uri->toString();
@@ -312,7 +305,7 @@ class Front extends Plugin_Front
 
             //we need to hijack $_SERVER['PHP_SELF'] so that phpBB correctly utilizes it such as correctly noted the page a user is browsing
             $php_self = $_SERVER['PHP_SELF'];
-            $juri = new JURI($source_url);
+            $juri = new Uri($source_url);
             $_SERVER['PHP_SELF'] = $juri->getPath() . $jfile;
 
             try {
@@ -427,7 +420,7 @@ class Front extends Plugin_Front
 	 * @return string
 	 */
 	function cssCacheName($url) {
-		$uri = new JURI($url);
+		$uri = new Uri($url);
 		$uri->delVar('sid');
 		return parent::cssCacheName($uri->toString());
 	}
@@ -559,7 +552,7 @@ class Front extends Plugin_Front
         //\JFusion\Framework::raiseWarning($url, $this->getJname());
         //split up the timeout from url
         $parts = explode('url=', $url, 2);
-        $uri = new JURI($parts[1]);
+        $uri = new Uri($parts[1]);
         $jfile = $uri->getPath();
         $jfile = basename($jfile);
         $query = $uri->getQuery(false);

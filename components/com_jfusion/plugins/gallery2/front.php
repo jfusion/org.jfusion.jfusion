@@ -14,11 +14,18 @@
  */
 
 // no direct access
+use GalleryCapabilities;
+use GalleryCoreApi;
+use GalleryEmbed;
+use GalleryItem;
+use GalleryPermissionHelper_simple;
+use GalleryUtilities;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\Plugin\Plugin_Front;
 
 use \Exception;
+use JRegistry;
 use \RuntimeException;
 use \stdClass;
 
@@ -41,15 +48,6 @@ class Front extends Plugin_Front
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'gallery2';
-    }
 
     /**
      * @return string
@@ -120,7 +118,6 @@ class Front extends Plugin_Front
         if (isset($g2data['sidebarBlocksHtml'])) {
 	        $this->helper->setVar('sidebar', $g2data['sidebarBlocksHtml']);
         }
-	    $this->helper->setPathway();
         if (isset($g2data['bodyHtml']) && isset($g2data['headHtml'])) {
             $buffer = '<html><head>' . $g2data['headHtml'] . '</head><body>' . $g2data['bodyHtml'] . '</body></html>';
             $data->body = $g2data['bodyHtml'];
@@ -413,4 +410,86 @@ class Front extends Plugin_Front
 
         return $url;
     }
+
+	/**
+	 * @return array
+	 */
+	function getPathWay()
+	{
+		$pathway = array();
+
+		global $gallery;
+		$session = $gallery->getSession();
+		if ($session) {
+			$session->doNotUseTempId();
+		}
+		/**
+		 * @ignore
+		 * @var $entities GalleryItem[]
+		 * @var $it GalleryItem
+		 */
+		$entities = array();
+		$urlGenerator = $gallery->getUrlGenerator();
+		$itemId = (int) GalleryUtilities::getRequestVariables('itemId');
+		$userId = $gallery->getActiveUserId();
+		/* fetch parent sequence for current itemId or Root */
+		if ($itemId) {
+			list($ret, $parentSequence) = GalleryCoreApi::fetchParentSequence($itemId);
+			if ($ret) {
+				return $ret;
+			}
+		} else {
+			list($ret, $rootId) = GalleryCoreApi::getPluginParameter('module', 'core', 'id.rootAlbum');
+			if ($ret) {
+				return $ret;
+			}
+			$parentSequence = array($rootId);
+		}
+		/* Add current item at the end */
+		$parentSequence[] = $itemId;
+		/* shift first parent off, as Joomla adds menu name already.*/
+		array_shift($parentSequence);
+		/* study permissions */
+		if (sizeof($parentSequence) > 0 && $parentSequence[0] != 0) {
+			GalleryCoreApi::requireOnce('modules/core/classes/helpers/GalleryPermissionHelper_simple.class');
+			$ret = GalleryPermissionHelper_simple::studyPermissions($parentSequence);
+			if ($ret) {
+				return $ret;
+			} else {
+				/* load the Entities */
+				list($ret, $list) = GalleryCoreApi::loadEntitiesById($parentSequence);
+				if ($ret) {
+					return $ret;
+				} else {
+					foreach ($list as $it) {
+						$entities[$it->getId() ] = $it;
+					}
+				}
+			}
+		}
+		/* check permissions and push */
+		$i = 1;
+		$limit = count($parentSequence);
+		foreach ($parentSequence as $id) {
+			list($ret, $canSee) = GalleryCoreApi::hasItemPermission($id, 'core.view', $userId);
+			if ($ret) {
+				return $ret;
+			} else {
+				if ($canSee) {
+					/* push them into pathway */
+					$urlParams = array('view' => 'core.ShowItem', 'itemId' => $id);
+					$title = $entities[$id]->getTitle() ? $entities[$id]->getTitle() : $entities[$id]->getPathComponent();
+					$title = preg_replace('/\r\n/', ' ', $title);
+					$url = $urlGenerator->generateUrl($urlParams);
+
+					$path = new stdClass();
+					$path->title = $title;
+					$path->url = $url;
+					$pathway[] = $path;
+				}
+				$i++;
+			}
+		}
+		return $pathway;
+	}
 }

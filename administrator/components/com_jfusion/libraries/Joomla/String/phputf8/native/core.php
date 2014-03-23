@@ -77,19 +77,24 @@ function utf8_strpos($str, $needle, $offset = NULL) {
 
 //--------------------------------------------------------------------
 /**
-* UTF-8 aware alternative to strrpos
-* Find position of last occurrence of a char in a string
-* Note: This will get alot slower if offset is used
-* Note: requires utf8_substr and utf8_strlen to be loaded
-* @param string haystack
-* @param string needle (you should validate this with utf8_is_valid)
-* @param integer (optional) offset (from left)
-* @return mixed integer position or FALSE on failure
-* @see http://www.php.net/strrpos
-* @see utf8_substr
-* @see utf8_strlen
-* @package utf8
-*/
+ * UTF-8 aware alternative to strrpos
+ * Find position of last occurrence of a char in a string
+ * Note: This will get alot slower if offset is used
+ * Note: requires utf8_substr and utf8_strlen to be loaded
+ *
+ * @param          $str
+ * @param          $needle
+ * @param int|null $offset
+ *
+ * @internal param \haystack $string
+ * @internal param \needle $string
+ * @internal param int $offset (from left)
+ * @return mixed integer position or FALSE on failure
+ * @see      http://www.php.net/strrpos
+ * @see      utf8_substr
+ * @see      utf8_strlen
+ * @package  utf8
+ */
 function utf8_strrpos($str, $needle, $offset = NULL) {
 
     if ( is_null($offset) ) {
@@ -124,33 +129,38 @@ function utf8_strrpos($str, $needle, $offset = NULL) {
 
 //--------------------------------------------------------------------
 /**
-* UTF-8 aware alternative to substr
-* Return part of a string given character offset (and optionally length)
-*
-* Note arguments: comparied to substr - if offset or length are
-* not integers, this version will not complain but rather massages them
-* into an integer.
-*
-* Note on returned values: substr documentation states false can be
-* returned in some cases (e.g. offset > string length)
-* mb_substr never returns false, it will return an empty string instead.
-* This adopts the mb_substr approach
-*
-* Note on implementation: PCRE only supports repetitions of less than
-* 65536, in order to accept up to MAXINT values for offset and length,
-* we'll repeat a group of 65535 characters when needed.
-*
-* Note on implementation: calculating the number of characters in the
-* string is a relatively expensive operation, so we only carry it out when
-* necessary. It isn't necessary for +ve offsets and no specified length
-*
-* @author Chris Smith<chris@jalakai.co.uk>
-* @param string
-* @param integer number of UTF-8 characters offset (from left)
-* @param integer (optional) length in UTF-8 characters from offset
-* @return mixed string or FALSE if failure
-* @package utf8
-*/
+ * UTF-8 aware alternative to substr
+ * Return part of a string given character offset (and optionally length)
+ *
+ * Note arguments: comparied to substr - if offset or length are
+ * not integers, this version will not complain but rather massages them
+ * into an integer.
+ *
+ * Note on returned values: substr documentation states false can be
+ * returned in some cases (e.g. offset > string length)
+ * mb_substr never returns false, it will return an empty string instead.
+ * This adopts the mb_substr approach
+ *
+ * Note on implementation: PCRE only supports repetitions of less than
+ * 65536, in order to accept up to MAXINT values for offset and length,
+ * we'll repeat a group of 65535 characters when needed.
+ *
+ * Note on implementation: calculating the number of characters in the
+ * string is a relatively expensive operation, so we only carry it out when
+ * necessary. It isn't necessary for +ve offsets and no specified length
+ *
+ * @author   Chris Smith<chris@jalakai.co.uk>
+ *
+ * @param          $str
+ * @param          $offset
+ * @param int|null $length
+ *
+ * @internal param $string
+ * @internal param number $integer of UTF-8 characters offset (from left)
+ * @internal param int $length in UTF-8 characters from offset
+ * @return mixed string or FALSE if failure
+ * @package  utf8
+ */
 function utf8_substr($str, $offset, $length = NULL) {
 
     // generates E_NOTICE

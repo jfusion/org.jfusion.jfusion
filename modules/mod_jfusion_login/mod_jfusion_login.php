@@ -108,11 +108,11 @@ try {
 	        if (!empty($userlookup)) {
 	            if ($params->get('avatar')) {
 	                // retrieve avatar
-	                $avatarSrc = $params->get('avatar_software');
-	                if ($avatarSrc == '' || $avatarSrc == 'jfusion') {
-	                    $avatar = $JFusionPlugin->getAvatar($userlookup->userid);
+	                $avatar_software = $params->get('avatar_software');
+	                if ($avatar_software != 'jfusion') {
+		                $avatar = \JFusion\Framework::getAltAvatar($avatar_software, $userlookup);
 	                } else {
-	                    $avatar = \JFusion\Framework::getAltAvatar($avatarSrc, $user->get('id'));
+		                $avatar = $JFusionPlugin->getAvatar($userlookup->userid);
 	                }
 	                if (empty($avatar)) {
 	                    $avatar = 'components/com_jfusion/images/noavatar.png';
@@ -134,9 +134,9 @@ try {
 	        //show the avatar if it is not set to JFusion
 	        if ($params->get('avatar')) {
 	            //retrieve avatar
-	            $avatarSrc = $params->get('avatar_software');
-	            if ($avatarSrc != 'jfusion') {
-	                $avatar = \JFusion\Framework::getAltAvatar($avatarSrc, $user->get('id'));
+		        $avatar_software = $params->get('avatar_software');
+	            if ($avatar_software != 'jfusion' && !empty($userlookup)) {
+	                $avatar = \JFusion\Framework::getAltAvatar($avatar_software, $userlookup);
 	            } else {
 	                $avatar = 'components/com_jfusion/images/noavatar.png';
 	            }

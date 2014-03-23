@@ -31,7 +31,7 @@ class JFusionFrameless {
 	 */
 	public static function initData($jname, $isPlugin = true)
 	{
-		$uri = JURI::getInstance();
+		$uri = JUri::getInstance();
 
 		// declare Data object
 		$data = new stdClass();
@@ -143,7 +143,7 @@ class JFusionFrameless {
 
 		if (!$data->isPlugin) {
 			require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php');
-			$JFusionPlugin = new JFusionPublic();
+			$JFusionPlugin = new \JFusion\Plugin\Plugin_Front();
 		} else {
 			$JFusionPlugin = \JFusion\Factory::getFront($data->jname);
 
@@ -193,7 +193,7 @@ class JFusionFrameless {
 		}
 
 		//check to see if the Joomla database is still connected in case the plugin messed it up
-		\JFusion\Framework::reconnectJoomlaDb();
+		JFusionFunction::reconnectJoomlaDb();
 
 		if ($data->buffer === 0) {
 			throw new RuntimeException(JText::_('NO_FRAMELESS'));
@@ -271,7 +271,7 @@ class JFusionFrameless {
 				$JFusionPlugin->parseHeader($data);
 
 				if ($data->default_css) {
-					$document->addStyleSheet(JURI::base() . '/components/com_jfusion/css/default.css');
+					$document->addStyleSheet(JUri::base() . '/components/com_jfusion/css/default.css');
 				}
 				if ($data->default_css_overflow) {
 					$style = 'style="overflow: ' . $data->default_css_overflow . ';"';

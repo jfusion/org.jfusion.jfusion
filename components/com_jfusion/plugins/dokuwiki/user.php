@@ -17,7 +17,7 @@
 // no direct access
 use JFusion\Framework;
 use JFusion\Plugin\Plugin_User;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use \Exception;
 use \RuntimeException;
 use \stdClass;
@@ -169,16 +169,6 @@ class JFusionUser_dokuwiki extends Plugin_User
             $user = null;
         }
         return $user;
-    }
-
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'dokuwiki';
     }
 
     /**

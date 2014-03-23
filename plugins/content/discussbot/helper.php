@@ -14,6 +14,8 @@
  */
 
 // no direct access
+use JFusion\Framework;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 /**
@@ -174,7 +176,7 @@ class JFusionDiscussBotHelper {
 
 		$JFusionForum->checkThreadExists($this->params, $this->article, $threadinfo, $status);
 		if (!empty($status['error'])) {
-			\JFusion\Framework::raise('error', $status['error'], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
+			Framework::raise('error', $status['error'], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
 		} else {
 			if ($status['action'] != 'unchanged') {
 				if ($status['action'] == 'created') {
@@ -184,7 +186,7 @@ class JFusionDiscussBotHelper {
 				//catch in case plugins screwed up
 				if (!empty($threadinfo->threadid)) {
 					//update the lookup table
-					\JFusion\Framework::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $manually_created);
+					JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $manually_created);
 
 					//set the status to true since it was just created
 				}
@@ -550,7 +552,7 @@ class JFusionDiscussBotHelper {
 				JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
 JS;
 
-			\JFusion\Framework::loadJavascriptLanguage(array('BUTTON_CANCEL', 'BUTTON_INITIATE',
+			JFusionFunction::loadJavascriptLanguage(array('BUTTON_CANCEL', 'BUTTON_INITIATE',
 				'BUTTON_PUBLISH_NEW_DISCUSSION', 'BUTTON_REPUBLISH_DISCUSSION', 'BUTTON_UNPUBLISH_DISCUSSION',
 				'CONFIRM_THREAD_CREATION', 'CONFIRM_UNPUBLISH_DISCUSSION', 'CONFIRM_PUBLISH_DISCUSSION',
 				'DISCUSSBOT_ERROR', 'HIDE_REPLIES', 'JYES', 'SHOW_REPLIES', 'SUBMITTING_QUICK_REPLY'));

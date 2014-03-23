@@ -131,10 +131,10 @@ class plgSearchJfusion extends JPlugin
 		foreach ($searchPlugins AS $jname) {
 			$searchMe = \JFusion\Factory::getFront($jname);
 			if (is_array($pluginParamValue)) {
-				$pluginParam = new \JFusion\Registry\Registry('');
+				$pluginParam = new JRegistry('');
 				$pluginParam->loadArray($pluginParamValue[$jname]);
 			} else {
-				$pluginParam = new \JFusion\Registry\Registry('');
+				$pluginParam = new JRegistry('');
 			}
 			$itemid = $pluginParam->get('itemid');
 			try {

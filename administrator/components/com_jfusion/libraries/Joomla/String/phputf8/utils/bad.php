@@ -224,15 +224,20 @@ define('UTF8_BAD_SEQINCOMPLETE',7);
 
 //--------------------------------------------------------------------
 /**
-* Reports on the type of bad byte found in a UTF-8 string. Returns a
-* status code on the first bad byte found
-* @author <hsivonen@iki.fi>
-* @param string UTF-8 encoded string
-* @return mixed integer constant describing problem or FALSE if valid UTF-8
-* @see utf8_bad_explain
-* @see http://hsivonen.iki.fi/php-utf8/
-* @package utf8
-*/
+ * Reports on the type of bad byte found in a UTF-8 string. Returns a
+ * status code on the first bad byte found
+ *
+ * @author   <hsivonen@iki.fi>
+ *
+ * @param $str
+ * @param $i
+ *
+ * @internal param \UTF $string -8 encoded string
+ * @return mixed integer constant describing problem or FALSE if valid UTF-8
+ * @see      utf8_bad_explain
+ * @see      http://hsivonen.iki.fi/php-utf8/
+ * @package  utf8
+ */
 function utf8_bad_identify($str, &$i) {
 
     $mState = 0;     // cached expected number of octets after the current octet

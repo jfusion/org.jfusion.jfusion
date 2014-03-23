@@ -15,12 +15,14 @@
  */
 
 // no direct access
-use JFusion\Database\Driver;
+use JFile;
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Database\DatabaseFactory;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 use \Exception;
+use JFusionFunction;
 use \RuntimeException;
 
 defined('_JEXEC') or die('Restricted access');
@@ -40,15 +42,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class Admin extends Plugin_Admin
 {
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'phpbb3';
-    }
-
     /**
      * @return string
      */
@@ -95,7 +88,7 @@ class Admin extends Plugin_Admin
             $options = array('driver' => $params['database_type'], 'host' => $params['database_host'], 'user' => $params['database_user'], 'password' => $params['database_password'], 'database' => $params['database_name'], 'prefix' => $params['database_prefix']);
             //Get configuration settings stored in the database
 	        try {
-		        $db = Driver::getInstance($options);
+		        $db = DatabaseFactory::getInstance($options)->getDriver($params['database_type'], $options);
 
 		        if (!$db) {
 			        Framework::raiseWarning(Text::_('NO_DATABASE'), $this->getJname());
@@ -776,7 +769,7 @@ HTML;
 	{
 		$jname = $this->getJname();
 
-		Framework::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS'));
+		JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS'));
 		$js = <<<JS
 		JFusion.renderPlugin['{$jname}'] = function(index, plugin, pair) {
 			var usergroups = JFusion.usergroups[plugin.name];

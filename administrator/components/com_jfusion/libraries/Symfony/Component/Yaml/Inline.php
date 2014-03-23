@@ -378,13 +378,14 @@ class Inline
         throw new ParseException(sprintf('Malformed inline YAML string %s', $mapping));
     }
 
-    /**
-     * Evaluates scalars and replaces magic values.
-     *
-     * @param string $scalar
-     *
-     * @return string A YAML string
-     */
+	/**
+	 * Evaluates scalars and replaces magic values.
+	 *
+	 * @param string $scalar
+	 *
+	 * @throws Exception\ParseException
+	 * @return string A YAML string
+	 */
     private static function evaluateScalar($scalar)
     {
         $scalar = trim($scalar);

@@ -15,10 +15,11 @@
 
 // no direct access
 use JFusion\Factory;
-use JFusion\Framework;
 use JFusion\Plugin\Plugin_Forum;
 
 use \Exception;
+use JFusionFunction;
+use \JRoute;
 
 
 defined('_JEXEC') or die('Restricted access');
@@ -37,16 +38,6 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Forum extends Plugin_Forum
 {
-	/**
-	 * returns the name of this JFusion plugin
-	 *
-	 * @return string name of current JFusion plugin
-	 */
-	function getJname()
-	{
-		return 'joomla_int';
-	}
-
 	/**
 	 * Returns the URL to a userprofile of the integrated software
 	 *
@@ -68,7 +59,7 @@ class Forum extends Plugin_Forum
 				$db->setQuery($query, 0, 1);
 				$itemid = $db->loadResult();
 				if ($itemid) {
-					$url = \JRoute::_('index.php?option=com_comprofiler&task=userProfile&Itemid=' . $itemid . '&user=' . $userid);
+					$url = JRoute::_('index.php?option=com_comprofiler&task=userProfile&Itemid=' . $itemid . '&user=' . $userid);
 				} else {
 					$query = $db->getQuery(true)
 						->select('id')
@@ -78,7 +69,7 @@ class Forum extends Plugin_Forum
 					$db->setQuery($query, 0, 1);
 					$itemid = $db->loadResult();
 					if ($itemid) {
-						$url = \JRoute::_('index.php?option=com_community&view=profile&Itemid=' . $itemid . '&userid=' . $userid);
+						$url = JRoute::_('index.php?option=com_community&view=profile&Itemid=' . $itemid . '&userid=' . $userid);
 					} else {
 						$query = $db->getQuery(true)
 							->select('id')
@@ -88,7 +79,7 @@ class Forum extends Plugin_Forum
 						$db->setQuery($query, 0, 1);
 						$itemid = $db->loadResult();
 						if ($itemid) {
-							$url = \JRoute::_('index.php?option=com_joomunity&Itemid=' . $itemid . '&cmd=Profile.View.' . $userid);
+							$url = JRoute::_('index.php?option=com_joomunity&Itemid=' . $itemid . '&cmd=Profile.View.' . $userid);
 						}
 					}
 				}
@@ -150,7 +141,7 @@ class Forum extends Plugin_Forum
 				}
 			}
 		} catch (Exception $e) {
-			$avatar = Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+			$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 		}
 		return $avatar;
 	}

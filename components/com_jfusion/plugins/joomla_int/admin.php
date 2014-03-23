@@ -16,11 +16,12 @@
 
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
 use \RuntimeException;
 use \Exception;
+use \JComponentHelper;
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
@@ -38,16 +39,8 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class Admin extends Plugin_Admin {
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'joomla_int';
-    }
-
+class Admin extends Plugin_Admin
+{
 	/**
 	 * returns the name of user table of integrated software
 	 *
@@ -231,7 +224,7 @@ class Admin extends Plugin_Admin {
 	 */
 	public function allowRegistration()
 	{
-		$params = \JComponentHelper::getParams('com_users');
+		$params = JComponentHelper::getParams('com_users');
 		// Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
 		return ($params->get('allowUserRegistration', false) ? true : false);
 	}

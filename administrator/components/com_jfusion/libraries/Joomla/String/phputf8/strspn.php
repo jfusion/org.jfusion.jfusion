@@ -5,14 +5,20 @@
 
 //---------------------------------------------------------------
 /**
-* UTF-8 aware alternative to strspn
-* Find length of initial segment matching mask
-* Note: requires utf8_strlen and utf8_substr (if start, length are used)
-* @param string
-* @return int
-* @see http://www.php.net/strspn
-* @package utf8
-*/
+ * UTF-8 aware alternative to strspn
+ * Find length of initial segment matching mask
+ * Note: requires utf8_strlen and utf8_substr (if start, length are used)
+ *
+ * @param      $str
+ * @param      $mask
+ * @param null $start
+ * @param null $length
+ *
+ * @internal param $string
+ * @return int
+ * @see      http://www.php.net/strspn
+ * @package  utf8
+ */
 function utf8_strspn($str, $mask, $start = NULL, $length = NULL) {
 
     $mask = preg_replace('!([\\\\\\-\\]\\[/^])!','\\\${1}',$mask);

@@ -318,7 +318,7 @@ class executeJFusionHook
             //if sef is enabled, we need to rewrite the nojs link
             if ($vbsefenabled == 1) {
                 if ($vbsefmode == 1) {
-                    $uri = JURI::getInstance();
+                    $uri = JUri::getInstance();
                     $url = $uri->toString();
                     $show['nojs_link'] = $url;
                     $show['nojs_link'].= (substr($url, -1) != '/') ? '/nojs,1/' : 'nojs,1/';
@@ -434,7 +434,7 @@ class executeJFusionHook
 	        if (defined('_VBJNAME')) {
 		        $JFusionActivePlugin =  _VBJNAME;
 	        }
-            $baseURL = (class_exists('JFusionFunction')) ? \JFusion\Framework::getJoomlaURL() : JURI::root();
+            $baseURL = (class_exists('JFusionFunction')) ? \JFusion\Framework::getJoomlaURL() : JUri::root();
             $loginURL = JRoute::_($baseURL . 'index.php?option=com_user&task=login', false);
             $credentials = array('username' => $vbulletin->userinfo['username'], 'password' => $password, 'password_salt' => $vbulletin->userinfo['salt']);
             $options = array('entry_url' => $loginURL);

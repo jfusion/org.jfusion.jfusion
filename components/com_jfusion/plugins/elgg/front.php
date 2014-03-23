@@ -34,16 +34,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class Front extends Plugin_Front
 {
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */    
-    function getJname() 
-    {
-        return 'elgg';
-    }
-
     /**
      * @return string
      */

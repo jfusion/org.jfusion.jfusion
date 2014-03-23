@@ -14,6 +14,15 @@
  */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use RuntimeException;
+use Soapfault;
+use stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,7 +37,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class User extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
 	/**
 	 * Magento does not have usernames.
@@ -54,7 +63,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	 * @param $status
 	 *
 	 * @throws RuntimeException
-	 * @return MagentoSoapClient
+	 * @return Soapclient
 	 */
 	function connectToApi(&$status) {
 		$apipath = $this->params->get('source_url') . 'index.php/api/?wsdl';
@@ -66,7 +75,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			try {
 				require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'soapclient.php';
 
-				$proxi = new MagentoSoapClient($apipath);
+				$proxi = new Soapclient($apipath);
 				if($proxi->login($apiuser, $apikey)) {
 					$status['debug'][] = 'Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey;
 				}
@@ -89,7 +98,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		static $eav_entity_types;
 		try {
 			if (!isset($eav_entity_types)) {
-				$db = \JFusion\Factory::getDataBase($this->getJname());
+				$db = Factory::getDataBase($this->getJname());
 
 				$query = $db->getQuery(true)
 					->select('entity_type_id, entity_type_code')
@@ -104,7 +113,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			}
 			return $eav_entity_types[$eav_entity_code];
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			return false;
 		}
 	}
@@ -126,7 +135,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			if (!isset($eav_attributes[$entity_type_code])) {
 				// first get the entity_type_id to access the attribute table
 				$entity_type_id = $this->getMagentoEntityTypeID('customer');
-				$db = \JFusion\Factory::getDataBase($this->getJname());
+				$db = Factory::getDataBase($this->getJname());
 				// Get a database object
 				$query = $db->getQuery(true)
 					->select('attribute_id, attribute_code, backend_type')
@@ -144,7 +153,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			}
 			return $eav_attributes[$entity_type_code];
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			return false;
 		}
 
@@ -183,7 +192,7 @@ class User extends \JFusion\Plugin\Plugin_User
 				 *       for now I'm trying to get this working. optimising comes next
 				 */
 				$filled_object = array();
-				$db = \JFusion\Factory::getDataBase($this->getJname());
+				$db = Factory::getDataBase($this->getJname());
 				for ($i = 0;$i < count($result);$i++) {
 					$query = $db->getQuery(true)
 						->where('entity_id = ' . (int)$entity_id)
@@ -205,7 +214,7 @@ class User extends \JFusion\Plugin\Plugin_User
 				$result = $filled_object;
 			}
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 		}
 		return $result;
 	}
@@ -220,7 +229,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		}
 
 		// Get the user id
-		$db = \JFusion\Factory::getDataBase($this->getJname());
+		$db = Factory::getDataBase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('entity_id')
@@ -293,14 +302,6 @@ class User extends \JFusion\Plugin\Plugin_User
 		}
 		return $instance;
 	}
-	/**
-	 * returns the name of this JFusion plugin
-	 * @return string name of current JFusion plugin
-	 */
-	function getJname()
-	{
-		return 'magento';
-	}
 
 	/**
 	 * @param object $userinfo
@@ -351,7 +352,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	 */
 	function update_create_Magentouser($user, $entity_id) {
 		try {
-			$db = \JFusion\Factory::getDataBase($this->getJname());
+			$db = Factory::getDataBase($this->getJname());
 			$sqlDateTime = date('Y-m-d H:i:s', time());
 			// transactional handling of this update is a necessarily
 			if (!$entity_id) { //create an (almost) empty user
@@ -494,7 +495,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			$status['error'][] = Text::_('ERROR_CREATING_USER') . ': ' . Text::_('USERGROUP_MISSING');
 		} else {
 			$usergroup = $usergroups[0];
-			$db = \JFusion\Factory::getDataBase($this->getJname());
+			$db = Factory::getDataBase($this->getJname());
 			//prepare the variables
 			// first get some default stuff from Magento
 /*
@@ -756,7 +757,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		} else {
 			$usergroup = $usergroups[0];
 			//set the usergroup in the user table
-			$db = \JFusion\Factory::getDataBase($this->getJname());
+			$db = Factory::getDataBase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->update('#__customer_entity')

@@ -8,6 +8,8 @@
  */
 
 // no direct access
+use JFusion\Plugin\Plugin_Auth;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 /**
@@ -15,18 +17,8 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractauth.php
  * @package JFusion_mediawiki
  */
-class Auth extends \JFusion\Plugin\Plugin_Auth
+class Auth extends Plugin_Auth
 {
-	/**
-	 * returns the name of this JFusion plugin
-	 *
-	 * @return string name of current JFusion plugin
-	 */
-	function getJname()
-	{
-		return 'mediawiki';
-	}
-
     /**
      * @param array|object $userinfo
      * @return string

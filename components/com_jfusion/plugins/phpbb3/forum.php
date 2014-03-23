@@ -14,12 +14,14 @@
  */
 
 // no direct access
+use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Forum;
 
 use \Exception;
+use JRegistry;
 use \stdClass;
 use \RuntimeException;
 
@@ -45,15 +47,6 @@ class Forum extends Plugin_Forum
 	var $helper;
 
     var $joomlaGlobals;
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'phpbb3';
-    }
 
     /**
      * @param int $threadid

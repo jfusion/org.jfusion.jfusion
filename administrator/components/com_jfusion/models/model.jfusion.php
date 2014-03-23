@@ -1,7 +1,6 @@
 <?php
 
 use JFusion\Factory;
-use JFusion\Framework;
 
 /**
  * Model for all jfusion related function
@@ -52,7 +51,7 @@ class JFusionFunction
 				}
 			} else {
 				//we need to create direct link to the plugin
-				$params = JFactory::getParams($itemid);
+				$params = Factory::getParams($itemid);
 				$url = $params->get('source_url') . $url;
 				if ($xhtml) {
 					$url = str_replace('&', '&amp;', $url);
@@ -95,7 +94,7 @@ class JFusionFunction
 				}
 			} else {
 				//fully parse the URL if sefmode = 1
-				$u = JURI::getInstance($url);
+				$u = JUri::getInstance($url);
 				$u->setVar('jfile', $u->getPath());
 				$u->setVar('option', 'com_jfusion');
 				$u->setVar('Itemid', $itemid);
@@ -112,70 +111,6 @@ class JFusionFunction
 			}
 		}
 		return $url;
-	}
-
-	/**
-	 * Returns either the Joomla wrapper URL or the full URL directly to the forum
-	 *
-	 * @param string $url    relative path to a webpage of the integrated software
-	 * @param string $jname  name of the JFusion plugin used
-	 * @param string $view   name of the JFusion view used
-	 * @param string $itemid the itemid
-	 *
-	 * @return string full URL to the filename passed to this function
-	 */
-	public static function createURL($url, $jname, $view, $itemid = '')
-	{
-		if (!empty($itemid)) {
-			//use the itemid only to identify plugin name and view type
-			$base_url = 'index.php?option=com_jfusion&amp;Itemid=' . $itemid;
-		} else {
-			$base_url = 'index.php?option=com_jfusion&amp;Itemid=-1&amp;view=' . $view . '&amp;jname=' . $jname;
-		}
-		if ($view == 'direct') {
-			$params = Factory::getParams($jname);
-			$url = $params->get('source_url') . $url;
-		} elseif ($view == 'wrapper') {
-			//use base64_encode to encode the URL for passing.  But, base64_code uses / which throws off SEF urls.  Thus slashes
-			//must be translated into something base64_encode will not generate and something that will not get changed by Joomla or Apache.
-			$url = $base_url . '&amp;wrap=' . str_replace('/', '_slash_', base64_encode($url));
-			$url = JRoute::_($url);
-		} elseif ($view == 'frameless') {
-			//split the filename from the query
-			$parts = explode('?', $url);
-			if (isset($parts[1])) {
-				$base_url.= '&amp;jfile=' . $parts[0] . '&amp;' . $parts[1];
-			} else {
-				$base_url.= '&amp;jfile=' . $parts[0];
-			}
-			$url = JRoute::_($base_url);
-		}
-		return $url;
-	}
-
-	/**
-	 * Raise warning function that can handle arrays
-	 *
-	 * @return array array with the php info values
-	 */
-	public static function phpinfoArray()
-	{
-		//get the phpinfo and parse it into an array
-		ob_start();
-		phpinfo();
-		$phpinfo = array('phpinfo' => array());
-		if (preg_match_all('#(?:<h2>(?:<a name=".*?">)?(.*?)(?:</a>)?</h2>)|(?:<tr(?: class=".*?")?><t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>)?)?</tr>)#s', ob_get_clean(), $matches, PREG_SET_ORDER)) {
-			foreach ($matches as $match) {
-				if (strlen($match[1])) {
-					$phpinfo[$match[1]] = array();
-				} else if (isset($match[3])) {
-					$phpinfo[end(array_keys($phpinfo))][$match[2]] = isset($match[4]) ? array($match[3], $match[4]) : $match[3];
-				} else {
-					$phpinfo[end(array_keys($phpinfo))][] = $match[2];
-				}
-			}
-		}
-		return $phpinfo;
 	}
 
 	/**
@@ -278,9 +213,9 @@ class JFusionFunction
 		}
 
 		//make the URL absolute and clean it up a bit
-		$joomla_url = static::getJoomlaURL();
+		$joomla_url = JFusionFunction::getJoomlaURL();
 
-		$juri = new JURI($joomla_url);
+		$juri = new JUri($joomla_url);
 		$path = $juri->getPath();
 		if ($path != '/') {
 			$article_url = str_replace($path, '', $article_url);
@@ -303,68 +238,6 @@ class JFusionFunction
 		$link = '<a href="' . $article_url . '">' . $text . '</a>';
 
 		return $link;
-	}
-
-	/**
-	 * Parses text from bbcode to html, html to bbcode, or html to plaintext
-	 * $options include:
-	 * strip_all_html - if $to==bbcode, strips all unsupported html from text (default is false)
-	 * bbcode_patterns - if $to==bbcode, adds additional html to bbcode rules; array [0] startsearch, [1] startreplace, [2] endsearch, [3] endreplace
-	 * parse_smileys - if $to==html, disables the bbcode smiley parsing; useful for plugins that do their own smiley parsing (default is true)
-	 * custom_smileys - if $to==html, adds custom smileys to parser; array in the format of array[$smiley] => $path.  For example $options['custom_smileys'][':-)'] = 'http://mydomain.com/smileys/smile.png';
-	 * html_patterns - if $to==html, adds additional bbcode to html rules;
-	 *     Must be an array of elements with the custom bbcode as the key and the value in the format described at http://nbbc.sourceforge.net/readme.php?page=usage_add
-	 *     For example $options['html_patterns']['mono'] = array('simple_start' => '<tt>', 'simple_end' => '</tt>', 'class' => 'inline', 'allow_in' => array('listitem', 'block', 'columns', 'inline', 'link'));
-	 * character_limit - if $to==html OR $to==plaintext, limits the number of visible characters to the user
-	 * plaintext_line_breaks - if $to=='plaintext', should line breaks when converting to plaintext be replaced with <br /> (br) (default), converted to spaces (space), or left as \n (n)
-	 * plain_tags - if $to=='plaintext', array of custom bbcode tags (without brackets) that should be stripped
-	 *
-	 * @param string $text    the actual text
-	 * @param string $to      what to convert the text to; bbcode, html, or plaintext
-	 * @param mixed  $options array with parser options
-	 *
-	 * @return string with converted text
-	 */
-	public static function parseCode($text, $to, $options = array())
-	{
-		$parser = new JFusionParse();
-		return $parser->parseCode($text, $to, $options);
-	}
-
-	/**
-	 * Used by the Framework::parseCode function to parse various tags when parsing to bbcode.
-	 * For example, some Joomla editors like to use an empty paragraph tag for line breaks which gets
-	 * parsed into a lot of unnecessary line breaks
-	 *
-	 * @param mixed $matches mixed values from preg functions
-	 * @param string $tag
-	 *
-	 * @return string to replace search subject with
-	 */
-	public static function parseTag($matches, $tag = 'p')
-	{
-		$return = false;
-		if ($tag == 'p') {
-			$text = trim($matches);
-			//remove the slash added to double quotes and slashes added by the e modifier
-			$text = str_replace('\"', '"', $text);
-			if(empty($text) || ord($text) == 194) {
-				//p tags used simply as a line break
-				$return = "\n";
-			} else {
-				$return = $text . "\n\n";
-			}
-		} elseif ($tag == 'img') {
-			$joomla_url = static::getJoomlaURL();
-			$juri = new JURI($joomla_url);
-			$path = $juri->getPath();
-			if ($path != '/'){
-				$matches = str_replace($path, '', $matches);
-			}
-			$url = JRoute::_($joomla_url . $matches);
-			$return = $url;
-		}
-		return $return;
 	}
 
 	/**
@@ -409,52 +282,6 @@ class JFusionFunction
 	}
 
 	/**
-	 * Retrieves the source of the avatar for a Joomla supported component
-	 *
-	 * @param string  $software    software name
-	 * @param int     $uid         uid
-	 * @param boolean $isPluginUid boolean if true, look up the Joomla id in the look up table
-	 * @param string  $jname       needed if $isPluginId = true
-	 * @param string  $username    username
-	 *
-	 * @return string nothing
-	 */
-	public static function getAltAvatar($software, $uid, $isPluginUid = false, $jname = '', $username = '')
-	{
-		try {
-			$db = Factory::getDBO();
-			if ($isPluginUid && !empty($jname)) {
-				$userlookup = Framework::lookupUser($jname, $uid, false, $username);
-				if (!empty($userlookup)) {
-					$uid = $userlookup->id;
-				} else {
-					//no user was found
-					$avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
-					return $avatar;
-				}
-			}
-			switch($software) {
-				case 'gravatar':
-					$query = $db->getQuery(true)
-						->select('email')
-						->from('#__users')
-						->where('id = ' . $uid);
-
-					$db->setQuery($query);
-					$email = $db->loadResult();
-					$avatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' . md5(strtolower($email)) . '&size=40';
-					break;
-				default:
-					$avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
-					break;
-			}
-		} catch (Exception $e) {
-			$avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
-		}
-		return $avatar;
-	}
-
-	/**
 	 * Gets the source_url from the joomla_int plugin
 	 *
 	 * @return string Joomla source URL
@@ -484,7 +311,7 @@ class JFusionFunction
 			$jfusionPluginURL = array();
 		}
 		if (!isset($jfusionPluginURL[$itemid])) {
-			$joomla_url = static::getJoomlaURL();
+			$joomla_url = JFusionFunction::getJoomlaURL();
 			$baseURL = JRoute::_('index.php?option=com_jfusion&Itemid=' . $itemid, false);
 			if (!strpos($baseURL, '?')) {
 				$baseURL = preg_replace('#\.[\w]{3,4}\z#is', '', $baseURL);
@@ -492,7 +319,7 @@ class JFusionFunction
 					$baseURL.= '/';
 				}
 			}
-			$juri = new JURI($joomla_url);
+			$juri = new JUri($joomla_url);
 			$path = $juri->getPath();
 			if ($path != '/') {
 				$baseURL = str_replace($path, '', $baseURL);
@@ -520,30 +347,6 @@ class JFusionFunction
 			$url = $jfusionPluginURL[$itemid];
 		}
 		return $url;
-	}
-
-	/**
-	 * hides sensitive information
-	 *
-	 * @param object $userinfo userinfo
-	 *
-	 * @return string parsed userinfo object
-	 */
-	public static function anonymizeUserinfo($userinfo)
-	{
-		if ( is_object($userinfo) ) {
-			$userclone = clone $userinfo;
-			$userclone->password_clear = '******';
-			if (isset($userclone->password)) {
-				$userclone->password = substr($userclone->password, 0, 6) . '********';
-			}
-			if (isset($userclone->password_salt)) {
-				$userclone->password_salt = substr($userclone->password_salt, 0, 4) . '*****';
-			}
-		} else {
-			$userclone = $userinfo;
-		}
-		return $userclone;
 	}
 
 	/**
@@ -773,7 +576,7 @@ class JFusionFunction
 				break;
 			case 'redirect_itemid':
 				if ($itemid) {
-					$app = Factory::getApplication();
+					$app = JFactory::getApplication();
 					$menus = $app->getMenu('site');
 					$item = $menus->getItem($itemid);
 					if ($item && $item->params->get('visual_integration') == 'frameless') {
@@ -808,7 +611,7 @@ class JFusionFunction
 
 				$keys = array('SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETED', 'DELETE_PAIR', 'REMOVE', 'OK');
 
-				$url = JURI::root() . 'administrator/index.php';
+				$url = JUri::root() . 'administrator/index.php';
 
 
 				$document->addScript('components/com_jfusion/js/jfusion.js');
@@ -816,7 +619,7 @@ class JFusionFunction
 			} else {
 				$keys = array('SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'OK');
 
-				$url = JURI::root() . 'index.php';
+				$url = JUri::root() . 'index.php';
 			}
 
 			static::loadJavascriptLanguage($keys);

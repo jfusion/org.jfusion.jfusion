@@ -259,7 +259,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
                 $JFusionActivePlugin =(empty($conf['jfusion']['jfusion_plugin_name'])) ? 'dokuwiki' : $conf['jfusion']['jfusion_plugin_name'];
                 // do the login
                 $credentials = array('username' => $username, 'password' => $password);
-                $options = array('entry_url' => JURI::root() . 'index.php?option=com_user&task=login', 'silent' => true);
+                $options = array('entry_url' => JUri::root() . 'index.php?option=com_user&task=login', 'silent' => true);
 
                 //detect if the session should be remembered
                 if (!empty($sticky)) {

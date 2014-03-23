@@ -37,12 +37,4 @@ class Auth extends Plugin_Auth
         $md5_key = $this->params->get('md5_key');
         return md5($userinfo->password_clear . $md5_key);
     }
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'efront';
-    }
 }

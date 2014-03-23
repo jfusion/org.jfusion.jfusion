@@ -8,6 +8,11 @@
 */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Plugin\Plugin_Front;
+use Joomla\Uri\Uri;
+use stdClass;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 /**
@@ -15,16 +20,8 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractpublic.php
  * @package JFusion_mediawiki
  */
-class Front extends \JFusion\Plugin\Plugin_Front
+class Front extends Plugin_Front
 {
-    /**
-     * @return string
-     */
-    function getJname()
-	{
-		return 'mediawiki';
-	}
-
     /**
      * @param $data
      */
@@ -33,7 +30,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
 	    $regex_body		= array();
 	    $replace_body	= array();
 
-		$uri = new JUri($data->integratedURL);
+		$uri = new Uri($data->integratedURL);
 		$regex_body[]	= '#addButton\("/(.*?)"#mS';
 		$replace_body[]	= 'addButton("' . $uri->toString(array('scheme', 'host')) . '/$1"';
 
@@ -59,7 +56,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
      */
     function getSearchQuery(&$pluginParam)
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
 			->select('p.page_id , p.page_title AS title, t.old_text as text,

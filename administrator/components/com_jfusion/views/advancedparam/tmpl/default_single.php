@@ -15,7 +15,7 @@
  */
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-$uri = JURI::getInstance();
+$uri = JUri::getInstance();
 $uri->setVar('task', 'advancedparamsubmit');
 ?>
 <div class="jfusion">

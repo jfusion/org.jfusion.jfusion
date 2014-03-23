@@ -17,8 +17,10 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Front;
+use Joomla\Uri\Uri;
+use JRegistry;
 use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -40,14 +42,6 @@ class Front extends Plugin_Front
 	 * @var $helper Helper
 	 */
 	var $helper;
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'dokuwiki';
-    }
 
     /**
      * @return string
@@ -120,6 +114,13 @@ class Front extends Plugin_Front
         require_once $source_path . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
         require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
+
+	    $hook = new Hooks();
+	    /**
+	     * @ignore
+	     * @var $EVENT_HANDLER \Doku_Event_Handler
+	     */
+	    $hook->register($EVENT_HANDLER);
         if (!is_file($index_file)) {
             Framework::raiseWarning('The path to the DokuWiki index file set in the component preferences does not exist', $this->getJname());
         } else {
@@ -160,7 +161,7 @@ class Front extends Plugin_Front
         $replace_body = array();
         $callback_body = array();
 
-	    $uri = new JUri($data->integratedURL);
+	    $uri = new Uri($data->integratedURL);
 	    $path = $uri->getPath();
         
         $regex_body[] = '#(href|action|src)=["\']' . preg_quote($data->integratedURL, '#') . '(.*?)["\']#mS';
@@ -361,9 +362,8 @@ class Front extends Plugin_Front
      * $result->created = (optional) date when the content was created
      */
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid, $ordering) {
-        require_once 'doku_search.php';
         $highlights = array();
-        $search = new DokuWikiSearch($this->getJname());
+        $search = new Search($this->getJname());
         $results = $search->ft_pageSearch($text, $highlights);
         //pass results back to the plugin in case they need to be filtered
 

@@ -17,7 +17,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 
 use \Exception;
@@ -89,15 +89,6 @@ class JFusionUser_elgg extends Plugin_User
 		    $result = null;
 	    }
         return $result;
-    }
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */    
-    function getJname() 
-    {
-        return 'elgg';
     }
 
     /**
@@ -222,7 +213,7 @@ class JFusionUser_elgg extends Plugin_User
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    jimport('joomla.user.helper');
-	    $existinguser->password_salt = JUserHelper::genRandomPassword(8);
+	    $existinguser->password_salt = Framework::genRandomPassword(8);
 	    $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -262,8 +253,7 @@ class JFusionUser_elgg extends Plugin_User
 	                $user->password = $userinfo->password_clear;
 	            } else {
 	                //generate a random one for now
-	                jimport('joomla.user.helper');
-	                $user->password = JUserHelper::genRandomPassword(12);
+	                $user->password = Framework::genRandomPassword(12);
 	            }
 	            /**
 	             * @TODO add usergroup functionality

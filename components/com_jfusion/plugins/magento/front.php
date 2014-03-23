@@ -14,6 +14,12 @@
  */
 
 // no direct access
+use JFusion\Curl\Curl;
+use JFusion\Factory;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_Front;
+use RuntimeException;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -28,17 +34,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Front extends \JFusion\Plugin\Plugin_Front
+class Front extends Plugin_Front
 {
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'magento';
-    }
-
     /**
      * @return string
      */
@@ -97,7 +94,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
                 $codes = explode('=', $lang);
                 $joomla_code = $codes[0];
                 $store_code = $codes[1];
-                if ($joomla_code == \JFusion\Factory::getLanguage()->getTag()) {
+                if ($joomla_code == Factory::getLanguage()->getTag()) {
                     $cookies_to_set[0] = array('store=' . $store_code);
                     break;
                 }
@@ -107,7 +104,7 @@ class Front extends \JFusion\Plugin\Plugin_Front
             $curl_options['expires'] = $this->params->get('cookie_expires');
             $curl_options['secure'] = $this->params->get('secure');
             $curl_options['httponly'] = $this->params->get('httponly');
-            $status = JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
+            $status = Curl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
         }
         return $status;
     }

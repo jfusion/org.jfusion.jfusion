@@ -15,6 +15,19 @@
  */
 
 // no direct access
+use Exception;
+use JArchive;
+use JFile;
+use JFolder;
+use JFusion\Archive\Tar;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+use RuntimeException;
+use SimpleXMLElement;
+use stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -30,17 +43,8 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class Admin extends \JFusion\Plugin\Plugin_Admin
+class Admin extends Plugin_Admin
 {
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'moodle';
-    }
-
     /**
      * @return string
      */
@@ -60,7 +64,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
         $params = array();
         $lines = $this->readFile($myfile);
         if ($lines === false) {
-            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
             return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -121,7 +125,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
     {
         try {
             //getting the connection to the db
-            $db = \JFusion\Factory::getDatabase($this->getJname());
+            $db = Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('username, email')
@@ -133,7 +137,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
             $userlist = $db->loadObjectList();
             return $userlist;
         } catch (Exception $e) {
-            \JFusion\Framework::raiseError($e, $this->getJname());
+            Framework::raiseError($e, $this->getJname());
             return array();
         }
     }
@@ -145,7 +149,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
     {
         try {
             //getting the connection to the db
-            $db = \JFusion\Factory::getDatabase($this->getJname());
+            $db = Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('count(*)')
@@ -155,7 +159,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
             //getting the results
             $no_users = $db->loadResult();
         } catch (Exception $e) {
-            \JFusion\Framework::raiseError($e, $this->getJname());
+            Framework::raiseError($e, $this->getJname());
             $no_users = 0;
         }
         return $no_users;
@@ -167,7 +171,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
     function getUsergroupList()
     {
 	    //get the connection to the db
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('id, shortname as name')
@@ -185,7 +189,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
     {
         $result = false;
         try {
-            $db = \JFusion\Factory::getDatabase($this->getJname());
+            $db = Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('value')
@@ -199,7 +203,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
                 $result = true;
             }
         } catch (Exception $e) {
-            \JFusion\Framework::raiseError($e, $this->getJname());
+            Framework::raiseError($e, $this->getJname());
         }
         return $result;
     }
@@ -228,7 +232,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
         $jname = $this->getJname();
         try {
             try {
-                \JFusion\Factory::getDatabase($jname);
+                Factory::getDatabase($jname);
             } catch (Exception $e) {
                 throw new RuntimeException(Text::_('MOODLE_CONFIG_FIRST'));
             }
@@ -276,15 +280,10 @@ HTML;
         $status = array('error' => array(), 'debug' => array());
         $jname = $this->getJname();
         try {
-            $db = \JFusion\Factory::getDatabase($jname);
+            $db = Factory::getDatabase($jname);
             $source_path = $this->params->get('source_path');
             jimport('joomla.filesystem.archive');
             jimport('joomla.filesystem.file');
-
-            $pear_path = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'pear';
-            require_once $pear_path . DIRECTORY_SEPARATOR . 'PEAR.php';
-            $pear_archive_path = $pear_path . DIRECTORY_SEPARATOR . 'archive_tar' . DIRECTORY_SEPARATOR . 'Archive_Tar.php';
-            require_once $pear_archive_path;
 
             $archive_filename = 'moodle_module_jfusion.tar.gz';
             $old_chdir = getcwd();
@@ -293,7 +292,7 @@ HTML;
 
             // Create an archive to facilitate the installation into the Moodle installation while extracting
             chdir($src_code);
-            $tar = new Archive_Tar($archive_filename, 'gz');
+            $tar = new Tar($archive_filename, 'gz');
             $tar->setErrorHandling(PEAR_ERROR_PRINT);
             $tar->createModify('auth lang', '', '');
             chdir($old_chdir);
@@ -302,7 +301,7 @@ HTML;
             JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
 
             if ($ret) {
-                $joomla_baseurl = \JFusion\Factory::getParams('joomla_int')->get('source_url');
+                $joomla_baseurl = Factory::getParams('joomla_int')->get('source_url');
                 $joomla_source_path = JPATH_ROOT . DIRECTORY_SEPARATOR;
 
                 // now set all relevant parameters in Moodles database
@@ -351,11 +350,11 @@ HTML;
             jimport('joomla.filesystem.folder');
 
             $jname = $this->getJname();
-            $db = \JFusion\Factory::getDatabase($jname);
+            $db = Factory::getDatabase($jname);
             $source_path = $this->params->get('source_path');
             $xmlfile = realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
-            $listfiles = \JFusion\Framework::getXml($xmlfile);
+            $listfiles = Framework::getXml($xmlfile);
             $files = $listfiles->file;
 
             /**
@@ -486,7 +485,7 @@ HTML;
         $html = Text::_('MOODLE_CONFIG_FIRST');
         try {
             $jname = $this->getJname();
-            $db = \JFusion\Factory::getDatabase($jname);
+            $db = Factory::getDatabase($jname);
 
             $source_path = $this->params->get('source_path');
             $jfusion_auth = $source_path . 'auth' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'auth.php';
@@ -538,7 +537,7 @@ HTML;
 HTML;
             }
         } catch (Exception $e) {
-            \JFusion\Framework::raiseError($e, $this->getJname());
+            Framework::raiseError($e, $this->getJname());
         }
         return $html;
     }
@@ -550,9 +549,9 @@ HTML;
     {
         try {
             $jname = $this->getJname();
-            $db = \JFusion\Factory::getDatabase($jname);
+            $db = Factory::getDatabase($jname);
 
-            $activation = ((\JFusion\Factory::getApplication()->input->get('activation', 1)) ? 'true' : 'false');
+            $activation = ((Factory::getApplication()->input->get('activation', 1)) ? 'true' : 'false');
             if ($activation == 'true') {
                 $query = $db->getQuery(true)
                     ->update('#__config_plugins')

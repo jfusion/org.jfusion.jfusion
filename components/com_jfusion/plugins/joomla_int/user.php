@@ -13,13 +13,18 @@
  * @link       http://www.jfusion.org
  */
 // no direct access
+use JEventDispatcher;
+use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 
 
 use \Exception;
+use JRegistry;
+use JTable;
+use JUser;
 use \RuntimeException;
 use \stdClass;
 
@@ -41,16 +46,6 @@ jimport('joomla.user.helper');
  */
 class User extends Plugin_User
 {
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'joomla_int';
-    }
-
 	/**
 	 * gets the userinfo from the JFusion integrated software. Definition of object:
 	 *
@@ -150,7 +145,7 @@ class User extends Plugin_User
 				}
 
 				// Get the language of the user and store it as variable in the user object
-				$user_params = new \JRegistry($result->params);
+				$user_params = new JRegistry($result->params);
 
 				$result->language = $user_params->get('language', Factory::getLanguage()->getTag());
 
@@ -292,7 +287,7 @@ class User extends Plugin_User
 				$this->debugger->add('debug', Text::_('USERNAME') . ': ' . $userinfo->username . ' ' . Text::_('FILTERED_USERNAME') . ': ' . $username_clean);
 
 				//create a Joomla password hash if password_clear is available
-				$userinfo->password_salt = \JUserHelper::genRandomPassword(32);
+				$userinfo->password_salt = Framework::genRandomPassword(32);
 				if (!empty($userinfo->password_clear)) {
 					/**
 					 * @ignore
@@ -306,7 +301,7 @@ class User extends Plugin_User
 					$password = $userinfo->password;
 				}
 
-				$instance = new \JUser();
+				$instance = new JUser();
 				$instance->set('name', $userinfo->name);
 				$instance->set('username', $username_clean);
 				$instance->set('password', $password);
@@ -381,7 +376,7 @@ class User extends Plugin_User
      */
     function deleteUser($userinfo) {
         //get the database ready
-        $db = \JFactory::getDBO();
+        $db = JFactory::getDBO();
         //setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
         $username = $userinfo->username;
@@ -397,7 +392,7 @@ class User extends Plugin_User
         $userid = $db->loadResult();
         if ($userid) {
             //this user was created by JFusion and we need to delete them from the joomla user and jfusion lookup table
-            $user = \JUser::getInstance($userid);
+            $user = JUser::getInstance($userid);
             $user->delete();
 
 	        $query = $db->getQuery(true)
@@ -433,7 +428,7 @@ class User extends Plugin_User
 	            $db->setQuery($query);
                 $db->execute();
                 //delete it from the Joomla usertable
-                $user = \JUser::getInstance($userid);
+                $user = JUser::getInstance($userid);
                 $user->delete();
                 $status['debug'][] = Text::_('USER_DELETION') . ' ' . $username;
             } else {
@@ -456,7 +451,7 @@ class User extends Plugin_User
             $status['error'][] = Text::_('FUSION_BLOCKED_USER');
         } else {
 	        jimport('joomla.user.helper');
-	        $instance = \JUser::getInstance();
+	        $instance = JUser::getInstance();
 
 	        // If _getUser returned an error, then pass it back.
 	        if (!$instance->load($userinfo->userid)) {
@@ -484,12 +479,12 @@ class User extends Plugin_User
 				        $instance->set('guest', 0);
 
 				        // Register the needed session variables
-				        $session = \JFactory::getSession();
+				        $session = JFactory::getSession();
 				        $session->set('user', $instance);
 
 				        // Update the user related fields for the Joomla sessions table.
 				        try {
-					        $db = \JFactory::getDBO();
+					        $db = JFactory::getDBO();
 
 					        $query = $db->getQuery(true)
 						        ->update('#__session')
@@ -537,15 +532,15 @@ class User extends Plugin_User
 		}
 
 	    if ($userinfo->id) {
-		    $my = \JFactory::getUser();
+		    $my = JFactory::getUser();
 		    if ($my->id == $userinfo->id) {
 			    // Hit the user last visit field
 			    $my->setLastVisit();
 			    // Destroy the php session for this user
-			    \JFactory::getSession()->destroy();
+			    JFactory::getSession()->destroy();
 		    }
 		    //destroy the Joomla session but do so directly based on what $options is
-		    $table = \JTable::getInstance('session');
+		    $table = JTable::getInstance('session');
 		    $table->destroy($userinfo->id, $options['clientid']);
 	    }
         return array();
@@ -569,13 +564,13 @@ class User extends Plugin_User
 			throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		} else {
 			$db = Factory::getDatabase($this->getJname());
-			$dispatcher = \JEventDispatcher::getInstance();
+			$dispatcher = JEventDispatcher::getInstance();
 
 			jimport('joomla.user.helper');
 
 			if ($fire_user_plugins) {
 				// Get the old user
-				$old = new \JUser($existinguser->userid);
+				$old = new JUser($existinguser->userid);
 				//Fire the onBeforeStoreUser event.
 				\JPluginHelper::importPlugin('user');
 				$dispatcher->trigger('onBeforeStoreUser', array($old->getProperties(), false));
@@ -599,7 +594,7 @@ class User extends Plugin_User
 			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups));
 			if ($fire_user_plugins) {
 				//Fire the onAfterStoreUser event
-				$updated = new \JUser($existinguser->userid);
+				$updated = new JUser($existinguser->userid);
 				$dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
 			}
 		}
@@ -837,7 +832,7 @@ class User extends Plugin_User
 	public function updateUserLanguage($userinfo, &$existinguser, &$status)
 	{
 		$db = Factory::getDatabase($this->getJname());
-		$params = new \JRegistry($existinguser->params);
+		$params = new JRegistry($existinguser->params);
 		$params->set('language', $userinfo->language);
 
 		$query = $db->getQuery(true)

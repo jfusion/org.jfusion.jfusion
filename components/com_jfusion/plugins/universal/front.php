@@ -8,6 +8,8 @@
 */
 
 // no direct access
+use JFusion\Plugin\Plugin_Front;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 /**
@@ -15,16 +17,8 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractpublic.php
  * @package JFusion_universal
  */
-class Front extends \JFusion\Plugin\Plugin_Front
+class Front extends Plugin_Front
 {
-    /**
-     * @return string
-     */
-    function getJname()
-	{
-		return 'universal';
-	}
-
     /**
      * @return string
      */

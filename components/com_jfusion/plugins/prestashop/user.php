@@ -17,6 +17,16 @@
 
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use RuntimeException;
+use stdClass;
+use Tools;
+use Validate;
+
 defined('_JEXEC') or die('Restricted access');
 
 
@@ -32,7 +42,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class User extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
 	/**
 	 * @var $helper Helper
@@ -52,7 +62,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			    $identifier = $userinfo->email;
 		    }
 		    // Get user info from database
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('id_customer as userid, email, email as username, passwd as password, firstname, lastname, active')
@@ -83,25 +93,15 @@ class User extends \JFusion\Plugin\Plugin_User
 				   $result->activation = '';
 			   } else {
 				   jimport('joomla.user.helper');
-				   $result->activation = \JFusion\Framework::getHash(JUserHelper::genRandomPassword());
+				   $result->activation = Framework::getHash(Framework::genRandomPassword());
 			   }
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         // read through params for cookie key (the salt used)
         return $result;
-    }
-
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */    
-    function getJname() 
-    {
-        return 'prestashop';
     }
 
     /**
@@ -119,7 +119,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		    if (is_object($userinfo)) {
 			    $identifier = $userinfo->id_customer;
 		    }
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->update('#__customer')
@@ -143,7 +143,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	 */
 	function destroySession($userinfo, $options) {
 		$status = array('error' => array(), 'debug' => array());
-		$params = \JFusion\Factory::getParams($this->getJname());
+		$params = Factory::getParams($this->getJname());
 
 		$status = $this->curlLogout($userinfo, $options, $params->get('logout_type'));
 		return $status;
@@ -159,7 +159,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
 			$status['error'][] = Text::_('FUSION_BLOCKED_USER');
 		} else {
-			$params = \JFusion\Factory::getParams($this->getJname());
+			$params = Factory::getParams($this->getJname());
 			$status = $this->curlLogin($userinfo, $options, $params->get('brute_force'));
 		}
 		return $status;
@@ -177,7 +177,7 @@ class User extends \JFusion\Plugin\Plugin_User
 
 	    $existinguser->password = Tools::encrypt($userinfo->password_clear);
 
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__customer')
@@ -198,7 +198,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function createUser($userinfo, &$status) {
 	    try {
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
@@ -308,7 +308,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    //we need to update the email
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__customer')
@@ -330,7 +330,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function activateUser($userinfo, &$existinguser, &$status) {
 	    /* change the 'active' field of the customer in the ps_customer table to 1 */
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__customer')
@@ -352,7 +352,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
 	    /* change the 'active' field of the customer in the ps_customer table to 0 */
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__customer')
@@ -378,7 +378,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		} else {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 			// now delete the user
 			$query = $db->getQuery(true)
 				->delete('#__customer_group')

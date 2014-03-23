@@ -41,15 +41,6 @@ class Helper extends Plugin
     var $bbcode_bitfield = '';
 
     /**
-     * Returns the name for this plugin
-     *
-     * @return string
-     */
-    function getJname() {
-        return 'phpbb3';
-    }
-
-    /**
      * This function is to emulate phpbb set_var used needed to proper encode "clean" password, and other variables.
      *
      * @param $var

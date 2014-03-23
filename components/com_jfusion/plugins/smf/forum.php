@@ -14,6 +14,16 @@
  * @link       http://www.jfusion.org
  */
 // no direct access
+use Exception;
+use JFactory;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_Forum;
+use JRegistry;
+use RuntimeException;
+use stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 /**
  * JFusion Forum Class for SMF 1.1.x
@@ -27,19 +37,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Forum extends \JFusion\Plugin\Plugin_Forum
+class Forum extends Plugin_Forum
 {
-
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'smf';
-    }
-
     /**
      * Get profile url
      *
@@ -124,7 +123,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
         $numargs = func_num_args();
         if ($numargs > 3) {
 	        try {
-		        $db = \JFusion\Factory::getDatabase($this->getJname());
+		        $db = Factory::getDatabase($this->getJname());
 		        $filters = func_get_args();
 		        for ($i = 3; $i < $numargs; $i++) {
 			        if ($filters[$i][0] == 'userid') {
@@ -132,7 +131,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 			        }
 		        }
 	        } catch (Exception $e) {
-				\JFusion\Framework::raiseError($e, $this->getJname());
+				Framework::raiseError($e, $this->getJname());
 	        }
         }
 
@@ -212,7 +211,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
     function filterActivityResults(&$results, $limit=0)
     {
 	    try {
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('value')
@@ -243,7 +242,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 			    }
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 	    }
     }
 
@@ -261,8 +260,8 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 			    static $markread;
 			    if (!is_array($markread)) {
 				    $markread = array();
-				    $db = \JFusion\Factory::getDatabase($this->getJname());
-				    $userlookup = \JFusion\Framework::lookupUser($this->getJname(), $JUser->id);
+				    $db = Factory::getDatabase($this->getJname());
+				    $userlookup = Framework::lookupUser($this->getJname(), $JUser->id);
 				    if (!empty($userlookup)) {
 					    $query = $db->getQuery(true)
 						    ->select('ID_MSG, ID_TOPIC')
@@ -302,7 +301,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 			    $newstatus = ($latest_read_msgid !== false && $post->postid > $latest_read_msgid) ? 1 : 0;
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 	    }
         return $newstatus;
     }
@@ -316,7 +315,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
     {
 	    try {
 		    // initialise some objects
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('ID_BOARD as id, name')
@@ -326,7 +325,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 		    //getting the results
 		    return $db->loadObjectList('id');
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 			return array();
 	    }
     }
@@ -343,7 +342,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
         if ($userid) {
 	        try {
 		        // initialise some objects
-		        $db = \JFusion\Factory::getDatabase($this->getJname());
+		        $db = Factory::getDatabase($this->getJname());
 		        // read unread count
 
 		        $query = $db->getQuery(true)
@@ -364,7 +363,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 		        $totalCount = $db->loadResult();
 		        return array('unread' => $unreadCount, 'total' => $totalCount);
 	        } catch (Exception $e) {
-				\JFusion\Framework::raiseError($e, $this->getJname());
+				Framework::raiseError($e, $this->getJname());
 	        }
         }
         return array('unread' => 0, 'total' => 0);
@@ -383,7 +382,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 	    try {
 		    if ($puser_id) {
 			    // Get SMF Params and get an instance of the database
-			    $db = \JFusion\Factory::getDatabase($this->getJname());
+			    $db = Factory::getDatabase($this->getJname());
 			    // Load member params from database "mainly to get the avatar"
 
 			    $query = $db->getQuery(true)
@@ -433,7 +432,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 			    }
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $url = false;
 	    }
         return $url;
@@ -454,7 +453,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 	    try {
 		    //setup some variables
 		    $userid = $this->getThreadAuthor($dbparams, $contentitem);
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    $subject = trim(strip_tags($contentitem->title));
 
 		    //prepare the content body
@@ -470,7 +469,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 		    $db->setQuery($query);
 		    $smfUser = $db->loadObject();
 		    if ($dbparams->get('use_content_created_date', false)) {
-			    $timezone = \JFusion\Factory::getConfig()->get('offset');
+			    $timezone = Factory::getConfig()->get('offset');
 			    $timestamp = strtotime($contentitem->created);
 			    //undo Joomla timezone offset
 			    $timestamp += ($timezone * 3600);
@@ -586,7 +585,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 	    try {
 		    $postid = $existingthread->postid;
 		    //setup some variables
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    $subject = trim(strip_tags($contentitem->title));
 
 		    //prepare the content body
@@ -626,7 +625,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
     function createQuickReply(&$dbparams, $showGuestInputs)
     {
         $html = '';
-	    $mainframe = \JFusion\Factory::getApplication();
+	    $mainframe = Factory::getApplication();
         if ($showGuestInputs) {
             $username = $mainframe->input->post->get('guest_username', '');
             $email = $mainframe->input->post->get('guest_email', '');
@@ -676,7 +675,7 @@ HTML;
     {
         $status = array('error' => array(), 'debug' => array());
 	    try {
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    if ($userinfo->guest) {
 			    $userinfo->username = $postinfo->username;
 			    $userinfo->email = $postinfo->email;
@@ -703,7 +702,7 @@ HTML;
 		    }
 		    //setup some variables
 		    $userid = $userinfo->userid;
-		    $public = \JFusion\Factory::getFront($this->getJname());
+		    $public = Factory::getFront($this->getJname());
 		    //strip out html from post
 		    $text = strip_tags($postinfo->text);
 
@@ -816,13 +815,13 @@ HTML;
 		    $query.= ' UNION ';
 		    $query.= '(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, a.posterName as realName, a.ID_MEMBER, 1 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a ' . $where . ' AND a.ID_MEMBER = 0)';
 		    $query.= ' ORDER BY order_by_date ' . $sort;
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $db->setQuery($query, $start, $limit);
 
 		    $posts = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $posts = array();
 	    }
         return $posts;
@@ -838,7 +837,7 @@ HTML;
     function getReplyCount($existingthread)
     {
 	    try {
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('numReplies')
@@ -848,7 +847,7 @@ HTML;
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -894,7 +893,7 @@ HTML;
     function getThread($threadid)
     {
 	    try {
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('ID_TOPIC AS threadid, ID_BOARD AS forumid, ID_FIRST_MSG AS postid')
@@ -904,7 +903,7 @@ HTML;
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $results = null;
 	    }
         return $results;
@@ -916,7 +915,7 @@ HTML;
      */
     function getThreadLockedStatus($threadid) {
 	    try {
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('locked')
@@ -926,7 +925,7 @@ HTML;
 		    $db->setQuery($query);
 		    $locked = $db->loadResult();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $locked = true;
 	    }
         return $locked;

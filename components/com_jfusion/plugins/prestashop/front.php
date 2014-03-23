@@ -17,6 +17,8 @@
 
 
 // no direct access
+use JFusion\Plugin\Plugin_Front;
+
 defined('_JEXEC') or die('Restricted access');
 
 
@@ -34,21 +36,12 @@ defined('_JEXEC') or die('Restricted access');
  */
 
 
-class Front extends \JFusion\Plugin\Plugin_Front
+class Front extends Plugin_Front
 {
 	/**
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */    
-    function getJname() 
-    {
-        return 'prestashop';
-    }
 
     /**
      * @return string

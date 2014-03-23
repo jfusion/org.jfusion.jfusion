@@ -65,7 +65,7 @@ class jfusionViewusergroups extends JViewLegacy {
 	        $document->addScript('components/com_jfusion/js/File.Upload.js');
 	        $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
-	        \JFusion\Framework::loadJavascriptLanguage(array('SELECT_ONE'));
+	        JFusionFunction::loadJavascriptLanguage(array('SELECT_ONE'));
 
 	        $groups = array();
 

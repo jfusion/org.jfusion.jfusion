@@ -8,6 +8,13 @@
  */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use RuntimeException;
+use stdClass;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'map.php');
@@ -17,7 +24,7 @@ require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'map.php');
  * For detailed descriptions on these functions please check the model.abstractuser.php
  * @package JFusion_universal
  */
-class User extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
 	/**
 	 * @var $helper Helper
@@ -40,7 +47,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			//get the identifier
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, $username->field, $email->field);
 
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$field = $this->helper->getQuery(array('USERID', 'USERNAME', 'EMAIL', 'REALNAME', 'PASSWORD', 'SALT', 'GROUP', 'ACTIVE', 'INACTIVE', 'ACTIVECODE', 'FIRSTNAME', 'LASTNAME'));
 
@@ -99,14 +106,6 @@ class User extends \JFusion\Plugin\Plugin_User
 	}
 
 	/**
-	 * @return string
-	 */
-	function getJname()
-	{
-		return 'universal';
-	}
-
-	/**
 	 * @param object $userinfo
 	 *
 	 * @return array
@@ -120,7 +119,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			if (!$userid) {
 				$status['error'][] = Text::_('USER_DELETION_ERROR') . ': ' . Text::_('UNIVERSAL_NO_USERID_SET');
 			} else {
-				$db = \JFusion\Factory::getDatabase($this->getJname());
+				$db = Factory::getDatabase($this->getJname());
 
 				$query = $db->getQuery(true)
 					->delete('#__' . $this->helper->getTable())
@@ -208,7 +207,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	 */
 	function updatePassword($userinfo, &$existinguser, &$status)
 	{
-		$db = \JFusion\Factory::getDatabase($this->getJname());
+		$db = Factory::getDatabase($this->getJname());
 		$maped = $this->helper->getMap();
 
 		$userid = $this->helper->getFieldType('USERID');
@@ -275,7 +274,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		} else if (!$email) {
 			$status['error'][] = Text::_('EMAIL_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_EMAIL_SET');
 		} else {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->update('#__' . $this->helper->getTable())
@@ -304,7 +303,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		} else {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$userid = $this->helper->getFieldType('USERID');
 			$group = $this->helper->getFieldType('GROUP');
@@ -419,7 +418,7 @@ class User extends \JFusion\Plugin\Plugin_User
 				}
 			}
 			if ($userStatus != null) {
-				$db = \JFusion\Factory::getDatabase($this->getJname());
+				$db = Factory::getDatabase($this->getJname());
 
 				$query = $db->getQuery(true)
 					->update('#__' . $this->helper->getTable())
@@ -456,7 +455,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			if ( isset($inactive) ) $userStatus = $inactive->value['off'];
 			if ( isset($active) ) $userStatus = $active->value['on'];
 
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->update('#__' . $this->helper->getTable())
@@ -486,7 +485,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		} else if (!$activecode) {
 			$status['debug'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_ACTIVECODE_SET');
 		} else {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->update('#__' . $this->helper->getTable())
@@ -517,7 +516,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		} else if (!$activecode) {
 			$status['debug'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_ACTIVECODE_SET');
 		} else {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->update('#__' . $this->helper->getTable())
@@ -559,7 +558,7 @@ class User extends \JFusion\Plugin\Plugin_User
 						} else {
 							$user = new stdClass;
 							$maped = $this->helper->getMap();
-							$db = \JFusion\Factory::getDatabase($this->getJname());
+							$db = Factory::getDatabase($this->getJname());
 							foreach ($maped as $value) {
 								$field = $value->field;
 								foreach ($value->type as $type) {

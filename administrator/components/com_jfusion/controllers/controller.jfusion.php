@@ -524,52 +524,17 @@ class JFusionController extends JControllerLegacy
 	        $jname = JFactory::getApplication()->input->get('jname');
 	        $new_jname = JFactory::getApplication()->input->get('new_jname');
 
+		    $error = true;
+
 	        //replace not-allowed characters with _
 	        $new_jname = preg_replace('/([^a-zA-Z0-9_])/', '_', $new_jname);
 
-		    $error = true;
 	        //initialise response element
 	        $result = array();
 
-		    //check to see if an integration was selected
-		    $db = JFactory::getDBO();
-
-		    $query = $db->getQuery(true)
-			    ->select('count(*)')
-			    ->from('#__jfusion')
-			    ->where('original_name IS NULL')
-		        ->where('name LIKE ' . $db->quote($jname));
-
-		    $db->setQuery($query);
-		    $record = $db->loadResult();
-
-		    $query = $db->getQuery(true)
-			    ->select('id')
-			    ->from('#__jfusion')
-			    ->where('name = ' . $db->quote($new_jname));
-
-		    $db->setQuery($query);
-		    $exsist = $db->loadResult();
-		    if ($exsist) {
-			    throw new RuntimeException($new_jname . ' ' . JText::_('ALREADY_IN_USE'));
-		    } else if ($jname && $new_jname && $record) {
-			    $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
-			    if ($JFusionPlugin->multiInstance()) {
-				    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
-				    $model = new JFusionModelInstaller();
-				    $result = $model->copy($jname, $new_jname);
-
-				    if ($result['status']) {
-					    $error = false;
-					    $result['new_jname'] =  $new_jname;
-				    }
-				    unset($result['status']);
-			    } else {
-				    throw new RuntimeException(JText::_('CANT_COPY'));
-			    }
-		    } else {
-				throw new RuntimeException(JText::_('NONE_SELECTED'));
-		    }
+		    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
+		    $model = new JFusionModelInstaller();
+		    $result = $model->copy($jname, $new_jname);
 
 		    /**
 		     * @ignore

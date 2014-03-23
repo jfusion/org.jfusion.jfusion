@@ -17,7 +17,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
 use \Exception;
@@ -39,15 +39,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class Admin extends Plugin_Admin
 {
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'elgg';
-    }
-
     /**
      * @return string
      */

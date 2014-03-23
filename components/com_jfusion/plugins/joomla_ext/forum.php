@@ -15,9 +15,9 @@
 
 // no direct access
 use JFusion\Factory;
-use JFusion\Framework;
 use JFusion\Plugin\Plugin_Forum;
 
+use JFusionFunction;
 use \JRoute;
 use \Exception;
 
@@ -41,16 +41,6 @@ class JFusionForum_joomla_ext extends Plugin_Forum
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-	/**
-	 * returns the name of this JFusion plugin
-	 *
-	 * @return string name of current JFusion plugin
-	 */
-	function getJname()
-	{
-		return 'joomla_ext';
-	}
 
 	/**
 	 * Returns the URL to a userprofile of the integrated software
@@ -155,7 +145,7 @@ class JFusionForum_joomla_ext extends Plugin_Forum
 				}
 			}
 		} catch (Exception $e) {
-			$avatar = Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+			$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 		}
 		return $avatar;
 	}

@@ -5,19 +5,25 @@
 
 //---------------------------------------------------------------
 /**
-* UTF-8 aware alternative to str_ireplace
-* Case-insensitive version of str_replace
-* Note: requires utf8_strtolower
-* Note: it's not fast and gets slower if $search / $replace is array
-* Notes: it's based on the assumption that the lower and uppercase
-* versions of a UTF-8 character will have the same length in bytes
-* which is currently true given the hash table to strtolower
-* @param string
-* @return string
-* @see http://www.php.net/str_ireplace
-* @see utf8_strtolower
-* @package utf8
-*/
+ * UTF-8 aware alternative to str_ireplace
+ * Case-insensitive version of str_replace
+ * Note: requires utf8_strtolower
+ * Note: it's not fast and gets slower if $search / $replace is array
+ * Notes: it's based on the assumption that the lower and uppercase
+ * versions of a UTF-8 character will have the same length in bytes
+ * which is currently true given the hash table to strtolower
+ *
+ * @param      $search
+ * @param      $replace
+ * @param      $str
+ * @param null $count
+ *
+ * @internal param $string
+ * @return string
+ * @see      http://www.php.net/str_ireplace
+ * @see      utf8_strtolower
+ * @package  utf8
+ */
 function utf8_ireplace($search, $replace, $str, $count = NULL){
 
     if ( !is_array($search) ) {

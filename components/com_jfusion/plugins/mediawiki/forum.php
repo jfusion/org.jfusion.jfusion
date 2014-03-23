@@ -1,6 +1,16 @@
 <?php namespace JFusion\Plugins\mediawiki;
 
 // no direct access
+use DateTimeZone;
+use Exception;
+use JDate;
+use JFusion\Factory;
+use JFusion\Framework;
+use JFusion\Plugin\Plugin_Forum;
+use Joomla\String\String;
+use JFusionFunction;
+use JRegistry;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -13,18 +23,8 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org/
 **/
 
-class Forum extends \JFusion\Plugin\Plugin_Forum
+class Forum extends Plugin_Forum
 {
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'mediawiki';
-    }
-
     /**
      * @param $config
      * @param $view
@@ -35,7 +35,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
     function renderActivityModule($config, $view, $pluginParam) {
 	    $output = '';
 	    try {
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
 
 		    // configuration
@@ -86,16 +86,16 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 					    if ($avatar) {
 						    // retrieve avatar
 						    if(!empty($avatar_software) && $avatar_software != 'jfusion' && !empty($userlookup)) {
-							    $o_avatar = \JFusion\Framework::getAltAvatar($avatar_software, $userlookup->id);
+							    $o_avatar = Framework::getAltAvatar($avatar_software, $userlookup);
 						    }
 						    if(empty($o_avatar)) {
-							    $o_avatar = \JFusion\Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+							    $o_avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 						    }
 						    $maxheight = $avatar_height;
 						    $maxwidth = $avatar_width;
 
 
-						    $size = ($avatar_keep_proportional) ? \JFusion\Framework::getImageSize($o_avatar) : false;
+						    $size = ($avatar_keep_proportional) ? Framework::getImageSize($o_avatar) : false;
 						    //size the avatar to fit inside the dimensions if larger
 						    if($size!==false && ($size->width > $maxwidth || $size->height > $maxheight)) {
 							    $wscale = $maxwidth/$size->width;
@@ -124,10 +124,10 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 					    } else {
 						    $output .= '<li>';
 					    }
-					    $url = \JFusion\Framework::routeURL('index.php?title=' . $value->title, $itemid, $this->getJname());
-					    if (JString::strlen($value->title) > $display_limit_subject) {
+					    $url = Framework::routeURL('index.php?title=' . $value->title, $itemid, $this->getJname());
+					    if (String::strlen($value->title) > $display_limit_subject) {
 						    //we need to shorten the subject
-						    $value->pagename = JString::substr($value->title, 0, $display_limit_subject) . '...';
+						    $value->pagename = String::substr($value->title, 0, $display_limit_subject) . '...';
 					    }
 					    $output .= '<a href="' . $url . '" target="' . $new_window . '">' . $value->title . '</a> - ';
 					    if ($showuser) {
@@ -137,7 +137,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 					    if($showdate) {
 						    jimport('joomla.utilities.date');
 						    $JDate =  new JDate($value->created);
-						    $JDate->setTimezone(new DateTimeZone(\JFusion\Framework::getJoomlaTimezone()));
+						    $JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
 						    if (empty($custom_date)) {
 							    $output .= ' ' . $JDate->format(_DATE_FORMAT_LC2, true);
 						    } else {
@@ -153,7 +153,7 @@ class Forum extends \JFusion\Plugin\Plugin_Forum
 			    $output .= '</ul>';
 		    }
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 	    }
         return $output;
 	}

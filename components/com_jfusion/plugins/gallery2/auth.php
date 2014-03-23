@@ -14,6 +14,7 @@
  */
 
 // no direct access
+use GalleryUtilities;
 use JFusion\Plugin\Plugin_Auth;
 
 defined('_JEXEC') or die('Restricted access');
@@ -32,14 +33,6 @@ class Auth extends Plugin_Auth
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-    /**
-     * @return string
-     */
-    function getJname()
-    {
-        return 'gallery2';
-    }
 
     /**
      * @param array|object $userinfo

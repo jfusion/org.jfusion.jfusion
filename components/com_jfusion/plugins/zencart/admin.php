@@ -15,6 +15,14 @@
  */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Database\DatabaseFactory;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+use stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -26,17 +34,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Admin extends \JFusion\Plugin\Plugin_Admin
+class Admin extends Plugin_Admin
 {
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'zencart';
-    }
-
     /**
      * @return string
      */
@@ -60,7 +59,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
         $params['source_path'] = $softwarePath;
 
         if (!file_exists($myfile)) {
-            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
             return false;
         } else {
             include_once($myfile);
@@ -90,7 +89,9 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
             $options = array('driver' => $driver, 'host' => $params['database_host'], 'user' => $params['database_user'],
                 'password' => $params['database_password'], 'database' => $params['database_name'],
                 'prefix' => $params['database_prefix']);
-            $db = JDatabaseDriver::getInstance($options);
+
+	        $db = DatabaseFactory::getInstance($options)->getDriver($driver, $options);
+
             //Get Default Country
             $query = $db->getQuery(true)
                 ->select('configuration_value')
@@ -114,7 +115,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
     {
         try {
             //getting the connection to the db
-            $db = \JFusion\Factory::getDatabase($this->getJname());
+            $db = Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('customers_email_address as username, customers_email_address as email')
@@ -124,7 +125,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
             //getting the results
             $userlist = $db->loadObjectList();
         } catch (Exception $e) {
-            \JFusion\Framework::raiseError($e, $this->getJname());
+            Framework::raiseError($e, $this->getJname());
             $userlist = array();
         }
         return $userlist;
@@ -137,7 +138,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
     {
         try {
             //getting the connection to the db
-            $db = \JFusion\Factory::getDatabase($this->getJname());
+            $db = Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('count(*)')
@@ -147,7 +148,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
             //getting the results
             $no_users = $db->loadResult();
         } catch (Exception $e) {
-            \JFusion\Framework::raiseError($e, $this->getJname());
+            Framework::raiseError($e, $this->getJname());
             $no_users = 0;
         }
         return $no_users;
@@ -158,7 +159,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
      */
     function getUsergroupList()
     {
-	    $db = \JFusion\Factory::getDataBase($this->getJname());
+	    $db = Factory::getDataBase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('group_id as id, group_name as name')

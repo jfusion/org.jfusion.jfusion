@@ -16,7 +16,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 
 use \RuntimeException;
@@ -46,14 +46,6 @@ class User extends Plugin_User
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */    
-    function getJname() {
-        return 'joomla_ext';
-    }
 
 	/**
 	 * gets the userinfo from the JFusion integrated software. Definition of object:

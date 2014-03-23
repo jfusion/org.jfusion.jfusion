@@ -15,7 +15,7 @@
 
 // no direct access
 use JFusion\Factory;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Front;
 
 use \RuntimeException;
@@ -36,15 +36,6 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Front extends Plugin_Front
 {
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'joomla_int';
-    }
-
 	/**
 	 * Returns the registration URL for the integrated software
 	 *

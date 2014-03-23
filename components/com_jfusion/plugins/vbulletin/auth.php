@@ -13,6 +13,8 @@
  * @link       http://www.jfusion.org
  */
 // no direct access
+use JFusion\Plugin\Plugin_Auth;
+
 defined('_JEXEC') or die('Restricted access');
 /**
  * JFusion Authentication Class for vBulletin
@@ -26,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Auth extends \JFusion\Plugin\Plugin_Auth
+class Auth extends Plugin_Auth
 {
     /**
      * @param array|object $userinfo
@@ -53,13 +55,5 @@ class Auth extends \JFusion\Plugin\Plugin_Auth
             $testcrypt = md5(md5($userinfo->password_clear) . $userinfo->password_salt);
         }
         return $testcrypt;
-    }
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'vbulletin';
     }
 }

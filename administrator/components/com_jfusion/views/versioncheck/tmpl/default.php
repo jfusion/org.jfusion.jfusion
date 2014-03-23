@@ -128,7 +128,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 			    <?php
 		        if ($component->olddate && is_int($component->olddate)) {
 			        $date = JFactory::getDate($component->olddate);
-			        $date->setTimezone(new DateTimeZone(\JFusion\Framework::getJoomlaTimezone()));
+			        $date->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
 			        echo $date->toSql(true);
 		        } else {
 			        echo JText::_('UNKNOWN');
@@ -147,7 +147,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 			    <?php
 		        if ($component->date) {
 			        $date = JFactory::getDate($component->date);
-			        $date->setTimezone(new DateTimeZone(\JFusion\Framework::getJoomlaTimezone()));
+			        $date->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
 			        echo $date->toSql(true);
 		        } else {
 			        echo JText::_('UNKNOWN');
@@ -242,7 +242,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 			    <?php
 		        if ($jfusion_plugin->date) {
 			        $date = JFactory::getDate($jfusion_plugin->date);
-			        $date->setTimezone(new DateTimeZone(\JFusion\Framework::getJoomlaTimezone()));
+			        $date->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
 			        echo $date->toSql(true);
 		        } else {
 			        echo JText::_('UNKNOWN');

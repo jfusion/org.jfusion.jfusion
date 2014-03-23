@@ -27,15 +27,20 @@ function utf8_strlen($str){
 
 //--------------------------------------------------------------------
 /**
-* Assumes mbstring internal encoding is set to UTF-8
-* Wrapper around mb_strpos
-* Find position of first occurrence of a string
-* @param string haystack
-* @param string needle (you should validate this with utf8_is_valid)
-* @param integer offset in characters (from left)
-* @return mixed integer position or FALSE on failure
-* @package utf8
-*/
+ * Assumes mbstring internal encoding is set to UTF-8
+ * Wrapper around mb_strpos
+ * Find position of first occurrence of a string
+ *
+ * @param      $str
+ * @param      $search
+ * @param bool $offset
+ *
+ * @internal param \haystack $string
+ * @internal param \needle $string
+ * @internal param \offset $integer in characters (from left)
+ * @return mixed integer position or FALSE on failure
+ * @package  utf8
+ */
 function utf8_strpos($str, $search, $offset = FALSE){
     if ( $offset === FALSE ) {
         return mb_strpos($str, $search);
@@ -46,15 +51,20 @@ function utf8_strpos($str, $search, $offset = FALSE){
 
 //--------------------------------------------------------------------
 /**
-* Assumes mbstring internal encoding is set to UTF-8
-* Wrapper around mb_strrpos
-* Find position of last occurrence of a char in a string
-* @param string haystack
-* @param string needle (you should validate this with utf8_is_valid)
-* @param integer (optional) offset (from left)
-* @return mixed integer position or FALSE on failure
-* @package utf8
-*/
+ * Assumes mbstring internal encoding is set to UTF-8
+ * Wrapper around mb_strrpos
+ * Find position of last occurrence of a char in a string
+ *
+ * @param          $str
+ * @param          $search
+ * @param bool|int $offset
+ *
+ * @internal param \haystack $string
+ * @internal param \needle $string
+ * @internal param int $offset (from left)
+ * @return mixed integer position or FALSE on failure
+ * @package  utf8
+ */
 function utf8_strrpos($str, $search, $offset = FALSE){
     if ( $offset === FALSE ) {
         # Emulate behaviour of strrpos rather than raising warning
@@ -80,15 +90,20 @@ function utf8_strrpos($str, $search, $offset = FALSE){
 
 //--------------------------------------------------------------------
 /**
-* Assumes mbstring internal encoding is set to UTF-8
-* Wrapper around mb_substr
-* Return part of a string given character offset (and optionally length)
-* @param string
-* @param integer number of UTF-8 characters offset (from left)
-* @param integer (optional) length in UTF-8 characters from offset
-* @return mixed string or FALSE if failure
-* @package utf8
-*/
+ * Assumes mbstring internal encoding is set to UTF-8
+ * Wrapper around mb_substr
+ * Return part of a string given character offset (and optionally length)
+ *
+ * @param          $str
+ * @param          $offset
+ * @param bool|int $length
+ *
+ * @internal param $string
+ * @internal param number $integer of UTF-8 characters offset (from left)
+ * @internal param int $length in UTF-8 characters from offset
+ * @return mixed string or FALSE if failure
+ * @package  utf8
+ */
 function utf8_substr($str, $offset, $length = FALSE){
     if ( $length === FALSE ) {
         return mb_substr($str, $offset);

@@ -14,6 +14,7 @@
  */
 
 // no direct access
+use JFile;
 use JFusion\Plugin\Plugin;
 
 defined('_JEXEC') or die('Restricted access');
@@ -32,16 +33,16 @@ defined('_JEXEC') or die('Restricted access');
 class Helper extends Plugin
 {
     /**
-     * @var Jfusion_DokuWiki_Basic|Jfusion_DokuWiki_Plain|Jfusion_DokuWiki_Mysql
+     * @var Auth_Basic|Auth_Plain|Auth_Mysql
      */
     var $auth;
 
-    /**
-     *
-     */
-    function __construct()
-    {
-        parent::__construct();
+	/**
+	 * @param string $instance instance name of this plugin
+	 */
+	function __construct($instance)
+	{
+		parent::__construct($instance);
 
 	    $conf = $this->getConf();
 
@@ -50,12 +51,12 @@ class Helper extends Plugin
 			    if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 				    require_once('auth' . DIRECTORY_SEPARATOR . 'mysql.class.php');
 			    }
-			    $this->auth = new Jfusion_DokuWiki_Mysql($this);
+			    $this->auth = new Auth_Mysql($this);
 		    } elseif ($conf['authtype'] == 'authplain') {
 			    if (!class_exists('Jfusion_DokuWiki_Plain')) {
 				    require_once('auth' . DIRECTORY_SEPARATOR . 'plain.class.php');
 			    }
-			    $this->auth = new Jfusion_DokuWiki_Plain($this);
+			    $this->auth = new Auth_Plain($this);
 		    }
 	    }
 
@@ -63,17 +64,8 @@ class Helper extends Plugin
 		    if (!class_exists('Jfusion_DokuWiki_Basic')) {
 			    require_once('auth' . DIRECTORY_SEPARATOR . 'basic.class.php');
 		    }
-		    $this->auth = new Jfusion_DokuWiki_Basic($this);
+		    $this->auth = new Auth_Basic($this);
 	    }
-    }
-
-    /**
-     * Returns the name for this plugin
-     *
-     * @return string
-     */
-    function getJname() {
-        return 'dokuwiki';
     }
 
     /**

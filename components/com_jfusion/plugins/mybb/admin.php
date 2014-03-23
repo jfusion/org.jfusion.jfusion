@@ -15,6 +15,13 @@
  */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Database\DatabaseFactory;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -30,17 +37,8 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class Auth extends \JFusion\Plugin\Plugin_Admin
+class Auth extends Plugin_Admin
 {
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'mybb';
-    }
-
     /**
      * @return string
      */
@@ -61,7 +59,7 @@ class Auth extends \JFusion\Plugin\Plugin_Admin
         $params = array();
         //include config file
         if (!file_exists($myfile)) {
-            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             $config = array();
@@ -81,7 +79,7 @@ class Auth extends \JFusion\Plugin\Plugin_Admin
             $database = $params['database_name'];
             $prefix = $params['database_prefix'];
             $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
-	        $db = JDatabaseDriver::getInstance($options);
+	        $db = DatabaseFactory::getInstance($options)->getDriver($driver, $options);
 
 	        $query = $db->getQuery(true)
 		        ->select('value')
@@ -128,7 +126,7 @@ class Auth extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    $query = $db->getQuery(true)
 			    ->select('username, email')
 			    ->from('#__users');
@@ -136,7 +134,7 @@ class Auth extends \JFusion\Plugin\Plugin_Admin
 		    $db->setQuery($query, $limitstart, $limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -149,7 +147,7 @@ class Auth extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 	        //getting the connection to the db
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -159,7 +157,7 @@ class Auth extends \JFusion\Plugin\Plugin_Admin
 	        //getting the results
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    return 0;
 		}
     }
@@ -170,7 +168,7 @@ class Auth extends \JFusion\Plugin\Plugin_Admin
     function getUsergroupList()
     {
 	    //getting the connection to the db
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->select('gid as id, title as name')
@@ -186,12 +184,12 @@ class Auth extends \JFusion\Plugin\Plugin_Admin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroups = Framework::getUserGroups($this->getJname(), true);
 
 	    $group = '';
 	    if ($usergroups !== null) {
 		    //we want to output the usergroup name
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('title')
@@ -211,7 +209,7 @@ class Auth extends \JFusion\Plugin\Plugin_Admin
     {
 	    $result = false;
 	    try {
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('value')
@@ -224,7 +222,7 @@ class Auth extends \JFusion\Plugin\Plugin_Admin
 	            $result = true;
 	        }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 	    }
         return $result;
     }

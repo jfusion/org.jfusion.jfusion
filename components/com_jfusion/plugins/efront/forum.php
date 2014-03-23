@@ -37,15 +37,6 @@ defined('_JEXEC') or die('Restricted access');
 class Forum extends Plugin_Forum
 {
     /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'efront';
-    }
-
-    /**
      * @param int $userid
      * @return string
      */
@@ -75,7 +66,6 @@ class Forum extends Plugin_Forum
 		    Framework::raiseError($e, $this->getJname());
 		    $url = '';
 	    }
-
         return $url;
     }
 }

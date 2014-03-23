@@ -8,6 +8,14 @@
 */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use RuntimeException;
+use stdClass;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 /**
@@ -27,7 +35,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class User extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
 
     /**
@@ -47,7 +55,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		    $username = $this->filterUsername($userinfo->username);
 
 		    // initialise some objects
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('user_id as userid, user_name as username, user_token, user_real_name as name, user_email as email, user_password as password, NULL as password_salt, NULL as activation, TRUE as is_activated, NULL as reason, user_touched as lastvisit')
@@ -93,18 +101,10 @@ class User extends \JFusion\Plugin\Plugin_User
 			    $result->activation = '';
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;
-    }
-
-    /**
-     * @return string
-     */
-    function getJname()
-    {
-        return 'mediawiki';
     }
 
     /**
@@ -116,7 +116,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	        //setup status array to hold debug info and errors
 	        $status = array('error' => array(), 'debug' => array());
 
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__user')
@@ -231,7 +231,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    $existinguser->password = ':A:' . md5($userinfo->password_clear);
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__user')
@@ -266,7 +266,7 @@ class User extends \JFusion\Plugin\Plugin_User
     function updateEmail($userinfo, &$existinguser, &$status)
     {
 	    //we need to update the email
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 	    $query = $db->getQuery(true)
 		    ->update('#__user')
 		    ->set('user_email = ' . $db->quote($userinfo->email))
@@ -292,7 +292,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		} else {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 			try {
 				$query = $db->getQuery(true)
 					->delete('#__user_groups')
@@ -324,7 +324,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 	    $ban = new stdClass;
 	    $ban->ipb_id = NULL;
 	    $ban->ipb_address = NULL;
@@ -361,7 +361,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->delete('#__ipblocks')
@@ -413,7 +413,7 @@ class User extends \JFusion\Plugin\Plugin_User
     {
 	    try {
 		    //we need to create a new SMF user
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {

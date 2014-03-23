@@ -159,7 +159,7 @@ class plgSystemJfusion extends JPlugin
                 if ($debug) {
                     \JFusion\Framework::raiseNotice('Refresh is true');
                 }
-                $uri = JURI::getInstance();
+                $uri = JUri::getInstance();
                 //add a variable to ensure refresh
                 $uri->setVar('time', time());
                 $link = $uri->toString();

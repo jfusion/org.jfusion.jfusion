@@ -14,6 +14,16 @@
  */
 
 // no direct access
+use Exception;
+use JFusion\Curl\Curl;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use Joomla\Uri\Uri;
+use RuntimeException;
+use stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -32,21 +42,12 @@ defined('_JEXEC') or die('Restricted access');
 /**
  *
  */
-class User extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
 	/**
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-	/**
-	 * returns the name of this JFusion plugin
-	 *
-	 * @return string name of current JFusion plugin
-	 */
-	function getJname()	{
-		return 'wordpress';
-	}
 
     /**
      * @param object $userinfo
@@ -59,7 +60,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		    //get the identifier
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'user_login', 'user_email');
 		    // Get a database object
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    //make the username case insensitive
 		    if ($identifier_type == 'user_login') {
 			    $identifier = $this->filterUsername($identifier);
@@ -95,7 +96,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			    $result = $jFusionUserObject;
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 	    }
 	    return $result;
 	}
@@ -105,7 +106,7 @@ class User extends \JFusion\Plugin\Plugin_User
      *
      * @param $user
      *
-     * @return \stdClass
+     * @return stdClass
      */
     function convertUserobjectToJFusion($user) {
 		$result = new stdClass;
@@ -200,11 +201,10 @@ class User extends \JFusion\Plugin\Plugin_User
 		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
 		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
 
-
-		$my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST) . parse_url(JURI::root(), PHP_URL_PATH), '/');
+		$my_ID = rtrim(parse_url(Uri::root(), PHP_URL_HOST) . parse_url(Uri::root(), PHP_URL_PATH), '/');
 		$curl_options['jnodeid'] = $my_ID;
 		
-		$curl = new JFusionCurl($curl_options);
+		$curl = new Curl($curl_options);
 		
 		$remotedata = $curl->ReadPage();
 		if (!empty($curl->status['error'])) {
@@ -302,7 +302,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	    $t_hasher = new PasswordHashOrg(8, true);
 	    $existinguser->password = $t_hasher->HashPassword($userinfo->password_clear);
 	    unset($t_hasher);
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -335,7 +335,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    //we need to update the email
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -380,7 +380,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function activateUser($userinfo, &$existinguser, &$status) {
 	    //activate the user
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -401,7 +401,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
 	    //set activation key
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -423,7 +423,7 @@ class User extends \JFusion\Plugin\Plugin_User
     function createUser($userinfo, &$status) {
 	    try {
 		    //find out what usergroup should be used
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
@@ -532,7 +532,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			    throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
 		    }
 
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    $reassign = $this->params->get('reassign_blogs');
 		    $reassign_to = $this->params->get('reassign_username');
 		    $user_id = $userinfo->userid;
@@ -654,7 +654,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		} else {
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$database_prefix = $this->params->get('database_prefix');
 

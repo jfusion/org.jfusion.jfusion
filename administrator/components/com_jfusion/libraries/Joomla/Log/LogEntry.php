@@ -73,10 +73,11 @@ class LogEntry
 	/**
 	 * Constructor
 	 *
-	 * @param   string  $message   The message to log.
-	 * @param   string  $priority  Message priority based on {$this->priorities}.
-	 * @param   string  $category  Type of entry
-	 * @param   string  $date      Date of entry (defaults to now if not specified or blank)
+	 * @param   string   $message  The message to log.
+	 * @param int|string $priority Message priority based on {$this->priorities}
+	 *                             .
+	 * @param   string   $category Type of entry
+	 * @param   string   $date     Date of entry (defaults to now if not specified or blank)
 	 *
 	 * @since   1.0
 	 */

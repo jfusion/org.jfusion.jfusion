@@ -119,14 +119,13 @@ class modjfusionWhosOnlineHelper {
 							// retrieve avatar
 							$avatarSrc = $config['avatar_software'];
 							$avatar = '';
-							if(!empty($avatarSrc) && $avatarSrc != 'jfusion' && !empty($joomla_userid)) {
-								$avatar = \JFusion\Framework::getAltAvatar($avatarSrc, $joomla_userid);
+							if(!empty($avatarSrc) && $avatarSrc != 'jfusion' && !empty($userinfo)) {
+								$avatar = \JFusion\Framework::getAltAvatar($avatarSrc, $userinfo);
 							} else if ($jfusion_userid) {
 								$avatar = $forum_links->getAvatar($jfusion_userid);
 							}
-
 							if(empty($avatar)) {
-								$avatar = \JFusion\Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+								$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 							}
 
 							$u->output->avatar_source = $avatar;

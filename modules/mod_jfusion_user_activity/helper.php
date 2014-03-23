@@ -53,16 +53,14 @@ class modjfusionUserActivityHelper {
 		//get the avatar of the logged in user
 		if ($config['avatar']) {
 			//retrieve avatar
-			if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion') {
-				$avatar = \JFusion\Framework::getAltAvatar($config['avatar_software'], $joomlaUser->id);
+			$avatar = '';
+			if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion' && $userinfo) {
+				$avatar = \JFusion\Framework::getAltAvatar($config['avatar_software'], $userinfo);
 			} else if ($userinfo) {
 				$avatar = $forum->getAvatar($userinfo->userid);
-			} else {
-				$avatar = '';
 			}
-
 			if (empty($avatar)) {
-				$avatar = \JFusion\Framework::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+				$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 			}
 
 			$maxheight = $config['avatar_height'];

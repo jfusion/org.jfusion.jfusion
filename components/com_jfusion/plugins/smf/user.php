@@ -15,6 +15,14 @@
  */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use RuntimeException;
+use stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -29,7 +37,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class User extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
     /**
      * get user
@@ -46,7 +54,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		    //get the identifier
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.memberName', 'a.emailAddress');
 		    // initialise some objects
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('a.ID_MEMBER as userid, a.memberName as username, a.realName as name, a.emailAddress as email, a.passwd as password, a.passwordSalt as password_salt, a.validation_code as activation, a.is_activated, null as reason, a.lastLogin as lastvisit, a.ID_GROUP as group_id, a.ID_POST_GROUP as postgroup, a.additionalGroups')
@@ -107,20 +115,10 @@ class User extends \JFusion\Plugin\Plugin_User
 			    }
 		    }
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;
-    }
-
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'smf';
     }
 
     /**
@@ -137,7 +135,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	    try {
 	        //setup status array to hold debug info and errors
 	        $status = array('error' => array(), 'debug' => array());
-	        $db = \JFusion\Factory::getDatabase($this->getJname());
+	        $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__members')
@@ -206,7 +204,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	    try {
 		    $status['debug'][] = $this->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__log_online')
@@ -255,7 +253,7 @@ class User extends \JFusion\Plugin\Plugin_User
     {
 	    $existinguser->password = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
 	    $existinguser->password_salt = substr(md5(rand()), 0, 4);
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__members')
@@ -296,7 +294,7 @@ class User extends \JFusion\Plugin\Plugin_User
     function updateEmail($userinfo, &$existinguser, &$status)
     {
 	    //we need to update the email
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__members')
@@ -330,7 +328,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			    $usergroup->groups = array();
 		    }
 
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->update('#__members')
@@ -408,7 +406,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 	    $ban = new stdClass;
 	    $ban->ID_BAN_GROUP = null;
 	    $ban->name = $existinguser->username;
@@ -443,7 +441,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->delete('#__ban_groups')
@@ -475,7 +473,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function activateUser($userinfo, &$existinguser, &$status)
     {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__members')
@@ -501,7 +499,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__members')
@@ -529,7 +527,7 @@ class User extends \JFusion\Plugin\Plugin_User
     {
 	    try {
 		    //we need to create a new SMF user
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
@@ -623,9 +621,9 @@ class User extends \JFusion\Plugin\Plugin_User
 	{
 		$index = 0;
 
-		$master = \JFusion\Framework::getMaster();
+		$master = Framework::getMaster();
 		if ($master) {
-			$mastergroups = \JFusion\Framework::getUserGroups($master->name);
+			$mastergroups = Framework::getUserGroups($master->name);
 
 			$groups = array();
 			if ($userinfo) {

@@ -20,16 +20,16 @@ abstract class Folder
 	/**
 	 * Copy a folder.
 	 *
-	 * @param   string   $src          The path to the source folder.
-	 * @param   string   $dest         The path to the destination folder.
-	 * @param   string   $path         An optional base path to prefix to the file names.
-	 * @param   string   $force        Force copy.
-	 * @param   boolean  $use_streams  Optionally force folder/file overwrites.
+	 * @param   string    $src         The path to the source folder.
+	 * @param   string    $dest        The path to the destination folder.
+	 * @param   string    $path        An optional base path to prefix to the file names.
+	 * @param bool|string $force       Force copy.
+	 * @param   boolean   $use_streams Optionally force folder/file overwrites.
 	 *
+	 * @throws \RuntimeException
 	 * @return  boolean  True on success.
 	 *
 	 * @since   1.0
-	 * @throws  \RuntimeException
 	 */
 	public static function copy($src, $dest, $path = '', $force = false, $use_streams = false)
 	{

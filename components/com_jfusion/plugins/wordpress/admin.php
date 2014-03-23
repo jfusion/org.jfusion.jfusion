@@ -15,6 +15,15 @@
  */
 
 // no direct access
+use Exception;
+use Joomla\Database\DatabaseDriver;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Database\DatabaseFactory;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+use stdClass;
+
 defined('_JEXEC') or die('Restricted access');
 
 
@@ -30,21 +39,12 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Admin extends \JFusion\Plugin\Plugin_Admin
+class Admin extends Plugin_Admin
 {
 	/**
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-	/**
-	 * returns the name of this JFusion plugin
-	 * @return string name of current JFusion plugin
-	 */
-	function getJname()
-	{
-		return 'wordpress';
-	}
 
     /**
      * @return string
@@ -55,7 +55,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
 	}
 
     /**
-     * @param JDatabaseDriver $db
+     * @param DatabaseDriver $db
      * @param string $database_prefix
      * @return array
      */
@@ -93,7 +93,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
         $params = array();
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-			\JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+			Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
 		} else {
 			//parse the file line by line to get only the config variables
@@ -121,7 +121,8 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
 			$options = array('driver' => $driver, 'host' => $params['database_host'], 'user' => $params['database_user'],
                         'password' => $params['database_password'], 'database' => $params['database_name'],
                         'prefix' => $params['database_prefix']);
-			$db = JDatabaseDriver::getInstance($options );
+
+	        $db = DatabaseFactory::getInstance($options)->getDriver($driver, $options);
 
 			//Find the url to Wordpress
 	        $query = $db->getQuery(true)
@@ -161,7 +162,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
 	{
 		try {
 			//getting the connection to the db
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
 				->select('user_login as username, user_email as email')
@@ -172,7 +173,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
 			//getting the results
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 			$userlist = array();
 		}
 		return $userlist;
@@ -185,7 +186,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 			//getting the connection to the db
-			$db = \JFusion\Factory::getDatabase($this->getJname());
+			$db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -195,7 +196,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
 			//getting the results
 			$no_users = $db->loadResult();
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $this->getJname());
+			Framework::raiseError($e, $this->getJname());
 		    $no_users = 0;
 		}
 		return $no_users;
@@ -215,7 +216,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroups = Framework::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 		    $group = array();
 		    foreach ($usergroups as $usergroup) {
@@ -234,7 +235,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
     {
 	    $result = false;
 	    try {
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('option_value')
@@ -246,7 +247,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
 
 		    $result = ($auths == '1');
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 	    }
 	    return $result;
 	}

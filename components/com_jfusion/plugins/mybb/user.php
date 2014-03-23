@@ -1,4 +1,11 @@
 <?php namespace JFusion\Plugins\mybb;
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_User;
+use RuntimeException;
+use stdClass;
 
 /**
  * PHP version 5
@@ -26,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class User extends \JFusion\Plugin\Plugin_User
+class User extends Plugin_User
 {
     /**
      * @param object $userinfo
@@ -37,7 +44,7 @@ class User extends \JFusion\Plugin\Plugin_User
 		    //get the identifier
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username', 'a.email');
 		    // Get user info from database
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('a.uid as userid, a.username, a.usergroup as group_id, a.username as name, a.email, a.password, a.salt as password_salt, a.usergroup as activation, b.isbannedgroup as block')
@@ -51,7 +58,7 @@ class User extends \JFusion\Plugin\Plugin_User
 			    //Check to see if user needs to be activated
 			    if ($result->group_id == 5) {
 				    jimport('joomla.user.helper');
-				    $result->activation = JUserHelper::genRandomPassword(32);
+				    $result->activation = Framework::genRandomPassword(32);
 			    } else {
 				    $result->activation = null;
 			    }
@@ -61,14 +68,6 @@ class User extends \JFusion\Plugin\Plugin_User
 		    $result = null;
 	    }
         return $result;
-    }
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'mybb';
     }
 
     /**
@@ -117,7 +116,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	            $cookiepath = $this->params->get('cookie_path', '/');
 	            //get myBB uid, loginkey
 
-		        $db = \JFusion\Factory::getDatabase($this->getJname());
+		        $db = Factory::getDatabase($this->getJname());
 
 		        $query = $db->getQuery(true)
 			        ->select('uid, loginkey')
@@ -160,7 +159,7 @@ class User extends \JFusion\Plugin\Plugin_User
      * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 	    $user = new stdClass;
 	    $user->uid = $existinguser->userid;
 	    $user->gid = 7;
@@ -194,7 +193,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	 * @return void
 	 */
     function unblockUser($userinfo, &$existinguser, &$status) {
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 	    //found out what the old usergroup was
 
 	    $query = $db->getQuery(true)
@@ -243,9 +242,9 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    jimport('joomla.user.helper');
-	    $existinguser->password_salt = JUserHelper::genRandomPassword(6);
+	    $existinguser->password_salt = Framework::genRandomPassword(6);
 	    $existinguser->password = md5(md5($existinguser->password_salt) . md5($userinfo->password_clear));
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -275,7 +274,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	    } else {
 		    $usergroup = $usergroups[0];
 		    //update the usergroup
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
@@ -298,7 +297,7 @@ class User extends \JFusion\Plugin\Plugin_User
     function createUser($userinfo, &$status) {
 	    try {
 		    //found out what usergroup should be used
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . Text::_('USERGROUP_MISSING');
@@ -312,17 +311,17 @@ class User extends \JFusion\Plugin\Plugin_User
 			    jimport('joomla.user.helper');
 			    if (isset($userinfo->password_clear)) {
 				    //we can update the password
-				    $user->salt = JUserHelper::genRandomPassword(6);
+				    $user->salt = Framework::genRandomPassword(6);
 				    $user->password = md5(md5($user->salt) . md5($userinfo->password_clear));
-				    $user->loginkey = JUserHelper::genRandomPassword(50);
+				    $user->loginkey = Framework::genRandomPassword(50);
 			    } else {
 				    $user->password = $userinfo->password;
 				    if (!isset($userinfo->password_salt)) {
-					    $user->salt = JUserHelper::genRandomPassword(6);
+					    $user->salt = Framework::genRandomPassword(6);
 				    } else {
 					    $user->salt = $userinfo->password_salt;
 				    }
-				    $user->loginkey = JUserHelper::genRandomPassword(50);
+				    $user->loginkey = Framework::genRandomPassword(50);
 			    }
 			    if (!empty($userinfo->activation)) {
 				    $user->usergroup = $this->params->get('activationgroup');
@@ -352,7 +351,7 @@ class User extends \JFusion\Plugin\Plugin_User
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    //we need to update the email
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')
@@ -379,7 +378,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	    } else {
 		    $usergroup = $usergroups[0];
 		    //update the usergroup
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->update('#__users')
@@ -403,7 +402,7 @@ class User extends \JFusion\Plugin\Plugin_User
 	    //found out what usergroup should be used
 	    $usergroup = $this->params->get('activationgroup');
 	    //update the usergroup
-	    $db = \JFusion\Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
 		    ->update('#__users')

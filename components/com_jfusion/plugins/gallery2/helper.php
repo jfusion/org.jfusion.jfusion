@@ -14,11 +14,16 @@
  */
 
 // no direct access
+use GalleryCoreApi;
+use GalleryEmbed;
+use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\Plugin\Plugin;
 
-use \Exception;
+use Exception;
+use JRoute;
+use JUri;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -40,15 +45,6 @@ class Helper extends Plugin
     var $registry = array();
 
     /**
-     * Returns the name for this plugin
-     *
-     * @return string
-     */
-    function getJname() {
-        return 'gallery2';
-    }
-
-    /**
      * @param $fullInit
      * @param null $itemId
      * @return bool
@@ -59,7 +55,7 @@ class Helper extends Plugin
             $source_path = $this->params->get('source_path');
 	        $index_file = $source_path . 'embed.php';
             if (substr($source_url, 0, 1) == '/') {
-                $uri = JURI::getInstance();
+                $uri = JUri::getInstance();
                 $base = $uri->toString(array('scheme', 'host', 'port'));
                 $source_url = $base . $source_url;
             }
@@ -179,91 +175,5 @@ class Helper extends Plugin
             return $this->registry[$key];
         }
         return $default;
-    }
-
-    /**
-     * @return null
-     */
-    function setPathway() {
-        global $gallery;
-        $session = $gallery->getSession();
-        if ($session) {
-            $session->doNotUseTempId();
-        }
-	    /**
-	     * @ignore
-	     * @var $entities GalleryItem[]
-	     * @var $it GalleryItem
-	     */
-        $entities = array();
-        $mainframe = Factory::getApplication();
-        $urlGenerator = $gallery->getUrlGenerator();
-        $itemId = (int)GalleryUtilities::getRequestVariables('itemId');
-        $userId = $gallery->getActiveUserId();
-        /* fetch parent sequence for current itemId or Root */
-        if ($itemId) {
-            list($ret, $parentSequence) = GalleryCoreApi::fetchParentSequence($itemId);
-            if ($ret) {
-                return $ret;
-            }
-        } else {
-            list($ret, $rootId) = GalleryCoreApi::getPluginParameter('module', 'core', 'id.rootAlbum');
-            if ($ret) {
-                return $ret;
-            }
-            $parentSequence = array($rootId);
-        }
-        /* Add current item at the end */
-        $parentSequence[] = $itemId;
-        /* shift first parent off, as Joomla adds menu name already.*/
-        array_shift($parentSequence);
-        /* study permissions */
-        if (sizeof($parentSequence) > 0 && $parentSequence[0] != 0) {
-	        GalleryCoreApi::requireOnce('modules/core/classes/helpers/GalleryPermissionHelper_simple.class');
-	        $ret = GalleryPermissionHelper_simple::studyPermissions($parentSequence);
-            if ($ret) {
-                return $ret;
-            } else {
-                /* load the Entities */
-                list($ret, $list) = GalleryCoreApi::loadEntitiesById($parentSequence);
-                if ($ret) {
-                    return $ret;
-                } else {
-                    foreach ($list as $it) {
-                        $entities[$it->getId() ] = $it;
-                    }
-                }
-            }
-        }
-        $breadcrumbs = $mainframe->getPathWay();
-        $document = Factory::getDocument();
-        /* check permissions and push */
-        $i = 1;
-        $limit = count($parentSequence);
-        foreach ($parentSequence as $id) {
-            list($ret, $canSee) = GalleryCoreApi::hasItemPermission($id, 'core.view', $userId);
-            if ($ret) {
-                return $ret;
-            } else {
-                if ($canSee) {
-                    /* push them into pathway */
-                    $urlParams = array('view' => 'core.ShowItem', 'itemId' => $id);
-                    $title = $entities[$id]->getTitle() ? $entities[$id]->getTitle() : $entities[$id]->getPathComponent();
-                    $title = preg_replace('/\r\n/', ' ', $title);
-                    $url = $urlGenerator->generateUrl($urlParams);
-                    if ($i < $limit) {
-                        $breadcrumbs->addItem($title, $url);
-                    } else {
-                        $breadcrumbs->addItem($title, '');
-                        /* description */
-                        $document->setMetaData('description', $entities[$id]->getSummary());
-                        /* keywords */
-                        $document->setMetaData('keywords', $entities[$id]->getKeywords());
-                    }
-                }
-                $i++;
-            }
-        }
-        return null;
     }
 }

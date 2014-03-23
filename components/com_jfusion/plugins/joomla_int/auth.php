@@ -14,7 +14,10 @@
  */
 
 use JFusion\Factory;
+use JFusion\Framework;
 use JFusion\Plugin\Plugin_Auth;
+use JUserHelper;
+
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
@@ -34,16 +37,6 @@ defined('_JEXEC') or die('Restricted access');
 class Auth extends Plugin_Auth
 {
 	/**
-	 * returns the name of this JFusion plugin
-	 *
-	 * @return string name of current JFusion plugin
-	 */
-	function getJname()
-	{
-		return 'joomla_int';
-	}
-
-	/**
 	 * Generates an encrypted password based on the userinfo passed to this function
 	 *
 	 * @param object $userinfo userdata object containing the userdata
@@ -54,9 +47,9 @@ class Auth extends Plugin_Auth
 	{
 		jimport('joomla.user.helper');
 		if (jimport('phpass.passwordhash')) {
-			$testcrypt = \JUserHelper::hashPassword($userinfo->password_clear);
+			$testcrypt = JUserHelper::hashPassword($userinfo->password_clear);
 		} else {
-			$testcrypt = \JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex');
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex');
 		}
 		return $testcrypt;
 	}
@@ -88,7 +81,7 @@ class Auth extends Plugin_Auth
 			$rehash = true;
 		} elseif (substr($userinfo->password, 0, 8) == '{SHA256}') {
 			// Check the password
-			$testcrypt = \JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'sha256', true);
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'sha256', true);
 
 			$match = $this->comparePassword($userinfo->password, $testcrypt);
 
@@ -96,7 +89,7 @@ class Auth extends Plugin_Auth
 		} else {
 			$rehash = true;
 
-			$testcrypt = \JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex', false);
+			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'md5-hex', false);
 
 			$match = $this->comparePassword($userinfo->password, $testcrypt);
 		}
@@ -126,10 +119,10 @@ class Auth extends Plugin_Auth
 	{
 		jimport('joomla.user.helper');
 		if (jimport('phpass.passwordhash')) {
-			$password = \JUserHelper::hashPassword($userinfo->password_clear);
+			$password = JUserHelper::hashPassword($userinfo->password_clear);
 		} else {
-			$salt = \JUserHelper::genRandomPassword(32);
-			$password = \JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'md5-hex') . ':' . $salt;
+			$salt = Framework::genRandomPassword(32);
+			$password = JUserHelper::getCryptedPassword($userinfo->password_clear, $salt, 'md5-hex') . ':' . $salt;
 		}
 		return $password;
 	}

@@ -5,7 +5,7 @@ require_once __DIR__ . '/libraries/import.php';
 require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php');
 
 use JFusion\Factory;
-use JFusion\Registry\Registry;
+use Joomla\Registry\Registry;
 
 jimport('joomla.application.component.helper');
 /**
@@ -46,8 +46,8 @@ $config->set('usergroups', $params->get('usergroups', false));
 
 Factory::$config = $config;
 
-Factory::$document = JFactory::getDocument();
-
 require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.eventhook.php');
 
-$event = new JFusionEventHook(Factory::getDispatcher());
+$listener = new JFusionEventHook();
+
+Factory::getDispatcher()->addListener($listener);

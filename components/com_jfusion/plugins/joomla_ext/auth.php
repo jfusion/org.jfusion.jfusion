@@ -41,16 +41,6 @@ class JFusionAuth_joomla_ext extends Plugin_Auth
 	var $helper;
 
 	/**
-	 * returns the name of this JFusion plugin
-	 *
-	 * @return string name of current JFusion plugin
-	 */
-	function getJname()
-	{
-		return 'joomla_ext';
-	}
-
-	/**
 	 * Generates an encrypted password based on the userinfo passed to this function
 	 *
 	 * @param object $userinfo userdata object containing the userdata

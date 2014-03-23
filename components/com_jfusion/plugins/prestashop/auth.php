@@ -15,6 +15,9 @@
  */
  
 // no direct access
+use JFusion\Plugin\Plugin_Auth;
+use Tools;
+
 defined('_JEXEC') or die('Restricted access');
 
 
@@ -30,21 +33,12 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_prestashop extends \JFusion\Plugin\Plugin_Auth
+class JFusionAuth_prestashop extends Plugin_Auth
 {
 	/**
 	 * @var $helper Helper
 	 */
 	var $helper;
-
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname() 
-    {
-        return 'prestashop';
-    }
 
     /**
      * @param object $userinfo

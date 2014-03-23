@@ -846,7 +846,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
 		} elseif (!defined('IN_JOOMLA')) {
 			define('IN_JOOMLA', 1);
-			\JFusion\Framework::reconnectJoomlaDb();
+			JFusionFunction::reconnectJoomlaDb();
 		}
 
 		$mainframe = JFactory::getApplication('site');
@@ -902,7 +902,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 		// do the login
 		$credentials = array('username' => $username, 'password' => $password);
-		$options = array('entry_url' => JURI::root() . 'index.php?option=com_user&task=login', 'silent' => true);
+		$options = array('entry_url' => JUri::root() . 'index.php?option=com_user&task=login', 'silent' => true);
 
 		$options['remember'] = $remember;
 

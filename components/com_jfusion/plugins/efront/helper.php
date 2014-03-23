@@ -36,16 +36,8 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class Helper extends Plugin {
-
-    /**
-     * @return string
-     */
-    function getJname()
-    {
-        return 'efront';
-    }
-
+class Helper extends Plugin
+{
     /**
      * @param $dir
      */

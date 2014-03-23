@@ -8,6 +8,13 @@
 */
 
 // no direct access
+use Exception;
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
+use JFusion\Plugin\Plugin_Admin;
+use stdClass;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 /**
@@ -16,20 +23,12 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_mediawiki
  */
 
-class Admin extends \JFusion\Plugin\Plugin_Admin
+class Admin extends Plugin_Admin
 {
 	/**
-	 * @var $helper JFusionHelper_mediawiki
+	 * @var $helper Helper
 	 */
 	var $helper;
-
-    /**
-     * @return string
-     */
-    function getJname()
-    {
-        return 'mediawiki';
-    }
 
     /**
      * @return string
@@ -50,7 +49,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
         $params = array();
          //try to open the file
         if ( !file_exists($myfile) ) {
-            \JFusion\Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             $wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
@@ -88,7 +87,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 		    // initialise some objects
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('user_name as username, user_email as email')
@@ -99,7 +98,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
 
 		    return $userlist;
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
 	    return $userlist;
@@ -112,7 +111,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
     {
 	    try {
 		    //getting the connection to the db
-		    $db = \JFusion\Factory::getDatabase($this->getJname());
+		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('count(*)')
@@ -123,7 +122,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
 		    //getting the results
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseError($e, $this->getJname());
+		    Framework::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }
@@ -152,7 +151,7 @@ class Admin extends \JFusion\Plugin\Plugin_Admin
      */
     function getDefaultUsergroup()
     {
-	    $usergroups = \JFusion\Framework::getUserGroups($this->getJname(), true);
+	    $usergroups = Framework::getUserGroups($this->getJname(), true);
 	    if ($usergroups !== null) {
 		    return $usergroups;
 	    } else {

@@ -5,15 +5,21 @@
 
 //---------------------------------------------------------------
 /**
-* UTF-8 aware alternative to strcspn
-* Find length of initial segment not matching mask
-* Note: requires utf8_strlen and utf8_substr (if start, length are used)
-* @param string
-* @return int
-* @see http://www.php.net/strcspn
-* @see utf8_strlen
-* @package utf8
-*/
+ * UTF-8 aware alternative to strcspn
+ * Find length of initial segment not matching mask
+ * Note: requires utf8_strlen and utf8_substr (if start, length are used)
+ *
+ * @param      $str
+ * @param      $mask
+ * @param null $start
+ * @param null $length
+ *
+ * @internal param $string
+ * @return int
+ * @see      http://www.php.net/strcspn
+ * @see      utf8_strlen
+ * @package  utf8
+ */
 function utf8_strcspn($str, $mask, $start = NULL, $length = NULL) {
 
     if ( empty($mask) || strlen($mask) == 0 ) {

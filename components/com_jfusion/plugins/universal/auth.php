@@ -8,6 +8,8 @@
  */
 
 // no direct access
+use JFusion\Plugin\Plugin_Auth;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 /**
@@ -15,17 +17,8 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractauth.php
  * @package JFusion_universal
  */
-class Auth extends \JFusion\Plugin\Plugin_Auth
+class Auth extends Plugin_Auth
 {
-
-    /**
-     * @return string
-     */
-    function getJname()
-    {
-        return 'universal';
-    }
-
     /**
      * @param array|object $userinfo
      * @return string

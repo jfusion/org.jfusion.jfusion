@@ -80,7 +80,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        $document->addScript('components/com_jfusion/js/File.Upload.js');
 	        $document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
-	        \JFusion\Framework::loadJavascriptLanguage(array('COPY_MESSAGE', 'DELETE', 'PLUGIN', 'COPY'));
+	        JFusionFunction::loadJavascriptLanguage(array('COPY_MESSAGE', 'DELETE', 'PLUGIN', 'COPY'));
 
 	        parent::display();
         } else {
@@ -361,9 +361,10 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				$JFusionPlugin = \JFusion\Factory::getAdmin($record->name);
 
 				//output detailed configuration warnings for enabled plugins
-				if ($record->status==1) {
+				if ($record->status == 1) {
 					//check to see if the plugin files exist
-					$plugin_xml = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $record->name . DIRECTORY_SEPARATOR . 'jfusion.xml';
+
+					$plugin_xml = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $JFusionPlugin->getName() . DIRECTORY_SEPARATOR . 'jfusion.xml';
 					if(!file_exists($plugin_xml)) {
 						$record->status = 0;
 						\JFusion\Framework::raiseWarning(JText::_('NO_FILES'), $record->name);

@@ -16,7 +16,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use \Exception;
 use \RuntimeException;
@@ -82,14 +82,6 @@ class User extends Plugin_User
 		    $result = null;
 	    }
         return $result;
-    }
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'efront';
     }
 
     /**

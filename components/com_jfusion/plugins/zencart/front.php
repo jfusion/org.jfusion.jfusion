@@ -14,6 +14,8 @@
  */
 
 // no direct access
+use JFusion\Plugin\Plugin_Front;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -25,17 +27,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Front extends \JFusion\Plugin\Plugin_Front
+class Front extends Plugin_Front
 {
-    /**
-     * returns the name of this JFusion plugin
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return 'zencart';
-    }
-
     /**
      * @return string
      */
