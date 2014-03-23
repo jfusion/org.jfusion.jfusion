@@ -7,7 +7,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-use JFusion\Event\Dispatcher;
+use JFusion\Factory;
+use Joomla\Event\Event;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -65,7 +66,8 @@ class Session
 	 */
 	public function close()
 	{
-		Dispatcher::getInstance()->trigger('onSessionClose');
+		$event = new Event('onSessionClose');
+		Factory::getDispatcher()->triggerEvent($event);
 	}
 
 	/**
@@ -75,14 +77,8 @@ class Session
 	 */
 	public function restart()
 	{
-		$responces = Dispatcher::getInstance()->trigger('onSessionRestart');
-		if ($responces) {
-			foreach ($responces as $responce) {
-				if ($responce == true) {
-					return true;
-				}
-			}
-		}
-		return false;
+		$event = new Event('onSessionRestart');
+		Factory::getDispatcher()->triggerEvent($event);
+		return $event->getArgument('status', false);
 	}
 }

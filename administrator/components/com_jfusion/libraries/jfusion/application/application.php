@@ -8,7 +8,9 @@
  */
 
 use JFusion\Event\Dispatcher;
-use JFusion\Input\Input;
+use JFusion\Factory;
+use Joomla\Event\Event;
+use Joomla\Input\Input;
 use JFusion\Session\Session;
 
 
@@ -24,12 +26,6 @@ defined('_JEXEC') or die;
  */
 class Application
 {
-	/**
-	 * @var    JDocument  The application document object.
-	 * @since  11.3
-	 */
-	protected $document;
-
 	/**
 	 * @var    Application  The application instance.
 	 * @since  11.3
@@ -72,7 +68,10 @@ class Application
 	 */
 	public function enqueueMessage($msg, $type = 'message')
 	{
-		Dispatcher::getInstance()->trigger('onApplicationEnqueueMessage', array($msg, $type));
+		$event = new Event('onApplicationEnqueueMessage');
+		$event->addArgument('message', $msg);
+		$event->addArgument('type', $type);
+		Factory::getDispatcher()->triggerEvent($event);
 	}
 
 	/**
@@ -100,15 +99,9 @@ class Application
 	 */
 	public function isAdmin()
 	{
-		$responces = Dispatcher::getInstance()->trigger('onApplicationIsAdmin');
-		if ($responces) {
-			foreach ($responces as $responce) {
-				if ($responce == true) {
-					return true;
-				}
-			}
-		}
-		return false;
+		$event = new Event('onApplicationIsAdmin');
+		$responce = Factory::getDispatcher()->triggerEvent($event);
+		return $responce->getArgument('admin', false);
 	}
 
 	/**
@@ -132,15 +125,14 @@ class Application
 	 */
 	public function login($credentials, $options = array())
 	{
-		$responces = Dispatcher::getInstance()->trigger('onApplicationLogin', array($credentials, $options));
-		if ($responces) {
-			foreach ($responces as $responce) {
-				if ($responce == true) {
-					return true;
-				}
-			}
-		}
-		return false;
+		$event = new Event('onApplicationLogin');
+
+		$event->addArgument('credentials', $credentials);
+		$event->addArgument('options', $options);
+
+		Factory::getDispatcher()->triggerEvent($event);
+
+		return $event->getArgument('status', false);
 	}
 
 	/**
@@ -161,15 +153,13 @@ class Application
 	 */
 	public function logout($userid = null)
 	{
-		$responces = Dispatcher::getInstance()->trigger('onApplicationLogout', array($userid));
-		if ($responces) {
-			foreach ($responces as $responce) {
-				if ($responce == true) {
-					return true;
-				}
-			}
-		}
-		return false;
+		$event = new Event('onApplicationLogout');
+
+		$event->addArgument('userid', $userid);
+
+		Factory::getDispatcher()->triggerEvent($event);
+
+		return $event->getArgument('status', false);
 	}
 
 	/**
@@ -188,18 +178,24 @@ class Application
 	 */
 	public function redirect($url, $moved = false)
 	{
-		Dispatcher::getInstance()->trigger('onApplicationRedirect', array($url, $moved));
+		$event = new Event('onApplicationRedirect');
+
+		$event->addArgument('url', $url);
+		$event->addArgument('moved', $moved);
+
+		Factory::getDispatcher()->triggerEvent($event);
 	}
 
 	/**
-	 * Method to get the application document object.
+	 * Retrieves the source of the avatar for a Joomla supported component
 	 *
-	 * @return  JDocument  The document object
-	 *
-	 * @since   11.3
+	 * @return string url of the default avatar
 	 */
-	public function getDocument()
+	public function getDefaultAvatar()
 	{
-		return $this->document;
+		$event = new Event('onApplicationGetDefaultAvatar');
+		Factory::getDispatcher()->triggerEvent($event);
+
+		return $event->getArgument('avatar', false);
 	}
 }

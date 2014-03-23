@@ -13,9 +13,15 @@
  * @link      http://www.jfusion.org
  */
 
-use JFusion\Language\Text;
+use JFusion\Factory;
+use Joomla\Language\Text;
 
 
+use JFusion\Parser\Parser;
+use JFusionFunction;
+use JMenu;
+use JRoute;
+use JUri;
 use \stdClass;
 use \SimpleXMLElement;
 use \Exception;
@@ -80,29 +86,6 @@ class Framework
 			$jfusion_slaves = $db->loadObjectList();
 		}
 		return $jfusion_slaves;
-	}
-	
-    /**
-     * Changes plugin status in both Joomla 1.5 and Joomla 1.6
-     *
-     * @param string $element
-     * @param string $folder
-     *
-     * @return object master details
-     */
-	public static function getPluginStatus($element, $folder) {
-		//get joomla specs
-        $db = Factory::getDBO();
-
-		$query = $db->getQuery(true)
-			->select('published')
-			->from('#__extensions')
-			->where('element = ' . $db->quote($element))
-			->where('folder = ' . $db->quote($folder));
-
-        $db->setQuery($query);
-        $result = $db->loadResult();
-        return $result;
 	}
 
     /**
@@ -169,7 +152,7 @@ class Framework
                 }
             } else {
                 //fully parse the URL if sefmode = 1
-                $u = JURI::getInstance($url);
+                $u = JUri::getInstance($url);
                 $u->setVar('jfile', $u->getPath());
                 $u->setVar('option', 'com_jfusion');
                 $u->setVar('Itemid', $itemid);
@@ -184,45 +167,6 @@ class Framework
                     $url = 'index.php?' . $query;
                 }
             }
-        }
-        return $url;
-    }
-
-    /**
-     * Returns either the Joomla wrapper URL or the full URL directly to the forum
-     *
-     * @param string $url    relative path to a webpage of the integrated software
-     * @param string $jname  name of the JFusion plugin used
-     * @param string $view   name of the JFusion view used
-     * @param string $itemid the itemid
-     *
-     * @return string full URL to the filename passed to this function
-     */
-    public static function createURL($url, $jname, $view, $itemid = '')
-    {
-        if (!empty($itemid)) {
-            //use the itemid only to identify plugin name and view type
-            $base_url = 'index.php?option=com_jfusion&amp;Itemid=' . $itemid;
-        } else {
-            $base_url = 'index.php?option=com_jfusion&amp;Itemid=-1&amp;view=' . $view . '&amp;jname=' . $jname;
-        }
-        if ($view == 'direct') {
-            $params = Factory::getParams($jname);
-            $url = $params->get('source_url') . $url;
-        } elseif ($view == 'wrapper') {
-            //use base64_encode to encode the URL for passing.  But, base64_code uses / which throws off SEF urls.  Thus slashes
-            //must be translated into something base64_encode will not generate and something that will not get changed by Joomla or Apache.
-            $url = $base_url . '&amp;wrap=' . str_replace('/', '_slash_', base64_encode($url));
-            $url = JRoute::_($url);
-        } elseif ($view == 'frameless') {
-            //split the filename from the query
-            $parts = explode('?', $url);
-            if (isset($parts[1])) {
-                $base_url.= '&amp;jfile=' . $parts[0] . '&amp;' . $parts[1];
-            } else {
-                $base_url.= '&amp;jfile=' . $parts[0];
-            }
-            $url = JRoute::_($base_url);
         }
         return $url;
     }
@@ -490,31 +434,6 @@ class Framework
     }
 
     /**
-     * Raise warning function that can handle arrays
-     *
-     * @return array array with the php info values
-     */
-    public static function phpinfoArray()
-    {
-        //get the phpinfo and parse it into an array
-        ob_start();
-        phpinfo();
-        $phpinfo = array('phpinfo' => array());
-        if (preg_match_all('#(?:<h2>(?:<a name=".*?">)?(.*?)(?:</a>)?</h2>)|(?:<tr(?: class=".*?")?><t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>)?)?</tr>)#s', ob_get_clean(), $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                if (strlen($match[1])) {
-                    $phpinfo[$match[1]] = array();
-                } else if (isset($match[3])) {
-                    $phpinfo[end(array_keys($phpinfo))][$match[2]] = isset($match[4]) ? array($match[3], $match[4]) : $match[3];
-                } else {
-                    $phpinfo[end(array_keys($phpinfo))][] = $match[2];
-                }
-            }
-        }
-        return $phpinfo;
-    }
-
-    /**
      * Parses text from bbcode to html, html to bbcode, or html to plaintext
      * $options include:
      * strip_all_html - if $to==bbcode, strips all unsupported html from text (default is false)
@@ -536,147 +455,47 @@ class Framework
      */
     public static function parseCode($text, $to, $options = array())
     {
-	    $parser = new JFusionParse();
+	    $parser = new Parser();
 	    return $parser->parseCode($text, $to, $options);
-    }
-
-    /**
-     * Used by the Framework::parseCode function to parse various tags when parsing to bbcode.
-     * For example, some Joomla editors like to use an empty paragraph tag for line breaks which gets
-     * parsed into a lot of unnecessary line breaks
-     *
-     * @param mixed $matches mixed values from preg functions
-     * @param string $tag
-     *
-     * @return string to replace search subject with
-     */
-    public static function parseTag($matches, $tag = 'p')
-    {
-        $return = false;
-        if ($tag == 'p') {
-            $text = trim($matches);
-            //remove the slash added to double quotes and slashes added by the e modifier
-            $text = str_replace('\"', '"', $text);
-            if(empty($text) || ord($text) == 194) {
-                //p tags used simply as a line break
-                $return = "\n";
-            } else {
-                $return = $text . "\n\n";
-            }
-        } elseif ($tag == 'img') {
-            $joomla_url = static::getJoomlaURL();
-            $juri = new JURI($joomla_url);
-            $path = $juri->getPath();
-            if ($path != '/'){
-                $matches = str_replace($path, '', $matches);
-            }
-            $url = JRoute::_($joomla_url . $matches);
-            $return = $url;
-        }
-        return $return;
-    }
-
-    /**
-     * Reconnects Joomla DB if it gets disconnected
-     *
-     * @return string nothing
-     */
-    public static function reconnectJoomlaDb()
-    {
-        //check to see if the Joomla database is still connected
-        $db = Factory::getDBO();
-        jimport('joomla.database.database');
-        jimport('joomla.database.table');
-        $conf = Factory::getConfig();
-        $database = $conf->get('db');
-        $connected = true;
-        if (!method_exists($db, 'connected')){
-            $connected = false;	
-        } elseif (!$db->connected()){
-            $connected = false;
-        }
-
-        if (!$connected) {
-	        $db->disconnect();
-	        $db->connect();
-        }
-        //try to select the joomla database
-        if (!$db->select($database)) {
-	        //oops database select failed
-	        die('JFusion error: could not select Joomla database when trying to restore Joomla database object');
-        } else {
-            //database reconnect successful, some final tidy ups
-       	
-        	//add utf8 support
-            $db->setQuery('SET names \'utf8\'');
-            $db->execute();
-            //legacy $database must be restored
-            if (JPluginHelper::getPlugin('system', 'legacy')) {
-                $GLOBALS['database'] = $db;
-            }
-        }
     }
 
 	/**
 	 * Retrieves the source of the avatar for a Joomla supported component
 	 *
 	 * @param string  $software    software name
-	 * @param int     $uid         uid
+	 * @param stdClass $userinfo
 	 * @param boolean $isPluginUid boolean if true, look up the Joomla id in the look up table
 	 * @param string  $jname       needed if $isPluginId = true
 	 * @param string  $username    username
 	 *
 	 * @return string nothing
 	 */
-	public static function getAltAvatar($software, $uid, $isPluginUid = false, $jname = '', $username = '')
+	public static function getAltAvatar($software, $userinfo, $isPluginUid = false, $jname = '', $username = '')
 	{
+		$application = Factory::getApplication();
 		try {
-			$db = Factory::getDBO();
 			if ($isPluginUid && !empty($jname)) {
-				$userlookup = static::lookupUser($jname, $uid, false, $username);
+				$userlookup = static::lookupUser($jname, $userinfo->id, false, $username);
 				if (!empty($userlookup)) {
-					$uid = $userlookup->id;
+					$userinfo = $userlookup;
 				} else {
 					//no user was found
-					$avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
-					return $avatar;
+					return $application->getDefaultAvatar();
 				}
 			}
 			switch($software) {
 				case 'gravatar':
-					$query = $db->getQuery(true)
-						->select('email')
-						->from('#__users')
-						->where('id = ' . $uid);
-
-					$db->setQuery($query);
-					$email = $db->loadResult();
-					$avatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' . md5(strtolower($email)) . '&size=40';
+					$avatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' . md5(strtolower($userinfo->email)) . '&size=40';
 					break;
 				default:
-					$avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+					$avatar = $application->getDefaultAvatar();
 					break;
 			}
 		} catch (Exception $e) {
-			$avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+			$avatar = $application->getDefaultAvatar();
 		}
 		return $avatar;
 	}
-
-    /**
-     * Gets the source_url from the joomla_int plugin
-     *
-     * @return string Joomla source URL
-     */
-    public static function getJoomlaURL()
-    {
-        static $joomla_source_url;
-        if (empty($joomla_source_url)) {
-            $params = Factory::getParams('joomla_int');
-            $joomla_source_url = $params->get('source_url', '/');
-        }
-        return $joomla_source_url;
-    }
 
     /**
      * Gets the base url of a specific menu item
@@ -693,7 +512,7 @@ class Framework
             $jfusionPluginURL = array();
         }
         if (!isset($jfusionPluginURL[$itemid])) {
-            $joomla_url = static::getJoomlaURL();
+            $joomla_url = JFusionFunction::getJoomlaURL();
             $baseURL = JRoute::_('index.php?option=com_jfusion&Itemid=' . $itemid, false);
             if (!strpos($baseURL, '?')) {
                 $baseURL = preg_replace('#\.[\w]{3,4}\z#is', '', $baseURL);
@@ -701,7 +520,7 @@ class Framework
                     $baseURL.= '/';
                 }
             }
-            $juri = new JURI($joomla_url);
+            $juri = new JUri($joomla_url);
             $path = $juri->getPath();
             if ($path != '/') {
                 $baseURL = str_replace($path, '', $baseURL);
@@ -769,27 +588,6 @@ class Framework
             $output.= '&#' . ord($char) . ';';
         }
         return $output;
-    }
-
-    /**
-     * Retrieves the current timezone based on user preference
-     * Defaults to Joomla global config for timezone
-     * Hopefully the need for this will be deprecated in Joomla 1.6
-     *
-     * @return int timezone in -6 format
-     */
-    public static function getJoomlaTimezone()
-    {
-        static $timezone;
-        if (!isset($timezone)) {
-            $timezone = Factory::getConfig()->get('offset');
-
-            $JUser = JFactory::getUser();
-            if (!$JUser->guest) {
-                $timezone = $JUser->getParam('timezone', $timezone);
-            }
-        }
-        return $timezone;
     }
 
 	/**
@@ -1110,23 +908,6 @@ class Framework
 	}
 
 	/**
-	 * @param string|array $keys
-	 */
-	public static function loadJavascriptLanguage($keys) {
-		if (!empty($keys)) {
-			$document = Factory::getDocument();
-
-			if (is_array($keys)) {
-				foreach($keys as $key) {
-					Text::script($key);
-				}
-			} else {
-				Text::script($keys);
-			}
-		}
-	}
-
-	/**
 	 * @param string $filename file name or url
 	 *
 	 * @return boolean|stdClass
@@ -1279,7 +1060,6 @@ class Framework
 	 * @return mixed;
 	 */
 	public static function getUserGroups($jname = '', $default = false) {
-		jimport('joomla.application.component.helper');
 		$params = Factory::getConfig();
 		$usergroups = $params->get('usergroups', false);
 
@@ -1309,7 +1089,6 @@ class Framework
 	 * @return stdClass;
 	 */
 	public static function getUpdateUserGroups() {
-		jimport('joomla.application.component.helper');
 		$params = Factory::getConfig();
 		$usergroupmodes = $params->get('updateusergroups', new stdClass());
 		return $usergroupmodes;
@@ -1352,5 +1131,184 @@ class Framework
 			}
 		}
 		return $advanced;
+	}
+
+	/**
+	 * Generate a random password
+	 *
+	 * @param   integer  $length  Length of the password to generate
+	 *
+	 * @return  string  Random Password
+	 *
+	 * @since   11.1
+	 */
+	public static function genRandomPassword($length = 8)
+	{
+		$salt = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		$base = strlen($salt);
+		$makepass = '';
+
+		/*
+		 * Start with a cryptographic strength random string, then convert it to
+		 * a string with the numeric base of the salt.
+		 * Shift the base conversion on each character so the character
+		 * distribution is even, and randomize the start shift so it's not
+		 * predictable.
+		 */
+		$random = static::genRandomBytes($length + 1);
+		$shift = ord($random[0]);
+
+		for ($i = 1; $i <= $length; ++$i)
+		{
+			$makepass .= $salt[($shift + ord($random[$i])) % $base];
+			$shift += ord($random[$i]);
+		}
+
+		return $makepass;
+	}
+
+	/**
+	 * Generate random bytes.
+	 *
+	 * @param   integer  $length  Length of the random data to generate
+	 *
+	 * @return  string  Random binary data
+	 *
+	 * @since  12.1
+	 */
+	public static function genRandomBytes($length = 16)
+	{
+		$length = (int) $length;
+		$sslStr = '';
+
+		/*
+		 * If a secure randomness generator exists and we don't
+		 * have a buggy PHP version use it.
+		 */
+		if (function_exists('openssl_random_pseudo_bytes')
+			&& (version_compare(PHP_VERSION, '5.3.4') >= 0 || IS_WIN))
+		{
+			$sslStr = openssl_random_pseudo_bytes($length, $strong);
+
+			if ($strong)
+			{
+				return $sslStr;
+			}
+		}
+
+		/*
+		 * Collect any entropy available in the system along with a number
+		 * of time measurements of operating system randomness.
+		 */
+		$bitsPerRound = 2;
+		$maxTimeMicro = 400;
+		$shaHashLength = 20;
+		$randomStr = '';
+		$total = $length;
+
+		// Check if we can use /dev/urandom.
+		$urandom = false;
+		$handle = null;
+
+		// This is PHP 5.3.3 and up
+		if (function_exists('stream_set_read_buffer') && @is_readable('/dev/urandom'))
+		{
+			$handle = @fopen('/dev/urandom', 'rb');
+
+			if ($handle)
+			{
+				$urandom = true;
+			}
+		}
+
+		while ($length > strlen($randomStr))
+		{
+			$bytes = ($total > $shaHashLength)? $shaHashLength : $total;
+			$total -= $bytes;
+
+			/*
+			 * Collect any entropy available from the PHP system and filesystem.
+			 * If we have ssl data that isn't strong, we use it once.
+			 */
+			$entropy = rand() . uniqid(mt_rand(), true) . $sslStr;
+			$entropy .= implode('', @fstat(fopen(__FILE__, 'r')));
+			$entropy .= memory_get_usage();
+			$sslStr = '';
+
+			if ($urandom)
+			{
+				stream_set_read_buffer($handle, 0);
+				$entropy .= @fread($handle, $bytes);
+			}
+			else
+			{
+				/*
+				 * There is no external source of entropy so we repeat calls
+				 * to mt_rand until we are assured there's real randomness in
+				 * the result.
+				 *
+				 * Measure the time that the operations will take on average.
+				 */
+				$samples = 3;
+				$duration = 0;
+
+				for ($pass = 0; $pass < $samples; ++$pass)
+				{
+					$microStart = microtime(true) * 1000000;
+					$hash = sha1(mt_rand(), true);
+
+					for ($count = 0; $count < 50; ++$count)
+					{
+						$hash = sha1($hash, true);
+					}
+
+					$microEnd = microtime(true) * 1000000;
+					$entropy .= $microStart . $microEnd;
+
+					if ($microStart >= $microEnd)
+					{
+						$microEnd += 1000000;
+					}
+
+					$duration += $microEnd - $microStart;
+				}
+
+				$duration = $duration / $samples;
+
+				/*
+				 * Based on the average time, determine the total rounds so that
+				 * the total running time is bounded to a reasonable number.
+				 */
+				$rounds = (int) (($maxTimeMicro / $duration) * 50);
+
+				/*
+				 * Take additional measurements. On average we can expect
+				 * at least $bitsPerRound bits of entropy from each measurement.
+				 */
+				$iter = $bytes * (int) ceil(8 / $bitsPerRound);
+
+				for ($pass = 0; $pass < $iter; ++$pass)
+				{
+					$microStart = microtime(true);
+					$hash = sha1(mt_rand(), true);
+
+					for ($count = 0; $count < $rounds; ++$count)
+					{
+						$hash = sha1($hash, true);
+					}
+
+					$entropy .= $microStart . microtime(true);
+				}
+			}
+
+			$randomStr .= sha1($entropy, true);
+		}
+
+		if ($urandom)
+		{
+			@fclose($handle);
+		}
+
+		return substr($randomStr, 0, $length);
 	}
 }

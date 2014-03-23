@@ -15,15 +15,17 @@
 
 //use JFusion\Cookies;
 use JFusion\Cookies\Cookies;
-use JFusion\Database\Driver;
-use JFusion\Registry\Registry;
+use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseFactory;
+use Joomla\Registry\Registry;
 use JFusion\Debugger\Debugger;
-use JFusion\Language\Language;
-use JFusion\Language\Text;
-use JFusion\Date\Date;
-use JFusion\Event\Dispatcher;
+use Joomla\Language\Language;
+use Joomla\Language\Text;
+use Joomla\Date\Date;
+use Joomla\Event\Dispatcher;
 use JFusion\Application\Application;
 use JFusion\Session\Session;
+use JFusion\Router\Router;
 
 
 use JFusion\Plugin\Plugin_Front;
@@ -68,7 +70,7 @@ class Factory
 	/**
 	 * Global database object
 	 *
-	 * @var    Driver
+	 * @var    DatabaseDriver
 	 * @since  11.1
 	 */
 	public static $database = null;
@@ -96,14 +98,6 @@ class Factory
 	public static $config = null;
 
 	/**
-	 * Global document object
-	 *
-	 * @var    JDocument
-	 * @since  11.1
-	 */
-	public static $document = null;
-
-	/**
 	 * Global language object
 	 *
 	 * @var    Language
@@ -127,152 +121,191 @@ class Factory
 	 */
 	public static $dispatcher = null;
 
+	/**
+	 * Gets an Fusion front object
+	 *
+	 * @param string $instance name of the JFusion plugin used
+	 *
+	 * @return string object for the JFusion plugin
+	 */
+	public static function &getNameFromInstance($instance)
+	{
+		static $namnes;
+		if (!isset($namnes)) {
+			$namnes = array();
+		}
+		//only create a new plugin instance if it has not been created before
+		if (!isset($namnes[$instance])) {
+			$db = static::getDbo();
 
+			$query = $db->getQuery(true)
+				->select('original_name')
+				->from('#__jfusion')
+				->where('name = ' . $db->quote($instance));
 
-
+			$db->setQuery($query);
+			$name = $db->loadResult();
+			if ($name) {
+				$instance = $name;
+			}
+			$namnes[$instance] = $instance;
+		}
+		return $namnes[$instance];
+	}
 
 	/**
 	 * Gets an Fusion front object
 	 *
-	 * @param string $jname name of the JFusion plugin used
+	 * @param string $instance name of the JFusion plugin used
 	 *
 	 * @return Plugin_Front object for the JFusion plugin
 	 */
-	public static function &getFront($jname)
+	public static function &getFront($instance)
 	{
 		static $instances;
 		if (!isset($instances)) {
 			$instances = array();
 		}
 		//only create a new plugin instance if it has not been created before
-		if (!isset($instances[$jname])) {
-			$class = '\JFusion\Plugins\\'.$jname.'\Front';
+		if (!isset($instances[$instance])) {
+			$name = static::getNameFromInstance($instance);
+
+			$class = '\JFusion\Plugins\\'.$name.'\Front';
 			if (!class_exists($class)) {
 				$class = '\JFusion\Plugin\Plugin_Front';
 			}
-			$instances[$jname] = new $class;
+			$instances[$instance] = new $class($instance);
 		}
-		return $instances[$jname];
+		return $instances[$instance];
 	}
 	/**
 	 * Gets an Fusion front object
 	 *
-	 * @param string $jname name of the JFusion plugin used
+	 * @param string $instance name of the JFusion plugin used
 	 *
 	 * @return Plugin_Admin object for the JFusion plugin
 	 */
-	public static function &getAdmin($jname)
+	public static function &getAdmin($instance)
 	{
 		static $instances;
 		if (!isset($instances)) {
 			$instances = array();
 		}
 		//only create a new plugin instance if it has not been created before
-		if (!isset($instances[$jname])) {
-			$class = '\JFusion\Plugins\\'.$jname.'\Admin';
+		if (!isset($instances[$instance])) {
+			$name = static::getNameFromInstance($instance);
+			$class = '\JFusion\Plugins\\'.$name.'\Admin';
 			if (!class_exists($class)) {
 				$class = '\JFusion\Plugin\Plugin_Admin';
 			}
-			$instances[$jname] = new $class;
+			$instances[$instance] = new $class($instance);
 		}
-		return $instances[$jname];
+		return $instances[$instance];
 	}
 
 	/**
 	 * Gets an Authentication Class for the JFusion Plugin
 	 *
-	 * @param string $jname name of the JFusion plugin used
+	 * @param string $instance name of the JFusion plugin used
 	 *
 	 * @return Plugin_Auth JFusion Authentication class for the JFusion plugin
 	 */
-	public static function &getAuth($jname)
+	public static function &getAuth($instance)
 	{
 		static $instances;
 		if (!isset($instances)) {
 			$instances = array();
 		}
 		//only create a new authentication instance if it has not been created before
-		if (!isset($instances[$jname])) {
-			$class = '\JFusion\Plugins\\'.$jname.'\Auth';
+		if (!isset($instances[$instance])) {
+			$name = static::getNameFromInstance($instance);
+
+			$class = '\JFusion\Plugins\\'.$name.'\Auth';
 			if (!class_exists($class)) {
 				$class = '\JFusion\Plugin\Plugin_Auth';
 			}
-			$instances[$jname] = new $class;
+			$instances[$instance] = new $class($instance);
 		}
-		return $instances[$jname];
+		return $instances[$instance];
 	}
 
 	/**
 	 * Gets an User Class for the JFusion Plugin
 	 *
-	 * @param string $jname name of the JFusion plugin used
+	 * @param string $instance name of the JFusion plugin used
 	 *
 	 * @return Plugin_User JFusion User class for the JFusion plugin
 	 */
-	public static function &getUser($jname)
+	public static function &getUser($instance)
 	{
 		static $instances;
 		if (!isset($instances)) {
 			$instances = array();
 		}
 		//only create a new user instance if it has not been created before
-		if (!isset($instances[$jname])) {
-			$class = '\JFusion\Plugins\\'.$jname.'\User';
+		if (!isset($instances[$instance])) {
+			$name = static::getNameFromInstance($instance);
+
+			$class = '\JFusion\Plugins\\'.$name.'\User';
 			if (!class_exists($class)) {
 				$class = '\JFusion\Plugin\Plugin_User';
 			}
-			$instances[$jname] = new $class;
+			$instances[$instance] = new $class($instance);
 		}
-		return $instances[$jname];
+		return $instances[$instance];
 	}
 
 	/**
 	 * Gets a Forum Class for the JFusion Plugin
 	 *
-	 * @param string $jname name of the JFusion plugin used
+	 * @param string $instance name of the JFusion plugin used
 	 *
 	 * @return Plugin_Forum JFusion Thread class for the JFusion plugin
 	 */
-	public static function &getForum($jname)
+	public static function &getForum($instance)
 	{
 		static $instances;
 		if (!isset($instances)) {
 			$instances = array();
 		}
 		//only create a new thread instance if it has not been created before
-		if (!isset($instances[$jname])) {
-			$class = '\JFusion\Plugins\\'.$jname.'\Forum';
+		if (!isset($instances[$instance])) {
+			$name = static::getNameFromInstance($instance);
+
+			$class = '\JFusion\Plugins\\'.$name.'\Forum';
 			if (!class_exists($class)) {
 				$class = '\JFusion\Plugin\Plugin_Forum';
 			}
-			$instances[$jname] = new $class;
+			$instances[$instance] = new $class($instance);
 		}
-		return $instances[$jname];
+		return $instances[$instance];
 	}
 
 	/**
 	 * Gets a Helper Class for the JFusion Plugin which is only used internally by the plugin
 	 *
-	 * @param string $jname name of the JFusion plugin used
+	 * @param string $instance name of the JFusion plugin used
 	 *
 	 * @return object JFusionHelper JFusion Helper class for the JFusion plugin
 	 */
-	public static function &getHelper($jname)
+	public static function &getHelper($instance)
 	{
 		static $instances;
 		if (!isset($instances)) {
 			$instances = array();
 		}
 		//only create a new thread instance if it has not been created before
-		if (!isset($instances[$jname])) {
-			$class = '\JFusion\Plugins\\'.$jname.'\Helper';
+		if (!isset($instances[$instance])) {
+			$name = static::getNameFromInstance($instance);
+
+			$class = '\JFusion\Plugins\\'.$name.'\Helper';
 			if (!class_exists($class)) {
-				$instances[$jname] = false;
+				$instances[$instance] = false;
 			} else {
-				$instances[$jname] = new $class;
+				$instances[$instance] = new $class($instance);
 			}
 		}
-		return $instances[$jname];
+		return $instances[$instance];
 	}
 
 	/**
@@ -280,7 +313,7 @@ class Factory
 	 *
 	 * @param string $jname name of the JFusion plugin used
 	 *
-	 * @return Driver Database connection for the JFusion plugin
+	 * @return DatabaseDriver Database connection for the JFusion plugin
 	 * @throws  RuntimeException
 	 */
 	public static function &getDatabase($jname)
@@ -354,7 +387,7 @@ class Factory
 	 *
 	 * @param string $jname name of the JFusion plugin used
 	 *
-	 * @return Driver database object
+	 * @return DatabaseDriver database object
 	 * @throws  RuntimeException
 	 */
 	public static function &createDatabase($jname)
@@ -374,24 +407,17 @@ class Factory
 			$driver = $params->get('database_type');
 			$charset = $params->get('database_charset', 'utf8');
 			//added extra code to prevent error when $driver is incorrect
-			if ($driver != 'mysql' && $driver != 'mysqli') {
-				//invalid driver
-				throw new RuntimeException(Text::_('INVALID_DRIVER'));
-			} else {
-				$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
 
-				jimport('joomla.database.database');
-				jimport('joomla.database.table');
+			$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
 
-				$db = Driver::getInstance($options);
+			$db = DatabaseFactory::getInstance()->getDriver($driver, $options);
 
-				//add support for UTF8
-				$db->setQuery('SET names ' . $db->quote($charset));
-				$db->execute();
+			//add support for UTF8
+			$db->setQuery('SET names ' . $db->quote($charset));
+			$db->execute();
 
-				//get the debug configuration setting
-				$db->setDebug(self::getConfig()->get('debug'));
-			}
+			//get the debug configuration setting
+			$db->setDebug(self::getConfig()->get('debug'));
 		}
 		return $db;
 	}
@@ -472,34 +498,6 @@ class Factory
 		}
 		return $result;
 	}
-	/**
-	 * Returns an object of the specified parser class
-	 * @param string $type
-	 *
-	 * @return BBCode_Parser of parser class
-	 */
-	public static function &getCodeParser($type = 'bbcode') {
-		static $instance;
-
-		if (!isset($instance)) {
-			$instance = array();
-		}
-
-		if (empty($instance[$type])) {
-			switch ($type) {
-				case 'bbcode':
-					if (!class_exists('BBCode_Parser')) {
-						include_once 'parsers' . DIRECTORY_SEPARATOR . 'nbbc.php';
-					}
-					$instance[$type] = new BBCode_Parser;
-					break;
-				default:
-					$instance[$type] = false;
-					break;
-			}
-		}
-		return $instance[$type];
-	}
 
 	/**
 	 * Gets an JFusion cross domain cookie object
@@ -566,15 +564,16 @@ class Factory
 	 *
 	 * Returns the global {@link Driver} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  Driver
-	 *
-	 * @see     Driver
-	 * @since   11.1
+	 * @return  DatabaseDriver
 	 */
 	public static function getDbo()
 	{
 		if (!self::$database)
 		{
+			//get config values
+			$conf = self::getConfig();
+
+			//prepare the data for creating a database connection
 			$conf = self::getConfig();
 
 			$host = $conf->get('host');
@@ -584,12 +583,14 @@ class Factory
 			$prefix = $conf->get('dbprefix');
 			$driver = $conf->get('dbtype');
 			$debug = $conf->get('debug');
+			//added extra code to prevent error when $driver is incorrect
 
 			$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
 
-			self::$database = Driver::getInstance($options);
+			self::$database = DatabaseFactory::getInstance()->getDriver($driver, $options);
 
-			self::$database->setDebug($debug);
+			//get the debug configuration setting
+			self::$database->setDebug(self::getConfig()->get('debug'));
 		}
 		return self::$database;
 	}
@@ -623,28 +624,6 @@ class Factory
 	public static function getConfig()
 	{
 		return self::$config;
-	}
-
-	/**
-	 * Get a document object.
-	 *
-	 * Returns the global {@link JDocument} object, only creating it if it doesn't already exist.
-	 *
-	 * @return  JDocument object
-	 *
-	 * @see     JDocument
-	 * @since   11.1
-	 */
-	public static function getDocument()
-	{
-		if (!self::$document)
-		{
-			/**
-			 * TODO CREATE Config
-			 */
-		}
-
-		return self::$document;
 	}
 
 	/**
@@ -735,7 +714,7 @@ class Factory
 	{
 		if (!self::$dispatcher)
 		{
-			self::$dispatcher = Dispatcher::getInstance();
+			self::$dispatcher = new Dispatcher();
 		}
 		return self::$dispatcher;
 	}
@@ -759,7 +738,7 @@ class Factory
 	/**
 	 * Method to get the application session object.
 	 *
-	 * @return  Session  The session object
+	 * @return  Router  The session object
 	 *
 	 * @since   11.3
 	 */
@@ -767,7 +746,7 @@ class Factory
 	{
 		if (!self::$session)
 		{
-			self::$session = Session::getInstance();
+			self::$session = Router::getInstance();
 		}
 		return self::$session;
 	}

@@ -14,11 +14,16 @@
  */
 
 // no direct access
+use JCategories;
+use JCategoryNode;
+use JEventDispatcher;
+use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
-use JFusion\Registry\Registry;
+use Joomla\Language\Text;
 
+use JFusionFunction;
+use JRegistry;
 use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -38,13 +43,13 @@ class Plugin_Forum extends Plugin
 	var $helper;
 
 	/**
-	 *
+	 * @param string $instance instance name of this plugin
 	 */
-	function __construct()
+	function __construct($instance)
 	{
-		parent::__construct();
+		parent::__construct($instance);
 		//get the helper object
-		$this->helper = & Factory::getHelper($this->getJname());
+		$this->helper = & Factory::getHelper($this->getJname(), $this->getName());
 	}
 
     /**
@@ -190,7 +195,7 @@ class Plugin_Forum extends Plugin
     /**
      * Checks to see if a thread already exists for the content item and calls the appropriate function
      *
-     * @param Registry 	&$dbparams		object with discussion bot parameters
+     * @param JRegistry 	&$dbparams		object with discussion bot parameters
      * @param object 	&$contentitem 	object containing content information
      * @param object|int 	&$threadinfo 	object with threadinfo from lookup table
      * @param array 	&$status        object with debug, error, and action static
@@ -250,7 +255,7 @@ class Plugin_Forum extends Plugin
     /**
      * Retrieves the default forum based on section/category stipulations or default set in the plugins config
      *
-     * @param Registry &$dbparams    discussion bot parameters
+     * @param JRegistry &$dbparams    discussion bot parameters
      * @param object &$contentitem object containing content information
      *
      * @return int Returns id number of the forum
@@ -363,7 +368,7 @@ class Plugin_Forum extends Plugin
      * Function that determines the author of an article or returns the default user if one is not found
      * For the discussion bot
      *
-     * @param Registry &$dbparams    object with discussion bot parameters
+     * @param JRegistry &$dbparams    object with discussion bot parameters
      * @param object &$contentitem contentitem
      *
      * @return int forum's userid
@@ -434,7 +439,7 @@ class Plugin_Forum extends Plugin
 	/**
 	 * Prepares the body for the first post in a thread
 	 *
-	 * @param Registry &$dbparams 		object with discussion bot parameters
+	 * @param JRegistry &$dbparams 		object with discussion bot parameters
 	 * @param object	$contentitem 	object containing content information
 	 *
 	 * @return string
@@ -481,7 +486,7 @@ class Plugin_Forum extends Plugin
 	/**
 	 * Retrieves the posts to be displayed in the content item if enabled
 	 *
-	 * @param Registry $dbparams
+	 * @param JRegistry $dbparams
 	 * @param object $existingthread object with forumid, threadid, and postid (first post in thread)
 	 * @param int $start
 	 * @param int $limit
@@ -515,14 +520,14 @@ class Plugin_Forum extends Plugin
 
 	function loadQuickReplyIncludes() {
 		//using markitup http://markitup.jaysalvat.com/ for bbcode textbox
-		$document = Factory::getDocument();
+		$document = JFactory::getDocument();
 
 		$path = 'plugins/content/jfusion/discussbot/markitup';
 
-		$document->addScript(Framework::getJoomlaURL() . $path . '/jquery.markitup.js');
-		$document->addScript(Framework::getJoomlaURL() . $path . '/sets/bbcode/set.js');
-		$document->addStylesheet(Framework::getJoomlaURL() . $path . '/skins/simple/style.css');
-		$document->addStylesheet(Framework::getJoomlaURL() . $path . '/sets/bbcode/style.css');
+		$document->addScript(JFusionFunction::getJoomlaURL() . $path . '/jquery.markitup.js');
+		$document->addScript(JFusionFunction::getJoomlaURL() . $path . '/sets/bbcode/set.js');
+		$document->addStylesheet(JFusionFunction::getJoomlaURL() . $path . '/skins/simple/style.css');
+		$document->addStylesheet(JFusionFunction::getJoomlaURL() . $path . '/sets/bbcode/style.css');
 
 		$js = <<<JS
 		JFusion.loadMarkitup = true;
@@ -534,7 +539,7 @@ JS;
     /**
      * Returns HTML of a quick reply
      *
-     * @param Registry &$dbparams       object with discussion bot parameters
+     * @param JRegistry &$dbparams       object with discussion bot parameters
      * @param boolean $showGuestInputs toggles whether to show guest inputs or not
      *
      * @return string of html
@@ -569,7 +574,7 @@ HTML;
     /**
      * Creates the html for the selected captcha for the discussion bot
      *
-     * @param Registry $dbparams object with discussion bot parameters
+     * @param JRegistry $dbparams object with discussion bot parameters
      *
      * @return string
      */
@@ -603,7 +608,7 @@ HTML;
 					$theme = $dbparams->get('recaptcha_theme', 'red');
 					$lang = $dbparams->get('recaptcha_lang', 'en');
 
-					$document = Factory::getDocument();
+					$document = JFactory::getDocument();
 
                     $js = <<<JS
 					var RecaptchaOptions = {
@@ -653,7 +658,7 @@ JS;
     /**
      * Verifies captcha of a guest post submitted by the discussion bot
      *
-     * @param Registry &$dbparams object with discussion bot parameters
+     * @param JRegistry &$dbparams object with discussion bot parameters
      *
      * @return boolean
      */
@@ -733,7 +738,7 @@ JS;
 	/**
 	 * Creates a post from the quick reply
 	 *
-	 * @param Registry $params      object with discussion bot parameters
+	 * @param JRegistry $params      object with discussion bot parameters
 	 * @param stdClass $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
 	 * @param object $contentitem object of content item
 	 * @param object $userinfo    object info of the forum user
@@ -761,7 +766,7 @@ JS;
     /**
      * @param array $config
      * @param $view
-     * @param Registry $params
+     * @param JRegistry $params
      *
      * @return string
      */

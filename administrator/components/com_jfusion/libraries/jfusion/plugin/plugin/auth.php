@@ -33,13 +33,13 @@ class Plugin_Auth extends Plugin
 	var $helper;
 
 	/**
-	 *
+	 * @param string $instance instance name of this plugin
 	 */
-	function __construct()
+	function __construct($instance)
 	{
-		parent::__construct();
+		parent::__construct($instance);
 		//get the helper object
-		$this->helper = & Factory::getHelper($this->getJname());
+		$this->helper = & Factory::getHelper($this->getJname(), $this->getName());
 	}
 
     /**

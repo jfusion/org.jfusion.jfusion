@@ -14,11 +14,17 @@
  */
 
 // no direct access
+use JFactory;
+use JFile;
+use JFolder;
 use JFusion\Factory;
-use JFusion\Parser\Parsers\CssParser;
-use JFusion\Registry\Registry;
-use JFusion\Language\Text;
+use JFusion\Framework;
+use Joomla\Language\Text;
 
+use JFusion\Parser\Css;
+use JMenu;
+use JRegistry;
+use JUri;
 use \RuntimeException;
 use \stdClass;
 
@@ -48,13 +54,13 @@ class Plugin_Front extends Plugin
 	private $curlLocation = null;
 
 	/**
-	 *
+	 * @param string $instance instance name of this plugin
 	 */
-	function __construct()
+	function __construct($instance)
 	{
-		parent::__construct();
+		parent::__construct($instance);
 		//get the helper object
-		$this->helper = &Factory::getHelper($this->getJname());
+		$this->helper = & Factory::getHelper($this->getJname(), $this->getName());
 	}
 
     /**
@@ -346,7 +352,7 @@ JS;
             $jname = Factory::getApplication()->input->get('Itemid');
         }
 
-        $document = Factory::getDocument();
+        $document = JFactory::getDocument();
 
         $sourcepath = JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
         $urlpath = 'components/com_jfusion/css/' . $jname . '/';
@@ -367,7 +373,7 @@ JS;
 		                    $cssUrlRaw = $cssUrl[1];
 
 		                    if (strpos($cssUrlRaw, '/') === 0) {
-			                    $uri = new JURI($data->integratedURL);
+			                    $uri = new JUri($data->integratedURL);
 
 			                    $cssUrlRaw = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port')) . $cssUrlRaw;
 		                    }
@@ -375,7 +381,7 @@ JS;
 		                    $filenamesource = $sourcepath . $filename;
 
 		                    if ( !JFile::exists($filenamesource) ) {
-			                    $cssparser = new CssParser('#jfusionframeless');
+			                    $cssparser = new Css('#jfusionframeless');
 			                    $result = $cssparser->ParseUrl($cssUrlRaw);
 			                    if ($result !== false ) {
 				                    $content = $cssparser->GetCSS();
@@ -405,7 +411,7 @@ JS;
                     }
 
                     if ( !JFile::exists($filenamesource) ) {
-                        $cssparser = new CssParser('#jfusionframeless');
+                        $cssparser = new Css('#jfusionframeless');
                         $cssparser->setUrl($data->integratedURL);
                         $cssparser->ParseStr($values);
                         $content = $cssparser->GetCSS();
@@ -426,7 +432,7 @@ JS;
 	 * @return string
 	 */
 	function cssCacheName($url) {
-		$uri = new JURI($url);
+		$uri = new JUri($url);
 		$filename = $uri->toString(array('path', 'query'));
 		$filename = trim($filename, '/');
 
@@ -507,7 +513,7 @@ JS;
      *                                  forum (to be published in a thread or post; used by discussion bot)
      *                                  activity (displayed in activity module; used by the activity module)
      *                                  search (displayed as search results; used by search plugin)
-     * @param Registry $params        (optional) Joomla parameter object passed in by JFusion's module/plugin
+     * @param JRegistry $params        (optional) Joomla parameter object passed in by JFusion's module/plugin
      * @param mixed $object             (optional) Object with information for the specific element the text is from
      *
      * @return array  $status           Information passed back to calling script such as limit_applied
@@ -779,7 +785,7 @@ HTML;
         preg_match('#(.*?;url=)(.*)#mi', $matches[1], $matches2);
         list(, $timeout , $url) = $matches2;
 
-        $uri = new JURI($url);
+        $uri = new JUri($url);
         $jfile = basename($uri->getPath());
         $query = $uri->getQuery(false);
         $fragment = $uri->getFragment();
@@ -830,7 +836,7 @@ HTML;
      *
      * @param string &$text        string text to be searched
      * @param string &$phrase      string how the search should be performed exact, all, or any
-     * @param Registry &$pluginParam custom plugin parameters in search.xml
+     * @param JRegistry &$pluginParam custom plugin parameters in search.xml
      * @param int    $itemid       what menu item to use when creating the URL
      * @param string $ordering     ordering sent by Joomla: null, oldest, popular, category, alpha, or newest
      *
@@ -1066,7 +1072,7 @@ HTML;
 		$config = Factory::getConfig();
 		$sefenabled = $config->get('sef');
 		if(!empty($sefenabled)) {
-			$uri = JURI::getInstance();
+			$uri = JUri::getInstance();
 			$current = $uri->toString(array('path', 'query'));
 
 			$menu = JMenu::getInstance('site');

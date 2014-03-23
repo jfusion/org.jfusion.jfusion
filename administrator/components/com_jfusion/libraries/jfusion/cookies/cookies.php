@@ -2,7 +2,7 @@
 // Check to ensure this file is within the rest of the framework
 
 use JFusion\Factory;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 
 defined('JPATH_BASE') or die();
 /**

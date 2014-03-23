@@ -14,6 +14,7 @@
 
 use JFusion\Factory;
 use JFusion\Framework;
+use Joomla\Uri\Uri;
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
@@ -59,11 +60,7 @@ class Parser
                 $options['plaintext_line_breaks'] = 'br';
             }
 
-            /**
-             * @ignore
-             * @var $bbcode BBCode_Parser
-             */
-            $bbcode = Factory::getCodeParser();
+	        $bbcode = new Nbbc();
             $bbcode->SetPlainMode(true);
             if (isset($options['plain_tags']) && is_array($options['plain_tags'])) {
                 foreach ($options['plain_tags'] as $tag) {
@@ -98,7 +95,7 @@ class Parser
             //Encode html entities added by the plugin prepareText function
             $text = htmlentities($text);
 
-            $bbcode = Factory::getCodeParser();
+            $bbcode = new Nbbc();
 
             //do not parse & into &amp;
             $bbcode->SetAllowAmpersand(true);
@@ -110,7 +107,7 @@ class Parser
             }
 
             if (!empty($options['parse_smileys'])) {
-                $bbcode->SetSmileyURL(Framework::getJoomlaURL() . 'components/com_jfusion/images/smileys');
+                $bbcode->SetSmileyURL(JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/smileys');
             } else {
                 $bbcode->SetEnableSmileys(false);
             }
@@ -253,8 +250,8 @@ class Parser
                 $return = $text . "\n\n";
             }
         } elseif ($tag == 'img') {
-            $joomla_url = Framework::getJoomlaURL();
-            $juri = new JURI($joomla_url);
+            $joomla_url = JFusionFunction::getJoomlaURL();
+            $juri = new Uri($joomla_url);
             $path = $juri->getPath();
             if ($path != '/'){
                 $matches = str_replace($path, '', $matches);
@@ -322,6 +319,6 @@ class Parser
      */
     public function __url($matches)
     {
-    	return '[url=' . JRoute::_(Framework::getJoomlaURL() . $matches[1]) . ']' . $matches[2] . '[/url]';
+    	return '[url=' . JRoute::_(JFusionFunction::getJoomlaURL() . $matches[1]) . ']' . $matches[2] . '[/url]';
     }
 }

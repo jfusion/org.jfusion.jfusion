@@ -7,8 +7,6 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-use \Exception;
-
 defined('JPATH_PLATFORM') or die;
 
 /**
@@ -23,16 +21,6 @@ defined('JPATH_PLATFORM') or die;
  */
 class Object
 {
-	/**
-	 * An array of error messages or Exception objects.
-	 *
-	 * @var    array
-	 * @since  11.1
-	 * @see    JError
-	 * @deprecated  12.3  JError has been deprecated
-	 */
-	protected $_errors = array();
-
 	/**
 	 * Class constructor, overridden in descendant classes.
 	 *
@@ -63,7 +51,7 @@ class Object
 	}
 
 	/**
-	 * Sets a default value if not alreay assigned
+	 * Sets a default value if not none assigned
 	 *
 	 * @param   string  $property  The name of the property.
 	 * @param   mixed   $default   The default value.
@@ -128,59 +116,6 @@ class Object
 	}
 
 	/**
-	 * Get the most recent error message.
-	 *
-	 * @param   integer  $i         Option error index.
-	 * @param   boolean  $toString  Indicates if JError objects should return their error message.
-	 *
-	 * @return  string   Error message
-	 *
-	 * @since   11.1
-	 * @see     JError
-	 * @deprecated 12.3  JError has been deprecated
-	 */
-	public function getError($i = null, $toString = true)
-	{
-		// Find the error
-		if ($i === null)
-		{
-			// Default, return the last message
-			$error = end($this->_errors);
-		}
-		elseif (!array_key_exists($i, $this->_errors))
-		{
-			// If $i has been specified but does not exist, return false
-			return false;
-		}
-		else
-		{
-			$error = $this->_errors[$i];
-		}
-
-		// Check if only the string is requested
-		if ($error instanceof Exception && $toString)
-		{
-			return (string) $error;
-		}
-
-		return $error;
-	}
-
-	/**
-	 * Return all errors, if any.
-	 *
-	 * @return  array  Array of error messages or JErrors.
-	 *
-	 * @since   11.1
-	 * @see     JError
-	 * @deprecated 12.3  JError has been deprecated
-	 */
-	public function getErrors()
-	{
-		return $this->_errors;
-	}
-
-	/**
 	 * Modifies a property of the object, creating it if it does not already exist.
 	 *
 	 * @param   string  $property  The name of the property.
@@ -221,21 +156,5 @@ class Object
 		}
 
 		return false;
-	}
-
-	/**
-	 * Add an error message.
-	 *
-	 * @param   string  $error  Error message.
-	 *
-	 * @return  void
-	 *
-	 * @since   11.1
-	 * @see     JError
-	 * @deprecated 12.3  JError has been deprecated
-	 */
-	public function setError($error)
-	{
-		array_push($this->_errors, $error);
 	}
 }

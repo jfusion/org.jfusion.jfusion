@@ -12,7 +12,7 @@ use JFusion\Framework;
 use JFusion\Debugger\Debugger;;
 
 use JFusion\Object\Object;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 
 use \stdClass;
 use \Exception;

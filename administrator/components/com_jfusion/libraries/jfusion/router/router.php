@@ -7,8 +7,9 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-use JFusion\Event\Dispatcher;
-use JFusion\Uri\Uri;
+use JFusion\Factory;
+use Joomla\Event\Event;
+use Joomla\Uri\Uri;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -66,14 +67,10 @@ class Router
 	 */
 	public function build($url)
 	{
-		$responces = Dispatcher::getInstance()->trigger('onRouterBuild');
-		if ($responces) {
-			foreach ($responces as $responce) {
-				if ($responce instanceof Uri) {
-					return $responce;
-				}
-			}
-		}
-		return new Uri();
+		$pluginevent = new Event('onRouterBuild');
+		$pluginevent->addArgument('url', $url);
+
+		Factory::getDispatcher()->triggerEvent($pluginevent);
+		return $pluginevent->getArgument('uri', new Uri());
 	}
 }

@@ -16,7 +16,8 @@
 // no direct access
 use JFusion\Factory;
 use\JFusion\Debugger\Debugger;
-use\JFusion\Registry\Registry;
+use Joomla\Event\Event;
+use\Joomla\Registry\Registry;
 
 use \Exception;
 use \ReflectionMethod;
@@ -49,11 +50,23 @@ class Plugin
 	var $debugger;
 
 	/**
-	 *
+	 * @var string
 	 */
-	function __construct()
+	private $instance = null;
+
+	/**
+	 * @var string
+	 */
+	private $name = null;
+
+	/**
+	 * @param string $instance instance name of this plugin
+	 */
+	function __construct($instance)
 	{
-		Factory::getDispatcher()->trigger('onLanguageLoadFramework');
+		$this->instance = $instance;
+
+		$responce = Factory::getDispatcher()->triggerEvent(new Event('onLanguageLoadFramework'));
 
 		$jname = $this->getJname();
 		if (!empty($jname)) {
@@ -76,7 +89,10 @@ class Plugin
 					foreach($plugins as $plugin) {
 						$name = $plugin->original_name ? $plugin->original_name : $plugin->name;
 						if (!$loaded) {
-							Factory::getDispatcher()->trigger('onLanguageLoadPlugin', array($name));
+							$pluginevent = new Event('onLanguageLoadPlugin');
+							$pluginevent->addArgument('jname', $name);
+
+							Factory::getDispatcher()->triggerEvent($pluginevent);
 							$loaded = true;
 						}
 						static::$language[$jname] = true;
@@ -96,9 +112,26 @@ class Plugin
 	 *
 	 * @return string name of current JFusion plugin
 	 */
-	function getJname()
+	final public function getJname()
 	{
-		return '';
+		return $this->instance;
+	}
+
+	/**
+	 * returns the name of this JFusion plugin, using the "namespace" part of the plugin class
+	 *
+	 * @return string name of current JFusion plugin
+	 */
+	final public function getName()
+	{
+		if (!$this->name) {
+			$this->name = get_class($this);
+
+			list ($jfusion, $plugins, $name) = explode('\\', get_class($this));
+
+			$this->name = $name;
+		}
+		return $this->name;
 	}
 
 	/**

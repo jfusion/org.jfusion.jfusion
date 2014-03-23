@@ -16,8 +16,8 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Registry\Registry;
-use JFusion\Language\Text;
+use Joomla\Registry\Registry;
+use Joomla\Language\Text;
 
 use \RuntimeException;
 use \Exception;
@@ -39,13 +39,13 @@ class Plugin_Admin extends Plugin
 	var $helper;
 
 	/**
-	 *
+	 * @param string $instance instance name of this plugin
 	 */
-	function __construct()
+	function __construct($instance)
 	{
-		parent::__construct();
+		parent::__construct($instance);
 		//get the helper object
-		$this->helper = & Factory::getHelper($this->getJname());
+		$this->helper = & Factory::getHelper($this->getJname(), $this->getName());
 	}
 
     /**
@@ -160,7 +160,7 @@ class Plugin_Admin extends Plugin
 		    throw new RuntimeException($this->getJname() . ' -> joomla_int ' . Text::_('NO_DATABASE'));
 	    } else {
 		    //added check for missing files of copied plugins after upgrade
-		    $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR;
+		    $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getName() . DIRECTORY_SEPARATOR;
 		    if (!file_exists($path . 'admin.php')) {
 			    throw new RuntimeException(Text::_('NO_FILES') . ' admin.php');
 		    } else if (!file_exists($path . 'user.php')) {

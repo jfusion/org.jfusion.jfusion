@@ -16,10 +16,11 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
-use JFusion\Registry\Registry;
+use Joomla\Language\Text;
+use Joomla\Registry\Registry;
 
 
+use JUri;
 use \RuntimeException;
 use \Exception;
 use \stdClass;
@@ -41,13 +42,13 @@ class Plugin_User extends Plugin
 	var $helper;
 
 	/**
-	 *
+	 * @param string $instance instance name of this plugin
 	 */
-	function __construct()
+	function __construct($instance)
 	{
-		parent::__construct();
+		parent::__construct($instance);
 		//get the helper object
-		$this->helper = & Factory::getHelper($this->getJname());
+		$this->helper = & Factory::getHelper($this->getJname(), $this->getName());
 	}
 
     /**
@@ -853,7 +854,7 @@ class Plugin_User extends Plugin
 		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
 		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
 
-		$my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST) . parse_url(JURI::root(), PHP_URL_PATH), '/');
+		$my_ID = rtrim(parse_url(JUri::root(), PHP_URL_HOST) . parse_url(JUri::root(), PHP_URL_PATH), '/');
 		$curl_options['jnodeid'] = strtolower($my_ID);
 
 		// For further simplifying setup we send also an indication if this system is a host. Other hosts should
@@ -975,7 +976,7 @@ class Plugin_User extends Plugin
         // plugin. This is totally transparent for the the webmaster. No additional setup is needed
 
 
-        $my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST).parse_url(JURI::root(), PHP_URL_PATH), '/');
+        $my_ID = rtrim(parse_url(JUri::root(), PHP_URL_HOST).parse_url(JUri::root(), PHP_URL_PATH), '/');
         $curl_options['jnodeid'] = $my_ID;
         $remotedata = JFusionCurl::RemoteReadPage($curl_options);
         return $remotedata;
@@ -1039,7 +1040,7 @@ class Plugin_User extends Plugin
 		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
 		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
 
-		$my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST) . parse_url(JURI::root(), PHP_URL_PATH), '/');
+		$my_ID = rtrim(parse_url(JUri::root(), PHP_URL_HOST) . parse_url(JUri::root(), PHP_URL_PATH), '/');
 		$curl_options['jnodeid'] = strtolower($my_ID);
 
 		// For further simplifying setup we send also an indication if this system is a host. Other hosts should

@@ -15,7 +15,7 @@
 
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Language\Text;
+use Joomla\Language\Text;
 
 use \stdClass;
 use \Exception;
