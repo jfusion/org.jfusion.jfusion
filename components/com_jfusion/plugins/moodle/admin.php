@@ -16,12 +16,12 @@
 
 // no direct access
 use Exception;
-use JArchive;
 use JFile;
 use JFolder;
 use JFusion\Archive\Tar;
 use JFusion\Factory;
 use JFusion\Framework;
+use Joomla\Archive\Archive;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 use RuntimeException;
@@ -297,7 +297,8 @@ HTML;
             $tar->createModify('auth lang', '', '');
             chdir($old_chdir);
 
-            $ret = JArchive::extract($src_code . DIRECTORY_SEPARATOR . $archive_filename, $source_path);
+	        $archive = new Archive();
+            $ret = $archive->extract($src_code . DIRECTORY_SEPARATOR . $archive_filename, $source_path);
             JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
 
             if ($ret) {

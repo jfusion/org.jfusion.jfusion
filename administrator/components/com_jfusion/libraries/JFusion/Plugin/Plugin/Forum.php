@@ -374,12 +374,16 @@ class Plugin_Forum extends Plugin
 	{
 		if($dbparams->get('use_article_userid', 1)) {
 			//find this user in the forum
-			$userinfo = Framework::lookupUser($this->getJname(), $contentitem->created_by);
 
-			if(empty($userinfo->userid)) {
+			$userlookup = new stdClass();
+			$userlookup->userid = $contentitem->created_by;
+
+			$userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+
+			if(!$userlookup) {
 				$id = $dbparams->get('default_userid');
 			} else {
-				$id = $userinfo->userid;
+				$id = $userlookup->userid;
 			}
 		} else {
 			$id = $dbparams->get('default_userid');

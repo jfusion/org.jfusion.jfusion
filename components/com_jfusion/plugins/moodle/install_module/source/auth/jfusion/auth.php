@@ -64,7 +64,7 @@ class DualLogin
      * @return array|string
      */
     function login($curl_options) {
-		$helper = new JFusionCurl;
+		$helper = new \JFusion\Curl\Curl;
 		$status = $helper->RemoteLogin($curl_options);
 		unset($helper);
 		return $status;
@@ -75,7 +75,7 @@ class DualLogin
      * @return array|string
      */
     function logout($curl_options) {
-		$helper = new JFusionCurl;
+		$helper = new \JFusion\Curl\Curl;
 		/**
 		 * @TODO to fix: For info, with J! 1.6 there is problem with a form token and it's not provided to the post data
 		 */

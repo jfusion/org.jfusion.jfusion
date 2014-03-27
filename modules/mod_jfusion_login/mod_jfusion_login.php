@@ -15,6 +15,9 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -59,15 +62,15 @@ try {
 	        $link_jname = $link_itemid;
 	    }
 	    //get the default URLs if no custom URL specified
-	    $LinkPlugin = \JFusion\Factory::getFront($link_jname);
+	    $LinkPlugin = Factory::getFront($link_jname);
 	    if (empty($lostpassword_url) && method_exists($LinkPlugin, 'getLostPasswordURL')) {
-	        $lostpassword_url = \JFusion\Framework::routeURL($LinkPlugin->getLostPasswordURL(), $link_itemid);
+	        $lostpassword_url = Framework::routeURL($LinkPlugin->getLostPasswordURL(), $link_itemid);
 	    }
 	    if (empty($lostusername_url) && method_exists($LinkPlugin, 'getLostUsernameURL')) {
-	        $lostusername_url = \JFusion\Framework::routeURL($LinkPlugin->getLostUsernameURL(), $link_itemid);
+	        $lostusername_url = Framework::routeURL($LinkPlugin->getLostUsernameURL(), $link_itemid);
 	    }
 	    if (empty($register_url) && method_exists($LinkPlugin, 'getRegistrationURL')) {
-		    $register_url = \JFusion\Framework::routeURL($LinkPlugin->getRegistrationURL(), $link_itemid);
+		    $register_url = Framework::routeURL($LinkPlugin->getRegistrationURL(), $link_itemid);
 	    }
 	    //now find out from which plugin the avatars need to be displayed
 	    $itemid = $params->get('itemidAvatarPMs');
@@ -85,16 +88,21 @@ try {
 	        $jname = $itemid;
 	    }
 
+		$userlookup = null;
 		if (!$user->get('guest')) {
-	        $userlookup = \JFusion\Framework::lookupUser($jname, $user->get('id'));
-	        if (!empty($userlookup)) {
+			$userlookup = new stdClass();
+			$userlookup->userid = $user->get('id');
+			$userlookup->username = $user->get('username');
+			$userlookup->email = $user->get('email');
+	        $userlookup = Framework::lookupUser($jname, $userlookup, 'joomla_int');
+	        if ($userlookup) {
 		        try {
-			        $JFusionUser = \JFusion\Factory::getUser($link_jname);
+			        $JFusionUser = Factory::getUser($link_jname);
 			        $userinfo = $JFusionUser->getUser($userlookup);
 		        } catch (Exception $e) {
 			        $userinfo = null;
 		        }
-	            if (!empty($userinfo)) {
+	            if ($userinfo) {
 	                $display_name = ($params->get('name') && isset($userinfo->name)) ? $userinfo->name : $userinfo->username;
 	            } else {
 	                $display_name = ($params->get('name')) ? $user->get('name') : $user->get('username');
@@ -103,14 +111,14 @@ try {
 		}
 
 	    if (!empty($jname) && $jname != 'joomla_int' && !$user->get('guest')) {
-	        $JFusionPlugin = \JFusion\Factory::getForum($jname);
+	        $JFusionPlugin = Factory::getForum($jname);
 	        //check to see if we found a user
-	        if (!empty($userlookup)) {
+	        if ($userlookup) {
 	            if ($params->get('avatar')) {
 	                // retrieve avatar
 	                $avatar_software = $params->get('avatar_software');
 	                if ($avatar_software != 'jfusion') {
-		                $avatar = \JFusion\Framework::getAltAvatar($avatar_software, $userlookup);
+		                $avatar = Framework::getAltAvatar($avatar_software, $userlookup);
 	                } else {
 		                $avatar = $JFusionPlugin->getAvatar($userlookup->userid);
 	                }
@@ -120,12 +128,12 @@ try {
 	            }
 	            if ($params->get('pmcount') && $jname != 'joomla_ext') {
 	                $pmcount = $JFusionPlugin->getPrivateMessageCounts($userlookup->userid);
-	                $url_pm = \JFusion\Framework::routeURL($JFusionPlugin->getPrivateMessageURL(), $itemid);
+	                $url_pm = Framework::routeURL($JFusionPlugin->getPrivateMessageURL(), $itemid);
 	            } else {
 	                $pmcount = false;
 	            }
 	            if ($params->get('viewnewmessages') && $jname != 'joomla_ext') {
-	                $url_viewnewmessages = \JFusion\Framework::routeURL($JFusionPlugin->getViewNewMessagesURL(), $itemid);
+	                $url_viewnewmessages = Framework::routeURL($JFusionPlugin->getViewNewMessagesURL(), $itemid);
 	            } else {
 	                $url_viewnewmessages = false;
 	            }
@@ -135,8 +143,8 @@ try {
 	        if ($params->get('avatar')) {
 	            //retrieve avatar
 		        $avatar_software = $params->get('avatar_software');
-	            if ($avatar_software != 'jfusion' && !empty($userlookup)) {
-	                $avatar = \JFusion\Framework::getAltAvatar($avatar_software, $userlookup);
+	            if ($avatar_software != 'jfusion' && $userlookup) {
+	                $avatar = Framework::getAltAvatar($avatar_software, $userlookup);
 	            } else {
 	                $avatar = 'components/com_jfusion/images/noavatar.png';
 	            }
@@ -146,7 +154,7 @@ try {
 	        $pmcount = $url_viewnewmessages = false;
 	    }
 	}
-	$public = \JFusion\Factory::getFront('joomla_int');
+	$public = Factory::getFront('joomla_int');
 	//use the Joomla default if JFusion specified none
 	if (empty($lostpassword_url)) {
 	    $lostpassword_url = JRoute::_($public->getLostPasswordURL());
@@ -167,6 +175,6 @@ try {
 	//render the login module
 	require_once JModuleHelper::getLayoutPath('mod_jfusion_login', $layout);
 } catch (Exception $e) {
-	\JFusion\Framework::raiseError($e, 'mod_jfusion_login');
+	Framework::raiseError($e, 'mod_jfusion_login');
 	echo $e->getMessage();
 }

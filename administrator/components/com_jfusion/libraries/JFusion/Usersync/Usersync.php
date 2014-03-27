@@ -210,7 +210,7 @@ class Usersync
 					    } else {
 						    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $data['user']['jname']);
 						    static::markResolved($id);
-						    Framework::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
+						    Framework::updateLookup($data['user']['userinfo'], $data['user']['jname'], $userinfo, $data['conflict']['jname']);
 					    }
 				    } elseif ($error['action'] == '2') {
 					    $userinfo = Factory::getUser($data['user']['jname'])->getUser($data['user']['userinfo']);
@@ -221,7 +221,7 @@ class Usersync
 					    } else {
 						    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $data['conflict']['jname']);
 						    static::markResolved($id);
-						    Framework::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
+						    Framework::updateLookup($userinfo, $data['conflict']['jname'], $data['user']['userinfo'], $data['user']['jname']);
 					    }
 				    } elseif ($error['action'] == '3') {
 					    //delete the first entity
@@ -235,7 +235,7 @@ class Usersync
 					    } else {
 						    static::markResolved($id);
 						    Framework::raiseMessage(Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
-						    Framework::updateLookup($data['user']['userinfo'], 0, $error['conflict_jname'], true);
+						    Framework::deleteLookup($error['user_jname'], $data['user']['userinfo']);
 					    }
 				    } elseif ($error['action'] == '4') {
 					    //delete the second entity (conflicting plugin)
@@ -248,7 +248,7 @@ class Usersync
 					    } else {
 						    static::markResolved($id);
 						    Framework::raiseMessage(Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);
-						    Framework::updateLookup($data['conflict']['userinfo'], 0, $error['conflict_jname'], true);
+						    Framework::deleteLookup($error['conflict_jname'], $data['conflict']['userinfo']);
 					    }
 				    }
 			    }
@@ -385,10 +385,10 @@ class Usersync
 									    $sync_log->email = isset($status['userinfo']->email) ? $status['userinfo']->email : $userinfo->email;
 									    //update the lookup table
 									    if ($action == 'master') {
-										    Framework::updateLookup($userinfo, 0, $jname);
+										    Framework::updateLookup($status['userinfo'], $syncdata['master'], $userinfo, $jname);
 									    } else {
 										    try {
-											    Framework::updateLookup($SlaveUser->getUser($userlist[$j]), 0, $jname);
+											    Framework::updateLookup($userinfo, $jname, $status['userinfo'], $syncdata['master']);
 										    } catch (Exception $e) {
 											    throw new RuntimeException($jname . ': ' . $e->getMessage());
 										    }

@@ -738,14 +738,12 @@ JS;
 					    //first get Joomla id for the vBulletin user
 					    $vbUser = Factory::getUser($this->getJname());
 					    $userinfo = $vbUser->getUser($vbUid, 'userid');
-					    $vb_userlookup = Framework::lookupUser($this->getJname(), $vbUid, false, $userinfo->username);
+					    $userlookup = Framework::lookupUser($profile_plugin, $userinfo, $this->getJname());
 					    //now get the id of the selected plugin based on Joomla id
-					    if (!empty($vb_userlookup)) {
-						    $profile_userlookup = Framework::lookupUser($profile_plugin, $vb_userlookup->id);
+					    if ($userlookup) {
 						    //get the profile link
-
-						    $forum = Factory::getForum($this->getJname());
-						    $url = $forum->getProfileURL($profile_userlookup->userid);
+						    $forum = Factory::getForum($profile_plugin);
+						    $url = $forum->getProfileURL($userlookup->userid);
 					    }
 				    }
 			    }

@@ -10,6 +10,7 @@ use JFusion\Plugin\Plugin_Forum;
 use Joomla\String\String;
 use JFusionFunction;
 use JRegistry;
+use stdClass;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -64,7 +65,8 @@ class Forum extends Plugin_Forum
 			    ->select('p.page_id , p.page_title AS title, SUBSTRING(t.old_text,1,' . $display_limit . ') as text,
 					STR_TO_DATE(r.rev_timestamp, "%Y%m%d%H%i%S") AS created,
 					p.page_title AS section,
-					r.rev_user_text as user')
+					r.rev_user_text as user,
+					r.rev_user as userid')
 			    ->from('#__page AS p')
 		        ->innerJoin('#__revision AS r ON r.rev_page = p.page_id AND r.rev_id = p.page_latest')
 			    ->innerJoin('#__text AS t on t.old_id = r.rev_text_id')
@@ -84,8 +86,13 @@ class Forum extends Plugin_Forum
 					    //get the avatar of the logged in user
 					    $o_avatar_height = $o_avatar_width = '';
 					    if ($avatar) {
+						    $userlookup = new stdClass();
+						    $userlookup = $value->userid;
+
+						    $userlookup = Framework::lookupUser('joomla_int', $userlookup, $this->getJname());
+
 						    // retrieve avatar
-						    if(!empty($avatar_software) && $avatar_software != 'jfusion' && !empty($userlookup)) {
+						    if(!empty($avatar_software) && $avatar_software != 'jfusion' && $userlookup) {
 							    $o_avatar = Framework::getAltAvatar($avatar_software, $userlookup);
 						    }
 						    if(empty($o_avatar)) {

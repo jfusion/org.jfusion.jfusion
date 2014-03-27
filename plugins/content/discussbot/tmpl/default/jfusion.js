@@ -72,7 +72,8 @@ JFusion.renderMessages = function (messages) {
             });
             h4.inject(div);
             var divList = new Element('div');
-            Array.each(item, function (item, index, object) {
+//            Array.each(item, function (item, index, object) {
+            Array.each(item, function (item) {
                 if (JFusion.messageSlide) {
                     JFusion.messageSlide.slideIn();
                 }

@@ -8,6 +8,8 @@
  */
 
 // no direct access
+use JFusion\Framework;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 jimport('joomla.application.component.controller');
@@ -26,10 +28,25 @@ class JFusionControllerPlugin extends JControllerLegacy
         $jname = JFactory::getApplication()->input->get('jname');
         $userid = JFactory::getApplication()->input->get('userid');
         $username = JFactory::getApplication()->input->get('username');
-        require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionpublic.php');
-        $user = \JFusion\Framework::lookupUser($jname, $userid, false, $username);
+		$email = JFactory::getApplication()->input->get('email');
 
-        die(print_r($user));
+		$userlookup = null;
+		if ($jname && ($userid || $username || $email)) {
+			$userlookup = new stdClass();
+			if ($userid) {
+				$userlookup->userid = $userid;
+			}
+			if ($username) {
+				$userlookup->username = $username;
+			}
+			if ($email) {
+				$userlookup->email = $email;
+			}
+
+			$userlookup = Framework::lookupUser($jname, $userlookup, $jname);
+		}
+
+        die(print_r($userlookup));
 	}
 
 	/**

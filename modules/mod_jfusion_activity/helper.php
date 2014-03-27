@@ -52,12 +52,16 @@ class modjfusionActivityHelper
             foreach ($results as $r) {
 	            $r->output = new stdClass();
                 //get the Joomla userid
-                $userlookup = Framework::lookupUser($jname, $r->userid, false, $r->username);
+	            $userlookup = new stdClass();
+	            $userlookup->userid = $r->userid;
+	            $userlookup->username = $r->username;
+
+                $userlookup = Framework::lookupUser('joomla_int', $userlookup, $jname);
 
                 //get the avatar of the logged in user
                 if ($config['avatar']) {
                     // retrieve avatar
-                    if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion' && !empty($userlookup)) {
+                    if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion' && $userlookup) {
                         $avatar = Framework::getAltAvatar($config['avatar_software'], $userlookup);
                     } else {
                         $avatar = $forum->getAvatar($r->userid);
@@ -98,7 +102,7 @@ class modjfusionActivityHelper
                 //process user info
                 $r->output->display_name = ($config['display_name'] && !empty($r->name)) ? $r->name : $r->username;
                 if (empty($r->guest) && $config['userlink']) {
-                    if ($config['userlink_software'] == 'custom' && !empty($config['userlink_custom'])  && !empty($userlookup)) {
+                    if ($config['userlink_software'] == 'custom' && !empty($config['userlink_custom'])  && $userlookup) {
                         $user_url = $config['userlink_custom'] . $userlookup->id;
                     } else {
                         $user_url = Framework::routeURL($forum->getProfileURL($r->userid), $config['itemid'], $jname);

@@ -7,12 +7,16 @@
  */
 use JFusion\Factory;
 
+use JFusion\Framework;
 use Joomla\Event\Event;
 use JFusion\Event\LanguageInterface;
 use JFusion\Event\ApplicationInterface;
 use JFusion\Event\SessionInterface;
 use JFusion\Event\RouterInterface;
 use JFusion\Event\InstallerInterface;
+use JFusion\Event\PlatformInterface;
+
+
 
 use Joomla\Uri\Uri;
 
@@ -20,7 +24,7 @@ use Joomla\Uri\Uri;
 /**
  * Class JFusionFramework
  */
-class JFusionEventHook implements LanguageInterface, ApplicationInterface, SessionInterface, RouterInterface, InstallerInterface {
+class JFusionEventHook implements LanguageInterface, ApplicationInterface, SessionInterface, RouterInterface, InstallerInterface , PlatformInterface {
 	/**
 	 * Loads a language file for framework
 	 *
@@ -210,5 +214,146 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 			->where('jname = ' . $db->quote($jname));
 		$db->setQuery($query);
 		$db->execute();
+	}
+
+	/**
+	 * used for platform login
+	 *
+	 * @param   Event $event
+	 *
+	 * @return  void
+	 */
+	function onPlatformLogin($event)
+	{
+		$username = $event->getArgument('username');
+		$password = $event->getArgument('password');
+		$remember = $event->getArgument('remember');
+
+		$activePlugin = $event->getArgument('activePlugin');
+
+		if ($activePlugin) {
+			global $JFusionActivePlugin;
+			$JFusionActivePlugin = $activePlugin;
+		}
+
+		$mainframe = JFactory::getApplication();
+
+		// do the login
+		$credentials = array('username' => $username, 'password' => $password);
+		$options = array('entry_url' => JUri::root() . 'index.php?option=com_user&task=login', 'silent' => true);
+
+		$options['remember'] = $remember;
+
+		$mainframe->login($credentials, $options);
+
+		//clean up the joomla session object before continuing
+		$session = JFactory::getSession();
+		$id = $session->getId();
+		$session_data = session_encode();
+		$session->close();
+
+		//if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
+		//by php session_write_close and thus the user is not logged into Joomla.  php bug?
+		if (!defined('IN_JOOMLA') && $id) {
+			$jdb = JFactory::getDbo();
+
+			$query = $jdb->getQuery(true);
+
+			$query->select('*')
+				->from('#__session')
+				->where('session_id = ' . $jdb->quote($id));
+
+
+			$jdb->setQuery($query, 0 , 1);
+
+			$data = $jdb->loadObject();
+			if ($data) {
+				$data->time = time();
+				$jdb->updateObject('#__session', $data, 'session_id');
+			} else {
+				// if load failed then we assume that it is because
+				// the session doesn't exist in the database
+				// therefore we use insert instead of store
+				$app = JFactory::getApplication();
+
+				$data = new stdClass();
+				$data->session_id = $id;
+				$data->data = $session_data;
+				$data->client_id = $app->getClientId();
+				$data->username = '';
+				$data->guest = 1;
+				$data->time = time();
+
+				$jdb->insertObject('#__session', $data, 'session_id');
+			}
+		}
+	}
+
+	/**
+	 * used for platform logout
+	 *
+	 * @param   Event $event
+	 *
+	 * @return  void
+	 */
+	function onPlatformLogout($event)
+	{
+		$username = $event->getArgument('username');
+		$activePlugin = $event->getArgument('activePlugin');
+
+		$mainframe = JFactory::getApplication();
+
+		if ($activePlugin) {
+			global $JFusionActivePlugin;
+			$JFusionActivePlugin = $activePlugin;
+		}
+
+		$user = new stdClass;
+		if ($username) {
+			if ($activePlugin) {
+				$lookupUser = new stdClass();
+				$lookupUser->username = $username;
+
+				$lookupUser = Framework::lookupUser('joomla_int', $lookupUser, $activePlugin);
+				if ($lookupUser) {
+					$user = JFactory::getUser($lookupUser->userid);
+				}
+			} else {
+				$user = JFactory::getUser($username);
+			}
+		}
+		if (isset($user->userid) && $user->userid) {
+			$mainframe->logout($user->userid);
+		} else {
+			$mainframe->logout();
+		}
+
+		// clean up session
+		$session = JFactory::getSession();
+		$session->close();
+	}
+
+	/**
+	 * used for platform delete user
+	 *
+	 * @param   Event $event
+	 *
+	 * @return  void
+	 */
+	function onPlatformUserDelete($event)
+	{
+		$userid = $event->getArgument('$userid');
+
+		$user = JUser::getInstance($userid);
+
+		if ($user) {
+			if ($user->delete()) {
+				$event->setArgument('debug', 'user deleted: ' . $userid);
+			} else {
+				$event->setArgument('error', 'Delete user failed: ' . $userid);
+			}
+		} else {
+			$event->setArgument('error', 'invalid user');
+		}
 	}
 }

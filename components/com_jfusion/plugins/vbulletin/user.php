@@ -905,8 +905,12 @@ class User extends Plugin_User
 				}
 
 				//find the userid attached to Joomla userid
-				$joomla_userid = $JUser->get('id');
-				$userlookup = Framework::lookupUser($this->getJname(), $joomla_userid);
+				$userlookup = new stdClass();
+				$userlookup->userid = $JUser->get('id');
+				$userlookup->username = $JUser->get('username');
+				$userlookup->email = $JUser->get('email');
+
+				$userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
 				$vb_userid = (!empty($userlookup)) ? $userlookup->userid : 0;
 
 				//is there a valid VB user logged in?
@@ -998,7 +1002,10 @@ class User extends Plugin_User
 				}
 
 				//find the Joomla user id attached to the vB user
-				$userlookup = Framework::lookupUser($this->getJname(), $session_userid, false);
+				$userlookup = new stdClass();
+				$userlookup->userid = $session_userid;
+
+				$userlookup = Framework::lookupUser($this->getJname(), $userlookup, $this->getJname());
 
 				if (!empty($joomla_persistant_cookie)) {
 					if ($debug) {
@@ -1020,7 +1027,8 @@ class User extends Plugin_User
 					Framework::raiseNotice('Keep alive enabled so renew Joomla\'s session', $this->getJname());
 				}
 
-				if (!empty($userlookup)) {
+				$joomlaid = $JUser->get('id');
+				if ($joomlaid) {
 					if ($debug) {
 						Framework::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.', $this->getJname());
 					}
@@ -1030,7 +1038,7 @@ class User extends Plugin_User
 					$query = $db->getQuery(true)
 						->select('username, email')
 						->from('#__users')
-						->where('id = ' . $userlookup->id);
+						->where('id = ' . $joomlaid);
 
 					$db->setQuery($query);
 					$user_identifiers = $db->loadObject();

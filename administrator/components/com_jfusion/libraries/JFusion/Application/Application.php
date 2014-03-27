@@ -7,11 +7,14 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-use JFusion\Event\Dispatcher;
+use Exception;
 use JFusion\Factory;
+use Jfusion\Framework;
 use Joomla\Event\Event;
 use Joomla\Input\Input;
 use JFusion\Session\Session;
+use Joomla\Language\Text;
+use stdClass;
 
 
 /**
@@ -28,6 +31,11 @@ class Application
 	 * @since  11.3
 	 */
 	protected static $instance;
+	/**
+	 * @var boolean $messageStatus
+	 * @since  11.3
+	 */
+	private $messageStatus = true;
 
 	/**
 	 * Class constructor.
@@ -65,10 +73,20 @@ class Application
 	 */
 	public function enqueueMessage($msg, $type = 'message')
 	{
-		$event = new Event('onApplicationEnqueueMessage');
-		$event->addArgument('message', $msg);
-		$event->addArgument('type', $type);
-		Factory::getDispatcher()->triggerEvent($event);
+		if ($this->messageStatus) {
+			$event = new Event('onApplicationEnqueueMessage');
+			$event->addArgument('message', $msg);
+			$event->addArgument('type', $type);
+			Factory::getDispatcher()->triggerEvent($event);
+		}
+	}
+
+	/**
+	 * @param boolean $status
+	 */
+	public function messageStatus($status)
+	{
+		$this->messageStatus = $status;
 	}
 
 	/**

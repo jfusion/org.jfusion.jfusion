@@ -276,8 +276,11 @@ class Forum extends Plugin_Forum
 				    $marktimes = array();
 				    $db = Factory::getDatabase($this->getJname());
 
-				    $userlookup = Framework::lookupUser($this->getJname(), $JUser->id);
-				    if (!empty($userlookup)) {
+				    $userlookup = new stdClass();
+				    $userlookup->userid = $JUser->get('id');
+
+				    $userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+				    if ($userlookup) {
 					    $query = $db->getQuery(true)
 						    ->select('topic_id, mark_time')
 						    ->from('#__topics_track')
@@ -417,9 +420,12 @@ class Forum extends Plugin_Forum
 			    if ($userid == 'find') {
 				    $JUser = JFactory::getUser();
 				    if (!$JUser->guest) {
-					    $userinfo = Framework::lookupUser($this->getJname(), $JUser->id);
-					    if (!empty($userinfo)) {
-						    $userid = $userinfo->userid;
+					    $userlookup = new stdClass();
+					    $userlookup->userid = $JUser->get('id');
+
+					    $userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+					    if ($userlookup) {
+						    $userid = $userlookup->userid;
 
 						    $query = $db->getQuery(true)
 							    ->select('group_id')

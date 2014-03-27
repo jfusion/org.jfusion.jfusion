@@ -715,8 +715,12 @@ class Forum extends Plugin_Forum
 			    if (!is_array($marktimes)) {
 				    $marktimes = array();
 				    $db = Factory::getDatabase($this->getJname());
-				    $userlookup = Framework::lookupUser($this->getJname(), $JUser->id);
-				    if (!empty($userlookup)) {
+
+				    $userlookup = new stdClass();
+				    $userlookup->userid = $JUser->get('id');
+
+				    $userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+				    if ($userlookup) {
 					    $query = $db->getQuery(true)
 						    ->select('threadid, readtime')
 						    ->from('#__threadread')
@@ -812,11 +816,15 @@ class Forum extends Plugin_Forum
 			    if ($userid == 'find') {
 				    //get the joomla user
 				    $JoomlaUser = JFactory::getUser();
+
 				    //get the vb user
 				    if (!$JoomlaUser->guest) {
-					    $user = Framework::lookupUser($this->getJname(), $JoomlaUser->id);
-					    if (!empty($user)) {
-						    $userid = $user->userid;
+					    $userlookup = new stdClass();
+					    $userlookup->userid = $JoomlaUser->get('id');
+
+					    $userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+					    if ($userlookup) {
+						    $userid = $userlookup->userid;
 					    } else {
 						    //oops, something has failed
 						    $userid = 0;
@@ -952,9 +960,12 @@ class Forum extends Plugin_Forum
         $JoomlaUser = JFactory::getUser();
         //get the vb user
         if (!$JoomlaUser->guest) {
-            $user = Framework::lookupUser($this->getJname(), $JoomlaUser->id);
-            if (!empty($user)) {
-                $userid = $user->userid;
+	        $userlookup = new stdClass();
+	        $userlookup->userid = $JoomlaUser->get('id');
+
+	        $userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+            if ($userlookup) {
+                $userid = $userlookup->userid;
             } else {
                 //oops, something has failed
                 $userid = 0;

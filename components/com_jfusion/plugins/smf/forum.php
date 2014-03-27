@@ -261,8 +261,12 @@ class Forum extends Plugin_Forum
 			    if (!is_array($markread)) {
 				    $markread = array();
 				    $db = Factory::getDatabase($this->getJname());
-				    $userlookup = Framework::lookupUser($this->getJname(), $JUser->id);
-				    if (!empty($userlookup)) {
+
+				    $userlookup = new stdClass();
+				    $userlookup->userid = $JUser->get('id');
+
+				    $userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+				    if ($userlookup) {
 					    $query = $db->getQuery(true)
 						    ->select('ID_MSG, ID_TOPIC')
 						    ->from('#__log_topics')

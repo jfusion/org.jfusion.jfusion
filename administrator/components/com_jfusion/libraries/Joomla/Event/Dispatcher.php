@@ -473,7 +473,6 @@ class Dispatcher implements DispatcherInterface
 			{
 				$event = $this->events[$event];
 			}
-
 			else
 			{
 				$event = new Event($event);
@@ -500,7 +499,6 @@ class Dispatcher implements DispatcherInterface
 				}
 			}
 		}
-
 		return $event;
 	}
 }

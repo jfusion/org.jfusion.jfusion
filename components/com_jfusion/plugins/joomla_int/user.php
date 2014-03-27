@@ -375,6 +375,10 @@ class User extends Plugin_User
      * @return array
      */
     function deleteUser($userinfo) {
+	    /**
+	     * TODO need to be changed as deleting the user is not correct
+	     */
+
         //get the database ready
         $db = JFactory::getDBO();
         //setup status array to hold debug info and errors
@@ -390,7 +394,7 @@ class User extends Plugin_User
 
         $db->setQuery($query);
         $userid = $db->loadResult();
-        if ($userid) {
+	    if ($userid) {
             //this user was created by JFusion and we need to delete them from the joomla user and jfusion lookup table
             $user = JUser::getInstance($userid);
             $user->delete();
@@ -400,13 +404,6 @@ class User extends Plugin_User
 		        ->where('id = ' . (int)$userid);
 
             $db->setQuery($query);
-            $db->execute();
-
-	        $query = $db->getQuery(true)
-		        ->delete('#__jfusion_users')
-		        ->where('id = ' . (int)$userid);
-
-	        $db->setQuery($query);
             $db->execute();
             $status['debug'][] = Text::_('USER_DELETION') . ' ' . $username;
         } else {
