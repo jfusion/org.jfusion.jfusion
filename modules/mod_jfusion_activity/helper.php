@@ -56,7 +56,8 @@ class modjfusionActivityHelper
 	            $userlookup->userid = $r->userid;
 	            $userlookup->username = $r->username;
 
-                $userlookup = Framework::lookupUser('joomla_int', $userlookup, $jname);
+	            $PluginUser = Factory::getUser('joomla_int');
+	            $userlookup = $PluginUser->lookupUser($userlookup, $jname);
 
                 //get the avatar of the logged in user
                 if ($config['avatar']) {

@@ -839,7 +839,9 @@ class Front extends Plugin_Front
 				$userlookup = new stdClass();
 				$userlookup->userid = $userid;
 
-				$userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+				$PluginUser = Factory::getUser($this->getJname());
+				$userlookup = $userPlugin->lookupUser($userlookup, 'joomla_int');
+
 				$existinguser = $userPlugin->getUser($userlookup);
 				$group_id = $existinguser->group_id;
 			} else {

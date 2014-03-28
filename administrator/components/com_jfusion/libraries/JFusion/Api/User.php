@@ -1,4 +1,6 @@
 <?php namespace JFusion\Api;
+use JFusion\Factory;
+
 /**
  *
  */
@@ -9,7 +11,7 @@ class User extends Base {
 	public function getUser()
 	{
 
-		$joomla = ApiInternal::getInstance(true);
+		$joomla = Platform::getInstance(true);
 		$plugin = isset($this->payload['plugin']) ? $this->payload['plugin'] : 'joomla_int';
 
 		$userPlugin = Factory::getUser($plugin);
@@ -39,7 +41,7 @@ class User extends Base {
 		if (isset($session['login'])) {
 			$userinfo = $session['login'];
 			if (is_array($userinfo)) {
-				$joomla = ApiInternal::getInstance();
+				$joomla = Platform::getInstance();
 
 				if (isset($userinfo['plugin'])) {
 					$joomla->setActivePlugin($userinfo['plugin']);
@@ -56,7 +58,7 @@ class User extends Base {
 	public function executeLogout()
 	{
 		if ($this->readPayload(false)) {
-			$joomla = ApiInternal::getInstance();
+			$joomla = Platform::getInstance();
 
 			if (isset($userinfo['plugin'])) {
 				$joomla->setActivePlugin($userinfo['plugin']);
@@ -76,7 +78,7 @@ class User extends Base {
 		if ($this->payload) {
 			if (isset($this->payload['userinfo']) && get_class($this->payload['userinfo']) == 'stdClass') {
 
-				$joomla = ApiInternal::getInstance();
+				$joomla = Platform::getInstance();
 
 				if (isset($userinfo['plugin'])) {
 					$joomla->setActivePlugin($userinfo['plugin']);
@@ -107,7 +109,7 @@ class User extends Base {
 	{
 		if ($this->payload) {
 			if ( isset($this->payload['userinfo']) && is_array($this->payload['userinfo'])) {
-				$joomla = ApiInternal::getInstance();
+				$joomla = Platform::getInstance();
 
 				if (isset($this->payload['overwrite']) && $this->payload['overwrite']) {
 					$overwrite = 1;
@@ -134,7 +136,7 @@ class User extends Base {
 	{
 		if ($this->payload) {
 			if (isset($this->payload['userid'])) {
-				$joomla = ApiInternal::getInstance();
+				$joomla = Platform::getInstance();
 
 				$joomla->delete($this->payload['userid']);
 

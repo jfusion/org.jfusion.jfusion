@@ -16,7 +16,6 @@
 use Exception;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
-use JFusion\Event\Dispatcher;
 use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Event\Event;

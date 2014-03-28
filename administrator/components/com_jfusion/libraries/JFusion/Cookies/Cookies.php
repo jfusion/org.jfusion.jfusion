@@ -130,7 +130,7 @@ class Cookies {
                 $api = null;
                 $data = array();
 		    	foreach($this->_cookies as $key => $cookies) {
-		    		$api = new \JFusion\API\Api($key, $this->secret);
+		    		$api = new Api($key, $this->secret);
 		    		if ($api->set('Cookie', 'Cookies', $cookies)) {
 		    			$data['url'][$api->url] = $api->sid;
 		    		}

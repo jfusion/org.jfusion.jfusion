@@ -8,7 +8,7 @@
 * UTF-8 aware alternative to str_split
 * Convert a string to an array
 * Note: requires utf8_strlen to be loaded
-* @param string UTF-8 encoded
+* @param string $str UTF-8 encoded
 * @param int number to characters to split string by
 * @return string characters in string reverses
 * @see http://www.php.net/str_split

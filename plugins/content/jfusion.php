@@ -1360,7 +1360,8 @@ HTML;
 				$userlookup->email = $p->{$columns->email};
 			}
 
-			$userlookup = Framework::lookupUser('joomla_int', $userlookup, $JFusionForum->getJname());
+			$PluginUser = Factory::getUser('joomla_int');
+			$userlookup = $PluginUser->lookupUser($userlookup, $JFusionForum->getJname());
 
 			//avatar
 			if ($showavatar){

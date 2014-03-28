@@ -89,7 +89,8 @@ class Forum extends Plugin_Forum
 						    $userlookup = new stdClass();
 						    $userlookup = $value->userid;
 
-						    $userlookup = Framework::lookupUser('joomla_int', $userlookup, $this->getJname());
+						    $PluginUser = Factory::getUser('joomla_int');
+						    $userlookup = $PluginUser->lookupUser($userlookup, $this->getJname());
 
 						    // retrieve avatar
 						    if(!empty($avatar_software) && $avatar_software != 'jfusion' && $userlookup) {

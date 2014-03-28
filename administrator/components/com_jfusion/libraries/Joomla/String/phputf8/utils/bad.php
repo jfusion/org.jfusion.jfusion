@@ -132,8 +132,8 @@ function utf8_bad_strip($str) {
 * Comes from W3 FAQ: Multilingual Forms
 * Note: modified to include full ASCII range including control chars
 * @see http://www.w3.org/International/questions/qa-forms-utf-8
-* @param string to search
-* @param string to replace bad bytes with (defaults to '?') - use ASCII
+* @param string $str to search
+* @param string $replace to replace bad bytes with (defaults to '?') - use ASCII
 * @return string
 * @package utf8
 */

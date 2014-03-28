@@ -7,7 +7,7 @@
 /**
 * UTF-8 aware alternative to ord
 * Returns the unicode ordinal for a character
-* @param string UTF-8 encoded character
+* @param string $chr UTF-8 encoded character
 * @return int unicode ordinal for the character
 * @see http://www.php.net/ord
 * @see http://www.php.net/manual/en/function.ord.php#46267

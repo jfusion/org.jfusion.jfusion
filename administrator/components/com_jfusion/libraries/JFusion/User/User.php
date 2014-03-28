@@ -9,10 +9,8 @@
 
 use Exception;
 use JFusion\Factory;
-use Jfusion\Framework;
+use JFusion\Framework;
 use Joomla\Event\Event;
-use Joomla\Input\Input;
-use JFusion\Session\Session;
 use Joomla\Language\Text;
 use stdClass;
 
@@ -266,12 +264,14 @@ class User
 					}
 					if ($success === 0) {
 						//allow for joomlaid retrieval in the loginchecker
-/*
-						$debugger->set('joomlaid', $JoomlaUser['userinfo']->userid);
-						if ($master->name != 'joomla_int') {
-							Framework::updateLookup($userinfo, $JoomlaUser['userinfo']->userid, $master->name);
-						}
-*/
+						/**
+						 * TODO: UPDATE LOOKUP HERE ?
+						 * $debugger->set('joomlaid', $JoomlaUser['userinfo']->userid);
+						 * if ($master->name != 'joomla_int') {
+						 *     Framework::updateLookup($userinfo, $JoomlaUser['userinfo']->userid, $master->name);
+						 * }
+						 */
+
 						//setup the other slave JFusion plugins
 						$slaves = Factory::getPlugins('slave');
 						foreach ($slaves as $slave) {
@@ -301,7 +301,7 @@ class User
 									//apply the clear text password to the user object
 									$SlaveUser['userinfo']->password_clear = $credentials['password'];
 
-									Framework::updateLookup($SlaveUser['userinfo'], $slave->name, $userinfo, $master->name);
+									$JFusionSlave->updateLookup($SlaveUser['userinfo'], $userinfo, $master->name);
 
 									if (!in_array($slave->name, $options['skipplugin']) && $slave->dual_login == 1) {
 										try {
@@ -533,7 +533,7 @@ class User
 
 											//apply the clear text password to the user object
 											$SlaveUser['userinfo']->password_clear = $credentials['password'];
-											Framework::updateLookup($SlaveUser['userinfo'], $JoomlaUser['userinfo']->userid, $slave->name);
+											$JFusionSlave->updateLookup($SlaveUser['userinfo'], $JoomlaUser['userinfo'], 'joomla_int');
 											if (!isset($options['group']) && $slave->dual_login == 1 && $JFusionActivePlugin != $slave->name) {
 												try {
 													$SlaveSession = $JFusionSlave->createSession($SlaveUser['userinfo'], $options);

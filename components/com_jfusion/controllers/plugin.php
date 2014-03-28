@@ -8,7 +8,7 @@
  */
 
 // no direct access
-use JFusion\Framework;
+use JFusion\Factory;
 
 defined('_JEXEC' ) or die('Restricted access' );
 
@@ -43,7 +43,8 @@ class JFusionControllerPlugin extends JControllerLegacy
 				$userlookup->email = $email;
 			}
 
-			$userlookup = Framework::lookupUser($jname, $userlookup, $jname);
+			$PluginUser = Factory::getUser($jname);
+			$userlookup = $PluginUser->lookupUser($userlookup, $jname);
 		}
 
         die(print_r($userlookup));

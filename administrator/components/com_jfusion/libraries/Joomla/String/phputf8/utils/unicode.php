@@ -25,7 +25,7 @@
 * Note: this function has been modified slightly in this library to
 * trigger errors on encountering bad bytes
 * @author <hsivonen@iki.fi>
-* @param string UTF-8 encoded string
+* @param string $str UTF-8 encoded string
 * @return mixed array of unicode code points or FALSE if UTF-8 invalid
 * @see utf8_from_unicode
 * @see http://hsivonen.iki.fi/php-utf8/
@@ -191,7 +191,7 @@ function utf8_to_unicode($str) {
 * Note: this function has been modified slightly in this library to use
 * output buffering to concatenate the UTF-8 string (faster) as well as
 * reference the array by it's keys
-* @param array of unicode code points representing a string
+* @param array $arr of unicode code points representing a string
 * @return mixed UTF-8 string or FALSE if array contains invalid code points
 * @author <hsivonen@iki.fi>
 * @see utf8_to_unicode

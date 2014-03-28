@@ -265,7 +265,8 @@ class Forum extends Plugin_Forum
 				    $userlookup = new stdClass();
 				    $userlookup->userid = $JUser->get('id');
 
-				    $userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+				    $PluginUser = Factory::getUser($this->getJname());
+				    $userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
 				    if ($userlookup) {
 					    $query = $db->getQuery(true)
 						    ->select('ID_MSG, ID_TOPIC')

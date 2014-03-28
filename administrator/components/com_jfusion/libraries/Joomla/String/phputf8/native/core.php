@@ -23,7 +23,7 @@ if ( !defined('UTF8_CORE') ) {
 * @author <chernyshevsky at hotmail dot com>
 * @link   http://www.php.net/manual/en/function.strlen.php
 * @link   http://www.php.net/manual/en/function.utf8-decode.php
-* @param string UTF-8 string
+* @param string $str UTF-8 string
 * @return int number of UTF-8 characters in string
 * @package utf8
 */
@@ -38,9 +38,9 @@ function utf8_strlen($str){
 * Find position of first occurrence of a string
 * Note: This will get alot slower if offset is used
 * Note: requires utf8_strlen amd utf8_substr to be loaded
-* @param string haystack
-* @param string needle (you should validate this with utf8_is_valid)
-* @param integer offset in characters (from left)
+* @param string $str haystack
+* @param string $needle needle (you should validate this with utf8_is_valid)
+* @param integer $offset offset in characters (from left)
 * @return mixed integer position or FALSE on failure
 * @see http://www.php.net/strpos
 * @see utf8_strlen

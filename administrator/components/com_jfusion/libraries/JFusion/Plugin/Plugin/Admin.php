@@ -13,6 +13,7 @@
  * @link      http://www.jfusion.org
  */
 
+use JFusion\Api\Api;
 use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Registry\Registry;
@@ -167,9 +168,7 @@ class Plugin_Admin extends Plugin
 			    $jfc = Factory::getCookies();
 			    list($url) = $jfc->getApiUrl($cookie_domain);
 			    if ($url) {
-				    require_once(JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusionapi.php');
-
-				    $api = new JFusionAPI($url, Factory::getParams('joomla_int')->get('secret'));
+				    $api = new Api($url, Factory::getParams('joomla_int')->get('secret'));
 				    if (!$api->ping()) {
 					    list ($message) = $api->getError();
 

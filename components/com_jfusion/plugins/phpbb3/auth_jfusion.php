@@ -12,6 +12,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
+use JFusion\Api\Platform;
 
 /**
  * @ignore
@@ -204,10 +205,10 @@ function logout_jfusion(&$data) {
 }
 
 /**
- * @return JFusionAPIInternal
+ * @return Platform
  */
 function startJoomla() {
     define('_JFUSIONAPI_INTERNAL', true);
     require_once 'JFUSION_PATH' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
-	return JFusionAPIInternal::getInstance();
+	return Platform::getInstance();
 }

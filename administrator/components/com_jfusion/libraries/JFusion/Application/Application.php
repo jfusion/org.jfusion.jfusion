@@ -7,14 +7,10 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-use Exception;
 use JFusion\Factory;
-use Jfusion\Framework;
 use Joomla\Event\Event;
 use Joomla\Input\Input;
 use JFusion\Session\Session;
-use Joomla\Language\Text;
-use stdClass;
 
 
 /**

@@ -7,7 +7,6 @@
  */
 use JFusion\Factory;
 
-use JFusion\Framework;
 use Joomla\Event\Event;
 use JFusion\Event\LanguageInterface;
 use JFusion\Event\ApplicationInterface;
@@ -314,7 +313,8 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 				$lookupUser = new stdClass();
 				$lookupUser->username = $username;
 
-				$lookupUser = Framework::lookupUser('joomla_int', $lookupUser, $activePlugin);
+				$PluginUser = Factory::getUser('joomla_int');
+				$lookupUser = $PluginUser->lookupUser($lookupUser, $activePlugin);
 				if ($lookupUser) {
 					$user = JFactory::getUser($lookupUser->userid);
 				}

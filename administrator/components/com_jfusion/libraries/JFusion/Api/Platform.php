@@ -243,7 +243,7 @@ class Platform extends Base {
 					$userlookup = new stdClass();
 					$userlookup->username = $updateinfo->username;
 
-					$userlookup = Framework::lookupUser($plugin->name, $userlookup, $plugin->name);
+					$userlookup = $PluginUserUpdate->lookupUser($userlookup, $plugin->name);
 
 					if($userlookup) {
 						$existinguser = $PluginUserUpdate->getUser($updateinfo->username);

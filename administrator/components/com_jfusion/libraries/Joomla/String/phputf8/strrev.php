@@ -7,7 +7,7 @@
 /**
 * UTF-8 aware alternative to strrev
 * Reverse a string
-* @param string UTF-8 encoded
+* @param string $str UTF-8 encoded
 * @return string characters in string reverses
 * @see http://www.php.net/strrev
 * @package utf8

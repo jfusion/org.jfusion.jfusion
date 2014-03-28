@@ -169,149 +169,6 @@ class Framework
     }
 
     /**
-     * Updates the JFusion user lookup table during login
-     *
-     * @param object  $userinfo         object containing the userdata
-     * @param string  $jname            name of the JFusion plugin used
-     * @param object  $exsistinginfo    object containing the userdata
-     * @param string  $exsistingname    name of the JFusion plugin used
-     */
-	public static function updateLookup($userinfo, $jname, $exsistinginfo, $exsistingname)
-    {
-	    if ($userinfo) {
-		    $db = Factory::getDBO();
-		    //we don't need to update the lookup for internal joomla unless deleting a user
-
-		    try {
-			    $query = $db->getQuery(true)
-				    ->select('*')
-				    ->from('#__jfusion_users_plugin')
-				    ->where('( userid = ' . $db->quote($exsistinginfo->userid) . ' AND ' . 'jname = ' . $db->quote($exsistingname) . ' )', 'OR')
-				    ->where('( userid = ' . $db->quote($userinfo->userid) . ' AND ' . 'jname = ' . $db->quote($jname) . ' )', 'OR')
-				    ->where('( email = ' . $db->quote($userinfo->email) . ' AND ' . 'jname = ' . $db->quote($jname) . ' )', 'OR');
-			    $db->setQuery($query);
-
-			    $db->loadObjectList('jname');
-			    $list = $db->loadResult();
-
-			    if (empty($list)) {
-				    $first = new stdClass();
-				    $first->id = -1;
-				    $first->username = $exsistinginfo->username;
-				    $first->userid = $exsistinginfo->userid;
-				    $first->email = $exsistinginfo->email;
-				    $first->jname = $exsistingname;
-				    $db->insertObject('#__jfusion_users_plugin', $first, 'autoid');
-
-				    $first->id = $first->autoid;
-				    $db->updateObject('#__jfusion_users_plugin', $first, 'autoid');
-
-				    $second = new stdClass();
-				    $second->id = $first->id;
-				    $second->username = $userinfo->username;
-				    $second->userid = $userinfo->userid;
-				    $second->email = $userinfo->email;
-				    $second->jname = $jname;
-				    $db->insertObject('#__jfusion_users_plugin', $second);
-			    } else if (!isset($list[$exsistingname])) {
-				    $first = new stdClass();
-				    $first->id = $list[$jname]->id;
-				    $first->username = $exsistinginfo->username;
-				    $first->userid = $exsistinginfo->userid;
-				    $first->email = $exsistinginfo->email;
-				    $first->jname = $exsistingname;
-				    $db->insertObject('#__jfusion_users_plugin', $first, 'autoid');
-			    } else if (!isset($list[$jname])) {
-				    $first = new stdClass();
-				    $first->id = $list[$exsistingname]->id;
-				    $first->username = $userinfo->username;
-				    $first->userid = $userinfo->userid;
-				    $first->userid = $userinfo->userid;
-				    $first->jname = $jname;
-				    $db->insertObject('#__jfusion_users_plugin', $first, 'autoid');
-			    } else {
-				    $first = $list[$jname];
-				    $first->username = $userinfo->username;
-				    $first->userid = $userinfo->userid;
-				    $first->email = $userinfo->email;
-				    $db->updateObject('#__jfusion_users_plugin', $first, 'autoid');
-			    }
-		    } catch (Exception $e) {
-			    static::raiseError($e);
-		    }
-	    }
-    }
-
-	/**
-	 * Updates the JFusion user lookup table during login
-	 *
-	 * @param string  $jname            name of the JFusion plugin used
-	 * @param stdClass  $userinfo    object containing the userdata
-	 */
-	public static function deleteLookup($jname, $userinfo)
-	{
-		if ($userinfo) {
-			$db = Factory::getDBO();
-			//we don't need to update the lookup for internal joomla unless deleting a user
-
-			try {
-				$query = $db->getQuery(true)
-					->delete('#__jfusion_users_plugin')
-					->where('userid = ' . $db->quote($userinfo->userid))
-					->where('jname = ' . $db->quote($jname));
-
-				$db->setQuery($query);
-				$db->execute();
-			} catch (Exception $e) {
-				static::raiseError($e);
-			}
-		}
-	}
-
-    /**
-     * Returns the userinfo data for JFusion plugin based on the userid
-     *
-     * @param string  $jname      name of the JFusion plugin used
-     * @param stdClass  $exsistinginfo     user info
-     * @param string $exsistingname if true, returns the userinfo data based on Joomla, otherwise the plugin
-     *
-     * @return stdClass|null returns user login info from the requester software or null
-     *
-     */
-	public static function lookupUser($jname, $exsistinginfo, $exsistingname)
-    {
-	    $result = null;
-	    if ($exsistinginfo) {
-	        //initialise some vars
-	        $db = Factory::getDBO();
-
-		    $query = $db->getQuery(true)
-			    ->select('b.*')
-			    ->from('#__jfusion_users_plugin AS a')
-			    ->innerJoin('#__jfusion_users_plugin AS b ON a.id = b.id')
-			    ->where('b.jname = ' . $db->quote($jname))
-		        ->where('a.jname = ' . $db->quote($exsistingname));
-
-	        $search = array();
-	        if (isset($exsistinginfo->userid)) {
-		        $search[] = 'userid = ' . $db->quote($exsistinginfo->userid);
-	        }
-	        if (isset($exsistinginfo->username)) {
-		        $search[] = 'username = ' . $db->quote($exsistinginfo->username);
-	        }
-		    if (isset($exsistinginfo->email)) {
-			    $search[] = 'email = ' . $db->quote($exsistinginfo->email);
-		    }
-	        if (!empty($search)) {
-		        $query->where('( ' . implode(' OR ', $search) . ' )');
-		        $db->setQuery($query);
-		        $result = $db->loadObject();
-		    }
-	    }
-        return $result;
-    }
-
-    /**
      * Delete old user data in the lookup table
      *
      * @param object $userinfo userinfo of the user to be deleted
@@ -321,29 +178,30 @@ class Framework
     public static function removeUser($userinfo)
     {
 	    /**
-	     * TODO: need to be change to remove the user corectly with the new layout.
+	     * TODO: need to be change to remove the user correctly with the new layout.
 	     */
 	    //Delete old user data in the lookup table
 	    $db = Factory::getDBO();
 
-	    $query = $db->getQuery(true)
-		    ->delete('#__jfusion_users')
-		    ->where('id = ' . $userinfo->id, 'OR')
-	        ->where('username =' . $db->quote($userinfo->username))
-		    ->where('LOWER(username) = ' . strtolower($db->quote($userinfo->email)));
-
-        $db->setQuery($query);
 	    try {
+		    $query = $db->getQuery(true)
+			    ->delete('#__jfusion_users')
+			    ->where('id = ' . $userinfo->userid, 'OR')
+		        ->where('username =' . $db->quote($userinfo->username))
+			    ->where('LOWER(username) = ' . strtolower($db->quote($userinfo->email)));
+	        $db->setQuery($query);
+
 		    $db->execute();
 	    } catch (Exception $e) {
 		    static::raiseWarning($e);
 	    }
 
-	    $query = $db->getQuery(true)
-		    ->delete('#__jfusion_users_plugin')
-		    ->where('id = ' . $userinfo->id);
-        $db->setQuery($query);
 	    try {
+		    $query = $db->getQuery(true)
+			    ->delete('#__jfusion_users_plugin')
+			    ->where('userid = ' . $userinfo->userid);
+	        $db->setQuery($query);
+
 		    $db->execute();
 	    } catch (Exception $e) {
 		    static::raiseWarning($e);

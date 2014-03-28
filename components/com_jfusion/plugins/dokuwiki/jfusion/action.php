@@ -10,6 +10,8 @@
  */
 
 // must be run within Dokuwiki
+use JFusion\Api\Platform;
+
 if (!defined('DOKU_INC')) die();
 
 if (!defined('DOKU_LF')) define('DOKU_LF', "\n");
@@ -218,7 +220,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
 
         define('_JFUSIONAPI_INTERNAL', true);
         require_once $conf['jfusion']['joomla_basepath'] . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
-	    $joomla = JFusionAPIInternal::getInstance();
+	    $joomla = Platform::getInstance();
         $mainframe = $joomla->getApplication();
 
         //set the cookie path to the correct setting

@@ -378,7 +378,8 @@ class Plugin_Forum extends Plugin
 			$userlookup = new stdClass();
 			$userlookup->userid = $contentitem->created_by;
 
-			$userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+			$PluginUser = Factory::getUser($this->getJname());
+			$userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
 
 			if(!$userlookup) {
 				$id = $dbparams->get('default_userid');

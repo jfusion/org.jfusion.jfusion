@@ -94,7 +94,9 @@ try {
 			$userlookup->userid = $user->get('id');
 			$userlookup->username = $user->get('username');
 			$userlookup->email = $user->get('email');
-	        $userlookup = Framework::lookupUser($jname, $userlookup, 'joomla_int');
+
+			$PluginUser = Factory::getUser($jname);
+			$userlookup = $PluginUser->lookupUser($userinfo, 'joomla_int');
 	        if ($userlookup) {
 		        try {
 			        $JFusionUser = Factory::getUser($link_jname);

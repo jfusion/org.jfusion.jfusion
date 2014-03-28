@@ -14,6 +14,8 @@
  */
 
 //force required variables into global scope
+use JFusion\Api\Platform;
+
 if (!isset($GLOBALS['vbulletin']) && !empty($vbulletin)) {
     $GLOBALS['vbulletin'] = & $vbulletin;
 }
@@ -587,7 +589,7 @@ class executeJFusionHook
         define('_VBULLETIN_JFUSION_HOOK', true);
         define('_JFUSIONAPI_INTERNAL', true);
         require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
-	    $joomla = JFusionAPIInternal::getInstance();
+	    $joomla = Platform::getInstance();
 	    $mainframe = $joomla->getApplication();
 
         $curlFile = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';

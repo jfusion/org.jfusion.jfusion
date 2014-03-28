@@ -123,7 +123,8 @@ class Forum extends Plugin_Forum
 
 		            $userlookup = new stdClass();
 		            $userlookup->userid = $JUser->get('id');
-	                $userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+		            $PluginUser = Factory::getUser($this->getJname());
+		            $userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
 	                if ($userlookup) {
 		                $query = $db->getQuery(true)
 			                ->select('id_msg, id_topic')
@@ -805,7 +806,7 @@ HTML;
 			$userlookup = new stdClass();
 			$userlookup->userid = $userid;
 
-			$userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+			$userlookup = $userPlugin->lookupUser($userlookup, 'joomla_int');
 			$existinguser = $userPlugin->getUser($userlookup);
 			$group_id = $existinguser->group_id;
 		} else {

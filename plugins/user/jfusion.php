@@ -185,7 +185,7 @@ class plgUserJfusion extends JPlugin
 					            $userinfo = $MasterUser['userinfo'];
 				            }
 				            //update the jfusion_users_plugin table
-				            Framework::updateLookup($userinfo, $master->name, $JoomlaUser, 'joomla_int');
+				            $JFusionMaster->updateLookup($userinfo, $JoomlaUser, 'joomla_int');
 			            } catch (Exception $e) {
 				            $error_info[$master->name] = array($e->getMessage());
 			            }
@@ -252,7 +252,7 @@ class plgUserJfusion extends JPlugin
 						}
 
 						//update the jfusion_users_plugin table
-						Framework::updateLookup($userinfo, $slave->name, $JoomlaUser, 'joomla_int');
+						$JFusionSlave->updateLookup($userinfo, $JoomlaUser, 'joomla_int');
 					} catch (Exception $e) {
 						$error_info[$slave->name] = $debug_info[$slave->name] + array($e->getMessage());
 					}
@@ -711,7 +711,7 @@ class plgUserJfusion extends JPlugin
 		    $master = Framework::getMaster();
 		    if ($master->name && $master->name != 'joomla_int' && $JFusionActivePlugin != $master->name) {
 			    $JFusionMaster = Factory::getUser($master->name);
-			    $userlookup = Framework::lookupUser($master->name, $userinfo, 'joomla_int');
+			    $userlookup = $JFusionMaster->lookupUser($userinfo, 'joomla_int');
 			    $debugger->set('userlookup', $userlookup);
 			    $MasterUser = $JFusionMaster->getUser($userlookup);
 			    if (isset($options['show_unsensored'])) {
@@ -743,7 +743,7 @@ class plgUserJfusion extends JPlugin
 			    //check if sessions are enabled
 			    if ($slave->dual_login == 1 && $JFusionActivePlugin != $slave->name) {
 				    $JFusionSlave = Factory::getUser($slave->name);
-				    $userlookup = Framework::lookupUser($slave->name, $userinfo, 'joomla_int');
+				    $userlookup = $JFusionSlave->lookupUser($userinfo, 'joomla_int');
 				    try {
 					    $SlaveUser = $JFusionSlave->getUser($userlookup);
 				    } catch (Exception $e) {

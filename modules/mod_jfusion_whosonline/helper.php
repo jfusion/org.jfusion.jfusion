@@ -92,7 +92,8 @@ class modjfusionWhosOnlineHelper {
 								//Joomla userid is readily available
 								$joomla_userid = $u->userid;
 							} else {
-								$userlookup = Framework::lookupUser('joomla_int', $userinfo, $link_jname);
+								$PluginUser = Factory::getUser('joomla_int');
+								$userlookup = $PluginUser->lookupUser($userinfo, $link_jname);
 								if($userlookup) {
 									$joomla_userid = $userlookup->userid;
 								}

@@ -20,7 +20,7 @@
 * Unicode standard
 * Note: this function has been modified to simple return true or false
 * @author <hsivonen@iki.fi>
-* @param string UTF-8 encoded string
+* @param string $str UTF-8 encoded string
 * @return boolean true if valid
 * @see http://hsivonen.iki.fi/php-utf8/
 * @see utf8_compliant
@@ -164,7 +164,7 @@ function utf8_is_valid($str) {
 * are doing)
 * @see utf8_is_valid
 * @see http://www.php.net/manual/en/reference.pcre.pattern.modifiers.php#54805
-* @param string UTF-8 string to check
+* @param string $str UTF-8 string to check
 * @return boolean TRUE if string is valid UTF-8
 * @package utf8
 */

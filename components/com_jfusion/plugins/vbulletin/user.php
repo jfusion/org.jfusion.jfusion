@@ -910,7 +910,8 @@ class User extends Plugin_User
 				$userlookup->username = $JUser->get('username');
 				$userlookup->email = $JUser->get('email');
 
-				$userlookup = Framework::lookupUser($this->getJname(), $userlookup, 'joomla_int');
+				$PluginUser = Factory::getUser($this->getJname());
+				$userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
 				$vb_userid = (!empty($userlookup)) ? $userlookup->userid : 0;
 
 				//is there a valid VB user logged in?
@@ -1005,8 +1006,8 @@ class User extends Plugin_User
 				$userlookup = new stdClass();
 				$userlookup->userid = $session_userid;
 
-				$userlookup = Framework::lookupUser($this->getJname(), $userlookup, $this->getJname());
-
+				$PluginUser = Factory::getUser($this->getJname());
+				$userlookup = $PluginUser->lookupUser($userlookup, $this->getJname());
 				if (!empty($joomla_persistant_cookie)) {
 					if ($debug) {
 						Framework::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal', $this->getJname());
