@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Curl;
 
 /**
  * HTML Form Parser
@@ -13,7 +13,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionCurlHtmlFormParser
+class HtmlFormParser
 {
 
 	var $html_data = '';

@@ -141,7 +141,7 @@ function utf8_strip_non_ascii_ctrl($str) {
 * available from the phputf8 project downloads:
 * http://prdownloads.sourceforge.net/phputf8
 *
-* @param string UTF-8 string
+* @param string $str UTF-8 string
 * @param int (optional) -1 lowercase only, +1 uppercase only, 1 both cases
 * @param string UTF-8 with accented characters replaced by ASCII chars
 * @return string accented chars replaced with ascii equivalents

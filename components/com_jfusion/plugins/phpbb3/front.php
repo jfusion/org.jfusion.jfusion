@@ -22,6 +22,7 @@ use JFusion\Plugin\Plugin_Front;
 use \Exception;
 use Joomla\Uri\Uri;
 use JRegistry;
+use JUri;
 use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -244,7 +245,7 @@ class Front extends Plugin_Front
     		//refresh the page to avoid phpbb3 error
     		//this happens as the phpbb3 config file can not be loaded twice
     		//and phpbb3 always uses include instead of include_once
-            $uri = Uri::getInstance();
+            $uri = JUri::getInstance();
             //add a variable to ensure refresh
             $uri->setVar('time', time());
             $link = $uri->toString();

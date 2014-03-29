@@ -24,7 +24,7 @@
  * created 26-06-2010 Henk Wevers
  */
 
-
+use JFusion\Curl\Curl;
 
 if (!defined('MOODLE_INTERNAL')) {
 	die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
@@ -64,7 +64,7 @@ class DualLogin
      * @return array|string
      */
     function login($curl_options) {
-		$helper = new \JFusion\Curl\Curl;
+		$helper = new Curl;
 		$status = $helper->RemoteLogin($curl_options);
 		unset($helper);
 		return $status;
@@ -75,7 +75,7 @@ class DualLogin
      * @return array|string
      */
     function logout($curl_options) {
-		$helper = new \JFusion\Curl\Curl;
+		$helper = new Curl;
 		/**
 		 * @TODO to fix: For info, with J! 1.6 there is problem with a form token and it's not provided to the post data
 		 */

@@ -25,7 +25,7 @@ function utf8_ucwords($str) {
 /**
 * Callback function for preg_replace_callback call in utf8_ucwords
 * You don't need to call this yourself
-* @param array of matches corresponding to a single word
+* @param array $matches of matches corresponding to a single word
 * @return string with first char of the word in uppercase
 * @see utf8_ucwords
 * @see utf8_strtoupper

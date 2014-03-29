@@ -1,6 +1,7 @@
 <?php namespace JFusion\Cookies;
 // Check to ensure this file is within the rest of the framework
 
+use JFusion\Api\Api;
 use JFusion\Factory;
 use Joomla\Language\Text;
 

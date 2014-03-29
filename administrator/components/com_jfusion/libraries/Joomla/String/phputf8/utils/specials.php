@@ -95,7 +95,7 @@ function utf8_specials_pattern() {
 * numeric characters but just that common non-alphanumeric are not
 * in the string, including ASCII device control characters.
 * @package utf8
-* @param string to check
+* @param string $str to check
 * @return boolean TRUE if the string only contains word characters
 * @see utf8_specials_pattern
 */

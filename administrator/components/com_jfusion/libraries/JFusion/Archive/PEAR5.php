@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Archive;
 
 /**
  * This is only meant for PHP 5 to get rid of certain strict warning

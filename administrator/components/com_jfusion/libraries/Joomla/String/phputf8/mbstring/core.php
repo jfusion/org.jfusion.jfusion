@@ -16,7 +16,7 @@ if ( !defined('UTF8_CORE') ) {
 * Assumes you have mb_internal_encoding to UTF-8 already
 * Note: this function does not count bad bytes in the string - these
 * are simply ignored
-* @param string UTF-8 string
+* @param string $str UTF-8 string
 * @return int number of UTF-8 characters in string
 * @package utf8
 */

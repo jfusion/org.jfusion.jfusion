@@ -18,6 +18,7 @@ use JFusion\Plugin\Plugin_Front;
 use Joomla\Uri\Uri;
 
 use JRegistry;
+use JUri;
 use stdClass;
 
 defined('_JEXEC' ) or die('Restricted access' );
@@ -347,16 +348,16 @@ class Front extends Plugin_Front
      */
     function onAfterRender()
     {
-	    $buffer = Factory::getApplication()->getBody();
+	    $buffer = JFactory::getApplication()->getBody();
     	
-        $base = Uri::base(true) . '/';
+        $base = JUri::base(true) . '/';
 
         $regex_body  = '#src="' . preg_quote($base, '#') . '%#mSsi';
         $replace_body= 'src="%';
         
         $buffer = preg_replace($regex_body, $replace_body, $buffer);
 
-	    Factory::getApplication()->setBody($buffer);
+	    JFactory::getApplication()->setBody($buffer);
         return true;
     }
 

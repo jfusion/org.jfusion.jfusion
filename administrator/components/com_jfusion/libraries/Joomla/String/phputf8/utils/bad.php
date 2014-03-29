@@ -366,7 +366,7 @@ function utf8_bad_identify($str, &$i) {
 /**
 * Takes a return code from utf8_bad_identify() are returns a message
 * (in English) explaining what the problem is.
-* @param int return code from utf8_bad_identify
+* @param int $code return code from utf8_bad_identify
 * @return mixed string message or FALSE if return code unknown
 * @see utf8_bad_identify
 * @package utf8

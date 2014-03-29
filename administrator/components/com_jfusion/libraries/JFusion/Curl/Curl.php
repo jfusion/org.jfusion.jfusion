@@ -1,4 +1,4 @@
-<?php
+<?php namespace JFusion\Curl;
 /**
  * curl login model
  *
@@ -13,6 +13,9 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use Joomla\Language\Text;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -25,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionCurl
+class Curl
 {
 	var $options = array();
 	/**
@@ -116,7 +119,7 @@ class JFusionCurl
 	 **/
 	public static function _($string, $jsSafe = false)
 	{
-		return JText::_($string, $jsSafe);
+		return Text::_($string, $jsSafe);
 	}
 
 	/**
@@ -344,7 +347,7 @@ class JFusionCurl
 	public static function addCookie($name, $value = '', $expires = 0, $cookiepath = '', $cookiedomain = '', $secure = 0, $httponly  = 0)
 	{
 		if (strpos($cookiedomain, 'http://') === 0 || strpos($cookiedomain, 'https://') === 0) {
-			$jc = \JFusion\Factory::getCookies();
+			$jc = Factory::getCookies();
 			$now = time();
 			if ($expires) {
 				if ($expires>$now) {
@@ -717,7 +720,7 @@ class JFusionCurl
 					$this->status['debug'][] = static::_('CURL_PHASE_1');
 					$this->setCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
 					//find out if we have the form with the name/id specified
-					$parser = new JFusionCurlHtmlFormParser($remotedata);
+					$parser = new HtmlFormParser($remotedata);
 					$result = $parser->parseForms();
 					$frmcount = count($result);
 					$myfrm = -1;
