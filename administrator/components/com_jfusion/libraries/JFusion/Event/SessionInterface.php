@@ -1,6 +1,5 @@
 <?php namespace JFusion\Event;
 
-use Joomla\Event\Event;
 
 /**
  * Interface Interface_Session
@@ -12,18 +11,14 @@ interface SessionInterface
 	/**
 	 * Close the session
 	 *
-	 * @param   Event   $event
-	 *
-	 * @return  void
+	 * @return  boolean if loaded or not
 	 */
-	function onSessionClose($event);
+	function onSessionClose();
 
 	/**
 	 * Restart an expired or locked session.
 	 *
-	 * @param   Event   $event
-	 *
-	 * @return  void
+	 * @return  boolean  True on success
 	 */
-	public function onSessionRestart($event);
+	public function onSessionRestart();
 }

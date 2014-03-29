@@ -1,4 +1,4 @@
-<?php namespace JFusion\Archive;
+<?php
 /**
  * This is only meant for PHP 5 to get rid of certain strict warning
  * that doesn't get hidden since it's in the shutdown function

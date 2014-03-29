@@ -1,6 +1,4 @@
 <?php namespace JFusion\Event;
-use Joomla\Event\Event;
-
 /**
  * Created by PhpStorm.
  * User: fanno
@@ -13,18 +11,16 @@ interface LanguageInterface
 	/**
 	 * Loads a language file for framework
 	 *
-	 * @param   Event   $event
-	 *
-	 * @return  void
+	 * @return  boolean if loaded or not
 	 */
-	function onLanguageLoadFramework($event);
+	function onLanguageLoadFramework();
 
 	/**
 	 * Loads a language file for plugin
 	 *
-	 * @param   Event   $event
+	 * @param   string  $jname Plugin name
 	 *
 	 * @return  boolean if loaded or not
 	 */
-	function onLanguageLoadPlugin($event);
+	function onLanguageLoadPlugin($jname);
 }

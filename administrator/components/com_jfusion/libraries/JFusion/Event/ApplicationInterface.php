@@ -1,6 +1,4 @@
 <?php namespace JFusion\Event;
-use Joomla\Event\Event;
-
 /**
  * Created by PhpStorm.
  * User: fanno
@@ -17,11 +15,12 @@ interface ApplicationInterface
 	 * or "303 See Other" code in the header pointing to the new location. If the headers have already been
 	 * sent this will be accomplished using a JavaScript statement.
 	 *
-	 * @param   Event   $event
+	 * @param   string   $url    The URL to redirect to. Can only be http/https URL
+	 * @param   boolean  $moved  True if the page is 301 Permanently Moved, otherwise 303 See Other is assumed.
 	 *
 	 * @return  void
 	 */
-	function onApplicationRedirect($event);
+	function onApplicationRedirect($url, $moved = false);
 
 	/**
 	 * Logout authentication function.
@@ -33,11 +32,11 @@ interface ApplicationInterface
 	 * should be done in the plugin as this provides the ability to give
 	 * much more information about why the routine may have failed.
 	 *
-	 * @param   Event   $event
+	 * @param   integer  $userid   The user to load - Can be an integer or string - If string, it is converted to ID automatically
 	 *
-	 * @return  void
+	 * @return  boolean  True on success
 	 */
-	function onApplicationLogout($event);
+	function onApplicationLogout($userid = null);
 
 	/**
 	 * Login authentication function.
@@ -51,37 +50,35 @@ interface ApplicationInterface
 	 * validation.  Successful validation will update the current session with
 	 * the user details.
 	 *
-	 * @param   Event   $event
+	 * @param   array  $credentials  Array('username' => string, 'password' => string)
+	 * @param   array  $options      Array('remember' => boolean)
 	 *
-	 * @return  void
+	 * @return  boolean  True on success.
 	 */
-	public function onApplicationLogin($event);
+	public function onApplicationLogin($credentials, $options = array());
 
 	/**
 	 * Enqueue a system message.
 	 *
-	 * @param   Event   $event
+	 * @param   string  $msg   The message to enqueue.
+	 * @param   string  $type  The message type. Default is message.
 	 *
 	 * @return  void
 	 */
-	public function onApplicationEnqueueMessage($event);
+	public function onApplicationEnqueueMessage($msg, $type = 'message');
 
 	/**
 	 * Is admin interface?
 	 *
-	 * @param   Event   $event
-	 *
-	 * @return  void
+	 * @return  boolean  True if this application is administrator.
 	 */
-	public function onApplicationIsAdmin($event);
+	public function onApplicationIsAdmin();
 
 	/**
 	 * get default url
 	 *
-	 * @param   Event   $event
-	 *
-	 * @return  void
+	 * @return  string  get url of default
 	 */
-	public function onApplicationGetDefaultAvatar($event);
+	public function onApplicationGetDefaultAvatar();
 
 }
