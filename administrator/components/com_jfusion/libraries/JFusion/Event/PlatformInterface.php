@@ -7,7 +7,6 @@ use Joomla\Event\Event;
  * Date: 18-03-14
  * Time: 14:14
  */
-
 interface PlatformInterface
 {
 	/**

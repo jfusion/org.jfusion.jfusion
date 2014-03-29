@@ -1,6 +1,5 @@
 <?php namespace JFusion\Event;
 
-
 /**
  * Interface Interface_Session
  *
