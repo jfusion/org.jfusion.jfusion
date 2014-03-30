@@ -7,6 +7,7 @@
  * @copyright Copyright (C) 2008 JFusion -- Morten Hundevad. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin;
 use stdClass;
@@ -382,11 +383,11 @@ class Helper extends Plugin
 	/**
 	 * @param $type
 	 * @param $value
-	 * @param \JFusion\User\Userinfo $userinfo
+	 * @param Userinfo $userinfo
 	 *
 	 * @return int|null|string
 	 */
-	function getHashedPassword($type, $value, \JFusion\User\Userinfo $userinfo) {
+	function getHashedPassword($type, $value, Userinfo $userinfo) {
 		if (!isset($userinfo->password_clear)) {
 			$out = $userinfo->password;
 		} else if ($type == 'CUSTOM') {

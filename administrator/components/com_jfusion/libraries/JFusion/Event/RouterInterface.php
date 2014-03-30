@@ -1,6 +1,5 @@
 <?php namespace JFusion\Event;
 
-use Joomla\Uri\Uri;
 use Joomla\Event\Event;
 
 /**

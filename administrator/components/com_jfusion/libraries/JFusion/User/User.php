@@ -10,7 +10,6 @@
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
-use Joomla\Event\Event;
 use Joomla\Language\Text;
 use RuntimeException;
 use stdClass;

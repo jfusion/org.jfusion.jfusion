@@ -458,7 +458,7 @@ class Tar extends PEAR
     * This method extract from the archive one file identified by $p_filename.
     * The return value is a string with the file content, or NULL on error.
     * @param string $p_filename     The path of the file to extract in a string.
-    * @return                       a string with the file content or NULL.
+    * @return string|null           a string with the file content or NULL.
     * @access public
     */
     function extractInString($p_filename)
@@ -1396,7 +1396,7 @@ class Tar extends PEAR
     * This method extract from the archive one file identified by $p_filename.
     * The return value is a string with the file content, or NULL on error.
     * @param string $p_filename     The path of the file to extract in a string.
-    * @return                       a string with the file content or NULL.
+    * @return string|null           a string with the file content or NULL.
     * @access private
     */
     function _extractInString($p_filename)

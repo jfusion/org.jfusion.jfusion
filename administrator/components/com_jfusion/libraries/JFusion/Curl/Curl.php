@@ -454,7 +454,7 @@ class Curl
 		$options['secure'] = $secure;
 		$options['httponly'] = $httponly;
 
-		$curl = new JFusionCurl($options);
+		$curl = new Curl($options);
 		$curl->cookies = $cookies;
 		$curl->status = $status;
 		return $curl->setCookies($cookiedomain, $cookiepath, $expires, $secure, $httponly);
@@ -571,7 +571,7 @@ class Curl
 		$options['secure'] = $secure;
 		$options['httponly'] = $httponly;
 
-		$curl = new JFusionCurl($options);
+		$curl = new Curl($options);
 		$curl->cookies = $cookies;
 		$curl->status = $status;
 		return $curl->deleteCookies($cookiedomain, $cookiepath, $leavealone, $secure, $httponly);

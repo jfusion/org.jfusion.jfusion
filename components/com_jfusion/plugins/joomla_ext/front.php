@@ -15,6 +15,7 @@
 
 // no direct access
 use JFusion\Factory;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Front;
 
@@ -147,13 +148,13 @@ class Front extends Plugin_Front
 	 * Update the language front end param in the account of the user if this one changes it
 	 * NORMALLY THE LANGUAGE SELECTION AND CHANGEMENT FOR JOOMLA IS PROVIDED BY THIRD PARTY LIKE JOOMFISH
 	 *
-	 * @param \JFusion\User\Userinfo $userinfo userinfo
+	 * @param Userinfo $userinfo userinfo
 	 *
 	 * @throws RuntimeException
 	 *
 	 * @return array status
 	 */
-	public function setLanguageFrontEnd(\JFusion\User\Userinfo $userinfo = null)
+	public function setLanguageFrontEnd(Userinfo $userinfo = null)
 	{
 		$status = array('error' => '', 'debug' => '');
 		$user = Factory::getUser($this->getJname());

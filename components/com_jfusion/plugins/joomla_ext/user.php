@@ -51,7 +51,7 @@ class User extends Plugin_User
 	/**
 	 * gets the userinfo from the JFusion integrated software. Definition of object:
 	 *
-	 * @param object $userinfo contains the object of the user
+	 * @param Userinfo $userinfo contains the object of the user
 	 *
 	 * @return null|Userinfo userinfo Object containing the user information
 	 */

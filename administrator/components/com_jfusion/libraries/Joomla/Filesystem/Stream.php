@@ -95,7 +95,7 @@ class Stream
 	/**
 	 * File Handle
 	 *
-	 * @var    array
+	 * @var    resource
 	 * @since  1.0
 	 */
 	protected $fh;

@@ -2,6 +2,7 @@
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Event\Event;
 use stdClass;
 
@@ -171,11 +172,11 @@ class Platform extends Base {
 	}
 
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
+	 * @param Userinfo $userinfo
 	 *
 	 * @return void
 	 */
-	public function register(\JFusion\User\Userinfo $userinfo)
+	public function register(Userinfo $userinfo)
 	{
 		$this->getApplication();
 
