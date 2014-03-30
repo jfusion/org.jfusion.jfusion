@@ -15,6 +15,7 @@
  
 // no direct access
 use JFusion\Plugin\Plugin_Auth;
+use JFusion\User\Userinfo;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -46,10 +47,10 @@ class Auth extends Plugin_Auth
 
 
     /**
-     * @param array|object $userinfo
+     * @param Userinfo $userinfo
      * @return string
      */
-    function generateEncryptedPassword($userinfo) {
+    function generateEncryptedPassword(Userinfo $userinfo) {
         $t_hasher = new PasswordHashOrg(8, true);
         $check = $t_hasher->CheckPassword($userinfo->password_clear, $userinfo->password);
         //$check will be true or false if the passwords match

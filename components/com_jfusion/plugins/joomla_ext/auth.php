@@ -17,6 +17,7 @@
 use JFusion\Factory;
 use JFusion\Plugin\Plugin_Auth;
 
+use JFusion\User\Userinfo;
 use \PasswordHash;
 use \JCrypt;
 defined('_JEXEC') or die('Restricted access');
@@ -43,11 +44,11 @@ class JFusionAuth_joomla_ext extends Plugin_Auth
 	/**
 	 * Generates an encrypted password based on the userinfo passed to this function
 	 *
-	 * @param object $userinfo userdata object containing the userdata
+	 * @param Userinfo $userinfo userdata object containing the userdata
 	 *
 	 * @return string Returns generated password
 	 */
-	public function generateEncryptedPassword($userinfo)
+	public function generateEncryptedPassword(Userinfo $userinfo)
 	{
 		if (jimport('phpass.passwordhash')) {
 			$testcrypt = $this->helper->hashPassword($userinfo);
@@ -60,11 +61,11 @@ class JFusionAuth_joomla_ext extends Plugin_Auth
 	/**
 	 * used by framework to ensure a password test
 	 *
-	 * @param object $userinfo userdata object containing the userdata
+	 * @param Userinfo $userinfo userdata object containing the userdata
 	 *
 	 * @return boolean
 	 */
-	function checkPassword($userinfo) {
+	function checkPassword(Userinfo $userinfo) {
 		$rehash = false;
 		$match = false;
 
@@ -112,13 +113,13 @@ class JFusionAuth_joomla_ext extends Plugin_Auth
 	/**
 	 * Hashes a password using the current encryption.
 	 *
-	 * @param   object  $userinfo  The plaintext password to encrypt.
+	 * @param   Userinfo  $userinfo  The plaintext password to encrypt.
 	 *
 	 * @return  string  The encrypted password.
 	 *
 	 * @since   3.2.1
 	 */
-	public function hashPassword($userinfo)
+	public function hashPassword(Userinfo $userinfo)
 	{
 		if (jimport('phpass.passwordhash')) {
 			$password = $this->helper->hashPassword($userinfo->password_clear);

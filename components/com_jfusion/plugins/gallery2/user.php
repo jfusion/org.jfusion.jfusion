@@ -19,6 +19,7 @@ use GalleryEmbed;
 use GalleryStatus;
 use GalleryUser;
 use GalleryUtilities;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 
@@ -46,11 +47,11 @@ class User extends Plugin_User
 	var $helper;
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
-     * @return null|object
+     * @return null|Userinfo
      */
-    function getUser($userinfo) {
+    function getUser(Userinfo $userinfo) {
         // get the username
         if (is_object($userinfo)) {
             $username = $userinfo->username;
@@ -68,49 +69,52 @@ class User extends Plugin_User
     }
 
     /**
-     * @param $g2_user
+     * @param $userinfo
      *
-     * @return object
+     * @return Userinfo
      */
-    function &_getUser($g2_user) {
-        $userinfo = new stdClass;
-        $userinfo->userid = $g2_user->id;
-        $userinfo->name = $g2_user->fullName;
-        $userinfo->username = $g2_user->userName;
-        $userinfo->email = $g2_user->email;
-        $userinfo->password = $g2_user->hashedPassword;
-        $userinfo->password_salt = substr($g2_user->hashedPassword, 0, 4);
-        list($ret, $groups) = GalleryCoreApi::fetchGroupsForUser($g2_user->id); //,1, 2);
-        $userinfo->groups = array();
-        $userinfo->groupnames = array();
+    function &_getUser($userinfo) {
+	    $result = new stdClass;
+	    $result->userid = $userinfo->id;
+	    $result->name = $userinfo->fullName;
+	    $result->username = $userinfo->userName;
+	    $result->email = $userinfo->email;
+	    $result->password = $userinfo->hashedPassword;
+	    $result->password_salt = substr($userinfo->hashedPassword, 0, 4);
+        list($ret, $groups) = GalleryCoreApi::fetchGroupsForUser($userinfo->id); //,1, 2);
+	    $result->groups = array();
+	    $result->groupnames = array();
         if (!$ret) {
             foreach ($groups as $id => $name) {
-                $userinfo->groups[] = $id;
-                $userinfo->group_id = $id;
+	            $result->groups[] = $id;
+	            $result->group_id = $id;
 
-                $userinfo->groupnames[] = $name;
-                $userinfo->group_name = $name;
+	            $result->groupnames[] = $name;
+	            $result->group_name = $name;
             }
         }
         /**
          * @TODO Research if and in how to detect blocked Users
          */
-        $userinfo->block = 0; //(0 if allowed to access site, 1 if user access is blocked)
+	    $result->block = 0; //(0 if allowed to access site, 1 if user access is blocked)
         //Not found jet
-        $userinfo->registerdate = null;
-        $userinfo->lastvisitdate = null;
+	    $result->registerdate = null;
+	    $result->lastvisitdate = null;
         //Not activated users are saved separated so not to set. (PendingUser)
-        $userinfo->activation = null;
-        return $userinfo;
+	    $result->activation = null;
+
+	    $user = new Userinfo();
+	    $user->bind($result, $this->getJname());
+        return $user;
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
      *
      * @return array
      */
-    function destroySession($userinfo, $options) {
+    function destroySession(Userinfo $userinfo, $options) {
 	    $this->helper->loadGallery2Api(false);
 	    GalleryInitSecondPass();
         GalleryEmbed::logout();
@@ -120,12 +124,12 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
      *
      * @return array
      */
-    function createSession($userinfo, $options) {
+    function createSession(Userinfo $userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
 
         if (!isset($options['noframework'])) {
@@ -205,11 +209,11 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
      * @return array
      */
-    function deleteUser($userinfo) {
+    function deleteUser(Userinfo $userinfo) {
         //setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
         $username = $userinfo->username;
@@ -248,12 +252,12 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array &$status
      *
      * @return void
      */
-    function createUser($userinfo, &$status) {
+    function createUser(Userinfo $userinfo, &$status) {
 	    $this->helper->loadGallery2Api(false);
         $usergroups = $this->getCorrectUserGroups($userinfo);
         if (empty($usergroups)) {
@@ -304,14 +308,14 @@ class User extends Plugin_User
     }
 
 	/**
-	 * @param object $userinfo
-	 * @param object &$existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo &$existinguser
 	 * @param array  &$status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup($userinfo, &$existinguser, &$status) {
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    $this->helper->loadGallery2Api(false);
         $usergroups = $this->getCorrectUserGroups($userinfo);
         if (empty($usergroups)) {
@@ -339,13 +343,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updatePassword($userinfo, &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
         /**
          * @ignore
          * @var $user GalleryUser
@@ -383,13 +387,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object &$existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo &$existinguser
      * @param array &$status
      *
      * @return void
      */
-    function updateEmail($userinfo, &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    /**
 	     * @ignore
 	     * @var $user GalleryUser

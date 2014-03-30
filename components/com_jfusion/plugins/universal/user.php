@@ -10,6 +10,7 @@
 // no direct access
 use Exception;
 use JFusion\Factory;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use RuntimeException;
@@ -32,17 +33,17 @@ class User extends Plugin_User
 	var $helper;
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 *
-	 * @return null|object
+	 * @return null|Userinfo
 	 */
-	function getUser($userinfo)
+	function getUser(Userinfo $userinfo)
 	{
 		// initialise some objects
 		$email = $this->helper->getFieldType('EMAIL');
 		$username = $this->helper->getFieldType('USERNAME');
 		$userid = $this->helper->getFieldType('USERID');
-		$result = null;
+		$user = null;
 		if ($userid) {
 			//get the identifier
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, $username->field, $email->field);
@@ -100,17 +101,19 @@ class User extends Plugin_User
 						$result->group_id = base64_encode($result2->group_id);
 					}
 				}
+				$user = new Userinfo();
+				$user->bind($result, $this->getJname());
 			}
 		}
-		return $result;
+		return $user;
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 *
 	 * @return array
 	 */
-	function deleteUser($userinfo)
+	function deleteUser(Userinfo $userinfo)
 	{
 		//setup status array to hold debug info and errors
 		$status = array('error' => array(), 'debug' => array());
@@ -161,12 +164,12 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 * @param array $options
 	 *
 	 * @return array
 	 */
-	function destroySession($userinfo, $options) {
+	function destroySession(Userinfo $userinfo, $options) {
 		$cookie_backup = $_COOKIE;
 		$_COOKIE = array();
 		$_COOKIE['jfusionframeless'] = true;
@@ -177,12 +180,12 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 * @param array $options
 	 *
 	 * @return array|string
 	 */
-	function createSession($userinfo, $options) {
+	function createSession(Userinfo $userinfo, $options) {
 		$status = array('error' => array(), 'debug' => array());
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
@@ -198,14 +201,14 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	function updatePassword($userinfo, &$existinguser, &$status)
+	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$db = Factory::getDatabase($this->getJname());
 		$maped = $this->helper->getMap();
@@ -247,25 +250,25 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updateUsername($userinfo, &$existinguser, &$status)
+	function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updateEmail($userinfo, &$existinguser, &$status)
+	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$userid = $this->helper->getFieldType('USERID');
 		$email = $this->helper->getFieldType('EMAIL');
@@ -289,14 +292,14 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		//get the usergroup and determine if working in advanced or simple mode
 		$usergroups = $this->getCorrectUserGroups($userinfo);
@@ -383,14 +386,14 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	function blockUser($userinfo, &$existinguser, &$status)
+	function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$userid = $this->helper->getFieldType('USERID');
 		$active = $this->helper->getFieldType('ACTIVE');
@@ -434,14 +437,14 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	function unblockUser($userinfo, &$existinguser, &$status)
+	function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$userid = $this->helper->getFieldType('USERID');
 		$active = $this->helper->getFieldType('ACTIVE');
@@ -469,14 +472,14 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	function activateUser($userinfo, &$existinguser, &$status)
+	function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$userid = $this->helper->getFieldType('USERID');
 		$activecode = $this->helper->getFieldType('ACTIVECODE');
@@ -500,14 +503,14 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	function inactivateUser($userinfo, &$existinguser, &$status)
+	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$userid = $this->helper->getFieldType('USERID');
 		$activecode = $this->helper->getFieldType('ACTIVECODE');
@@ -530,12 +533,12 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function createUser($userinfo, &$status)
+	function createUser(Userinfo $userinfo, &$status)
 	{
 		try {
 			$usergroups = $this->getCorrectUserGroups($userinfo);

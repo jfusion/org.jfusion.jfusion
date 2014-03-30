@@ -1,5 +1,6 @@
 <?php namespace JFusion\Plugins\mybb;
 use JFusion\Plugin\Plugin_Auth;
+use JFusion\User\Userinfo;
 
 /**
  * 
@@ -32,10 +33,10 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionAuth_mybb extends Plugin_Auth
 {
     /**
-     * @param array|object $userinfo
+     * @param Userinfo $userinfo
      * @return string
      */
-    function generateEncryptedPassword($userinfo) {
+    function generateEncryptedPassword(Userinfo $userinfo) {
         //Apply myBB encryption
         $testcrypt = md5(md5($userinfo->password_salt) . md5($userinfo->password_clear));
         return $testcrypt;

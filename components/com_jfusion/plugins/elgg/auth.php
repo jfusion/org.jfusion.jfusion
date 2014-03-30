@@ -16,6 +16,7 @@
 
 // no direct access
 use JFusion\Plugin\Plugin_Auth;
+use JFusion\User\Userinfo;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -34,10 +35,10 @@ defined('_JEXEC') or die('Restricted access');
 class Auth extends Plugin_Auth
 {
     /**
-     * @param array|object $userinfo
+     * @param Userinfo $userinfo
      * @return string
      */
-    function generateEncryptedPassword($userinfo) {
+    function generateEncryptedPassword(Userinfo $userinfo) {
         $testcrypt = md5($userinfo->password_clear . $userinfo->password_salt);
         return $testcrypt;
     }

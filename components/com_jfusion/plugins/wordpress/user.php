@@ -18,6 +18,7 @@ use Exception;
 use JFusion\Curl\Curl;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use Joomla\Uri\Uri;
@@ -50,12 +51,12 @@ class User extends Plugin_User
 	var $helper;
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
-     * @return null|object
+     * @return null|Userinfo
      */
-    function getUser($userinfo) {
-	    $result = null;
+    function getUser(Userinfo $userinfo) {
+	    $user = null;
 	    try {
 		    //get the identifier
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'user_login', 'user_email');
@@ -94,11 +95,14 @@ class User extends Plugin_User
 			    $jFusionUserObject = $this->convertUserobjectToJFusion($result);
 			    $jFusionUserObject->{$this->getJname() . '_UserObject'} = $result;
 			    $result = $jFusionUserObject;
+
+			    $user = new Userinfo();
+			    $user->bind($result, $this->getJname());
 		    }
 	    } catch (Exception $e) {
 		    Framework::raiseError($e, $this->getJname());
 	    }
-	    return $result;
+	    return $user;
 	}
 
     /**
@@ -169,12 +173,12 @@ class User extends Plugin_User
 	}
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
      *
      * @return array|bool|string
      */
-    function destroySession($userinfo, $options) {
+    function destroySession(Userinfo $userinfo, $options) {
 	    require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 
         $status = array('error' => array(), 'debug' => array());
@@ -245,11 +249,12 @@ class User extends Plugin_User
 
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
+     *
      * @return array|string
      */
-    function createSession($userinfo, $options) {
+    function createSession(Userinfo $userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
@@ -288,13 +293,13 @@ class User extends Plugin_User
 	}
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updatePassword($userinfo, &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    // get the encryption PHP file
 	    if (!class_exists('PasswordHashOrg')) {
 		    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
@@ -316,24 +321,24 @@ class User extends Plugin_User
 	}
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updateUsername($userinfo, &$existinguser, &$status) {
+    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		// not implemented in jFusion 1.x
 	}
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updateEmail($userinfo, &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -349,36 +354,36 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-    function blockUser($userinfo, &$existinguser, &$status) {
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		// not supported for Wordpress
 	    throw new RuntimeException('Blocking not supported by Wordpress');
 	}
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function unblockUser($userinfo, &$existinguser, &$status) {
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	}
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function activateUser($userinfo, &$existinguser, &$status) {
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    //activate the user
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -393,13 +398,13 @@ class User extends Plugin_User
 	}
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function inactivateUser($userinfo, &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    //set activation key
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -420,7 +425,7 @@ class User extends Plugin_User
      *
      * @return void
      */
-    function createUser($userinfo, &$status) {
+    function createUser(Userinfo $userinfo, &$status) {
 	    try {
 		    //find out what usergroup should be used
 		    $db = Factory::getDatabase($this->getJname());
@@ -524,7 +529,7 @@ class User extends Plugin_User
      * @param object $userinfo
      * @return array
      */
-    function deleteUser($userinfo) {
+    function deleteUser(Userinfo $userinfo) {
 		//setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
 	    try {
@@ -642,14 +647,14 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup($userinfo, &$existinguser, &$status) {
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('USERGROUP_MISSING'));

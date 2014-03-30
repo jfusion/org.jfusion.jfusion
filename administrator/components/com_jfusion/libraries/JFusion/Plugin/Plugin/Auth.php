@@ -14,6 +14,7 @@
  */
 
 use JFusion\Factory;
+use JFusion\User\Userinfo;
 
 /**
  * Abstract interface for all JFusion auth implementations.
@@ -42,11 +43,11 @@ class Plugin_Auth extends Plugin
     /**
      * Generates an encrypted password based on the userinfo passed to this function
      *
-     * @param object $userinfo userdata object containing the userdata
+     * @param Userinfo $userinfo userdata object containing the userdata
      * 
      * @return string Returns generated password
      */
-    function generateEncryptedPassword($userinfo) 
+    function generateEncryptedPassword(Userinfo $userinfo)
     {
         return '';
     }
@@ -54,11 +55,11 @@ class Plugin_Auth extends Plugin
 	/**
 	 * used by framework to ensure a password test
 	 *
-	 * @param object $userinfo userdata object containing the userdata
+	 * @param Userinfo $userinfo userdata object containing the userdata
 	 *
 	 * @return boolean
 	 */
-	function checkPassword($userinfo) {
+	function checkPassword(Userinfo $userinfo) {
 		return $this->comparePassword($userinfo->password, $this->generateEncryptedPassword($userinfo));
 	}
 

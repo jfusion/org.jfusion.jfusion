@@ -20,6 +20,7 @@ use Exception;
 use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use JHTML;
@@ -49,13 +50,15 @@ class User extends Plugin_User
 	var $helper;
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 * @param string $identifier_type
 	 * @param int $ignore_id
-	 * @return null|object
+	 *
+*@return null|Userinfo
 	 */
-	function getUser($userinfo, $identifier_type = 'auto', $ignore_id = 0)
+	function getUser(Userinfo $userinfo, $identifier_type = 'auto', $ignore_id = 0)
 	{
+		$user = null;
 		try {
 			if($identifier_type == 'auto') {
 				//get the identifier
@@ -130,12 +133,13 @@ class User extends Plugin_User
 				} else {
 					$result->activation = '';
 				}
+				$user = new Userinfo();
+				$user->bind($result, $this->getJname());
 			}
 		} catch (Exception $e) {
 			Framework::raiseError($e, $this->getJname());
-			$result = null;
 		}
-		return $result;
+		return $user;
 	}
 
 	/**
@@ -147,10 +151,10 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 * @return array
 	 */
-	function deleteUser($userinfo)
+	function deleteUser(Userinfo $userinfo)
 	{
 		//setup status array to hold debug info and errors
 		$status = array();
@@ -173,12 +177,12 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 * @param array $options
 	 *
 	 * @return array
 	 */
-	function destroySession($userinfo, $options)
+	function destroySession(Userinfo $userinfo, $options)
 	{
 		$status = array('error' => array(), 'debug' => array());
 		try {
@@ -254,11 +258,11 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 * @param array $options
 	 * @return array
 	 */
-	function createSession($userinfo, $options)
+	function createSession(Userinfo $userinfo, $options)
 	{
 		$status = array('error' => array(), 'debug' => array());
 		try {
@@ -358,13 +362,13 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updatePassword($userinfo, &$existinguser, &$status)
+	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		jimport('joomla.user.helper');
 		$existinguser->password_salt = Framework::genRandomPassword(3);
@@ -388,13 +392,13 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updateEmail($userinfo, &$existinguser, &$status)
+	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$apidata = array('userinfo' => $userinfo, 'existinguser' => $existinguser);
 		$response = $this->helper->apiCall('updateEmail', $apidata);
@@ -411,13 +415,13 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object &$existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo &$existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function blockUser($userinfo, &$existinguser, &$status)
+	function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$db = Factory::getDatabase($this->getJname());
 
@@ -471,13 +475,13 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function unblockUser($userinfo, &$existinguser, &$status)
+	function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$usergroups = $this->getCorrectUserGroups($existinguser);
 		$usergroup = $usergroups[0];
@@ -538,13 +542,13 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function activateUser($userinfo, &$existinguser, &$status)
+	function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		//found out what usergroup should be used
 		$usergroups = $this->getCorrectUserGroups($existinguser);
@@ -573,13 +577,13 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function inactivateUser($userinfo, &$existinguser, &$status)
+	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		//found out what usergroup should be used
 		$activationgroup = $this->params->get('activationgroup');
@@ -635,12 +639,12 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function createUser($userinfo, &$status)
+	function createUser(Userinfo $userinfo, &$status)
 	{
 		try {
 			//get the default user group and determine if we are using simple or advanced
@@ -733,13 +737,13 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object &$userinfo
-	 * @param object &$existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo &$existinguser
 	 * @param array &$status
 	 *
 	 * @return bool
 	 */
-	function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
+	function executeUpdateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$update_groups = false;
 		$usergroups = $this->getCorrectUserGroups($userinfo);
@@ -777,14 +781,14 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		//check to see if we have a group_id in the $userinfo, if not return
 		$usergroups = $this->getCorrectUserGroups($userinfo);
@@ -1251,11 +1255,11 @@ class User extends Plugin_User
 	/**
 	 * Function That find the correct user group index
 	 *
-	 * @param stdClass $userinfo
+	 * @param Userinfo $userinfo
 	 *
 	 * @return int
 	 */
-	function getUserGroupIndex($userinfo)
+	function getUserGroupIndex(Userinfo $userinfo)
 	{
 		$index = 0;
 

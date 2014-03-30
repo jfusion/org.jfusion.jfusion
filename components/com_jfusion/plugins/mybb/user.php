@@ -2,6 +2,7 @@
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use RuntimeException;
@@ -36,10 +37,12 @@ defined('_JEXEC') or die('Restricted access');
 class User extends Plugin_User
 {
     /**
-     * @param object $userinfo
-     * @return null|stdClass
+     * @param Userinfo $userinfo
+     *
+*@return null|Userinfo
      */
-    function getUser($userinfo) {
+    function getUser(Userinfo $userinfo) {
+	    $user = null;
 	    try {
 		    //get the identifier
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username', 'a.email');
@@ -63,20 +66,23 @@ class User extends Plugin_User
 				    $result->activation = null;
 			    }
 			    $result->groups = array($result->group_id);
+
+			    $user = new Userinfo();
+			    $user->bind($result, $this->getJname());
 		    }
 	    } catch (Exception $e) {
-		    $result = null;
+		    $user = null;
 	    }
-        return $result;
+        return $user;
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
      *
      * @return array
      */
-    function destroySession($userinfo, $options) {
+    function destroySession(Userinfo $userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
         $cookiedomain = $this->params->get('cookie_domain');
         $cookiepath = $this->params->get('cookie_path', '/');
@@ -100,11 +106,11 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
      * @return array
      */
-    function createSession($userinfo, $options) {
+    function createSession(Userinfo $userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
         //do not create sessions for blocked users
 	    try {
@@ -152,13 +158,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object &$existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo &$existinguser
      * @param array &$status
      *
      * @return void
      */
-    function blockUser($userinfo, &$existinguser, &$status) {
+    function blockUser(Userinfo $userinfo, &$existinguser, &$status) {
 	    $db = Factory::getDatabase($this->getJname());
 	    $user = new stdClass;
 	    $user->uid = $existinguser->userid;
@@ -185,14 +191,14 @@ class User extends Plugin_User
     }
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-    function unblockUser($userinfo, &$existinguser, &$status) {
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    $db = Factory::getDatabase($this->getJname());
 	    //found out what the old usergroup was
 
@@ -234,13 +240,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updatePassword($userinfo, &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    jimport('joomla.user.helper');
 	    $existinguser->password_salt = Framework::genRandomPassword(6);
 	    $existinguser->password = md5(md5($existinguser->password_salt) . md5($userinfo->password_clear));
@@ -259,14 +265,14 @@ class User extends Plugin_User
     }
 
 	/**
-	 * @param object $userinfo
-	 * @param object &$existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo &$existinguser
 	 * @param array  &$status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
@@ -289,12 +295,12 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $status
      *
      * @return void
      */
-    function createUser($userinfo, &$status) {
+    function createUser(Userinfo $userinfo, &$status) {
 	    try {
 		    //found out what usergroup should be used
 		    $db = Factory::getDatabase($this->getJname());
@@ -343,13 +349,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updateEmail($userinfo, &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -364,13 +370,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function activateUser($userinfo, &$existinguser, &$status) {
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    //found out what usergroup should be used
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
@@ -392,13 +398,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function inactivateUser($userinfo, &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    //found out what usergroup should be used
 	    $usergroup = $this->params->get('activationgroup');
 	    //update the usergroup

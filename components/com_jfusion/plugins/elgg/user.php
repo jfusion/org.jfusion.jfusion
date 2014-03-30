@@ -17,6 +17,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 
@@ -42,11 +43,12 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionUser_elgg extends Plugin_User
 {
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
-     * @return null|object
+     * @return null|Userinfo
      */
-    function getUser($userinfo) {
+    function getUser(Userinfo $userinfo) {
+	    $user = null;
 	    try {
 		    //get the identifier
 		    $identifier = $userinfo;
@@ -83,20 +85,22 @@ class JFusionUser_elgg extends Plugin_User
 			    } else {
 				    $result->activation = '';
 			    }
+
+			    $user = new Userinfo();
+			    $user->bind($result, $this->getJname());
 		    }
 	    } catch (Exception $e) {
 		    Framework::raiseError($e, $this->getJname());
-		    $result = null;
 	    }
-        return $result;
+        return $user;
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
      * @return array
      */
-    function deleteUser($userinfo) {
+    function deleteUser(Userinfo $userinfo) {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
@@ -117,12 +121,12 @@ class JFusionUser_elgg extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $option
      *
      * @return array
      */
-    function destroySession($userinfo, $option) {
+    function destroySession(Userinfo $userinfo, $option) {
         $status = array('error' => array(), 'debug' => array());
         /*
         NOTE:
@@ -136,13 +140,13 @@ class JFusionUser_elgg extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
      * @param bool $framework
      *
      * @return array
      */
-    function createSession($userinfo, $options, $framework = true) {
+    function createSession(Userinfo $userinfo, $options, $framework = true) {
         //destroy a cookie if it exists already, this will prevent the person logging in from having to refresh twice to appear as logged in
 	    try {
 		    $this->destroySession(null, null);
@@ -205,13 +209,13 @@ class JFusionUser_elgg extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object &$existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo &$existinguser
      * @param array &$status
      *
      * @return void
      */
-    function updatePassword($userinfo, &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    jimport('joomla.user.helper');
 	    $existinguser->password_salt = Framework::genRandomPassword(8);
 	    $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
@@ -230,12 +234,12 @@ class JFusionUser_elgg extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array &$status
      *
      * @return void
      */
-    function createUser($userinfo, &$status) {
+    function createUser(Userinfo $userinfo, &$status) {
 	    try {
 	        //found out what usergroup should be used
 	        $usergroups = $this->getCorrectUserGroups($userinfo);
@@ -311,13 +315,13 @@ class JFusionUser_elgg extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updateEmail($userinfo, &$existinguser, &$status)
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
@@ -334,15 +338,15 @@ class JFusionUser_elgg extends Plugin_User
     }
     
     /**
-     * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the existing user data
+     * @param Userinfo $userinfo      holds the new user data
+     * @param Userinfo &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
      *
      * @return void
      */
-    function blockUser($userinfo, &$existinguser, &$status)
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
@@ -362,18 +366,18 @@ class JFusionUser_elgg extends Plugin_User
 		}
     }
 
-    /**
-     * unblock user
-     *
-     * @param object $userinfo      holds the new user data
-     * @param object &&$existinguser holds the existing user data
-     * @param array  &&$status       Status array
-     *
-     * @access public
-     *
-     * @return void
-     */
-    function unblockUser($userinfo, &$existinguser, &$status)
+	/**
+	 * unblock user
+	 *
+	 * @param Userinfo $userinfo holds the new user data
+	 * @param Userinfo $existinguser
+	 * @param array                  $status
+	 *
+	 * @access   public
+	 *
+	 * @return void
+	 */
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
@@ -394,13 +398,13 @@ class JFusionUser_elgg extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object &$existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo &$existinguser
      * @param array &$status
      *
      * @return void
      */
-    function activateUser($userinfo, &$existinguser, &$status) {
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
@@ -420,13 +424,13 @@ class JFusionUser_elgg extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object &$existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo &$existinguser
      * @param array &$status
      *
      * @return void
      */
-    function inactivateUser($userinfo, &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		if (defined('externalpage')) {
         	define('externalpage', true);	
         }

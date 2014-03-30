@@ -13,7 +13,10 @@ use Joomla\String\String;
 /**
  * Allows for quoting in language .ini files.
  */
-define('_QQ_', '"');
+if (!defined('_QQ_')) {
+	define('_QQ_', '"');
+}
+
 
 /**
  * Languages/translation handler class

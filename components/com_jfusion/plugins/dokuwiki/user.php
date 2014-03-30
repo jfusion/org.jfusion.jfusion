@@ -17,6 +17,7 @@
 // no direct access
 use JFusion\Framework;
 use JFusion\Plugin\Plugin_User;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use \Exception;
 use \RuntimeException;
@@ -43,12 +44,12 @@ class JFusionUser_dokuwiki extends Plugin_User
 	var $helper;
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param int $overwrite
      *
      * @return array
      */
-    function updateUser($userinfo, $overwrite = 0) {
+    function updateUser(Userinfo $userinfo, $overwrite = 0) {
         // Initialise some variables
         $userinfo->username = $this->filterUsername($userinfo->username);
         $status = array('error' => array(), 'debug' => array());
@@ -130,11 +131,11 @@ class JFusionUser_dokuwiki extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
-     * @return null|object
+     * @return null|Userinfo
      */
-    function getUser($userinfo) {
+    function getUser(Userinfo $userinfo) {
     	if (is_object($userinfo)) {
     		$username = $this->filterUsername($userinfo->username);
 		} else {
@@ -142,29 +143,31 @@ class JFusionUser_dokuwiki extends Plugin_User
 		}
 		$raw_user = $this->helper->auth->getUserData($username);
         if (is_array($raw_user)) {
-            $user = new stdClass;
-            $user->block = 0;
-            $user->activation = '';
-            $user->userid = $username;
-            $user->name = $raw_user['name'];
-            $user->username = $username;
-            $user->password = $raw_user['pass'];
-            $user->email = $raw_user['mail'];
+	        $result = new stdClass;
+	        $result->block = 0;
+	        $result->activation = '';
+	        $result->userid = $username;
+	        $result->name = $raw_user['name'];
+	        $result->username = $username;
+	        $result->password = $raw_user['pass'];
+	        $result->email = $raw_user['mail'];
 
             $groups = $raw_user['grps'];
 
             if (!empty($groups)) {
-                $user->groups = $groups;
-                $user->groupnames = $groups;
+	            $result->groups = $groups;
+	            $result->groupnames = $groups;
                 // Support as master if using old jfusion plugins.
-                $user->group_id = $groups[0];
-                $user->group_name = $groups[0];
+	            $result->group_id = $groups[0];
+	            $result->group_name = $groups[0];
             } else {
-                $user->groups = array();
-                $user->groupnames = array();
-                $user->group_id = null;
-                $user->group_name = null;
+	            $result->groups = array();
+	            $result->groupnames = array();
+	            $result->group_id = null;
+	            $result->group_name = null;
             }
+	        $user = new Userinfo();
+	        $user->bind($result, $this->getJname());
         } else {
             $user = null;
         }
@@ -172,11 +175,11 @@ class JFusionUser_dokuwiki extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
      * @return array
      */
-    function deleteUser($userinfo) {
+    function deleteUser(Userinfo $userinfo) {
         //setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
         $username = $this->filterUsername($userinfo->username);
@@ -191,12 +194,12 @@ class JFusionUser_dokuwiki extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
      *
      * @return array
      */
-    function destroySession($userinfo, $options) {
+    function destroySession(Userinfo $userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
 
         $cookie_path = $this->params->get('cookie_path', '/');
@@ -219,12 +222,12 @@ class JFusionUser_dokuwiki extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
      *
      * @return array
      */
-    function createSession($userinfo, $options) {
+    function createSession(Userinfo $userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
 
         if(!empty($userinfo->password_clear)){
@@ -264,12 +267,12 @@ class JFusionUser_dokuwiki extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array &$status
      *
      * @return void
      */
-    function createUser($userinfo, &$status) {
+    function createUser(Userinfo $userinfo, &$status) {
 	    try {
 		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
@@ -300,35 +303,35 @@ class JFusionUser_dokuwiki extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updatePassword($userinfo, &$existinguser, &$status)
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updateEmail($userinfo, &$existinguser, &$status)
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-	public function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
     }
 }

@@ -18,6 +18,7 @@
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use RuntimeException;
@@ -42,14 +43,15 @@ class User extends Plugin_User
     /**
      * get user
      *
-     * @param object $userinfo holds the new user data
+     * @param Userinfo $userinfo holds the new user data
      *
      * @access public
      *
-     * @return null|object
+     * @return null|Userinfo
      */
-    function getUser($userinfo)
+    function getUser(Userinfo $userinfo)
     {
+	    $user = null;
 	    try {
 		    //get the identifier
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.memberName', 'a.emailAddress');
@@ -113,24 +115,25 @@ class User extends Plugin_User
 			    if ($result->is_activated == 1) {
 				    $result->activation = '';
 			    }
+			    $user = new Userinfo();
+			    $user->bind($result, $this->getJname());
 		    }
 	    } catch (Exception $e) {
 		    Framework::raiseError($e, $this->getJname());
-		    $result = null;
 	    }
-        return $result;
+        return $user;
     }
 
     /**
      * delete user
      *
-     * @param object $userinfo holds the new user data
+     * @param Userinfo $userinfo holds the new user data
      *
      * @access public
      *
      * @return array
      */
-    function deleteUser($userinfo)
+    function deleteUser(Userinfo $userinfo)
     {
 	    try {
 	        //setup status array to hold debug info and errors
@@ -191,14 +194,14 @@ class User extends Plugin_User
     /**
      * destroy session
      *
-     * @param object $userinfo holds the new user data
+     * @param Userinfo $userinfo holds the new user data
      * @param array  $options  Status array
      *
      * @access public
      *
      * @return array
      */
-    function destroySession($userinfo, $options)
+    function destroySession(Userinfo $userinfo, $options)
     {
         $status = array('error' => array(), 'debug' => array());
 	    try {
@@ -221,14 +224,14 @@ class User extends Plugin_User
     /**
      * create session
      *
-     * @param object $userinfo holds the new user data
+     * @param Userinfo $userinfo holds the new user data
      * @param array  $options  options
      *
      * @access public
      *
      * @return array
      */
-    function createSession($userinfo, $options)
+    function createSession(Userinfo $userinfo, $options)
     {
         $status = array('error' => array(), 'debug' => array());
         //do not create sessions for blocked users
@@ -241,15 +244,15 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the existing user data
+     * @param Userinfo $userinfo      holds the new user data
+     * @param Userinfo &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
      *
      * @return void
      */
-    function updatePassword($userinfo, &$existinguser, &$status)
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $existinguser->password = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
 	    $existinguser->password_salt = substr(md5(rand()), 0, 4);
@@ -268,30 +271,15 @@ class User extends Plugin_User
     }
 
     /**
-     * updateUsername
-     *
-     * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the existing user data
+     * @param Userinfo $userinfo      holds the new user data
+     * @param Userinfo &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
      *
      * @return void
      */
-    function updateUsername($userinfo, &$existinguser, &$status)
-    {
-    }
-
-    /**
-     * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the existing user data
-     * @param array  &$status       Status array
-     *
-     * @access public
-     *
-     * @return void
-     */
-    function updateEmail($userinfo, &$existinguser, &$status)
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
@@ -307,8 +295,8 @@ class User extends Plugin_User
     }
 
 	/**
-	 * @param object $userinfo      holds the new user data
-	 * @param object &$existinguser holds the existing user data
+	 * @param Userinfo $userinfo      holds the new user data
+	 * @param Userinfo &$existinguser holds the existing user data
 	 * @param array  &$status       Status array
 	 *
 	 * @throws RuntimeException
@@ -316,7 +304,7 @@ class User extends Plugin_User
 	 *
 	 * @return void
 	 */
-	public function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
@@ -356,13 +344,13 @@ class User extends Plugin_User
     }
 
 	/**
-	 * @param object &$userinfo
-	 * @param object &$existinguser
+	 * @param Userinfo &$userinfo
+	 * @param Userinfo &$existinguser
 	 * @param array &$status
 	 *
 	 * @return bool
 	 */
-	function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
+	function executeUpdateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$update_groups = false;
 		$usergroups = $this->getCorrectUserGroups($userinfo);
@@ -396,15 +384,15 @@ class User extends Plugin_User
 	}
 
     /**
-     * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the existing user data
+     * @param Userinfo $userinfo      holds the new user data
+     * @param Userinfo &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
      *
      * @return void
      */
-    function blockUser($userinfo, &$existinguser, &$status)
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $db = Factory::getDatabase($this->getJname());
 	    $ban = new stdClass;
@@ -431,15 +419,15 @@ class User extends Plugin_User
     /**
      * unblock user
      *
-     * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the existing user data
+     * @param Userinfo $userinfo      holds the new user data
+     * @param Userinfo &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
      *
      * @return void
      */
-    function unblockUser($userinfo, &$existinguser, &$status)
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -463,15 +451,15 @@ class User extends Plugin_User
     /**
      * activate user
      *
-     * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the existing user data
+     * @param Userinfo $userinfo      holds the new user data
+     * @param Userinfo &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
      *
      * @return void
      */
-    function activateUser($userinfo, &$existinguser, &$status)
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -489,15 +477,15 @@ class User extends Plugin_User
     /**
      * deactivate user
      *
-     * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the existing user data
+     * @param Userinfo $userinfo      holds the new user data
+     * @param Userinfo &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
      *
      * @return void
      */
-    function inactivateUser($userinfo, &$existinguser, &$status)
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -516,14 +504,14 @@ class User extends Plugin_User
     /**
      * Creates a new user
      *
-     * @param object $userinfo holds the new user data
+     * @param Userinfo $userinfo holds the new user data
      * @param array  &$status  Status array
      *
      * @access public
      *
      * @return void
      */
-    function createUser($userinfo, &$status)
+    function createUser(Userinfo $userinfo, &$status)
     {
 	    try {
 		    //we need to create a new SMF user
@@ -613,11 +601,11 @@ class User extends Plugin_User
 	/**
 	 * Function That find the correct user group index
 	 *
-	 * @param stdClass $userinfo
+	 * @param Userinfo $userinfo
 	 *
 	 * @return int
 	 */
-	function getUserGroupIndex($userinfo)
+	function getUserGroupIndex(Userinfo $userinfo)
 	{
 		$index = 0;
 

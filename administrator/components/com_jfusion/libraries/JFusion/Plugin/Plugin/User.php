@@ -16,6 +16,7 @@
 use JFusion\Curl\Curl;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use Joomla\Registry\Registry;
 
@@ -62,11 +63,11 @@ class Plugin_User extends Plugin
      * $userinfo->lastvisitdate
      * $userinfo->group_id
      *
-     * @param object $userinfo contains the object of the user
+     * @param Userinfo $userinfo contains the object of the user
      *
-     * @return null|object userinfo Object containing the user information
+     * @return null|Userinfo Userinfo containing the user information
      */
-    function getUser($userinfo)
+	public function getUser(Userinfo $userinfo)
     {
         return null;
     }
@@ -74,14 +75,14 @@ class Plugin_User extends Plugin
     /**
      * Returns the identifier and identifier_type for getUser
      *
-     * @param object &$userinfo    object with user identifying information
+     * @param Userinfo &$userinfo    object with user identifying information
      * @param string $username_col Database column for username
      * @param string $email_col    Database column for email
      * @param bool $lowerEmail   Boolean to lowercase emails for comparison
      *
      * @return array array($identifier, $identifier_type)
      */
-	public final function getUserIdentifier(&$userinfo, $username_col, $email_col, $lowerEmail = true)
+	public final function getUserIdentifier(Userinfo &$userinfo, $username_col, $email_col, $lowerEmail = true)
     {
         //the discussion bot may need to override the identifier_type to prevent user hijacking by guests
         $override = (defined('OVERRIDE_IDENTIFIER')) ? OVERRIDE_IDENTIFIER : 'default';
@@ -141,7 +142,7 @@ class Plugin_User extends Plugin
      * $result['error'] (contains any error messages)
      * $result['debug'] (contains information on what was done)
      *
-     * @param object $userinfo contains the userinfo
+     * @param Userinfo $userinfo contains the userinfo
      * @param array $options  contains Array with the login options, such as remember_me
      *
      * @return array result Array containing the result of the session destroy
@@ -159,12 +160,12 @@ class Plugin_User extends Plugin
      * $result['error'] (contains any error messages)
      * $result['debug'] (contains information on what was done)
      *
-     * @param object $userinfo contains the userinfo
+     * @param Userinfo $userinfo contains the userinfo
      * @param array  $options  contains array with the login options, such as remember_me     *
      *
      * @return array result Array containing the result of the session creation
      */
-    function createSession($userinfo, $options)
+    function createSession(Userinfo $userinfo, $options)
     {
         return array();
     }
@@ -186,14 +187,14 @@ class Plugin_User extends Plugin
      * $result['error'] (contains any error messages)
      * $result['userinfo'] (contains the userinfo object of the integrated software user)
      *
-     * @param object $userinfo  contains the userinfo
+     * @param Userinfo $userinfo  contains the userinfo
      * @param int    $overwrite determines if the userinfo can be overwritten
      *
      * @throws RuntimeException
      *
      * @return array result Array containing the result of the user update
      */
-    function updateUser($userinfo, $overwrite = 0)
+    function updateUser(Userinfo $userinfo, $overwrite = 0)
     {
         $status = array('error' => array(), 'debug' => array());
 	    $this->debugger->set(null, $status);
@@ -255,12 +256,12 @@ class Plugin_User extends Plugin
     }
 
 	/**
-	 * @param stdClass $userinfo
-	 * @param stdClass $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 *
 	 * @return boolean return true if changed
 	 */
-	function doUpdateUsergroup($userinfo, &$existinguser)
+	function doUpdateUsergroup(Userinfo $userinfo, &$existinguser)
 	{
 		$changed = false;
 		//check for advanced usergroup sync
@@ -288,15 +289,15 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containing the old userinfo
+     * @param Userinfo $userinfo      Object containing the new userinfo
+     * @param Userinfo &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @throws RuntimeException
      *
      * @return boolean Whether updateUsergroup was executed or not
      */
-    function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
+    function executeUpdateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
         $changed = false;
         $usergroups = $this->getCorrectUserGroups($userinfo);
@@ -309,12 +310,12 @@ class Plugin_User extends Plugin
     }
 
 	/**
-	 * @param stdClass $userinfo
-	 * @param stdClass $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 *
 	 * @return boolean return true if changed
 	 */
-	function doUpdatePassword($userinfo, &$existinguser)
+	function doUpdatePassword(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$changed = false;
 		if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
@@ -349,13 +350,13 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containing the old userinfo
+     * @param Userinfo $userinfo      Object containing the new userinfo
+     * @param Userinfo &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @throws RuntimeException
      */
-    function updatePassword($userinfo, &$existinguser, &$status)
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
@@ -365,27 +366,27 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containing the old userinfo
+     * @param Userinfo $userinfo      Object containing the new userinfo
+     * @param Userinfo &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @throws RuntimeException
      */
-    function updateUsername($userinfo, &$existinguser, &$status)
+    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
 
 
 	/**
-	 * @param stdClass $userinfo
-	 * @param stdClass $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param          $overwrite
 	 *
 	 * @throws RuntimeException
 	 * @return boolean return true if changed
 	 */
-	function doUpdateEmail($userinfo, &$existinguser, $overwrite)
+	function doUpdateEmail(Userinfo $userinfo, Userinfo &$existinguser, $overwrite)
 	{
 		$changed = false;
 		if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
@@ -417,13 +418,13 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containing the old userinfo
+     * @param Userinfo $userinfo      Object containing the new userinfo
+     * @param Userinfo &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @throws RuntimeException
      */
-    function updateEmail($userinfo, &$existinguser, &$status)
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
@@ -433,25 +434,25 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containing the old userinfo
+     * @param Userinfo $userinfo      Object containing the new userinfo
+     * @param Userinfo &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @throws RuntimeException
      */
-	public function updateUsergroup($userinfo, &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
 
 	/**
-	 * @param stdClass $userinfo
-	 * @param stdClass $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param          $overwrite
 	 *
 	 * @return boolean return true if changed
 	 */
-	function doUpdateBlock($userinfo, &$existinguser, $overwrite)
+	function doUpdateBlock(Userinfo $userinfo, Userinfo &$existinguser, $overwrite)
 	{
 		$changed = false;
 		//check the blocked status
@@ -493,13 +494,13 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containing the old userinfo
+     * @param Userinfo $userinfo      Object containing the new userinfo
+     * @param Userinfo &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @throws RuntimeException
      */
-    function blockUser($userinfo, &$existinguser, &$status)
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
@@ -509,26 +510,26 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containing the old userinfo
+     * @param Userinfo $userinfo      Object containing the new userinfo
+     * @param Userinfo &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @throws RuntimeException
      */
-    function unblockUser($userinfo, &$existinguser, &$status)
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
 
 
 	/**
-	 * @param stdClass $userinfo
-	 * @param stdClass $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param          $overwrite
 	 *
 	 * @return boolean return true if changed
 	 */
-	function doUpdateActivate($userinfo, &$existinguser, $overwrite)
+	function doUpdateActivate(Userinfo $userinfo, Userinfo &$existinguser, $overwrite)
 	{
 		$changed = false;
 		//check the activation status
@@ -570,13 +571,13 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containing the old userinfo
+     * @param Userinfo $userinfo      Object containing the new userinfo
+     * @param Userinfo &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @throws RuntimeException
      */
-    function activateUser($userinfo, &$existinguser, &$status)
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
@@ -599,9 +600,9 @@ class Plugin_User extends Plugin
 
 
 	/**
-	 * @param stdClass $userinfo
+	 * @param Userinfo $userinfo
 	 */
-	function doCreateUser($userinfo)
+	function doCreateUser(Userinfo $userinfo)
 	{
 		//check activation and block status
 		$create_inactive = $this->params->get('create_inactive', 1);
@@ -632,10 +633,10 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo Object containing the new userinfo
+     * @param Userinfo $userinfo Object containing the new userinfo
      * @param array  &$status  Array containing the errors and result of the function
      */
-    function createUser($userinfo, &$status)
+    function createUser(Userinfo $userinfo, &$status)
     {
     }
 
@@ -644,11 +645,11 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo Object containing the existing userinfo
+     * @param Userinfo $userinfo Object containing the existing userinfo
      *
      * @return array status Array containing the errors and result of the function
      */
-    function deleteUser($userinfo)
+    function deleteUser(Userinfo $userinfo)
     {
         //setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
@@ -657,12 +658,12 @@ class Plugin_User extends Plugin
     }
 
 	/**
-	 * @param stdClass $userinfo
-	 * @param stdClass $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 *
 	 * @return boolean return true if changed
 	 */
-	function doUserLanguage($userinfo, &$existinguser)
+	function doUserLanguage(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$changed = false;
 		//Update the user language with the current used in Joomla or the one existing from an other plugin
@@ -696,11 +697,11 @@ class Plugin_User extends Plugin
     /**
      * Function that update the language of a user
      *
-     * @param object $userinfo Object containing the existing userinfo
-     * @param object $existinguser         Object JLanguage containing the current language of Joomla
+     * @param Userinfo $userinfo Object containing the existing userinfo
+     * @param Userinfo $existinguser         Object JLanguage containing the current language of Joomla
      * @param array  &$status      Array containing the errors and result of the function
      */
-    function updateUserLanguage($userinfo, &$existinguser, &$status)
+    function updateUserLanguage(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
@@ -720,12 +721,12 @@ class Plugin_User extends Plugin
 	/**
 	 * compare set of usergroup with a user returns true if the usergroups are correct
 	 *
-	 * @param object $userinfo user with current usergroups
+	 * @param Userinfo $userinfo user with current usergroups
 	 * @param array $usergroups array with the correct usergroups
 	 *
 	 * @return boolean
 	 */
-	public function compareUserGroups($userinfo, $usergroups) {
+	public function compareUserGroups(Userinfo $userinfo, $usergroups) {
 		if (!is_array($usergroups)) {
 			$usergroups = array($usergroups);
 		}
@@ -756,11 +757,11 @@ class Plugin_User extends Plugin
 	/**
 	 * Function That find the correct user group index
 	 *
-	 * @param stdClass $userinfo
+	 * @param Userinfo $userinfo
 	 *
 	 * @return int
 	 */
-	function getUserGroupIndex($userinfo)
+	function getUserGroupIndex(Userinfo $userinfo)
 	{
 		$index = 0;
 
@@ -800,14 +801,14 @@ class Plugin_User extends Plugin
 	/**
 	 * Common code for user.php
 	 *
-	 * @param object $userinfo userinfo
+	 * @param Userinfo $userinfo userinfo
 	 * @param array $options  options
 	 * @param string $type    jname
 	 * @param array $curl_options_merge
 	 *
 	 * @return string nothing
 	 */
-	final public function curlLogin($userinfo, $options, $type = 'brute_force', $curl_options_merge = array())
+	final public function curlLogin(Userinfo $userinfo, $options, $type = 'brute_force', $curl_options_merge = array())
 	{
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 		$curl_options = array();
@@ -986,14 +987,14 @@ class Plugin_User extends Plugin
 	/**
 	 * Function that automatically logs out the user from the integrated software
 	 *
-	 * @param object $userinfo contains the userinfo
+	 * @param Userinfo $userinfo contains the userinfo
 	 * @param array  $options  contains Array with the login options, such as remember_me
 	 * @param string $type     method of destruction
 	 * @param array $curl_options_merge
 	 *
 	 * @return array result Array containing the result of the session destroy
 	 */
-	final public function curlLogout($userinfo, $options, $type = 'brute_force', $curl_options_merge = array())
+	final public function curlLogout(Userinfo $userinfo, $options, $type = 'brute_force', $curl_options_merge = array())
 	{
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 		$curl_options = array();
@@ -1113,11 +1114,11 @@ class Plugin_User extends Plugin
 	/**
 	 * return the correct usergroups for a given user
 	 *
-	 * @param object|null $userinfo user with correct usergroups, if null it will return the usergroup for new users
+	 * @param Userinfo|null $userinfo user with correct usergroups, if null it will return the usergroup for new users
 	 *
 	 * @return array
 	 */
-	final public function getCorrectUserGroups($userinfo)
+	final public function getCorrectUserGroups(Userinfo $userinfo)
 	{
 		$jname = $this->getJname();
 		$group = array();
@@ -1172,13 +1173,12 @@ class Plugin_User extends Plugin
 	/**
 	 * Returns the userinfo data for JFusion plugin based on the userid
 	 *
-	 * @param stdClass  $exsistinginfo     user info
-	 * @param string $exsistingname if true, returns the userinfo data based on Joomla, otherwise the plugin
+	 * @param Userinfo $exsistinginfo     user info
 	 *
 	 * @return stdClass|null returns user login info from the requester software or null
 	 *
 	 */
-	final public function lookupUser($exsistinginfo, $exsistingname)
+	final public function lookupUser(Userinfo $exsistinginfo)
 	{
 		$result = null;
 		if ($exsistinginfo) {
@@ -1190,7 +1190,7 @@ class Plugin_User extends Plugin
 				->from('#__jfusion_users_plugin AS a')
 				->innerJoin('#__jfusion_users_plugin AS b ON a.id = b.id')
 				->where('b.jname = ' . $db->quote($this->getJname()))
-				->where('a.jname = ' . $db->quote($exsistingname));
+				->where('a.jname = ' . $db->quote($exsistinginfo->getJname()));
 
 			$search = array();
 			if (isset($exsistinginfo->userid)) {
@@ -1214,14 +1214,13 @@ class Plugin_User extends Plugin
 	/**
 	 * Updates the JFusion user lookup table during login
 	 *
-	 * @param stdClass  $userinfo         object containing the userdata
-	 * @param stdClass  $exsistinginfo    object containing the userdata
-	 * @param string  $exsistingname    name of the JFusion plugin used
+	 * @param Userinfo $userinfo         object containing the userdata
+	 * @param Userinfo $exsistinginfo    object containing the userdata
 	 */
-	final public function updateLookup($userinfo, $exsistinginfo, $exsistingname)
+	final public function updateLookup(Userinfo $userinfo, Userinfo $exsistinginfo)
 	{
-		if ($userinfo) {
-			$jname = $this->getJname();
+		$jname = $this->getJname();
+		if ($userinfo->getJname() == $jname) {
 			$db = Factory::getDBO();
 			//we don't need to update the lookup for internal joomla unless deleting a user
 
@@ -1229,45 +1228,47 @@ class Plugin_User extends Plugin
 				$query = $db->getQuery(true)
 					->select('*')
 					->from('#__jfusion_users_plugin')
-					->where('( userid = ' . $db->quote($exsistinginfo->userid) . ' AND ' . 'jname = ' . $db->quote($exsistingname) . ' )', 'OR')
-					->where('( email = ' . $db->quote($userinfo->email) . ' AND ' . 'jname = ' . $db->quote($exsistingname) . ' )', 'OR')
-					->where('( userid = ' . $db->quote($userinfo->userid) . ' AND ' . 'jname = ' . $db->quote($jname) . ' )', 'OR')
-					->where('( email = ' . $db->quote($userinfo->email) . ' AND ' . 'jname = ' . $db->quote($jname) . ' )', 'OR');
+					->where('( userid = ' . $db->quote($exsistinginfo->userid) . ' AND ' . 'jname = ' . $db->quote($exsistinginfo->getJname()) . ' )', 'OR')
+					->where('( email = ' . $db->quote($userinfo->email) . ' AND ' . 'jname = ' . $db->quote($exsistinginfo->getJname()) . ' )', 'OR');
+				if ($jname != $exsistinginfo->getJname()) {
+					$query->where('( userid = ' . $db->quote($userinfo->userid) . ' AND ' . 'jname = ' . $db->quote($jname) . ' )', 'OR')
+						->where('( email = ' . $db->quote($userinfo->email) . ' AND ' . 'jname = ' . $db->quote($jname) . ' )', 'OR');
+				}
 				$db->setQuery($query);
 
 				$db->loadObjectList('jname');
 				$list = $db->loadResult();
-
 				if (empty($list)) {
 					$first = new stdClass();
 					$first->id = -1;
 					$first->username = $exsistinginfo->username;
 					$first->userid = $exsistinginfo->userid;
 					$first->email = $exsistinginfo->email;
-					$first->jname = $exsistingname;
+					$first->jname = $exsistinginfo->getJname();
 					$db->insertObject('#__jfusion_users_plugin', $first, 'autoid');
 
 					$first->id = $first->autoid;
 					$db->updateObject('#__jfusion_users_plugin', $first, 'autoid');
-
-					$second = new stdClass();
-					$second->id = $first->id;
-					$second->username = $userinfo->username;
-					$second->userid = $userinfo->userid;
-					$second->email = $userinfo->email;
-					$second->jname = $jname;
-					$db->insertObject('#__jfusion_users_plugin', $second);
-				} else if (!isset($list[$exsistingname])) {
+					if ($jname != $exsistinginfo->getJname()) {
+						$second = new stdClass();
+						$second->id = $first->id;
+						$second->username = $userinfo->username;
+						$second->userid = $userinfo->userid;
+						$second->email = $userinfo->email;
+						$second->jname = $jname;
+						$db->insertObject('#__jfusion_users_plugin', $second);
+					}
+				} else if (!isset($list[$exsistinginfo->getJname()])) {
 					$first = new stdClass();
 					$first->id = $list[$jname]->id;
 					$first->username = $exsistinginfo->username;
 					$first->userid = $exsistinginfo->userid;
 					$first->email = $exsistinginfo->email;
-					$first->jname = $exsistingname;
+					$first->jname = $exsistinginfo->getJname();
 					$db->insertObject('#__jfusion_users_plugin', $first, 'autoid');
 				} else if (!isset($list[$jname])) {
 					$first = new stdClass();
-					$first->id = $list[$exsistingname]->id;
+					$first->id = $list[$exsistinginfo->getJname()]->id;
 					$first->username = $userinfo->username;
 					$first->userid = $userinfo->userid;
 					$first->userid = $userinfo->userid;
@@ -1289,11 +1290,11 @@ class Plugin_User extends Plugin
 	/**
 	 * Updates the JFusion user lookup table during login
 	 *
-	 * @param stdClass  $userinfo    object containing the userdata
+	 * @param Userinfo $userinfo    object containing the userdata
 	 */
-	final public function deleteLookup($userinfo)
+	final public function deleteLookup(Userinfo $userinfo)
 	{
-		if ($userinfo) {
+		if ($userinfo->getJname() == $this->getJname()) {
 			$db = Factory::getDBO();
 			//we don't need to update the lookup for internal joomla unless deleting a user
 

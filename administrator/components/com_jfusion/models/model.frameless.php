@@ -143,7 +143,7 @@ class JFusionFrameless {
 
 		if (!$data->isPlugin) {
 			require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php');
-			$JFusionPlugin = new \JFusion\Plugin\Plugin_Front();
+			$JFusionPlugin = new \JFusion\Plugin\Plugin_Front(null);
 		} else {
 			$JFusionPlugin = \JFusion\Factory::getFront($data->jname);
 

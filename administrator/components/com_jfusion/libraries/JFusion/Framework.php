@@ -238,7 +238,7 @@ class Framework
 	 * Retrieves the source of the avatar for a Joomla supported component
 	 *
 	 * @param string  $software    software name
-	 * @param stdClass $userinfo
+	 * @param \JFusion\User\Userinfo $userinfo
 	 *
 	 * @return string nothing
 	 */

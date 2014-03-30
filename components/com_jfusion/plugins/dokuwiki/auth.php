@@ -16,6 +16,7 @@
 
 // no direct access
 use JFusion\Plugin\Plugin_Auth;
+use JFusion\User\Userinfo;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -40,11 +41,11 @@ class Auth extends Plugin_Auth
     /**
      * Generate a encrypted password from clean password
      *
-     * @param object $userinfo holds the user data
+     * @param Userinfo $userinfo holds the user data
      *
      * @return string
      */
-    function generateEncryptedPassword($userinfo)
+    function generateEncryptedPassword(Userinfo $userinfo)
     {
         return $this->helper->auth->cryptPassword($userinfo->password_clear);
     }

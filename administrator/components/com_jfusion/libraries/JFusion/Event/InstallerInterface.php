@@ -1,5 +1,7 @@
 <?php namespace JFusion\Event;
 
+use Joomla\Event\Event;
+
 /**
  * Created by PhpStorm.
  * User: fanno
@@ -9,9 +11,9 @@
 interface InstallerInterface
 {
 	/**
-	 * @param string $instance the name of the plugin that are getting uninstalled.
+	 * @param Event $event
 	 *
-	 * @return mixed
+	 * @return  Event
 	 */
-	function onInstallerPluginUninstall($instance);
+	function onInstallerPluginUninstall($event);
 }

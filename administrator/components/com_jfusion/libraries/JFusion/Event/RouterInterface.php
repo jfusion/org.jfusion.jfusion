@@ -1,6 +1,7 @@
 <?php namespace JFusion\Event;
 
 use Joomla\Uri\Uri;
+use Joomla\Event\Event;
 
 /**
  * Interface Interface_Router
@@ -11,9 +12,10 @@ interface RouterInterface
 {
 	/**
 	 * Function to convert an internal URI to a route
-	 * @param   string  $url  The internal URL
 	 *
-	 * @return  Uri  The absolute search engine friendly URL
+	 * @param   Event   $event
+	 *
+	 * @return  Event
 	 */
-	function  onRouterBuild($url);
+	function  onRouterBuild($event);
 }

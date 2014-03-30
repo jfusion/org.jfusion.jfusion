@@ -20,6 +20,7 @@
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use RuntimeException;
@@ -50,11 +51,12 @@ class User extends Plugin_User
 	var $helper;
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
-     * @return null|object
+     * @return null|Userinfo
      */
-    function getUser($userinfo) {
+    function getUser(Userinfo $userinfo) {
+	    $user = null;
 	    try {
 		    //get the identifier
 		    $identifier = $userinfo;
@@ -95,21 +97,23 @@ class User extends Plugin_User
 				   jimport('joomla.user.helper');
 				   $result->activation = Framework::getHash(Framework::genRandomPassword());
 			   }
+
+			    $user = new Userinfo();
+			    $user->bind($result, $this->getJname());
 		    }
 	    } catch (Exception $e) {
 		    Framework::raiseError($e, $this->getJname());
-		    $result = null;
 	    }
         // read through params for cookie key (the salt used)
-        return $result;
+        return $user;
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
      * @return array
      */
-    function deleteUser($userinfo) {
+    function deleteUser(Userinfo $userinfo) {
 	    try {
 		    /* Warning: this function mimics the original prestashop function which is a suggestive deletion,
 				all user information remains in the table for past reference purposes. To delete everything associated
@@ -136,12 +140,12 @@ class User extends Plugin_User
 
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 * @param string $options
 	 *
 	 * @return array
 	 */
-	function destroySession($userinfo, $options) {
+	function destroySession(Userinfo $userinfo, $options) {
 		$status = array('error' => array(), 'debug' => array());
 		$params = Factory::getParams($this->getJname());
 
@@ -150,12 +154,12 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 * @param array $options
 	 *
 	 * @return array
 	 */
-	function createSession($userinfo, $options) {
+	function createSession(Userinfo $userinfo, $options) {
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
 			$status['error'][] = Text::_('FUSION_BLOCKED_USER');
 		} else {
@@ -166,13 +170,13 @@ class User extends Plugin_User
 	}
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updatePassword($userinfo, &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    $this->helper->loadFramework();
 
 	    $existinguser->password = Tools::encrypt($userinfo->password_clear);
@@ -191,12 +195,12 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $status
      *
      * @return void
      */
-    function createUser($userinfo, &$status) {
+    function createUser(Userinfo $userinfo, &$status) {
 	    try {
 		    $db = Factory::getDatabase($this->getJname());
 
@@ -300,13 +304,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function updateEmail($userinfo, &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -322,13 +326,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function activateUser($userinfo, &$existinguser, &$status) {
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    /* change the 'active' field of the customer in the ps_customer table to 1 */
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -344,13 +348,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array $status
      *
      * @return void
      */
-    function inactivateUser($userinfo, &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    /* change the 'active' field of the customer in the ps_customer table to 0 */
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -366,14 +370,14 @@ class User extends Plugin_User
     }
 
 	/**
-	 * @param object $userinfo
-	 * @param object $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup($userinfo, &$existinguser, &$status) {
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('USERGROUP_MISSING'));

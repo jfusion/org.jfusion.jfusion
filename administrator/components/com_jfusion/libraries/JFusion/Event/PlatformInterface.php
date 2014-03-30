@@ -1,4 +1,5 @@
 <?php namespace JFusion\Event;
+
 use Joomla\Event\Event;
 
 /**
@@ -14,7 +15,7 @@ interface PlatformInterface
 	 *
 	 * @param   Event   $event
 	 *
-	 * @return  void
+	 * @return  Event
 	 */
 	function onPlatformLogin($event);
 
@@ -23,7 +24,7 @@ interface PlatformInterface
 	 *
 	 * @param   Event   $event
 	 *
-	 * @return  void
+	 * @return  Event
 	 */
 	function onPlatformLogout($event);
 
@@ -32,7 +33,7 @@ interface PlatformInterface
 	 *
 	 * @param   Event   $event
 	 *
-	 * @return  void
+	 * @return  Event
 	 */
 	function onPlatformUserDelete($event);
 }

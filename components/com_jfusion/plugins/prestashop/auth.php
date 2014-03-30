@@ -41,11 +41,11 @@ class JFusionAuth_prestashop extends Plugin_Auth
 	var $helper;
 
     /**
-     * @param object $userinfo
+     * @param \JFusion\User\Userinfo $userinfo
      *
      * @return string
      */
-    function generateEncryptedPassword($userinfo) {
+    function generateEncryptedPassword(\JFusion\User\Userinfo $userinfo) {
 	    $this->helper->loadFramework();
 	    return Tools::encrypt($userinfo->password_clear);
     }

@@ -1,4 +1,5 @@
 <?php namespace JFusion\Event;
+
 use Joomla\Event\Event;
 
 /**
@@ -14,7 +15,7 @@ interface LanguageInterface
 	 *
 	 * @param Event $event
 	 *
-	 * @return  boolean if loaded or not
+	 * @return  Event
 	 */
 	function onLanguageLoadFramework($event);
 
@@ -23,7 +24,7 @@ interface LanguageInterface
 	 *
 	 * @param Event $event
 	 *
-	 * @return  boolean if loaded or not
+	 * @return  Event
 	 */
 	function onLanguageLoadPlugin($event);
 }

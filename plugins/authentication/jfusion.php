@@ -75,6 +75,7 @@ class plgAuthenticationjfusion extends JPlugin
 
 	    if ($authResponce->status === Authentication::STATUS_SUCCESS) {
 		    $response->status = JAuthentication::STATUS_SUCCESS;
+		    $response->userinfo = $authResponce->userinfo;
 	    } else {
 		    if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
 			    //Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour

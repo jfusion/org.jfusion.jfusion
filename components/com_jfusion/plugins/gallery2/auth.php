@@ -16,6 +16,7 @@
 // no direct access
 use GalleryUtilities;
 use JFusion\Plugin\Plugin_Auth;
+use JFusion\User\Userinfo;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -35,10 +36,10 @@ class Auth extends Plugin_Auth
 	var $helper;
 
     /**
-     * @param array|object $userinfo
+     * @param Userinfo $userinfo
      * @return string
      */
-    function generateEncryptedPassword($userinfo) {
+    function generateEncryptedPassword(Userinfo $userinfo) {
         $this->helper->loadGallery2Api(false);
         $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear, $userinfo->password_salt);
         return $testcrypt;

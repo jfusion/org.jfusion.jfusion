@@ -29,6 +29,7 @@
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use RuntimeException;
@@ -125,11 +126,12 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param Userinfo $userinfo
 	 *
-	 * @return mixed|null
+	 * @return Userinfo|null
 	 */
-	function &getUser($userinfo) {
+	function &getUser(Userinfo $userinfo) {
+		$user = null;
 		try {
 			$db = Factory::getDatabase($this->getJname());
 			//get the identifier
@@ -168,13 +170,15 @@ class User extends Plugin_User
 					}
 					$result->registerDate = date('d-m-Y H:i:s', $result->firstaccess);
 					$result->lastvisitDate = date('d-m-Y H:i:s', $result->lastlogin);
+
+					$user = new Userinfo();
+					$user->bind($result, $this->getJname());
 				}
 			}
 		} catch (Exception $e) {
 			Framework::raiseError($e, $this->getJname());
-			$result = null;
 		}
-		return $result;
+		return $user;
 	}
 
 	/**
@@ -182,12 +186,12 @@ class User extends Plugin_User
 	 * $result['error'] (contains any error messages)
 	 * $result['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo contains the userinfo
+	 * @param Userinfo $userinfo contains the userinfo
 	 * @param array $options  contains Array with the login options, such as remember_me
 	 *
 	 * @return array result Array containing the result of the session destroy
 	 */
-	function destroySession($userinfo, $options)
+	function destroySession(Userinfo $userinfo, $options)
     {
         $status = array('error' => array(), 'debug' => array());
         $status = array('debug' => array(), 'error' => array());
@@ -240,12 +244,12 @@ class User extends Plugin_User
 	 * $result['error'] (contains any error messages)
 	 * $result['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo contains the userinfo
+	 * @param Userinfo $userinfo contains the userinfo
 	 * @param array  $options  contains array with the login options, such as remember_me     *
 	 *
 	 * @return array result Array containing the result of the session creation
 	 */
-	function createSession($userinfo, $options) {
+	function createSession(Userinfo $userinfo, $options) {
 		// If a session expired by not accessing Moodle for a long time we cannot login normally.
 		// Also we want to disable the remember me effects, we are going to login anyway
 		// we find out by reading the MOODLEID_ cookie and brute force login if MOODLE_ID is not nobody
@@ -276,11 +280,11 @@ class User extends Plugin_User
 	 * $status['error'] (contains any error messages)
 	 * $status['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo      Object containing the new userinfo
-	 * @param object &$existinguser Object containing the old userinfo
+	 * @param Userinfo $userinfo      Object containing the new userinfo
+	 * @param Userinfo &$existinguser Object containing the old userinfo
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function updatePassword($userinfo, &$existinguser, &$status) {
+	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		if ($this->params->get('passwordsaltmain')) {
 			$existinguser->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));
 		} else {
@@ -304,11 +308,12 @@ class User extends Plugin_User
 	 * $status['error'] (contains any error messages)
 	 * $status['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo      Object containing the new userinfo
-	 * @param object &$existinguser Object containing the old userinfo
+	 * @param Userinfo $userinfo      Object containing the new userinfo
+	 * @param Userinfo &$existinguser Object containing the old userinfo
+	 *
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function updateUsername($userinfo, &$existinguser, &$status) {
+	function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		// not implemented in jFusion 1.x
 	}
 
@@ -317,11 +322,12 @@ class User extends Plugin_User
 	 * $status['error'] (contains any error messages)
 	 * $status['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo      Object containing the new userinfo
-	 * @param object &$existinguser Object containing the old userinfo
+	 * @param Userinfo $userinfo      Object containing the new userinfo
+	 * @param Userinfo &$existinguser Object containing the old userinfo
+	 *
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function updateEmail($userinfo, &$existinguser, &$status) {
+	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		//TODO ? check for duplicates, or leave it at db error
 		//we need to update the email
 		$db = Factory::getDatabase($this->getJname());
@@ -342,13 +348,13 @@ class User extends Plugin_User
 	 * $status['error'] (contains any error messages)
 	 * $status['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo      Object containing the new userinfo
-	 * @param object &$existinguser Object containing the old userinfo
+	 * @param Userinfo $userinfo      Object containing the new userinfo
+	 * @param Userinfo &$existinguser Object containing the old userinfo
 	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @throws RuntimeException
 	 */
-	function blockUser($userinfo, &$existinguser, &$status) {
+	function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		$db = Factory::getDatabase($this->getJname());
 		$query = $db->getQuery(true)
 			->select('value')
@@ -376,13 +382,13 @@ class User extends Plugin_User
 	 * $status['error'] (contains any error messages)
 	 * $status['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo      Object containing the new userinfo
-	 * @param object &$existinguser Object containing the old userinfo
+	 * @param Userinfo $userinfo      Object containing the new userinfo
+	 * @param Userinfo &$existinguser Object containing the old userinfo
 	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @throws RuntimeException
 	 */
-	function unblockUser($userinfo, &$existinguser, &$status) {
+	function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		$db = Factory::getDatabase($this->getJname());
 		$query = $db->getQuery(true)
 			->select('value')
@@ -411,11 +417,11 @@ class User extends Plugin_User
 	 * $status['error'] (contains any error messages)
 	 * $status['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo      Object containing the new userinfo
-	 * @param object &$existinguser Object containing the old userinfo
+	 * @param Userinfo $userinfo      Object containing the new userinfo
+	 * @param Userinfo &$existinguser Object containing the old userinfo
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function activateUser($userinfo, &$existinguser, &$status) {
+	function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		//activate the user
 		$db = Factory::getDatabase($this->getJname());
 
@@ -435,11 +441,11 @@ class User extends Plugin_User
 	 * $status['error'] (contains any error messages)
 	 * $status['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo      Object containing the new userinfo
-	 * @param object &$existinguser Object containing the old userinfo
+	 * @param Userinfo $userinfo      Object containing the new userinfo
+	 * @param Userinfo &$existinguser Object containing the old userinfo
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function inactivateUser($userinfo, &$existinguser, &$status) {
+	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
@@ -458,11 +464,11 @@ class User extends Plugin_User
 	 * $status['error'] (contains any error messages)
 	 * $status['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo Object containing the new userinfo
+	 * @param Userinfo $userinfo Object containing the new userinfo
 	 * @param array  &$status  Array containing the errors and result of the function
 	 * @return void
 	 */
-	function createUser($userinfo, &$status) {
+	function createUser(Userinfo $userinfo, &$status) {
 		try {
 			// first find out if the user already exists, but with deleted flag set
 			$db = Factory::getDatabase($this->getJname());
@@ -604,11 +610,11 @@ class User extends Plugin_User
 	 * $status['error'] (contains any error messages)
 	 * $status['debug'] (contains information on what was done)
 	 *
-	 * @param object $userinfo Object containing the existing userinfo
+	 * @param Userinfo $userinfo Object containing the existing userinfo
 	 *
 	 * @return array status Array containing the errors and result of the function
 	 */
-	function deleteUser($userinfo) {
+	function deleteUser(Userinfo $userinfo) {
 		$status = array('debug' => array(), 'error' => array());
 		try {
 			//setup status array to hold debug info and errors

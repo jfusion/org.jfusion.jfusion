@@ -16,6 +16,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use \Exception;
@@ -43,9 +44,10 @@ class User extends Plugin_User
     /**
      * @param object $userinfo
      *
-     * @return null|object
+     * @return null|Userinfo
      */
-    function getUser($userinfo) {
+    function getUser(Userinfo $userinfo) {
+	    $user = null;
 	    try {
 	        $db = Factory::getDatabase($this->getJname());
 	        //get the identifier
@@ -76,20 +78,22 @@ class User extends Plugin_User
 	            $result->registerDate = date('d-m-Y H:i:s', $result->timestamp);
 	            $result->activation = ($result->pending == 1) ? "1" : '';
 	            $result->block = !$result->active;
+
+		        $user = new Userinfo();
+		        $user->bind($result, $this->getJname());
 	        }
 	    } catch (Exception $e) {
 		    Framework::raiseError($e, $this->getJname());
-		    $result = null;
 	    }
-        return $result;
+        return $user;
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
      * @return array
      */
-    function destroySession($userinfo, $options) {
+    function destroySession(Userinfo $userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
         if (isset($options['remember'])) {
             if ($options['remember']) {
@@ -151,11 +155,11 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $options
      * @return array
      */
-    function createSession($userinfo, $options) {
+    function createSession(Userinfo $userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
                 try {
                     //do not create sessions for blocked users
@@ -221,13 +225,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array &$status
      *
      * @return void
      */
-    function updatePassword($userinfo, &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    $md5_key = $this->params->get('md5_key');
 	    $existinguser->password = md5($userinfo->password_clear . $md5_key);
 	    $db = Factory::getDatabase($this->getJname());
@@ -244,24 +248,24 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object &$existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo &$existinguser
      * @param array &$status
      *
      * @return void
      */
-    function updateUsername($userinfo, &$existinguser, &$status) {
+    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
         // not implemented in jFusion 1.x
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array &$status
      *
      * @return void
      */
-    function updateEmail($userinfo, &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -276,13 +280,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array &$status
      *
      * @return void
      */
-    function blockUser($userinfo, &$existinguser, &$status) {
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -297,13 +301,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array &$status
      *
      * @return void
      */
-    function unblockUser($userinfo, &$existinguser, &$status) {
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    //unblock the user
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -318,13 +322,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo $existinguser
      * @param array &$status
      *
      * @return void
      */
-    function activateUser($userinfo, &$existinguser, &$status) {
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -339,13 +343,13 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
-     * @param object &$existinguser
+     * @param Userinfo $userinfo
+     * @param Userinfo &$existinguser
      * @param array &$status
      *
      * @return void
      */
-    function inactivateUser($userinfo, &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -360,12 +364,12 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array &$status
      *
      * @return void
      */
-    function createUser($userinfo, &$status) {
+    function createUser(Userinfo $userinfo, Userinfo &$status) {
        /**
         * NOTE: eFront does a character check on the user credentials. I think we are ok (HW): if (preg_match("/^.*[$\/\'\"]+.*$/", $parameter))
         */
@@ -495,11 +499,11 @@ class User extends Plugin_User
     }
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
      * @return array|bool
      */
-    function deleteUser($userinfo){
+    function deleteUser(Userinfo $userinfo){
         // we are using the api function remove_user here. 
         // User deletion is not a time critical function and deleting a user is
         // more often than not a complicated task in this type of software.
@@ -571,14 +575,14 @@ class User extends Plugin_User
     }
 
 	/**
-	 * @param object $userinfo
-	 * @param object &$existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo &$existinguser
 	 * @param array  &$status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-    function updateUsergroup($userinfo, &$existinguser, &$status) {
+    function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
 		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));

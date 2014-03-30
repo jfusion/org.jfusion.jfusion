@@ -65,10 +65,10 @@ defined('_JEXEC') or die('Restricted access');
 class Auth extends Plugin_Auth
 {
     /**
-     * @param array|object $userinfo
+     * @param \JFusion\User\Userinfo $userinfo
      * @return string
      */
-    function generateEncryptedPassword($userinfo) {
+    function generateEncryptedPassword(\JFusion\User\Userinfo $userinfo) {
         $validated = false;
         if ($userinfo->password == md5($userinfo->password_clear . $this->params->get('passwordsaltmain')) or $userinfo->password == md5($userinfo->password_clear)) {
             $validated = true;
