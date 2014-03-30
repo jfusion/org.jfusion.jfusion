@@ -17,6 +17,7 @@
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use RuntimeException;
@@ -219,10 +220,11 @@ class User extends Plugin_User
 		return $result;
 	}
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
-	 * @return null|\JFusion\User\Userinfo
+	 * @param Userinfo $userinfo
+	 *
+*@return null|Userinfo
 	 */
-	function getUser(\JFusion\User\Userinfo $userinfo) {
+	function getUser(Userinfo $userinfo) {
 		$identifier = $userinfo;
 		if (is_object($userinfo)) {
 			$identifier = $userinfo->email;
@@ -298,7 +300,7 @@ class User extends Plugin_User
 					$instance->lastvisitDate = $magento_user['updated_at']['value'];
                     $instance->block = !$magento_user['is_active']['value'];
 
-					$user = new \JFusion\User\Userinfo();
+					$user = new Userinfo();
 					$user->bind($instance, $this->getJname());
 				}
 			}
@@ -307,22 +309,22 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
+	 * @param Userinfo $userinfo
 	 * @param array $options
      *
 	 * @return array
 	 */
-	function destroySession(\JFusion\User\Userinfo $userinfo, $options) {
+	function destroySession(Userinfo $userinfo, $options) {
 		return $this->curlLogout($userinfo, $options, $this->params->get('logout_type'));
 	}
 
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
+	 * @param Userinfo $userinfo
 	 * @param array $options
      *
 	 * @return array|string
 	 */
-	function createSession(\JFusion\User\Userinfo $userinfo, $options) {
+	function createSession(Userinfo $userinfo, $options) {
 /*		$status = array('error' => array(), 'debug' => array());
 		if ($userinfo->block)=="1" || !empty($userinfo->activation)) {
 			$status['error'][] = Text::_('FUSION_BLOCKED_USER');
@@ -485,12 +487,12 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
+	 * @param Userinfo $userinfo
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function createUser(\JFusion\User\Userinfo $userinfo, &$status) {
+	function createUser(Userinfo $userinfo, &$status) {
 		$magentoVersion = $this->params->get('magento_version', '1.7');
 
 		$usergroups = $this->getCorrectUserGroups($userinfo);
@@ -596,13 +598,13 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
-	 * @param \JFusion\User\Userinfo $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updatePassword(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser, &$status) {
+	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		$magentoVersion = $this->params->get('magento_version', '1.7');
 
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
@@ -624,23 +626,23 @@ class User extends Plugin_User
 	/**
      * @TODO update username code
      *
-	 * @param \JFusion\User\Userinfo $userinfo
-	 * @param \JFusion\User\Userinfo $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updateUsername(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser, &$status) {
+	function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 	}
 
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
-	 * @param \JFusion\User\Userinfo $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function activateUser(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser, &$status) {
+	function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
 		$this->fillMagentouser($magento_user, 'is_active', 1);
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
@@ -652,13 +654,13 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
-	 * @param \JFusion\User\Userinfo $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function inactivateUser(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser, &$status) {
+	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
         $this->fillMagentouser($magento_user, 'is_active', 0);
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
@@ -670,11 +672,11 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
+	 * @param Userinfo $userinfo
 	 *
 	 * @return array
 	 */
-	function deleteUser(\JFusion\User\Userinfo $userinfo) {
+	function deleteUser(Userinfo $userinfo) {
 		//setup status array to hold debug info and errors
 		$status = array('error' => array(), 'debug' => array());
 		//set the userid
@@ -714,14 +716,14 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
-	 * @param \JFusion\User\Userinfo $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array $status
 	 * @param $jname
 	 *
 	 * @return void
 	 */
-	function updateEmail(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser, &$status, $jname) {
+	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status, $jname) {
 		//set the userid
 		$user_id = $existinguser->userid;
 		$new_email = $userinfo->email;
@@ -746,14 +748,14 @@ class User extends Plugin_User
 	}
 
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
-	 * @param \JFusion\User\Userinfo $existinguser
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
 	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser, &$status) {
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('USERGROUP_MISSING'));

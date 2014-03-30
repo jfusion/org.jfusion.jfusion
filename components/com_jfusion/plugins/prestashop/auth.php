@@ -16,6 +16,7 @@
  
 // no direct access
 use JFusion\Plugin\Plugin_Auth;
+use JFusion\User\Userinfo;
 use Tools;
 
 defined('_JEXEC') or die('Restricted access');
@@ -41,11 +42,11 @@ class JFusionAuth_prestashop extends Plugin_Auth
 	var $helper;
 
     /**
-     * @param \JFusion\User\Userinfo $userinfo
+     * @param Userinfo $userinfo
      *
      * @return string
      */
-    function generateEncryptedPassword(\JFusion\User\Userinfo $userinfo) {
+    function generateEncryptedPassword(Userinfo $userinfo) {
 	    $this->helper->loadFramework();
 	    return Tools::encrypt($userinfo->password_clear);
     }

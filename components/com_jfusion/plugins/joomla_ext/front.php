@@ -147,13 +147,13 @@ class Front extends Plugin_Front
 	 * Update the language front end param in the account of the user if this one changes it
 	 * NORMALLY THE LANGUAGE SELECTION AND CHANGEMENT FOR JOOMLA IS PROVIDED BY THIRD PARTY LIKE JOOMFISH
 	 *
-	 * @param object $userinfo userinfo
+	 * @param \JFusion\User\Userinfo $userinfo userinfo
 	 *
 	 * @throws RuntimeException
 	 *
 	 * @return array status
 	 */
-	public function setLanguageFrontEnd($userinfo = null)
+	public function setLanguageFrontEnd(\JFusion\User\Userinfo $userinfo = null)
 	{
 		$status = array('error' => '', 'debug' => '');
 		$user = Factory::getUser($this->getJname());

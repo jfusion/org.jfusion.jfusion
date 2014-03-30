@@ -420,7 +420,7 @@ class User extends Plugin_User
 	}
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param array $status
      *
      * @return void
@@ -526,7 +526,8 @@ class User extends Plugin_User
 	}
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
+     *
      * @return array
      */
     function deleteUser(Userinfo $userinfo) {

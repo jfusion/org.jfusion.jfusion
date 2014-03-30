@@ -39,11 +39,8 @@ class modjfusionUserActivityHelper {
 		$output = new stdClass();
 
 	    $forum = Factory::getForum($jname);
-	    try {
-		    $joomlaUser = JFactory::getUser();
-	    } catch (Exception $e) {
-		    $joomlaUser = null;
-	    }
+
+	    $joomlaUser = \JFusionFunction::getJoomlaUser((object)JFactory::getUser());
 
 	    $PluginUser = Factory::getUser($jname);
 	    try {

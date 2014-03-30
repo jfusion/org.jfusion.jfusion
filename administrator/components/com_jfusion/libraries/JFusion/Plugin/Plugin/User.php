@@ -1175,18 +1175,18 @@ class Plugin_User extends Plugin
 	 *
 	 * @param Userinfo $exsistinginfo     user info
 	 *
-	 * @return stdClass|null returns user login info from the requester software or null
+	 * @return Userinfo|null returns user login info from the requester software or null
 	 *
 	 */
 	final public function lookupUser(Userinfo $exsistinginfo)
 	{
-		$result = null;
+		$user = null;
 		if ($exsistinginfo) {
 			//initialise some vars
 			$db = Factory::getDBO();
 
 			$query = $db->getQuery(true)
-				->select('b.*')
+				->select('b.userid, b.username, b.email')
 				->from('#__jfusion_users_plugin AS a')
 				->innerJoin('#__jfusion_users_plugin AS b ON a.id = b.id')
 				->where('b.jname = ' . $db->quote($this->getJname()))
@@ -1206,9 +1206,14 @@ class Plugin_User extends Plugin
 				$query->where('( ' . implode(' OR ', $search) . ' )');
 				$db->setQuery($query);
 				$result = $db->loadObject();
+
+				if ($result) {
+					$user = new Userinfo();
+					$user->bind($result, $this->getJname());
+				}
 			}
 		}
-		return $result;
+		return $user;
 	}
 
 	/**

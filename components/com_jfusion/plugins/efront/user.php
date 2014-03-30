@@ -42,7 +42,7 @@ class User extends Plugin_User
 	var $helper;
 
     /**
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      *
      * @return null|Userinfo
      */
@@ -369,7 +369,7 @@ class User extends Plugin_User
      *
      * @return void
      */
-    function createUser(Userinfo $userinfo, Userinfo &$status) {
+    function createUser(Userinfo $userinfo, &$status) {
        /**
         * NOTE: eFront does a character check on the user credentials. I think we are ok (HW): if (preg_match("/^.*[$\/\'\"]+.*$/", $parameter))
         */

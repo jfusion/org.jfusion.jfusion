@@ -791,4 +791,25 @@ JS;
 	{
 		return md5(JFactory::getConfig()->get('secret') . $seed);
 	}
+
+	/**
+	 * @param object $user
+	 *
+	 * @return \JFusion\User\Userinfo
+	 */
+	public static function getJoomlaUser($user = null)
+	{
+		$result = new stdClass();
+		foreach($user as $key => $value) {
+			if ($key == 'id') {
+				$result->userid = $value;
+			} else {
+				$result->$key = $value;
+			}
+		}
+
+		$userinfo = new \JFusion\User\Userinfo();
+		$userinfo->bind($result, 'joomla_int');
+		return $userinfo;
+	}
 }

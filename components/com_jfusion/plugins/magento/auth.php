@@ -14,6 +14,7 @@
  */
 // no direct access
 use JFusion\Plugin\Plugin_Auth;
+use JFusion\User\Userinfo;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -32,11 +33,11 @@ defined('_JEXEC') or die('Restricted access');
 class Auth extends Plugin_Auth
 {
 	/**
-	 * @param \JFusion\User\Userinfo $userinfo
+	 * @param Userinfo $userinfo
 	 * @return string
 	 */
 
-	function generateEncryptedPassword(\JFusion\User\Userinfo $userinfo) {
+	function generateEncryptedPassword(Userinfo $userinfo) {
         $magentoEncryption = $this->params->get('magento_encryption', 'MD5');
         if ($magentoEncryption == "MD5") {
 			if ($userinfo->password_salt) {

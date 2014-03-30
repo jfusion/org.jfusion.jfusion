@@ -48,7 +48,7 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      *
-*@return null|Userinfo
+	 * @return null|Userinfo
      */
     function getUser(Userinfo $userinfo) {
 	    $user = null;
@@ -1382,19 +1382,9 @@ class User extends Plugin_User
 							    }
 							    $JoomlaUser = Factory::getUser('joomla_int');
 
-							    $userinfo = new stdClass;
-							    $userinfo->id = $JUser->id;
-							    $userinfo->username = $JUser->username;
-							    $userinfo->name = $JUser->name;
-							    $userinfo->email = $JUser->email;
-							    $userinfo->block = $JUser->block;
-							    $userinfo->activation = $JUser->activation;
-							    $userinfo->groups = $JUser->groups;
-							    $userinfo->password = $JUser->password;
-							    $userinfo->password_clear = $JUser->password_clear;
+							    $userinfo = \JFusionFunction::getJoomlaUser((object)$JUser);
 
 							    $options['clientid'][] = '0';
-
 							    try {
 								    $status = $JoomlaUser->destroySession($userinfo, $options);
 								    if ($debug) {

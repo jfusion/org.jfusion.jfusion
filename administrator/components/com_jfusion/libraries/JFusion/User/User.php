@@ -217,7 +217,7 @@ class User
 										$debugger->set($master->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $MasterSession['error']);
 										Framework::raise('error', $MasterSession['error'], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
 										/**
-										 * TODO relace below code ? or just login slaves as well?
+										 * TODO replace below code ? or just login slaves as well?
 										 */
 										if ($master->name == 'joomla_int') {
 											$success = -1;
@@ -231,7 +231,7 @@ class User
 									$debugger->set($master->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $e->getMessage());
 									Framework::raiseError($e, $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
 									/**
-									 * TODO relace below code ? or just login slaves as well?
+									 * TODO replace below code ? or just login slaves as well?
 									 */
 									if ($master->name == 'joomla_int') {
 										$success = -1;
@@ -319,14 +319,14 @@ class User
 	 * should be done in the plugin as this provides the ability to give
 	 * much more information about why the routine may have failed.
 	 *
-	 * @param   stdClass    $userinfo   The user to load - Can be an integer or string - If string, it is converted to ID automatically
+	 * @param   Userinfo $userinfo   The user to load - Can be an integer or string - If string, it is converted to ID automatically
 	 * @param   array       $options
 	 *
 	 * @return  boolean  True on success
 	 *
 	 * @since   3.2
 	 */
-	public function logout($userinfo = null, $options = array())
+	public function logout(Userinfo $userinfo = null, $options = array())
 	{
 		//initialise some vars
 		global $JFusionActive;
@@ -435,13 +435,13 @@ class User
 	}
 
 	/**
- * Delete user
- *
- * @param stdClass $userinfo
- *
- * @return boolean
- */
-	public function delete($userinfo)
+     * Delete user
+     *
+     * @param Userinfo $userinfo
+     *
+     * @return boolean
+     */
+	public function delete(Userinfo $userinfo)
 	{
 		$result = false;
 
@@ -528,11 +528,11 @@ class User
 	/**
 	 * Delete user
 	 *
-	 * @param stdClass $userinfo
+	 * @param Userinfo $userinfo
 	 *
 	 * @return boolean False on Error
 	 */
-	public function save($userinfo)
+	public function save(Userinfo $userinfo)
 	{
 		$debugger = Factory::getDebugger('jfusion-saveuser');
 		$debugger->set(null, array());

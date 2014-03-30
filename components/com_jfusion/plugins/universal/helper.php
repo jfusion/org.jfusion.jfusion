@@ -382,11 +382,11 @@ class Helper extends Plugin
 	/**
 	 * @param $type
 	 * @param $value
-	 * @param stdClass $userinfo
+	 * @param \JFusion\User\Userinfo $userinfo
 	 *
 	 * @return int|null|string
 	 */
-	function getHashedPassword($type, $value, $userinfo) {
+	function getHashedPassword($type, $value, \JFusion\User\Userinfo $userinfo) {
 		if (!isset($userinfo->password_clear)) {
 			$out = $userinfo->password;
 		} else if ($type == 'CUSTOM') {

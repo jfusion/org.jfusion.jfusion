@@ -88,15 +88,7 @@ class plgUserJfusion extends JPlugin
 		if (!$JFusionActive) {
 			//A change has been made to a user without JFusion knowing about it
 
-			//convert the user array into a user object
-			$JoomlaUser = new stdClass();
-			foreach($user as $key => $value) {
-				if ($key == 'id') {
-					$JoomlaUser->userid = $value;
-				} else {
-					$JoomlaUser->$key = $value;
-				}
-			}
+			$JoomlaUser = JFusionFunction::getJoomlaUser((object)$user);
 
 			if (!isset($JoomlaUser->group_id) && !empty($JoomlaUser->groups)) {
 				$JoomlaUser->group_id = $JoomlaUser->groups[0];
@@ -377,10 +369,13 @@ class plgUserJfusion extends JPlugin
 		global $JFusionActive, $JFusionActivePlugin;
 		$JFusionActive = true;
 		$user = JFactory::getUser($user['id']);
-		$userinfo = new stdClass();
-		$userinfo->userid = $user->get('id');
-		$userinfo->email = $user->get('email');
-		$userinfo->username = $user->get('username');
+		$result = new stdClass();
+		$result->userid = $user->get('id');
+		$result->email = $user->get('email');
+		$result->username = $user->get('username');
+
+		$userinfo = new \JFusion\User\Userinfo();
+		$userinfo->bind($result, 'joomla_int');
 
 		if (empty($options['clientid'][0])) {
 			$JFuser = new \JFusion\User\User();
@@ -425,7 +420,9 @@ class plgUserJfusion extends JPlugin
 		if (!$success) {
 			$result = false;
 		} else {
-			$userinfo = (object)$user;
+			$user = JFactory::getUser($user['id']);
+
+			$userinfo = JFusionFunction::getJoomlaUser((object)$user);
 
 			$JFuser = new \JFusion\User\User();
 
@@ -434,9 +431,10 @@ class plgUserJfusion extends JPlugin
 			//delete any sessions that the user could have active
 			$db = JFactory::getDBO();
 
+
 			$query = $db->getQuery(true)
 				->delete('#__session')
-				->where('userid = ' . $db->quote($user['id']));
+				->where('userid = ' . $db->quote($user->get('id')));
 
 			$db->setQuery($query);
 			$db->execute();

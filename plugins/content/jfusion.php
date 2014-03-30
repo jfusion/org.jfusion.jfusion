@@ -671,7 +671,9 @@ HTML;
 	public function createPost()
 	{
 		$data = $this->prepareJSONResponce();
-		$JoomlaUser = JFactory::getUser();
+
+		$JoomlaUser = JFusionFunction::getJoomlaUser((object)JFactory::getUser());
+
 		$JFusionForum = Factory::getForum($this->jname);
 
 		//define some variables
@@ -932,7 +934,7 @@ HTML;
 		//setup parameters
 		$JFusionForum = Factory::getForum($this->jname);
 		$allowGuests = $this->params->get('quickreply_allow_guests', 0);
-		$JoomlaUser = JFactory::getUser();
+		$JoomlaUser = JFusionFunction::getJoomlaUser((object)JFactory::getUser());
 		//make sure the user exists in the software before displaying the quick reply
 		$JFusionUser = Factory::getUser($this->jname);
 		$JFusionUserinfo = $JFusionUser->getUser($JoomlaUser);

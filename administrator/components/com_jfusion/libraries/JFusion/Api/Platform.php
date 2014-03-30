@@ -171,11 +171,11 @@ class Platform extends Base {
 	}
 
 	/**
-	 * @param object $userinfo
+	 * @param \JFusion\User\Userinfo $userinfo
 	 *
 	 * @return void
 	 */
-	public function register($userinfo)
+	public function register(\JFusion\User\Userinfo $userinfo)
 	{
 		$this->getApplication();
 
