@@ -12,21 +12,27 @@ use stdClass;
  */
 class Userinfo {
 	private $jname = null;
-	private $userinfo = array('userid'=> null,
-		'username'=> null,
-		'email'=> null,
-		'password'=> null,
-		'password_clear' => null,
-		'block' => true,
-		'activation' => null,
-		'groups' => array(),
-		'groupnames' => array());
+	private $userinfo = null;
 
 	/**
 	 * @param $jname
 	 */
 	function __construct($jname)
 	{
+		/**
+		 * TODO: maybe add a check that ckeck if jname is a valid jname ? that then throw new \InvalidParameterException ??
+		 */
+		$this->userinfo = new stdClass();
+		$this->userinfo->userid = null;
+		$this->userinfo->username = null;
+		$this->userinfo->email = null;
+		$this->userinfo->password = null;
+		$this->userinfo->password_clear = null;
+		$this->userinfo->block = true;
+		$this->userinfo->activation = null;
+		$this->userinfo->groups = array();
+		$this->userinfo->groupnames = array();
+
 		$this->jname = $jname;
 	}
 
@@ -46,21 +52,23 @@ class Userinfo {
 	 */
 	public function __set($name, $value)
 	{
-		switch($name) {
-			case 'block' :
-				if ($value) {
-					$value = true;
-				} else {
-					$value = false;
-				}
-				break;
-			case 'activation' :
-				if (empty($value)) {
-					$value = null;
-				}
-				break;
+		if ($name != 'jname') {
+			switch($name) {
+				case 'block' :
+					if ($value) {
+						$value = true;
+					} else {
+						$value = false;
+					}
+					break;
+				case 'activation' :
+					if (empty($value)) {
+						$value = null;
+					}
+					break;
+			}
+			$this->userinfo->$name = $value;
 		}
-		$this->userinfo[$name] = $value;
 	}
 
 	/**
@@ -70,8 +78,8 @@ class Userinfo {
 	 */
 	public function __get($name)
 	{
-		if (array_key_exists($name, $this->userinfo)) {
-			return $this->userinfo[$name];
+		if (isset($this->userinfo->$name)) {
+			return $this->userinfo->$name;
 		}
 		return null;
 	}
@@ -83,7 +91,7 @@ class Userinfo {
 	 */
 	public function __isset($name)
 	{
-		return isset($this->userinfo[$name]);
+		return isset($this->userinfo->$name);
 	}
 
 	/**
@@ -95,7 +103,7 @@ class Userinfo {
 			case 'block' :
 				break;
 			default:
-//				unset($this->userinfo[$name]);
+//				unset($this->userinfo->$name);
 		}
 	}
 
@@ -110,11 +118,7 @@ class Userinfo {
 	 * @return stdClass
 	 */
 	function toObject() {
-		$object = new stdClass();
-
-		foreach($this->userinfo as $key => $value) {
-			$object->$key = $value;
-		}
+		$object = clone($this->userinfo);
 		$object->jname = $this->jname;
 		return $object;
 	}
