@@ -110,7 +110,7 @@ class User
 				$MasterUserPlugin = Factory::getUser($master->name);
 				//check to see if userinfo is already present
 
-				if (!empty($credentials['userinfo'])) {
+				if ($credentials['userinfo'] instanceof Userinfo) {
 					//the jfusion auth plugin is enabled
 					$debugger->add('init', Text::_('USING_JFUSION_AUTH'));
 
@@ -119,11 +119,13 @@ class User
 					$debugger->add('init', Text::_('USING_OTHER_AUTH'));
 					//other auth plugin enabled get the userinfo again
 					//temp userinfo to see if the user exists in the master
-					$auth_userinfo = new stdClass();
+
+					$auth_userinfo = new Userinfo('joomla_int');
 					$auth_userinfo->username = $credentials['username'];
 					$auth_userinfo->email = $credentials['email'];
 					$auth_userinfo->password_clear = $credentials['password'];
 					$auth_userinfo->name = $credentials['fullname'];
+
 					//get the userinfo for real
 					try {
 						$userinfo = $MasterUserPlugin->getUser($auth_userinfo);
@@ -131,7 +133,7 @@ class User
 						$userinfo = null;
 					}
 
-					if (!$userinfo) {
+					if (!$userinfo instanceof Userinfo) {
 						//should be auto-create users?
 						$params = Factory::getParams($master->name);
 						$autoregister = $params->get('autoregister', 0);
@@ -171,7 +173,7 @@ class User
 					}
 				}
 
-				if ($userinfo) {
+				if ($userinfo instanceof Userinfo) {
 					if ($success === 0) {
 						//apply the clear text password to the user object
 						$userinfo->password_clear = $credentials['password'];
@@ -261,9 +263,9 @@ class User
 											}
 
 											if (isset($options['show_unsensored'])) {
-												$details = $SlaveUser['userinfo'];
+												$details = $SlaveUser['userinfo']->toObject();
 											} else {
-												$details = Framework::anonymizeUserinfo($SlaveUser['userinfo']);
+												$details = $SlaveUser['userinfo']->getAnonymizeed();
 											}
 
 											$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'), $details);
@@ -363,9 +365,9 @@ class User
 				$debugger->set('userlookup', $userlookup);
 				$MasterUser = $JFusionMaster->getUser($userlookup);
 				if (isset($options['show_unsensored'])) {
-					$details = $MasterUser;
+					$details = $MasterUser->toObject();
 				} else {
-					$details = Framework::anonymizeUserinfo($MasterUser);
+					$details = $MasterUser->getAnonymizeed();
 				}
 				$debugger->set('masteruser', $details);
 
@@ -401,9 +403,9 @@ class User
 							$SlaveUser = null;
 						}
 						if (isset($options['show_unsensored'])) {
-							$info = $SlaveUser;
+							$info = $SlaveUser->toObject();
 						} else {
-							$info = Framework::anonymizeUserinfo($SlaveUser);
+							$info = $SlaveUser->getAnonymizeed();
 						}
 
 						$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('DETAILS') , $info);

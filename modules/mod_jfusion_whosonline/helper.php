@@ -14,6 +14,7 @@
 */
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 
 /**
  * Helper class
@@ -110,7 +111,7 @@ class modjfusionWhosOnlineHelper {
 							// retrieve avatar
 							$avatarSrc = $config['avatar_software'];
 							$avatar = '';
-							if(!empty($avatarSrc) && $avatarSrc != 'jfusion' && $userinfo) {
+							if(!empty($avatarSrc) && $avatarSrc != 'jfusion' && $userinfo instanceof Userinfo) {
 								$avatar = Framework::getAltAvatar($avatarSrc, $userinfo);
 							} else if ($jfusion_userid) {
 								$avatar = $forum_links->getAvatar($jfusion_userid);

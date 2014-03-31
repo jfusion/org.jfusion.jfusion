@@ -101,8 +101,8 @@ class User extends Plugin_User
 						$result->group_id = base64_encode($result2->group_id);
 					}
 				}
-				$user = new Userinfo();
-				$user->bind($result, $this->getJname());
+				$user = new Userinfo($this->getJname());
+				$user->bind($result);
 			}
 		}
 		return $user;

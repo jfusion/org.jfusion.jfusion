@@ -14,6 +14,7 @@
 */
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 
 /**
  * This is the user activity helper file
@@ -53,9 +54,9 @@ class modjfusionUserActivityHelper {
 		if ($config['avatar']) {
 			//retrieve avatar
 			$avatar = '';
-			if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion' && $userinfo) {
+			if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion' && $userinfo instanceof Userinfo) {
 				$avatar = Framework::getAltAvatar($config['avatar_software'], $userinfo);
-			} else if ($userinfo) {
+			} else if ($userinfo instanceof Userinfo) {
 				$avatar = $forum->getAvatar($userinfo->userid);
 			}
 			if (empty($avatar)) {

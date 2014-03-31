@@ -160,7 +160,7 @@ class Front extends Plugin_Front
 		$user = Factory::getUser($this->getJname());
 		$existinguser = (isset($userinfo)) ? $user->getUser($userinfo) : null;
 		// If the user is connected we change his account parameter in function of the language front end
-		if ($existinguser) {
+		if ($userinfo instanceof Userinfo && $existinguser instanceof Userinfo) {
 			$userinfo->language = Factory::getLanguage()->getTag();
 
 			$user->updateUserLanguage($userinfo, $existinguser, $status);

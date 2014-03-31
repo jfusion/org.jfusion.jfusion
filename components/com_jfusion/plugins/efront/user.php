@@ -79,8 +79,8 @@ class User extends Plugin_User
 	            $result->activation = ($result->pending == 1) ? "1" : '';
 	            $result->block = !$result->active;
 
-		        $user = new Userinfo();
-		        $user->bind($result, $this->getJname());
+		        $user = new Userinfo($this->getJname());
+		        $user->bind($result);
 	        }
 	    } catch (Exception $e) {
 		    Framework::raiseError($e, $this->getJname());

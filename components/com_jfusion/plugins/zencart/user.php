@@ -101,8 +101,8 @@ class User extends Plugin_User
                             }
                         }
                     }
-	                $user = new Userinfo();
-	                $user->bind($result, $this->getJname());
+	                $user = new Userinfo($this->getJname());
+	                $user->bind($result);
                 }
             }
         } catch (Exception $e) {

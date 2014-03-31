@@ -1,6 +1,7 @@
 <?php
 
 use JFusion\Factory;
+use JFusion\User\Userinfo;
 
 /**
  * Model for all jfusion related function
@@ -795,7 +796,7 @@ JS;
 	/**
 	 * @param object $user
 	 *
-	 * @return \JFusion\User\Userinfo
+	 * @return Userinfo
 	 */
 	public static function getJoomlaUser($user = null)
 	{
@@ -808,8 +809,33 @@ JS;
 			}
 		}
 
-		$userinfo = new \JFusion\User\Userinfo();
-		$userinfo->bind($result, 'joomla_int');
+		$userinfo = new Userinfo('joomla_int');
+		$userinfo->bind($result);
 		return $userinfo;
+	}
+
+
+	/**
+	 * hides sensitive information
+	 *
+	 * @param object $userinfo userinfo
+	 *
+	 * @return string parsed userinfo object
+	 */
+	public static function anonymizeUserinfo($userinfo)
+	{
+		if ( is_object($userinfo) ) {
+			$userclone = clone $userinfo;
+			$userclone->password_clear = '******';
+			if (isset($userclone->password)) {
+				$userclone->password = substr($userclone->password, 0, 6) . '********';
+			}
+			if (isset($userclone->password_salt)) {
+				$userclone->password_salt = substr($userclone->password_salt, 0, 4) . '*****';
+			}
+		} else {
+			$userclone = $userinfo;
+		}
+		return $userclone;
 	}
 }

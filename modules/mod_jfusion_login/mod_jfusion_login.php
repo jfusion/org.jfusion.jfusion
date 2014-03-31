@@ -17,6 +17,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -104,7 +105,7 @@ try {
 		        } catch (Exception $e) {
 			        $userinfo = null;
 		        }
-	            if ($userinfo) {
+	            if ($userinfo instanceof Userinfo) {
 	                $display_name = ($params->get('name') && isset($userinfo->name)) ? $userinfo->name : $userinfo->username;
 	            } else {
 	                $display_name = ($params->get('name')) ? $user->get('name') : $user->get('username');

@@ -67,8 +67,8 @@ class User extends Plugin_User
 			    }
 			    $result->groups = array($result->group_id);
 
-			    $user = new Userinfo();
-			    $user->bind($result, $this->getJname());
+			    $user = new Userinfo($this->getJname());
+			    $user->bind($result);
 		    }
 	    } catch (Exception $e) {
 		    $user = null;

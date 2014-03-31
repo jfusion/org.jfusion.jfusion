@@ -12,6 +12,7 @@ use JFusion\Framework;
 use JFusion\Debugger\Debugger;;
 
 use JFusion\Object\Object;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 
 use \stdClass;
@@ -266,14 +267,17 @@ class Authentication extends Object
 		//get the JFusion master
 		$master = Framework::getMaster();
 		if (!empty($master)) {
+			$userinfo = new Userinfo(null);
+			$userinfo->username = $credentials['username'];
+
 			$JFusionMaster = Factory::getUser($master->name);
 			try {
-				$userinfo = $JFusionMaster->getUser($credentials['username']);
+				$userinfo = $JFusionMaster->getUser($userinfo);
 			} catch (Exception $e) {
 				$userinfo = null;
 			}
 			//check if a user was found
-			if (!empty($userinfo)) {
+			if ($userinfo instanceof Userinfo) {
 				/**
 				 * check to see if the login checker wanted a skip password
 				 * TODO: DO WE still need to allow this ?
@@ -339,7 +343,7 @@ class Authentication extends Object
 									$JFusionSlave = Factory::getUser($auth_model->name);
 									$slaveuserinfo = $JFusionSlave->getUser($userinfo);
 									// add in the clear password to be able to generate the hash
-									if (!empty($slaveuserinfo)) {
+									if ($slaveuserinfo instanceof Userinfo) {
 										$slaveuserinfo->password_clear = $userinfo->password_clear;
 										$testcrypt = $model->generateEncryptedPassword($slaveuserinfo);
 										$check = $model->checkPassword($slaveuserinfo);

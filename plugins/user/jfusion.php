@@ -374,8 +374,8 @@ class plgUserJfusion extends JPlugin
 		$result->email = $user->get('email');
 		$result->username = $user->get('username');
 
-		$userinfo = new \JFusion\User\Userinfo();
-		$userinfo->bind($result, 'joomla_int');
+		$userinfo = new \JFusion\User\Userinfo('joomla_int');
+		$userinfo->bind($result);
 
 		if (empty($options['clientid'][0])) {
 			$JFuser = new \JFusion\User\User();

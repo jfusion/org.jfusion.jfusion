@@ -15,6 +15,8 @@
  */
 
 // no direct access
+use JFusion\User\Userinfo;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -192,19 +194,16 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 		}
 
 		//check to see if JFusion auth plugin was used
-		if (isset($response->userinfo)) {
-			//hide sensitive information
-			$auth_userinfo = clone ($response->userinfo);
+		if (isset ($response->userinfo) && $response->userinfo instanceof Userinfo) {
+			$auth_userinfo = $response->userinfo->toObject();
 		} else {
 			//non jfusion auth plugin was used
-			$auth_userinfo = clone ($response);
+			$auth_userinfo = clone($response);
 		}
-
 		if (empty($options['show_unsensored'])) {
-			//hide sensitive data
-			$auth_userinfo = \JFusion\Framework::anonymizeUserinfo($auth_userinfo);
-
+			$auth_userinfo = JFusionFunction::anonymizeUserinfo($auth_userinfo);
 		}
+
 		if (!empty($response->error_message)) {
 			//clean up empty params for easier reading
 			unset($auth_userinfo->fullname, $auth_userinfo->birthdate, $auth_userinfo->gender, $auth_userinfo->postcode, $auth_userinfo->country, $auth_userinfo->language, $auth_userinfo->timezone, $auth_userinfo->type);

@@ -147,7 +147,7 @@ class Plugin_User extends Plugin
      *
      * @return array result Array containing the result of the session destroy
      */
-    function destroySession($userinfo, $options)
+    function destroySession(Userinfo $userinfo, $options)
     {
         $result = array();
         $result['error'] = array();
@@ -261,7 +261,7 @@ class Plugin_User extends Plugin
 	 *
 	 * @return boolean return true if changed
 	 */
-	function doUpdateUsergroup(Userinfo $userinfo, &$existinguser)
+	function doUpdateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$changed = false;
 		//check for advanced usergroup sync
@@ -587,13 +587,13 @@ class Plugin_User extends Plugin
      * $status['error'] (contains any error messages)
      * $status['debug'] (contains information on what was done)
      *
-     * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containing the old userinfo
+     * @param Userinfo $userinfo      Object containing the new userinfo
+     * @param Userinfo &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @throws RuntimeException
      */
-    function inactivateUser($userinfo, &$existinguser, &$status)
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
@@ -1208,8 +1208,8 @@ class Plugin_User extends Plugin
 				$result = $db->loadObject();
 
 				if ($result) {
-					$user = new Userinfo();
-					$user->bind($result, $this->getJname());
+					$user = new Userinfo($this->getJname());
+					$user->bind($result);
 				}
 			}
 		}

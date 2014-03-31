@@ -238,7 +238,7 @@ class Framework
 	 * Retrieves the source of the avatar for a Joomla supported component
 	 *
 	 * @param string  $software    software name
-	 * @param \JFusion\User\Userinfo $userinfo
+	 * @param User\Userinfo $userinfo
 	 *
 	 * @return string nothing
 	 */
@@ -316,30 +316,6 @@ class Framework
             $url = $jfusionPluginURL[$itemid];
         }
         return $url;
-    }
-
-    /**
-     * hides sensitive information
-     *
-     * @param object $userinfo userinfo
-     *
-     * @return string parsed userinfo object
-     */
-    public static function anonymizeUserinfo($userinfo)
-    {
-        if ( is_object($userinfo) ) {
-            $userclone = clone $userinfo;
-            $userclone->password_clear = '******';
-            if (isset($userclone->password)) {
-                $userclone->password = substr($userclone->password, 0, 6) . '********';
-            }
-            if (isset($userclone->password_salt)) {
-                $userclone->password_salt = substr($userclone->password_salt, 0, 4) . '*****';
-            }
-        } else {
-            $userclone = $userinfo;
-        }
-        return $userclone;
     }
 
     /**

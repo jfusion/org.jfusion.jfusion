@@ -103,8 +103,8 @@ class User extends Plugin_User
         //Not activated users are saved separated so not to set. (PendingUser)
 	    $result->activation = null;
 
-	    $user = new Userinfo();
-	    $user->bind($result, $this->getJname());
+	    $user = new Userinfo($this->getJname());
+	    $user->bind($result);
         return $user;
     }
 

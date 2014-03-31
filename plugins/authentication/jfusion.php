@@ -15,6 +15,8 @@
  */
 
 use JFusion\Authentication\Authentication;
+use JFusion\Factory;
+use JFusion\User\Userinfo;
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
@@ -111,9 +113,12 @@ class plgAuthenticationjfusion extends JPlugin
 		    // Check the two factor authentication
 		    if ($response->status == JAuthentication::STATUS_SUCCESS)
 		    {
-			    $joomla = \JFusion\Factory::getUser('joomla_int');
+			    $joomla = Factory::getUser('joomla_int');
 
-			    $joomlauser = $joomla->getUser($credentials['username']);
+			    $joomlauser = new Userinfo(null);
+			    $joomlauser->username = $credentials['username'];
+
+			    $joomlauser = $joomla->getUser($joomlauser);
 
 			    require_once JPATH_ADMINISTRATOR . '/components/com_users/helpers/users.php';
 

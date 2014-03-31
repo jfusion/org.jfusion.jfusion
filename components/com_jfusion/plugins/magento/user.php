@@ -300,8 +300,8 @@ class User extends Plugin_User
 					$instance->lastvisitDate = $magento_user['updated_at']['value'];
                     $instance->block = !$magento_user['is_active']['value'];
 
-					$user = new Userinfo();
-					$user->bind($instance, $this->getJname());
+					$user = new Userinfo($this->getJname());
+					$user->bind($instance);
 				}
 			}
 		}

@@ -23,14 +23,21 @@ class Userinfo {
 		'groupnames' => array());
 
 	/**
-	 * @param stdClass $userinfo
-	 * @param          $jname
+	 * @param $jname
 	 */
-	function bind(stdClass $userinfo, $jname) {
+	function __construct($jname)
+	{
+		$this->jname = $jname;
+	}
+
+	/**
+	 * @param stdClass $userinfo
+	 */
+
+	function bind(stdClass $userinfo) {
 		foreach($userinfo as $key => $value) {
 			$this->$key = $value;
 		}
-		$this->jname = $jname;
 	}
 
 	/**
@@ -120,18 +127,13 @@ class Userinfo {
 	public function getAnonymizeed()
 	{
 		$userinfo = $this->toObject();
-		if ( is_object($userinfo) ) {
-			$userclone = clone $userinfo;
-			$userclone->password_clear = '******';
-			if (isset($userclone->password)) {
-				$userclone->password = substr($userclone->password, 0, 6) . '********';
-			}
-			if (isset($userclone->password_salt)) {
-				$userclone->password_salt = substr($userclone->password_salt, 0, 4) . '*****';
-			}
-		} else {
-			$userclone = $userinfo;
+		$userinfo->password_clear = '******';
+		if (isset($userinfo->password)) {
+			$userinfo->password = substr($userinfo->password, 0, 6) . '********';
 		}
-		return $userclone;
+		if (isset($userinfo->password_salt)) {
+			$userinfo->password_salt = substr($userinfo->password_salt, 0, 4) . '*****';
+		}
+		return $userinfo;
 	}
 }

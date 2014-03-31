@@ -166,8 +166,8 @@ class JFusionUser_dokuwiki extends Plugin_User
 	            $result->group_id = null;
 	            $result->group_name = null;
             }
-	        $user = new Userinfo();
-	        $user->bind($result, $this->getJname());
+	        $user = new Userinfo($this->getJname());
+	        $user->bind($result);
         } else {
             $user = null;
         }
