@@ -71,14 +71,6 @@ class JFusionAuth_joomla_ext extends JFusionAuth {
 			$phpass = new PasswordHash(10, true);
 
 			$match = $phpass->CheckPassword($userinfo->password_clear, $userinfo->password);
-		} elseif ($userinfo->password[0] == '$') {
-			// JCrypt::hasStrongPasswordSupport() includes a fallback for us in the worst case
-			JCrypt::hasStrongPasswordSupport();
-			$match = password_verify($userinfo->password_clear, $userinfo->password);
-
-			// Uncomment this line if we actually move to bcrypt.
-			// $rehash = password_needs_rehash($hash, PASSWORD_DEFAULT);
-			$rehash = true;
 		} elseif (substr($userinfo->password, 0, 8) == '{SHA256}') {
 			// Check the password
 			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt, 'sha256', true);
