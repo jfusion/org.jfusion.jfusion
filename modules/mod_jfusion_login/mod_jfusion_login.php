@@ -91,13 +91,13 @@ try {
 
 		$userlookup = null;
 		if (!$user->get('guest')) {
-			$userlookup = new stdClass();
+			$userlookup = new \JFusion\User\Userinfo('joomla_int');
 			$userlookup->userid = $user->get('id');
 			$userlookup->username = $user->get('username');
 			$userlookup->email = $user->get('email');
 
 			$PluginUser = Factory::getUser($jname);
-			$userlookup = $PluginUser->lookupUser($userinfo, 'joomla_int');
+			$userlookup = $PluginUser->lookupUser($userlookup);
 	        if ($userlookup) {
 		        try {
 			        $JFusionUser = Factory::getUser($link_jname);

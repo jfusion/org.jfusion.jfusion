@@ -69,7 +69,8 @@ class modjfusionWhosOnlineHelper {
 						//assign the joomla_userid and jfusion_userid variables
 
 						if($link_jname == $jname) {
-							$userinfo = $u;
+							$userinfo = new \JFusion\User\Userinfo($jname);
+							$userinfo->bind($u);
 							$jfusion_userid = $userinfo->userid;
 						} else {
 							//first, the userid of the JFusion plugin for the menu item must be obtained
@@ -94,7 +95,7 @@ class modjfusionWhosOnlineHelper {
 								$joomla_userid = $u->userid;
 							} else {
 								$PluginUser = Factory::getUser('joomla_int');
-								$userlookup = $PluginUser->lookupUser($userinfo, $link_jname);
+								$userlookup = $PluginUser->lookupUser($userinfo);
 								if($userlookup) {
 									$joomla_userid = $userlookup->userid;
 								}

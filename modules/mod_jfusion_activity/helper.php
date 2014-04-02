@@ -52,12 +52,12 @@ class modjfusionActivityHelper
             foreach ($results as $r) {
 	            $r->output = new stdClass();
                 //get the Joomla userid
-	            $userlookup = new stdClass();
+	            $userlookup = new \JFusion\User\Userinfo($jname);
 	            $userlookup->userid = $r->userid;
 	            $userlookup->username = $r->username;
 
 	            $PluginUser = Factory::getUser('joomla_int');
-	            $userlookup = $PluginUser->lookupUser($userlookup, $jname);
+	            $userlookup = $PluginUser->lookupUser($userlookup);
 
                 //get the avatar of the logged in user
                 if ($config['avatar']) {

@@ -241,10 +241,10 @@ class Platform extends Base {
 				$updateinfo = $userinfo[$plugin->name];
 
 				if ($updateinfo instanceof stdClass) {
-					$userlookup = new stdClass();
+					$userlookup = new Userinfo($plugin->name);
 					$userlookup->username = $updateinfo->username;
 
-					$userlookup = $PluginUserUpdate->lookupUser($userlookup, $plugin->name);
+					$userlookup = $PluginUserUpdate->lookupUser($userlookup);
 
 					if($userlookup) {
 						$existinguser = $PluginUserUpdate->getUser($updateinfo->username);

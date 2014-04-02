@@ -61,55 +61,15 @@ class User extends Plugin_User
 			$db = Factory::getDatabase($this->getJname());
 			$JFusionUser = Factory::getUser($this->getJname());
 			list($identifier_type, $identifier) = $JFusionUser->getUserIdentifier($userinfo, 'username', 'email');
-			if ($identifier_type == 'username') {
-				$query = $db->getQuery(true)
-					->select('b.id as userid, b.activation, a.username, b.name, b.password, b.email, b.block, b.params')
-					->from('#__users as b')
-					->innerJoin('#__jfusion_users as a ON a.id = b.id');
 
-				if ($this->params->get('case_insensitive')) {
-					$query->where('LOWER(a.' . $identifier_type . ') = ' . $db->quote(strtolower($identifier)));
-				} else {
-					$query->where('a.' . $identifier_type . ' = ' . $db->quote($identifier));
-				}
-				//first check the JFusion user table if the identifier_type = username
-				$db->setQuery($query);
+			$query = $db->getQuery(true)
+				->select('id as userid, activation, username, name, password, email, block, params')
+				->from('#__users')
+				->where($identifier_type . ' = ' . $db->quote($identifier));
 
-				$result = $db->loadObject();
-				if (!$result) {
-					$query = $db->getQuery(true)
-						->select('id as userid, activation, username, name, password, email, block, params')
-						->from('#__users');
+			$db->setQuery($query);
+			$result = $db->loadObject();
 
-					if ($this->params->get('case_insensitive')) {
-						$query->where('LOWER(' . $identifier_type . ') = ' . $db->quote(strtolower($identifier)));
-					} else {
-						$query->where($identifier_type . ' = ' . $db->quote($identifier));
-					}
-					//check directly in the joomla user table
-					$db->setQuery($query);
-
-					$result = $db->loadObject();
-					if ($result) {
-						//update the lookup table so that we don't have to do a double query next time
-						$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $result->userid . ', ' . $db->quote($identifier) . ')';
-						$db->setQuery($query);
-						try {
-							$db->execute();
-						} catch (Exception $e) {
-							Framework::raiseWarning($e, $this->getJname());
-						}
-					}
-				}
-			} else {
-				$query = $db->getQuery(true)
-					->select('id as userid, activation, username, name, password, email, block, params')
-					->from('#__users')
-					->where($identifier_type . ' = ' . $db->quote($identifier));
-
-				$db->setQuery($query);
-				$result = $db->loadObject();
-			}
 			if ($result) {
 				$query = $db->getQuery(true)
 					->select('a.group_id, b.title as name')
@@ -217,11 +177,6 @@ class User extends Plugin_User
 			->update('#__users')
 			->set('username = ' . $db->quote($username_clean))
 			->where('id = ' . $db->quote($existinguser->userid));
-		$db->setQuery($query);
-		$db->execute();
-
-		//update the lookup table
-		$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $existinguser->userid . ', ' . $db->quote($userinfo->username) . ')';
 		$db->setQuery($query);
 		$db->execute();
 
@@ -337,22 +292,23 @@ class User extends Plugin_User
 				$JFusionActive = 1;
 				$instance->save(false);
 
-				$createdUser = $instance->getProperties();
-				$createdUser = (object)$createdUser;
+				$createdUser = (object)$instance->getProperties();
+
+				$result = new stdClass();
+				foreach($createdUser as $key => $value) {
+					if ($key == 'id') {
+						$result->userid = $value;
+					} else {
+						$result->$key = $value;
+					}
+				}
+
+				$createdUser = new Userinfo($this->getJname());
+				$createdUser->bind($result);
+
 				//update the user's group to the correct group if they are an admin
 				if ($isadmin) {
-					$createdUser->userid = $createdUser->id;
 					$this->updateUsergroup($userinfo, $createdUser, $status, false);
-				}
-				//create a new entry in the lookup table
-				//if the credentialed username is available (from the auth plugin), store it; otherwise store the $userinfo username
-				$username = (!empty($userinfo->credentialed_username)) ? $userinfo->credentialed_username : $userinfo->username;
-				$query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->quote($username) . ')';
-				$db->setQuery($query);
-				try {
-					$db->execute();
-				} catch (Exception $e) {
-					Framework::raiseWarning($e, $this->getJname());
 				}
 
 				//check to see if the user exists now

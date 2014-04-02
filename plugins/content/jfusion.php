@@ -1354,8 +1354,7 @@ HTML;
 			$post_output[$i]->postid = $postid;
 			$post_output[$i]->guest = $guest;
 
-
-			$userlookup = new stdClass();
+			$userlookup = new \JFusion\User\Userinfo($JFusionForum->getJname());
 			$userlookup->userid = $userid;
 			$userlookup->username = $p->{$columns->username};
 			if (isset($columns->email)) {
@@ -1363,7 +1362,7 @@ HTML;
 			}
 
 			$PluginUser = Factory::getUser('joomla_int');
-			$userlookup = $PluginUser->lookupUser($userlookup, $JFusionForum->getJname());
+			$userlookup = $PluginUser->lookupUser($userlookup);
 
 			//avatar
 			if ($showavatar){

@@ -86,11 +86,11 @@ class Forum extends Plugin_Forum
 					    //get the avatar of the logged in user
 					    $o_avatar_height = $o_avatar_width = '';
 					    if ($avatar) {
-						    $userlookup = new stdClass();
-						    $userlookup = $value->userid;
+						    $userlookup = new \JFusion\User\Userinfo($this->getJname());
+						    $userlookup->userid = $value->userid;
 
 						    $PluginUser = Factory::getUser('joomla_int');
-						    $userlookup = $PluginUser->lookupUser($userlookup, $this->getJname());
+						    $userlookup = $PluginUser->lookupUser($userlookup);
 
 						    // retrieve avatar
 						    if(!empty($avatar_software) && $avatar_software != 'jfusion' && $userlookup) {

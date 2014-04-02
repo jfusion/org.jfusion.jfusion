@@ -210,7 +210,7 @@ class Usersync
 					    } else {
 						    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $data['user']['jname']);
 						    static::markResolved($id);
-						    $userPlugin->updateLookup($data['user']['userinfo'], $userinfo, $data['conflict']['jname']);
+						    $userPlugin->updateLookup($data['user']['userinfo'], $userinfo);
 					    }
 				    } elseif ($error['action'] == '2') {
 					    $userinfo = Factory::getUser($data['user']['jname'])->getUser($data['user']['userinfo']);
@@ -223,7 +223,7 @@ class Usersync
 					    } else {
 						    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $data['conflict']['jname']);
 						    static::markResolved($id);
-						    $userPlugin->updateLookup($userinfo, $data['user']['userinfo'], $data['user']['jname']);
+						    $userPlugin->updateLookup($userinfo, $data['user']['userinfo']);
 					    }
 				    } elseif ($error['action'] == '3') {
 					    //delete the first entity
@@ -389,9 +389,9 @@ class Usersync
 									    $sync_log->email = isset($status['userinfo']->email) ? $status['userinfo']->email : $userinfo->email;
 									    //update the lookup table
 									    if ($action == 'master') {
-										    $MasterUser->updateLookup($status['userinfo'], $userinfo, $jname);
+										    $MasterUser->updateLookup($status['userinfo'], $userinfo);
 									    } else {
-										    $SlaveUser->updateLookup($userinfo, $status['userinfo'], $syncdata['master']);
+										    $SlaveUser->updateLookup($userinfo, $status['userinfo']);
 									    }
 								    }
 								    $sync_log->action = $status['action'];

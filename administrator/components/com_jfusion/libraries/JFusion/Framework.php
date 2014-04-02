@@ -185,19 +185,6 @@ class Framework
 
 	    try {
 		    $query = $db->getQuery(true)
-			    ->delete('#__jfusion_users')
-			    ->where('id = ' . $userinfo->userid, 'OR')
-		        ->where('username =' . $db->quote($userinfo->username))
-			    ->where('LOWER(username) = ' . strtolower($db->quote($userinfo->email)));
-	        $db->setQuery($query);
-
-		    $db->execute();
-	    } catch (Exception $e) {
-		    static::raiseWarning($e);
-	    }
-
-	    try {
-		    $query = $db->getQuery(true)
 			    ->delete('#__jfusion_users_plugin')
 			    ->where('userid = ' . $userinfo->userid);
 	        $db->setQuery($query);

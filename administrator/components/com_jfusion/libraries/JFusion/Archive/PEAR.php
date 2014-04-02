@@ -779,6 +779,8 @@ function _PEAR_call_destructors()
  *
  * This class is supserseded by {@link PEAR_Exception} in PHP 5
  *
+ * @property callable $callback
+ *
  * @category   pear
  * @package    PEAR
  * @author     Stig Bakken <ssb@php.net>

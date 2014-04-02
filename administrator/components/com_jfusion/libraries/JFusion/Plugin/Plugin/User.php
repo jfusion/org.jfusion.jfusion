@@ -1194,13 +1194,13 @@ class Plugin_User extends Plugin
 
 			$search = array();
 			if (isset($exsistinginfo->userid)) {
-				$search[] = 'userid = ' . $db->quote($exsistinginfo->userid);
+				$search[] = 'a.userid = ' . $db->quote($exsistinginfo->userid);
 			}
 			if (isset($exsistinginfo->username)) {
-				$search[] = 'username = ' . $db->quote($exsistinginfo->username);
+				$search[] = 'a.username = ' . $db->quote($exsistinginfo->username);
 			}
 			if (isset($exsistinginfo->email)) {
-				$search[] = 'email = ' . $db->quote($exsistinginfo->email);
+				$search[] = 'a.email = ' . $db->quote($exsistinginfo->email);
 			}
 			if (!empty($search)) {
 				$query->where('( ' . implode(' OR ', $search) . ' )');

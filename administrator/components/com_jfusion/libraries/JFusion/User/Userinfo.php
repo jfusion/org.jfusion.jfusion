@@ -9,10 +9,27 @@ use stdClass;
 
 /**
  * Class Userinfo
+ *
+ * Properties home user information, Below is the required parameters for jfusion framework
+ *
+ * @property mixed|null $userid userid
+ * @property string|null $username username
+ * @property string|null $email email
+ * @property string|null $password password (already encrypted)
+ * @property string|null $password_salt password_salt
+ * @property string|null $password_clear password_clear password in clear text
+ * @property boolean $block block
+ * @property string|null $activation activation
+ * @property array $groups groups
+ * @property array $groupnames groupnames
  */
 class Userinfo {
 	private $jname = null;
 	private $userinfo = null;
+
+	/**
+	 *
+	 */
 
 	/**
 	 * @param $jname
@@ -20,13 +37,14 @@ class Userinfo {
 	function __construct($jname)
 	{
 		/**
-		 * TODO: maybe add a check that ckeck if jname is a valid jname ? that then throw new \InvalidParameterException ??
+		 * TODO: maybe add a check that check if jname is a valid jname ? that then throw new \InvalidParameterException ??
 		 */
 		$this->userinfo = new stdClass();
 		$this->userinfo->userid = null;
 		$this->userinfo->username = null;
 		$this->userinfo->email = null;
 		$this->userinfo->password = null;
+		$this->userinfo->password_salt = null;
 		$this->userinfo->password_clear = null;
 		$this->userinfo->block = true;
 		$this->userinfo->activation = null;
@@ -61,11 +79,19 @@ class Userinfo {
 						$value = false;
 					}
 					break;
-				case 'activation' :
+				case 'activation':
+				case 'password_clear';
 					if (empty($value)) {
 						$value = null;
 					}
 					break;
+				case 'groups';
+				case 'groupnames';
+					if (!is_array($value)) {
+						$value = array();
+					}
+					break;
+
 			}
 			$this->userinfo->$name = $value;
 		}

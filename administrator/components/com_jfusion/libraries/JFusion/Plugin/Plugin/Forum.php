@@ -19,6 +19,7 @@ use JEventDispatcher;
 use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 
 use JFusionFunction;
@@ -375,11 +376,11 @@ class Plugin_Forum extends Plugin
 		if($dbparams->get('use_article_userid', 1)) {
 			//find this user in the forum
 
-			$userlookup = new stdClass();
+			$userlookup = new Userinfo('joomla_int');
 			$userlookup->userid = $contentitem->created_by;
 
 			$PluginUser = Factory::getUser($this->getJname());
-			$userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
+			$userlookup = $PluginUser->lookupUser($userlookup);
 
 			if(!$userlookup) {
 				$id = $dbparams->get('default_userid');

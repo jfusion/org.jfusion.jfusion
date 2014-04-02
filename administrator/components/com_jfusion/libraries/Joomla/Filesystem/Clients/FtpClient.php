@@ -50,6 +50,9 @@ if (!defined('FTP_NATIVE'))
 /**
  * FTP client class
  *
+ * @property int $_responseCode
+ * @property string $_responseMsg
+ *
  * @since  1.0
  */
 class FtpClient

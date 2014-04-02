@@ -679,7 +679,7 @@ class Curl
 	 */
 	public static function RemoteLogin($options)
 	{
-		$curl = new JFusionCurl($options);
+		$curl = new Curl($options);
 		return $curl->login();
 	}
 
@@ -1004,7 +1004,7 @@ class Curl
      */
     public static function RemoteReadPage($options)
     {
-        $curl = new JFusionCurl($options);
+        $curl = new Curl($options);
         return $curl->ReadPage();
     }
 
@@ -1019,7 +1019,7 @@ class Curl
 	 */
 	public static function RemoteLogout($options)
 	{
-		$curl = new JFusionCurl($options);
+		$curl = new Curl($options);
 		return $curl->logout();
 	}
 
@@ -1106,7 +1106,7 @@ class Curl
 	 */
 	public static function RemoteLogoutUrl($options)
 	{
-		$curl = new JFusionCurl($options);
+		$curl = new Curl($options);
 		return $curl->logoutUrl();
 	}
 	/**

@@ -242,7 +242,7 @@ class User
 							if ($success === 0) {
 								//allow for joomlaid retrieval in the loginchecker
 
-								$MasterUserPlugin->updateLookup($userinfo, $userinfo, $master->name);
+								$MasterUserPlugin->updateLookup($userinfo, $userinfo);
 
 								//setup the other slave JFusion plugins
 								$slaves = Factory::getPlugins('slave');
@@ -273,7 +273,7 @@ class User
 											//apply the clear text password to the user object
 											$SlaveUser['userinfo']->password_clear = $credentials['password'];
 
-											$SlaveUserPlugin->updateLookup($SlaveUser['userinfo'], $userinfo, $master->name);
+											$SlaveUserPlugin->updateLookup($SlaveUser['userinfo'], $userinfo);
 
 											if (!in_array($slave->name, $options['skipplugin']) && $slave->dual_login == 1) {
 												try {
@@ -361,7 +361,7 @@ class User
 		if ($master) {
 			if (!in_array($master->name, $options['skipplugin'])) {
 				$JFusionMaster = Factory::getUser($master->name);
-				$userlookup = $JFusionMaster->lookupUser($userinfo, 'joomla_int');
+				$userlookup = $JFusionMaster->lookupUser($userinfo);
 				$debugger->set('userlookup', $userlookup);
 				$MasterUser = $JFusionMaster->getUser($userlookup);
 				if (isset($options['show_unsensored'])) {
@@ -396,7 +396,7 @@ class User
 					//check if sessions are enabled
 					if ($slave->dual_login == 1) {
 						$JFusionSlave = Factory::getUser($slave->name);
-						$userlookup = $JFusionSlave->lookupUser($userinfo, 'joomla_int');
+						$userlookup = $JFusionSlave->lookupUser($userinfo);
 						try {
 							$SlaveUser = $JFusionSlave->getUser($userlookup);
 						} catch (Exception $e) {
@@ -530,10 +530,12 @@ class User
 	 * Delete user
 	 *
 	 * @param Userinfo $userinfo
+	 * @param Userinfo $olduserinfo
+	 * @param bool     $new
 	 *
 	 * @return boolean False on Error
 	 */
-	public function save(Userinfo $userinfo)
+	public function save(Userinfo $userinfo, Userinfo $olduserinfo = null, $new = false)
 	{
 		$debugger = Factory::getDebugger('jfusion-saveuser');
 		$debugger->set(null, array());
@@ -547,59 +549,33 @@ class User
 		if ($master) {
 			// Recover the old data of the user
 			// This is then used to determine if the username was changed
-			$session = JFactory::getSession();
-			$JoomlaUser->olduserinfo = (object)$session->get('olduser');
-			$session->clear('olduser');
-			$updateUsername = (!$isnew && $JoomlaUser->olduserinfo->username != $JoomlaUser->username) ? true : false;
-			//retrieve the username stored in jfusion_users if it exists
-			$db = JFactory::getDBO();
-
-			$query = $db->getQuery(true)
-				->select('username')
-				->from('#__jfusion_users')
-				->where('id = ' . (int)$JoomlaUser->userid);
-
-			$db->setQuery($query);
-			$storedUsername = $db->loadResult();
-			if ($updateUsername) {
-				try {
-					$update = new stdClass();
-					$update->id = $JoomlaUser->userid;
-					$update->username = $JoomlaUser->username;
-					if ($storedUsername) {
-						$db->updateObject('#__jfusion_users', $update, 'id');
-					} else {
-						$db->insertObject('#__jfusion_users', $update);
-					}
-				} catch ( Exception $e ) {
-					Framework::raiseError($e);
-				}
-
-				//if we had a username stored in jfusion_users, update the olduserinfo with that username before passing it into the plugins so they will find the intended user
-				if (!empty($storedUsername)) {
-					$JoomlaUser->olduserinfo->username = $storedUsername;
-				}
-			} else {
-				if (!empty($JoomlaUser->original_username)) {
-					//the user was created by JFusion's JFusionJoomlaUser::createUser and we have the original username which must be used as the jfusion_user table has not been updated yet
-					$JoomlaUser->username = $JoomlaUser->original_username;
-				} elseif (!empty($storedUsername)) {
-					//the username is not being updated but if there is a username stored in jfusion_users table, it must be used instead to prevent user duplication
-					$JoomlaUser->username = $storedUsername;
+			$updateUsername = false;
+			if ($new == false && $userinfo instanceof Userinfo && $olduserinfo instanceof Userinfo) {
+				if ($userinfo->getJname() == $olduserinfo->getJname() && $userinfo->username != $olduserinfo->username) {
+					$updateUsername = true;
 				}
 			}
+			//retrieve the username stored in jfusion_users if it exists
+			$userPlugin = Factory::getUser($userinfo->getJname());
+			if ($olduserinfo instanceof Userinfo) {
+				$storedUser = $userPlugin->lookupUser($olduserinfo);
+			} else {
+				$storedUser = null;
+			}
+
+			$master_userinfo = null;
 			try {
 				$JFusionMaster = Factory::getUser($master->name);
 				//update the master user if not joomla_int
-				if ($master->name != 'joomla_int') {
-					$master_userinfo = $JFusionMaster->getUser($JoomlaUser->olduserinfo);
+				if ($master->name != $userinfo->getJname()) {
+					$master_userinfo = $JFusionMaster->getUser($olduserinfo);
 					//if the username was updated, call the updateUsername function before calling updateUser
 					if ($updateUsername) {
-						if (!empty($master_userinfo)) {
+						if ($master_userinfo instanceof Userinfo) {
 							try {
 								$updateUsernameStatus = array();
 								$JFusionMaster->debugger->set(null, $updateUsernameStatus);
-								$JFusionMaster->updateUsername($JoomlaUser, $master_userinfo, $updateUsernameStatus);
+								$JFusionMaster->updateUsername($userinfo, $master_userinfo, $updateUsernameStatus);
 								$JFusionMaster->mergeStatus($updateUsernameStatus);
 								if (!$JFusionMaster->debugger->isEmpty('error')) {
 									$error_info[$master->name . ' ' . Text::_('USERNAME') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR') ] = $JFusionMaster->debugger->get('error');
@@ -616,7 +592,7 @@ class User
 					}
 					try {
 						//run the update user to ensure any other userinfo is updated as well
-						$MasterUser = $JFusionMaster->updateUser($JoomlaUser, 1);
+						$MasterUser = $JFusionMaster->updateUser($userinfo, 1);
 						if (!empty($MasterUser['error'])) {
 							$error_info[$master->name] = $MasterUser['error'];
 						}
@@ -625,12 +601,12 @@ class User
 						}
 						//make sure the userinfo is available
 						if (empty($MasterUser['userinfo'])) {
-							$userinfo = $JFusionMaster->getUser($JoomlaUser);
+							$master_userinfo = $JFusionMaster->getUser($userinfo);
 						} else {
-							$userinfo = $MasterUser['userinfo'];
+							$master_userinfo = $MasterUser['userinfo'];
 						}
 						//update the jfusion_users_plugin table
-						$JFusionMaster->updateLookup($userinfo, $JoomlaUser, 'joomla_int');
+						$JFusionMaster->updateLookup($master_userinfo, $userinfo);
 					} catch (Exception $e) {
 						$error_info[$master->name] = array($e->getMessage());
 					}
@@ -638,15 +614,15 @@ class User
 					//Joomla is master
 					// commented out because we should use the joomla use object (in out plugins)
 					//	            $master_userinfo = $JoomlaUser;
-					$master_userinfo = $JFusionMaster->getUser($JoomlaUser);
+					$master_userinfo = $JFusionMaster->getUser($userinfo);
 				}
 			} catch (Exception $e) {
 				$error_info[$master->name] = array($e->getMessage());
 			}
 
-			if ($master_userinfo) {
-				if ( !empty($JoomlaUser->password_clear) ) {
-					$master_userinfo->password_clear = $JoomlaUser->password_clear;
+			if ($master_userinfo instanceof Userinfo) {
+				if ( !empty($userinfo->password_clear) ) {
+					$master_userinfo->password_clear = $userinfo->password_clear;
 				}
 				//update the user details in any JFusion slaves
 				$slaves = Factory::getPlugins('slave');
@@ -655,8 +631,8 @@ class User
 						$JFusionSlave = Factory::getUser($slave->name);
 						//if the username was updated, call the updateUsername function before calling updateUser
 						if ($updateUsername) {
-							$slave_userinfo = $JFusionSlave->getUser($JoomlaUser->olduserinfo);
-							if (!empty($slave_userinfo)) {
+							$slave_userinfo = $JFusionSlave->getUser($olduserinfo);
+							if ($slave_userinfo instanceof Userinfo) {
 								try {
 									$updateUsernameStatus = array();
 									$JFusionSlave->debugger->set(null, $updateUsernameStatus);
@@ -691,13 +667,13 @@ class User
 							}
 						}
 						if (empty($SlaveUser['userinfo'])) {
-							$userinfo = $JFusionSlave->getUser($master_userinfo);
+							$slave_userinfo = $JFusionSlave->getUser($master_userinfo);
 						} else {
-							$userinfo = $SlaveUser['userinfo'];
+							$slave_userinfo = $SlaveUser['userinfo'];
 						}
 
 						//update the jfusion_users_plugin table
-						$JFusionSlave->updateLookup($userinfo, $JoomlaUser, 'joomla_int');
+						$JFusionSlave->updateLookup($slave_userinfo, $userinfo);
 					} catch (Exception $e) {
 						$error_info[$slave->name] = $debug_info[$slave->name] + array($e->getMessage());
 					}

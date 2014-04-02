@@ -310,13 +310,13 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 		$user = new stdClass;
 		if ($username) {
 			if ($activePlugin) {
-				$lookupUser = new stdClass();
-				$lookupUser->username = $username;
+				$userlookup = new \JFusion\User\Userinfo($activePlugin);
+				$userlookup->username = $username;
 
 				$PluginUser = Factory::getUser('joomla_int');
-				$lookupUser = $PluginUser->lookupUser($lookupUser, $activePlugin);
-				if ($lookupUser) {
-					$user = JFactory::getUser($lookupUser->userid);
+				$userlookup = $PluginUser->lookupUser($userlookup);
+				if ($userlookup instanceof \JFusion\User\Userinfo) {
+					$user = JFactory::getUser($userlookup->userid);
 				}
 			} else {
 				$user = JFactory::getUser($username);

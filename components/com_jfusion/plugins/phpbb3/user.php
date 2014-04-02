@@ -1339,11 +1339,11 @@ class User extends Plugin_User
 							    Framework::raiseNotice('has a guest session', $this->getJname());
 						    }
 						    //find the userid attached to Joomla userid
-						    $userlookup = new stdClass();
+						    $userlookup = new \JFusion\User\Userinfo('joomla_int');
 						    $userlookup->userid = $JUser->get('id');
 
 						    $PluginUser = Factory::getUser($this->getJname());
-						    $userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
+						    $userlookup = $PluginUser->lookupUser($userlookup);
 						    //get the user's info
 						    if ($userlookup) {
 							    $db = Factory::getDatabase($this->getJname());
@@ -1461,11 +1461,11 @@ class User extends Plugin_User
 						    $db->setQuery($query);
 						    $userid = $db->loadresult();
 
-						    $userlookup = new stdClass();
+						    $userlookup = new \JFusion\User\Userinfo($this->getJname());
 						    $userlookup->userid = $userid;
 
 						    $PluginUser = Factory::getUser($this->getJname());
-						    $userlookup = $PluginUser->lookupUser($userlookup, $this->getJname());
+						    $userlookup = $PluginUser->lookupUser($userlookup);
 						    if ($userlookup) {
 							    if ($debug) {
 								    Framework::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.', $this->getJname());

@@ -14,6 +14,8 @@ use Joomla\Database\Pdo\PdoDriver;
 /**
  * SQLite database driver supporting PDO based connections
  *
+ * @property string $charset
+ *
  * @see    http://php.net/manual/en/ref.pdo-sqlite.php
  * @since  1.0
  */

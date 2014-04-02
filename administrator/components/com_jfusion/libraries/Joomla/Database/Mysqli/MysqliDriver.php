@@ -14,6 +14,8 @@ use Psr\Log;
 /**
  * MySQLi Database Driver
  *
+ * @property \mysqli $connection
+ *
  * @see    http://php.net/manual/en/book.mysqli.php
  * @since  1.0
  */
@@ -331,7 +333,7 @@ class MysqliDriver extends DatabaseDriver
 	/**
 	 * Get the number of returned rows for the previous executed SQL statement.
 	 *
-	 * @param   resource  $cursor  An optional database cursor resource to extract the row count from.
+	 * @param   \mysqli_result  $cursor  An optional database cursor resource to extract the row count from.
 	 *
 	 * @return  integer   The number of returned rows.
 	 *

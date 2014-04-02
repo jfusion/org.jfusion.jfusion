@@ -121,10 +121,11 @@ class Forum extends Plugin_Forum
 	                $markread = array();
 	                $db = Factory::getDatabase($this->getJname());
 
-		            $userlookup = new stdClass();
+		            $userlookup = new \JFusion\User\Userinfo('joomla_int');
 		            $userlookup->userid = $JUser->get('id');
+
 		            $PluginUser = Factory::getUser($this->getJname());
-		            $userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
+		            $userlookup = $PluginUser->lookupUser($userlookup);
 	                if ($userlookup) {
 		                $query = $db->getQuery(true)
 			                ->select('id_msg, id_topic')
@@ -803,10 +804,10 @@ HTML;
 		$userid = $user->get('id');
 
 		if ($userid) {
-			$userlookup = new stdClass();
+			$userlookup = new \JFusion\User\Userinfo('joomla_int');
 			$userlookup->userid = $userid;
 
-			$userlookup = $userPlugin->lookupUser($userlookup, 'joomla_int');
+			$userlookup = $userPlugin->lookupUser($userlookup);
 			$existinguser = $userPlugin->getUser($userlookup);
 			$group_id = $existinguser->group_id;
 		} else {

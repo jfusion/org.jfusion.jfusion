@@ -32,7 +32,7 @@ class JFusionControllerPlugin extends JControllerLegacy
 
 		$userlookup = null;
 		if ($jname && ($userid || $username || $email)) {
-			$userlookup = new stdClass();
+			$userlookup = new \JFusion\User\Userinfo($jname);
 			if ($userid) {
 				$userlookup->userid = $userid;
 			}
@@ -44,7 +44,7 @@ class JFusionControllerPlugin extends JControllerLegacy
 			}
 
 			$PluginUser = Factory::getUser($jname);
-			$userlookup = $PluginUser->lookupUser($userlookup, $jname);
+			$userlookup = $PluginUser->lookupUser($userlookup);
 		}
 
         die(print_r($userlookup));

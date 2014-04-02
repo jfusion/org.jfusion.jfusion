@@ -276,11 +276,11 @@ class Forum extends Plugin_Forum
 				    $marktimes = array();
 				    $db = Factory::getDatabase($this->getJname());
 
-				    $userlookup = new stdClass();
+				    $userlookup = new \JFusion\User\Userinfo('joomla_int');
 				    $userlookup->userid = $JUser->get('id');
 
 				    $PluginUser = Factory::getUser($this->getJname());
-				    $userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
+				    $userlookup = $PluginUser->lookupUser($userlookup);
 				    if ($userlookup) {
 					    $query = $db->getQuery(true)
 						    ->select('topic_id, mark_time')
@@ -421,11 +421,11 @@ class Forum extends Plugin_Forum
 			    if ($userid == 'find') {
 				    $JUser = JFactory::getUser();
 				    if (!$JUser->guest) {
-					    $userlookup = new stdClass();
+					    $userlookup = new \JFusion\User\Userinfo('joomla_int');
 					    $userlookup->userid = $JUser->get('id');
 
 					    $PluginUser = Factory::getUser($this->getJname());
-					    $userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
+					    $userlookup = $PluginUser->lookupUser($userlookup);
 					    if ($userlookup) {
 						    $userid = $userlookup->userid;
 

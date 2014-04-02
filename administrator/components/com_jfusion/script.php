@@ -262,10 +262,13 @@ class com_jfusionInstallerScript
 			/***
 			 * UPGRADES FOR 1.1.2 Stable
 			 ***/
+			/**
+			 * TODO: REMOVE?
 			//make id the primary key so that the username will be updated
 			$query = 'ALTER TABLE `#__jfusion_users` DROP PRIMARY KEY, ADD PRIMARY KEY ( `id` )';
 			$db->setQuery($query);
 			$db->execute();
+			*/
 
 			/**
 			 * UPGRADES FOR 1.5
@@ -434,6 +437,27 @@ class com_jfusionInstallerScript
 			if (in_array('plugin_files', $columns)) {
 				//remove the column
 				$query = 'ALTER TABLE #__jfusion DROP column plugin_files';
+				$db->setQuery($query);
+				$db->execute();
+			}
+
+			/**
+			 * for 3.0
+			 */
+			$query = 'SHOW COLUMNS FROM #__jfusion_users_plugin';
+			$db->setQuery($query);
+			$columns = $db->loadColumn();
+			if (!in_array('email', $columns)) {
+				//remove the column
+				$query = 'ALTER TABLE  `#__jfusion_users_plugin` ADD  `email` VARCHAR( 255 ) NULL DEFAULT NULL AFTER  `id`';
+				$db->setQuery($query);
+				$db->execute();
+
+				$query = 'TRUNCATE #__jfusion_users_plugin';
+				$db->setQuery($query);
+				$db->execute();
+
+				$query = 'DROP TABLE #__jfusion_users';
 				$db->setQuery($query);
 				$db->execute();
 			}
