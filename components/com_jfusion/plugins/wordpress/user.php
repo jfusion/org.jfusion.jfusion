@@ -59,11 +59,11 @@ class User extends Plugin_User
 	    $user = null;
 	    try {
 		    //get the identifier
-		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'user_login', 'user_email');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
 		    // Get a database object
 		    $db = Factory::getDatabase($this->getJname());
 		    //make the username case insensitive
-		    if ($identifier_type == 'user_login') {
+		    if ($identifier_type == 'username') {
 			    $identifier = $this->filterUsername($identifier);
 		    }
 		    // internal note: working toward the JFusion 2.0 plugin system, we read all available userdata into the user object
@@ -72,7 +72,7 @@ class User extends Plugin_User
 		    // will be further developed for 2.0 allowing centralized registration
 
 		    $query = $db->getQuery(true)
-			    ->select('*')
+			    ->select('*, ID as userid, display_name as name, user_login as username, user_email as email, user_pass as password, user_registered as registerDate, user_activation_key as activation')
 			    ->from('#__users')
 			    ->where($identifier_type . ' = ' . $db->quote($identifier));
 
@@ -83,12 +83,12 @@ class User extends Plugin_User
 			    $query = $db->getQuery(true)
 				    ->select('*')
 				    ->from('#__usermeta')
-				    ->where('user_id = ' . $db->quote($result->ID));
+				    ->where('user_id = ' . $db->quote($result->userid));
 
 			    $db->setQuery($query);
-			    $result1 = $db->loadObjectList();
-			    if ($result1) {
-				    foreach ($result1 as $metarecord) {
+			    $usermeta = $db->loadObjectList();
+			    if ($usermeta) {
+				    foreach ($usermeta as $metarecord) {
 					    $result->{$metarecord->meta_key} = $metarecord->meta_value;
 				    }
 			    }
@@ -114,15 +114,9 @@ class User extends Plugin_User
      */
     function convertUserobjectToJFusion($user) {
 		$result = new stdClass;
-
-		$result->userid = $user->ID;
 		// have to figure out what to use a s the name. Guess display name will do.
 		//     $result->name         = $user->first_name;
 		//     if (user->last_name) { $result->name .= $user_last_name;}
-		$result->name = $user->display_name;
-		$result->username = $user->user_login;
-		$result->email = $user->user_email;
-		$result->password = $user->user_pass;
 		$result->password_salt = null;
 
 		// usergroup (actually role) is in a serialized field of the user metadata table
@@ -162,13 +156,10 @@ class User extends Plugin_User
 		// fill the userobject
 		$result->group_id          = $groupid;
 		$result->group_name        = $groupname;
-		$result->registerdate      = $user->user_registered;
-		$result->activation        = $user->user_activation_key;
-		$result->block             = 0;
+		$result->block             = false;
 
 		// todo get to find out where user status stands for. As far as I can see we have also two additional fields
 		// in a multi site, one of the spam. This maybe linked to block.
-
 		return $result;
 	}
 

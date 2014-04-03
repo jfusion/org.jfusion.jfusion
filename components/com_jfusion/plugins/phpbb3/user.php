@@ -54,7 +54,7 @@ class User extends Plugin_User
 	    $user = null;
 	    try {
 		    //get the identifier
-		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email', 'userid');
 		    // Get a database object
 		    $db = Factory::getDatabase($this->getJname());
 		    //make the username case insensitive
@@ -101,9 +101,9 @@ class User extends Plugin_User
 
 				    $db->setQuery($query);
 				    if ($db->loadObject()) {
-					    $result->block = 1;
+					    $result->block = true;
 				    } else {
-					    $result->block = 0;
+					    $result->block = false;
 				    }
 				    //if no inactive reason is set clear the activation code
 				    if ($result->user_type == 1) {
@@ -115,7 +115,7 @@ class User extends Plugin_User
 					    }
 				    } else {
 					    //active user, make sure no activation code is set
-					    $result->activation = '';
+					    $result->activation = null;
 				    }
 
 				    $user = new Userinfo($this->getJname());

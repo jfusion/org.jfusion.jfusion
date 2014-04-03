@@ -45,17 +45,15 @@ class User extends Plugin_User
     {
 	    $user = null;
         try {
-            $identifier = $userinfo;
-            if (is_object($userinfo)) {
-                $identifier = $userinfo->email;
-            }
+	        list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, null, 'customers_email_address', 'customers_id');
+
             $osCversion = $this->params->get('osCversion');
             $db = Factory::getDatabase($this->getJname());
 
             $query = $db->getQuery(true)
                 ->select('customers_id')
                 ->from('#__customers')
-                ->where('customers_email_address = ' . $db->Quote($identifier));
+                ->where($identifier_type . ' = ' . $db->Quote($identifier));
 
             $db->setQuery($query);
             $userid = $db->loadResult();
@@ -64,7 +62,7 @@ class User extends Plugin_User
                 $query1 = $db->getQuery(true)
                     ->select('customers_id as userid, customers_group_pricing as group_id, customers_firstname as name, customers_lastname as lastname, customers_password as password, null as password_salt')
                     ->from('#__customers')
-                    ->where('customers_id = ' . $db->Quote($userid));
+                    ->where('userid = ' . $db->Quote($userid));
 
                 $query2 = $db->getQuery(true)
                     ->select('customers_info_date_account_created as registerDate, customers_info_date_of_last_logon as lastvisitDate, customers_info_date_account_last_modified as modifiedDate')
@@ -82,8 +80,8 @@ class User extends Plugin_User
                     }
                     $result->groups = array($result->group_id);
 
-                    $result->activation = '';
-                    $result->block = 0;
+                    $result->activation = null;
+                    $result->block = false;
                     $password = $result->password;
                     $hashArr = explode(':', $password);
                     $result->password = $hashArr[0];

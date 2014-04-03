@@ -62,7 +62,7 @@ class User extends Plugin_User
 		try {
 			if($identifier_type == 'auto') {
 				//get the identifier
-				list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'u.username', 'u.email');
+				list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'u.username', 'u.email', 'userid');
 				if ($identifier_type == 'u.username') {
 					//lower the username for case insensitivity purposes
 					$identifier_type = 'LOWER(u.username)';
@@ -119,9 +119,9 @@ class User extends Plugin_User
 
 				$db->setQuery($query);
 				if ($db->loadObject() || ($this->params->get('block_coppa_users', 1) && (int) $result->group_id == 4)) {
-					$result->block = 1;
+					$result->block = true;
 				} else {
-					$result->block = 0;
+					$result->block = false;
 				}
 
 				//check to see if the user is awaiting activation
@@ -1119,7 +1119,7 @@ class User extends Plugin_User
 			$existinguser = $this->getUser($userinfo);
 			if (!empty($existinguser)) {
 				if ($settings['vb_block_user']) {
-					$userinfo->block =  1;
+					$userinfo->block =  true;
 
 					$this->blockUser($userinfo, $existinguser, $status);
 				}
@@ -1170,7 +1170,7 @@ class User extends Plugin_User
 			$existinguser = $this->getUser($userinfo);
 			if (!empty($existinguser)) {
 				if ($settings['vb_unblock_user']) {
-					$userinfo->block =  0;
+					$userinfo->block =  false;
 					try {
 						$this->unblockUser($userinfo, $existinguser, $status);
 					} catch (Exception $e) {
@@ -1233,7 +1233,7 @@ class User extends Plugin_User
 			$existinguser = $this->getUser($userinfo);
 			if (!empty($existinguser)) {
 				if ($settings['vb_block_user_registration']) {
-					$userinfo->block =  1;
+					$userinfo->block =  true;
 					try {
 						$this->blockUser($userinfo, $existinguser, $status);
 					} catch(Exception $e) {

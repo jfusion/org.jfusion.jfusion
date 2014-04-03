@@ -60,8 +60,8 @@ class User extends Plugin_User
 		$user = null;
 		try {
 			$db = Factory::getDatabase($this->getJname());
-			$JFusionUser = Factory::getUser($this->getJname());
-			list($identifier_type, $identifier) = $JFusionUser->getUserIdentifier($userinfo, 'username', 'email');
+
+			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
 
 			$query = $db->getQuery(true)
 				->select('id as userid, activation, username, name, password, email, block, params')
@@ -114,11 +114,11 @@ class User extends Plugin_User
 
 				//unset the activation status if not blocked
 				if ($result->block == 0) {
-					$result->activation = '';
+					$result->activation = null;
 				}
 				//unset the block if user is inactive
 				if (!empty($result->block) && !empty($result->activation)) {
-					$result->block = 0;
+					$result->block = false;
 				}
 
 				//check to see if CB is installed and activated and if so update the activation and ban accordingly
@@ -142,9 +142,9 @@ class User extends Plugin_User
 					if (!empty($cbresult)) {
 						if (empty($cbresult->confirmed) && !empty($cbresult->cbactivation)) {
 							$result->activation = $cbresult->cbactivation;
-							$result->block = 0;
+							$result->block = false;
 						} elseif (empty($cbresult->confirmed) || empty($cbresult->approved)) {
-							$result->block = 1;
+							$result->block = true;
 						}
 					}
 				}

@@ -37,7 +37,7 @@ class User extends Plugin_User
 	    $user = null;
 	    try {
 		    //get the identifier
-		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.member_name', 'a.email_address');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.member_name', 'a.email_address', 'userid');
 
 		    // initialise some objects
 		    $db = Factory::getDatabase($this->getJname());
@@ -90,16 +90,16 @@ class User extends Plugin_User
 			    $expire_time = $db->loadObject();
 			    if ($expire_time) {
 				    if ($expire_time->expire_time == '' || $expire_time->expire_time > time() ) {
-					    $result->block = 1;
+					    $result->block = true;
 				    } else {
-					    $result->block = 0;
+					    $result->block = false;
 				    }
 			    } else {
-				    $result->block = 0;
+				    $result->block = false;
 			    }
 
 			    if ($result->is_activated == 1) {
-				    $result->activation = '';
+				    $result->activation = null;
 			    }
 			    $user = new Userinfo($this->getJname());
 			    $user->bind($result);

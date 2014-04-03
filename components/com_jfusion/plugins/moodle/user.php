@@ -135,10 +135,10 @@ class User extends Plugin_User
 		try {
 			$db = Factory::getDatabase($this->getJname());
 			//get the identifier
-			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
+			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
 
 			$query = $db->getQuery(true)
-				->select('*')
+				->select('*, id as userid')
 				->from('#__user')
 				->where($identifier_type . ' = ' . $db->quote($identifier));
 
@@ -151,7 +151,6 @@ class User extends Plugin_User
 					$result = null;
 				} else {
 					// change/add fields used by jFusion
-					$result->userid = $result->id;
 					$result->name = trim($result->firstname . ' ' . $result->lastname);
 					$result->activation = !$result->confirmed;
 					// get the policy agreed stuff
@@ -166,7 +165,7 @@ class User extends Plugin_User
 					if ($sitepolicy) {
 						$result->block = !$result->policyagreed;
 					} else {
-						$result->block = 0;
+						$result->block = false;
 					}
 					$result->registerDate = date('d-m-Y H:i:s', $result->firstaccess);
 					$result->lastvisitDate = date('d-m-Y H:i:s', $result->lastlogin);
@@ -473,7 +472,7 @@ class User extends Plugin_User
 			// first find out if the user already exists, but with deleted flag set
 			$db = Factory::getDatabase($this->getJname());
 			//get the identifier
-			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
+			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'id');
 
 			$query = $db->getQuery(true)
 				->select('*')

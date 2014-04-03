@@ -59,22 +59,21 @@ class User extends Plugin_User
 	    $user = null;
 	    try {
 		    //get the identifier
-		    $identifier = $userinfo;
-		    if (is_object($userinfo)) {
-			    $identifier = $userinfo->email;
-		    }
+
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, null, 'email', 'userid');
+
 		    // Get user info from database
 		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
 			    ->select('id_customer as userid, email, email as username, passwd as password, firstname, lastname, active')
 			    ->from('#__customer')
-			    ->where('email =' . $db->quote($identifier));
+			    ->where($identifier_type . ' =' . $db->quote($identifier));
 
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
 		    if ($result) {
-			    $result->block = 0;
+			    $result->block = false;
 			    $query = $db->getQuery(true)
 				    ->select('id_group')
 				    ->from('#__customer_group')

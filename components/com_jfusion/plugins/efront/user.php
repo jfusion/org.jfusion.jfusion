@@ -51,14 +51,14 @@ class User extends Plugin_User
 	    try {
 	        $db = Factory::getDatabase($this->getJname());
 	        //get the identifier
-	        list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'login', 'email');
+	        list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
 	        if ($identifier_type == 'login') {
 	            $identifier = $this->filterUsername($identifier);
 	        }
 
 	        //initialise some params
 		    $query = $db->getQuery(true)
-			    ->select('*')
+			    ->select('*, id as userid, login as username')
 			    ->from('#__users')
 			    ->where($identifier_type . ' = ' . $db->quote($identifier));
 
@@ -66,8 +66,6 @@ class User extends Plugin_User
 	        $result = $db->loadObject();
 	        if ($result) {
 	            // change/add fields used by jFusion
-	            $result->userid = $result->id;
-	            $result->username = $result->login;
 	            $result->group_id = $this->helper->groupNameToID($result->user_type, $result->user_types_ID);
 	            $result->group_name = $this->helper->groupIdToName($result->group_id);
 
@@ -76,7 +74,7 @@ class User extends Plugin_User
 
 	            $result->name = trim($result->name . ' ' . $result->surname);
 	            $result->registerDate = date('d-m-Y H:i:s', $result->timestamp);
-	            $result->activation = ($result->pending == 1) ? "1" : '';
+	            $result->activation = ($result->pending == 1) ? '1' : null;
 	            $result->block = !$result->active;
 
 		        $user = new Userinfo($this->getJname());

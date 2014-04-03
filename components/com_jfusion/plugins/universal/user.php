@@ -46,7 +46,7 @@ class User extends Plugin_User
 		$user = null;
 		if ($userid) {
 			//get the identifier
-			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, $username->field, $email->field);
+			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, $username->field, $email->field, $userid->field);
 
 			$db = Factory::getDatabase($this->getJname());
 
@@ -67,18 +67,18 @@ class User extends Plugin_User
 						$result->name .= ' ' . $result->lastname;
 					}
 				}
-				$result->block = 0;
+				$result->block = false;
 
 				if ( isset($result->inactive) ) {
 					$inactive = $this->helper->getFieldType('INACTIVE');
 					if ($inactive->value['on'] == $result->inactive ) {
-						$result->block = 1;
+						$result->block = true;
 					}
 				}
 				if ( isset($result->active) ) {
 					$active = $this->helper->getFieldType('ACTIVE');
 					if ($active->value['on'] != $result->active ) {
-						$result->block = 1;
+						$result->block = true;
 					}
 				}
 				unset($result->inactive, $result->active);

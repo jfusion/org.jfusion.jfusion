@@ -12,16 +12,18 @@ use stdClass;
  *
  * Properties home user information, Below is the required parameters for jfusion framework
  *
- * @property mixed|null $userid userid
- * @property string|null $username username
- * @property string|null $email email
- * @property string|null $password password (already encrypted)
- * @property string|null $password_salt password_salt
- * @property string|null $password_clear password_clear password in clear text
- * @property boolean $block block
- * @property string|null $activation activation
- * @property array $groups groups
- * @property array $groupnames groupnames
+ * @property int|string|null    $userid             userid
+ * @property string|null        $username           username
+ * @property string|null        $email              email
+ * @property string|null        $password           password (already encrypted)
+ * @property string|null        $password_salt      password_salt
+ * @property string|null        $password_clear     password_clear password in clear text
+ * @property boolean            $block              block is used for user enabled/disabled state
+ * @property string|null        $activation         activation is used to determin if user has activated the account
+ * @property array              $groups             groups
+ * @property array              $groupnames         groupnames
+ * @property int                $registerDate       timestamp of register date
+ * @property int                $lastvisitDate      timestamp of lastvisit date
  */
 class Userinfo {
 	private $jname = null;
@@ -50,6 +52,8 @@ class Userinfo {
 		$this->userinfo->activation = null;
 		$this->userinfo->groups = array();
 		$this->userinfo->groupnames = array();
+		$this->userinfo->registerDate = 0;
+		$this->userinfo->lastvisitDate = 0;
 
 		$this->jname = $jname;
 	}

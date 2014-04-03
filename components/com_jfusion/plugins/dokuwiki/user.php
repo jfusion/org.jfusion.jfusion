@@ -136,16 +136,13 @@ class JFusionUser_dokuwiki extends Plugin_User
      * @return null|Userinfo
      */
     function getUser(Userinfo $userinfo) {
-    	if (is_object($userinfo)) {
-    		$username = $this->filterUsername($userinfo->username);
-		} else {
-			$username = $this->filterUsername($userinfo);
-		}
+	    $username = $this->filterUsername($userinfo->username);
+
 		$raw_user = $this->helper->auth->getUserData($username);
         if (is_array($raw_user)) {
 	        $result = new stdClass;
-	        $result->block = 0;
-	        $result->activation = '';
+	        $result->block = false;
+	        $result->activation = null;
 	        $result->userid = $username;
 	        $result->name = $raw_user['name'];
 	        $result->username = $username;

@@ -51,17 +51,7 @@ class Plugin_User extends Plugin
 	}
 
     /**
-     * gets the userinfo from the JFusion integrated software. Definition of object:
-     * $userinfo->userid
-     * $userinfo->name
-     * $userinfo->username
-     * $userinfo->email
-     * $userinfo->password (encrypted password)
-     * $userinfo->password_salt (salt used to encrypt password)
-     * $userinfo->block (0 if allowed to access site, 1 if user access is blocked)
-     * $userinfo->registerdate
-     * $userinfo->lastvisitdate
-     * $userinfo->group_id
+     * gets the userinfo from the JFusion integrated software. direct from the software
      *
      * @param Userinfo $userinfo contains the object of the user
      *
@@ -72,63 +62,78 @@ class Plugin_User extends Plugin
         return null;
     }
 
+	/**
+	 * Gets the userinfo from the JFusion integrated software. it uses the lookup function
+	 *
+	 * @param Userinfo $userinfo contains the object of the user
+	 *
+	 * @return null|Userinfo Userinfo containing the user information
+	 */
+	final public function findUser(Userinfo $userinfo)
+	{
+		$userloopup = $this->lookupUser($userinfo);
+		if ($userloopup instanceof Userinfo) {
+			$user = $this->getUser($userloopup);
+		} else {
+			$user = $this->getUser($userinfo);
+			if ($user instanceof Userinfo) {
+				/**
+				 * TODO: determine if the update lookup should really be here or not.
+				 */
+				$this->updateLookup($user, $userinfo);
+			}
+		}
+		return $user;
+	}
+
     /**
      * Returns the identifier and identifier_type for getUser
      *
-     * @param Userinfo &$userinfo    object with user identifying information
-     * @param string $username_col Database column for username
-     * @param string $email_col    Database column for email
-     * @param bool $lowerEmail   Boolean to lowercase emails for comparison
+     * @param Userinfo  &$userinfo      object with user identifying information
+     * @param string    $username_col   Database column for username
+     * @param string    $email_col      Database column for email
+     * @param string    $userid_col     Database column for userid
+	 * @param bool      $lowerEmail     Boolean to lowercase emails for comparison
      *
      * @return array array($identifier, $identifier_type)
      */
-	public final function getUserIdentifier(Userinfo &$userinfo, $username_col, $email_col, $lowerEmail = true)
+	public final function getUserIdentifier(Userinfo &$userinfo, $username_col, $email_col, $userid_col, $lowerEmail = true)
     {
-        //the discussion bot may need to override the identifier_type to prevent user hijacking by guests
-        $override = (defined('OVERRIDE_IDENTIFIER')) ? OVERRIDE_IDENTIFIER : 'default';
-        $options = array('0', '1', '2');
-        if (in_array($override, $options)) {
-            $login_identifier = $override;
-        } else {
-            $login_identifier = $this->params->get('login_identifier', 1);
-        }
-        $identifier = $userinfo; // saves some code lines, only change if userinfo is an object
+	    $login_identifier = $this->params->get('login_identifier', 1);
+
+	    if ($this->getJname() == $userinfo->getJname() && $userinfo->userid != null) {
+		    $login_identifier = 4;
+	    } elseif ($username_col == null) {
+		    $login_identifier = 2;
+	    }
         switch ($login_identifier) {
             default:
             case 1:
                 // username
-                if (is_object($userinfo)) {
-                    $identifier = $userinfo->username;
-                }
+	            $identifier = $userinfo->username;
                 $identifier_type = $username_col;
                 break;
             case 2:
                 // email
-                if (is_object($userinfo)) {
-                    $identifier = $userinfo->email;
-                }
+	            $identifier = $userinfo->email;
                 $identifier_type = $email_col;
                 break;
             case 3:
                 // username or email
-                if (!is_object($userinfo)) {
-                    $pattern = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i';
-                    if (preg_match($pattern, $identifier)) {
-                        $identifier_type = $email_col;
-                    } else {
-                        $identifier_type = $username_col;
-                    }
-                } else {
-                    $pattern = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i';
-                    if (preg_match($pattern, $userinfo->username)) {
-                        $identifier_type = $email_col;
-                        $identifier = $userinfo->email;
-                    } else {
-                        $identifier_type = $username_col;
-                        $identifier = $userinfo->username;
-                    }
-                }
+	            $pattern = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i';
+	            if (preg_match($pattern, $userinfo->username)) {
+		            $identifier_type = $email_col;
+		            $identifier = $userinfo->email;
+	            } else {
+		            $identifier_type = $username_col;
+		            $identifier = $userinfo->username;
+	            }
                 break;
+	        case 4:
+		        // userid
+		        $identifier_type = $userid_col;
+		        $identifier = $userinfo->userid;
+		        break;
         }
         if ($lowerEmail && $identifier_type == $email_col) {
             $identifier_type = 'LOWER(' . $identifier_type . ')';

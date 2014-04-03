@@ -52,15 +52,8 @@ class User extends Plugin_User
      * @return null|Userinfo
      */
     function getUser(Userinfo $userinfo) {
-        // get the username
-        if (is_object($userinfo)) {
-            $username = $userinfo->username;
-        } else {
-            $username = $userinfo;
-        }
-
 	    $this->helper->loadGallery2Api(false);
-        list($ret, $g2_user) = GalleryCoreApi::fetchUserByUserName($username);
+        list($ret, $g2_user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         if ($ret) {
             return null;
         } else {
@@ -96,10 +89,10 @@ class User extends Plugin_User
         /**
          * @TODO Research if and in how to detect blocked Users
          */
-	    $result->block = 0; //(0 if allowed to access site, 1 if user access is blocked)
+	    $result->block = false; //(0 if allowed to access site, 1 if user access is blocked)
         //Not found jet
-	    $result->registerdate = null;
-	    $result->lastvisitdate = null;
+	    $result->registerDate = null;
+	    $result->lastvisitDate = null;
         //Not activated users are saved separated so not to set. (PendingUser)
 	    $result->activation = null;
 

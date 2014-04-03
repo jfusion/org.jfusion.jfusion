@@ -522,14 +522,13 @@ HTML;
 			if($userinfo->guest) {
 				$userinfo->username = $postinfo->username;
 				$userinfo->email = $postinfo->email;
-				$userinfo->userid = 0;
+				$userinfo->userid = null;
 				if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
 					throw new RuntimeException(Text::_('GUEST_FIELDS_MISSING'));
 				} else {
 					//check to see if user exists to prevent user hijacking
 					$JFusionUser = Factory::getUser($this->getJname());
-					define('OVERRIDE_IDENTIFIER', 3);
-					$existinguser = $JFusionUser->getUser($userinfo->username);
+					$existinguser = $JFusionUser->getUser($userinfo);
 					if(!empty($existinguser)) {
 						throw new RuntimeException(Text::_('USERNAME_IN_USE'));
 					}

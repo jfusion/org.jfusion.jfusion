@@ -42,20 +42,16 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      *
-*@return null|Userinfo
+	 * @return null|Userinfo
      */
     function getUser(Userinfo $userinfo)
     {
 	    $user = null;
 	    try {
 		    // get the username
-		    if (is_object($userinfo)) {
-			    $username = $userinfo->username;
-		    } else {
-			    $username = $userinfo;
-		    }
+		    $userinfo->username = $this->filterUsername($userinfo->username);
 
-		    $username = $this->filterUsername($userinfo->username);
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
 
 		    // initialise some objects
 		    $db = Factory::getDatabase($this->getJname());
@@ -63,7 +59,7 @@ class User extends Plugin_User
 		    $query = $db->getQuery(true)
 			    ->select('user_id as userid, user_name as username, user_token, user_real_name as name, user_email as email, user_password as password, NULL as password_salt, NULL as activation, TRUE as is_activated, NULL as reason, user_touched as lastvisit')
 			    ->from('#__user')
-		        ->where('user_name = ' . $db->quote($username));
+		        ->where($identifier_type . ' = ' . $db->quote($identifier));
 
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
@@ -93,15 +89,15 @@ class User extends Plugin_User
 
 			    if (isset($block->ipb_user)) {
 				    if ($block->ipb_expiry ) {
-					    $result->block = 1;
+					    $result->block = true;
 				    } else {
-					    $result->block = 0;
+					    $result->block = false;
 				    }
 			    } else {
-				    $result->block = 0;
+				    $result->block = false;
 			    }
 
-			    $result->activation = '';
+			    $result->activation = null;
 
 			    $user = new Userinfo($this->getJname());
 			    $user->bind($result);

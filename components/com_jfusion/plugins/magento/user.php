@@ -222,13 +222,11 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 *
-*@return null|Userinfo
+	 * @return null|Userinfo
 	 */
-	function getUser(Userinfo $userinfo) {
-		$identifier = $userinfo;
-		if (is_object($userinfo)) {
-			$identifier = $userinfo->email;
-		}
+	function getUser(Userinfo $userinfo)
+	{
+		$identifier = $userinfo->email;
 
 		// Get the user id
 		$db = Factory::getDataBase($this->getJname());
