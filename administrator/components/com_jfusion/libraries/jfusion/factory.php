@@ -471,7 +471,7 @@ class JFusionFactory
             switch ($type) {
                 case 'bbcode':
                     if (!class_exists('BBCode_Parser')) {
-                        include_once 'parsers' . DIRECTORY_SEPARATOR . 'nbbc.php';
+	                    require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models'. DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'nbbc.php';
                     }
 	                $instance[$type] = new BBCode_Parser;
                     break;

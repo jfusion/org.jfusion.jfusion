@@ -69,7 +69,6 @@ class JFusionDiscussBotHelper {
 	public function setArticle($article)
 	{
 		$this->article = $article;
-
 		if (isset($this->article->id)) {
 			$session = JFactory::getSession();
 			$debug = $session->get('jfusion.discussion.debug.' . $this->article->id, false);
@@ -116,6 +115,14 @@ class JFusionDiscussBotHelper {
 	 */
 	public function setThreadInfo($threadinfo)
 	{
+		$thread = new stdClass();
+		$thread->threadid = 0;
+		$thread->forumid = 0;
+		$thread->postid = 0;
+		$thread->manual = false;
+		$thread->valid = false;
+		$thread->published = false;
+
 		$this->replyCount = 0;
 		if ($threadinfo) {
 			$threadinfo->valid = false;
@@ -131,19 +138,15 @@ class JFusionDiscussBotHelper {
 					$threadinfo->valid = true;
 				}
 			}
-		} else {
-			$threadinfo = new stdClass();
-			$threadinfo->threadid = 0;
-			$threadinfo->forumid = 0;
-			$threadinfo->postid = 0;
-			$threadinfo->manual = false;
-			$threadinfo->valid = false;
-			$threadinfo->published = false;
+			foreach($threadinfo as $key => $value) {
+				$thread->$key = $value;
+			}
 		}
+
 		if (isset($this->article->id)) {
-			$this->threadinfo[$this->article->id] = $threadinfo;
+			$this->threadinfo[$this->article->id] = $thread;
 		}
-		return $threadinfo;
+		return $thread;
 	}
 
 	/**
@@ -551,9 +554,9 @@ class JFusionDiscussBotHelper {
 JS;
 
 			JFusionFunction::loadJavascriptLanguage(array('BUTTON_CANCEL', 'BUTTON_INITIATE',
-				'BUTTON_PUBLISH_NEW_DISCUSSION', 'BUTTON_REPUBLISH_DISCUSSION', 'BUTTON_UNPUBLISH_DISCUSSION',
-				'CONFIRM_THREAD_CREATION', 'CONFIRM_UNPUBLISH_DISCUSSION', 'CONFIRM_PUBLISH_DISCUSSION',
-				'DISCUSSBOT_ERROR', 'HIDE_REPLIES', 'JYES', 'SHOW_REPLIES', 'SUBMITTING_QUICK_REPLY'));
+				                                        'BUTTON_PUBLISH_NEW_DISCUSSION', 'BUTTON_REPUBLISH_DISCUSSION', 'BUTTON_UNPUBLISH_DISCUSSION',
+				                                        'CONFIRM_THREAD_CREATION', 'CONFIRM_UNPUBLISH_DISCUSSION', 'CONFIRM_PUBLISH_DISCUSSION',
+				                                        'DISCUSSBOT_ERROR', 'HIDE_REPLIES', 'JYES', 'SHOW_REPLIES', 'SUBMITTING_QUICK_REPLY'));
 
 			//check for a custom js file
 			if (file_exists(DISCUSSION_TEMPLATE_PATH . 'jfusion.js')) {

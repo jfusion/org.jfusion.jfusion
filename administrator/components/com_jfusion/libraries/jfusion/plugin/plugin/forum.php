@@ -197,21 +197,25 @@ class JFusionForum extends JFusionPlugin
 		if(!empty($forumid)) {
 			if(!empty($existingthread)) {
 				//datetime post was last updated
-				$postModified = $threadinfo->modified;
+				if (isset($threadinfo->modified)) {
+					$postModified = $threadinfo->modified;
+				} else {
+					$postModified = 0;
+				}
 				//datetime content was last updated
 				$contentModified = JFusionFactory::getDate($contentitem->modified)->toUnix();
 
 				$status['debug'][] = 'Thread exists...comparing dates';
 				$status['debug'][] = 'Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified) . ')';
 				$status['debug'][] = 'Thread Modification Date: ' . $postModified . '  (' . date('Y-m-d H:i:s', $postModified) . ')';
-				$status['debug'][] = 'Is ' . $contentModified . ' > ' . $postModified . '?';
+				$status['debug'][] = 'Is ' . $contentModified . ' > ' . $postModified . ' ?';
 				if($contentModified > $postModified) {
 					$status['debug'][] = 'Yes...attempting to update thread';
 					//update the post if the content has been updated
 					$this->updateThread($dbparams, $existingthread, $contentitem, $status);
 					if (empty($status['error'])) {
-	                	$status['action'] = 'updated';
-	            	}
+						$status['action'] = 'updated';
+					}
 				} else {
 					$status['debug'][] = 'No...thread unchanged';
 				}
