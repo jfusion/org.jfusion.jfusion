@@ -56,8 +56,6 @@ class plgContentJfusion extends JPlugin
 	var $postid = 0;
 	var $moderated = 0;
 
-	var $testing = 0;
-
 	/**
 	 * Constructor
 	 *
@@ -377,20 +375,19 @@ class plgContentJfusion extends JPlugin
 	 */
 	public function onContentAfterDisplay($context, &$article, &$params, $limitstart = 0)
 	{
+		/*
+		 * forgot why this was needed.
 		$view = JFactory::getApplication()->input->get('view');
 		$layout = JFactory::getApplication()->input->get('layout');
 
 		if ($this->helper->option == 'com_content') {
 			if ($view == 'featured' || ($view == 'category' && $layout == 'blog')) {
-//				$article->text = $article->introtext;
-//				$this->onContentPrepare($context, $article, $params, $limitstart);
-//				$article->introtext = $article->text;
+				$article->text = $article->introtext;
+				$this->onContentPrepare($context, $article, $params, $limitstart);
+				$article->introtext = $article->text;
 			}
 		}
-	}
-
-	public function init() {
-
+		*/
 	}
 
 	/**
