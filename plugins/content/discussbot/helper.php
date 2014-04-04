@@ -118,6 +118,15 @@ class JFusionDiscussBotHelper {
 	 */
 	public function setThreadInfo($threadinfo)
 	{
+
+		$thread = new stdClass();
+		$thread->threadid = 0;
+		$thread->forumid = 0;
+		$thread->postid = 0;
+		$thread->manual = false;
+		$thread->valid = false;
+		$thread->published = false;
+
 		$this->replyCount = 0;
 		if ($threadinfo) {
 			$threadinfo->valid = false;
@@ -133,17 +142,13 @@ class JFusionDiscussBotHelper {
 					$threadinfo->valid = true;
 				}
 			}
-		} else {
-			$threadinfo = new stdClass();
-			$threadinfo->threadid = 0;
-			$threadinfo->forumid = 0;
-			$threadinfo->postid = 0;
-			$threadinfo->manual = false;
-			$threadinfo->valid = false;
-			$threadinfo->published = false;
+			foreach($threadinfo as $key => $value) {
+				$thread->$key = $value;
+			}
 		}
+
 		if (isset($this->article->id)) {
-			$this->threadinfo[$this->article->id] = $threadinfo;
+			$this->threadinfo[$this->article->id] = $thread;
 		}
 		return $threadinfo;
 	}

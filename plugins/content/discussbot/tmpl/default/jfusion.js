@@ -53,7 +53,7 @@ JFusion.renderMessages = function (messages) {
 
         Object.each(messages, function (item, type) {
             if (type === 'error') {
-                window.location = '#jfusionMessageArea';
+                window.location.hash = 'jfusionMessageArea';
             }
 
             //stop a slideOut if pending
@@ -97,7 +97,7 @@ JFusion.renderMessages = function (messages) {
 
 JFusion.initializeDiscussbot = function () {
     if (JFusion.jumptoDiscussion) {
-        window.location = '#discussion';
+        window.location.hash = 'discussion';
     }
 
     //only initiate if the div container exists and if the var has not been declared Fx.Slide
@@ -177,7 +177,7 @@ JFusion.highlightPost = function (postid) {
         highlight.delay(JFusion.highlightDelay);
 
         if (JFusion.enableJumpto) {
-            window.location = '#' + postid;
+            window.location.hash = postid;
         }
     }
 };
@@ -380,7 +380,7 @@ JFusion.quote = function (pid) {
     quickReply.set('value', quickReply.get('value') + $('originalText' + pid).get('html'));
     quickReply.focus();
 
-    window.location = '#jfusionQuickReply';
+    window.location.hash = 'jfusionQuickReply';
 };
 
 JFusion.pagination = function (id) {
@@ -391,7 +391,7 @@ JFusion.pagination = function (id) {
             JFusion.onSuccess(JSONobject);
             JFusion.updateContent(JSONobject);
             if (JSONobject.success) {
-                window.location = '#discussion';
+                window.location.hash = 'discussion';
             }
         },
         onError: function (JSONobject) {
