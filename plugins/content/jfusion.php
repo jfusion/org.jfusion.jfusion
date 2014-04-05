@@ -374,6 +374,7 @@ class plgContentJfusion extends JPlugin
 	public function onContentAfterDisplay($context, &$article, &$params, $limitstart = 0)
 	{
 		/*
+		 *
 		 * forgot why this was needed.
 		$view = JFactory::getApplication()->input->get('view');
 		$layout = JFactory::getApplication()->input->get('layout');
@@ -442,6 +443,8 @@ class plgContentJfusion extends JPlugin
 			//only use the first and get rid of the others
 			if (!$this->manual) {
 				$this->manual = true;
+				$this->manual_threadid = $id;
+
 				$this->helper->debug('Plugging for thread id ' . $id);
 				//get the existing thread information
 				$forumthread = $JFusionForum->getThread($id);
@@ -449,13 +452,17 @@ class plgContentJfusion extends JPlugin
 				if (!empty($forumthread)) {
 					//manually plugged so definitely published
 					$forumthread->published = 1;
+					$forumthread->manual = 1;
 
 					//set threadinfo
 					$this->helper->setThreadInfo($forumthread);
-					$this->helper->getThreadInfo(true);
-					$this->helper->checkThreadExists(1);
-
-					$this->helper->debug('Thread info found.');
+					$forumthread = $this->helper->getThreadInfo();
+					if ($forumthread->valid) {
+						$this->helper->checkThreadExists(1);
+						$this->helper->debug('Thread info found.');
+					} else {
+						$this->helper->debug('Thread info found but not valid!!');
+					}
 					$content = $this->render();
 				} else {
 					$this->helper->debug('Thread info not found!');
@@ -483,12 +490,17 @@ class plgContentJfusion extends JPlugin
 					if (!empty($forumthread)) {
 						//manually plugged so definitely published
 						$forumthread->published = 1;
-						//create buttons for the manually plugged article
+						$forumthread->manual = 1;
 						//set threadinfo
 						$this->helper->setThreadInfo($forumthread);
-						$this->helper->getThreadInfo(true);
-						$this->helper->checkThreadExists(1);
-
+						$forumthread = $this->helper->getThreadInfo();
+						if ($forumthread->valid) {
+							$this->helper->checkThreadExists(1);
+							$this->helper->debug('Thread info found.');
+						} else {
+							$this->helper->debug('Thread info found but not valid!!');
+						}
+						//create buttons for the manually plugged article
 						$content = $this->renderButtons(false);
 
 						//append the content
