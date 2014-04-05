@@ -68,9 +68,8 @@ class plgContentJfusion extends JPlugin
 	 * @param array|object  $params   An array or object that holds the plugin configuration
 	 *
 	 * @since 1.5
-	 * @return void
 	 */
-	public function plgContentJfusion(&$subject, $params)
+	public function __construct(&$subject, $params)
 	{
 		parent::__construct($subject, $params);
 
@@ -120,7 +119,7 @@ class plgContentJfusion extends JPlugin
 		$this->helper = new JFusionDiscussBotHelper($this->params, $this->mode);
 
 		//set option
-		$this->helper->option = JFactory::getApplication()->input->getCmd('option');
+//		$this->helper->context = JFactory::getApplication()->input->getCmd('option');
 	}
 
 	/**
@@ -130,8 +129,9 @@ class plgContentJfusion extends JPlugin
 	 */
 	public function onContentAfterSave($context, $article, $isNew)
 	{
+		$this->helper->context = $context;
 		try {
-			if (substr($context, -8) == '.article') {
+			if (substr($this->helper->context, -8) == '.article') {
 				//check to see if a valid $content object was passed on
 				if (!is_object($article)) {
 					throw new RuntimeException(JText::_('NO_CONTENT_DATA_FOUND'));
@@ -251,11 +251,11 @@ class plgContentJfusion extends JPlugin
 	 */
 	public function onContentPrepare($context, &$article, &$params, $limitstart = 0)
 	{
+		$this->helper->context = $context;
 		$this->ajax_request = JFactory::getApplication()->input->getInt('ajax_request', 0);
 		$data = $this->prepareJSONResponce();
 		try {
-//			if ($context != 'com_content.featured' && $context != 'com_content.category') {
-			if (true) {
+			if (in_array($context, $this->helper->supported)) {
 				//seems syntax has completely changed :(
 				$this->article = $article;
 				$this->helper->setArticle($this->article);
@@ -268,82 +268,83 @@ class plgContentJfusion extends JPlugin
 				$this->helper->debugger->set(null, array());
 				$this->helper->debug('onContentPrepare called');
 
-
 				//check to see if a valid $content object was passed on
-				if (!is_object($this->article)){
+				if (!is_object($this->article)) {
 					JFusionFunction::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
 				} else {
 					//make sure there is a plugin
 					if (!empty($this->jname)) {
-						//do nothing if this is a K2 category object
-						if ($this->helper->option == 'com_k2' && get_class($this->article) == 'TableK2Category') {
-						} else {
-							//set some variables needed throughout
-							$this->template = $this->params->get('template', 'default');
+						//set some variables needed throughout
+						$this->template = $this->params->get('template', 'default');
 
-							//make sure we have an actual article
-							if (!empty($this->article->id)) {
-								$this->dbtask = JFactory::getApplication()->input->get('dbtask', null);
-								$skip_new_check = ($this->dbtask == 'create_thread') ? true : false;
-								$skip_k2_check = ($this->helper->option == 'com_k2' && in_array($this->dbtask, array('unpublish_discussion', 'publish_discussion'))) ? true : false;
+						//make sure we have an actual article
+						if (!empty($this->article->id)) {
+							$this->dbtask = JFactory::getApplication()->input->get('dbtask', null);
+							$skip_new_check = ($this->dbtask == 'create_thread') ? true : false;
 
-								list($this->valid, $this->validity_reason) = $this->helper->validate($skip_new_check, $skip_k2_check);
-								$this->helper->debug('Validity: ' . $this->valid . '; ' . $this->validity_reason);
+							$skip_k2_check = false;
+							if ($context == 'com_k2.item') {
+								if (in_array($this->dbtask, array('unpublish_discussion', 'publish_discussion'))) {
+									$skip_k2_check = true;
+								}
+							}
 
-								if ($this->dbtask == 'create_thread') {
-									//this article has been manually initiated for discussion
-									$this->createThread();
-								} elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get('enable_quickreply', false)) {
-									//a quick reply has been submitted so let's create the post
-									$this->createPost();
-								} elseif ($this->dbtask == 'unpublish_discussion') {
-									//an article has been 'uninitiated'
-									$this->unpublishDiscussion();
-								} elseif ($this->dbtask == 'publish_discussion') {
-									//an article has been 'reinitiated'
-									$this->publishDiscussion();
-									$threadinfo = $this->helper->getThreadInfo();
-									if ($threadinfo->valid && $threadinfo->published) {
-										//content is now published so display it
-										$data->posts = $this->renderDiscussionContent();
-									} else {
-										$data->posts = null;
-									}
+							list($this->valid, $this->validity_reason) = $this->helper->validate($skip_new_check, $skip_k2_check);
+							$this->helper->debug('Validity: ' . $this->valid . '; ' . $this->validity_reason);
+
+							if ($this->dbtask == 'create_thread') {
+								//this article has been manually initiated for discussion
+								$this->createThread();
+							} elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get('enable_quickreply', false)) {
+								//a quick reply has been submitted so let's create the post
+								$this->createPost();
+							} elseif ($this->dbtask == 'unpublish_discussion') {
+								//an article has been 'uninitiated'
+								$this->unpublishDiscussion();
+							} elseif ($this->dbtask == 'publish_discussion') {
+								//an article has been 'reinitiated'
+								$this->publishDiscussion();
+								$threadinfo = $this->helper->getThreadInfo();
+								if ($threadinfo->valid && $threadinfo->published) {
+									//content is now published so display it
+									$data->posts = $this->renderDiscussionContent();
+								} else {
+									$data->posts = null;
+								}
+								$data->error = false;
+							}
+
+							//save the visibility of the posts if applicable
+							$show_discussion = JFactory::getApplication()->input->get('show_discussion', '');
+							if ($show_discussion !== '') {
+								$JSession = JFactory::getSession();
+								$JSession->set('jfusion.discussion.visibility', (int)$show_discussion);
+							}
+
+							//check for some specific ajax requests
+							if ($this->ajax_request) {
+								//check to see if this is an ajax call to update the pagination
+								if ($this->params->get('show_posts', 1) && $this->dbtask == 'update_posts') {
+									$this->updatePosts();
+								}  else if ($this->dbtask == 'update_debug_info') {
 									$data->error = false;
+								} else if ($show_discussion !== '') {
+									$data->error = false;
+									JFusionFunction::raiseNotice('jfusion.discussion.visibility set to ' . $show_discussion);
+								} else {
+									JFusionFunction::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
 								}
+								$this->renderJSONResponce($data);
+							}
+							//add scripts to header
+							$this->helper->loadScripts();
 
-								//save the visibility of the posts if applicable
-								$show_discussion = JFactory::getApplication()->input->get('show_discussion', '');
-								if ($show_discussion !== '') {
-									$JSession = JFactory::getSession();
-									$JSession->set('jfusion.discussion.visibility', (int)$show_discussion);
-								}
+							if (empty($this->article->params) && !empty($this->article->parameters)) {
+								$this->article->params = $this->article->parameters;
+							}
 
-								//check for some specific ajax requests
-								if ($this->ajax_request) {
-									//check to see if this is an ajax call to update the pagination
-									if ($this->params->get('show_posts', 1) && $this->dbtask == 'update_posts') {
-										$this->updatePosts();
-									}  else if ($this->dbtask == 'update_debug_info') {
-										$data->error = false;
-									} else if ($show_discussion !== '') {
-										$data->error = false;
-										JFusionFunction::raiseNotice('jfusion.discussion.visibility set to ' . $show_discussion);
-									} else {
-										JFusionFunction::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
-									}
-									$this->renderJSONResponce($data);
-								}
-								//add scripts to header
-								$this->helper->loadScripts();
-
-								if (empty($this->article->params) && !empty($this->article->parameters)) {
-									$this->article->params = $this->article->parameters;
-								}
-
-								if (!empty($this->article->params)) {
-									$this->prepareContent();
-								}
+							if (!empty($this->article->params)) {
+								$this->prepareContent();
 							}
 						}
 					}
@@ -358,12 +359,12 @@ class plgContentJfusion extends JPlugin
 			}
 		}
 
-		$article->text = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $article->text);
+		$this->article->text = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->text);
 		if (isset($this->article->introtext)) {
-			$article->introtext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $article->introtext);
+			$this->article->introtext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->introtext);
 		}
 		if (isset($this->article->fulltext)) {
-			$article->fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $article->fulltext);
+			$this->article->fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->fulltext);
 		}
 	}
 
@@ -380,13 +381,9 @@ class plgContentJfusion extends JPlugin
 		$view = JFactory::getApplication()->input->get('view');
 		$layout = JFactory::getApplication()->input->get('layout');
 
-		if ($this->helper->option == 'com_content') {
-			if ($view == 'featured' || ($view == 'category' && $layout == 'blog')) {
-				$article->text = $article->introtext;
-				$this->onContentPrepare($context, $article, $params, $limitstart);
-				$article->introtext = $article->text;
-			}
-		}
+//		$article->text = $article->introtext;
+		//$this->onContentPrepare($context, $article, $params, $limitstart);
+//		$article->introtext = $article->text;
 		*/
 	}
 
@@ -427,7 +424,7 @@ class plgContentJfusion extends JPlugin
 	 * @return string
 	 */
 	public function view() {
-		return ($this->helper->option == 'com_k2') ? 'item' : 'article';
+		return (strpos($this->helper->context, 'com_k2') === 0) ? 'item' : 'article';
 	}
 
 	/*
@@ -444,7 +441,6 @@ class plgContentJfusion extends JPlugin
 		$this->helper->debug('Finding all manually added plugs');
 		preg_match_all('/\{jfusion_discuss (.*)\}/U', $this->article->text, $matches);
 		$this->helper->debug(count($matches[1]) . ' matches found');
-
 		foreach($matches[1] as $id) {
 			//only use the first and get rid of the others
 			if (!$this->manual) {
@@ -459,7 +455,8 @@ class plgContentJfusion extends JPlugin
 
 					//set threadinfo
 					$this->helper->setThreadInfo($forumthread);
-					$this->helper->checkThreadExists();
+					$this->helper->getThreadInfo(true);
+					$this->helper->checkThreadExists(1);
 
 					$this->helper->debug('Thread info found.');
 					$content = $this->render();
@@ -492,7 +489,8 @@ class plgContentJfusion extends JPlugin
 						//create buttons for the manually plugged article
 						//set threadinfo
 						$this->helper->setThreadInfo($forumthread);
-						$this->helper->checkThreadExists();
+						$this->helper->getThreadInfo(true);
+						$this->helper->checkThreadExists(1);
 
 						$content = $this->renderButtons(false);
 
@@ -579,7 +577,6 @@ class plgContentJfusion extends JPlugin
 					$content = $this->renderButtons();
 				}
 			} else {
-
 				$this->helper->debug('In manual mode');
 				//in manual mode so just create the buttons
 				if ($this->validity_reason != JText::_('REASON_NOT_IN_K2_ARTICLE_TEXT')) {
@@ -589,7 +586,6 @@ class plgContentJfusion extends JPlugin
 			//append the content
 			$this->article->text .= $content;
 		}
-
 		$this->renderDebugOutput();
 	}
 
@@ -651,7 +647,7 @@ HTML;
 		if ($editAccess) {
 			if ($this->valid) {
 				if ($submittedArticleId == $this->article->id) {
-					$status = $this->helper->checkThreadExists(1);
+					$status = $this->helper->checkThreadExists(0, 1);
 
 					if (!empty($status['error'])) {
 						JFusionFunction::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
@@ -917,7 +913,6 @@ HTML;
 			$content = '<div style="float:none; display:' . $display . ';" id="discussion">';
 
 			if ($generate_guts) {
-
 				$content .= $this->renderDiscussionContent();
 			}
 			$content .= '</div>';
@@ -1083,9 +1078,9 @@ HTML;
 			}
 			$linkTarget = $this->params->get('link_target', '_parent');
 
-			if ($this->helper->option == 'com_content') {
+			if (strpos($this->helper->context, 'com_content') === 0) {
 				$article_access = $this->article->params->get('access-view');
-			} elseif ($this->helper->option == 'com_k2') {
+			} elseif (strpos($this->helper->context, 'com_k2') === 0) {
 				$article_access = (in_array($this->article->access, $JUser->getAuthorisedViewLevels()) && in_array($this->article->category->access, $JUser->getAuthorisedViewLevels()));
 			} else {
 				$article_access = 1;
@@ -1100,7 +1095,7 @@ HTML;
 			 */
 			$show_readmore = $readmore_catch = 0;
 			$readmore_param = null;
-			if ($this->helper->option == 'com_content') {
+			if (strpos($this->helper->context, 'com_content') === 0) {
 				if (isset($this->article->params)) {
 					//blog view
 					$article_params = $this->article->params;
@@ -1113,7 +1108,7 @@ HTML;
 					$show_readmore = ($override !== false) ? $override : $article_params->get('show_readmore');
 				}
 				$readmore_param = 'show_readmore';
-			} elseif ($this->helper->option == 'com_k2' && JFactory::getApplication()->input->get('view') == 'itemlist') {
+			} elseif ($this->helper->context == 'com_k2.itemlist') {
 				$article_params = $this->article->params;
 				$layout = JFactory::getApplication()->input->get('layout');
 				if ($layout == 'category') {
@@ -1135,7 +1130,7 @@ HTML;
 				if (!empty($show_readmore) && !empty($readmore_catch)) {
 					if ($article_access) {
 						$readmore_link = $this->helper->getArticleUrl();
-						if ($this->helper->option == 'com_content') {
+						if (strpos($this->helper->context, 'com_content') === 0) {
 							if (!empty($this->article->alternative_readmore)) {
 								$readmore = $this->article->alternative_readmore;
 								if ($this->article->params->get('show_readmore_title', 0) != 0) {

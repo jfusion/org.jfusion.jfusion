@@ -43,8 +43,15 @@ class JFusionDiscussBotHelper {
 	var $debugger;
 	var $output;
 	var $replyCount = 0;
-	var $option;
+	var $context;
 	var $isJ16;
+
+	var $supported = array('com_content.article',
+		'com_content.category',
+		'com_content.featured',
+		'com_content.article',
+		'com_k2.item',
+		'com_k2.itemlist');
 
 	/**
 	 * @param JRegistry $params
@@ -62,11 +69,11 @@ class JFusionDiscussBotHelper {
 	}
 
 	/**
-	 * @param mixed $article
+	 * @param mixed &$article
 
 	 * @return void
 	 */
-	public function setArticle($article)
+	public function setArticle(&$article)
 	{
 		$this->article = $article;
 		if (isset($this->article->id)) {
@@ -90,12 +97,14 @@ class JFusionDiscussBotHelper {
 			if (!isset($this->threadinfo[$this->article->id]) || $update) {
 				$db = JFactory::getDBO();
 
+				list($conponent, $view) = explode('.', $this->context, 2);
+
 				$query = $db->getQuery(true)
 					->select('*')
 					->from('#__jfusion_discussion_bot')
 					->where('contentid = ' . $db->quote($this->article->id))
 					->where('jname = ' . $db->quote($this->jname))
-					->where('component = ' . $db->quote($this->option));
+					->where('component = ' . $db->quote($conponent));
 
 				$db->setQuery($query);
 				$threadinfo = $this->setThreadInfo($db->loadObject());
@@ -151,9 +160,11 @@ class JFusionDiscussBotHelper {
 
 	/**
 	 * @param int $force_new
+	 * @param int $manually_created
+	 *
 	 * @return array
 	 */
-	public function checkThreadExists($force_new = 0)
+	public function checkThreadExists($manually_created = 0, $force_new = 0)
 	{
 		$this->debug('Checking if thread exists');
 
@@ -161,10 +172,11 @@ class JFusionDiscussBotHelper {
 
 		if ($force_new) {
 			$threadinfo = $this->setThreadInfo(null);
-			$manually_created = 1;
 		} else {
 			$threadinfo = $this->getThreadInfo();
-			$manually_created = (empty($threadinfo->manual)) ? 0 : 1;
+			if ($threadinfo->valid) {
+				$manually_created = ($threadinfo->manual) ? 1 : 0;
+			}
 		}
 
 		$status = array('error' => array(), 'debug' => array());
@@ -188,7 +200,6 @@ class JFusionDiscussBotHelper {
 				if (!empty($threadinfo->threadid)) {
 					//update the lookup table
 					JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $manually_created);
-
 					//set the status to true since it was just created
 				}
 			}
@@ -209,7 +220,7 @@ class JFusionDiscussBotHelper {
 	 */
 	public function getArticleUrl($jumpto = '', $query = '', $xhtml = true)
 	{
-		if ($this->option == 'com_content') {
+		if (strpos($this->context, 'com_content') === 0) {
 			//make sure Joomla content helper is loaded
 			if (!class_exists('ContentHelperRoute')) {
 				require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_content' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
@@ -225,7 +236,7 @@ class JFusionDiscussBotHelper {
 				$url .= '&limitstart=' . $limitstart;
 			}
 			$url .= $query;
-		} else if ($this->option == 'com_k2') {
+		} else if (strpos($this->context, 'com_k2') === 0) {
 			if (!class_exists('K2HelperRoute')) {
 				require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
 			}
@@ -240,7 +251,6 @@ class JFusionDiscussBotHelper {
 		if (!empty($jumpto)) {
 			$url .= '#' . $jumpto;
 		}
-
 		return $url;
 	}
 
@@ -275,12 +285,13 @@ class JFusionDiscussBotHelper {
 		$components = array('com_content', 'com_k2');
 		$responce = array(0, JText::_('UNKNOWN'));
 		//make sure we have an article
-		if (!$this->article->id || !in_array($this->option, $components)) {
-			$responce = array(0, JText::sprintf('REASON_NOT_AN_ARTICLE', $this->option));
+		if (!$this->article->id || !in_array($this->context, $this->supported)) {
+			$responce = array(0, JText::sprintf('REASON_NOT_AN_ARTICLE', $this->context));
 		} else {
 			//if in K2, make sure we are after the article itself and not video or gallery
 			$view = JFactory::getApplication()->input->get('view');
-			if ($this->option == 'com_k2' && $view == 'item' && !$skip_k2_check && is_object($this->article->params)) {
+
+			if ($this->context == 'com_k2.item' && !$skip_k2_check && is_object($this->article->params)) {
 				static $k2_tracker;
 				if ($this->article->params->get('itemImageGallery') && empty($k2_tracker)) {
 					$k2_tracker = 'gallery';
@@ -311,7 +322,7 @@ class JFusionDiscussBotHelper {
 					} else {
 						//make sure article is published
 						$state = false;
-						if ($this->option == 'com_k2') {
+						if (strpos($this->context, 'com_k2') === 0) {
 							if (isset($this->article->published)) {
 								$state = $this->article->published;
 							}
@@ -337,7 +348,7 @@ class JFusionDiscussBotHelper {
 									$responce = array(1, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
 								} elseif ($creationMode == 'view') {
 									//only create the article if we are in the article view
-									$test_view = ($this->option == 'com_k2') ? 'item' : 'article';
+									$test_view = (strpos($this->context, 'com_k2') === 0) ? 'item' : 'article';
 									if (JFactory::getApplication()->input->get('view') != $test_view) {
 										$responce = array(0, JText::_('REASON_CREATED_ON_VIEW'));
 									}
@@ -347,7 +358,7 @@ class JFusionDiscussBotHelper {
 										$responce = array(0, JText::_('REASON_ARTICLE_NOT_NEW'));
 									}
 								}
-								if ($this->option == 'com_content') {
+								if (strpos($this->context, 'com_content') === 0) {
 									//Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
 									$catid = $this->article->catid;
 									$JCat = JCategories::getInstance('Content');
@@ -437,7 +448,7 @@ class JFusionDiscussBotHelper {
 									} else {
 										$responce = array(0, JText::_('REASON_NO_STIPULATIONS'));
 									}
-								} elseif ($this->option == 'com_k2') {
+								} elseif (strpos($this->context, 'com_k2') === 0) {
 									$includedCategories = $this->params->get('include_k2_categories');
 									if (!is_array($includedCategories)) {
 										$includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
@@ -541,7 +552,7 @@ class JFusionDiscussBotHelper {
 			$this->debug('Loading scripts into header');
 
 			$view = JFactory::getApplication()->input->get('view');
-			$test_view = ($this->option == 'com_k2') ? 'item' : 'article';
+			$test_view = (strpos($this->context, 'com_k2') === 0) ? 'item' : 'article';
 
 			$jumpto_discussion = JFactory::getApplication()->input->post->getInt('jumpto_discussion', '0');
 

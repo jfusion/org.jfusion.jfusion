@@ -614,19 +614,20 @@ class JFusionFunction
             $article_url = str_replace($path, '', $article_url);
         }
 
-        if (substr($joomla_url, -1) == '/') {
-            if ($article_url[0] == '/') {
-                $article_url = substr($joomla_url, 0, -1) . $article_url;
-            } else {
-                $article_url = $joomla_url . $article_url;
-            }
-        } else {
-            if ($article_url[0] == '/') {
-                $article_url = $joomla_url . $article_url;
-            } else {
-                $article_url = $joomla_url . '/' . $article_url;
-            }
-        }
+	    if (substr($joomla_url, -1) == '/') {
+		    if (isset($article_url[0]) && $article_url[0] == '/') {
+			    $article_url = substr($joomla_url, 0, -1) . $article_url;
+		    } else {
+			    $article_url = $joomla_url . $article_url;
+		    }
+
+	    } else {
+		    if (isset($article_url[0]) && $article_url[0] == '/') {
+			    $article_url = $joomla_url . $article_url;
+		    } else {
+			    $article_url = $joomla_url . '/' . $article_url;
+		    }
+	    }
 
         $link = '<a href="' . $article_url . '">' . $text . '</a>';
 
