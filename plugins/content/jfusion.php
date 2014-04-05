@@ -117,9 +117,6 @@ class plgContentJfusion extends JPlugin
 		$helper_path = DISCUSSBOT_PATH . 'helper.php';
 		include_once $helper_path;
 		$this->helper = new JFusionDiscussBotHelper($this->params, $this->mode);
-
-		//set option
-//		$this->helper->context = JFactory::getApplication()->input->getCmd('option');
 	}
 
 	/**
