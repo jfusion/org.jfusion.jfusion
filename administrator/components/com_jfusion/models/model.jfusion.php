@@ -223,13 +223,13 @@ class JFusionFunction
 		}
 
 		if (substr($joomla_url, -1) == '/') {
-			if ($article_url[0] == '/') {
+			if (strpos($article_url, '/') === 0) {
 				$article_url = substr($joomla_url, 0, -1) . $article_url;
 			} else {
 				$article_url = $joomla_url . $article_url;
 			}
 		} else {
-			if ($article_url[0] == '/') {
+			if (strpos($article_url, '/') === 0) {
 				$article_url = $joomla_url . $article_url;
 			} else {
 				$article_url = $joomla_url . '/' . $article_url;
