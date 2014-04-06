@@ -55,7 +55,7 @@ class JFormFieldJFusionActivePlugins extends JFormField
 		    $rows = $db->loadObjectList();
 
 		    foreach ($rows as $key => &$row) {
-			    if (!\JFusion\Framework::hasFeature($row->name, $feature)) {
+			    if (!JFusionFunction::hasFeature($row->name, $feature)) {
 				    unset($rows[$key]);
 			    }
 		    }

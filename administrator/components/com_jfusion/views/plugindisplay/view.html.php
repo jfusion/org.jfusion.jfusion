@@ -154,7 +154,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    }
 
 		    //set wizard options
-		    $record->wizard = \JFusion\Framework::hasFeature($record->name, 'wizard');
+		    $record->wizard = JFusionFunction::hasFeature($record->name, 'wizard');
 		    if($record->wizard) {
 			    $record->wizardimage = 'components/com_jfusion/images/wizard_icon.png';
 			    $record->wizardscript =  'index.php?option=com_jfusion&task=wizard&jname=' . $record->name;
