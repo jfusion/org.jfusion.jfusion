@@ -944,8 +944,12 @@ class Front extends Plugin_Front
      */
     function getSearchResultLink($post)
 	{
-		$forum = Factory::getForum($this->getJname());
-		return $forum->getPostURL($post->id_topic, $post->id_msg);
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 */
+		$platform = Factory::getPlayform('Joomla', $this->getJname());
+		return $platform->getPostURL($post->id_topic, $post->id_msg);
 	}
 
     /************************************************

@@ -141,11 +141,13 @@ class Plugin
 	final public function methodDefined($method) {
 		$name = get_class($this);
 
+		/**
+		 * TODO: FIX ISSUE DETERMINE IF A FUNCTION EXISTS OR NOT for Platform_XXX_Platform
+		 */
 		//if the class name is the abstract class then return false
 		$abstractClassNames = array('JFusion\Plugin\Plugin_Admin',
 			'JFusion\Plugin\Plugin_Auth',
-			'JFusion\Plugin\Plugin_Forum',
-			'JFusion\Plugin\Plugin_Public',
+			'JFusion\Plugin\Plugin_Front',
 			'JFusion\Plugin\Plugin_User',
 			'JFusion\Plugin\Plugin');
 		$return = false;

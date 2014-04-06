@@ -47,8 +47,12 @@ try {
 		}
 		$jname = $parametersInstance->get('jfusionplugin');
 
-		$forum = \JFusion\Factory::getForum($jname);
-		if($forum->isConfigured()) {
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 */
+		$platform = \JFusion\Factory::getPlayform('Joomla', $jname);
+		if($platform->isConfigured()) {
 			$pluginParam = new JRegistry('');
 			$data = $parametersInstance->get($jname);
 			if (is_array($data)) {

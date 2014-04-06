@@ -260,10 +260,10 @@ class Front extends Plugin_Front
 
 	                /**
 	                 * @ignore
-	                 * @var $forum Forum
+	                 * @var $platform Platform_Joomla_Platform
 	                 */
-                    $forum = Factory::getForum($this->getJname());
-                    $info->galleryImage = $forum->renderImageBlock($config, 'image_block', $pluginParam);
+	                $platform = Factory::getPlayform('Joomla', $this->getJname());
+                    $info->galleryImage = $platform->renderImageBlock($config, 'image_block', $pluginParam);
 
 //                    list(, $views) = GalleryCoreApi::fetchItemViewCount($array['itemId']);
                     $return[] = $info;

@@ -114,7 +114,11 @@ try {
 		}
 
 	    if (!empty($jname) && $jname != 'joomla_int' && !$user->get('guest')) {
-	        $JFusionPlugin = Factory::getForum($jname);
+		    /**
+		     * @ignore
+		     * @var $platform \JFusion\Plugin\Platform_Joomla
+		     */
+		    $platform = Factory::getPlayform('Joomla', $jname);
 	        //check to see if we found a user
 	        if ($userlookup) {
 	            if ($params->get('avatar')) {
@@ -123,20 +127,20 @@ try {
 	                if ($avatar_software != 'jfusion') {
 		                $avatar = Framework::getAltAvatar($avatar_software, $userlookup);
 	                } else {
-		                $avatar = $JFusionPlugin->getAvatar($userlookup->userid);
+		                $avatar = $platform->getAvatar($userlookup->userid);
 	                }
 	                if (empty($avatar)) {
 	                    $avatar = 'components/com_jfusion/images/noavatar.png';
 	                }
 	            }
 	            if ($params->get('pmcount') && $jname != 'joomla_ext') {
-	                $pmcount = $JFusionPlugin->getPrivateMessageCounts($userlookup->userid);
-	                $url_pm = Framework::routeURL($JFusionPlugin->getPrivateMessageURL(), $itemid);
+	                $pmcount = $platform->getPrivateMessageCounts($userlookup->userid);
+	                $url_pm = Framework::routeURL($platform->getPrivateMessageURL(), $itemid);
 	            } else {
 	                $pmcount = false;
 	            }
 	            if ($params->get('viewnewmessages') && $jname != 'joomla_ext') {
-	                $url_viewnewmessages = Framework::routeURL($JFusionPlugin->getViewNewMessagesURL(), $itemid);
+	                $url_viewnewmessages = Framework::routeURL($platform->getViewNewMessagesURL(), $itemid);
 	            } else {
 	                $url_viewnewmessages = false;
 	            }

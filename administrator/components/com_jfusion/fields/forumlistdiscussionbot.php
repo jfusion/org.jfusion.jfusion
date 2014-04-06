@@ -52,10 +52,14 @@ class JFormFieldForumListDiscussionbot extends JFormField
 		    $jPluginParam = new JRegistry($params);
 		    $jname = $jPluginParam->get('jname', false);
 		    if ($jname !== false) {
-			    $JFusionPlugin = \JFusion\Factory::getForum($jname);
-			    if ($JFusionPlugin->isConfigured()) {
-				    if (method_exists($JFusionPlugin, 'getForumList')) {
-					    $forumlist = $JFusionPlugin->getForumList();
+			    /**
+			     * @ignore
+			     * @var $platform \JFusion\Plugin\Platform_Joomla
+			     */
+			    $platform = \JFusion\Factory::getPlayform('Joomla', $jname);
+			    if ($platform->isConfigured()) {
+				    if (method_exists($platform, 'getForumList')) {
+					    $forumlist = $platform->getForumList();
 					    if (!empty($forumlist)) {
 						    $selectedValue = $jPluginParam->get($this->fieldname);
 						    $output = JHTML::_('select.genericlist', $forumlist, $this->formControl . '[' . $this->group . '][' . $this->fieldname . ']', 'class="inputbox"', 'id', 'name', $selectedValue);

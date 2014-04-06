@@ -140,13 +140,17 @@ class JFusionDiscussBotHelper {
 		if ($threadinfo) {
 			$threadinfo->valid = false;
 			//make sure the forum and thread still exists
-			$Forum = \JFusion\Factory::getForum($this->jname);
+			/**
+			 * @ignore
+			 * @var $platform \JFusion\Plugin\Platform_Joomla
+			 */
+			$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
 
 			$forumlist = $this->getForumList();
 			if (in_array($threadinfo->forumid, $forumlist)) {
-				$forumthread = $Forum->getThread($threadinfo->threadid);
+				$forumthread = $platform->getThread($threadinfo->threadid);
 				if ($forumthread) {
-					$this->replyCount = $Forum->getReplyCount($forumthread);
+					$this->replyCount = $platform->getReplyCount($forumthread);
 					//seems the thread is now missing
 					$threadinfo->valid = true;
 				}
@@ -172,7 +176,11 @@ class JFusionDiscussBotHelper {
 	{
 		$this->debug('Checking if thread exists');
 
-		$JFusionForum = \JFusion\Factory::getForum($this->jname);
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 */
+		$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
 
 		if ($force_new) {
 			$threadinfo = $this->setThreadInfo(null);
@@ -192,7 +200,7 @@ class JFusionDiscussBotHelper {
 			$status['threadinfo'] = new stdClass();
 		}
 
-		$JFusionForum->checkThreadExists($this->params, $this->article, $threadinfo, $status);
+		$platform->checkThreadExists($this->params, $this->article, $threadinfo, $status);
 		if (!empty($status['error'])) {
 			Framework::raise('error', $status['error'], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
 		} else {
@@ -267,8 +275,12 @@ class JFusionDiscussBotHelper {
 		static $lists_instance;
 
 		if (!isset($lists_instance)) {
-			$JFusionForum = \JFusion\Factory::getForum($this->jname);
-			$full_list = $JFusionForum->getForumList();
+			/**
+			 * @ignore
+			 * @var $platform \JFusion\Plugin\Platform_Joomla
+			 */
+			$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
+			$full_list = $platform->getForumList();
 			$lists_instance = array();
 			foreach ($full_list as $a) {
 				$lists_instance[] = (isset($a->forum_id)) ? $a->forum_id : $a->id;
@@ -312,8 +324,12 @@ class JFusionDiscussBotHelper {
 			if ($this->params->get('default_userid', false) === false) {
 				$responce = array(0, JText::_('REASON_NO_DEFAULT_USER'));
 			} else {
-				$JFusionForum = \JFusion\Factory::getForum($this->jname);
-				$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+				/**
+				 * @ignore
+				 * @var $platform \JFusion\Plugin\Platform_Joomla
+				 */
+				$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
+				$forumid = $platform->getDefaultForum($this->params, $this->article);
 				if (empty($forumid)) {
 					$responce = array(0, JText::_('REASON_NO_FORUM_FOUND'));
 				} else {
@@ -544,6 +560,9 @@ class JFusionDiscussBotHelper {
 		return $responce;
 	}
 
+	/**
+	 * @internal @var $platform \JFusion\Plugin\Platform_Joomla
+	 */
 	public function loadScripts()
 	{
 		JHtml::_('behavior.framework', true);
@@ -578,9 +597,13 @@ JS;
 
 			//Load quick reply includes if enabled
 			if ($this->params->get('enable_quickreply')) {
-				$JFusionForum = \JFusion\Factory::getForum($this->jname);
+				/**
+				 * @ignore
+				 * @var $platform \JFusion\Plugin\Platform_Joomla
+				 */
+				$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
 				$this->debug('Quick reply is enabled and thus loading any includes (js, css, etc).');
-				$js .= $JFusionForum->loadQuickReplyIncludes();
+				$js .= $platform->loadQuickReplyIncludes();
 			}
 
 			if ($view == $test_view) {

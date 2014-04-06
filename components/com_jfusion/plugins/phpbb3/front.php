@@ -814,10 +814,14 @@ class Front extends Plugin_Front
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering) {
         $where.= ' AND p.post_approved = 1';
-        $forum = Factory::getForum($this->getJname());
+	    /**
+	     * @ignore
+	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     */
+	    $platform = Factory::getPlayform('Joomla', $this->getJname());
         if ($pluginParam->get('forum_mode', 0)) {
             $selected_ids = $pluginParam->get('selected_forums', array());
-            $forumids = $forum->filterForumList($selected_ids);
+            $forumids = $platform->filterForumList($selected_ids);
         } else {
 	        try {
 		        $db = Factory::getDatabase($this->getJname());
@@ -831,7 +835,7 @@ class Front extends Plugin_Front
 
 		        $db->setQuery($query);
 		        $forumids = $db->loadColumn();
-		        $forumids = $forum->filterForumList($forumids);
+		        $forumids = $platform->filterForumList($forumids);
 	        } catch (Exception $e) {
 		        Framework::raiseError($e, $this->getJname());
 		        $forumids = array();
@@ -868,7 +872,11 @@ class Front extends Plugin_Front
      * @return string
      */
     function getSearchResultLink($post) {
-        $forum = Factory::getForum($this->getJname());
-        return $forum->getPostURL($post->topic_id, $post->post_id);
+	    /**
+	     * @ignore
+	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     */
+	    $platform = Factory::getPlayform('Joomla', $this->getJname());
+        return $platform->getPostURL($post->topic_id, $post->post_id);
     }
 }

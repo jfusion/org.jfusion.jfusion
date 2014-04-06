@@ -39,7 +39,11 @@ class modjfusionUserActivityHelper {
     public static function prepareAutoOutput($jname, $config, $params) {
 		$output = new stdClass();
 
-	    $forum = Factory::getForum($jname);
+	    /**
+	     * @ignore
+	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     */
+	    $platform = Factory::getPlayform('Joomla', $jname);
 
 	    $joomlaUser = \JFusionFunction::getJoomlaUser((object)JFactory::getUser());
 
@@ -57,7 +61,7 @@ class modjfusionUserActivityHelper {
 			if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion' && $userinfo instanceof Userinfo) {
 				$avatar = Framework::getAltAvatar($config['avatar_software'], $userinfo);
 			} else if ($userinfo instanceof Userinfo) {
-				$avatar = $forum->getAvatar($userinfo->userid);
+				$avatar = $platform->getAvatar($userinfo->userid);
 			}
 			if (empty($avatar)) {
 				$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
@@ -94,8 +98,8 @@ class modjfusionUserActivityHelper {
 
 		//get the PM count of the logged in user
 		if($userinfo && $config['pmcount'] ) {
-			$output->pm_url = Framework::routeURL($forum->getPrivateMessageURL(), $config['itemid'], $jname);
-			$output->pm_count = $forum->getPrivateMessageCounts($userinfo->userid);
+			$output->pm_url = Framework::routeURL($platform->getPrivateMessageURL(), $config['itemid'], $jname);
+			$output->pm_count = $platform->getPrivateMessageCounts($userinfo->userid);
 		} else {
 			$output->pm_url = '';
 			$output->pm_count = '';
@@ -103,7 +107,7 @@ class modjfusionUserActivityHelper {
 
 		//get the new message url
 		if ($config['viewnewmessages']) {
-			$output->newmessages_url = Framework::routeURL($forum->getViewNewMessagesURL(), $config['itemid'], $jname);
+			$output->newmessages_url = Framework::routeURL($platform->getViewNewMessagesURL(), $config['itemid'], $jname);
 		} else {
 			$output->newmessages_url = '';
 		}

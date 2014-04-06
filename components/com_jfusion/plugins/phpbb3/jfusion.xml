@@ -27,6 +27,7 @@
         <filename>user.php</filename>
         <filename>helper.php</filename>
         <folder>utf</folder>
+        <folder>Platform</folder>
     </files>
 
     <form>

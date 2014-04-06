@@ -170,11 +170,15 @@ class jfusionViewdiscussionbot extends JViewLegacy
 		}
 
 		//get the forum listings
-		$JFusionForum = \JFusion\Factory::getForum($this->jname);
+	    /**
+	     * @ignore
+	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     */
+	    $platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
 	    try {
-		    $this->forumSelectOptions = $JFusionForum->getForumList();
+		    $this->forumSelectOptions = $platform->getForumList();
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $JFusionForum->getJname());
+			\JFusion\Framework::raiseError($e, $platform->getJname());
 	    }
 
 		//joomla select options

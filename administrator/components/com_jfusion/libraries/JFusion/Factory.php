@@ -253,27 +253,35 @@ class Factory
 	/**
 	 * Gets a Forum Class for the JFusion Plugin
 	 *
+	 * @param string $platform
 	 * @param string $instance name of the JFusion plugin used
 	 *
-	 * @return Plugin_Forum JFusion Thread class for the JFusion plugin
+	 * @throws \RuntimeException
+	 * @return Plugin\Plugin JFusion Thread class for the JFusion plugin
 	 */
-	public static function &getForum($instance)
+	public static function &getPlayform($platform, $instance)
 	{
 		static $instances;
 		if (!isset($instances)) {
 			$instances = array();
 		}
+
+		$platform = ucfirst(strtolower($platform));
+
 		//only create a new thread instance if it has not been created before
-		if (!isset($instances[$instance])) {
+		if (!isset($instances[$platform][$instance])) {
 			$name = static::getNameFromInstance($instance);
 
-			$class = '\JFusion\Plugins\\'.$name.'\Forum';
+			$class = '\JFusion\Plugins\\'.$name.'\Platform_' . $platform. '_Platform';
 			if (!class_exists($class)) {
-				$class = '\JFusion\Plugin\Plugin_Forum';
+				$class = '\JFusion\Plugin\Platform_' . $platform;
 			}
-			$instances[$instance] = new $class($instance);
+			if (!class_exists($class)) {
+				throw new RuntimeException('Platform Class Platform_' . $platform . ' do not Exsist');
+			}
+			$instances[$platform][$instance] = new $class($instance);
 		}
-		return $instances[$instance];
+		return $instances[$platform][$instance];
 	}
 
 	/**

@@ -744,8 +744,12 @@ JS;
 					    //now get the id of the selected plugin based on Joomla id
 					    if ($userlookup) {
 						    //get the profile link
-						    $forum = Factory::getForum($profile_plugin);
-						    $url = $forum->getProfileURL($userlookup->userid);
+						    /**
+						     * @ignore
+						     * @var $platform \JFusion\Plugin\Platform_Joomla
+						     */
+						    $platform = Factory::getPlayform('Joomla', $profile_plugin);
+						    $url = $platform->getProfileURL($userlookup->userid);
 					    }
 				    }
 			    }
@@ -837,8 +841,12 @@ JS;
      */
     function filterSearchResults(&$results, &$pluginParam)
     {
-        $plugin = Factory::getForum($this->getJname());
-        $plugin->filterActivityResults($results, 0, 'forumid', true);
+	    /**
+	     * @ignore
+	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     */
+	    $platform = Factory::getPlayform('Joomla', $this->getJname());
+	    $platform->filterActivityResults($results, 0, 'forumid', true);
     }
 
     /**
@@ -848,8 +856,12 @@ JS;
      */
     function getSearchResultLink($post)
     {
-        $forum = Factory::getForum($this->getJname());
-        return $forum->getPostURL($post->threadid, $post->postid);
+	    /**
+	     * @ignore
+	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     */
+	    $platform = Factory::getPlayform('Joomla', $this->getJname());
+        return $platform->getPostURL($post->threadid, $post->postid);
     }
 
 

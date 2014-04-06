@@ -52,7 +52,11 @@ class modjfusionWhosOnlineHelper {
 		if(empty($link_jname)) {
 			$output->error = JText::_('NO_MENU_ITEM');
 		} else{
-			$forum_links = Factory::getForum($link_jname);
+			/**
+			 * @ignore
+			 * @var $platform \JFusion\Plugin\Platform_Joomla
+			 */
+			$platform = Factory::getPlayform('Joomla', $link_jname);
 			$public_users = Factory::getFront($jname);
 			if(!$public_users->isConfigured()) {
 				$output->error = $jname . ': ' . JText::_('NOT_CONFIGURED');
@@ -103,7 +107,7 @@ class modjfusionWhosOnlineHelper {
 							if ($config['userlink_software'] == 'custom' && !empty($config['userlink_custom']) && $joomla_userid) {
 								$user_url = $config['userlink_custom'] . $joomla_userid;
 							} else if ($jfusion_userid) {
-								$user_url = Framework::routeURL($forum_links->getProfileURL($jfusion_userid), $config['itemid'], $link_jname);
+								$user_url = Framework::routeURL($platform->getProfileURL($jfusion_userid), $config['itemid'], $link_jname);
 							}
 						}
 						$u->output->user_url = $user_url;
@@ -115,7 +119,7 @@ class modjfusionWhosOnlineHelper {
 							if(!empty($avatarSrc) && $avatarSrc != 'jfusion' && $userinfo instanceof Userinfo) {
 								$avatar = Framework::getAltAvatar($avatarSrc, $userinfo);
 							} else if ($jfusion_userid) {
-								$avatar = $forum_links->getAvatar($jfusion_userid);
+								$avatar = $platform->getAvatar($jfusion_userid);
 							}
 							if(empty($avatar)) {
 								$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';

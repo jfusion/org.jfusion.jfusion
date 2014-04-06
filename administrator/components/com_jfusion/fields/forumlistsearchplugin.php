@@ -61,15 +61,19 @@ class JFormFieldForumListSearchPlugin extends JFormField
 	        }
 
 	        if (!empty($jname)) {
-		        $JFusionPlugin = \JFusion\Factory::getForum($jname);
-		        if ($JFusionPlugin->isConfigured()) {
+		        /**
+		         * @ignore
+		         * @var $platform \JFusion\Plugin\Platform_Joomla
+		         */
+		        $platform = \JFusion\Factory::getPlayform('Joomla', $jname);
+		        if ($platform->isConfigured()) {
 			        if (!isset($jPluginParamRaw[$jname])) {
 				        $jPluginParamRaw[$jname] = array();
 			        }
 			        $JPluginParam = new JRegistry('');
 			        $JPluginParam->loadArray($jPluginParamRaw[$jname]);
-			        if (method_exists($JFusionPlugin, 'getForumList')) {
-				        $forumlist = $JFusionPlugin->getForumList();
+			        if (method_exists($platform, 'getForumList')) {
+				        $forumlist = $platform->getForumList();
 				        if (!empty($forumlist)) {
 					        $selectedValue = $JPluginParam->get($this->fieldname);
 					        $output = JHTML::_('select.genericlist', $forumlist, $this->name . '[]', 'multiple size="6" class="inputbox"', 'id', 'name', $selectedValue);

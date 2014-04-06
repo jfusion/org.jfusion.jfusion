@@ -6,7 +6,7 @@ use Exception;
 use JDate;
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Plugin\Plugin_Forum;
+use JFusion\Plugin\Platform_Joomla;
 use Joomla\String\String;
 use JFusionFunction;
 use JRegistry;
@@ -24,7 +24,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org/
 **/
 
-class Forum extends Plugin_Forum
+class Platform_Joomla_Platform extends Platform_Joomla
 {
     /**
      * @param $config

@@ -46,7 +46,11 @@ class modjfusionActivityHelper
 
     public static function appendAutoOutput(&$results, $jname, &$config, &$params)
     {
-        $forum = Factory::getForum($jname);
+	    /**
+	     * @ignore
+	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     */
+	    $platform = Factory::getPlayform('Joomla', $jname);
         $public = Factory::getFront($jname);
         if (is_array($results)) {
             foreach ($results as $r) {

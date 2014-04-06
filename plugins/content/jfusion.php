@@ -185,7 +185,11 @@ class plgContentJfusion extends JPlugin
 						} elseif ($this->mode == 'test' && empty($manually_plugged)) {
 							//recheck validity without stipulation
 							$this->helper->debug('In test mode thus not creating the article');
-							$JFusionForum = Factory::getForum($this->jname);
+							/**
+							 * @ignore
+							 * @var $platform \JFusion\Plugin\Platform_Joomla
+							 */
+							$platform = Factory::getPlayform('Joomla', $this->jname);
 							$content = '<u>' . $this->article->title . '</u><br />';
 							if ($threadinfo->valid) {
 								$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
@@ -203,7 +207,7 @@ class plgContentJfusion extends JPlugin
 									$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('FORUM_NOT_EXIST') . '<br />';
 								}
 
-								$forumthread = $JFusionForum->getThread($threadinfo->threadid);
+								$forumthread = $platform->getThread($threadinfo->threadid);
 								if (empty($forumthread)) {
 									$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('THREAD_NOT_EXIST') . '<br />';
 								}
@@ -217,9 +221,9 @@ class plgContentJfusion extends JPlugin
 									$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;2><br/>';
 									$content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
 									$content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
-									$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+									$forumid = $platform->getDefaultForum($this->params, $this->article);
 									$content .= JText::_('FORUMID') . ': ' . $forumid . '<br />';
-									$author = $JFusionForum->getThreadAuthor($this->params, $this->article);
+									$author = $platform->getThreadAuthor($this->params, $this->article);
 									$content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
 								}
 							}
@@ -439,7 +443,11 @@ class plgContentJfusion extends JPlugin
 
 		$content = '';
 		//get the jfusion forum object
-		$JFusionForum = Factory::getForum($this->jname);
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 */
+		$platform = Factory::getPlayform('Joomla', $this->jname);
 
 		//find any {jfusion_discuss...} to manually plug
 		$this->helper->debug('Finding all manually added plugs');
@@ -452,7 +460,7 @@ class plgContentJfusion extends JPlugin
 				$this->manual = true;
 				$this->helper->debug('Plugging for thread id ' . $id);
 				//get the existing thread information
-				$forumthread = $JFusionForum->getThread($id);
+				$forumthread = $platform->getThread($id);
 
 				if (!empty($forumthread)) {
 					//manually plugged so definitely published
@@ -490,7 +498,7 @@ class plgContentJfusion extends JPlugin
 					$this->manual_threadid = $match[1];
 
 					//get the existing thread information
-					$forumthread = $JFusionForum->getThread($this->manual_threadid);
+					$forumthread = $platform->getThread($this->manual_threadid);
 
 					if (!empty($forumthread)) {
 						//manually plugged so definitely published
@@ -560,7 +568,7 @@ class plgContentJfusion extends JPlugin
 						$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('FORUM_NOT_EXIST') . '<br />';
 					}
 
-					$forumthread = $JFusionForum->getThread($threadinfo->threadid);
+					$forumthread = $platform->getThread($threadinfo->threadid);
 					if (empty($forumthread)) {
 						$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('THREAD_NOT_EXIST') . '<br />';
 					}
@@ -574,9 +582,9 @@ class plgContentJfusion extends JPlugin
 						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
 						$content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
 						$content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
-						$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+						$forumid = $platform->getDefaultForum($this->params, $this->article);
 						$content .= JText::_('FORUMID') . ': ' . $forumid . '<br />';
-						$author = $JFusionForum->getThreadAuthor($this->params, $this->article);
+						$author = $platform->getThreadAuthor($this->params, $this->article);
 						$content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
 					}
 				}
@@ -700,7 +708,11 @@ HTML;
 
 		$JoomlaUser = JFusionFunction::getJoomlaUser((object)JFactory::getUser());
 
-		$JFusionForum = Factory::getForum($this->jname);
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 */
+		$platform = Factory::getPlayform('Joomla', $this->jname);
 
 		//define some variables
 		$allowGuests = $this->params->get('quickreply_allow_guests', 0);
@@ -719,7 +731,7 @@ HTML;
 				$userinfo->guest = 1;
 				//retrieve the userid from forum software
 				if ($allowGuests && $JoomlaUser->guest) {
-					$captcha_verification = $JFusionForum->verifyCaptcha($this->params);
+					$captcha_verification = $platform->verifyCaptcha($this->params);
 				} else {
 					$JFusionUser = Factory::getUser($this->jname);
 					try {
@@ -741,7 +753,7 @@ HTML;
 						$postinfo->name = JFactory::getApplication()->input->post->getString('guest_name', '');
 						$postinfo->email = JFactory::getApplication()->input->post->getString('guest_email', '');
 
-						$status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo, $postinfo);
+						$status = $platform->createPost($this->params, $threadinfo, $this->article, $userinfo, $postinfo);
 
 						if (!empty($status['error'])) {
 							Framework::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
@@ -750,7 +762,7 @@ HTML;
 
 							//if pagination is set, set $limitstart so that we go to the added post
 							if ($this->params->get('enable_pagination', 0)) {
-								$replyCount = $JFusionForum->getReplyCount($threadinfo);
+								$replyCount = $platform->getReplyCount($threadinfo);
 								$application = JFactory::getApplication();
 								$limit = $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
 
@@ -958,7 +970,11 @@ HTML;
 		$threadinfo = $this->helper->getThreadInfo();
 
 		//setup parameters
-		$JFusionForum = Factory::getForum($this->jname);
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 */
+		$platform = Factory::getPlayform('Joomla', $this->jname);
 		$allowGuests = $this->params->get('quickreply_allow_guests', 0);
 		$JoomlaUser = JFusionFunction::getJoomlaUser((object)JFactory::getUser());
 		//make sure the user exists in the software before displaying the quick reply
@@ -976,7 +992,7 @@ HTML;
 		if ($threadinfo->valid) {
 			//prepare quick reply box if enabled
 			if ($this->params->get('enable_quickreply')) {
-				$threadLocked = $JFusionForum->getThreadLockedStatus($threadinfo->threadid);
+				$threadLocked = $platform->getThreadLockedStatus($threadinfo->threadid);
 				if ($threadLocked) {
 					$this->helper->output['reply_form_error'] = $this->params->get('locked_msg');
 				} elseif ($show_form) {
@@ -998,7 +1014,7 @@ HTML;
 							$showall = '';
 						}
 
-						$form = $JFusionForum->createQuickReply($this->params, $showGuestInputs);
+						$form = $platform->createQuickReply($this->params, $showGuestInputs);
 						$submit = JText::_('SUBMIT');
 
 						$this->helper->output['reply_form'] =<<<HTML
@@ -1047,7 +1063,7 @@ HTML;
 						$showall = '';
 					}
 
-					$form = $JFusionForum->createQuickReply($this->params, $showGuestInputs);
+					$form = $platform->createQuickReply($this->params, $showGuestInputs);
 					$submit = JText::_('SUBMIT');
 
 					$this->helper->output['reply_form'] =<<<HTML
@@ -1237,14 +1253,18 @@ HTML;
 			//create the discuss this link
 			if ($threadinfo->valid || $this->manual) {
 				if ($link_mode != 'never') {
-					$JFusionForum = Factory::getForum($this->jname);
+					/**
+					 * @ignore
+					 * @var $platform \JFusion\Plugin\Platform_Joomla
+					 */
+					$platform = Factory::getPlayform('Joomla', $this->jname);
 
 					if ($view == $this->view()) {
 						if ($link_mode == 'article' || $link_mode == 'always') {
 							if ($this->params->get('enable_comment_in_forum_button', 0)) {
 								$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
 								$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
-								$this->helper->output['buttons']['comment_in_forum']['href'] = Framework::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
+								$this->helper->output['buttons']['comment_in_forum']['href'] = Framework::routeURL($platform->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
 								$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
 								$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
 							}
@@ -1265,7 +1285,7 @@ HTML;
 							$this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(' . $this->article->id . ', \'' . $discuss_link . '\');';
 							$this->helper->output['buttons']['discuss']['target'] = '_self';
 						} else {
-							$this->helper->output['buttons']['discuss']['href'] = Framework::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
+							$this->helper->output['buttons']['discuss']['href'] = Framework::routeURL($platform->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
 							$this->helper->output['buttons']['discuss']['target'] = $linkTarget;
 						}
 
@@ -1274,7 +1294,7 @@ HTML;
 						if ($this->params->get('enable_comment_in_forum_button', 0)) {
 							$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
 							$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
-							$this->helper->output['buttons']['comment_in_forum']['href'] = Framework::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
+							$this->helper->output['buttons']['comment_in_forum']['href'] = Framework::routeURL($platform->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
 							$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
 							$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
 						}
@@ -1320,7 +1340,11 @@ HTML;
 	{
 		$post_output = array();
 
-		$JFusionForum = Factory::getForum($this->jname);
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 */
+		$platform = Factory::getPlayform('Joomla', $this->jname);
 		$threadinfo = $this->helper->getThreadInfo();
 
 		$sort = $this->params->get('sort_posts', 'ASC');
@@ -1337,7 +1361,7 @@ HTML;
 			$start = 0;
 		}
 
-		$posts = $JFusionForum->getPosts($this->params, $threadinfo, (int)$start, (int)$limit, $sort);
+		$posts = $platform->getPosts($this->params, $threadinfo, (int)$start, (int)$limit, $sort);
 
 		$this->helper->debug('Preparing posts output');
 
@@ -1356,8 +1380,7 @@ HTML;
 		$itemid = $this->params->get('itemid');
 		$JFusionPublic = Factory::getFront($this->jname);
 
-		$JFusionForum = Factory::getForum($this->jname);
-		$columns = $JFusionForum->getDiscussionColumns();
+		$columns = $platform->getDiscussionColumns();
 		if (empty($columns)) return '';
 
 		for ($i=0; $i<count($posts); $i++) {
@@ -1376,7 +1399,7 @@ HTML;
 			$post_output[$i]->postid = $postid;
 			$post_output[$i]->guest = $guest;
 
-			$userlookup = new \JFusion\User\Userinfo($JFusionForum->getJname());
+			$userlookup = new \JFusion\User\Userinfo($platform->getJname());
 			$userlookup->userid = $userid;
 			$userlookup->username = $p->{$columns->username};
 			if (isset($columns->email)) {
@@ -1391,7 +1414,7 @@ HTML;
 				if (!empty($avatar_software) && $avatar_software != 'jfusion' && $userlookup) {
 					$post_output[$i]->avatar_src = Framework::getAltAvatar($avatar_software, $userlookup);
 				} else {
-					$post_output[$i]->avatar_src = $JFusionForum->getAvatar($userid);
+					$post_output[$i]->avatar_src = $platform->getAvatar($userid);
 				}
 
 				if (empty($post_output[$i]->avatar_src)) {
@@ -1424,7 +1447,7 @@ HTML;
 			}
 
 			//post title
-			$post_output[$i]->subject_url = Framework::routeURL($JFusionForum->getPostURL($threadid, $postid), $itemid);
+			$post_output[$i]->subject_url = Framework::routeURL($platform->getPostURL($threadid, $postid), $itemid);
 			if (!empty($posttitle)) {
 				$post_output[$i]->subject = $posttitle;
 			} elseif (!empty($threadtitle)) {
@@ -1440,7 +1463,7 @@ HTML;
 					if ($link_software == 'custom' && !empty($userlink_custom)  && !empty($userlookup)) {
 						$post_output[$i]->username_url = $userlink_custom . $userlookup->id;
 					} else {
-						$post_output[$i]->username_url = Framework::routeURL($JFusionForum->getProfileURL($userid), $itemid);
+						$post_output[$i]->username_url = Framework::routeURL($platform->getProfileURL($userid), $itemid);
 					}
 				}
 				$post_output[$i]->username = $username;

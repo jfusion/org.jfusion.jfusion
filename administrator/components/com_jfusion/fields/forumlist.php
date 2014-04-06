@@ -60,10 +60,14 @@ class JFormFieldForumlist extends JFormField
 
 			$control_name = $this->formControl . '[' . $this->group . ']';
 			if (!empty($jname)) {
-				$JFusionPlugin = \JFusion\Factory::getForum($jname);
-				if ($JFusionPlugin->isConfigured()) {
-					if (method_exists($JFusionPlugin, 'getForumList')) {
-						$forumlist = $JFusionPlugin->getForumList();
+				/**
+				 * @ignore
+				 * @var $platform \JFusion\Plugin\Platform_Joomla
+				 */
+				$platform = \JFusion\Factory::getPlayform('Joomla', $jname);
+				if ($platform->isConfigured()) {
+					if (method_exists($platform, 'getForumList')) {
+						$forumlist = $platform->getForumList();
 						if (!empty($forumlist)) {
 							$selectedValue = $parametersInstance->get($this->fieldname);
 							$output = JHTML::_('select.genericlist', $forumlist, $control_name . '[' . $this->fieldname . '][]', 'multiple size="6" class="inputbox"', 'id', 'name', $selectedValue);

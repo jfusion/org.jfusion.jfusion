@@ -15,7 +15,7 @@
 
 // no direct access
 use JFusion\Factory;
-use JFusion\Plugin\Plugin_Forum;
+use JFusion\Plugin\Platform_Joomla;
 
 use JFusionFunction;
 use \JRoute;
@@ -35,7 +35,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionForum_joomla_ext extends Plugin_Forum
+class Platform_Joomla_Platform extends Platform_Joomla
 {
 	/**
 	 * @var $helper Helper

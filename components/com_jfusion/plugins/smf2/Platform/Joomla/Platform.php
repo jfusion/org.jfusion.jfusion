@@ -13,7 +13,7 @@ use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Language\Text;
-use JFusion\Plugin\Plugin_Forum;
+use JFusion\Plugin\Platform_Joomla;
 use JRegistry;
 use RuntimeException;
 use stdClass;
@@ -26,7 +26,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_SMF
  */
 
-class Forum extends Plugin_Forum
+class Platform_Joomla_Platform extends Platform_Joomla
 {
     /**
      * @param int $threadid

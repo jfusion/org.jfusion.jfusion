@@ -485,95 +485,39 @@ class JFusionFunction
 	 */
 	public static function hasFeature($jname, $feature, $itemid = null) {
 		$return = false;
-		$admin = Factory::getAdmin($jname);
-		$public = Factory::getFront($jname);
-		$forum = Factory::getForum($jname);
-		$user = Factory::getUser($jname);
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 */
+		$platform = Factory::getPlayform('Joomla', $jname);
 		switch ($feature) {
-			//Admin Features
-			case 'wizard':
-				$return = $admin->methodDefined('setupFromPath');
-				break;
-			//Public Features
-			case 'search':
-				$return = ($public->methodDefined('getSearchQuery') || $public->methodDefined('getSearchResults'));
-				break;
-			case 'whosonline':
-				$return = $public->methodDefined('getOnlineUserQuery');
-				break;
-			case 'breadcrumb':
-				$return = $public->methodDefined('getPathWay');
-				break;
-			case 'frontendlanguage':
-				$return = $public->methodDefined('setLanguageFrontEnd');
-				break;
-			case 'frameless':
-				$return = $public->methodDefined('getBuffer');
-				break;
 			//Forum Features
 			case 'discussion':
-				$return = $forum->methodDefined('createThread');
+				$return = $platform->methodDefined('createThread');
 				break;
 			case 'activity':
-				$return = ($forum->methodDefined('getActivityQuery') || $forum->methodDefined('renderActivityModule'));
+				$return = ($platform->methodDefined('getActivityQuery') || $platform->methodDefined('renderActivityModule'));
 				break;
 			case 'threadurl':
-				$return = $forum->methodDefined('getThreadURL');
+				$return = $platform->methodDefined('getThreadURL');
 				break;
 			case 'posturl':
-				$return = $forum->methodDefined('getPostURL');
+				$return = $platform->methodDefined('getPostURL');
 				break;
 			case 'profileurl':
-				$return = $forum->methodDefined('getProfileURL');
+				$return = $platform->methodDefined('getProfileURL');
 				break;
 			case 'avatarurl':
-				$return = $forum->methodDefined('getAvatar');
+				$return = $platform->methodDefined('getAvatar');
 				break;
 			case 'privatemessageurl':
-				$return = $forum->methodDefined('getPrivateMessageURL');
+				$return = $platform->methodDefined('getPrivateMessageURL');
 				break;
 			case 'viewnewmessagesurl':
-				$return = $forum->methodDefined('getViewNewMessagesURL');
+				$return = $platform->methodDefined('getViewNewMessagesURL');
 				break;
 			case 'privatemessagecounts':
-				$return = $forum->methodDefined('getPrivateMessageCounts');
-				break;
-			//User Features
-			case 'useractivity':
-				$return = $user->methodDefined('activateUser');
-				break;
-			case 'duallogin':
-				$return = $user->methodDefined('createSession');
-				break;
-			case 'duallogout':
-				$return = $user->methodDefined('destroySession');
-				break;
-			case 'updatepassword':
-				$return = $user->methodDefined('updatePassword');
-				break;
-			case 'updateusername':
-				$return = $user->methodDefined('updateUsername');
-				break;
-			case 'updateemail':
-				$return = $user->methodDefined('updateEmail');
-				break;
-			case 'updateusergroup':
-				$return = $user->methodDefined('updateUsergroup');
-				break;
-			case 'updateuserlanguage':
-				$return = $user->methodDefined('updateUserLanguage');
-				break;
-			case 'syncsessions':
-				$return = $user->methodDefined('syncSessions');
-				break;
-			case 'blockuser':
-				$return = $user->methodDefined('blockUser');
-				break;
-			case 'activateuser':
-				$return = $user->methodDefined('activateUser');
-				break;
-			case 'deleteuser':
-				$return = $user->methodDefined('deleteUser');
+				$return = $platform->methodDefined('getPrivateMessageCounts');
 				break;
 			case 'redirect_itemid':
 				if ($itemid) {
@@ -592,6 +536,9 @@ class JFusionFunction
 				}
 			case 'any':
 				$return = true;
+				break;
+			default:
+				$return = \JFusion\Framework::hasFeature($jname, $feature);
 				break;
 		}
 		return $return;

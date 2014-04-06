@@ -26,6 +26,7 @@
         <filename>search.xml</filename>
         <filename>user.php</filename>
         <folder>yui</folder>
+        <folder>Platform</folder>
     </files>
 
     <form>

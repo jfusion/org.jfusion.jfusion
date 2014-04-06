@@ -28,6 +28,7 @@
         <filename>user.php</filename>
         <filename>forum.php</filename>
         <folder>fields</folder>
+        <folder>Platform</folder>
     </files>
 
     <form>

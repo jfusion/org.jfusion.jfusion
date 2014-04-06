@@ -390,15 +390,13 @@ class Framework
      * @static
      * @param string $jname
      * @param string $feature feature
-     * @param int $itemid itemid
      *
      * @return bool
      */
-    public static function hasFeature($jname, $feature, $itemid = null) {
+    public static function hasFeature($jname, $feature) {
         $return = false;
 	    $admin = Factory::getAdmin($jname);
 	    $public = Factory::getFront($jname);
-	    $forum = Factory::getForum($jname);
 	    $user = Factory::getUser($jname);
         switch ($feature) {
             //Admin Features
@@ -420,34 +418,6 @@ class Framework
                 break;
             case 'frameless':
                 $return = $public->methodDefined('getBuffer');
-                break;
-            //Forum Features
-            case 'discussion':
-                $return = $forum->methodDefined('createThread');
-                break;
-            case 'activity':
-                $return = ($forum->methodDefined('getActivityQuery') || $forum->methodDefined('renderActivityModule'));
-                break;
-            case 'threadurl':
-                $return = $forum->methodDefined('getThreadURL');
-                break;
-            case 'posturl':
-                $return = $forum->methodDefined('getPostURL');
-                break;
-            case 'profileurl':
-                $return = $forum->methodDefined('getProfileURL');
-                break;
-            case 'avatarurl':
-                $return = $forum->methodDefined('getAvatar');
-                break;
-            case 'privatemessageurl':
-                $return = $forum->methodDefined('getPrivateMessageURL');
-                break;
-            case 'viewnewmessagesurl':
-                $return = $forum->methodDefined('getViewNewMessagesURL');
-                break;
-            case 'privatemessagecounts':
-                $return = $forum->methodDefined('getPrivateMessageCounts');
                 break;
             //User Features
             case 'useractivity':
@@ -485,24 +455,6 @@ class Framework
                 break;
             case 'deleteuser':
                 $return = $user->methodDefined('deleteUser');
-                break;
-            case 'redirect_itemid':
-                if ($itemid) {
-                    $app = Factory::getApplication();
-                    $menus = $app->getMenu('site');
-                    $item = $menus->getItem($itemid);
-                    if ($item && $item->params->get('visual_integration') == 'frameless') {
-                        $return = true;
-                    }
-                }
-                break;
-            case 'config':
-		        if ($jname == 'joomla_int') {
-			        $return = false;
-			        break;
-		        }
-            case 'any':
-                $return = true;
                 break;
         }
         return $return;
