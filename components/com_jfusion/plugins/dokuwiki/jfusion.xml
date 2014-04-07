@@ -26,6 +26,7 @@
         <filename>jfusion.xml</filename>
         <filename>front.php</filename>
         <filename>user.php</filename>
+        <folder>Platform</folder>
     </files>
 
     <form>
