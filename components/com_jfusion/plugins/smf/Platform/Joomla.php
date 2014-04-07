@@ -18,8 +18,9 @@ use Exception;
 use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
-use JFusion\Plugin\Platform_Joomla;
+use JFusion\Plugin\Platform\Joomla;
 use JRegistry;
 use RuntimeException;
 use stdClass;
@@ -37,7 +38,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla_Platform extends Platform_Joomla
+class Platform_Joomla extends Joomla
 {
     /**
      * Get profile url
@@ -262,7 +263,7 @@ class Platform_Joomla_Platform extends Platform_Joomla
 				    $markread = array();
 				    $db = Factory::getDatabase($this->getJname());
 
-				    $userlookup = new \JFusion\User\Userinfo('joomla_int');
+				    $userlookup = new Userinfo('joomla_int');
 				    $userlookup->userid = $JUser->get('id');
 
 				    $PluginUser = Factory::getUser($this->getJname());
@@ -377,15 +378,15 @@ class Platform_Joomla_Platform extends Platform_Joomla
     /**
      * Get avatar
      *
-     * @param int $puser_id user id
+     * @param int $userid user id
      *
      * @return string url of avatar
      */
-    function getAvatar($puser_id)
+    function getAvatar($userid)
     {
 	    $url = false;
 	    try {
-		    if ($puser_id) {
+		    if ($userid) {
 			    // Get SMF Params and get an instance of the database
 			    $db = Factory::getDatabase($this->getJname());
 			    // Load member params from database "mainly to get the avatar"
@@ -393,7 +394,7 @@ class Platform_Joomla_Platform extends Platform_Joomla
 			    $query = $db->getQuery(true)
 				    ->select('*')
 				    ->from('#__members')
-				    ->where('ID_MEMBER = ' . $puser_id);
+				    ->where('ID_MEMBER = ' . $userid);
 
 			    $db->setQuery($query);
 			    $db->execute();
@@ -404,7 +405,7 @@ class Platform_Joomla_Platform extends Platform_Joomla
 				    $query = $db->getQuery(true)
 					    ->select('*')
 					    ->from('#__attachments')
-					    ->where('ID_MEMBER = ' . $puser_id);
+					    ->where('ID_MEMBER = ' . $userid);
 
 				    $db->setQuery($query);
 				    $db->execute();
@@ -935,4 +936,90 @@ HTML;
 	    }
         return $locked;
     }
+
+	/************************************************
+	 * Functions For JFusion Who's Online Module
+	 ***********************************************/
+
+	/**
+	 * Returns a query to find online users
+	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+	 *
+	 * @param array $usergroups
+	 *
+	 * @return string
+	 */
+	function getOnlineUserQuery($usergroups = array())
+	{
+		$db = Factory::getDatabase($this->getJname());
+
+		$query = $db->getQuery(true)
+			->select('DISTINCT u.ID_MEMBER AS userid, u.memberName AS username, u.realName AS name, u.emailAddress as email')
+			->from('#__members AS u')
+			->innerJoin('#__log_online AS s ON u.ID_MEMBER = s.ID_MEMBER WHERE s.ID_MEMBER != 0');
+
+		if(!empty($usergroups)) {
+			if(is_array($usergroups)) {
+				$usergroups_string = implode(',', $usergroups);
+				$usergroup_query = '(u.ID_GROUP IN (' . $usergroups_string . ') OR u.ID_POST_GROUP IN (' . $usergroups_string . ')';
+				foreach($usergroups AS $usergroup) {
+					$usergroup_query .= ' OR FIND_IN_SET(' . intval($usergroup) . ', u.additionalGroups)';
+				}
+				$usergroup_query .= ')';
+			} else {
+				$usergroup_query = '(u.ID_GROUP = ' . $usergroups . ' OR u.ID_POST_GROUP = ' . $usergroups . ' OR FIND_IN_SET(' . $usergroups . ', u.additionalGroups))';
+			}
+			$query->where($usergroup_query);
+		}
+
+		$query = (string)$query;
+
+		return $query;
+	}
+
+	/**
+	 * Returns number of guests
+	 *
+	 * @return int
+	 */
+	function getNumberOnlineGuests()
+	{
+		try {
+			$db = Factory::getDatabase($this->getJname());
+
+			$query = $db->getQuery(true)
+				->select('COUNT(DISTINCT(ip))')
+				->from('#__log_online')
+				->where('ID_MEMBER = 0');
+
+			$db->setQuery($query);
+			return $db->loadResult();
+		} catch (Exception $e) {
+			Framework::raiseError($e, $this->getJname());
+			return 0;
+		}
+	}
+
+	/**
+	 * Returns number of logged in users
+	 *
+	 * @return int
+	 */
+	function getNumberOnlineMembers()
+	{
+		try {
+			$db = Factory::getDatabase($this->getJname());
+
+			$query = $db->getQuery(true)
+				->select('COUNT(DISTINCT(ip))')
+				->from('#__log_online')
+				->where('ID_MEMBER != 0');
+
+			$db->setQuery($query);
+			return $db->loadResult();
+		} catch (Exception $e) {
+			Framework::raiseError($e, $this->getJname());
+			return 0;
+		}
+	}
 }

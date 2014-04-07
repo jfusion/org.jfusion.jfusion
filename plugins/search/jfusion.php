@@ -129,7 +129,11 @@ class plgSearchJfusion extends JPlugin
 		}
 
 		foreach ($searchPlugins AS $jname) {
-			$searchMe = \JFusion\Factory::getFront($jname);
+			/**
+			 * @ignore
+			 * @var $platform \JFusion\Plugin\Platform\Joomla
+			 */
+			$platform = \JFusion\Factory::getPlayform('Joomla', $jname);
 			if (is_array($pluginParamValue)) {
 				$pluginParam = new JRegistry('');
 				$pluginParam->loadArray($pluginParamValue[$jname]);
@@ -138,9 +142,9 @@ class plgSearchJfusion extends JPlugin
 			}
 			$itemid = $pluginParam->get('itemid');
 			try {
-				$results = $searchMe->getSearchResults($text, $phrase, $pluginParam, $itemid, $ordering);
+				$results = $platform->getSearchResults($text, $phrase, $pluginParam, $itemid, $ordering);
 			} catch (Exception $e) {
-				\JFusion\Framework::raiseError($e,$searchMe->getJname());
+				\JFusion\Framework::raiseError($e, $platform->getJname());
 				$results = array();
 			}
 			if (is_array($results)) {

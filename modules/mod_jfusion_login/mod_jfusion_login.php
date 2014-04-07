@@ -116,7 +116,7 @@ try {
 	    if (!empty($jname) && $jname != 'joomla_int' && !$user->get('guest')) {
 		    /**
 		     * @ignore
-		     * @var $platform \JFusion\Plugin\Platform_Joomla
+		     * @var $platform \JFusion\Plugin\Platform\Joomla
 		     */
 		    $platform = Factory::getPlayform('Joomla', $jname);
 	        //check to see if we found a user

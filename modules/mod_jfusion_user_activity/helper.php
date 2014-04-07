@@ -41,7 +41,7 @@ class modjfusionUserActivityHelper {
 
 	    /**
 	     * @ignore
-	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = Factory::getPlayform('Joomla', $jname);
 

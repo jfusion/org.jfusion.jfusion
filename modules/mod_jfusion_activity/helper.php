@@ -48,7 +48,7 @@ class modjfusionActivityHelper
     {
 	    /**
 	     * @ignore
-	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = Factory::getPlayform('Joomla', $jname);
         $public = Factory::getFront($jname);
@@ -69,7 +69,7 @@ class modjfusionActivityHelper
                     if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion' && $userlookup) {
                         $avatar = Framework::getAltAvatar($config['avatar_software'], $userlookup);
                     } else {
-                        $avatar = $forum->getAvatar($r->userid);
+                        $avatar = $platform->getAvatar($r->userid);
                     }
                     if (empty($avatar)) {
                         $avatar = Factory::getApplication()->getDefaultAvatar();
@@ -110,7 +110,7 @@ class modjfusionActivityHelper
                     if ($config['userlink_software'] == 'custom' && !empty($config['userlink_custom'])  && $userlookup) {
                         $user_url = $config['userlink_custom'] . $userlookup->id;
                     } else {
-                        $user_url = Framework::routeURL($forum->getProfileURL($r->userid), $config['itemid'], $jname);
+                        $user_url = Framework::routeURL($platform->getProfileURL($r->userid), $config['itemid'], $jname);
                     }
 
                     if (empty($user_url)) {
@@ -157,15 +157,15 @@ class modjfusionActivityHelper
 
                 //combine all info into an url string
                 if ($config['linktype'] == LINKPOST) {
-                    $r->output->subject_url = Framework::routeURL($forum->getPostURL($r->threadid, $r->postid), $config['itemid'], $jname);
+                    $r->output->subject_url = Framework::routeURL($platform->getPostURL($r->threadid, $r->postid), $config['itemid'], $jname);
                 } else {
-                    $r->output->subject_url = Framework::routeURL($forum->getThreadURL($r->threadid), $config['itemid'], $jname);
+                    $r->output->subject_url = Framework::routeURL($platform->getThreadURL($r->threadid), $config['itemid'], $jname);
                 }
 
                 if ($config['mode'] == LAT) {
                     if ($config['show_reply_num']) {
-                        $existingthread = $forum->getThread($r->threadid);
-                        $count = (!empty($existingthread)) ? $forum->getReplyCount($existingthread) : 0;
+                        $existingthread = $platform->getThread($r->threadid);
+                        $count = (!empty($existingthread)) ? $platform->getReplyCount($existingthread) : 0;
                         $reply = ($count==1) ? 'REPLY' : 'REPLIES';
                         $r->output->replyCount = $count . ' ' . JText::_($reply);
                     }
@@ -185,9 +185,9 @@ class modjfusionActivityHelper
 
 	            $r->output->newpost = '';
 	            try {
-		            $r->output->newpost = $forum->checkReadStatus($r);
+		            $r->output->newpost = $platform->checkReadStatus($r);
 	            } catch (Exception $e) {
-		            Framework::raiseError($e, $forum->getJname());
+		            Framework::raiseError($e, $platform->getJname());
 	            }
 
                 $r->output->body = $r->body;

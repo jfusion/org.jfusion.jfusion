@@ -1,4 +1,4 @@
-<?php namespace JFusion\Plugin;
+<?php namespace JFusion\Plugin\Platform;
 
 /**
  * Abstract forum file
@@ -19,6 +19,7 @@ use JEventDispatcher;
 use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\Plugin\Plugin_Platform;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 
@@ -36,7 +37,7 @@ use \stdClass;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class Platform_Joomla extends Plugin
+class Joomla extends Plugin_Platform
 {
 	var $helper;
 
@@ -90,11 +91,11 @@ class Platform_Joomla extends Plugin
     /**
      * Retrieves the source path to the user's avatar
      *
-     * @param int|string $uid software user id
+     * @param int|string $userid software user id
      *
      * @return string with source path to users avatar
      */
-    function getAvatar($uid)
+    function getAvatar($userid)
     {
         return '';
     }
@@ -480,7 +481,7 @@ class Platform_Joomla extends Plugin
 			}
 
 			$text .= (!empty($text)) ? '<br /><br />' : '';
-			$text .= Framework::createJoomlaArticleURL($contentitem, $link_text);
+			$text .= JFusionFunction::createJoomlaArticleURL($contentitem, $link_text);
 		}
 
 		//prepare the content
@@ -781,4 +782,226 @@ JS;
     {
         return Text::_('METHOD_NOT_IMPLEMENTED');
     }
+
+	/**
+	 * Function that that is used to keep sessions in sync and/or alive
+	 *
+	 * @param boolean $keepalive    Tells the function to regenerate the inactive session as long as the other is active
+	 * unless there is a persistent cookie available for inactive session
+	 * @return integer 0 if no session changes were made, 1 if session created
+	 */
+	function syncSessions($keepalive = false)
+	{
+		return 0;
+	}
+
+	/**
+	 * @param array $config
+	 * @param $view
+	 * @param JRegistry $params
+	 *
+	 * @return string
+	 */
+	function renderUserActivityModule($config, $view, $params)
+	{
+		return Text::_('METHOD_NOT_IMPLEMENTED');
+	}
+
+	/************************************************
+	 * Functions For JFusion Who's Online Module
+	 ***********************************************/
+
+	/**
+	 * Returns a query to find online users
+	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+	 *
+	 * @param array $usergroups
+	 *
+	 * @return string online user query
+	 */
+	function getOnlineUserQuery($usergroups = array())
+	{
+		return '';
+	}
+
+	/**
+	 * Returns number of guests
+	 *
+	 * @return int
+	 */
+	function getNumberOnlineGuests()
+	{
+		return 0;
+	}
+
+	/**
+	 * Returns number of logged in users
+	 *
+	 * @return int
+	 */
+	function getNumberOnlineMembers()
+	{
+		return 0;
+	}
+
+	/**
+	 * @param array $config
+	 * @param $view
+	 * @param JRegistry $params
+	 *
+	 * @return string
+	 */
+	function renderWhosOnlineModule($config, $view, $params)
+	{
+		return Text::_('METHOD_NOT_IMPLEMENTED');
+	}
+
+	/**
+	 * Set the language from Joomla to the integrated software
+	 *
+	 * @param Userinfo $userinfo - it can be null if the user is not logged for example.
+	 *
+	 * @throws RuntimeException
+	 *
+	 * @return array nothing
+	 */
+	function setLanguageFrontEnd(Userinfo $userinfo = null)
+	{
+		$status = array('error' => '', 'debug' => '');
+		$status['debug'] = Text::_('METHOD_NOT_IMPLEMENTED');
+		return $status;
+	}
+
+	/************************************************
+	 * Functions For JFusion Search Plugin
+	 ***********************************************/
+
+	/**
+	 * Retrieves the search results to be displayed.  Placed here so that plugins that do not use the database can retrieve and return results
+	 * Each result should include:
+	 * $result->title = title of the post/article
+	 * $result->section = (optional) section of  the post/article (shows underneath the title; example is Forum Name / Thread Name)
+	 * $result->text = text body of the post/article
+	 * $result->href = link to the content (without this, joomla will not display a title)
+	 * $result->browsernav = 1 opens link in a new window, 2 opens in the same window
+	 * $result->created = (optional) date when the content was created
+	 *
+	 * @param string &$text        string text to be searched
+	 * @param string &$phrase      string how the search should be performed exact, all, or any
+	 * @param JRegistry &$pluginParam custom plugin parameters in search.xml
+	 * @param int    $itemid       what menu item to use when creating the URL
+	 * @param string $ordering     ordering sent by Joomla: null, oldest, popular, category, alpha, or newest
+	 *
+	 * @return array of results as objects
+	 */
+	function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid, $ordering)
+	{
+		//initialize plugin database
+		$db = Factory::getDatabase($this->getJname());
+		//get the query used to search
+		$query = $this->getSearchQuery($pluginParam);
+		//assign specific table columns to title and text
+		$columns = $this->getSearchQueryColumns();
+		//build the query
+		if ($phrase == 'exact') {
+			$where = '((LOWER(' . $columns->title . ') LIKE \'%' . $text . '%\') OR (LOWER(' . $columns->text . ') like \'%' . $text . '%\'))';
+		} else {
+			$words = explode(' ', $text);
+			$wheres = array();
+			foreach ($words as $word) {
+				$wheres[] = '((LOWER(' . $columns->title . ') LIKE \'%' . $word . '%\') OR (LOWER(' . $columns->text . ') like \'%' . $word . '%\'))';
+			}
+			if ($phrase == 'all') {
+				$separator = 'AND';
+			} else {
+				$separator = 'OR';
+			}
+			$where = '(' . implode(') ' . $separator . ' (', $wheres) . ')';
+		}
+		//pass the where clause into the plugin in case it wants to add something
+		$this->getSearchCriteria($where, $pluginParam, $ordering);
+		$query.= ' WHERE ' . $where;
+		//add a limiter if set
+		$limit = $pluginParam->get('search_limit', '');
+		if (!empty($limit)) {
+			$db->setQuery($query, 0, $limit);
+		} else {
+			$db->setQuery($query);
+		}
+		$results = $db->loadObjectList();
+		//pass results back to the plugin in case they need to be filtered
+		$this->filterSearchResults($results, $pluginParam);
+		//load the results
+		if (is_array($results)) {
+			foreach ($results as $result) {
+				//add a link
+				$href = Framework::routeURL($this->getSearchResultLink($result), $itemid, $this->getJname(), false);
+				$result->href = $href;
+				//open link in same window
+				$result->browsernav = 2;
+				//clean up the text such as removing bbcode, etc
+				$this->prepareText($result->text, 'search', $pluginParam, $result);
+				$this->prepareText($result->title, 'search', $pluginParam, $result);
+				$this->prepareText($result->section, 'search', $pluginParam, $result);
+			}
+		}
+		return $results;
+	}
+
+	/**
+	 * Assigns specific db columns to title and text of content retrieved
+	 *
+	 * @return object Db columns assigned to title and text of content retrieved
+	 */
+	function getSearchQueryColumns()
+	{
+		$columns = new stdClass();
+		$columns->title = '';
+		$columns->text = '';
+		return $columns;
+	}
+
+	/**
+	 * Generates SQL query for the search plugin that does not include where, limit, or order by
+	 *
+	 * @param object &$pluginParam custom plugin parameters in search.xml
+	 * @return string Returns query string
+	 */
+	function getSearchQuery(&$pluginParam)
+	{
+		return '';
+	}
+
+	/**
+	 * Add on a plugin specific clause;
+	 *
+	 * @param string &$where reference to where clause already generated by search bot; add on plugin specific criteria
+	 * @param object &$pluginParam custom plugin parameters in search.xml
+	 * @param string $ordering     ordering sent by Joomla: null, oldest, popular, category, alpha, or newest
+	 */
+	function getSearchCriteria(&$where, &$pluginParam, $ordering)
+	{
+	}
+
+	/**
+	 * Filter out results from the search ie forums that a user does not have permission to
+	 *
+	 * @param array &$results object list of search query results
+	 * @param object &$pluginParam custom plugin parameters in search.xml
+	 */
+	function filterSearchResults(&$results, &$pluginParam)
+	{
+	}
+
+	/**
+	 * Returns the URL for a post
+	 *
+	 * @param mixed $vars mixed
+	 *
+	 * @return string with URL
+	 */
+	function getSearchResultLink($vars)
+	{
+		return '';
+	}
 }

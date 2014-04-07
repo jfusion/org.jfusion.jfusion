@@ -18,8 +18,10 @@ use Exception;
 use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
-use JFusion\Plugin\Platform_Joomla;
+use JFusion\Plugin\Platform\Joomla;
+use JPluginHelper;
 use JRegistry;
 use RuntimeException;
 use stdClass;
@@ -38,7 +40,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla_Platform extends Platform_Joomla
+class Platform_Joomla extends Joomla
 {
     /**
      * @var $helper Helper
@@ -716,7 +718,7 @@ class Platform_Joomla_Platform extends Platform_Joomla
 				    $marktimes = array();
 				    $db = Factory::getDatabase($this->getJname());
 
-				    $userlookup = new \JFusion\User\Userinfo('joomla_int');
+				    $userlookup = new Userinfo('joomla_int');
 				    $userlookup->userid = $JUser->get('id');
 
 				    $PluginUser = Factory::getUser($this->getJname());
@@ -820,7 +822,7 @@ class Platform_Joomla_Platform extends Platform_Joomla
 
 				    //get the vb user
 				    if (!$JoomlaUser->guest) {
-					    $userlookup = new \JFusion\User\Userinfo('joomla_int');
+					    $userlookup = new Userinfo('joomla_int');
 					    $userlookup->userid = $JoomlaUser->get('id');
 
 					    $PluginUser = Factory::getUser($this->getJname());
@@ -962,7 +964,7 @@ class Platform_Joomla_Platform extends Platform_Joomla
         $JoomlaUser = JFactory::getUser();
         //get the vb user
         if (!$JoomlaUser->guest) {
-	        $userlookup = new \JFusion\User\Userinfo('joomla_int');
+	        $userlookup = new Userinfo('joomla_int');
 	        $userlookup->userid = $JoomlaUser->get('id');
 
 	        $PluginUser = Factory::getUser($this->getJname());
@@ -1047,4 +1049,295 @@ class Platform_Joomla_Platform extends Platform_Joomla
         return $forumids;
     }
 
+	/**
+	 * @param bool $keepalive
+	 *
+	 * @return int
+	 */
+	function syncSessions($keepalive = false)
+	{
+		try {
+			$userPlugin = Factory::getUser($this->getJname());
+			$debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
+			if ($debug) {
+				Framework::raiseNotice('keep alive called', $this->getJname());
+			}
+			$options = array();
+			//retrieve the values for vb cookies
+			$cookie_prefix = $this->params->get('cookie_prefix');
+			$vbversion = $this->helper->getVersion();
+			if ((int) substr($vbversion, 0, 1) > 3) {
+				if (substr($cookie_prefix, -1) !== '_') {
+					$cookie_prefix .= '_';
+				}
+			}
+			$mainframe = Factory::getApplication();
+			$cookie_sessionhash = $mainframe->input->cookie->get($cookie_prefix . 'sessionhash', '');
+			$cookie_userid = $mainframe->input->cookie->get($cookie_prefix . 'userid', '');
+			$cookie_password = $mainframe->input->cookie->get($cookie_prefix . 'password', '');
+			$JUser = JFactory::getUser();
+			if (JPluginHelper::isEnabled('system', 'remember')) {
+				jimport('joomla.utilities.utility');
+				$hash = Framework::getHash('JLOGIN_REMEMBER');
+
+				$joomla_persistant_cookie = $mainframe->input->cookie->get($hash, '', 'raw');
+			} else {
+				$joomla_persistant_cookie = '';
+			}
+			$db = Factory::getDatabase($this->getJname());
+
+			$query = $db->getQuery(true)
+				->select('userid')
+				->from('#__session')
+				->where('sessionhash = ' . $db->quote($cookie_sessionhash));
+
+			$db->setQuery($query);
+			$session_userid = $db->loadResult();
+
+			if (!$JUser->get('guest', true)) {
+				//user logged into Joomla so let's check for an active vb session
+				if ($debug) {
+					Framework::raiseNotice('Joomla user logged in', $this->getJname());
+				}
+
+				//find the userid attached to Joomla userid
+				$userlookup = new stdClass();
+				$userlookup->userid = $JUser->get('id');
+				$userlookup->username = $JUser->get('username');
+				$userlookup->email = $JUser->get('email');
+
+				$PluginUser = Factory::getUser($this->getJname());
+				$userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
+				$vb_userid = (!empty($userlookup)) ? $userlookup->userid : 0;
+
+				//is there a valid VB user logged in?
+				$vb_session = ((!empty($cookie_userid) && !empty($cookie_password) && $cookie_userid == $vb_userid) || (!empty($session_userid) && $session_userid == $vb_userid)) ? 1 : 0;
+
+				if ($debug) {
+					Framework::raiseNotice('vB session active: ' . $vb_session, $this->getJname());
+				}
+
+				//create a new session if one does not exist and either keep alive is enabled or a joomla persistent cookie exists
+				if (!$vb_session) {
+					if ((!empty($keepalive) || !empty($joomla_persistant_cookie))) {
+						if ($debug) {
+							Framework::raiseNotice('vbulletin guest', $this->getJname());
+							Framework::raiseNotice('cookie_sessionhash = '. $cookie_sessionhash, $this->getJname());
+							Framework::raiseNotice('session_userid = '. $session_userid, $this->getJname());
+							Framework::raiseNotice('vb_userid = ' . $vb_userid, $this->getJname());
+						}
+						//enable remember me as this is a keep alive function anyway
+						$options['remember'] = 1;
+						//get the user's info
+
+						$query = $db->getQuery(true)
+							->select('username, email')
+							->from('#__user')
+							->where('userid = ' . $userlookup->userid);
+
+						$db->setQuery($query);
+						$user_identifiers = $db->loadObject();
+						$userinfo = $userPlugin->getUser($user_identifiers);
+						//create a new session
+						try {
+							$status = $userPlugin->createSession($userinfo, $options);
+							if ($debug) {
+								Framework::raise('notice', $status, $this->getJname());
+							}
+						} catch (Exception $e) {
+							Framework::raiseError($e, $this->getJname());
+						}
+						//signal that session was changed
+						return 1;
+					} else {
+						if ($debug) {
+							Framework::raiseNotice('keep alive disabled or no persistant session found so calling Joomla\'s destorySession', $this->getJname());
+						}
+						$JoomlaUser = Factory::getUser('joomla_int');
+
+						$userinfo = \JFusionFunction::getJoomlaUser((object)$JUser);
+
+						$options['clientid'][] = '0';
+						try {
+							$status = $JoomlaUser->destroySession($userinfo, $options);
+							if ($debug) {
+								Framework::raise('notice', $status, $this->getJname());
+							}
+						} catch (Exception $e) {
+							Framework::raiseError($e, $JoomlaUser->getJname());
+						}
+					}
+				} elseif ($debug) {
+					Framework::raiseNotice('Nothing done as both Joomla and vB have active sessions.', $this->getJname());
+				}
+			} elseif (!empty($session_userid) || (!empty($cookie_userid) && !empty($cookie_password))) {
+				//the user is not logged into Joomla and we have an active vB session
+
+				if ($debug) {
+					Framework::raiseNotice('Joomla has a guest session', $this->getJname());
+				}
+
+				if (!empty($cookie_userid) && $cookie_userid != $session_userid) {
+					try {
+						$status = $userPlugin->destroySession(null, null);
+						if ($debug) {
+							Framework::raiseNotice('Cookie userid did not match session userid thus destroyed vB\'s session.', $this->getJname());
+							Framework::raise('notice', $status, $this->getJname());
+						}
+					} catch (Exception $e) {
+						Framework::raiseError($e, $this->getJname());
+					}
+				}
+
+				//find the Joomla user id attached to the vB user
+				$userlookup = new stdClass();
+				$userlookup->userid = $session_userid;
+
+				$PluginUser = Factory::getUser($this->getJname());
+				$userlookup = $PluginUser->lookupUser($userlookup, $this->getJname());
+				if (!empty($joomla_persistant_cookie)) {
+					if ($debug) {
+						Framework::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal', $this->getJname());
+					}
+					return 0;
+				} elseif (empty($keepalive)) {
+					if ($debug) {
+						Framework::raiseNotice('Keep alive disabled so kill vBs session', $this->getJname());
+					}
+					//something fishy or user chose not to use remember me so let's destroy vB's session
+					try {
+						$userPlugin->destroySession(null, null);
+					} catch (Exception $e) {
+						Framework::raiseError($e, $this->getJname());
+					}
+					return 1;
+				} elseif ($debug) {
+					Framework::raiseNotice('Keep alive enabled so renew Joomla\'s session', $this->getJname());
+				}
+
+				$joomlaid = $JUser->get('id');
+				if ($joomlaid) {
+					if ($debug) {
+						Framework::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.', $this->getJname());
+					}
+					//get the user's info
+					$db = JFactory::getDBO();
+
+					$query = $db->getQuery(true)
+						->select('username, email')
+						->from('#__users')
+						->where('id = ' . $joomlaid);
+
+					$db->setQuery($query);
+					$user_identifiers = $db->loadObject();
+					$JoomlaUser = Factory::getUser('joomla_int');
+					$userinfo = $JoomlaUser->getUser($user_identifiers);
+					if (!empty($userinfo)) {
+						global $JFusionActivePlugin;
+						$JFusionActivePlugin = $this->getJname();
+						try {
+							$status = $JoomlaUser->createSession($userinfo, $options);
+							if ($debug) {
+								Framework::raise('notice', $status, $this->getJname());
+							}
+						} catch (Exception $e) {
+							Framework::raiseError($e, $JoomlaUser->getJname());
+						}
+
+						//no need to signal refresh as Joomla will recognize this anyway
+						return 0;
+					}
+				}
+			}
+		} catch (Exception $e) {
+			Framework::raiseError($e, $this->getJname());
+		}
+		return 0;
+	}
+
+	/************************************************
+	 * Functions For JFusion Who's Online Module
+	 ***********************************************/
+	/**
+	 * Returns a query to find online users
+	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+	 *
+	 * @param array $usergroups
+	 *
+	 * @return string
+	 */
+	function getOnlineUserQuery($usergroups = array())
+	{
+		$db = Factory::getDatabase($this->getJname());
+
+		$name_field = $this->params->get('name_field');
+
+		$query = $db->getQuery(true)
+			->select('DISTINCT u.userid, u.username AS username, u.email');
+
+		if (!empty($name_field)) {
+			$query->select('CASE WHEN f.' . $name_field . ' IS NULL OR f.' . $name_field . ' = \'\' THEN u.username ELSE f.' . $name_field . ' END AS name')
+				->from('#__userfield as f')
+				->innerJoin('#__user AS u ON f.userid = u.userid');
+		} else {
+			$query->select('u.username as name')
+				->from('#__user AS u');
+		}
+
+		$query->innerJoin('#__session AS s ON u.userid = s.userid')
+			->where('s.userid != 0');
+
+		if (!empty($usergroups)) {
+			$usergroups = implode(',', $usergroups);
+
+			$query->where('u.usergroupid IN (' . $usergroups . ')');
+		}
+
+		$query = (string)$query;
+		return $query;
+	}
+	/**
+	 * Returns number of guests
+	 *
+	 * @return int
+	 */
+	function getNumberOnlineGuests()
+	{
+		try {
+			$db = Factory::getDatabase($this->getJname());
+
+			$query = $db->getQuery(true)
+				->select('COUNT(DISTINCT(host))')
+				->from('#__session')
+				->where('userid = 0');
+
+			$db->setQuery($query);
+			return $db->loadResult();
+		} catch (Exception $e) {
+			Framework::raiseError($e, $this->getJname());
+			return 0;
+		}
+	}
+	/**
+	 * Returns number of logged in users
+	 *
+	 * @return int
+	 */
+	function getNumberOnlineMembers()
+	{
+		try {
+			$db = Factory::getDatabase($this->getJname());
+
+			$query = $db->getQuery(true)
+				->select('COUNT(DISTINCT(userid))')
+				->from('#__session')
+				->where('userid != 0');
+
+			$db->setQuery($query);
+			return $db->loadResult();
+		} catch (Exception $e) {
+			Framework::raiseError($e, $this->getJname());
+			return 0;
+		}
+	}
 }

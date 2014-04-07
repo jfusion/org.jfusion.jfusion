@@ -54,16 +54,15 @@ class modjfusionWhosOnlineHelper {
 		} else{
 			/**
 			 * @ignore
-			 * @var $platform \JFusion\Plugin\Platform_Joomla
+			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
 			$platform = Factory::getPlayform('Joomla', $link_jname);
-			$public_users = Factory::getFront($jname);
-			if(!$public_users->isConfigured()) {
+			if(!$platform->isConfigured()) {
 				$output->error = $jname . ': ' . JText::_('NOT_CONFIGURED');
 			} else {
 				//show the number of people online if set to do so
-				$output->num_guests = $public_users->getNumberOnlineGuests();
-				$output->num_members = $public_users->getNumberOnlineMembers();
+				$output->num_guests = $platform->getNumberOnlineGuests();
+				$output->num_members = $platform->getNumberOnlineMembers();
 
 				if(is_array($output->online_users)) {
 					// process result

@@ -13,6 +13,7 @@
  * @link      http://www.jfusion.org
  */
 
+use JFactory;
 use JFusion\Api\Api;
 use JFusion\Factory;
 use JFusion\Framework;
@@ -395,7 +396,7 @@ class Plugin_Admin extends Plugin
     {
         $result = false;
         if ($itemid) {
-            $app = Factory::getApplication();
+            $app = JFactory::getApplication();
             $menus = $app->getMenu('site');
             $params = $menus->getParams($itemid);
             if ($params) {

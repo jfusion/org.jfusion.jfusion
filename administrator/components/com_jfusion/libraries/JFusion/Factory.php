@@ -31,7 +31,7 @@ use JFusion\Plugin\Plugin_Front;
 use JFusion\Plugin\Plugin_Admin;
 use JFusion\Plugin\Plugin_Auth;
 use JFusion\Plugin\Plugin_User;
-use JFusion\Plugin\Plugin_Forum;
+use JFusion\Plugin\Plugin_Platform;
 
 
 use \RuntimeException;
@@ -256,8 +256,7 @@ class Factory
 	 * @param string $platform
 	 * @param string $instance name of the JFusion plugin used
 	 *
-	 * @throws \RuntimeException
-	 * @return Plugin\Plugin JFusion Thread class for the JFusion plugin
+	 * @return Plugin_Platform JFusion Thread class for the JFusion plugin
 	 */
 	public static function &getPlayform($platform, $instance)
 	{
@@ -272,12 +271,12 @@ class Factory
 		if (!isset($instances[$platform][$instance])) {
 			$name = static::getNameFromInstance($instance);
 
-			$class = '\JFusion\Plugins\\'.$name.'\Platform_' . $platform. '_Platform';
+			$class = '\JFusion\Plugins\\' . $name . '\Platform_' . $platform;
 			if (!class_exists($class)) {
-				$class = '\JFusion\Plugin\Platform_' . $platform;
+				$class = '\JFusion\Plugin\Platform\\' . $platform;
 			}
 			if (!class_exists($class)) {
-				throw new RuntimeException('Platform Class Platform_' . $platform . ' do not Exsist');
+				$class = '\JFusion\Plugin\Plugin_Platform';
 			}
 			$instances[$platform][$instance] = new $class($instance);
 		}

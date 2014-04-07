@@ -927,96 +927,10 @@ class Front extends Plugin_Front
     {
 	    /**
 	     * @ignore
-	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = Factory::getPlayform('Joomla', $this->getJname());
         return $platform->getPostURL($post->ID_TOPIC, $post->ID_MSG);
-    }
-
-    /************************************************
-    * Functions For JFusion Who's Online Module
-    ***********************************************/
-
-	/**
-	 * Returns a query to find online users
-	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
-	 *
-	 * @param array $usergroups
-	 *
-	 * @return string
-	 */
-    function getOnlineUserQuery($usergroups = array())
-    {
-	    $db = Factory::getDatabase($this->getJname());
-
-	    $query = $db->getQuery(true)
-		    ->select('DISTINCT u.ID_MEMBER AS userid, u.memberName AS username, u.realName AS name, u.emailAddress as email')
-		    ->from('#__members AS u')
-		    ->innerJoin('#__log_online AS s ON u.ID_MEMBER = s.ID_MEMBER WHERE s.ID_MEMBER != 0');
-
-	    if(!empty($usergroups)) {
-		    if(is_array($usergroups)) {
-			    $usergroups_string = implode(',', $usergroups);
-			    $usergroup_query = '(u.ID_GROUP IN (' . $usergroups_string . ') OR u.ID_POST_GROUP IN (' . $usergroups_string . ')';
-			    foreach($usergroups AS $usergroup) {
-				    $usergroup_query .= ' OR FIND_IN_SET(' . intval($usergroup) . ', u.additionalGroups)';
-			    }
-			    $usergroup_query .= ')';
-		    } else {
-			    $usergroup_query = '(u.ID_GROUP = ' . $usergroups . ' OR u.ID_POST_GROUP = ' . $usergroups . ' OR FIND_IN_SET(' . $usergroups . ', u.additionalGroups))';
-		    }
-		    $query->where($usergroup_query);
-	    }
-
-	    $query = (string)$query;
-
-        return $query;
-    }
-
-    /**
-     * Returns number of guests
-     *
-     * @return int
-     */
-    function getNumberOnlineGuests()
-    {
-	    try {
-		    $db = Factory::getDatabase($this->getJname());
-
-		    $query = $db->getQuery(true)
-			    ->select('COUNT(DISTINCT(ip))')
-			    ->from('#__log_online')
-			    ->where('ID_MEMBER = 0');
-
-		    $db->setQuery($query);
-		    return $db->loadResult();
-	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
-		    return 0;
-	    }
-    }
-
-    /**
-     * Returns number of logged in users
-     *
-     * @return int
-     */
-    function getNumberOnlineMembers()
-    {
-	    try {
-		    $db = Factory::getDatabase($this->getJname());
-
-		    $query = $db->getQuery(true)
-			    ->select('COUNT(DISTINCT(ip))')
-			    ->from('#__log_online')
-			    ->where('ID_MEMBER != 0');
-
-		    $db->setQuery($query);
-		    return $db->loadResult();
-	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
-		    return 0;
-	    }
     }
 
     /**

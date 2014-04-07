@@ -142,88 +142,6 @@ class Front extends Plugin_Front
         return $status;
     }
 
-	/**
-	 * @param array $usergroups
-	 *
-	 * @return string
-	 */
-    function getOnlineUserQuery($usergroups = array())
-    {
-	    $db = Factory::getDatabase($this->getJname());
-        //get a unix time from 5 minutes ago
-        date_default_timezone_set('UTC');
-        $active = strtotime('-5 minutes', time());
-
-	    $query = $db->getQuery(true)
-		    ->select('DISTINCT u.user_id AS userid, u.username_clean AS username, u.username AS name, u.user_email as email')
-		    ->from('#__users AS u')
-		    ->innerJoin('#__sessions AS s ON u.user_id = s.session_user_id')
-		    ->where('s.session_viewonline = 1')
-		    ->where('s.session_user_id != 1')
-		    ->where('s.session_time > ' . $active);
-
-	    if (!empty($usergroups)) {
-		    $usergroups = implode(',', $usergroups);
-
-		    $query->innerJoin('#___user_group AS g ON u.user_id = g.user_id')
-			    ->where('g.group_id IN (' . $usergroups . ')');
-	    }
-
-	    $query = (string)$query;
-        return $query;
-    }
-
-    /**
-     * @return int
-     */
-    function getNumberOnlineGuests() {
-	    try {
-		    //get a unix time from 5 minutes ago
-		    date_default_timezone_set('UTC');
-		    $active = strtotime('-5 minutes', time());
-		    $db = Factory::getDatabase($this->getJname());
-
-		    $query = $db->getQuery(true)
-			    ->select('COUNT(DISTINCT(session_ip))')
-			    ->from('#__sessions')
-			    ->where('session_user_id = 1')
-			    ->where('session_time > ' . $active);
-
-		    $db->setQuery($query);
-		    $result = $db->loadResult();
-	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
-		    $result = 0;
-	    }
-        return $result;
-    }
-
-    /**
-     * @return int
-     */
-    function getNumberOnlineMembers() {
-	    try {
-		    //get a unix time from 5 minutes ago
-		    date_default_timezone_set('UTC');
-		    $active = strtotime('-5 minutes', time());
-		    $db = Factory::getDatabase($this->getJname());
-
-		    $query = $db->getQuery(true)
-			    ->select('COUNT(DISTINCT(session_user_id))')
-			    ->from('#__sessions')
-			    ->where('session_viewonline = 1')
-			    ->where('session_user_id != 1')
-			    ->where('session_time > ' . $active);
-
-		    $db->setQuery($query);
-		    $result = $db->loadResult();
-	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
-		    $result = 0;
-	    }
-        return $result;
-    }
-
     /**
      * @param object $jfdata
      *
@@ -816,7 +734,7 @@ class Front extends Plugin_Front
         $where.= ' AND p.post_approved = 1';
 	    /**
 	     * @ignore
-	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = Factory::getPlayform('Joomla', $this->getJname());
         if ($pluginParam->get('forum_mode', 0)) {
@@ -874,7 +792,7 @@ class Front extends Plugin_Front
     function getSearchResultLink($post) {
 	    /**
 	     * @ignore
-	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = Factory::getPlayform('Joomla', $this->getJname());
         return $platform->getPostURL($post->topic_id, $post->post_id);

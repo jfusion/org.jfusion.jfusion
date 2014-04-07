@@ -49,7 +49,7 @@ try {
 
 		/**
 		 * @ignore
-		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = \JFusion\Factory::getPlayform('Joomla', $jname);
 		if($platform->isConfigured()) {
@@ -124,7 +124,7 @@ try {
 	            }
 
 	            //define some other JFusion specific parameters
-	            $query = $forum->getActivityQuery($selectedforumssql, $config['result_order'], $config['result_limit']);
+	            $query = $platform->getActivityQuery($selectedforumssql, $config['result_order'], $config['result_limit']);
 	            if (!empty($query)) {
 	                // load
 	                if($config['mode']==LAT) {
@@ -147,7 +147,7 @@ try {
 	                    $resultBeforeFiltering = '';
 	                }
 	                if (!empty($results)) {
-	                    $forum->filterActivityResults($results, $config['result_limit']);
+		                $platform->filterActivityResults($results, $config['result_limit']);
 	                }
 	                //reorder the keys for the for loop
 	                if(is_array($results)) {
@@ -168,8 +168,8 @@ try {
 	                }
 	            }
 			} else {
-				if ($forum->methodDefined('renderActivityModule')) {
-					$output = $forum->renderActivityModule($config, $view, $pluginParam);
+				if ($platform->methodDefined('renderActivityModule')) {
+					$output = $platform->renderActivityModule($config, $view, $pluginParam);
 					echo $output;
 				} else {
 					throw new RuntimeException(JText::_('NOT_IMPLEMENTED_YET'));

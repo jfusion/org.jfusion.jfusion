@@ -6,11 +6,11 @@ use Exception;
 use JDate;
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Plugin\Platform_Joomla;
+use JFusion\Plugin\Platform\Joomla;
+use JFusion\User\Userinfo;
 use Joomla\String\String;
 use JFusionFunction;
 use JRegistry;
-use stdClass;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -24,7 +24,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org/
 **/
 
-class Platform_Joomla_Platform extends Platform_Joomla
+class Platform_Joomla extends Joomla
 {
     /**
      * @param $config
@@ -86,7 +86,7 @@ class Platform_Joomla_Platform extends Platform_Joomla
 					    //get the avatar of the logged in user
 					    $o_avatar_height = $o_avatar_width = '';
 					    if ($avatar) {
-						    $userlookup = new \JFusion\User\Userinfo($this->getJname());
+						    $userlookup = new Userinfo($this->getJname());
 						    $userlookup->userid = $value->userid;
 
 						    $PluginUser = Factory::getUser('joomla_int');

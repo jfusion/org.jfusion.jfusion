@@ -45,8 +45,12 @@ try {
 				$pluginParam->loadArray($value);
 				$view = $pluginParam->get('view', 'auto');
 
-				$public = \JFusion\Factory::getFront($jname);
-				if($public->isConfigured()) {
+				/**
+				 * @ignore
+				 * @var $platform \JFusion\Plugin\Platform\Joomla
+				 */
+				$platform = \JFusion\Factory::getPlayform('Joomla', $jname);
+				if($platform->isConfigured()) {
 					$output = new stdClass();
 					$title = $pluginParam->get('title', NULL);
 					$output->title = $title;
@@ -79,14 +83,14 @@ try {
 
 					if($view == 'auto') {
 						$db = \JFusion\Factory::getDatabase($jname);
-						$query = $public->getOnlineUserQuery($config['group_limit']);
+						$query = $platform->getOnlineUserQuery($config['group_limit']);
 						$db->setQuery($query, 0, $config['member_limit']);
 						$output->online_users = $db->loadObjectList();
 
 						modjfusionWhosOnlineHelper::appendAutoOutput($jname, $config, $params, $output);
 					} else {
-						if ($public->methodDefined('renderWhosOnlineModule')) {
-							$output->custom_output = $public->renderWhosOnlineModule($config, $view, $pluginParam);
+						if ($platform->methodDefined('renderWhosOnlineModule')) {
+							$output->custom_output = $platform->renderWhosOnlineModule($config, $view, $pluginParam);
 						} else {
 							$output->error = JText::_('NOT_IMPLEMENTED_YET');
 						}

@@ -19,7 +19,7 @@ use stdClass;
  * @property string|null        $password_salt      password_salt
  * @property string|null        $password_clear     password_clear password in clear text
  * @property boolean            $block              block is used for user enabled/disabled state
- * @property string|null        $activation         activation is used to determin if user has activated the account
+ * @property string|null        $activation         activation is used to determine if user has activated the account
  * @property array              $groups             groups
  * @property array              $groupnames         groupnames
  * @property int                $registerDate       timestamp of register date

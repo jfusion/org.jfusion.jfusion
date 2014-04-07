@@ -172,7 +172,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 		//get the forum listings
 	    /**
 	     * @ignore
-	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
 	    try {

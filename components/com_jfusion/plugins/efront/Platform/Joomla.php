@@ -16,7 +16,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Plugin\Platform_Joomla;
+use JFusion\Plugin\Platform\Joomla;
 
 use \Exception;
 
@@ -34,7 +34,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla_Platform extends Platform_Joomla
+class Platform_Joomla extends Joomla
 {
     /**
      * @param int $userid
@@ -68,4 +68,58 @@ class Platform_Joomla_Platform extends Platform_Joomla
 	    }
         return $url;
     }
+
+	/**
+	 * getOnlineUserQuery
+	 *
+	 * @param array $usergroups
+	 *
+	 * @return string
+	 */
+	function getOnlineUserQuery($usergroups = array())
+	{
+		//get a unix time from 5 minutes ago
+		date_default_timezone_set('UTC');
+		//$active = strtotime('-5 minutes', time());
+
+		$db = Factory::getDatabase($this->getJname());
+
+		$query = $db->getQuery(true)
+			->select('DISTINCT u.id AS userid, u.login as username, u.login as username_clean, concat(u.name,\' \', u.surname) AS name, u.email as email')
+			->from('#__users AS u')
+			->innerJoin('#__users_online AS s ON u.login = s.users_LOGIN');
+
+		$query = (string)$query;
+		return $query;
+	}
+
+	/**
+	 * @return int
+	 */
+	function getNumberOnlineGuests() {
+		return 0;
+	}
+
+	/**
+	 * @return int
+	 */
+	function getNumberOnlineMembers() {
+		try {
+			//get a unix time from 5 minutes ago
+			date_default_timezone_set('UTC');
+			// $active = strtotime('-5 minutes', time());
+			$db = Factory::getDatabase($this->getJname());
+
+			$query = $db->getQuery(true)
+				->select('COUNT(*)')
+				->from('#__users_online');
+
+			$db->setQuery($query);
+			$result = $db->loadResult();
+		} catch (Exception $e) {
+			Framework::raiseError($e, $this->getJname());
+			$result = 0;
+		}
+		return $result;
+	}
 }

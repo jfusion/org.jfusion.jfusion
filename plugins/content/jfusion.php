@@ -187,7 +187,7 @@ class plgContentJfusion extends JPlugin
 							$this->helper->debug('In test mode thus not creating the article');
 							/**
 							 * @ignore
-							 * @var $platform \JFusion\Plugin\Platform_Joomla
+							 * @var $platform \JFusion\Plugin\Platform\Joomla
 							 */
 							$platform = Factory::getPlayform('Joomla', $this->jname);
 							$content = '<u>' . $this->article->title . '</u><br />';
@@ -445,7 +445,7 @@ class plgContentJfusion extends JPlugin
 		//get the jfusion forum object
 		/**
 		 * @ignore
-		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = Factory::getPlayform('Joomla', $this->jname);
 
@@ -710,7 +710,7 @@ HTML;
 
 		/**
 		 * @ignore
-		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = Factory::getPlayform('Joomla', $this->jname);
 
@@ -972,7 +972,7 @@ HTML;
 		//setup parameters
 		/**
 		 * @ignore
-		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = Factory::getPlayform('Joomla', $this->jname);
 		$allowGuests = $this->params->get('quickreply_allow_guests', 0);
@@ -1255,7 +1255,7 @@ HTML;
 				if ($link_mode != 'never') {
 					/**
 					 * @ignore
-					 * @var $platform \JFusion\Plugin\Platform_Joomla
+					 * @var $platform \JFusion\Plugin\Platform\Joomla
 					 */
 					$platform = Factory::getPlayform('Joomla', $this->jname);
 
@@ -1342,7 +1342,7 @@ HTML;
 
 		/**
 		 * @ignore
-		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = Factory::getPlayform('Joomla', $this->jname);
 		$threadinfo = $this->helper->getThreadInfo();

@@ -200,92 +200,6 @@ class Front extends Plugin_Front
         return $status;
     }
 
-    /************************************************
-    * Functions For JFusion Who's Online Module
-    ***********************************************/
-	/**
-	 * Returns a query to find online users
-	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
-	 *
-	 * @param array $usergroups
-	 *
-	 * @return string
-	 */
-    function getOnlineUserQuery($usergroups = array())
-    {
-	    $db = Factory::getDatabase($this->getJname());
-
-        $name_field = $this->params->get('name_field');
-
-	    $query = $db->getQuery(true)
-		    ->select('DISTINCT u.userid, u.username AS username, u.email');
-
-	    if (!empty($name_field)) {
-		    $query->select('CASE WHEN f.' . $name_field . ' IS NULL OR f.' . $name_field . ' = \'\' THEN u.username ELSE f.' . $name_field . ' END AS name')
-		    ->from('#__userfield as f')
-		    ->innerJoin('#__user AS u ON f.userid = u.userid');
-	    } else {
-		    $query->select('u.username as name')
-		    ->from('#__user AS u');
-	    }
-
-	    $query->innerJoin('#__session AS s ON u.userid = s.userid')
-	        ->where('s.userid != 0');
-
-	    if (!empty($usergroups)) {
-		    $usergroups = implode(',', $usergroups);
-
-		    $query->where('u.usergroupid IN (' . $usergroups . ')');
-	    }
-
-	    $query = (string)$query;
-        return $query;
-    }
-    /**
-     * Returns number of guests
-     *
-     * @return int
-     */
-    function getNumberOnlineGuests()
-    {
-	    try {
-		    $db = Factory::getDatabase($this->getJname());
-
-		    $query = $db->getQuery(true)
-			    ->select('COUNT(DISTINCT(host))')
-			    ->from('#__session')
-		        ->where('userid = 0');
-
-		    $db->setQuery($query);
-		    return $db->loadResult();
-	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
-		    return 0;
-	    }
-    }
-    /**
-     * Returns number of logged in users
-     *
-     * @return int
-     */
-    function getNumberOnlineMembers()
-    {
-	    try {
-	        $db = Factory::getDatabase($this->getJname());
-
-		    $query = $db->getQuery(true)
-			    ->select('COUNT(DISTINCT(userid))')
-			    ->from('#__session')
-			    ->where('userid != 0');
-
-	        $db->setQuery($query);
-	        return $db->loadResult();
-	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
-			return 0;
-		}
-    }
-
     /**
      * @param object $jfdata
      *
@@ -746,7 +660,7 @@ JS;
 						    //get the profile link
 						    /**
 						     * @ignore
-						     * @var $platform \JFusion\Plugin\Platform_Joomla
+						     * @var $platform \JFusion\Plugin\Platform\Joomla
 						     */
 						    $platform = Factory::getPlayform('Joomla', $profile_plugin);
 						    $url = $platform->getProfileURL($userlookup->userid);
@@ -843,7 +757,7 @@ JS;
     {
 	    /**
 	     * @ignore
-	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = Factory::getPlayform('Joomla', $this->getJname());
 	    $platform->filterActivityResults($results, 0, 'forumid', true);
@@ -858,7 +772,7 @@ JS;
     {
 	    /**
 	     * @ignore
-	     * @var $platform \JFusion\Plugin\Platform_Joomla
+	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = Factory::getPlayform('Joomla', $this->getJname());
         return $platform->getPostURL($post->threadid, $post->postid);

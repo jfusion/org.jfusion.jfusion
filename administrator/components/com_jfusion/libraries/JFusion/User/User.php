@@ -12,8 +12,6 @@ use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Language\Text;
 use RuntimeException;
-use stdClass;
-
 
 /**
  * Joomla! CMS Application class

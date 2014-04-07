@@ -142,7 +142,7 @@ class JFusionDiscussBotHelper {
 			//make sure the forum and thread still exists
 			/**
 			 * @ignore
-			 * @var $platform \JFusion\Plugin\Platform_Joomla
+			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
 			$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
 
@@ -178,7 +178,7 @@ class JFusionDiscussBotHelper {
 
 		/**
 		 * @ignore
-		 * @var $platform \JFusion\Plugin\Platform_Joomla
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
 
@@ -277,7 +277,7 @@ class JFusionDiscussBotHelper {
 		if (!isset($lists_instance)) {
 			/**
 			 * @ignore
-			 * @var $platform \JFusion\Plugin\Platform_Joomla
+			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
 			$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
 			$full_list = $platform->getForumList();
@@ -326,7 +326,7 @@ class JFusionDiscussBotHelper {
 			} else {
 				/**
 				 * @ignore
-				 * @var $platform \JFusion\Plugin\Platform_Joomla
+				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
 				$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
 				$forumid = $platform->getDefaultForum($this->params, $this->article);
@@ -561,7 +561,7 @@ class JFusionDiscussBotHelper {
 	}
 
 	/**
-	 * @internal @var $platform \JFusion\Plugin\Platform_Joomla
+	 * @internal @var $platform \JFusion\Plugin\Platform\Joomla
 	 */
 	public function loadScripts()
 	{
@@ -599,7 +599,7 @@ JS;
 			if ($this->params->get('enable_quickreply')) {
 				/**
 				 * @ignore
-				 * @var $platform \JFusion\Plugin\Platform_Joomla
+				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
 				$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
 				$this->debug('Quick reply is enabled and thus loading any includes (js, css, etc).');

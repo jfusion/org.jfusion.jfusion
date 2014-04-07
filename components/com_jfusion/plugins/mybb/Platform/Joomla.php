@@ -17,7 +17,7 @@
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\Plugin\Platform_Joomla;
+use JFusion\Plugin\Platform\Joomla;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla_Platform extends Platform_Joomla
+class Platform_Joomla extends Joomla
 {
     /**
      * @param int $threadid

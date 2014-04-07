@@ -102,9 +102,13 @@ class plgSystemJfusion extends JPlugin
                 //for master if not joomla_int
                 $master = \JFusion\Framework::getMaster();
                 if (!empty($master) && $master->name != 'joomla_int' && $master->dual_login) {
-                    $JFusionUser = \JFusion\Factory::getUser($master->name);
+	                /**
+	                 * @ignore
+	                 * @var $platform \JFusion\Plugin\Platform\Joomla
+	                 */
+	                $platform = \JFusion\Factory::getPlayform('Joomla', $master->name);
 	                try {
-		                $changed = $JFusionUser->syncSessions($keepalive);
+		                $changed = $platform->syncSessions($keepalive);
 		                if (!empty($changed)) {
 			                if ($debug) {
 				                \JFusion\Framework::raiseNotice('session changed', $master->name);
@@ -112,7 +116,7 @@ class plgSystemJfusion extends JPlugin
 			                $refresh = true;
 		                }
 	                } catch (Exception $e) {
-		                \JFusion\Framework::raiseError($e, $JFusionUser->getJname());
+		                \JFusion\Framework::raiseError($e, $platform->getJname());
 	                }
                 }
                 //slave plugins
@@ -120,9 +124,13 @@ class plgSystemJfusion extends JPlugin
                 foreach ($plugins as $plugin) {
                     //only call keepAlive if the plugin is activated for dual login
                     if ($plugin->dual_login) {
-                        $JFusionUser = \JFusion\Factory::getUser($plugin->name);
+	                    /**
+	                     * @ignore
+	                     * @var $platform \JFusion\Plugin\Platform\Joomla
+	                     */
+	                    $platform = \JFusion\Factory::getPlayform('Joomla', $plugin->name);
 	                    try {
-		                    $changed = $JFusionUser->syncSessions($keepalive);
+		                    $changed = $platform->syncSessions($keepalive);
 		                    if (!empty($changed)) {
 			                    if ($debug) {
 				                    \JFusion\Framework::raiseNotice('session changed', $plugin->name);
@@ -130,7 +138,7 @@ class plgSystemJfusion extends JPlugin
 			                    $refresh = true;
 		                    }
 	                    } catch (Exception $e) {
-		                    \JFusion\Framework::raiseError($e, $JFusionUser->getJname());
+		                    \JFusion\Framework::raiseError($e, $platform->getJname());
 	                    }
                     }
                 }
@@ -180,12 +188,19 @@ class plgSystemJfusion extends JPlugin
 			$session->set('oldlang', $lang->getTag());
 			// The instance of the user is not obligatory. Without to be logged, the user can change the language of the integrated software
 			// if those implement it.
-			$userinfo = JFactory::getUser();
+
+			$userinfo = JFusionFunction::getJoomlaUser(JFactory::getUser());
+
 			$master = \JFusion\Framework::getMaster();
-			$JFusionMasterPublic = \JFusion\Factory::getFront($master->name);
-			if (method_exists($JFusionMasterPublic, 'setLanguageFrontEnd')) {
+
+			/**
+			 * @ignore
+			 * @var $platform \JFusion\Plugin\Platform\Joomla
+			 */
+			$platform = \JFusion\Factory::getPlayform('Joomla', $master->name);
+			if (method_exists($platform, 'setLanguageFrontEnd')) {
 				try {
-					$status = $JFusionMasterPublic->setLanguageFrontEnd($userinfo);
+					$status = $platform->setLanguageFrontEnd($userinfo);
 					if (!empty($status['error'])) {
 						//could not set the language
 						\JFusion\Framework::raise('error', $status['error'], $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
@@ -198,10 +213,14 @@ class plgSystemJfusion extends JPlugin
 			}
 			$slaves = \JFusion\Framework::getSlaves();
 			foreach($slaves as $slave) {
-				$JFusionSlavePublic = \JFusion\Factory::getFront($slave->name);
-				if (method_exists($JFusionSlavePublic, 'setLanguageFrontEnd')) {
+				/**
+				 * @ignore
+				 * @var $platform \JFusion\Plugin\Platform\Joomla
+				 */
+				$platform = \JFusion\Factory::getPlayform('Joomla', $slave->name);
+				if (method_exists($platform, 'setLanguageFrontEnd')) {
 					try {
-						$status = $JFusionSlavePublic->setLanguageFrontEnd($userinfo);
+						$status = $platform->setLanguageFrontEnd($userinfo);
 						if (!empty($status['error'])) {
 							//could not set the language
 							\JFusion\Framework::raise('error', $status['error'], $slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));

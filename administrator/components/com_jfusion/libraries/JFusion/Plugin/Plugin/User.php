@@ -711,18 +711,6 @@ class Plugin_User extends Plugin
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }
 
-    /**
-     * Function that that is used to keep sessions in sync and/or alive
-     *
-     * @param boolean $keepalive    Tells the function to regenerate the inactive session as long as the other is active
-     * unless there is a persistent cookie available for inactive session
-     * @return integer 0 if no session changes were made, 1 if session created
-     */
-    function syncSessions($keepalive = false)
-    {
-        return 0;
-    }
-
 	/**
 	 * compare set of usergroup with a user returns true if the usergroups are correct
 	 *

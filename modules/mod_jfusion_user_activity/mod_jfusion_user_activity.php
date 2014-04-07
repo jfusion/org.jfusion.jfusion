@@ -39,8 +39,12 @@ try {
 
 		$view = $params->get('view', 'auto');
 
-		$public = \JFusion\Factory::getFront($jname);
-		if($public->isConfigured()) {
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
+		 */
+		$platform = \JFusion\Factory::getPlayform('Joomla', $jname);
+		if($platform->isConfigured()) {
 			//configuration
 			$config['itemid'] = $params->get('itemid');
 			$config['avatar'] = $params->get('avatar', false);
@@ -73,8 +77,8 @@ try {
 
 				require(JModuleHelper::getLayoutPath('mod_jfusion_user_activity'));
 			} else {
-				if ($public->methodDefined('renderUserActivityModule')) {
-					$output = $public->renderUserActivityModule($config, $view, $params);
+				if ($platform->methodDefined('renderUserActivityModule')) {
+					$output = $platform->renderUserActivityModule($config, $view, $params);
 					echo $output;
 				} else {
 					throw new RuntimeException(JText::_('NOT_IMPLEMENTED_YET'));

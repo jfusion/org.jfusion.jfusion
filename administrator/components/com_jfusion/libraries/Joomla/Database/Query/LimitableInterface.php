@@ -15,8 +15,8 @@ namespace Joomla\Database\Query;
  * to retrieve the stored bounded variables on demand prior to
  * query execution.
  *
- * @property integer $limit
- * @property integer $offset
+ * @property int $limit
+ * @property int $offset
  *
  * @since  1.0
  */

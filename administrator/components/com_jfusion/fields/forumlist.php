@@ -62,7 +62,7 @@ class JFormFieldForumlist extends JFormField
 			if (!empty($jname)) {
 				/**
 				 * @ignore
-				 * @var $platform \JFusion\Plugin\Platform_Joomla
+				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
 				$platform = \JFusion\Factory::getPlayform('Joomla', $jname);
 				if ($platform->isConfigured()) {

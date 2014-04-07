@@ -15,11 +15,13 @@
 
 // no direct access
 use JFusion\Factory;
-use JFusion\Plugin\Platform_Joomla;
+use JFusion\Plugin\Platform\Joomla;
 
 use \Exception;
+use JFusion\User\Userinfo;
 use JFusionFunction;
 use \JRoute;
+use JText;
 
 
 defined('_JEXEC') or die('Restricted access');
@@ -36,7 +38,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla_Platform extends Platform_Joomla
+class Platform_Joomla extends Joomla
 {
 	/**
 	 * Returns the URL to a userprofile of the integrated software
@@ -93,11 +95,11 @@ class Platform_Joomla_Platform extends Platform_Joomla
 	/**
 	 * Retrieves the source path to the user's avatar
 	 *
-	 * @param int|string $uid software user id
+	 * @param int|string $userid software user id
 	 *
 	 * @return string with source path to users avatar
 	 */
-	function getAvatar($uid)
+	function getAvatar($userid)
 	{
 		try {
 			$db = Factory::getDatabase($this->getJname());
@@ -106,7 +108,7 @@ class Platform_Joomla_Platform extends Platform_Joomla
 				$query = $db->getQuery(true)
 					->select('avatar')
 					->from('#__comprofiler')
-					->where('user_id = ' . $uid);
+					->where('user_id = ' . $userid);
 
 				$db->setQuery($query);
 				$result = $db->loadResult();
@@ -120,7 +122,7 @@ class Platform_Joomla_Platform extends Platform_Joomla
 					$query = $db->getQuery(true)
 						->select('avatar')
 						->from('#__community_users')
-						->where('userid = ' . $uid);
+						->where('userid = ' . $userid);
 
 					$db->setQuery($query);
 					$result = $db->loadResult();
@@ -133,7 +135,7 @@ class Platform_Joomla_Platform extends Platform_Joomla
 					$query = $db->getQuery(true)
 						->select('user_picture')
 						->from('#__joom_users')
-						->where('user_id = ' . $uid);
+						->where('user_id = ' . $userid);
 
 					$db->setQuery($query);
 					$result = $db->loadResult();
@@ -144,5 +146,100 @@ class Platform_Joomla_Platform extends Platform_Joomla
 			$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 		}
 		return $avatar;
+	}
+
+	/**
+	 * Returns a query to find online users
+	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+	 *
+	 * @param array $usergroups
+	 *
+	 * @return string online user query
+	 */
+	public function getOnlineUserQuery($usergroups = array())
+	{
+		$db = Factory::getDatabase($this->getJname());
+
+		$query = $db->getQuery(true)
+			->select('DISTINCT u.id AS userid, u.username, u.name, u.email')
+			->from('#__users AS u')
+			->innerJoin('#__session AS s ON u.id = s.userid');
+
+		if (!empty($usergroups)) {
+			$usergroups = implode(',', $usergroups);
+
+			$query->innerJoin('#__user_usergroup_map AS g ON u.id = g.user_id')
+				->where('g.group_id IN (' . $usergroups . ')');
+		}
+
+		$query->where('s.client_id = 0')
+			->where('s.guest = 0');
+
+		$query = (string)$query;
+		return $query;
+	}
+
+	/**
+	 * Returns number of guests
+	 *
+	 * @return int
+	 */
+	public function getNumberOnlineGuests()
+	{
+		$db = Factory::getDatabase($this->getJname());
+
+		$query = $db->getQuery(true)
+			->select('COUNT(*)')
+			->from('#__session')
+			->where('guest = 1')
+			->where('client_id = 0');
+
+		$db->setQuery($query);
+		return $db->loadResult();
+	}
+
+	/**
+	 * Returns number of logged in users
+	 *
+	 * @return int
+	 */
+	public function getNumberOnlineMembers()
+	{
+		$db = Factory::getDatabase($this->getJname());
+
+		$query = $db->getQuery(true)
+			->select('COUNT(DISTINCT userid) AS c')
+			->from('#__session')
+			->where('guest = 0')
+			->where('client_id = 0');
+
+		$db->setQuery($query);
+		return $db->loadResult();
+	}
+
+	/**
+	 * Update the language front end param in the account of the user if this one changes it
+	 * NORMALLY THE LANGUAGE SELECTION AND CHANGEMENT FOR JOOMLA IS PROVIDED BY THIRD PARTY LIKE JOOMFISH
+	 *
+	 * @param Userinfo $userinfo userinfo
+	 *
+	 * @throws RuntimeException
+	 *
+	 * @return array status
+	 */
+	public function setLanguageFrontEnd(Userinfo $userinfo = null)
+	{
+		$status = array('error' => '', 'debug' => '');
+		$user = Factory::getUser($this->getJname());
+		$existinguser = (isset($userinfo)) ? $user->getUser($userinfo) : null;
+		// If the user is connected we change his account parameter in function of the language front end
+		if ($userinfo instanceof Userinfo && $existinguser instanceof Userinfo) {
+			$userinfo->language = Factory::getLanguage()->getTag();
+
+			$user->updateUserLanguage($userinfo, $existinguser, $status);
+		} else {
+			$status['debug'] = JText::_('NO_USER_DATA_FOUND');
+		}
+		return $status;
 	}
 }
