@@ -220,7 +220,7 @@ class Joomla extends Plugin_Platform
 				$status['debug'][] = 'Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified) . ')';
 				$status['debug'][] = 'Thread Modification Date: ' . $postModified . '  (' . date('Y-m-d H:i:s', $postModified) . ')';
 				$status['debug'][] = 'Is ' . $contentModified . ' > ' . $postModified . ' ?';
-				if($contentModified > $postModified) {
+				if($contentModified > $postModified && $postModified != 0) {
 					$status['debug'][] = 'Yes...attempting to update thread';
 					//update the post if the content has been updated
 					$this->updateThread($dbparams, $existingthread, $contentitem, $status);
