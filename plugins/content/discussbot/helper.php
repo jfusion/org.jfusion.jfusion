@@ -133,14 +133,14 @@ class JFusionDiscussBotHelper {
 		$thread->published = false;
 		$thread->modified = 0;
 
-		if (isset($this->article->id) && isset($this->threadinfo[$this->article->id])) {
-			$current = $this->threadinfo[$this->article->id];
-			if ($current->threadid == $threadinfo->threadid) {
-				$thread = $current;
-			}
-		}
 		$this->replyCount = 0;
 		if ($threadinfo) {
+			if (isset($this->article->id) && isset($this->threadinfo[$this->article->id])) {
+				$current = $this->threadinfo[$this->article->id];
+				if ($current->threadid == $threadinfo->threadid) {
+					$thread = $current;
+				}
+			}
 			$threadinfo->valid = false;
 			//make sure the forum and thread still exists
 			$Forum = JFusionFactory::getForum($this->jname);
