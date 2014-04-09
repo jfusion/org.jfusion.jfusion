@@ -374,8 +374,7 @@ class JFusionDiscussBotHelper {
 									$responce = array(1, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
 								} elseif ($creationMode == 'view') {
 									//only create the article if we are in the article view
-									$test_view = (strpos($this->context, 'com_k2') === 0) ? 'item' : 'article';
-									if (JFactory::getApplication()->input->get('view') != $test_view) {
+									if (!$this->view(JFactory::getApplication()->input->get('view'))) {
 										$responce = array(0, JText::_('REASON_CREATED_ON_VIEW'));
 									}
 								} elseif ($creationMode == 'new' && !$skip_new_check) {
