@@ -425,15 +425,6 @@ class plgContentJfusion extends JPlugin
 		exit();
 	}
 
-	/**
-	 * Returns the view for compare
-	 *
-	 * @return string
-	 */
-	public function view() {
-		return (strpos($this->helper->context, 'com_k2') === 0) ? 'item' : 'article';
-	}
-
 	/*
 	 * prepareContent
 	 */
@@ -490,7 +481,7 @@ class plgContentJfusion extends JPlugin
 
 		//check to see if the fulltext has a manual plug if we are in a blog view
 		if (isset($this->article->fulltext)) {
-			if (!$this->manual && JFactory::getApplication()->input->get('view') != $this->view()) {
+			if (!$this->manual &&  !$this->helper->view(JFactory::getApplication()->input->get('view'))) {
 				preg_match('/\{jfusion_discuss (.*)\}/U', $this->article->fulltext, $match);
 				if (!empty($match)) {
 					$this->helper->debug('No plugs in text but found plugs in fulltext');
@@ -534,7 +525,7 @@ class plgContentJfusion extends JPlugin
 			if ($this->mode == 'auto') {
 				$this->helper->debug('In auto mode');
 				if ($this->valid) {
-					if ($threadinfo->valid || $this->creationMode == 'load' || ($this->creationMode == 'view' && JFactory::getApplication()->input->get('view') == $this->view()) ) {
+					if ($threadinfo->valid || $this->creationMode == 'load' || ($this->creationMode == 'view' && $this->helper->view(JFactory::getApplication()->input->get('view'))) ) {
 						$status = $this->helper->checkThreadExists();
 						if ($status['action'] == 'created') {
 							$threadinfo = $status['threadinfo'];
@@ -919,9 +910,8 @@ HTML;
 		$this->helper->debug('Beginning rendering content');
 		$threadinfo = $this->helper->getThreadInfo();
 
-		$view = JFactory::getApplication()->input->get('view');
 		//let's only show quick replies and posts on the article view
-		if ($view == $this->view()) {
+		if ($this->helper->view(JFactory::getApplication()->input->get('view'))) {
 			$JSession = JFactory::getSession();
 
 			if (!$threadinfo->published && $this->creationMode != 'reply') {
@@ -1163,7 +1153,7 @@ HTML;
 			//let's overwrite the read more link with our own
 			//needed as in the case of updating the buttons via ajax which calls the article view
 			$view = ($override = JFactory::getApplication()->input->get('view_override')) ? $override : JFactory::getApplication()->input->get('view');
-			if ($view != $this->view() && $this->params->get('overwrite_readmore', 1)) {
+			if (!$this->helper->view($view) && $this->params->get('overwrite_readmore', 1)) {
 				//make sure the read more link is enabled for this article
 
 				if (!empty($show_readmore) && !empty($readmore_catch)) {
@@ -1243,7 +1233,7 @@ HTML;
 				}
 			}
 
-			if($view == $this->view() && $this->params->get('show_posts') && $this->params->get('show_refresh_link', 1) && $threadinfo->published) {
+			if($this->helper->view($view) && $this->params->get('show_posts') && $this->params->get('show_refresh_link', 1) && $threadinfo->published) {
 				$this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
 				$this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts(' . $this->article->id . ');';
 				$this->helper->output['buttons']['refresh']['text'] = JText::_('REFRESH_POSTS');
@@ -1259,7 +1249,7 @@ HTML;
 					 */
 					$platform = Factory::getPlayform('Joomla', $this->jname);
 
-					if ($view == $this->view()) {
+					if ($this->helper->view($view)) {
 						if ($link_mode == 'article' || $link_mode == 'always') {
 							if ($this->params->get('enable_comment_in_forum_button', 0)) {
 								$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
@@ -1302,7 +1292,7 @@ HTML;
 				}
 
 				//show comments link
-				if ($view == $this->view() && $this->params->get('show_posts') && $this->params->get('show_toggle_posts_link', 1) && $threadinfo->published) {
+				if ($this->helper->view($view) && $this->params->get('show_posts') && $this->params->get('show_toggle_posts_link', 1) && $threadinfo->published) {
 					$this->helper->output['buttons']['showreplies']['href'] = 'javascript: void(0);';
 					$this->helper->output['buttons']['showreplies']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(' . $this->article->id . ');';
 

@@ -575,7 +575,7 @@ HTML;
 
 		}
 		$quickReply = Factory::getApplication()->input->post->get('quickReply', '');
-	   	$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">' . $quickReply . '</textarea><br />';
+	   	$html .= '<textarea name="quickReply" class="inputbox quickReply" rows="15" cols="100">' . $quickReply . '</textarea><br />';
 	   	return $html;
 	}
 

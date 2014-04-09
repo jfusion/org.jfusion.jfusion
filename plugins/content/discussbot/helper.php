@@ -581,16 +581,11 @@ class JFusionDiscussBotHelper {
 			$this->debug('Loading scripts into header');
 
 			$view = JFactory::getApplication()->input->get('view');
-			$test_view = (strpos($this->context, 'com_k2') === 0) ? 'item' : 'article';
-
-			$jumpto_discussion = JFactory::getApplication()->input->post->getInt('jumpto_discussion', '0');
 
 			$js = <<<JS
 		        JFusion.view = '{$view}';
-		        JFusion.jumptoDiscussion = {$jumpto_discussion};
 		        JFusion.enablePagination = {$this->params->get('enable_pagination', 0)};
 		        JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
-				JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
 JS;
 
 			JFusionFunction::loadJavascriptLanguage(array('BUTTON_CANCEL', 'BUTTON_INITIATE',
@@ -614,16 +609,10 @@ JS;
 				$js .= $platform->loadQuickReplyIncludes();
 			}
 
-			if ($view == $test_view) {
+			if ($this->view($view)) {
 				$js .= <<<JS
 				window.addEvent('domready', function() {
         				JFusion.initializeDiscussbot();
-    				});
-JS;
-			} else {
-				$js .= <<<JS
-				window.addEvent('domready', function() {
-        				JFusion.initializeConfirmationBoxes();
     				});
 JS;
 			}
@@ -677,6 +666,23 @@ JS;
 				$session->set('jfusion.discussion.debug.' . $this->article->id, $this->debugger->get());
 			}
 		}
+	}
+
+	/**
+	 * Returns the view for compare
+	 *
+	 * @param $view
+	 *
+	 * @return boolean
+	 */
+	public function view($view) {
+		if (strpos($this->context, 'com_k2') === 0) {
+			$views = array('item');
+		} else {
+			$views = array('article',
+				'featured');
+		}
+		return in_array($view, $views);
 	}
 }
 

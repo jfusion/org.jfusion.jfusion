@@ -4,7 +4,7 @@
  */
 //var_dump($this->output['buttons']);
 foreach ($this->output['buttons'] AS $name => $html) {
-	$id = ucfirst($name) . $this->article->id;
+	$id = ucfirst($name);
 
 	$extras = '';
 	if(isset($html['js'])) {
@@ -14,7 +14,7 @@ foreach ($this->output['buttons'] AS $name => $html) {
 	}
 
 	$html =<<<HTML
-	<a id="jfusionBtn{$id}" class="readon jfusionButton" target="{$html['target']}" {$extras} href="{$html['href']}"><span>{$html['text']}</span></a>
+	<a class="readon jfusionButton jfusionBtn{$id}" target="{$html['target']}" {$extras} href="{$html['href']}"><span>{$html['text']}</span></a>
 HTML;
 	echo $html;
 }
