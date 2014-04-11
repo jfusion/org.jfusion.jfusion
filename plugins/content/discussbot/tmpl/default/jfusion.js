@@ -11,7 +11,7 @@ JFusion.highlightDelay = 500;
 
 JFusion.articelUrl = [];
 
-JFusion.onSuccess = function (id, JSONobject) {
+JFusion.onSuccess = function (JSONobject, id) {
     if (!JSONobject.success && JSONobject.message) {
         if (!JSONobject.messages) {
             JSONobject.messages = {};
@@ -26,7 +26,7 @@ JFusion.onSuccess = function (id, JSONobject) {
     }
 };
 
-JFusion.OnError = function (id, messages) {
+JFusion.OnError = function (messages, id) {
     JFusion.emptyMessage(id);
 
     var message = {};
@@ -148,11 +148,11 @@ JFusion.refreshPosts = function (id) {
         url: JFusion.articelUrl[id],
         noCache: true,
         onSuccess: function (JSONobject) {
-            JFusion.onSuccess(JSONobject);
+            JFusion.onSuccess(JSONobject, id);
             JFusion.updateContent(JSONobject);
         },
         onError: function (JSONobject) {
-            JFusion.OnError(JSONobject);
+            JFusion.OnError(JSONobject, id);
         }
     }).post({'tmpl': 'component',
             'ajax_request': '1',
@@ -294,7 +294,7 @@ JFusion.submitAjaxRequest = function (id, task, vars) {
         url: url,
         noCache: true,
         onSuccess: function (JSONobject) {
-            JFusion.onSuccess(JSONobject);
+            JFusion.onSuccess(JSONobject, id);
             if (JSONobject.success) {
                 window.location = url;
             }
@@ -364,14 +364,14 @@ JFusion.pagination = function (id) {
         url: JFusion.articelUrl[id],
         noCache: true,
         onSuccess : function (JSONobject) {
-            JFusion.onSuccess(JSONobject);
+            JFusion.onSuccessJSONobject, (id);
             JFusion.updateContent(JSONobject);
             if (JSONobject.success) {
                 JFusion.changeHash('jfusioncontent' + id);
             }
         },
         onError: function (JSONobject) {
-            JFusion.OnError(JSONobject);
+            JFusion.OnError(JSONobject, id);
         }
     }).post($('jfusionPaginationForm').toQueryString() + '&tmpl=component&ajax_request=1&dbtask=update_posts');
 };
@@ -392,7 +392,7 @@ JFusion.submitReply = function (id) {
             url: JFusion.articelUrl[id],
             noCache: true,
             onSuccess: function (JSONobject) {
-                JFusion.onSuccess(JSONobject);
+                JFusion.onSuccess(JSONobject, id);
                 JFusion.updateContent(JSONobject);
                 if (JSONobject.success) {
                     var quickReply = content.getElement('.quickReply');
@@ -402,7 +402,7 @@ JFusion.submitReply = function (id) {
                 }
             },
             onError: function (JSONobject) {
-                JFusion.OnError(JSONobject);
+                JFusion.OnError(JSONobject, id);
             }
         }).post(form.toQueryString() + '&tmpl=component&ajax_request=1');
     }
