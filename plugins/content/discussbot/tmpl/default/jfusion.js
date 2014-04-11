@@ -364,7 +364,7 @@ JFusion.pagination = function (id) {
         url: JFusion.articelUrl[id],
         noCache: true,
         onSuccess : function (JSONobject) {
-            JFusion.onSuccessJSONobject, (id);
+            JFusion.onSuccess(JSONobject, id);
             JFusion.updateContent(JSONobject);
             if (JSONobject.success) {
                 JFusion.changeHash('jfusioncontent' + id);
