@@ -653,7 +653,8 @@ JS;
 			$views = array('item');
 		} else {
 			$views = array('article',
-				'featured');
+				'featured',
+				'category');
 		}
 		return in_array($view, $views);
 	}

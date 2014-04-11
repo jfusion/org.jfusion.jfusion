@@ -346,6 +346,14 @@ class plgContentJfusion extends JPlugin
 						}
 					}
 				}
+
+				$this->article->text = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->text);
+				if (isset($this->article->introtext)) {
+					$this->article->introtext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->introtext);
+				}
+				if (isset($this->article->fulltext)) {
+					$this->article->fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->fulltext);
+				}
 			}
 		} catch (Exception $e) {
 			if ($this->ajax_request) {
@@ -354,14 +362,6 @@ class plgContentJfusion extends JPlugin
 			} else {
 				JFusionFunction::raiseError($e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
 			}
-		}
-
-		$this->article->text = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->text);
-		if (isset($this->article->introtext)) {
-			$this->article->introtext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->introtext);
-		}
-		if (isset($this->article->fulltext)) {
-			$this->article->fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->fulltext);
 		}
 	}
 
@@ -909,18 +909,18 @@ HTML;
 				$JSession->set('jfusion.discussion.visibility', 1);
 			}
 
-			$content = '<div style="float:none; display:' . $display . ';" id="jfusioncontent' . $this->article->id . '">';
+			$content = '<div style="float:none; display:' . $display . ';" class="jfusionposts">';
 
 			if ($generate_guts) {
 				$content .= $this->renderDiscussionContent();
 			}
 			$content .= '</div>';
 			//now generate the buttons in case the thread was just created
-			$button_content  = $this->renderButtons();
-			$content = $button_content . $content;
+			$content = $this->renderButtons() . $content;
 		} else {
 			$content = $this->renderButtons();
 		}
+		$content = '<div id="jfusioncontent' . $this->article->id . '">' . $content . '</div>';
 		return $content;
 	}
 
@@ -978,7 +978,7 @@ HTML;
 						$submit = JText::_('SUBMIT');
 
 						$this->helper->output['reply_form'] =<<<HTML
-						<form id="jfusionQuickReply{$this->article->id}" name="jfusionQuickReply{$this->article->id}" method="post" action="{$action_url}">
+						<form class="jfusionQuickReplyForm" name="jfusionQuickReply{$this->article->id}" method="post" action="{$action_url}">
 							<input type="hidden" name="dbtask" value="create_post" />
 							{$limitstart}
 							{$showall}
@@ -1278,7 +1278,7 @@ HTML;
                 <div class="jfusionclearfix jfusionButtonArea">
                     {$this->helper->renderFile('default_buttons.php')}
                 </div>
-                <div class="jfusionclearfix jfusionButtonConfirmationBox" style="display: none;" id="jfusionButtonConfirmationBox">
+                <div class="jfusionclearfix jfusionButtonConfirmationBox" style="display: none;">
                 </div>
 HTML;
 			}

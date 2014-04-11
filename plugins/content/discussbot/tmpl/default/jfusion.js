@@ -61,7 +61,7 @@ JFusion.renderMessages = function (id, messages) {
             });
             h4.inject(div);
             var divList = new Element('div');
-            Array.each(item, function (item, index, object) {
+            Array.each(item, function (item) {
                 var p = new Element('p', {
                     html: item
                 });
@@ -163,7 +163,7 @@ JFusion.confirmThreadAction = function (id, task, vars) {
     var container, divBtnContainer, msg;
     var content = $('jfusioncontent' + id);
     if (content) {
-        container = content.getElement('#jfusionButtonConfirmationBox');
+        container = content.getElement('.jfusionButtonConfirmationBox');
         if (container) {
             //clear anything already there
             container.empty();
@@ -280,7 +280,7 @@ JFusion.confirmThreadAction = function (id, task, vars) {
 JFusion.clearConfirmationBox = function (id) {
     var content = $('jfusioncontent' + id);
     if (content) {
-        var container = content.getElement('#jfusionButtonConfirmationBox');
+        var container = content.getElement('.jfusionButtonConfirmationBox');
         if (container) {
             container.empty();
         }
@@ -310,29 +310,34 @@ JFusion.toggleDiscussionVisibility = function (id, discusslink) {
     var showdiscussion, jfusionBtnShowreplies;
     var content = $('jfusioncontent' + id);
     if (content) {
-        jfusionBtnShowreplies = content.getElement('.jfusionBtnShowreplies');
-        content.toggle();
-        if (content.isDisplayed()) {
-            jfusionBtnShowreplies.set('html', Joomla.JText._('HIDE_REPLIES'));
-            showdiscussion = 1;
-        } else {
-            jfusionBtnShowreplies.set('html', Joomla.JText._('SHOW_REPLIES'));
-            showdiscussion = 0;
-        }
-        if (discusslink !== undefined) {
-            showdiscussion = 1;
-        }
-        new Request.JSON({
-            url: JFusion.articelUrl[id],
-            noCache: true,
-            onComplete: function () {
-                if (discusslink !== undefined) {
-                    window.location = discusslink;
+        var posts = content.getElement('.jfusionposts');
+        if (posts) {
+            jfusionBtnShowreplies = content.getElement('.jfusionBtnShowreplies');
+            if (jfusionBtnShowreplies) {
+                posts.toggle();
+                if (posts.isDisplayed()) {
+                    jfusionBtnShowreplies.set('html', Joomla.JText._('HIDE_REPLIES'));
+                    showdiscussion = 1;
+                } else {
+                    jfusionBtnShowreplies.set('html', Joomla.JText._('SHOW_REPLIES'));
+                    showdiscussion = 0;
                 }
+                if (discusslink !== undefined) {
+                    showdiscussion = 1;
+                }
+                new Request.JSON({
+                    url: JFusion.articelUrl[id],
+                    noCache: true,
+                    onComplete: function () {
+                        if (discusslink !== undefined) {
+                            window.location = discusslink;
+                        }
+                    }
+                }).post({'tmpl': 'component',
+                        'ajax_request': 1,
+                        'show_discussion': showdiscussion});
             }
-        }).post({'tmpl': 'component',
-                'ajax_request': 1,
-                'show_discussion': showdiscussion});
+        }
     } else {
         if (discusslink !== undefined) {
             window.location = discusslink;
@@ -372,9 +377,9 @@ JFusion.pagination = function (id) {
 };
 
 JFusion.submitReply = function (id) {
-    var content = $('jfusionQuickReply' + id);
+    var content = $('jfusioncontent' + id);
     if (content) {
-        var form = content.getElement('#jfusionQuickReply' + id);
+        var form = content.getElement('.jfusionQuickReplyForm');
         //show a loading
         JFusion.emptyMessage(id);
 
