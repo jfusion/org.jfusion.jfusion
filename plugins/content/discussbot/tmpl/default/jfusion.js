@@ -379,7 +379,7 @@ JFusion.pagination = function (id) {
 JFusion.submitReply = function (id) {
     var content = $('jfusioncontent' + id);
     if (content) {
-        var form = content.getElement('.jfusionQuickReplyForm');
+        var form = content.getElement('#jfusionQuickReply' + id);
         //show a loading
         JFusion.emptyMessage(id);
 

@@ -978,7 +978,7 @@ HTML;
 						$submit = JText::_('SUBMIT');
 
 						$this->helper->output['reply_form'] =<<<HTML
-						<form class="jfusionQuickReplyForm" name="jfusionQuickReply{$this->article->id}" method="post" action="{$action_url}">
+						<form id="jfusionQuickReply{$this->article->id}" name="jfusionQuickReply{$this->article->id}" method="post" action="{$action_url}">
 							<input type="hidden" name="dbtask" value="create_post" />
 							{$limitstart}
 							{$showall}
