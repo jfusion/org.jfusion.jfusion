@@ -351,6 +351,13 @@ class plgContentJfusion extends JPlugin
 						}
 					}
 				}
+				$this->article->text = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->text);
+				if (isset($this->article->introtext)) {
+					$this->article->introtext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->introtext);
+				}
+				if (isset($this->article->fulltext)) {
+					$this->article->fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $this->article->fulltext);
+				}
 			}
 		} catch (Exception $e) {
 			if ($this->ajax_request) {
@@ -359,14 +366,6 @@ class plgContentJfusion extends JPlugin
 			} else {
 				Framework::raiseError($e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
 			}
-		}
-
-		$article->text = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $article->text);
-		if (isset($this->article->introtext)) {
-			$article->introtext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $article->introtext);
-		}
-		if (isset($this->article->fulltext)) {
-			$article->fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U', '', $article->fulltext);
 		}
 	}
 
@@ -933,7 +932,7 @@ HTML;
 				$JSession->set('jfusion.discussion.visibility', 1);
 			}
 
-			$content = '<div style="float:none; display:' . $display . ';" id="discussion">';
+			$content = '<div style="float:none; display:' . $display . ';" class="jfusionposts">';
 
 			if ($generate_guts) {
 				$content .= $this->renderDiscussionContent();
@@ -941,12 +940,11 @@ HTML;
 
 			$content .= '</div>';
 			//now generate the buttons in case the thread was just created
-			$button_content  = $this->renderButtons();
-			$content = $button_content . $content;
+			$content = $this->renderButtons() . $content;
 		} else {
 			$content = $this->renderButtons();
 		}
-
+		$content = '<div id="jfusioncontent' . $this->article->id . '">' . $content . '</div>';
 		return $content;
 	}
 
@@ -1312,7 +1310,7 @@ HTML;
                 <div class="jfusionclearfix" id="jfusionButtonArea{$this->article->id}">
                     {$this->helper->renderFile('default_buttons.php')}
                 </div>
-                <div class="jfusionclearfix jfusionButtonConfirmationBox" style="display: none;" id="jfusionButtonConfirmationBox{$this->article->id}">
+                <div class="jfusionclearfix jfusionButtonConfirmationBox" style="display: none;">
                 </div>
 HTML;
 			}
