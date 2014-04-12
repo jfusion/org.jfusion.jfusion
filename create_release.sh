@@ -61,12 +61,15 @@ TIMESTAMP=$(date +%s)
 case $1 in
 	clear_packages)
 		echo "delete old package zip files"
-		rm ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip
-		
+		if [ -e ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip ]; then
+			rm ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip
+		fi
 		;;
 	clear_main)
 		echo "delete old main zip files"
-		rm ${FULLPATH}/*.zip
+		if [ -e ${FULLPATH}/*.zip ]; then
+        	rm ${FULLPATH}/*.zip
+		fi
 
 		;;
 	clear)
