@@ -73,14 +73,7 @@ goto end
 	call :createMain
 goto end
 
-:end
-echo Complete
-
 :createPackages
-	if exist %FULLPATH%pluginpackages\*.zip (
-		del "%FULLPATH%pluginpackages\*.zip"
-	)
-
 	echo Create the new packages for the plugins and module
 
 	call :CreatePackage modules\mod_jfusion_activity\* administrator\components\com_jfusion\packages\jfusion_mod_activity.zip mod_jfusion_activity
@@ -141,7 +134,7 @@ endlocal & goto :EOF
 
 	echo Create the new master package
 
-	del %FULLPATH%*.zip
+	call :clearMain
 
 	7za a "%FULLPATH%jfusion_package.zip" .\tmp\* -xr!*.svn* > NUL
 
@@ -197,4 +190,16 @@ endlocal & goto :EOF
 	if exist %FULLPATH%administrator\components\com_jfusion\packages\*.zip (
     	del "%FULLPATH%administrator\components\com_jfusion\packages\*.zip"
 	)
+		if exist %FULLPATH%pluginpackages\*.zip (
+    		del "%FULLPATH%pluginpackages\*.zip"
+    	)
 endlocal & goto :EOF
+
+:clearMain
+	if exist %FULLPATH%*.zip (
+    	del "%FULLPATH%*.zip"
+	)
+endlocal & goto :EOF
+
+:end
+echo Complete
