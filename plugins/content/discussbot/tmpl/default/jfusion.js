@@ -359,21 +359,28 @@ JFusion.quote = function (id, pid) {
     }
 };
 
-JFusion.pagination = function (id) {
-    new Request.JSON({
-        url: JFusion.articelUrl[id],
-        noCache: true,
-        onSuccess : function (JSONobject) {
-            JFusion.onSuccess(JSONobject, id);
-            JFusion.updateContent(JSONobject);
-            if (JSONobject.success) {
-                JFusion.changeHash('jfusioncontent' + id);
-            }
-        },
-        onError: function (JSONobject) {
-            JFusion.OnError(JSONobject, id);
+JFusion.pagination = function (id, limitstart) {
+    var content = $('jfusioncontent' + id);
+    if (content) {
+        var form = content.getElement('.jfusionPagination');
+        if (form) {
+            form.limitstart_discuss.set('value', limitstart);
+            new Request.JSON({
+                url: JFusion.articelUrl[id],
+                noCache: true,
+                onSuccess : function (JSONobject) {
+                    JFusion.onSuccess(JSONobject, id);
+                    JFusion.updateContent(JSONobject);
+                    if (JSONobject.success) {
+                        JFusion.changeHash('jfusioncontent' + id);
+                    }
+                },
+                onError: function (JSONobject) {
+                    JFusion.OnError(JSONobject, id);
+                }
+            }).post($('jfusionPaginationForm').toQueryString() + '&tmpl=component&ajax_request=1&dbtask=update_posts');
         }
-    }).post($('jfusionPaginationForm').toQueryString() + '&tmpl=component&ajax_request=1&dbtask=update_posts');
+    }
 };
 
 JFusion.submitReply = function (id) {

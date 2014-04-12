@@ -1466,7 +1466,11 @@ HTML;
 	 */
 	public function updatePagination($xhtml = false)
 	{
-		$action_url = $this->helper->getArticleUrl('', '', $xhtml);
+		$joomla_text = (isset($this->article->fulltext) && !empty($this->article->fulltext)) ? $this->article->fulltext : $this->article->text;
+		$pagebreaks = substr_count($joomla_text, 'system-pagebreak');
+		$query = ($pagebreaks) ? '&limitstart=' . $pagebreaks : '';
+
+		$action_url = $this->helper->getArticleUrl('jfusioncontent' . $this->article->id, $query, $xhtml);
 		$application = JFactory::getApplication();
 
 		$limit = (int) $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
@@ -1477,7 +1481,7 @@ HTML;
 			$footer = $pageNav->getListFooter();
 
 			$pagination =<<<HTML
-				<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="{$action_url}">
+				<form method="post" class="jfusionPagination" name="jfusionPagination" action="{$action_url}">
 					{$footer}
 				</form>
 HTML;

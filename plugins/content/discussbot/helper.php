@@ -850,9 +850,9 @@ HTML;
 	public function jfusion_item_active(&$item)
 	{
 		if($item->base>0) {
-			return '<a href="#" title="' . $item->text . '" onclick="javascript: document.jfusionPaginationForm.limitstart' . $this->identifier . '.value=' . $item->base . '; JFusion.pagination(' . $this->articleid . '); return false;">' . $item->text . '</a>';
+			return '<a href="#" title="' . $item->text . '" onclick="javascript: JFusion.pagination(' . $this->articleid . ', ' . $item->base . '); return false;">' . $item->text . '</a>';
 		} else {
-			return '<a href="#" title="' . $item->text . '" onclick="javascript: document.jfusionPaginationForm.limitstart' . $this->identifier . '.value=0; JFusion.pagination(' . $this->articleid . '); return false;">' . $item->text . '</a>';
+			return '<a href="#" title="' . $item->text . '" onclick="javascript: JFusion.pagination(' . $this->articleid . ', 0); return false;">' . $item->text . '</a>';
 		}
 	}
 
