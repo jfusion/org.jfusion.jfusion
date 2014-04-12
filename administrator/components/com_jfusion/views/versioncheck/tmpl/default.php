@@ -316,43 +316,19 @@ echo JFusionFunctionAdmin::getDonationBanner();
 	<?php
 	}
 	?>
-	<br/><br/><br/>
-	<table style="background-color:#ffffce;width:100%;">
-	    <tr>
-	        <td width="50px">
-	            <img src="components/com_jfusion/images/advanced.png" height="75" width="75">
-	        </td>
-	        <td>
-	            <h3>
-	                <?php echo JText::_('ADVANCED') . ' ' . JText::_('VERSION') . ' ' . JText::_('MANAGEMENT'); ?>
-	            </h3>
+	<form enctype="multipart/form-data" action="index.php" method="post" id="install" name="install">
+		<input type="hidden" name="install_url" value="" />
+		<input type="hidden" name="type" value="" />
+		<input type="hidden" name="installtype" value="url" />
+		<input type="hidden" name="task" value="install.install" />
+		<input type="hidden" name="option" value="com_installer" />
+		<?php echo JHTML::_('form.token'); ?>
+	</form>
 
-	            <form enctype="multipart/form-data" action="index.php" method="post" id="install" name="install">
-	                <input type="hidden" name="install_url" value="" />
-	                <input type="hidden" name="type" value="" />
-	                <input type="hidden" name="installtype" value="url" />
-		            <input type="hidden" name="task" value="install.install" />
-	                <input type="hidden" name="option" value="com_installer" />
-	                <?php echo JHTML::_('form.token'); ?>
-	                <strong>
-	                    <?php echo JText::_('ADVANCED_WARNING'); ?>
-	                </strong>
-	                <br/>
-	                <input id="build" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('LATEST') . ' ' . JText::_('DEVELOPMENT') . ' ' . JText::_('RELEASE'); ?>"/>
-	                <br/>
-		            <label for="git_tree">Git Tree:</label>
-	                <input id="git_tree" type="text" name="git_tree" size="40"/>
-	                <input id="git" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('SPECIFIC') . ' Git Tree'; ?>"/>
-	                <br/>
-	            </form>
-
-	            <form id="installPLUGIN" method="post" action="index.php" enctype="multipart/form-data">
-	                <input type="hidden" name="option" value="com_jfusion" />
-	                <input type="hidden" name="task" value="installplugin" />
-	                <input type="hidden" name="installtype" value="url" />
-	                <input type="hidden" id="installPLUGIN_url" name="install_url" class="input_box" size="150" value="" />
-	            </form>
-	        </td>
-	    </tr>
-	</table>
+	<form id="installPLUGIN" method="post" action="index.php" enctype="multipart/form-data">
+		<input type="hidden" name="option" value="com_jfusion" />
+		<input type="hidden" name="task" value="installplugin" />
+		<input type="hidden" name="installtype" value="url" />
+		<input type="hidden" id="installPLUGIN_url" name="install_url" class="input_box" size="150" value="" />
+	</form>
 </div>
