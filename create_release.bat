@@ -65,7 +65,6 @@ goto end
 goto end
 
 :CREATE_PACKAGES
-	call :clearackages
 	call :createPackages
 goto end
 
@@ -74,6 +73,8 @@ goto end
 goto end
 
 :createPackages
+	call :clearackages
+
 	echo Create the new packages for the plugins and module
 
 	call :CreatePackage modules\mod_jfusion_activity\* administrator\components\com_jfusion\packages\jfusion_mod_activity.zip mod_jfusion_activity
