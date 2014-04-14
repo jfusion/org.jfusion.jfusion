@@ -200,16 +200,10 @@ class plgSystemJfusion extends JPlugin
 			$platform = \JFusion\Factory::getPlayform('Joomla', $master->name);
 			if (method_exists($platform, 'setLanguageFrontEnd')) {
 				try {
-					$status = $platform->setLanguageFrontEnd($userinfo);
-					if (!empty($status['error'])) {
-						//could not set the language
-						\JFusion\Framework::raise('error', $status['error'], $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
-					}
+					$platform->setLanguageFrontEnd($userinfo);
 				} catch (Exception $e) {
 					\JFusion\Framework::raiseError($e, $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
 				}
-			} else {
-				$status['debug'][] = JText::_('METHOD_NOT_IMPLEMENTED') . ': ' . $master->name;
 			}
 			$slaves = \JFusion\Framework::getSlaves();
 			foreach($slaves as $slave) {
@@ -220,16 +214,10 @@ class plgSystemJfusion extends JPlugin
 				$platform = \JFusion\Factory::getPlayform('Joomla', $slave->name);
 				if (method_exists($platform, 'setLanguageFrontEnd')) {
 					try {
-						$status = $platform->setLanguageFrontEnd($userinfo);
-						if (!empty($status['error'])) {
-							//could not set the language
-							\JFusion\Framework::raise('error', $status['error'], $slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
-						}
+						$platform->setLanguageFrontEnd($userinfo);
 					} catch (Exception $e) {
 						\JFusion\Framework::raiseError($e, $slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
 					}
-				} else {
-					$status['debug'][] = JText::_('METHOD_NOT_IMPLEMENTED') . ': ' . $slave->name;
 				}
 			}
 		}

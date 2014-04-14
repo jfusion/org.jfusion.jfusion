@@ -140,7 +140,7 @@ class JFusionHook {
         //set our current phpBB3 filename
 	    $mainframe = \JFusion\Factory::getApplication();
 
-        $jfile = $mainframe->input->get('jfile');
+	    $jfile = $mainframe->input->get('jfile');
         if (empty($jfile)) {
             $jfile = 'index.php';
         }

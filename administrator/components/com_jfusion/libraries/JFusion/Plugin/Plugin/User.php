@@ -682,8 +682,7 @@ class Plugin_User extends Plugin
 		}
 		if (!empty($userinfo->language) && isset($existinguser->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
 			try {
-				$status = array('error' => array(), 'debug' => array());
-				$this->updateUserLanguage($userinfo, $existinguser, $status);
+				$this->updateUserLanguage($userinfo, $existinguser);
 				$existinguser->language = $userinfo->language;
 				$this->debugger->add('debug', Text::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
 
@@ -691,7 +690,6 @@ class Plugin_User extends Plugin
 			} catch (Exception $e) {
 				$this->debugger->add('error', Text::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
 			}
-			$this->mergeStatus($status);
 		} else {
 			//return a debug to inform we skipped this step
 			$this->debugger->add('debug', Text::_('LANGUAGE_NOT_UPDATED'));
@@ -704,9 +702,8 @@ class Plugin_User extends Plugin
      *
      * @param Userinfo $userinfo Object containing the existing userinfo
      * @param Userinfo $existinguser         Object JLanguage containing the current language of Joomla
-     * @param array  &$status      Array containing the errors and result of the function
      */
-    function updateUserLanguage(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updateUserLanguage(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
     }

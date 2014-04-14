@@ -59,19 +59,9 @@ class Usersync
      *
      * @return string nothing
      */
-    public static function getLogData($syncid, $type = 'all', $limitstart = null, $limit = null, $sort = 'id', $dir = '')
+    public static function getLogData($syncid, $type = 'all', $limitstart, $limit, $sort, $dir)
     {
         $db = Factory::getDBO();
-
-        if (empty($limit)) {
-            $mainframe = Factory::getApplication();
-            $client = Factory::getApplication()->input->getWord('filter_client', 'site');
-            $option = Factory::getApplication()->input->getCmd('option');
-            $sort = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order', 'filter_order', 'id', 'cmd');
-            $dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
-            $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', Factory::getConfig()->get('list_limit'), 'int');
-            $limitstart = 0;
-        }
 
 	    $query = $db->getQuery(true)
 		    ->select('*')
@@ -185,17 +175,22 @@ class Usersync
         return $syncdata;
     }
 
-    /**
-     * Fix sync errors
-     *
-     * @param string $syncid    the usersync id
-     * @param array $syncError the actual syncError data
-     *
-     * @return string nothing
-     */
-    public static function syncError($syncid, $syncError)
+	/**
+	 * Fix sync errors
+	 *
+	 * @param string $syncid    the usersync id
+	 * @param array  $syncError the actual syncError data
+	 *
+	 * @param        $limitstart
+	 * @param        $limit
+	 * @param        $sort
+	 * @param        $dir
+	 *
+	 * @return string nothing
+	 */
+    public static function syncError($syncid, $syncError, $limitstart, $limit, $sort, $dir)
     {
-	    $synclog = static::getLogData($syncid, 'error');
+	    $synclog = static::getLogData($syncid, 'error', $limitstart, $limit, $sort, $dir);
 	    foreach ($syncError as $id => $error) {
 		    try {
 			    if (isset($error['action']) && isset($synclog[$id]) && $error['action']) {

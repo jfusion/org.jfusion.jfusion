@@ -21,7 +21,6 @@ use JFusion\Framework;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
-use Joomla\Uri\Uri;
 use RuntimeException;
 use stdClass;
 
@@ -196,9 +195,12 @@ class User extends Plugin_User
 		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
 		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
 
-		$my_ID = rtrim(parse_url(Uri::root(), PHP_URL_HOST) . parse_url(Uri::root(), PHP_URL_PATH), '/');
-		$curl_options['jnodeid'] = $my_ID;
-		
+	    /**
+	     * TODO: CHANGE THIS SO THAT WE HAVE A WAY TO RETRIEVE "SYSTEM" Jnodeid from framework
+	     * $my_ID = rtrim(parse_url(JUri::root(), PHP_URL_HOST) . parse_url(Uri::root(), PHP_URL_PATH), '/');
+	     * $curl_options['jnodeid'] = $my_ID;
+	     */
+
 		$curl = new Curl($curl_options);
 		
 		$remotedata = $curl->ReadPage();

@@ -14,6 +14,7 @@
  */
 
 // no direct access
+use JFusion\Curl\Curl;
 use JFusion\Factory;
 use JFusion\Plugin\Platform\Joomla;
 use JText;
@@ -37,12 +38,9 @@ class Platform_Joomla extends Joomla
 	/**
 	 * @param null $userinfo
 	 *
-	 * @throws RuntimeException
-	 *
 	 * @return array|string
 	 */
 	function setLanguageFrontEnd($userinfo = null) {
-		$status = array('error' => '', 'debug' => '');
 		// The language is selected by the library magelib when the magento framework is started
 		/*if (JPluginHelper::isEnabled('system', 'magelib')) {
 			$status['debug'] = Text::_('STEP_SKIPPED_MAGELIB_INSTALLED');
@@ -61,7 +59,7 @@ class Platform_Joomla extends Joomla
 
 		$language_store_view = $this->params->get('language_store_view', '');
 		if (strlen($language_store_view) <= 0) {
-			$status['debug'] = JText::_('NO_STORE_LANGUAGE_LIST');
+			$this->debugger->add('debug', JText::_('NO_STORE_LANGUAGE_LIST'));
 		} else {
 			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 
@@ -81,8 +79,11 @@ class Platform_Joomla extends Joomla
 			$curl_options['expires'] = $this->params->get('cookie_expires');
 			$curl_options['secure'] = $this->params->get('secure');
 			$curl_options['httponly'] = $this->params->get('httponly');
+
+			$status = array('error' => '', 'debug' => '');
 			$status = Curl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
+
+			$this->mergeStatus($status);
 		}
-		return $status;
 	}
 }

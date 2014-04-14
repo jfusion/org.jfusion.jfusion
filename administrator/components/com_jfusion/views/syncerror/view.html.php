@@ -74,8 +74,8 @@ class jfusionViewsyncerror extends JViewLegacy
         $mainframe = JFactory::getApplication();
         $client = JFactory::getApplication()->input->getWord('filter_client', 'site');
         $option = JFactory::getApplication()->input->getCmd('option');
-        $filter_order = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order', 'filter_order', 'id', 'cmd');
-        $filter_order_Dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
+	    $sort = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order', 'filter_order', 'id', 'cmd');
+	    $dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
         $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', JFactory::getConfig()->get('list_limit'), 'int');
         $limitstart  = (int)$mainframe->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
 
@@ -85,8 +85,8 @@ class jfusionViewsyncerror extends JViewLegacy
 
 	    $this->pageNav = new JPagination($total, $limitstart, $limit);
 	    $this->syncdata = \JFusion\Usersync\Usersync::getSyncdata($this->syncid);
-	    $this->filter = array('order' => $filter_order, 'dir' => $filter_order_Dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);
-	    $this->synclog = \JFusion\Usersync\Usersync::getLogData($this->syncid, 'error', $limitstart, $limit, $filter_order, $filter_order_Dir);
+	    $this->filter = array('order' => $sort, 'dir' => $dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);
+	    $this->synclog = \JFusion\Usersync\Usersync::getLogData($this->syncid, 'error', $limitstart, $limit, $sort, $dir);
         parent::display($tpl);
     }
 }

@@ -73,7 +73,7 @@ class jfusionViewversioncheck extends JViewLegacy
 		$document = JFactory::getDocument();
 		$document->addScript('components/com_jfusion/views/' . $this->getName() . '/tmpl/default.js');
 
-		\JFusion\Framework::loadJavascriptLanguage(array('UPGRADE_CONFIRM_PLUGIN', 'UPGRADE_CONFIRM_BUILD', 'UPGRADE_CONFIRM_GIT', 'UPGRADE_CONFIRM_RELEASE', 'UPGRADE'));
+		\JFusionFunction::loadJavascriptLanguage(array('UPGRADE_CONFIRM_PLUGIN', 'UPGRADE_CONFIRM_BUILD', 'UPGRADE_CONFIRM_GIT', 'UPGRADE_CONFIRM_RELEASE', 'UPGRADE'));
 
 		$db = JFactory::getDBO();
 

@@ -76,7 +76,7 @@ class Platform_Joomla extends Joomla
 			$rows[$pos]->created = $search->getPageModifiedDateTime($key);
 			//dokuwiki doesn't track hits
 			$rows[$pos]->hits = 0;
-			$rows[$pos]->href = Framework::routeURL(str_replace(':', ';', $this->getSearchResultLink($key)), $itemid);
+			$rows[$pos]->href = \JFusionFunction::routeURL(str_replace(':', ';', $this->getSearchResultLink($key)), $itemid);
 			$rows[$pos]->section = JText::_($key);
 			$pos++;
 		}

@@ -511,12 +511,12 @@ HTML;
 	 * @param JRegistry $params      object with discussion bot parameters
 	 * @param stdClass $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
 	 * @param object $contentitem object of content item
-	 * @param object $userinfo    object info of the forum user
+	 * @param Userinfo $userinfo    object info of the forum user
 	 * @param stdClass $postinfo object with post info
 	 *
 	 * @return array with status
 	 */
-	function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
+	function createPost($params, $ids, $contentitem, Userinfo $userinfo, $postinfo)
 	{
         $status = array('error' => array(), 'debug' => array());
 		try {

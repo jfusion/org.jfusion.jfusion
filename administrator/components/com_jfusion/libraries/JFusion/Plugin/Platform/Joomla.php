@@ -749,12 +749,12 @@ JS;
 	 * @param JRegistry $params      object with discussion bot parameters
 	 * @param stdClass $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
 	 * @param object $contentitem object of content item
-	 * @param object $userinfo    object info of the forum user
+	 * @param Userinfo $userinfo    object info of the forum user
 	 * @param stdClass $postinfo object with post info
 	 *
 	 * @return array with status
 	 */
-	function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
+	function createPost($params, $ids, $contentitem, Userinfo $userinfo, $postinfo)
 	{
         $status = array('error' => array(), 'debug' => array());
         $status['debug'] = Text::_('METHOD_NOT_IMPLEMENTED');
@@ -861,15 +861,12 @@ JS;
 	 *
 	 * @param Userinfo $userinfo - it can be null if the user is not logged for example.
 	 *
-	 * @throws RuntimeException
-	 *
+	 * @throws \RuntimeException
 	 * @return array nothing
 	 */
 	function setLanguageFrontEnd(Userinfo $userinfo = null)
 	{
-		$status = array('error' => '', 'debug' => '');
-		$status['debug'] = Text::_('METHOD_NOT_IMPLEMENTED');
-		return $status;
+		throw new \RuntimeException(Text::_('METHOD_NOT_IMPLEMENTED'));
 	}
 
 	/************************************************
@@ -935,14 +932,15 @@ JS;
 		if (is_array($results)) {
 			foreach ($results as $result) {
 				//add a link
-				$href = Framework::routeURL($this->getSearchResultLink($result), $itemid, $this->getJname(), false);
+				$href = JFusionFunction::routeURL($this->getSearchResultLink($result), $itemid, $this->getJname(), false);
 				$result->href = $href;
 				//open link in same window
 				$result->browsernav = 2;
 				//clean up the text such as removing bbcode, etc
-				$this->prepareText($result->text, 'search', $pluginParam, $result);
-				$this->prepareText($result->title, 'search', $pluginParam, $result);
-				$this->prepareText($result->section, 'search', $pluginParam, $result);
+				$front = Factory::getFront($this->getJname());
+				$front->prepareText($result->text, 'search', $pluginParam, $result);
+				$front->prepareText($result->title, 'search', $pluginParam, $result);
+				$front->prepareText($result->section, 'search', $pluginParam, $result);
 			}
 		}
 		return $results;

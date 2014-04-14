@@ -994,8 +994,4 @@ class Framework
 
 		return substr($randomStr, 0, $length);
 	}
-
-	public static function getJoomlaURL()
-	{
-	}
 }

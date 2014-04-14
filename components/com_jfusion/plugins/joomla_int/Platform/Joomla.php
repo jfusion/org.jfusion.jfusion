@@ -223,23 +223,19 @@ class Platform_Joomla extends Joomla
 	 *
 	 * @param Userinfo $userinfo userinfo
 	 *
-	 * @throws RuntimeException
-	 *
 	 * @return array status
 	 */
 	public function setLanguageFrontEnd(Userinfo $userinfo = null)
 	{
-		$status = array('error' => '', 'debug' => '');
 		$user = Factory::getUser($this->getJname());
 		$existinguser = (isset($userinfo)) ? $user->getUser($userinfo) : null;
 		// If the user is connected we change his account parameter in function of the language front end
 		if ($userinfo instanceof Userinfo && $existinguser instanceof Userinfo) {
 			$userinfo->language = Factory::getLanguage()->getTag();
 
-			$user->updateUserLanguage($userinfo, $existinguser, $status);
+			$user->updateUserLanguage($userinfo, $existinguser);
 		} else {
-			$status['debug'] = JText::_('NO_USER_DATA_FOUND');
+			$this->debugger->add('debug', JText::_('NO_USER_DATA_FOUND'));
 		}
-		return $status;
 	}
 }

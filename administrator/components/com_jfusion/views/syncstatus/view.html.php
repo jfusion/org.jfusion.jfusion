@@ -77,11 +77,11 @@ class jfusionViewsyncstatus extends JViewLegacy
         $mainframe = JFactory::getApplication();
         $client = JFactory::getApplication()->input->getWord('filter_client', 'site');
         $option = JFactory::getApplication()->input->getCmd('option');
-        $filter_order = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order', 'filter_order', 'id', 'cmd');
-        $filter_order_Dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
+	    $sort = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order', 'filter_order', 'id', 'cmd');
+	    $dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
         $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', JFactory::getConfig()->get('list_limit'), 'int');
         $limitstart = (int)$mainframe->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
-        $syncdata['log'] = \JFusion\Usersync\Usersync::getLogData($this->syncid, 'all', $limitstart, $limit, $filter_order, $filter_order_Dir);
+        $syncdata['log'] = \JFusion\Usersync\Usersync::getLogData($this->syncid, 'all', $limitstart, $limit, $sort, $dir);
 
         $db = JFactory::getDBO();
 
@@ -95,7 +95,7 @@ class jfusionViewsyncstatus extends JViewLegacy
         jimport('joomla.html.pagination');
 
 	    $this->pageNav = new JPagination($total, $limitstart, $limit);
-	    $this->filter = array('order' => $filter_order, 'dir' => $filter_order_Dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);
+	    $this->filter = array('order' => $sort, 'dir' => $dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);
 	    $this->syncdata = $syncdata;
 
 	    $this->errorCount = \JFusion\Usersync\Usersync::countLogData($this->syncid, 'error');

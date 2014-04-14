@@ -759,7 +759,7 @@ class User extends Plugin_User
 		//Update the user language in the one existing from an other plugin
 		if (!empty($userinfo->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
 			try {
-				$this->updateUserLanguage($userinfo, $existinguser, $status);
+				$this->updateUserLanguage($userinfo, $existinguser);
 				$existinguser->language = $userinfo->language;
 				$this->debugger->add('debug', Text::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
 
@@ -784,9 +784,8 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	public function updateUserLanguage(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUserLanguage(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$db = Factory::getDatabase($this->getJname());
 		$params = new JRegistry($existinguser->params);

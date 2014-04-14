@@ -199,12 +199,12 @@ class Platform_Joomla extends Joomla
      * @param JRegistry $params
      * @param stdClass $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
      * @param object $contentitem
-     * @param object $userinfo
+     * @param Userinfo $userinfo
      * @param stdClass $postinfo object with post info
      *
      * @return array
      */
-    function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
+    function createPost($params, $ids, $contentitem, Userinfo $userinfo, $postinfo)
     {
         $status = array('error' => array(), 'debug' => array());
 	    try {

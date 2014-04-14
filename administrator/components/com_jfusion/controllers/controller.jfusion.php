@@ -346,8 +346,18 @@ class JFusionController extends JControllerLegacy
 	    try {
 		    $syncError = JFactory::getApplication()->input->post->get('syncError', array(), 'array');
 		    if ($syncError) {
+			    //append log
+			    $mainframe = JFactory::getApplication();
+			    $client = JFactory::getApplication()->input->getWord('filter_client', 'site');
+			    $option = JFactory::getApplication()->input->getCmd('option');
+
+			    $limitstart  = (int)$mainframe->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
+			    $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', JFactory::getConfig()->get('list_limit'), 'int');
+			    $sort = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order', 'filter_order', 'id', 'cmd');
+			    $dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
+
 			    //apply the submitted sync error instructions
-			    \JFusion\Usersync\Usersync::syncError($syncid, $syncError);
+			    \JFusion\Usersync\Usersync::syncError($syncid, $syncError, $limitstart, $limit, $sort, $dir);
 		    }
 		    $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid=' . $syncid);
 	    } catch (Exception $e) {

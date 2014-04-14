@@ -144,6 +144,7 @@ class Tar extends PEAR
         }
         $this->_tarname = $p_tarname;
         if ($this->_compress) { // assert zlib or bz2 extension support
+	        $extname = null;
             if ($this->_compress_type == 'gz')
                 $extname = 'zlib';
             else if ($this->_compress_type == 'bz2')
@@ -1689,7 +1690,7 @@ class Tar extends PEAR
 							  . '.tmp\'');
                 return false;
             }
-
+	        $v_temp_tar = 0;
             if ($this->_compress_type == 'gz')
                 $v_temp_tar = @gzopen($this->_tarname.".tmp", "rb");
             elseif ($this->_compress_type == 'bz2')
