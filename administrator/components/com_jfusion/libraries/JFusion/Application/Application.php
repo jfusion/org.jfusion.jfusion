@@ -10,8 +10,6 @@
 use JFusion\Factory;
 use Joomla\Event\Event;
 use Joomla\Input\Input;
-use JFusion\Session\Session;
-
 
 /**
  * Joomla! CMS Application class
@@ -34,6 +32,11 @@ class Application
 	private $messageStatus = true;
 
 	/**
+	 * @var Input $input
+	 */
+	public $input = null;
+
+	/**
 	 * Class constructor.
 	 *
 	 * @param   mixed  $input   An optional argument to provide dependency injection for the application's
@@ -53,8 +56,6 @@ class Application
 		{
 			$this->input = new Input;
 		}
-
-		$this->session = Session::getInstance();
 	}
 
 	/**
@@ -86,9 +87,7 @@ class Application
 	}
 
 	/**
-	 * Returns a reference to the global JApplicationCms object, only creating it if it doesn't already exist.
-	 *
-	 * This method must be invoked as: $web = JApplicationCms::getInstance();
+	 * Returns a reference to the global Application object, only creating it if it doesn't already exist.
 	 *
 	 * @return  Application
 	 */
@@ -111,8 +110,8 @@ class Application
 	public function isAdmin()
 	{
 		$event = new Event('onApplicationIsAdmin');
-		$responce = Factory::getDispatcher()->triggerEvent($event);
-		return $responce->getArgument('admin', false);
+		Factory::getDispatcher()->triggerEvent($event);
+		return $event->getArgument('admin', false);
 	}
 
 	/**
