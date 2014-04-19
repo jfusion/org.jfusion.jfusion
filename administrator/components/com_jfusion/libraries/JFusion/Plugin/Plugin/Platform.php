@@ -25,6 +25,22 @@
  */
 class Plugin_Platform extends Plugin
 {
+	/**
+	 * framework has file?
+	 *
+	 * @param $file
+	 *
+	 * @return boolean|string
+	 */
+	final public function hasFile($file)
+	{
+		$helloReflection = new \ReflectionClass($this);
+		$dir = dirname($helloReflection->getFilename());
+		if(file_exists($dir . '/' . $file)) {
+			return $dir . '/' . $file;
+		}
+		return false;
+	}
 
 	/**
 	 * Called when JFusion is uninstalled so that plugins can run uninstall processes such as removing auth mods

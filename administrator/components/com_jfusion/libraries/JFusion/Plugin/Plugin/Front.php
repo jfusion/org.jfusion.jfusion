@@ -13,18 +13,15 @@
  * @link      http://www.jfusion.org
  */
 
-use JFactory;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
+use Joomla\Uri\Uri;
 use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Filesystem\Path;
 use Joomla\Language\Text;
 
 use JFusion\Parser\Css;
-use JMenu;
-use JRegistry;
-use JUri;
 use \stdClass;
 
 /**
@@ -95,7 +92,7 @@ class Plugin_Front extends Plugin
 		$replace_body = array();
 		$callback_body = array();
 
-		$siteuri = new JUri($data->integratedURL);
+		$siteuri = new Uri($data->integratedURL);
 		$path = $siteuri->getPath();
 
 		//parse anchors
@@ -228,7 +225,7 @@ class Plugin_Front extends Plugin
         $callback_header = array();
 
         //convert relative links into absolute links
-	    $siteuri = new JUri($data->integratedURL);
+	    $siteuri = new Uri($data->integratedURL);
 	    $path = $siteuri->getPath();
 
 	    $regex_header[]	= '#(href|src)=(?<quote>["\'])' . $path . '(.*?)(\k<quote>)#Si';
@@ -362,15 +359,13 @@ JS;
             //Outputs: apearpearle pear
             if ($data->parse_css) {
                 if (preg_match_all('#<link(.*?type=[\'|"]text\/css[\'|"][^>]*)>#Si', $html, $css)) {
-                    require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'css.php');
-
                     jimport('joomla.filesystem.file');
                     foreach ($css[1] as $values) {
 	                    if( preg_match('#href=[\'|"](.*?)[\'|"]#Si', $values, $cssUrl)) {
 		                    $cssUrlRaw = $cssUrl[1];
 
 		                    if (strpos($cssUrlRaw, '/') === 0) {
-			                    $uri = new JUri($data->integratedURL);
+			                    $uri = new Uri($data->integratedURL);
 
 			                    $cssUrlRaw = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port')) . $cssUrlRaw;
 		                    }
@@ -396,7 +391,6 @@ JS;
         }
         if ($data->parse_infile_css) {
             if (preg_match_all('#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', $html, $css)) {
-                require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'css.php');
                 foreach ($css[1] as $key => $values) {
                     $filename = md5($values) . '.css';
                     $filenamesource = $sourcepath . 'infile' . DIRECTORY_SEPARATOR . $filename;
@@ -429,7 +423,7 @@ JS;
 	 * @return string
 	 */
 	function cssCacheName($url) {
-		$uri = new JUri($url);
+		$uri = new Uri($url);
 		$filename = $uri->toString(array('path', 'query'));
 		$filename = trim($filename, '/');
 
@@ -530,7 +524,7 @@ JS;
             $options = array();
             if (!empty($params) && $params->get('character_limit', false)) {
                 $status['limit_applied'] = 1;
-	                            $options['character_limit'] = $params->get('character_limit');
+				$options['character_limit'] = $params->get('character_limit');
             }
             $text = Framework::parseCode($text, 'html', $options);
         } elseif ($for == 'search') {
@@ -707,7 +701,7 @@ HTML;
             $q = str_replace('?', '&amp;', $q);
             $url = $this->data->baseURL . '&amp;jfile=' . $q;
         } elseif ($this->data->sefmode == 1) {
-            $url = Framework::routeURL($q, Factory::getApplication()->input->getInt('Itemid'));
+            $url = Factory::getApplication()->routeURL($q, Factory::getApplication()->input->getInt('Itemid'));
         } else {
             //we can just append both variables
             $url = $this->data->baseURL . $q;
@@ -746,7 +740,7 @@ HTML;
         } else {
             if ($this->data->sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = Framework::routeURL($url, $Itemid);
+                $url = Factory::getApplication()->routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {
@@ -782,7 +776,7 @@ HTML;
         preg_match('#(.*?;url=)(.*)#mi', $matches[1], $matches2);
         list(, $timeout , $url) = $matches2;
 
-        $uri = new JUri($url);
+        $uri = new Uri($url);
         $jfile = basename($uri->getPath());
         $query = $uri->getQuery(false);
         $fragment = $uri->getFragment();
@@ -801,7 +795,7 @@ HTML;
                 if (!empty($query)) {
                     $url.= '?' . $query;
                 }
-                $url = Framework::routeURL($url, Factory::getApplication()->input->getInt('Itemid'));
+                $url = Factory::getApplication()->routeURL($url, Factory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $url = $baseURL . $jfile;
@@ -859,7 +853,7 @@ HTML;
 		$config = Factory::getConfig();
 		$sefenabled = $config->get('sef');
 		if(!empty($sefenabled)) {
-			$uri = JUri::getInstance();
+			$uri = \JUri::getInstance();
 			$current = $uri->toString(array('path', 'query'));
 
 			$menu = JMenu::getInstance('site');
@@ -867,7 +861,7 @@ HTML;
 			$index = '/' . $item->route;
 			$pos = strpos($current, $index);
 			if ($pos !== false) {
-				$current = substr($current, $pos+strlen($index));
+				$current = substr($current, $pos + strlen($index));
 			}
 			$current = ltrim($current , '/');
 		} else {
@@ -1061,7 +1055,7 @@ HTML;
 		$regex_input = array();
 		$replace_input = array();
 
-		$uri = new JUri($data->source_url);
+		$uri = new Uri($data->source_url);
 
 		$search = array();
 		$search[] = preg_quote($uri->getPath(), '#');

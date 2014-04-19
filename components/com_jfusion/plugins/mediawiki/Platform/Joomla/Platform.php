@@ -1,4 +1,4 @@
-<?php namespace JFusion\Plugins\mediawiki;
+<?php namespace JFusion\Plugins\mediawiki\Platform\Joomla;
 
 // no direct access
 use DateTimeZone;
@@ -24,7 +24,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org/
 **/
 
-class Platform_Joomla extends Joomla
+class Platform extends Joomla
 {
     /**
      * @param $config
@@ -132,7 +132,7 @@ class Platform_Joomla extends Joomla
 					    } else {
 						    $output .= '<li>';
 					    }
-					    $url = Framework::routeURL('index.php?title=' . $value->title, $itemid, $this->getJname());
+					    $url = JFusionFunction::routeURL('index.php?title=' . $value->title, $itemid, $this->getJname());
 					    if (String::strlen($value->title) > $display_limit_subject) {
 						    //we need to shorten the subject
 						    $value->pagename = String::substr($value->title, 0, $display_limit_subject) . '...';

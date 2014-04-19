@@ -1,4 +1,4 @@
-<?php namespace JFusion\Plugins\gallery2;
+<?php namespace JFusion\Plugins\gallery2\Platform\Joomla;
 
 	/**
 	 *
@@ -26,6 +26,7 @@ use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Platform\Joomla;
+use JFusion\Plugins\gallery2\Helper;
 use JRegistry;
 use stdClass;
 
@@ -43,7 +44,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla extends Joomla
+class Platform extends Joomla
 {
 	/**
 	 * @var $helper Helper
@@ -373,12 +374,7 @@ class Platform_Joomla extends Joomla
 					$config['debug'] = true;
 					$pluginParam->set('g2_itemId', $array['itemId']);
 
-					/**
-					 * @ignore
-					 * @var $platform Platform_Joomla
-					 */
-					$platform = Factory::getPlayform('Joomla', $this->getJname());
-					$info->galleryImage = $platform->renderImageBlock($config, 'image_block', $pluginParam);
+					$info->galleryImage = $this->renderImageBlock($config, 'image_block', $pluginParam);
 
 //                    list(, $views) = GalleryCoreApi::fetchItemViewCount($array['itemId']);
 					$return[] = $info;

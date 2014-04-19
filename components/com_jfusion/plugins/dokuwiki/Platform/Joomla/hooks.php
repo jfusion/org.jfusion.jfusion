@@ -1,4 +1,4 @@
-<?php namespace JFusion\Plugins\dokuwiki;
+<?php
 
 	/**
  * file containing hook function for dokuwiki
@@ -16,7 +16,6 @@
 
 // no direct access
 use JFusion\Factory;
-use JFusion\Framework;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -57,7 +56,7 @@ class Hooks
 
 	    $Itemid = \JFactory::getApplication('site')->getMenu()->getActive()->id;
 
-        $baseURL = Framework::getPluginURL($Itemid, false);
+        $baseURL = JFusionFunction::getPluginURL($Itemid, false);
         if (is_array($event->data['preact'])) {
             $q = 'doku.php?id=' . $event->data['id'];
         } else {
@@ -71,7 +70,7 @@ class Hooks
             global $jname;
             $sefmode = Factory::getParams($jname)->get('sefmode');
             if ($sefmode == 1) {
-                $url = Framework::routeURL($q, $Itemid);
+                $url = JFusionFunction::routeURL($q, $Itemid);
             } else {
                 //we can just append both variables
                 $url = $baseURL . $q;

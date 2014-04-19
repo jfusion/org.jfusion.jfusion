@@ -1,4 +1,4 @@
-<?php namespace JFusion\Plugins\mybb;
+<?php namespace JFusion\Plugins\mybb\Platform\Joomla;
 
 /**
  * 
@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla extends Joomla
+class Platform extends Joomla
 {
     /**
      * @param int $threadid

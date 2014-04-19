@@ -110,7 +110,7 @@ class modjfusionActivityHelper
                     if ($config['userlink_software'] == 'custom' && !empty($config['userlink_custom'])  && $userlookup) {
                         $user_url = $config['userlink_custom'] . $userlookup->id;
                     } else {
-                        $user_url = Framework::routeURL($platform->getProfileURL($r->userid), $config['itemid'], $jname);
+                        $user_url = JFusionFunction::routeURL($platform->getProfileURL($r->userid), $config['itemid'], $jname);
                     }
 
                     if (empty($user_url)) {
@@ -157,9 +157,9 @@ class modjfusionActivityHelper
 
                 //combine all info into an url string
                 if ($config['linktype'] == LINKPOST) {
-                    $r->output->subject_url = Framework::routeURL($platform->getPostURL($r->threadid, $r->postid), $config['itemid'], $jname);
+                    $r->output->subject_url = JFusionFunction::routeURL($platform->getPostURL($r->threadid, $r->postid), $config['itemid'], $jname);
                 } else {
-                    $r->output->subject_url = Framework::routeURL($platform->getThreadURL($r->threadid), $config['itemid'], $jname);
+                    $r->output->subject_url = JFusionFunction::routeURL($platform->getThreadURL($r->threadid), $config['itemid'], $jname);
                 }
 
                 if ($config['mode'] == LAT) {

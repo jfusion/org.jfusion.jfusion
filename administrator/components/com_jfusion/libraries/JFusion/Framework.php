@@ -17,10 +17,6 @@ use Joomla\Language\Text;
 
 
 use JFusion\Parser\Parser;
-use JFusionFunction;
-use JMenu;
-use JRoute;
-use JUri;
 use \stdClass;
 use \SimpleXMLElement;
 use \Exception;
@@ -84,89 +80,6 @@ class Framework
 		}
 		return $jfusion_slaves;
 	}
-
-    /**
-     * Creates a JFusion Joomla compatible URL
-     *
-     * @param string  $url    string url to be parsed
-     * @param string  $itemid string itemid of the JFusion menu item or the name of the plugin for direct link
-     * @param string  $jname  optional jname if available to prevent having to find it based on itemid
-     * @param boolean $route  boolean optional switch to send url through JRoute::_() (true by default)
-     * @param boolean $xhtml  boolean optional switch to turn & into &amp; if $route is true (true by default)
-     *
-     * @return string Parsed URL
-     */
-    public static function routeURL($url, $itemid, $jname = '', $route = true, $xhtml = true)
-    {
-        if (!is_numeric($itemid)) {
-            if ($itemid == 'joomla_int') {
-                //special handling for internal URLs
-                if ($route) {
-                    $url = JRoute::_($url, $xhtml);
-                }
-            } else {
-                //we need to create direct link to the plugin
-                $params = Factory::getParams($itemid);
-                $url = $params->get('source_url') . $url;
-                if ($xhtml) {
-                    $url = str_replace('&', '&amp;', $url);
-                }
-            }
-        } else {
-            //we need to create link to a joomla itemid
-            if (empty($jname)) {
-                //determine the jname from the plugin
-                static $routeURL_jname;
-                if (!is_array($routeURL_jname)) {
-                    $routeURL_jname = array();
-                }
-                if (!isset($routeURL_jname[$itemid])) {
-	                $menu = JMenu::getInstance('site');
-
-                    $menu_param = $menu->getParams($itemid);
-                    $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
-                    $routeURL_jname[$itemid] = $plugin_param['jfusionplugin'];
-                    $jname = $routeURL_jname[$itemid];
-                } else {
-                    $jname = $routeURL_jname[$itemid];
-                }
-            }
-            //make the URL relative so that external software can use this function
-            $params = Factory::getParams($jname);
-            $source_url = $params->get('source_url');
-            $url = str_replace($source_url, '', $url);
-
-            $config = Factory::getConfig();
-            $sefenabled = $config->get('sef');
-            $params = Factory::getParams($jname);
-            $sefmode = $params->get('sefmode', 1);
-            if ($sefenabled && !$sefmode) {
-                //otherwise just tak on the
-                $baseURL = static::getPluginURL($itemid, false);
-                $url = $baseURL . $url;
-                if ($xhtml) {
-                    $url = str_replace('&', '&amp;', $url);
-                }
-            } else {
-                //fully parse the URL if sefmode = 1
-                $u = JUri::getInstance($url);
-                $u->setVar('jfile', $u->getPath());
-                $u->setVar('option', 'com_jfusion');
-                $u->setVar('Itemid', $itemid);
-                $query = $u->getQuery(false);
-                $fragment = $u->getFragment();
-                if (isset($fragment)) {
-                    $query.= '#' . $fragment;
-                }
-                if ($route) {
-                    $url = JRoute::_('index.php?' . $query, $xhtml);
-                } else {
-                    $url = 'index.php?' . $query;
-                }
-            }
-        }
-        return $url;
-    }
 
     /**
      * Delete old user data in the lookup table
@@ -251,59 +164,6 @@ class Framework
 		}
 		return $avatar;
 	}
-
-    /**
-     * Gets the base url of a specific menu item
-     *
-     * @param int $itemid int id of the menu item
-     * @param boolean $xhtml  return URL with encoded ampersands
-     *
-     * @return string parsed base URL of the menu item
-     */
-    public static function getPluginURL($itemid, $xhtml = true)
-    {
-        static $jfusionPluginURL;
-        if (!is_array($jfusionPluginURL)) {
-            $jfusionPluginURL = array();
-        }
-        if (!isset($jfusionPluginURL[$itemid])) {
-            $joomla_url = JFusionFunction::getJoomlaURL();
-            $baseURL = JRoute::_('index.php?option=com_jfusion&Itemid=' . $itemid, false);
-            if (!strpos($baseURL, '?')) {
-                $baseURL = preg_replace('#\.[\w]{3,4}\z#is', '', $baseURL);
-                if (substr($baseURL, -1) != '/') {
-                    $baseURL.= '/';
-                }
-            }
-            $juri = new JUri($joomla_url);
-            $path = $juri->getPath();
-            if ($path != '/') {
-                $baseURL = str_replace($path, '', $baseURL);
-            }
-            if (substr($joomla_url, -1) == '/') {
-                if ($baseURL[0] == '/') {
-                    $baseURL = substr($joomla_url, 0, -1) . $baseURL;
-                } else {
-                    $baseURL = $joomla_url . $baseURL;
-                }
-            } else {
-                if ($baseURL[0] == '/') {
-                    $baseURL = $joomla_url . $baseURL;
-                } else {
-                    $baseURL = $joomla_url . '/' . $baseURL;
-                }
-            }
-            $jfusionPluginURL[$itemid] = $baseURL;
-        }
-
-        //let's clean up the URL here before passing it
-        if($xhtml) {
-            $url = str_replace('&', '&amp;', $jfusionPluginURL[$itemid]);
-        } else {
-            $url = $jfusionPluginURL[$itemid];
-        }
-        return $url;
-    }
 
     /**
      * Converts a string to all ascii characters

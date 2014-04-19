@@ -1,4 +1,4 @@
-<?php namespace jfusion\plugins\phpbb3;
+<?php namespace jfusion\plugins\phpbb3\Platform\Joomla;
 
 /**
  *
@@ -18,6 +18,8 @@ use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
+use JFusion\Plugins\phpbb3\Helper;
+
 use Joomla\Language\Text;
 use JFusion\Plugin\Platform\Joomla;
 
@@ -40,7 +42,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla extends Joomla
+class Platform extends Joomla
 {
 	/**
 	 * @var $helper Helper

@@ -98,7 +98,7 @@ class modjfusionUserActivityHelper {
 
 		//get the PM count of the logged in user
 		if($userinfo && $config['pmcount'] ) {
-			$output->pm_url = Framework::routeURL($platform->getPrivateMessageURL(), $config['itemid'], $jname);
+			$output->pm_url = JFusionFunction::routeURL($platform->getPrivateMessageURL(), $config['itemid'], $jname);
 			$output->pm_count = $platform->getPrivateMessageCounts($userinfo->userid);
 		} else {
 			$output->pm_url = '';
@@ -107,7 +107,7 @@ class modjfusionUserActivityHelper {
 
 		//get the new message url
 		if ($config['viewnewmessages']) {
-			$output->newmessages_url = Framework::routeURL($platform->getViewNewMessagesURL(), $config['itemid'], $jname);
+			$output->newmessages_url = JFusionFunction::routeURL($platform->getViewNewMessagesURL(), $config['itemid'], $jname);
 		} else {
 			$output->newmessages_url = '';
 		}

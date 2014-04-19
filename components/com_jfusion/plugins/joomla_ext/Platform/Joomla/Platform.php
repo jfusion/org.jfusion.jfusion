@@ -1,4 +1,4 @@
-<?php namespace JFusion\Plugins\joomla_ext;
+<?php namespace JFusion\Plugins\joomla_ext\Platform\Joomla;
 
 /**
  * 
@@ -16,6 +16,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Plugin\Platform\Joomla;
+use JFusion\Plugins\joomla_ext\Helper;
 
 use JFusion\User\Userinfo;
 use JFusionFunction;
@@ -37,7 +38,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla extends Joomla
+class Platform extends Joomla
 {
 	/**
 	 * @var $helper Helper

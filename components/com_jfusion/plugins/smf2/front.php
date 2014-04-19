@@ -489,7 +489,7 @@ class Front extends Plugin_Front
 	        } else {
 	            $sefmode = $this->params->get('sefmode');
 	            if ($sefmode == 1) {
-	                $url = Framework::routeURL($q, Factory::getApplication()->input->getInt('Itemid'));
+	                $url = Factory::getApplication()->routeURL($q, Factory::getApplication()->input->getInt('Itemid'));
 	            } else {
 	                //we can just append both variables
 	                $url = $baseURL . $q;
@@ -547,7 +547,7 @@ class Front extends Plugin_Front
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = Framework::routeURL($url, $Itemid);
+                $url = Factory::getApplication()->routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {
@@ -606,7 +606,7 @@ class Front extends Plugin_Front
                 if (!empty($query)) {
                     $redirectURL.= '?' . $query;
                 }
-                $redirectURL = Framework::routeURL($redirectURL, Factory::getApplication()->input->getInt('Itemid'));
+                $redirectURL = Factory::getApplication()->routeURL($redirectURL, Factory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $redirectURL = $baseURL . $jfile;

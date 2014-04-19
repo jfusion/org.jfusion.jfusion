@@ -249,7 +249,11 @@ class Front extends Plugin_Front
                 $integratedURL = $jfdata->integratedURL;
                 $config = Factory::getConfig();
                 $vbsefenabled = $config->get('sef');
-                $hookFile = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
+
+	            $hooks = Factory::getPlayform($jfdata->platform, $this->getJname())->hasFile('hooks.php');
+	            if ($hooks) {
+		            $hookFile = $hooks;
+	            }
                 if ($vbsefmode) {
                     //need to set the base tag as vB JS/ajax requires it to function
                     $document = JFactory::getDocument();
@@ -814,7 +818,7 @@ JS;
             $jfile = basename($url_details['path']);
         }
 
-        $actionURL = Framework::routeURL($jfile, Factory::getApplication()->input->getInt('Itemid'));
+        $actionURL = Factory::getApplication()->routeURL($jfile, Factory::getApplication()->input->getInt('Itemid'));
         $replacement = 'action=\'' . $actionURL . '\'' . $extra . '>';
 
         unset($url_variables['option']);
@@ -913,7 +917,7 @@ JS;
             $url = $baseURL . '&amp;jfile=' . $url;
         } else {
             if ($vbsefmode) {
-                $url = Framework::routeURL($url, $plugin_itemid);
+                $url = Factory::getApplication()->routeURL($url, $plugin_itemid);
             } else {
                 //we can just append both variables
                 $url = $baseURL . $url;
@@ -957,7 +961,7 @@ JS;
             $url = $baseURL . '&jfile=' . $url;
         } else {
             if ($vbsefmode) {
-                $url = Framework::routeURL($url, $plugin_itemid);
+                $url = Factory::getApplication()->routeURL($url, $plugin_itemid);
             } else {
                 //we can just append both variables
                 $url = $baseURL . $url;

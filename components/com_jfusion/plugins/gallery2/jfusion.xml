@@ -26,7 +26,6 @@
         <filename>helper.php</filename>
         <filename>front.php</filename>
         <filename>user.php</filename>
-        <filename>forum.php</filename>
         <folder>fields</folder>
         <folder>Platform</folder>
     </files>

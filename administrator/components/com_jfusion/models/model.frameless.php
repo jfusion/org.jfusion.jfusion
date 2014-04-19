@@ -35,6 +35,7 @@ class JFusionFrameless {
 
 		// declare Data object
 		$data = new stdClass();
+		$data->platform = 'Joomla';
 		$data->buffer = null;
 		$data->header = null;
 		$data->bodyAttributes = null;
@@ -47,7 +48,7 @@ class JFusionFrameless {
 		$data->Itemid = JFactory::getApplication()->input->get('Itemid');
 
 		//Get the base URL to the specific JFusion plugin
-		$data->baseURL = \JFusion\Framework::getPluginURL($data->Itemid);
+		$data->baseURL = JFusionFunction::getPluginURL($data->Itemid);
 
 		//Get the full current URL
 		$query = $uri->getQuery ();
@@ -166,7 +167,7 @@ class JFusionFrameless {
 							$u->delVar('jfile');
 						}
 						$url = $u->getQuery();
-						$url = \JFusion\Framework::routeURL($jfile . '?' . $url, $data->Itemid, '', true, false);
+						$url = JFusionFunction::routeURL($jfile . '?' . $url, $data->Itemid, '', true, false);
 						$mainframe->redirect($url);
 					}
 				}
@@ -288,7 +289,7 @@ class JFusionFrameless {
 				if (is_array($pathway)) {
 					$breadcrumbs = $mainframe->getPathWay();
 					foreach ($pathway as $path) {
-						$breadcrumbs->addItem($path->title, \JFusion\Framework::routeURL($path->url, JFactory::getApplication()->input->getInt('Itemid')));
+						$breadcrumbs->addItem($path->title, JFusionFunction::routeURL($path->url, JFactory::getApplication()->input->getInt('Itemid')));
 					}
 				}
 			}

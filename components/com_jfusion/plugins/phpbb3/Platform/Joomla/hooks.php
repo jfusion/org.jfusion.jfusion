@@ -172,7 +172,7 @@ class JFusionHook {
         //set the script path to allow for email notifications with correct URLs
         $Itemid = $mainframe->input->getInt('Itemid');
         //Get the base URL to the specific JFusion plugin
-        $baseURL = \JFusion\Framework::getPluginURL($Itemid, false);
+        $baseURL = JFusionFunction::getPluginURL($Itemid, false);
         if (substr($baseURL, -1) != '/') {
             //non-SEF mode
             global $source_url;

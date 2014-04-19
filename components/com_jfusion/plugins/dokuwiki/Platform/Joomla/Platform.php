@@ -1,4 +1,4 @@
-<?php namespace JFusion\Plugins\dokuwiki;
+<?php namespace JFusion\Plugins\dokuwiki\Platform\Joomla;
 
 /**
  * 
@@ -15,6 +15,9 @@
 
 // no direct access
 use JFusion\Plugin\Platform\Joomla;
+use JFusion\Plugins\dokuwiki\Search;
+use JFusion\Plugins\dokuwiki\Helper;
+
 use JRegistry;
 use JText;
 
@@ -32,7 +35,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla extends Joomla
+class Platform extends Joomla
 {
 	/**
 	 * @var $helper Helper

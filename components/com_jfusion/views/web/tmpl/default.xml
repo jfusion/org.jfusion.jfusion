@@ -56,15 +56,15 @@
 				<option value="0">JNO</option>
 			</field>
 	
-			<field name="parse_css" type="radio" class="btn-group" default="1" label="PARSE_CSS" description="PARSE_CSS">
+			<field name="parse_css" type="radio" class="btn-group" default="0" label="PARSE_CSS" description="PARSE_CSS">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="parse_infile_css" type="radio" class="btn-group" default="1" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
+			<field name="parse_infile_css" type="radio" class="btn-group" default="0" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="default_css" type="radio" class="btn-group" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
+			<field name="default_css" type="radio" class="btn-group" default="0" label="DEFAULT_CSS" description="DEFAULT_CSS">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>

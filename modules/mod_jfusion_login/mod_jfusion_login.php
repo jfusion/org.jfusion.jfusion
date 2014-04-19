@@ -65,13 +65,13 @@ try {
 	    //get the default URLs if no custom URL specified
 	    $LinkPlugin = Factory::getFront($link_jname);
 	    if (empty($lostpassword_url) && method_exists($LinkPlugin, 'getLostPasswordURL')) {
-	        $lostpassword_url = Framework::routeURL($LinkPlugin->getLostPasswordURL(), $link_itemid);
+	        $lostpassword_url = JFusionFunction::routeURL($LinkPlugin->getLostPasswordURL(), $link_itemid);
 	    }
 	    if (empty($lostusername_url) && method_exists($LinkPlugin, 'getLostUsernameURL')) {
-	        $lostusername_url = Framework::routeURL($LinkPlugin->getLostUsernameURL(), $link_itemid);
+	        $lostusername_url = JFusionFunction::routeURL($LinkPlugin->getLostUsernameURL(), $link_itemid);
 	    }
 	    if (empty($register_url) && method_exists($LinkPlugin, 'getRegistrationURL')) {
-		    $register_url = Framework::routeURL($LinkPlugin->getRegistrationURL(), $link_itemid);
+		    $register_url = JFusionFunction::routeURL($LinkPlugin->getRegistrationURL(), $link_itemid);
 	    }
 	    //now find out from which plugin the avatars need to be displayed
 	    $itemid = $params->get('itemidAvatarPMs');
@@ -135,12 +135,12 @@ try {
 	            }
 	            if ($params->get('pmcount') && $jname != 'joomla_ext') {
 	                $pmcount = $platform->getPrivateMessageCounts($userlookup->userid);
-	                $url_pm = Framework::routeURL($platform->getPrivateMessageURL(), $itemid);
+	                $url_pm = JFusionFunction::routeURL($platform->getPrivateMessageURL(), $itemid);
 	            } else {
 	                $pmcount = false;
 	            }
 	            if ($params->get('viewnewmessages') && $jname != 'joomla_ext') {
-	                $url_viewnewmessages = Framework::routeURL($platform->getViewNewMessagesURL(), $itemid);
+	                $url_viewnewmessages = JFusionFunction::routeURL($platform->getViewNewMessagesURL(), $itemid);
 	            } else {
 	                $url_viewnewmessages = false;
 	            }

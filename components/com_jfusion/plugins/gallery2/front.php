@@ -21,7 +21,6 @@ use GalleryItem;
 use GalleryPermissionHelper_simple;
 use GalleryUtilities;
 use JFusion\Factory;
-use JFusion\Framework;
 use JFusion\Plugin\Plugin_Front;
 
 use JRegistry;
@@ -176,7 +175,7 @@ class Front extends Plugin_Front
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = Framework::routeURL($url, $Itemid);
+                $url = Factory::getApplication()->routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {

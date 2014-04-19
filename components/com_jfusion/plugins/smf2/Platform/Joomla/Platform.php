@@ -1,4 +1,4 @@
-<?php namespace JFusion\Plugins\smf2;
+<?php namespace JFusion\Plugins\smf2\Platform\Joomla;
 
 /**
 * @package JFusion_SMF
@@ -27,7 +27,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_SMF
  */
 
-class Platform_Joomla extends Joomla
+class Platform extends Joomla
 {
     /**
      * @param int $threadid

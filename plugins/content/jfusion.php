@@ -1252,7 +1252,7 @@ HTML;
 							if ($this->params->get('enable_comment_in_forum_button', 0)) {
 								$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
 								$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
-								$this->helper->output['buttons']['comment_in_forum']['href'] = Framework::routeURL($platform->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
+								$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($platform->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
 								$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
 								$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
 							}
@@ -1273,7 +1273,7 @@ HTML;
 							$this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(' . $this->article->id . ', \'' . $discuss_link . '\');';
 							$this->helper->output['buttons']['discuss']['target'] = '_self';
 						} else {
-							$this->helper->output['buttons']['discuss']['href'] = Framework::routeURL($platform->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
+							$this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($platform->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
 							$this->helper->output['buttons']['discuss']['target'] = $linkTarget;
 						}
 
@@ -1282,7 +1282,7 @@ HTML;
 						if ($this->params->get('enable_comment_in_forum_button', 0)) {
 							$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
 							$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
-							$this->helper->output['buttons']['comment_in_forum']['href'] = Framework::routeURL($platform->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
+							$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($platform->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
 							$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
 							$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
 						}
@@ -1435,7 +1435,7 @@ HTML;
 			}
 
 			//post title
-			$post_output[$i]->subject_url = Framework::routeURL($platform->getPostURL($threadid, $postid), $itemid);
+			$post_output[$i]->subject_url = JFusionFunction::routeURL($platform->getPostURL($threadid, $postid), $itemid);
 			if (!empty($posttitle)) {
 				$post_output[$i]->subject = $posttitle;
 			} elseif (!empty($threadtitle)) {
@@ -1451,7 +1451,7 @@ HTML;
 					if ($link_software == 'custom' && !empty($userlink_custom)  && !empty($userlookup)) {
 						$post_output[$i]->username_url = $userlink_custom . $userlookup->id;
 					} else {
-						$post_output[$i]->username_url = Framework::routeURL($platform->getProfileURL($userid), $itemid);
+						$post_output[$i]->username_url = JFusionFunction::routeURL($platform->getProfileURL($userid), $itemid);
 					}
 				}
 				$post_output[$i]->username = $username;

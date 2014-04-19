@@ -217,8 +217,11 @@ class Front extends Plugin_Front
                 define('PHPBB_DB_NEW_LINK', 1);
             }
 
-            //define the phpBB3 hooks
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
+	        $hooks = Factory::getPlayform($jfdata->platform, $this->getJname())->hasFile('hooks.php');
+	        if ($hooks) {
+		        //define the phpBB3 hooks
+		        require_once $hooks;
+	        }
             // Get the output
             ob_start();
 
@@ -431,7 +434,7 @@ class Front extends Plugin_Front
             }
             if (!empty($profile_mod_id) && strstr($q, 'i=' . $profile_mod_id)) {
                 $url = 'ucp.php?i=profile&mode=signature';
-                $url = Framework::routeURL($url, Factory::getApplication()->input->getInt('Itemid'), $this->getJname());
+                $url = Factory::getApplication()->routeURL($url, Factory::getApplication()->input->getInt('Itemid'), $this->getJname());
                 return 'href="' . $url . '"';
             }
         }
@@ -451,7 +454,7 @@ class Front extends Plugin_Front
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = Framework::routeURL($q, Factory::getApplication()->input->getInt('Itemid'));
+                $url = Factory::getApplication()->routeURL($q, Factory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $url = $baseURL . $q;
@@ -491,7 +494,7 @@ class Front extends Plugin_Front
                 if (!empty($query)) {
                     $redirectURL.= '?' . $query;
                 }
-                $redirectURL = Framework::routeURL($redirectURL, Factory::getApplication()->input->getInt('Itemid'));
+                $redirectURL = Factory::getApplication()->routeURL($redirectURL, Factory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $redirectURL = $baseURL . $jfile;
@@ -542,7 +545,7 @@ class Front extends Plugin_Front
             $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
-                $url = Framework::routeURL($url, $Itemid);
+                $url = Factory::getApplication()->routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {

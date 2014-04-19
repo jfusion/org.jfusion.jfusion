@@ -106,7 +106,7 @@ class modjfusionWhosOnlineHelper {
 							if ($config['userlink_software'] == 'custom' && !empty($config['userlink_custom']) && $joomla_userid) {
 								$user_url = $config['userlink_custom'] . $joomla_userid;
 							} else if ($jfusion_userid) {
-								$user_url = Framework::routeURL($platform->getProfileURL($jfusion_userid), $config['itemid'], $link_jname);
+								$user_url = JFusionFunction::routeURL($platform->getProfileURL($jfusion_userid), $config['itemid'], $link_jname);
 							}
 						}
 						$u->output->user_url = $user_url;

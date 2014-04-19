@@ -68,7 +68,7 @@ function login_jfusion(&$username, &$password) {
 			if (FORCE_REDIRECT_AFTER_LOGIN) {
 				if (isset($_REQUEST['redirect']) && defined('IN_JOOMLA')) {
 					$itemid = \JFusion\Factory::getApplication()->input->getInt('Itemid');
-					$url = \JFusion\Framework::getPluginURL($itemid, false);
+					$url = JFusionFunction::getPluginURL($itemid, false);
 					$redirect = str_replace('./', '', $_REQUEST['redirect']);
 					if (strpos($redirect, 'mode=login') !== false) {
 						$redirect = 'index.php';

@@ -208,4 +208,30 @@ class Application
 
 		return $event->getArgument('avatar', false);
 	}
+
+	/**
+	 * Creates a JFusion Joomla compatible URL
+	 *
+	 * @param string  $url    string url to be parsed
+	 * @param string  $itemid string itemid of the JFusion menu item or the name of the plugin for direct link
+	 * @param string  $jname  optional jname if available to prevent having to find it based on itemid
+	 * @param boolean $route  boolean optional switch to send url through JRoute::_() (true by default)
+	 * @param boolean $xhtml  boolean optional switch to turn & into &amp; if $route is true (true by default)
+	 *
+	 * @return string Parsed URL
+	 */
+	public function routeURL($url, $itemid, $jname = '', $route = true, $xhtml = true)
+	{
+		$event = new Event('onApplicationRoute');
+
+		$event->setArgument('url', $url);
+		$event->setArgument('itemid', $itemid);
+		$event->setArgument('jname', $jname);
+		$event->setArgument('route', $route);
+		$event->setArgument('xhtml', $xhtml);
+
+		Factory::getDispatcher()->triggerEvent($event);
+
+		return $event->getArgument('url');
+	}
 }

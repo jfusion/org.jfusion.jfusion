@@ -1,4 +1,4 @@
-<?php namespace JFusion\Plugins\vbulletin;
+<?php namespace JFusion\Plugins\vbulletin\Platform\Joomla;
 
 /**
  *
@@ -25,6 +25,7 @@ use JPluginHelper;
 use JRegistry;
 use RuntimeException;
 use stdClass;
+use JFusion\Plugins\vbulletin\Helper;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -40,7 +41,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla extends Joomla
+class Platform extends Joomla
 {
     /**
      * @var $helper Helper

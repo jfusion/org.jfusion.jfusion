@@ -1,4 +1,4 @@
-<?php namespace JFusion\Plugins\smf;
+<?php namespace JFusion\Plugins\smf\Platform\Joomla;
 
 /**
  * file containing forum function for the jfusion plugin
@@ -38,7 +38,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class Platform_Joomla extends Joomla
+class Platform extends Joomla
 {
     /**
      * Get profile url

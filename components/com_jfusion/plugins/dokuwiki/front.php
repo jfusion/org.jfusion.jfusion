@@ -108,17 +108,22 @@ class Front extends Plugin_Front
         require_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'phputf8' . DIRECTORY_SEPARATOR . 'mbstring' . DIRECTORY_SEPARATOR . 'core.php';
 
         define('DOKU_INC', $source_path);
-        require_once $source_path . 'inc' . DIRECTORY_SEPARATOR . 'events.php';
-        require_once $source_path . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
+	    $hooks = Factory::getPlayform($data->platform, $this->getJname())->hasFile('hooks.php');
 
-        require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
+	    if ($hooks) {
+		    require_once $source_path . 'inc' . DIRECTORY_SEPARATOR . 'events.php';
+		    require_once $source_path . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
-	    $hook = new Hooks();
-	    /**
-	     * @ignore
-	     * @var $EVENT_HANDLER \Doku_Event_Handler
-	     */
-	    $hook->register($EVENT_HANDLER);
+		    require_once $hooks;
+
+		    $hook = new Hooks();
+		    /**
+		     * @ignore
+		     * @var $EVENT_HANDLER \Doku_Event_Handler
+		     */
+		    $hook->register($EVENT_HANDLER);
+	    }
+
         if (!is_file($index_file)) {
             Framework::raiseWarning('The path to the DokuWiki index file set in the component preferences does not exist', $this->getJname());
         } else {
@@ -295,7 +300,7 @@ class Front extends Plugin_Front
             } else {
                 $sefmode = $this->params->get('sefmode');
                 if ($sefmode == 1) {
-                    $url = Framework::routeURL($url, Factory::getApplication()->input->getInt('Itemid'));
+                    $url = Factory::getApplication()->routeURL($url, Factory::getApplication()->input->getInt('Itemid'));
                 } else {
                     //we can just append both variables
                     $url = $this->data->baseURL . $url;

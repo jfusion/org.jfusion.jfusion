@@ -82,4 +82,11 @@ interface ApplicationInterface
 	 */
 	public function onApplicationGetDefaultAvatar($event);
 
+	/**
+	 * get default url
+	 *
+	 * @param Event $event
+	 * @return  Event
+	 */
+	public function onApplicationRoute($event);
 }

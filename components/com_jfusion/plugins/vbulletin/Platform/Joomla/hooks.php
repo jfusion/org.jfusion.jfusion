@@ -402,7 +402,7 @@ class executeJFusionHook
         $testURL = (substr($baseURL, -1) == '/') ? substr($baseURL, 0, -1) : $baseURL;
         if (strpos(strtolower($this->vars['url']), strtolower($testURL)) === false) {
             $url = basename($this->vars);
-            $url = \JFusion\Framework::routeURL($url, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
+            $url = JFusionFunction::routeURL($url, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
             $this->vars = $url;
         }
         //convert &amp; to & so the redirect is correct
@@ -544,7 +544,7 @@ class executeJFusionHook
         $testURL = (substr($baseURL, -1) == '/') ? substr($baseURL, 0, -1) : $baseURL;
         if (strpos(strtolower($this->vars['url']), strtolower($testURL)) === false) {
             $url = basename($this->vars['url']);
-            $url = \JFusion\Framework::routeURL($url, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
+            $url = JFusionFunction::routeURL($url, \JFusion\Factory::getApplication()->input->getInt('Itemid'));
 
             //convert &amp; to & so the redirect is correct
             $url = str_replace('&amp;', '&', $url);
@@ -574,7 +574,7 @@ class executeJFusionHook
 		    $jdata->body = & $this->vars;
 		    $jdata->Itemid = $params->get('plugin_itemid');
 		    //Get the base URL to the specific JFusion plugin
-		    $jdata->baseURL = \JFusion\Framework::getPluginURL($jdata->Itemid);
+		    $jdata->baseURL = JFusionFunction::getPluginURL($jdata->Itemid);
 		    //Get the integrated URL
 		    $jdata->integratedURL = $params->get('source_url');
 		    $public->parseBody($jdata);

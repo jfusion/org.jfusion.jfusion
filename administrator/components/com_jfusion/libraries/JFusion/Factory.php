@@ -271,7 +271,7 @@ class Factory
 		if (!isset($instances[$platform][$instance])) {
 			$name = static::getNameFromInstance($instance);
 
-			$class = '\JFusion\Plugins\\' . $name . '\Platform_' . $platform;
+			$class = '\JFusion\Plugins\\' . $name . '\Platform\\' . $platform . '\\Platform';
 			if (!class_exists($class)) {
 				$class = '\JFusion\Plugin\Platform\\' . $platform;
 			}
