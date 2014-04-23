@@ -90,7 +90,8 @@ class JFusionJplugin
 	 */
 	public static function hashPassword($userinfo) {
 		jimport('joomla.user.helper');
-		if (jimport('phpass.passwordhash')) {
+		if (method_exists('JUserHelper', 'hashPassword')) {
+			jimport('phpass.passwordhash');
 			$password = JUserHelper::hashPassword($userinfo->password_clear);
 		} else {
 			$salt = JUserHelper::genRandomPassword(32);
