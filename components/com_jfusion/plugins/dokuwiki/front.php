@@ -116,7 +116,7 @@ class Front extends Plugin_Front
 
 		    require_once $hooks;
 
-		    $hook = new Hooks();
+		    $hook = new \Hooks();
 		    /**
 		     * @ignore
 		     * @var $EVENT_HANDLER \Doku_Event_Handler

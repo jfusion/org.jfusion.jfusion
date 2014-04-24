@@ -495,55 +495,6 @@ JS;
     }
 
     /**
-     * Prepares text for various areas
-     *
-     * @param string &$text             Text to be modified
-     * @param string $for              (optional) Determines how the text should be prepared.
-     *                                  Options for $for as passed in by JFusion's plugins and modules are:
-     *                                  joomla (to be displayed in an article; used by discussion bot)
-     *                                  forum (to be published in a thread or post; used by discussion bot)
-     *                                  activity (displayed in activity module; used by the activity module)
-     *                                  search (displayed as search results; used by search plugin)
-     * @param JRegistry $params        (optional) Joomla parameter object passed in by JFusion's module/plugin
-     * @param mixed $object             (optional) Object with information for the specific element the text is from
-     *
-     * @return array  $status           Information passed back to calling script such as limit_applied
-     */
-    function prepareText(&$text, $for = '', $params = null, $object = '')
-    {
-        $status = array();
-        if ($for == 'forum') {
-            //first thing is to remove all joomla plugins
-            preg_match_all('/\{(.*)\}/U', $text, $matches);
-            //find each thread by the id
-            foreach ($matches[1] AS $plugin) {
-                //replace plugin with nothing
-                $text = str_replace('{' . $plugin . '}', "", $text);
-            }
-        } elseif ($for == 'joomla' || ($for == 'activity' && $params->get('parse_text') == 'html')) {
-            $options = array();
-            if (!empty($params) && $params->get('character_limit', false)) {
-                $status['limit_applied'] = 1;
-				$options['character_limit'] = $params->get('character_limit');
-            }
-            $text = Framework::parseCode($text, 'html', $options);
-        } elseif ($for == 'search') {
-            $text = Framework::parseCode($text, 'plaintext');
-        } elseif ($for == 'activity') {
-            if ($params->get('parse_text') == 'plaintext') {
-                $options = array();
-                $options['plaintext_line_breaks'] = 'space';
-                if ($params->get('character_limit')) {
-                    $status['limit_applied'] = 1;
-                    $options['character_limit'] = $params->get('character_limit');
-                }
-                $text = Framework::parseCode($text, 'plaintext', $options);
-            }
-        }
-        return $status;
-    }
-
-    /**
      * Parses custom BBCode defined in $this->prepareText() and called by the nbbc parser via Framework::parseCode()
      *
      * @param mixed $bbcode

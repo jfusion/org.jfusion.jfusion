@@ -102,10 +102,7 @@ class Helper extends Plugin
         // convert to NFKC
         $utf8_advanced = $this->params->get('utf8_advanced');
         if ($utf8_advanced == 'enabled') {
-            if (!class_exists('utf_normalizer_phpbb')) {
-                require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_normalizer.php';
-            }
-            utf_normalizer_phpbb::nfkc($text);
+	        Utf_Normalizer::nfkc($text);
         }
         // FC_NFKC_Closure, http://www.unicode.org/Public/5.0.0/ucd/DerivedNormalizationProps.txt
         $text = strtr($text, $fc_nfkc_closure);

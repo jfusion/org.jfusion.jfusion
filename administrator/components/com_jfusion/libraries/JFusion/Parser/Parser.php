@@ -102,7 +102,7 @@ class Parser
             }
 
             if (!empty($options['parse_smileys'])) {
-                $bbcode->SetSmileyURL(JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/smileys');
+                $bbcode->SetSmileyURL($options['parse_smileys']);
             } else {
                 $bbcode->SetEnableSmileys(false);
             }

@@ -1,4 +1,4 @@
-<?php
+<?php namespace jfusion\plugins\phpbb3;
 
 /**
  * 
@@ -63,7 +63,7 @@ define('UNICODE_JAMO_T', 2);
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class utf_normalizer_phpbb {
+class Utf_Normalizer {
     /**
      * Validate, cleanup and normalize a string
      *
@@ -83,15 +83,15 @@ class utf_normalizer_phpbb {
         }
         // Note: we do not check for $GLOBALS['utf_canonical_decomp']. It is assumed they are always loaded together
         if (!isset($GLOBALS['utf_nfc_qc'])) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_nfc_qc.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_nfc_qc.php';
         }
         if (!isset($GLOBALS['utf_canonical_decomp'])) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_canonical_decomp.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_canonical_decomp.php';
         }
         // Replace any byte in the range 0x00..0x1F, except for \r, \n and \t
         // We replace those characters with a 0xFF byte, which is illegal in UTF-8 and will in turn be replaced with a UTF replacement char
         $str = strtr($str, "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x0B\x0C\x0E\x0F\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F", "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF");
-        $str = utf_normalizer_phpbb::recompose($str, $pos, $len, $GLOBALS['utf_nfc_qc'], $GLOBALS['utf_canonical_decomp']);
+        $str = static::recompose($str, $pos, $len, $GLOBALS['utf_nfc_qc'], $GLOBALS['utf_canonical_decomp']);
     }
     /**
      * Validate and normalize a UTF string to NFC
@@ -107,12 +107,12 @@ class utf_normalizer_phpbb {
             return;
         }
         if (!isset($GLOBALS['utf_nfc_qc'])) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_nfc_qc.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_nfc_qc.php';
         }
         if (!isset($GLOBALS['utf_canonical_decomp'])) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_canonical_decomp.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_canonical_decomp.php';
         }
-        $str = utf_normalizer_phpbb::recompose($str, $pos, $len, $GLOBALS['utf_nfc_qc'], $GLOBALS['utf_canonical_decomp']);
+        $str = static::recompose($str, $pos, $len, $GLOBALS['utf_nfc_qc'], $GLOBALS['utf_canonical_decomp']);
     }
     /**
      * Validate and normalize a UTF string to NFKC
@@ -128,12 +128,12 @@ class utf_normalizer_phpbb {
             return;
         }
         if (!isset($GLOBALS['utf_nfkc_qc'])) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_nfc_qc.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_nfc_qc.php';
         }
         if (!isset($GLOBALS['utf_compatibility_decomp'])) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_compatibility_decomp.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_compatibility_decomp.php';
         }
-        $str = utf_normalizer_phpbb::recompose($str, $pos, $len, $GLOBALS['utf_nfkc_qc'], $GLOBALS['utf_compatibility_decomp']);
+        $str = static::recompose($str, $pos, $len, $GLOBALS['utf_nfkc_qc'], $GLOBALS['utf_compatibility_decomp']);
     }
     /**
      * Validate and normalize a UTF string to NFD
@@ -149,9 +149,9 @@ class utf_normalizer_phpbb {
             return;
         }
         if (!isset($GLOBALS['utf_canonical_decomp'])) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_canonical_decomp.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_canonical_decomp.php';
         }
-        $str = utf_normalizer_phpbb::decompose($str, $pos, $len, $GLOBALS['utf_canonical_decomp']);
+        $str = static::decompose($str, $pos, $len, $GLOBALS['utf_canonical_decomp']);
     }
     /**
      * Validate and normalize a UTF string to NFKD
@@ -167,9 +167,9 @@ class utf_normalizer_phpbb {
             return;
         }
         if (!isset($GLOBALS['utf_compatibility_decomp'])) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_compatibility_decomp.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_compatibility_decomp.php';
         }
-        $str = utf_normalizer_phpbb::decompose($str, $pos, $len, $GLOBALS['utf_compatibility_decomp']);
+        $str = static::decompose($str, $pos, $len, $GLOBALS['utf_compatibility_decomp']);
     }
     /**
      * Recompose a UTF string
@@ -187,11 +187,11 @@ class utf_normalizer_phpbb {
         global $utf_combining_class, $utf_canonical_comp, $utf_jamo_type, $utf_jamo_index;
         // Load some commonly-used tables
         if (!isset($utf_jamo_index, $utf_jamo_type, $utf_combining_class)) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_normalizer_common.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_normalizer_common.php';
         }
         // Load the canonical composition table
         if (!isset($utf_canonical_comp)) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_canonical_comp.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_canonical_comp.php';
         }
         // Buffer the last ASCII char before the UTF-8 stuff if applicable
         $tmp = '';
@@ -671,7 +671,7 @@ class utf_normalizer_phpbb {
         global $utf_combining_class;
         // Load some commonly-used tables
         if (!isset($utf_combining_class)) {
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'phpbb3' . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_normalizer_common.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'utf_normalizer_common.php';
         }
         // UTF char length array
         $utf_len_mask = array(

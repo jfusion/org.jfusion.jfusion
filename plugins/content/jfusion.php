@@ -38,7 +38,10 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  */
 class plgContentJfusion extends JPlugin
 {
-	var $params = false;
+	/**
+	 * @var JRegistry
+	 */
+	var $params = null;
 	var $mode = '';
 	var $valid = false;
 	var $jname = '';
@@ -79,7 +82,7 @@ class plgContentJfusion extends JPlugin
 		$this->loadLanguage('plg_content_jfusion', JPATH_ADMINISTRATOR);
 
 		//retrieve plugin software for discussion bot
-		if ($this->params === false) {
+		if ($this->params === null) {
 			if (is_array($params)) {
 				$this->params = new JRegistry($params['params']);
 			} else {
@@ -1366,7 +1369,7 @@ HTML;
 		$userlink_custom = $this->params->get('userlink_custom', false);
 		$character_limit = (int) $this->params->get('character_limit');
 		$itemid = $this->params->get('itemid');
-		$JFusionPublic = Factory::getFront($this->jname);
+		$front = Factory::getFront($this->jname);
 
 		$columns = $platform->getDiscussionColumns();
 		if (empty($columns)) return '';
@@ -1472,10 +1475,10 @@ HTML;
 
 			//post body
 			$post_output[$i]->text = $posttext;
-			$status = $JFusionPublic->prepareText($post_output[$i]->text, 'joomla', $this->params, $p);
+			$status = $platform->prepareText($post_output[$i]->text, 'joomla', $this->params);
 			$original_text = '[quote="' . $username . '"]' . "\n" . $posttext . "\n" . '[/quote]';
 			$post_output[$i]->original_text = $original_text;
-			$JFusionPublic->prepareText($post_output[$i]->original_text, 'discuss', $this->params, $p);
+			$platform->prepareText($post_output[$i]->original_text, 'discuss', $this->params);
 
 			//apply the post body limit if there is one
 			if (!empty($character_limit) && empty($status['limit_applied']) && JString::strlen($post_output[$i]->text) > $character_limit) {

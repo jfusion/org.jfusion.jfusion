@@ -51,7 +51,7 @@ class modjfusionActivityHelper
 	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = Factory::getPlayform('Joomla', $jname);
-        $public = Factory::getFront($jname);
+	    $front = Factory::getFront($jname);
         if (is_array($results)) {
             foreach ($results as $r) {
 	            $r->output = new stdClass();
@@ -174,7 +174,7 @@ class modjfusionActivityHelper
                 } else {
                     //gotta make it presentable
                     if ($config['display_body']==1) {
-                        $status = $public->prepareText($r->body, 'activity', $params, $r);
+                        $status = $platform->prepareText($r->body, 'activity', $params);
                         if (!empty($config['character_limit']) && empty($status['limit_applied']) && JString::strlen($r->body) > $config['character_limit']) {
                             $r->body = JString::substr($r->body, 0, $config['character_limit']) . '...';
                         }

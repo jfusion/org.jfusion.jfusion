@@ -392,7 +392,7 @@ class executeJFusionHook
                     $this->vars = str_replace($baseURL, $integratedURL, $this->vars);
                 }
             } else {
-                $this->vars = str_replace(\JFusion\Framework::getJoomlaURL(), $integratedURL, $this->vars);
+                $this->vars = str_replace(\JFusionFunction::getJoomlaURL(), $integratedURL, $this->vars);
             }
             //convert &amp; to & so the redirect is correct
             $this->vars = str_replace('&amp;', '&', $this->vars);
@@ -436,7 +436,7 @@ class executeJFusionHook
 	        if (defined('_VBJNAME')) {
 		        $JFusionActivePlugin =  _VBJNAME;
 	        }
-            $baseURL = (class_exists('JFusionFunction')) ? \JFusion\Framework::getJoomlaURL() : JUri::root();
+            $baseURL = (class_exists('JFusionFunction')) ? \JFusionFunction::getJoomlaURL() : JUri::root();
             $loginURL = JRoute::_($baseURL . 'index.php?option=com_user&task=login', false);
             $credentials = array('username' => $vbulletin->userinfo['username'], 'password' => $password, 'password_salt' => $vbulletin->userinfo['salt']);
             $options = array('entry_url' => $loginURL);
