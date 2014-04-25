@@ -41,11 +41,24 @@ class JFormFieldJFusionCustomParam extends JFormField
 		try {
 			if ($jname) {
 				//load the custom param output
+
 				$JFusionPlugin = \JFusion\Factory::getAdmin($jname);
+				$type = 'admin';
+				$command = explode('.', $this->fieldname, 2);
+				switch ($command[0]) {
+					case 'platform':
+						$JFusionPlugin = \JFusion\Factory::getPlayform('Joomla', $jname);
+						$this->fieldname = $command[1];
+						$type = 'platform';
+						break;
+					case 'admin':
+						$this->fieldname = $command[1];
+						break;
+				}
 				if (method_exists($JFusionPlugin, $this->fieldname)) {
 					$output = $JFusionPlugin->{$this->fieldname}($this->fieldname, $this->value, $this->element, $this->group);
 				} else {
-					throw new RuntimeException('Undefined function:' . $this->fieldname . ' in plugin:' . $jname);
+					throw new RuntimeException('Undefined function: ' . $this->fieldname . ' in plugin: ' . $jname . ' : ' . $type);
 				}
 			} else {
 				throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');

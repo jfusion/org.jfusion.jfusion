@@ -256,7 +256,18 @@ class JFusionController extends JControllerLegacy
 				    if (!empty($customcommand)) {
 					    $customarg1 = JFactory::getApplication()->input->getString('customarg1', null);
 					    $customarg2 = JFactory::getApplication()->input->getString('customarg2', null);
-					    $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
+
+					    $command = explode('.', $customcommand, 2);
+					    switch ($command[0]) {
+						    case 'platform':
+							    $JFusionPlugin = \JFusion\Factory::getPlayform('Joomla', $jname);
+							    $customcommand = $command[1];
+							    break;
+						    case 'admin':
+							    $customcommand = $command[1];
+							    break;
+					    }
+
 					    if (method_exists($JFusionPlugin, $customcommand)) {
 						    $JFusionPlugin->$customcommand($customarg1, $customarg2);
 					    }
