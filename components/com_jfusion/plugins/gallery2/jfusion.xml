@@ -17,10 +17,6 @@
     <files>
         <filename>index.html</filename>
         <filename>jfusion.xml</filename>
-        <filename>config.xml</filename>
-        <filename>activity.xml</filename>
-        <filename>search.xml</filename>
-        <filename>config.xml</filename>
         <filename>admin.php</filename>
         <filename>auth.php</filename>
         <filename>helper.php</filename>

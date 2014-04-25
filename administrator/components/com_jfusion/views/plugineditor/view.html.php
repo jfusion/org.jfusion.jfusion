@@ -78,6 +78,14 @@ class jfusionViewplugineditor extends JViewLegacy
 		        JFormHelper::addFieldPath(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'fields');
 
 		        $form->load($fields);
+
+		        $file = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'Platform' . DIRECTORY_SEPARATOR . 'Joomla' . DIRECTORY_SEPARATOR . 'jfusion.xml';
+		        if (file_exists($file)) {
+			        $content = file_get_contents($file);
+			        $xml = \JFusion\Framework::getXML($content, false);
+			        $form->load($xml);
+		        }
+
 		        $params = array();
 		        $params['params'] = $parametersInstance->toArray();
 		        $form->bind($params);

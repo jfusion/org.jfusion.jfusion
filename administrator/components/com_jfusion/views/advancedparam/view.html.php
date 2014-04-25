@@ -202,7 +202,7 @@ HTML;
 		global $jname;
 		$jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
 		if (isset($this->featureArray[$feature]) && !empty($jname)) {
-			$path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
+			$path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'Platform' . DIRECTORY_SEPARATOR . 'Joomla' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
 			$defaultPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $option . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'advancedparam' . DIRECTORY_SEPARATOR . 'paramfiles' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
 			$xml_path = (JFile::exists($path)) ? $path : $defaultPath;
 			$form = false;
@@ -340,7 +340,7 @@ HTML;
 			$jname = $value[$key]['jfusionplugin'];
 
 			if (isset($this->featureArray[$feature]) && !empty($jname)) {
-				$path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
+				$path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'Platform' . DIRECTORY_SEPARATOR . 'Joomla' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
 				$defaultPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $option . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'advancedparam' . DIRECTORY_SEPARATOR . 'paramfiles' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
 				$xml_path = (file_exists($path)) ? $path : $defaultPath;
 				$xml = \JFusion\Framework::getXml($xml_path);

@@ -227,9 +227,8 @@ class JFusionUser_dokuwiki extends Plugin_User
     function createSession(Userinfo $userinfo, $options) {
         $status = array('error' => array(), 'debug' => array());
 
-        if(!empty($userinfo->password_clear)){
+        if(!empty($userinfo->password_clear)) {
             //set login cookie
-            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'blowfish.php';
             $cookie_path = $this->params->get('cookie_path', '/');
             $cookie_domain = $this->params->get('cookie_domain');
             $cookie_secure = $this->params->get('secure', false);
@@ -238,7 +237,7 @@ class JFusionUser_dokuwiki extends Plugin_User
             //setup Dokuwiki constants
 	        $this->helper->defineConstants();
             $salt = $this->helper->getCookieSalt();
-            $pass = JFusion_PMA_blowfish_encrypt($userinfo->password_clear, $salt);
+            $pass = $this->helper->PMA_blowfish_encrypt($userinfo->password_clear, $salt);
 //            $sticky = (!empty($options['remember'])) ? 1 : 0;
             $sticky = 1;
         	$version = $this->helper->getVersion();

@@ -237,4 +237,58 @@ class Helper extends Plugin
         }
         return $usergroup;
     }
+
+	/**
+	 * Encryption using blowfish algorithm
+	 *
+	 * @param   string  $data original data
+	 * @param   string  $secret the secret
+	 *
+	 * @return  string  the encrypted result
+	 *
+	 * @access  public
+	 *
+	 * @author  lem9
+	 */
+	function PMA_blowfish_encrypt($data, $secret)
+	{
+		$pma_cipher = new Auth_Blowfish();
+		$encrypt = '';
+
+		$data .= '_'; // trimming fixed for DokuWiki FS#1690 FS#1713
+		$mod = strlen($data) % 8;
+
+		if ($mod > 0) {
+			$data .= str_repeat("\0", 8 - $mod);
+		}
+
+		foreach (str_split($data, 8) as $chunk) {
+			$encrypt .= $pma_cipher->encryptBlock($chunk, $secret);
+		}
+		return base64_encode($encrypt);
+	}
+
+	/**
+	 * Decryption using blowfish algorithm
+	 *
+	 * @param   string  $encdata encrypted data
+	 * @param   string  $secret the secret
+	 *
+	 * @return  string  original data
+	 *
+	 * @access  public
+	 *
+	 * @author  lem9
+	 */
+	function PMA_blowfish_decrypt($encdata, $secret)
+	{
+		$pma_cipher = new Auth_Blowfish();
+		$decrypt = '';
+		$data = base64_decode($encdata);
+
+		foreach (str_split($data, 8) as $chunk) {
+			$decrypt .= $pma_cipher->decryptBlock($chunk, $secret);
+		}
+		return substr(rtrim($decrypt, "\0"), 0, -1); // trimming fixed for DokuWiki FS#1690 FS#1713
+	}
 }
