@@ -120,17 +120,6 @@
             </fieldset>
 
             <fieldset name="MOD_OPTIONS">
-                <field name=" " type="helptext" default="AUTHENTICATION_MOD_DESCR" label=""/>
-                <field name="showAuthMod" default="" type="JFusionCustomParam" description="AUTHENTICATION_MOD" label="AUTHENTICATION_MOD"/>
-                <field name="@spacer" type="spacer" default="" label="" description="" />
-                <field name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
-                <field name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label="REDIRECT_ITEMID" feature="redirect_itemid"/>
-                <field name="mod_ids" type="radio" class="btn-group" default="0" label="MOD_IDS" description="MOD_IDS_DESCR">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
-                <field name="showRedirectMod" default="" type="JFusionCustomParam" description="REDIRECTION_MOD" label="REDIRECTION_MOD"/>
-                <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name=" " type="helptext" default="QUICK_MOD" label=""/>
                 <field name="showQuickMod" default="" type="JFusionCustomParam" description="QUICK_MOD" label="SHOW_QUICK_MOD"/>
             </fieldset>

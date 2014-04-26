@@ -1048,4 +1048,28 @@ JS;
 	{
 		return '';
 	}
+
+	/**
+	 * Function to check if a given itemid is configured for the plugin in question.
+	 *
+	 * @param int $itemid
+	 *
+	 * @return bool
+	 */
+	public final function isValidItemID($itemid)
+	{
+		$result = false;
+		if ($itemid) {
+			$app = JFactory::getApplication();
+			$menus = $app->getMenu('site');
+			$params = $menus->getParams($itemid);
+			if ($params) {
+				$jPluginParam = unserialize(base64_decode($params->get('JFusionPluginParam')));
+				if (is_array($jPluginParam) && $jPluginParam['jfusionplugin'] == $this->getJname()) {
+					$result = true;
+				}
+			}
+		}
+		return $result;
+	}
 }

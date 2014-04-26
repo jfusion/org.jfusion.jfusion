@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="params">
+        <fieldset name="MOD_OPTIONS">
+            <field name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
+            <field name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label="REDIRECT_ITEMID" feature="redirect_itemid"/>
+            <field name="platform.showRedirectMod" default="" type="JFusionCustomParam" description="REDIRECTION_MOD" label="REDIRECTION_MOD"/>
+        </fieldset>
+    </fields>
+</form>

@@ -159,12 +159,6 @@
                     <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
                 </field>
             </fieldset>
-
-            <fieldset name="MOD_OPTIONS">
-                <field name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
-                <field name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label="REDIRECT_ITEMID" feature="redirect_itemid"/>
-                <field name="showRedirectMod" default="" type="JFusionCustomParam" description="REDIRECTION_MOD" label="REDIRECTION_MOD"/>
-            </fieldset>
         </fields>
     </form>
 </extension>

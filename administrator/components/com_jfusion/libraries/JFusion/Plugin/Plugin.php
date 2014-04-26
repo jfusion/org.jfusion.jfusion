@@ -209,4 +209,35 @@ class Plugin
 		}
 		$status = array('error' => array(), 'debug' => array());
 	}
+
+	/**
+	 * Function returns the path to the modfile
+	 *
+	 * @param string $filename file name
+	 * @param int    &$error   error number
+	 * @param string &$reason  error reason
+	 *
+	 * @return string $mod_file path and file of the modfile.
+	 */
+	function getPluginFile($filename, &$error, &$reason)
+	{
+		//check to see if a path is defined
+		$path = $this->params->get('source_path');
+		if (empty($path)) {
+			$error = 1;
+			$reason = Text::_('SET_PATH_FIRST');
+		}
+		//check for trailing slash and generate file path
+		if (substr($path, -1) == DIRECTORY_SEPARATOR) {
+			$mod_file = $path . $filename;
+		} else {
+			$mod_file = $path . DIRECTORY_SEPARATOR . $filename;
+		}
+		//see if the file exists
+		if (!file_exists($mod_file) && $error == 0) {
+			$error = 1;
+			$reason = Text::_('NO_FILE_FOUND');
+		}
+		return $mod_file;
+	}
 }

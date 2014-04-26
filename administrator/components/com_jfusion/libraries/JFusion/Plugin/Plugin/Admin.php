@@ -316,37 +316,6 @@ class Plugin_Admin extends Plugin
     }
 
     /**
-     * Function returns the path to the modfile
-     *
-     * @param string $filename file name
-     * @param int    &$error   error number
-     * @param string &$reason  error reason
-     *
-     * @return string $mod_file path and file of the modfile.
-     */
-    function getModFile($filename, &$error, &$reason)
-    {
-        //check to see if a path is defined
-        $path = $this->params->get('source_path');
-        if (empty($path)) {
-            $error = 1;
-            $reason = Text::_('SET_PATH_FIRST');
-        }
-        //check for trailing slash and generate file path
-        if (substr($path, -1) == DIRECTORY_SEPARATOR) {
-            $mod_file = $path . $filename;
-        } else {
-            $mod_file = $path . DIRECTORY_SEPARATOR . $filename;
-        }
-        //see if the file exists
-        if (!file_exists($mod_file) && $error == 0) {
-            $error = 1;
-            $reason = Text::_('NO_FILE_FOUND');
-        }
-        return $mod_file;
-    }
-
-    /**
      * Called when JFusion is uninstalled so that plugins can run uninstall processes such as removing auth mods
      * @return array    [0] boolean true if successful uninstall
      *                  [1] mixed reason(s) why uninstall was unsuccessful
@@ -385,29 +354,6 @@ class Plugin_Admin extends Plugin
 	{
 		return true;
 	}
-
-    /**
-     * Function to check if a given itemid is configured for the plugin in question.
-     *
-     * @param int $itemid
-     * @return bool
-     */
-    public final function isValidItemID($itemid)
-    {
-        $result = false;
-        if ($itemid) {
-            $app = JFactory::getApplication();
-            $menus = $app->getMenu('site');
-            $params = $menus->getParams($itemid);
-            if ($params) {
-                $jPluginParam = unserialize(base64_decode($params->get('JFusionPluginParam')));
-                if (is_array($jPluginParam) && $jPluginParam['jfusionplugin'] == $this->getJname()) {
-                    $result = true;
-                }
-            }
-        }
-        return $result;
-    }
 
 	/**
 	 * read a given file (use to read config files)

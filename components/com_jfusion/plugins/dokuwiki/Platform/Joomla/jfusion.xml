@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="params">
+        <fieldset name="MOD_OPTIONS">
+            <field name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
+            <field name="redirect_itemid" type="JFusionItemid" size="10" label="REDIRECT_ITEMID" default="" description="REDIRECT_ITEMID" feature="redirect_itemid"/>
+            <field name="platform.showRedirectMod" default="" type="JFusionCustomParam" label="REDIRECTION_MOD" description="REDIRECTION_MOD" />
+            <field name=" " type="helptext" default="AUTHENTICATION_MOD_DESCR" label=""/>
+            <field name="platform.showAuthMod" default="" type="JFusionCustomParam" label="AUTHENTICATION_MOD" description="AUTHENTICATION_MOD" />
+        </fieldset>
+    </fields>
+</form>
+

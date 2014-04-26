@@ -89,14 +89,6 @@
                     <option value="0">JNO</option>
                 </field>
             </fieldset>
-
-            <fieldset name="MOD_OPTIONS">
-                <field name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
-                <field name="redirect_itemid" type="JFusionItemid" size="10" label="REDIRECT_ITEMID" default="" description="REDIRECT_ITEMID" feature="redirect_itemid"/>
-                <field name="showRedirectMod" default="" type="JFusionCustomParam" label="REDIRECTION_MOD" description="REDIRECTION_MOD" />
-                <field name=" " type="helptext" default="AUTHENTICATION_MOD_DESCR" label=""/>
-                <field name="showAuthMod" default="" type="JFusionCustomParam" label="AUTHENTICATION_MOD" description="AUTHENTICATION_MOD" />
-            </fieldset>
         </fields>
     </form>
 </extension>
