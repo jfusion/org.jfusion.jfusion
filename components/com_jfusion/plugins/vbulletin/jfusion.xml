@@ -125,7 +125,6 @@
             </fieldset>
 
             <fieldset name="MOD_OPTIONS">
-                <field name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
                 <field name=" " type="helptext" default="VB_HOOKS_DESC" label=""/>
                 <field name=" " type="helptext" default="VB_HOOKS_NOTE" label=""/>
                 <field name="vb_secret" default="" type="Secret" label="VB_SECRET" description="VB_SECRET_DESC" />
@@ -138,12 +137,10 @@
                 <field name=" " type="helptext" default="VB_HOOKS_DESC" label=""/>
                 <field name="jfvbtask" default="" type="JFusionCustomParam" label="VB_API_HOOK" description="VB_API_HOOK_DESC" />
                 <field name="frameless" default="" type="JFusionCustomParam" label="VB_FRAMELESS_HOOK" description="VB_FRAMELESS_HOOK_DESC" />
-                <field name="redirect" default="" type="JFusionCustomParam" label="VB_REDIRECT_HOOK" description="VB_REDIRECT_HOOK_DESC" />
-                <field name="duallogin" default="" type="JFusionCustomParam" label="VB_DUALLOGIN_HOOK" description="VB_DUALLOGIN_HOOK_DESC" />
-                <!--
+<!--
                 <field name=" " type="helptext" default="VB_GLOBALFIX_HOOK_DESC"/>
                 <field name="globalfix" default="" type="JFusionCustomParam" label="VB_GLOBALFIX_HOOK" description="VB_GLOBALFIX_HOOK"/>
-                -->
+-->
             </fieldset>
 
             <fieldset name="FRAMELESS_INTEGRATION_OPTIONS">

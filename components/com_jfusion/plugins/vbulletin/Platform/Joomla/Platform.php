@@ -43,6 +43,9 @@ defined('_JEXEC') or die('Restricted access');
  */
 class Platform extends Joomla
 {
+	static private $mods = array('redirect' => 'JFusion Redirect Plugin',
+		'duallogin' => 'JFusion Dual Login Plugin');
+
     /**
      * @var $helper Helper
      */
@@ -1469,5 +1472,245 @@ class Platform extends Joomla
 			}
 		}
 		return $status;
+	}
+
+	/**
+	 * @param string $name         name of element
+	 * @param string $value        value of element
+	 * @param string $node         node
+	 * @param string $control_name name of controller
+	 *
+	 * @return string html
+	 */
+	function redirect($name, $value, $node, $control_name)
+	{
+		return $this->renderHook($name);
+	}
+
+	/**
+	 * @param string $name         name of element
+	 * @param string $value        value of element
+	 * @param string $node         node
+	 * @param string $control_name name of controller
+	 *
+	 * @return string html
+	 */
+	function duallogin($name, $value, $node, $control_name)
+	{
+		return $this->renderHook($name);
+	}
+
+	/**
+	 * @param string $name         name of element
+	 *
+	 * @return string html
+	 */
+	function renderHook($name)
+	{
+		try {
+			try {
+				$db = Factory::getDatabase($this->getJname());
+			} catch (Exception $e) {
+				throw new RuntimeException(Text::_('VB_CONFIG_FIRST'));
+			}
+			$secret = $this->params->get('vb_secret', null);
+			if (empty($secret)) {
+				throw new RuntimeException(Text::_('VB_SECRET_EMPTY'));
+			}
+
+			$query = $db->getQuery(true)
+				->select('COUNT(*)')
+				->from('#__plugin')
+				->where('hookname = ' . $db->quote('init_startup'))
+				->where('title = ' . $db->quote(static::$mods[$name]))
+				->where('active = 1');
+
+			$db->setQuery($query);
+			$check = ($db->loadResult() > 0) ? true : false;
+
+			if ($check) {
+				//return success
+				$enabled = Text::_('ENABLED');
+				$disable = Text::_('DISABLE_THIS_PLUGIN');
+				$reenable = Text::_('REENABLE_THIS_PLUGIN');
+				$output = <<<HTML
+                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
+                    <span style="float: left; margin-left: 5px;">{$enabled}</span>
+                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return JFusion.Plugin.module('toggleHook', '{$name}', 'disable');">{$disable}</a>
+                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return JFusion.Plugin.module('toggleHook', '{$name}', 'reenable');">{$reenable}</a>
+HTML;
+			} else {
+				$disabled = Text::_('DISABLED');
+				$enable = Text::_('ENABLE_THIS_PLUGIN');
+				$output = <<<HTML
+                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
+                    <span style="float: left; margin-left: 5px;">{$disabled}</span>
+                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return JFusion.Plugin.module('toggleHook', '{$name}', 'enable');">{$enable}</a>
+HTML;
+			}
+		} catch (Exception $e) {
+			$output = $e->getMessage();
+		}
+		return $output;
+	}
+
+	/**
+	 * @param string $hook
+	 * @param string $action
+	 *
+	 * @return void
+	 */
+	function toggleHook($hook, $action)
+	{
+		try {
+			$db = Factory::getDatabase($this->getJname());
+			$params = Factory::getApplication()->input->get('params', array(), 'array');
+			$itemid = $params['plugin_itemid'];
+
+			$hookName = static::$mods[$hook];
+
+			if ($hookName) {
+				//all three cases, we want to remove the old hook
+				$query = $db->getQuery(true)
+					->delete('#__plugin')
+					->where('hookname = ' . $db->quote('init_startup'))
+					->where('title = ' . $db->quote($hookName));
+
+				$db->setQuery($query);
+				$db->execute();
+
+				//enable or re-enable the plugin
+				if ($action != 'disable') {
+					$secret = $this->params->get('vb_secret', null);
+					if (empty($secret)) {
+						Framework::raiseWarning(Text::_('VB_SECRET_EMPTY'));
+					} else if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
+						Framework::raiseWarning(Text::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
+					} else {
+						//install the hook
+						$php = $this->getHookPHP($hook, $itemid);
+
+						//add the post to the approval queue
+						$plugin = new stdClass;
+						$plugin->title = $hookName;
+						$plugin->hookname = 'init_startup';
+						$plugin->phpcode = $php;
+						$plugin->product = 'vbulletin';
+						$plugin->active = 1;
+						$plugin->executionorder = 1;
+
+						$db->insertObject('#__plugin', $plugin);
+					}
+				}
+			}
+		} catch (Exception $e) {
+			Framework::raiseError($e, $this->getJname());
+		}
+	}
+
+	/**
+	 * @param $plugin
+	 * @param $itemid
+	 *
+	 * @return string
+	 */
+	function getHookPHP($plugin, $itemid)
+	{
+		$php = $inner = null;
+
+		$jname = $this->getJname();
+
+		$config = JFactory::getConfig();
+		if ($plugin == 'redirect') {
+			$sefmode = $this->params->get('sefmode', 0);
+			$sef = $config->get('sef');
+			//get the baseUR
+			$app = JFactory::getApplication('site');
+			$router = $app->getRouter();
+			/**
+			 * @ignore
+			 * @var $uri \JUri
+			 */
+			$uri = $router->build ('index.php?option=com_jfusion&Itemid=' . $itemid);
+			$baseURL = $uri->toString();
+			$joomla_url = \JFusionFunction::getJoomlaURL();
+			if (!strpos($baseURL, '?')) {
+				$baseURL .= '/';
+			}
+			$juri = new \JUri($joomla_url);
+			$path = $juri->getPath();
+			if ($path != '/') {
+				$baseURL = str_replace($path, '', $baseURL);
+			}
+			if (substr($joomla_url, -1) == '/') {
+				if ($baseURL[0] == '/') {
+					$baseURL = substr($joomla_url, 0, -1) . $baseURL;
+				} else {
+					$baseURL = $joomla_url . $baseURL;
+				}
+			} else {
+				if ($baseURL[0] == '/') {
+					$baseURL = $joomla_url . $baseURL;
+				} else {
+					$baseURL = $joomla_url . '/' . $baseURL;
+				}
+			}
+			//let's clean up the URL here before passing it
+			$baseURL = str_replace('&amp;', '&', $baseURL);
+			//remove /administrator from path
+			$baseURL = str_replace('/administrator', '', $baseURL);
+			//set some constants needed to recreate the Joomla URL
+
+			$redirect_ignore = $this->params->get('redirect_ignore');
+			$inner =<<<PHP
+			if (!defined('_JEXEC')){
+				define('SEFENABLED','{$sef}');
+				define('SEFMODE','{$sefmode}');
+				define('JOOMLABASEURL','{$baseURL}');
+				define('REDIRECT_IGNORE','{$redirect_ignore}');
+PHP;
+		} elseif ($plugin == 'duallogin') {
+			//only login if not logging into the frontend of the forum and if $JFusionActivePlugin is not active for this plugin
+			$inner =<<<PHP
+			global \$JFusionActivePlugin,\$JFusionLoginCheckActive;
+			if (empty(\$_POST['logintype']) && \$JFusionActivePlugin != '{$jname}' && empty(\$JFusionLoginCheckActive)) {
+				\$JFusionActivePlugin = '{$jname}';
+				//set the JPATH_BASE needed to initiate Joomla if no already inside Joomla
+				defined('JPATH_BASE') or define('JPATH_BASE','" . JPATH_ROOT . "');
+PHP;
+		}
+
+		if ($inner) {
+			$version = $this->helper->getVersion();
+			if (substr($version, 0, 1) > 3) {
+				$setplugins = 'vBulletinHook::set_pluginlist($vbulletin->pluginlist);';
+			} else {
+				$setplugins = '';
+			}
+
+			$hookFile = __DIR__ . DIRECTORY_SEPARATOR . 'hooks.php';
+			$path = str_replace(DIRECTORY_SEPARATOR . 'administrator', '', JPATH_BASE);
+			$secret = $this->params->get('vb_secret', $config->get('secret'));
+
+			$php =<<<PHP
+			defined('_VBJNAME') or define('_VBJNAME', '{$jname}');
+			defined('JPATH_PATH') or define('JPATH_BASE', '{$path}');
+			defined('JFUSION_VB_JOOMLA_HOOK_FILE') or define('JFUSION_VB_JOOMLA_HOOK_FILE', '{$hookFile}');
+
+			{$inner}
+
+				if (file_exists(JFUSION_VB_JOOMLA_HOOK_FILE)) {
+					include_once(JFUSION_VB_JOOMLA_HOOK_FILE);
+					\$val = '{$plugin}';
+					\$JFusionHook = new executeJFusionJoomlaHook('init_startup', \$val, '{$secret}');
+
+					{$setplugins}
+
+				}
+			}
+PHP;
+		}
+
+		return $php;
 	}
 }

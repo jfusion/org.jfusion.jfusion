@@ -45,9 +45,7 @@ defined('_JEXEC') or die('Restricted access');
 class Admin extends Plugin_Admin
 {
 	static private $mods = array('jfvbtask' => 'JFusion API Plugin - REQUIRED',
-		'redirect' => 'JFusion Redirect Plugin',
 		'frameless' => 'JFusion Frameless Integration Plugin',
-		'duallogin' => 'JFusion Dual Login Plugin',
 		'globalfix' => 'JFusion Global Fix Plugin');
 
 	/**
@@ -319,33 +317,7 @@ class Admin extends Plugin_Admin
 	 *
 	 * @return string html
 	 */
-	function redirect($name, $value, $node, $control_name)
-	{
-		return $this->renderHook($name);
-	}
-
-	/**
-	 * @param string $name         name of element
-	 * @param string $value        value of element
-	 * @param string $node         node
-	 * @param string $control_name name of controller
-	 *
-	 * @return string html
-	 */
 	function frameless($name, $value, $node, $control_name)
-	{
-		return $this->renderHook($name);
-	}
-
-	/**
-	 * @param string $name         name of element
-	 * @param string $value        value of element
-	 * @param string $node         node
-	 * @param string $control_name name of controller
-	 *
-	 * @return string html
-	 */
-	function duallogin($name, $value, $node, $control_name)
 	{
 		return $this->renderHook($name);
 	}
@@ -499,10 +471,11 @@ HTML;
 	function toggleHook($hook, $action)
 	{
 		try {
-			$params = Factory::getApplication()->input->get('params', array(), 'array');
-			$itemid = $params['plugin_itemid'];
 			$db = Factory::getDatabase($this->getJname());
 			if ($hook != 'framelessoptimization') {
+				$params = Factory::getApplication()->input->get('params', array(), 'array');
+				$itemid = $params['plugin_itemid'];
+
 				$hookName = static::$mods[$hook];
 
 				if ($hookName) {
@@ -520,8 +493,6 @@ HTML;
 						$secret = $this->params->get('vb_secret', null);
 						if (empty($secret)) {
 							Framework::raiseWarning(Text::_('VB_SECRET_EMPTY'));
-						} else if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
-							Framework::raiseWarning(Text::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
 						} else {
 							//install the hook
 							$php = $this->getHookPHP($hook, $itemid);
@@ -605,90 +576,39 @@ HTML;
 
 	/**
 	 * @param $plugin
-	 * @param $itemid
+	 *
 	 * @return string
 	 */
-	function getHookPHP($plugin, $itemid)
+	function getHookPHP($plugin)
 	{
 		$hookFile = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
 		$php = "defined('_VBJNAME') or define('_VBJNAME', '{$this->getJname()}');\n";
-		$php.= "defined('JPATH_PATH') or define('JPATH_BASE', '" . (str_replace(DIRECTORY_SEPARATOR . 'administrator', '', JPATH_BASE)) . "');\n";
-		$php.= "defined('JFUSION_VB_HOOK_FILE') or define('JFUSION_VB_HOOK_FILE', '$hookFile');\n";
+		$php .= "defined('JPATH_PATH') or define('JPATH_BASE', '" . (str_replace(DIRECTORY_SEPARATOR . 'administrator', '', JPATH_BASE)) . "');\n";
+		$php .= "defined('JFUSION_VB_HOOK_FILE') or define('JFUSION_VB_HOOK_FILE', '$hookFile');\n";
 		if ($plugin == 'globalfix') {
-			$php.= "if (defined('_JEXEC') && empty(\$GLOBALS['vbulletin']) && !empty(\$vbulletin)) {\n";
-			$php.= "\$GLOBALS['vbulletin'] = \$vbulletin;\n";
-			$php.= "\$GLOBALS['db'] = \$vbulletin->db;\n";
-			$php.= '}';
+			$php .= "if (defined('_JEXEC') && empty(\$GLOBALS['vbulletin']) && !empty(\$vbulletin)) {\n";
+			$php .= "\$GLOBALS['vbulletin'] = \$vbulletin;\n";
+			$php .= "\$GLOBALS['db'] = \$vbulletin->db;\n";
+			$php .= '}';
 			return $php;
 		} elseif ($plugin == 'frameless') {
 			//we only want to initiate the frameless if we are inside Joomla or using AJAX
-			$php.= "if (defined('_JEXEC') || isset(\$_GET['jfusion'])){\n";
-		} elseif ($plugin == 'redirect') {
-			$php.= "if (!defined('_JEXEC')){\n";
-			$sefmode = $this->params->get('sefmode', 0);
-			$config = Factory::getConfig();
-			$sef = $config->get('sef');
-			//get the baseUR
-			$router = Factory::getRouter();
-			/**
-			 * @ignore
-			 * @var $uri Uri
-			 */
-			$uri = $router->build ('index.php?option=com_jfusion&Itemid=' . $itemid);
-			$baseURL = $uri->toString();
-			$joomla_url = JFusionFunction::getJoomlaURL();
-			if (!strpos($baseURL, '?')) {
-				$baseURL.= '/';
-			}
-			$juri = new Uri($joomla_url);
-			$path = $juri->getPath();
-			if ($path != '/') {
-				$baseURL = str_replace($path, '', $baseURL);
-			}
-			if (substr($joomla_url, -1) == '/') {
-				if ($baseURL[0] == '/') {
-					$baseURL = substr($joomla_url, 0, -1) . $baseURL;
-				} else {
-					$baseURL = $joomla_url . $baseURL;
-				}
-			} else {
-				if ($baseURL[0] == '/') {
-					$baseURL = $joomla_url . $baseURL;
-				} else {
-					$baseURL = $joomla_url . '/' . $baseURL;
-				}
-			}
-			//let's clean up the URL here before passing it
-			$baseURL = str_replace('&amp;', '&', $baseURL);
-			//remove /administrator from path
-			$baseURL = str_replace('/administrator', '', $baseURL);
-			//set some constants needed to recreate the Joomla URL
-			$php.= "define('SEFENABLED','$sef');\n";
-			$php.= "define('SEFMODE','$sefmode');\n";
-			$php.= "define('JOOMLABASEURL','$baseURL');\n";
-			$php.= "define('REDIRECT_IGNORE','" . $this->params->get('redirect_ignore') . "');\n";
-		} elseif ($plugin == 'duallogin') {
-			//only login if not logging into the frontend of the forum and if $JFusionActivePlugin is not active for this plugin
-			$php.= "global \$JFusionActivePlugin,\$JFusionLoginCheckActive;\n";
-			$php.= "if (empty(\$_POST['logintype']) && \$JFusionActivePlugin != '{$this->getJname() }' && empty(\$JFusionLoginCheckActive)) {\n";
-			$php.= "\$JFusionActivePlugin = '{$this->getJname() }';\n";
-			//set the JPATH_BASE needed to initiate Joomla if no already inside Joomla
-			$php.= "defined('JPATH_BASE') or define('JPATH_BASE','" . JPATH_ROOT . "');\n";
+			$php .= "if (defined('_JEXEC') || isset(\$_GET['jfusion'])){\n";
 		}
 
-		$php.= "if (file_exists(JFUSION_VB_HOOK_FILE)) {\n";
-		$php.= "include_once(JFUSION_VB_HOOK_FILE);\n";
-		$php.= "\$val = '$plugin';\n";
+		$php .= "if (file_exists(JFUSION_VB_HOOK_FILE)) {\n";
+		$php .= "include_once(JFUSION_VB_HOOK_FILE);\n";
+		$php .= "\$val = '$plugin';\n";
 		$secret = $this->params->get('vb_secret', Factory::getConfig()->get('secret'));
-		$php.= "\$JFusionHook = new executeJFusionHook('init_startup', \$val, '$secret');\n";
+		$php .= "\$JFusionHook = new executeJFusionHook('init_startup', \$val, '$secret');\n";
 
 		$version = $this->helper->getVersion();
 		if (substr($version, 0, 1) > 3) {
-			$php.= "vBulletinHook::set_pluginlist(\$vbulletin->pluginlist);\n";
+			$php .= "vBulletinHook::set_pluginlist(\$vbulletin->pluginlist);\n";
 		}
-		$php.= "}\n";
+		$php .= "}\n";
 		if ($plugin != 'jfvbtask') {
-			$php.= "}\n";
+			$php .= "}\n";
 		}
 		return $php;
 	}
@@ -720,6 +640,7 @@ HTML;
 	 * @param $value
 	 * @param $node
 	 * @param $control_name
+	 *
 	 * @return mixed|string
 	 */
 	function name_field($name, $value, $node, $control_name)

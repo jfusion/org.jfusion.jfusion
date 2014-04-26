@@ -27,7 +27,6 @@
     <form>
         <fields name="params">
             <fieldset name="PLUGIN_GENERAL_DETAILS">
-                <field name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
                 <field name="description" type="text" size="60" label="DESCRIPTION" default="Presta Shop" description="DESCRIPTION_DESC" />
                 <field name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/prestashop/" description="SOURCE_URL_DESC" />
                 <field name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />

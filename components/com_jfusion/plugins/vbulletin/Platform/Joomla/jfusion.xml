@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="params">
+        <fieldset name="MOD_OPTIONS">
+            <field name="platform.redirect" default="" type="JFusionCustomParam" label="VB_REDIRECT_HOOK" description="VB_REDIRECT_HOOK_DESC" />
+            <field name="platform.duallogin" default="" type="JFusionCustomParam" label="VB_DUALLOGIN_HOOK" description="VB_DUALLOGIN_HOOK_DESC" />
+        </fieldset>
+    </fields>
+</form>

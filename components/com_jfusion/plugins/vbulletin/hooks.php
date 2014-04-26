@@ -34,7 +34,7 @@ if (!isset($GLOBALS['db']) && !empty($db)) {
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class executeJFusionJoomlaHook
+class executeJFusionHook
 {
     var $vars;
 
@@ -62,8 +62,8 @@ class executeJFusionJoomlaHook
         $this->key = $key;
         eval('$success = $this->' . $hook . '();');
         //if ($success) die('<pre>'.print_r($GLOBALS['vbulletin']->pluginlist, true).'</pre>');
-    }
 
+    }
     function init_startup()
     {
         global $vbulletin;
@@ -168,16 +168,17 @@ class executeJFusionJoomlaHook
     {
         global $hookFile;
 
-        if (empty($hookFile) && defined('JFUSION_VB_JOOMLA_HOOK_FILE')) {
+        if (empty($hookFile) && defined('JFUSION_VB_HOOK_FILE')) {
             //as of JFusion 1.6
-            $hookFile = JFUSION_VB_JOOMLA_HOOK_FILE;
+            $hookFile = JFUSION_VB_HOOK_FILE;
         }
 
         //we need to set up the hooks
-        if ($plugin == 'duallogin') {
-            //retrieve the hooks that vBulletin will use to login to Joomla
-            $hookNames = array('global_setup_complete', 'login_verify_success', 'logout_process');
-            define('DUALLOGIN', 1);
+        if ($plugin == 'frameless') {
+            //retrieve the hooks that jFusion will use to make vB work fruitlessly
+            $hookNames = array('album_picture_complete', 'global_start', 'global_complete', 'global_setup_complete', 'header_redirect', 'logout_process', 'member_profileblock_fetch_unwrapped', 'redirect_generic', 'xml_print_output');
+        } elseif ($plugin == 'jfvbtask') {
+            $hookNames = array('global_setup_complete');
         } else {
             $hookNames = array();
         }
@@ -195,7 +196,7 @@ class executeJFusionJoomlaHook
                 elseif ($h == 'redirect_generic') $toPass = '$vars = array(); $vars["url"] =& $url; $vars["js_url"] =& $js_url; $vars["formfile"] =& $formfile;';
                 elseif ($h == 'xml_print_output') $toPass = '$vars = & $this->doc;';
                 else $toPass = '$vars = null;';
-                $hooks[$h] = 'include_once \'' . $hookFile . '\'; ' . $toPass . ' $jFusionHook = new executeJFusionJoomlaHook(\'' . $h . '\', $vars, \''. $this->key . '\');';
+                $hooks[$h] = 'include_once \'' . $hookFile . '\'; ' . $toPass . ' $jFusionHook = new executeJFusionHook(\'' . $h . '\', $vars, \''. $this->key . '\');';
             }
         }
         return $hooks;
@@ -303,7 +304,12 @@ class executeJFusionJoomlaHook
      */
     function global_setup_complete()
     {
-        if (defined('_JEXEC')) {
+        if (!empty($_POST['jfvbtask'])) {
+            //run the api task
+            global $vbulletin;
+            $jfaction = new JFvBulletinTask($vbulletin, $this->key);
+            $jfaction->performTask($_POST['jfvbtask']);
+        } elseif (defined('_JEXEC')) {
             //If Joomla SEF is enabled, the dash in the logout hash gets converted to a colon which must be corrected
             global $vbulletin, $show, $vbsefenabled, $vbsefmode;
             $vbulletin->GPC['logouthash'] = str_replace(':', '-', $vbulletin->GPC['logouthash']);
@@ -408,46 +414,6 @@ class executeJFusionJoomlaHook
     /**
      * @return bool
      */
-    function login_verify_success()
-    {
-        $this->backup_restore_globals('backup');
-        global $vbulletin;
-        //if JS is enabled, only a hashed form of the password is available
-        $password = (!empty($vbulletin->GPC['vb_login_password'])) ? $vbulletin->GPC['vb_login_password'] : $vbulletin->GPC['vb_login_md5password'];
-        if (!empty($password)) {
-            if (!defined('_JEXEC')) {
-                $mainframe = $this->startJoomla();
-            } else {
-                $mainframe = JFactory::getApplication('site');
-                define('_VBULLETIN_JFUSION_HOOK', true);
-            }
-            // do the login
-            global $JFusionActivePlugin;
-	        if (defined('_VBJNAME')) {
-		        $JFusionActivePlugin =  _VBJNAME;
-	        }
-            $baseURL = (class_exists('JFusionFunction')) ? \JFusionFunction::getJoomlaURL() : JUri::root();
-            $loginURL = JRoute::_($baseURL . 'index.php?option=com_user&task=login', false);
-            $credentials = array('username' => $vbulletin->userinfo['username'], 'password' => $password, 'password_salt' => $vbulletin->userinfo['salt']);
-            $options = array('entry_url' => $loginURL);
-            //set remember me option
-            if(!empty($vbulletin->GPC['cookieuser'])) {
-                $options['remember'] = 1;
-            }
-            //creating my own vb security string for check in the function
-            define('_VB_SECURITY_CHECK', md5('jfusion' . md5($password . $vbulletin->userinfo['salt'])));
-            $mainframe->login($credentials, $options);
-            // clean up the joomla session object before continuing
-            $session = JFactory::getSession();
-            $session->close();
-        }
-        $this->backup_restore_globals('restore');
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
     function logout_process()
     {
         $this->backup_restore_globals('backup');
@@ -460,23 +426,6 @@ class executeJFusionJoomlaHook
             //prevent global_complete from recreating the cookies
             $vbulletin->userinfo['userid'] = 0;
             $vbulletin->userinfo['password'] = 0;
-        }
-        if (defined('DUALLOGIN')) {
-            if (!defined('_JEXEC')) {
-                $mainframe = $this->startJoomla();
-            } else {
-                $mainframe = JFactory::getApplication('site');
-                define('_VBULLETIN_JFUSION_HOOK', true);
-            }
-            global $JFusionActivePlugin;
-	        if (defined('_VBJNAME')) {
-		        $JFusionActivePlugin =  _VBJNAME;
-	        }
-            // logout any joomla users
-            $mainframe->logout();
-            // clean up session
-            $session = JFactory::getSession();
-            $session->close();
         }
         $this->backup_restore_globals('restore');
         return true;
@@ -588,4 +537,416 @@ class executeJFusionJoomlaHook
         }
         return $mainframe;
     }
+}
+
+/**
+ *
+ */
+class JFvBulletinTask {
+    private $key;
+    private $data;
+    protected $vbulletin;
+
+	protected $response = array('success' => 0, 'debug' => array(), 'errors' => array());
+
+    /**
+     * @param $vbulletin
+     * @param $key
+     */
+    function __construct(&$vbulletin, $key) {
+        if (empty($key)) {
+	        $this->response['errors'][] = 'Missing key!';
+            $this->outputResponse();
+        }
+        $this->key = $key;
+        $this->vbulletin =& $vbulletin;
+    }
+
+    /**
+     * @param $task
+     */
+    function performTask($task) {
+        if (isset($_POST['jfvbdata'])) {
+            $this->data = $this->decryptApiData($_POST['jfvbdata']);
+	        if (method_exists($this, "_{$task}")) {
+		        //perform the task
+		        $this->{"_{$task}"}();
+	        } else {
+		        //respond with error
+		        $this->response['errors'][] = 'Task does not exist!';
+		        $this->outputResponse();
+	        }
+        } else {
+	        $this->response['errors'][] = 'Missing data!';
+            $this->outputResponse();
+        }
+    }
+
+    /**
+     * @param $data
+     * @return array|mixed
+     */
+    function decryptApiData($data) {
+        $decrypted_data = array();
+    	if (function_exists('mcrypt_decrypt')) {
+	        $decrypted_data = @unserialize(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $this->key, base64_decode($data), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
+	        if (!is_array($decrypted_data)) {
+		        $this->response['errors'][] = 'Data corrupted!';
+	            $this->outputResponse();
+	        } elseif ($decrypted_data['jfvbkey'] != $this->key) {
+	            //key doesn't match
+		        $this->response['errors'][] = 'Bad key!';
+	            $this->outputResponse();
+	        }
+    	} else {
+		    $this->response['errors'][] = 'mcrypt_decrypt Missing';
+    		$this->outputResponse();
+    	}
+        return $decrypted_data;
+    }
+
+    /**
+     * outputs responce
+     */
+    function outputResponse() {
+	    die(json_encode($this->response));
+    }
+
+    /**
+     * @param $existinguser
+     * @return array
+     */
+	function convertUserData($existinguser)
+	{
+		$userinfo = array('userid' => $existinguser->userid,
+			'username' => $existinguser->username,
+			'email' => $existinguser->email,
+			'password' => $existinguser->password,
+			'usergroupid' => $existinguser->group_id,
+			'displaygroupid' => $existinguser->membergroupids,
+			'membergroupids' => $existinguser->membergroupids);
+		return $userinfo;
+	}
+
+    function _createUser() {
+        $userinfo =& $this->data['userinfo'];
+        $defaultgroup =& $this->data['defaultgroup'];
+        $usergroups =& $this->data['usergroups'];
+
+        //create the new user
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
+        $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
+        $userdm->set('username', $userinfo->username);
+        $userdm->set('email', $userinfo->email);
+        $userdm->set('password', $userinfo->password_clear);
+
+	    $userdm->set('usergroupid', $defaultgroup);
+	    $userdm->set('displaygroupid', $usergroups->displaygroup);
+	    $userdm->set('membergroupids', $usergroups->membergroups);
+
+        $userdm->set('usertitle', $userinfo->usertitle);
+
+        //set the timezone
+        if (isset($userinfo->timezone)) {
+            $timezone = $userinfo->timezone;
+            $userdm->set('timezoneoffset', $timezone);
+        }
+
+        //performs some final VB checks before saving
+        $userdm->pre_save();
+        if (empty($userdm->errors)) {
+            $userdmid = $userdm->save();
+	        $this->response['new_id'] = $userdmid;
+	        $this->response['success'] = 1;
+        } else {
+	        $this->response['errors'] = $userdm->errors;
+        }
+	    $this->outputResponse();
+    }
+
+    function _deleteUser() {
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
+        $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
+        $existinguser = $this->convertUserData($this->data['userinfo']);
+        $userdm->set_existing($existinguser);
+        $userdm->delete();
+	    if(!empty($userdm->errors)) {
+		    $this->response['errors'] = $userdm->errors;
+	    } else {
+		    $this->response['success'] = 1;
+	    }
+	    $this->outputResponse();
+    }
+
+    function _updateUsergroup() {
+        $existinguser =& $this->data['existinguser'];
+        $userinfo =& $this->data['userinfo'];
+
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
+        $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
+        $vbuserinfo = $this->convertUserData($existinguser);
+        $userdm->set_existing($vbuserinfo);
+
+        if (empty($this->data['aec'])) {
+            $usergroups =& $this->data['usergroups'];
+            $defaultgroup =& $usergroups->defaultgroup;
+            $displaygroup =& $usergroups->displaygroup;
+            $membergroups =& $usergroups->membergroups;
+        } else {
+            $defaultgroup = $membergroups = $displaygroup = $this->data['aecgroupid'];
+        }
+
+        $userdm->set('usergroupid', $defaultgroup);
+	    $userdm->set('displaygroupid', $displaygroup);
+        $userdm->set('membergroupids', $membergroups);
+        $userdm->set('usertitle', $this->data['usertitle']);
+
+        //performs some final VB checks before saving
+        $userdm->pre_save();
+        if (empty($userdm->errors)) {
+            $userdm->save();
+	        $this->response['success'] = 1;
+        } else {
+	        $this->response['errors'] = $userdm->errors;
+        }
+	    $this->outputResponse();
+    }
+
+    function _updateEmail() {
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
+		$userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
+		$userdm->set_existing($this->convertUserData($this->data['existinguser']));
+		$userdm->set('email', $this->data['userinfo']->email);
+		//performs some final VB checks before saving
+		$userdm->pre_save();
+	    if(empty($userdm->errors)) {
+			$userdm->save();
+		    $this->response['success'] = 1;
+	    } else {
+		    $this->response['errors'] = $userdm->errors;
+	    }
+	    $this->outputResponse();
+    }
+
+    function _unblockUser() {
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
+        $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
+        $existinguser =& $this->data['existinguser'];
+        $bannedgroup =& $this->data['bannedgroup'];
+        $defaultgroup =& $this->data['defaultgroup'];
+        $displaygroup =& $this->data['displaygroup'];
+
+        $userinfo = $this->convertUserData($existinguser);
+        $userdm->set_existing($userinfo);
+
+        if (!empty($this->data['result'])) {
+            $result =& $this->data['result'];
+            //set the user title
+            if ($result->customtitle && $result->usertitle != $result->bantitle) {
+                $usertitle = $result->usertitle;
+            } else if (!empty($result->usertitle)) {
+                $usertitle = $result->usertitle;
+            } else {
+                $usertitle = $this->data['defaulttitle'];
+            }
+            $userdm->set('usertitle', $usertitle);
+            $userdm->set('posts', $existinguser->posts);
+            // This will activate the rank update
+
+            //keep user from getting stuck as banned
+            if ($result->usergroupid == $bannedgroup) {
+                $usergroupid = $defaultgroup;
+            } else {
+                $usergroupid = $result->group_id;
+            }
+            if ($result->displaygroupid == $bannedgroup) {
+                $displaygroupid = $displaygroup;
+            } else {
+                $displaygroupid = $result->displaygroupid;
+            }
+
+            $userdm->set('usergroupid', $usergroupid);
+            $userdm->set('displaygroupid', $displaygroupid);
+            $userdm->set('customtitle', $result->customtitle);
+        } else {
+            $userdm->set('usergroupid', $defaultgroup);
+            $userdm->set('displaygroupid', $displaygroup);
+        }
+
+        //performs some final VB checks before saving
+        $userdm->pre_save();
+	    if(empty($userdm->errors)){
+			$userdm->save();
+		    $this->response['success'] = 1;
+	    } else {
+		    $this->response['errors'] = $userdm->errors;
+	    }
+	    $this->outputResponse();
+    }
+
+    function _inactivateUser() {
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
+        $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
+        $existinguser =& $this->data['existinguser'];
+        $vbuser = $this->convertUserData($existinguser);
+        $userdm->set_existing($vbuser);
+        $userdm->set_bitfield('options', 'noactivationmails', 0);
+        //performs some final VB checks before saving
+        $userdm->pre_save();
+	    if(empty($userdm->errors)) {
+			$userdm->save();
+		    $this->response['success'] = 1;
+	    } else {
+		    $this->response['errors'] = $userdm->errors;
+	    }
+	    $this->outputResponse();
+    }
+
+    function _createThread() {
+	    /**
+	     * @ignore
+	     * @var $threaddm vB_DataManager
+	     */
+        $threaddm = & datamanager_init('Thread_FirstPost', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
+
+        $foruminfo = fetch_foruminfo($this->data['forumid'], false);
+        $threaddm->set_info('forum', $foruminfo);
+        $threaddm->set('forumid', $foruminfo['forumid']);
+        $threaddm->set('userid', $this->data['userid']);
+        $threaddm->set('title', $this->data['title']);
+        $threaddm->set('pagetext', trim($this->data['text']));
+        $threaddm->set('allowsmilie', $foruminfo['allowsmilies']);
+        $threaddm->set('showsignature', 1);
+        $threaddm->set('ipaddress', $this->data['ipaddress']);
+        $threaddm->set('visible', 1);
+        $threaddm->set_info('parseurl', 1);
+        $timestamp = ($this->data['timestamp'] == 'timestamp') ? TIMENOW : $this->data['timestamp'];
+        $threaddm->set('dateline', $timestamp);
+        $threaddm->pre_save();
+
+        if (empty($threaddm->errors)) {
+	        $threadid = $threaddm->save();
+	        $postid = $threaddm->fetch_field('firstpostid');
+
+	        $this->response['new_id'] = $threadid;
+	        $this->response['firstpostid'] = $postid;
+	        $this->response['success'] = 1;
+        } else {
+	        $this->response['errors'] = $threaddm->errors;
+        }
+	    $this->outputResponse();
+    }
+
+    function _createPost() {
+        $threadinfo = fetch_threadinfo($this->data['ids']->threadid);
+		$foruminfo = fetch_foruminfo($this->data['ids']->forumid, false);
+	    /**
+	     * @ignore
+	     * @var $postdm vB_DataManager
+	     */
+        $postdm = & datamanager_init('Post', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
+        $postdm->set_info('forum', $foruminfo);
+        $postdm->set_info('thread', $threadinfo);
+        $userinfo =& $this->data['userinfo'];
+        $postdm->set_info('user', $userinfo);
+        $postdm->set('userid', $userinfo['userid']);
+
+        if (!$userinfo['userid']) {
+            $postdm->set('username', $userinfo['username']);
+			if($this->data['post_approved']) {
+                $postdm->set('visible', 0);
+            } else {
+                $postdm->set('visible', 1);
+            }
+        } else {
+            $postdm->set('visible', 1);
+        }
+
+        $postdm->setr('parentid', $this->data['ids']->postid);
+        $postdm->setr('threadid', $this->data['ids']->threadid);
+        $postdm->setr('ipaddress', $this->data['ipaddress']);
+        $postdm->set('dateline', TIMENOW);
+        $postdm->setr('pagetext', $this->data['text']);
+        $postdm->set('title', $this->data['title']);
+        $postdm->set('allowsmilie', $foruminfo['allowsmilies']);
+        $postdm->set('showsignature', 1);
+        $postdm->pre_save();
+
+        if (empty($postdm->errors)) {
+	        $id = $postdm->save();
+	        $this->response['new_id'] = $id;
+	        $this->response['success'] = 1;
+        } else {
+	        $this->response['errors'] = $postdm->errors;
+        }
+	    $this->outputResponse();
+    }
+
+    function _updateThread() {
+        global $vbulletin;
+        $ids =& $this->data['existingthread'];
+
+        $postinfo = array();
+        $postinfo['postid'] = $ids->postid;
+        $postinfo['threadid'] = $ids->threadid;
+        $postinfo['ipaddress'] = $this->data['ipaddress'];
+        $postinfo['dateline'] = TIMENOW;
+
+        $threadinfo = fetch_threadinfo($ids->threadid);
+		$foruminfo = fetch_foruminfo($ids->forumid, false);
+
+	    /**
+	     * @ignore
+	     * @var $postdm vB_DataManager
+	     * @var $threaddm vB_DataManager
+	     */
+        $postdm = & datamanager_init('Post', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
+        $postdm->set_existing($postinfo);
+        $postdm->set_info('forum', $foruminfo);
+        $postdm->set_info('thread', $threadinfo);
+        $postdm->setr('pagetext', $this->data['text']);
+        $postdm->setr('title', $this->data['title']);
+        $parseurl = (($vbulletin->options['allowedbbcodes'] & ALLOW_BBCODE_URL) AND $foruminfo['allowbbcode']);
+        $postdm->set_info('parseurl', $parseurl);
+        $postdm->pre_save();
+
+        if (empty($postdm->errors)) {
+	        $postdm->save();
+	        //update the thread's title
+	        $threaddm = & datamanager_init('Thread', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
+	        $threaddm->set_existing($threadinfo);
+	        $threaddm->set('title', $this->data['title']);
+	        $threaddm->save();
+
+	        $this->response['success'] = 1;
+        } else {
+	        $this->response['errors'] = $postdm->errors;
+        }
+	    $this->outputResponse();
+    }
+
+	function _ping() {
+		 if ($this->data['ping']) {
+			 $this->response['success'] = 1;
+		 }
+		$this->outputResponse();
+	}
 }

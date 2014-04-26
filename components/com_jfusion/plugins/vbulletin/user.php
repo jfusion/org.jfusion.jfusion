@@ -52,7 +52,7 @@ class User extends Plugin_User
 	 * @param string $identifier_type
 	 * @param int $ignore_id
 	 *
-*@return null|Userinfo
+     * @return null|Userinfo
 	 */
 	function getUser(Userinfo $userinfo, $identifier_type = 'auto', $ignore_id = 0)
 	{
