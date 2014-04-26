@@ -185,19 +185,14 @@ class executeJFusionHook
         $hooks = array();
 
         foreach ($hookNames as $h) {
-            //certain hooks we want to call directly such as global variables
-            if ($h == 'profile_editoptions_start') {
-                $hooks[$h] = 'global $stylecount;';
-            } else {
-                if ($h == 'album_picture_complete') $toPass = '$vars =& $pictureinfo; ';
-                elseif ($h == 'global_complete') $toPass = '$vars =& $output; ';
-                elseif ($h == 'header_redirect') $toPass = '$vars =& $url;';
-                elseif ($h == 'member_profileblock_fetch_unwrapped') $toPass = '$vars =& $prepared;';
-                elseif ($h == 'redirect_generic') $toPass = '$vars = array(); $vars["url"] =& $url; $vars["js_url"] =& $js_url; $vars["formfile"] =& $formfile;';
-                elseif ($h == 'xml_print_output') $toPass = '$vars = & $this->doc;';
-                else $toPass = '$vars = null;';
-                $hooks[$h] = 'include_once \'' . $hookFile . '\'; ' . $toPass . ' $jFusionHook = new executeJFusionHook(\'' . $h . '\', $vars, \''. $this->key . '\');';
-            }
+	        if ($h == 'album_picture_complete') $toPass = '$vars =& $pictureinfo; ';
+	        elseif ($h == 'global_complete') $toPass = '$vars =& $output; ';
+	        elseif ($h == 'header_redirect') $toPass = '$vars =& $url;';
+	        elseif ($h == 'member_profileblock_fetch_unwrapped') $toPass = '$vars =& $prepared;';
+	        elseif ($h == 'redirect_generic') $toPass = '$vars = array(); $vars["url"] =& $url; $vars["js_url"] =& $js_url; $vars["formfile"] =& $formfile;';
+	        elseif ($h == 'xml_print_output') $toPass = '$vars = & $this->doc;';
+	        else $toPass = '$vars = null;';
+	        $hooks[$h] = 'include_once \'' . $hookFile . '\'; ' . $toPass . ' $jFusionHook = new executeJFusionHook(\'' . $h . '\', $vars, \''. $this->key . '\');';
         }
         return $hooks;
     }
