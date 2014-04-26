@@ -19,10 +19,9 @@ use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Database\DatabaseFactory;
+use Joomla\Form\Html\Select;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
-use JFusionFunction;
-use JHTML;
 use RuntimeException;
 use stdClass;
 
@@ -655,7 +654,7 @@ HTML;
 				//get a list of field names for custom profile fields
 				$custom_fields = $db->getTableColumns('#__userfield');
 
-				$vb_options = array(JHTML::_('select.option', '', '', 'id', 'name'));
+				$vb_options = array(Select::option('', '', 'id', 'name'));
 				if ($custom_fields) {
 					unset($custom_fields['userid']);
 					unset($custom_fields['temp']);
@@ -669,13 +668,13 @@ HTML;
 
 						$db->setQuery($query, 0, 1);
 						$title = $db->loadResult();
-						$vb_options[] = JHTML::_('select.option', $field, $title, 'id', 'name');
+						$vb_options[] = Select::option($field, $title, 'id', 'name');
 					}
 				}
 
 				$value = (empty($value)) ? '' : $value;
 
-				return JHTML::_('select.genericlist', $vb_options, $control_name . '[' . $name . ']', 'class="inputbox"', 'id', 'name', $value);
+				return Select::genericlist( $vb_options, $control_name . '[' . $name . ']', 'class="inputbox"', 'id', 'name', $value);
 			} else {
 				throw new RuntimeException(Text::_('SAVE_CONFIG_FIRST'));
 			}

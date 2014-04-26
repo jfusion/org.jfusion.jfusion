@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <form>
-        <fields addfieldpath="/components/com_jfusion/plugins/gallery2/fields">
+        <fields addfieldpath="/components/com_jfusion/plugins/gallery2/Platform/Joomla/fields">
             <fieldset name="basic">
                 <field name="title" type="text" default="" label="TITLE" description="TITLE_DESCR"/>
                 <field name="view" type="list" default="recent_image" label="SELECT_VIEW" description="SELECT_VIEW">

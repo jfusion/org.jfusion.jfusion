@@ -14,7 +14,6 @@ use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
-use JHTML;
 use stdClass;
 
 defined('_JEXEC' ) or die('Restricted access' );

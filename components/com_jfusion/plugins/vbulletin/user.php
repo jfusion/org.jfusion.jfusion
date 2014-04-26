@@ -22,7 +22,6 @@ use JFusion\Framework;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
-use JHTML;
 use RuntimeException;
 use stdClass;
 
