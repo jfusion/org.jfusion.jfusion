@@ -14,9 +14,10 @@
 	 */
 
 use JFusion\Factory;
-use\JFusion\Debugger\Debugger;
+use JFusion\Debugger\Debugger;
 use Joomla\Event\Event;
-use\Joomla\Registry\Registry;
+use Joomla\Language\Text;
+use Joomla\Registry\Registry;
 
 use \Exception;
 use \ReflectionMethod;

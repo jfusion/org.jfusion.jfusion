@@ -16,6 +16,7 @@
 // no direct access
 use Exception;
 use JFactory;
+use JFile;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;

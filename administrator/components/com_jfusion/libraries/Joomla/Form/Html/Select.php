@@ -45,12 +45,12 @@ abstract class Select
 	/**
 	 * Generates a yes/no radio list.
 	 *
-	 * @param   string  $name      The value of the HTML name attribute
-	 * @param   array   $attribs   Additional HTML attributes for the <select> tag
-	 * @param   string  $selected  The key that is selected
-	 * @param   string  $yes       Language key for Yes
-	 * @param   string  $no        Language key for no
-	 * @param   string  $id        The id for the field
+	 * @param   string    $name     The value of the HTML name attribute
+	 * @param   array     $attribs  Additional HTML attributes for the <select> tag
+	 * @param   string    $selected The key that is selected
+	 * @param   string    $yes      Language key for Yes
+	 * @param   string    $no       Language key for no
+	 * @param bool|string $id       The id for the field
 	 *
 	 * @return  string  HTML for the radio list
 	 *

@@ -619,10 +619,10 @@ class Form
 	 * field being loaded.  If it is false, then the new field being loaded will be ignored and the
 	 * method will move on to the next field to load.
 	 *
-	 * @param   string  $data     The name of an XML string or object.
-	 * @param   string  $replace  Flag to toggle whether form fields should be replaced if a field
-	 *                            already exists with the same group/name.
-	 * @param   string  $xpath    An optional xpath to search for the fields.
+	 * @param   string    $data    The name of an XML string or object.
+	 * @param bool|string $replace Flag to toggle whether form fields should be replaced if a field
+	 *                             already exists with the same group/name.
+	 * @param bool|string $xpath   An optional xpath to search for the fields.
 	 *
 	 * @return  boolean  True on success, false otherwise.
 	 *
@@ -742,10 +742,10 @@ class Form
 	 * fields in the new XML file unless the $reset parameter has been set
 	 * to false.
 	 *
-	 * @param   string  $file   The filesystem path of an XML file.
-	 * @param   string  $reset  Flag to toggle whether form fields should be replaced if a field
-	 *                          already exists with the same group/name.
-	 * @param   string  $xpath  An optional xpath to search for the fields.
+	 * @param   string    $file  The filesystem path of an XML file.
+	 * @param bool|string $reset Flag to toggle whether form fields should be replaced if a field
+	 *                           already exists with the same group/name.
+	 * @param bool|string $xpath An optional xpath to search for the fields.
 	 *
 	 * @return  boolean  True on success, false otherwise.
 	 *
@@ -1817,18 +1817,18 @@ class Form
 	/**
 	 * Method to get an instance of a form.
 	 *
-	 * @param   string  $name     The name of the form.
-	 * @param   string  $data     The name of an XML file or string to load as the form definition.
-	 * @param   array   $options  An array of form options.
-	 * @param   string  $replace  Flag to toggle whether form fields should be replaced if a field
-	 *                            already exists with the same group/name.
-	 * @param   string  $xpath    An optional xpath to search for the fields.
+	 * @param   string    $name    The name of the form.
+	 * @param   string    $data    The name of an XML file or string to load as the form definition.
+	 * @param   array     $options An array of form options.
+	 * @param bool|string $replace Flag to toggle whether form fields should be replaced if a field
+	 *                             already exists with the same group/name.
+	 * @param bool|string $xpath   An optional xpath to search for the fields.
 	 *
+	 * @throws \RuntimeException if the form could not be loaded.
+	 * @throws \InvalidArgumentException if no data provided.
 	 * @return  Form   Instance of this class.
 	 *
 	 * @since   1.0
-	 * @throws  \InvalidArgumentException if no data provided.
-	 * @throws  \RuntimeException if the form could not be loaded.
 	 */
 	public static function getInstance($name, $data = null, $options = array(), $replace = true, $xpath = false)
 	{

@@ -14,19 +14,11 @@
  */
 
 // no direct access
-use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
-use JFusion\User\Userinfo;
-use JFusion\Plugins\universal\Helper;
 
 use Joomla\Language\Text;
 use JFusion\Plugin\Platform\Joomla;
-
-use \Exception;
-use JRegistry;
-use \stdClass;
-use \RuntimeException;
 
 defined('_JEXEC') or die('Restricted access');
 

@@ -16,7 +16,6 @@
 
 // no direct access
 use Exception;
-use JFile;
 use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Language\Text;

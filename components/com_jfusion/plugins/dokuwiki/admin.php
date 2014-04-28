@@ -15,11 +15,8 @@
  */
 
 // no direct access
-use JFile;
-use JFolder;
-use JFusion\Factory;
+
 use JFusion\Framework;
-use Joomla\Filesystem\Path;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 use \RuntimeException;

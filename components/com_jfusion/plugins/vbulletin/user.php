@@ -20,6 +20,7 @@ use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
+use Joomla\Form\Html\Select;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 use RuntimeException;
@@ -886,11 +887,11 @@ class User extends Plugin_User
 			Framework::raiseError($e, $admin->getJname());
 		}
 
-		array_unshift($usergroups, JHTML::_('select.option', '0', '- Select a Group -', 'id', 'name'));
+		array_unshift($usergroups, Select::option( '0', '- Select a Group -', 'id', 'name'));
 		$v = (isset($current_settings['vb_expiration_groupid'])) ? $current_settings['vb_expiration_groupid'] : '';
-		$settings['lists']['vb_expiration_groupid'] = JHTML::_('select.genericlist', $usergroups,  'vb_expiration_groupid', '', 'id', 'name', $v);
+		$settings['lists']['vb_expiration_groupid'] = Select::genericlist( $usergroups,  'vb_expiration_groupid', '', 'id', 'name', $v);
 		$v = (isset($current_settings['vb_subscription_groupid'])) ? $current_settings['vb_subscription_groupid'] : '';
-		$settings['lists']['vb_subscription_groupid'] = JHTML::_('select.genericlist', $usergroups,  'vb_subscription_groupid', '', 'id', 'name', $v);
+		$settings['lists']['vb_subscription_groupid'] = Select::genericlist( $usergroups,  'vb_subscription_groupid', '', 'id', 'name', $v);
 		return $settings;
 	}
 

@@ -12,6 +12,7 @@ use Exception;
 use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
+use Joomla\Form\Html\Select;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 use stdClass;
@@ -226,7 +227,7 @@ class Admin extends Plugin_Admin
 
 				$output .= '<table>';
 				$output .= '<tr><td>';
-				$output .= JHTML::_('select.genericlist', $tl, $control_name . '[' . $name . '][' . $type . '][table]', 'onchange="javascript: Joomla.submitbutton(\'applyconfig\')"', 'id', 'name', $value->table);
+				$output .= Select::genericlist( $tl, $control_name . '[' . $name . '][' . $type . '][table]', 'onchange="javascript: Joomla.submitbutton(\'applyconfig\')"', 'id', 'name', $value->table);
 				$output .= '</td></tr>';
 				$output .= '<tr><td>';
 				if (!empty($value->table) ) {
@@ -268,7 +269,7 @@ class Admin extends Plugin_Admin
 						$output .= '<table>';
 						$output .= '<tr>';
 						$output .= '<td>';
-						$output .= JHTML::_('select.genericlist', $fieldtypes, $control_name . '[' . $name . '][' . $type . '][field][' . $val->Field . '][]', $onchange, 'id', 'name', $mapuserfield);
+						$output .= Select::genericlist($fieldtypes, $control_name . '[' . $name . '][' . $type . '][field][' . $val->Field . '][]', $onchange, 'id', 'name', $mapuserfield);
 						$output .= '</td>';
 						$output .= '<td>';
 						$onchange = 'onchange="javascript: JFusion.Plugin.changeValue(this,\'' . $val->Field . '\',\'' . $type . '\')"';
@@ -277,7 +278,7 @@ class Admin extends Plugin_Admin
 						if (isset($mapuserfield[0])) {
 							if (isset($fieldtypes[$mapuserfield[0]])) {
 								if (isset($fieldtypes[$mapuserfield[0]]->types)) {
-									$output .= JHTML::_('select.genericlist', $fieldtypes[$mapuserfield[0]]->types, $control_name . '[' . $name . '][' . $type . '][type][' . $val->Field . ']', $onchange, 'id', 'name', $fieldstype);
+									$output .= Select::genericlist( $fieldtypes[$mapuserfield[0]]->types, $control_name . '[' . $name . '][' . $type . '][type][' . $val->Field . ']', $onchange, 'id', 'name', $fieldstype);
 								}
 							}
 						}

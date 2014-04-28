@@ -15,6 +15,7 @@
 
 // no direct access
 use JFactory;
+use JFile;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
@@ -1931,5 +1932,19 @@ HTML;
 		}
 
 		return array($return, $reasons);
+	}
+
+	/**
+	 * @return bool
+	 */
+	function clearConfigCache()
+	{
+		$source_path = $this->params->get('source_path');
+		$cache = $source_path . 'cache' . DIRECTORY_SEPARATOR . 'data_global.php';
+		if (file_exists($cache)) {
+			jimport('joomla.filesystem.file');
+			return JFile::delete($cache);
+		}
+		return true;
 	}
 }

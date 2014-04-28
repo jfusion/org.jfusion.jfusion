@@ -22,8 +22,6 @@ use Joomla\Database\DatabaseFactory;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 use \Exception;
-use JFusionFunction;
-use \RuntimeException;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -347,20 +345,6 @@ HTML;
 		}
 		return $error;
 	}
-
-    /**
-     * @return bool
-     */
-    function clearConfigCache()
-    {
-        $source_path = $this->params->get('source_path');
-        $cache = $source_path . 'cache' . DIRECTORY_SEPARATOR . 'data_global.php';
-        if (file_exists($cache)) {
-            jimport('joomla.filesystem.file');
-            return JFile::delete($cache);
-        }
-        return true;
-    }
 
     /**
      * @return array

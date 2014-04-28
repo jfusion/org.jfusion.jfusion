@@ -13,7 +13,6 @@
  * @link      http://www.jfusion.org
  */
 
-use JFactory;
 use JFusion\Api\Api;
 use JFusion\Factory;
 use JFusion\Framework;
