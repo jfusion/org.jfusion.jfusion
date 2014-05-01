@@ -381,7 +381,19 @@ HTML;
         }
         $error = 0;
         $reason = '';
-        $mod_file = $this->getModFile('includes' . DS . 'auth' . DS . 'auth_jfusion.php', $error, $reason);
+
+	    /**
+	     * @ignore
+	     * @var $helper JFusionHelper_phpbb3
+	     */
+	    $helper = JFusionFactory::getHelper($this->getJname());
+
+	    if ($helper->isVersion('3.1')) {
+		    $mod_file = $this->getModFile('phpbb' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+	    } else {
+		    $mod_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+	    }
+
         if ($error == 0) {
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
@@ -427,7 +439,19 @@ HTML;
     function enableAuthMod() {
         $error = 0;
         $reason = '';
-        $auth_file = $this->getModFile('includes' . DS . 'auth' . DS . 'auth_jfusion.php', $error, $reason);
+
+	    /**
+	     * @ignore
+	     * @var $helper JFusionHelper_phpbb3
+	     */
+	    $helper = JFusionFactory::getHelper($this->getJname());
+
+	    if ($helper->isVersion('3.1')) {
+		    $auth_file = $this->getModFile('phpbb' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+		} else {
+		    $auth_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+		}
+
         //see if the auth mod file exists
         if (!file_exists($auth_file)) {
             jimport('joomla.filesystem.file');
@@ -494,11 +518,22 @@ HTML;
         //remove the file as well to allow for updates of the auth mod content
         $params = JFusionFactory::getParams($this->getJname());
         $path = $params->get('source_path');
-        if (substr($path, -1) == DS) {
-            $auth_file = $path . 'includes' . DS . 'auth' . DS . 'auth_jfusion.php';
-        } else {
-            $auth_file = $path . DS . 'includes' . DS . 'auth' . DS . 'auth_jfusion.php';
+        if (substr($path, -1) != DS) {
+	        $path = $path . DS;
         }
+
+	    /**
+	     * @ignore
+	     * @var $helper JFusionHelper_phpbb3
+	     */
+	    $helper = JFusionFactory::getHelper($this->getJname());
+
+	    if ($helper->isVersion('3.1')) {
+		    $auth_file = $path . 'phpbb' . DS . 'auth' . DS . 'auth_jfusion.php';
+	    } else {
+		    $auth_file = $path . 'includes' . DS . 'auth' . DS . 'auth_jfusion.php';
+	    }
+
         if (file_exists($auth_file)) {
             jimport('joomla.filesystem.file');
             if (!JFile::delete($auth_file)) {
