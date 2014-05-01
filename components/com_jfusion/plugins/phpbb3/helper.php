@@ -44,7 +44,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
     }
 
 	/**
-	 * check version, or
+	 * get version
 	 *
 	 * @return string
 	 */
