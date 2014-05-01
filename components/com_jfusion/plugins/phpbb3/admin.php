@@ -451,7 +451,13 @@ HTML;
 
 		    $error = 0;
 		    $reason = '';
-		    $mod_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+
+		    if ($this->helper->isVersion('3.1')) {
+			    $mod_file = $this->getModFile('phpbb' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+		    } else {
+			    $mod_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+		    }
+
 		    if ($error == 0) {
 			    //get the joomla path from the file
 			    jimport('joomla.filesystem.file');
