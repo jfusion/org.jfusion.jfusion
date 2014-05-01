@@ -506,7 +506,12 @@ HTML;
     {
         $error = 0;
         $reason = '';
-        $auth_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+
+	    if ($this->helper->isVersion('3.1')) {
+		    $auth_file = $this->getModFile('phpbb' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+		} else {
+		    $auth_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+	    }
         //see if the auth mod file exists
         if (!file_exists($auth_file)) {
             jimport('joomla.filesystem.file');
@@ -594,7 +599,13 @@ HTML;
 
 		    //remove the file as well to allow for updates of the auth mod content
 		    $source_path = $this->params->get('source_path');
-		    $auth_file = $source_path . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
+
+		    if ($this->helper->isVersion('3.1')) {
+			    $auth_file = $source_path . 'phpbb' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
+		    } else {
+			    $auth_file = $source_path . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
+		    }
+
 		    if (file_exists($auth_file)) {
 			    jimport('joomla.filesystem.file');
 			    if (!JFile::delete($auth_file)) {
