@@ -40,6 +40,46 @@ class Helper extends Plugin
     var $warn_msg = array();
     var $bbcode_bitfield = '';
 
+	/**
+	 * get version
+	 *
+	 * @return string
+	 */
+	function getVersion() {
+		$result = null;
+		try {
+			$db = Factory::getDatabase($this->getJname());
+
+			$query = $db->getQuery(true)
+				->select('config_value')
+				->from('#__config')
+				->where('config_name = ' . $db->quote('version'));
+
+			$db->setQuery($query);
+			$result = $db->loadResult();
+		} catch (Exception $e) {
+		}
+		return $result;
+	}
+
+	/**
+	 * check version
+	 *
+	 * @param string $version
+	 *
+	 * @return boolean
+	 */
+	function isVersion($version) {
+		$result = false;
+		$v = $this->getVersion();
+		if ($v) {
+			if (version_compare($v, $version) >= 0 ) {
+				$result = true;
+			}
+		}
+		return $result;
+	}
+
     /**
      * This function is to emulate phpbb set_var used needed to proper encode "clean" password, and other variables.
      *
