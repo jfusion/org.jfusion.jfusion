@@ -371,7 +371,7 @@ abstract class DatabaseDriver implements DatabaseInterface, Log\LoggerAwareInter
 	{
 		if (empty($args))
 		{
-			return;
+			return null;
 		}
 
 		switch ($method)
@@ -384,6 +384,7 @@ abstract class DatabaseDriver implements DatabaseInterface, Log\LoggerAwareInter
 				return $this->quoteName($args[0], isset($args[1]) ? $args[1] : null);
 				break;
 		}
+		return null;
 	}
 
 	/**

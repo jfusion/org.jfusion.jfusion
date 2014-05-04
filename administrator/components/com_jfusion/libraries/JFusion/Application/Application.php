@@ -234,4 +234,19 @@ class Application
 
 		return $event->getArgument('url');
 	}
+
+	/**
+	 * Load Script language
+	 *
+	 * @param string|array $keys
+	 */
+	public static function loadScriptLanguage($keys) {
+		if (!empty($keys)) {
+			$event = new Event('onApplicationRoute');
+
+			$event->setArgument('keys', $keys);
+
+			Factory::getDispatcher()->triggerEvent($event);
+		}
+	}
 }

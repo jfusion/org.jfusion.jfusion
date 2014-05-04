@@ -85,6 +85,6 @@ function utf8_ord($chr) {
         trigger_error('Invalid UTF-8 with surrogate ordinal '.$ord0);
         return FALSE;
     }
-
+	return FALSE;
 }
 

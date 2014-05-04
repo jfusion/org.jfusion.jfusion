@@ -13,7 +13,6 @@ use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
-use JFusionFunction;
 use stdClass;
 
 defined('_JEXEC' ) or die('Restricted access' );
@@ -264,7 +263,7 @@ class _Admin extends Plugin_Admin
 	{
 		$jname = $this->getJname();
 
-		 JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS', 'POSTGROUP'));
+		Factory::getApplication()->loadScriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS', 'POSTGROUP'));
 
 		$postgroups = json_encode($this->getUserpostgroupList());
 

@@ -89,4 +89,12 @@ interface ApplicationInterface
 	 * @return  Event
 	 */
 	public function onApplicationRoute($event);
+
+	/**
+	 * Load Script language
+	 *
+	 * @param Event $event
+	 * @return  Event
+	 */
+	public function onLoadScriptLanguage($event);
 }

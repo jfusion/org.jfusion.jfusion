@@ -729,6 +729,7 @@ class InputFilter
 	 */
 	protected function stripCssExpressions($source)
 	{
+		$return = null;
 		// Strip any comments out (in the form of /*...*/)
 		$test = preg_replace('#\/\*.*\*\/#U', '', $source);
 

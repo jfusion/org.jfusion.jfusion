@@ -835,6 +835,7 @@ class Language
 	 */
 	protected function parse($filename)
 	{
+		$track_errors = 0;
 		if ($this->debug)
 		{
 			// Capture hidden PHP errors from the parsing.

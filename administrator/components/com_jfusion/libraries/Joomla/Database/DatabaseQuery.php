@@ -201,7 +201,7 @@ abstract class DatabaseQuery
 	{
 		if (empty($args))
 		{
-			return;
+			return null;
 		}
 
 		switch ($method)
@@ -218,6 +218,7 @@ abstract class DatabaseQuery
 				return $this->escape($args[0], isset($args[1]) ? $args[1] : false);
 				break;
 		}
+		return null;
 	}
 
 	/**
