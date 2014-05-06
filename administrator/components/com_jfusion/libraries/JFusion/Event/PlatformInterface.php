@@ -36,4 +36,25 @@ interface PlatformInterface
 	 * @return  Event
 	 */
 	function onPlatformUserDelete($event);
+
+	/**
+	 * used for platform user register
+	 *
+	 * @param   Event   $event
+	 *
+	 * @return  Event
+	 */
+	function onPlatformUserRegister($event);
+
+	/**
+	 * used for platform user update
+	 *
+	 * @param   Event   $event
+	 *
+	 * @return  Event
+	 */
+	function onPlatformUserUpdate($event);
+
+
+
 }

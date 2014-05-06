@@ -10,8 +10,6 @@ class User extends Base {
 	 */
 	public function getUser()
 	{
-
-		$joomla = Platform::getInstance(true);
 		$plugin = isset($this->payload['plugin']) ? $this->payload['plugin'] : 'joomla_int';
 
 		$userPlugin = Factory::getUser($plugin);

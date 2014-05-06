@@ -372,7 +372,7 @@ JS;
 		                    $filename = $this->cssCacheName(urldecode(htmlspecialchars_decode($cssUrl[1])));
 		                    $filenamesource = $sourcepath . $filename;
 
-		                    if ( !is_file(Path::clean($filenamesource)) ) {
+		                    if (!is_file(Path::clean($filenamesource))) {
 			                    $cssparser = new Css('#jfusionframeless');
 			                    $result = $cssparser->ParseUrl($cssUrlRaw);
 			                    if ($result !== false ) {
@@ -382,7 +382,7 @@ JS;
 		                    }
 
 		                    if ( is_file(Path::clean($filenamesource)) ) {
-			                    $html = str_replace($cssUrlRaw  , $urlpath . $filename  , $html );
+			                    $html = str_replace($cssUrlRaw, $urlpath . $filename, $html);
 		                    }
 	                    }
                     }
@@ -395,20 +395,20 @@ JS;
                     $filename = md5($values) . '.css';
                     $filenamesource = $sourcepath . 'infile' . DIRECTORY_SEPARATOR . $filename;
 
-                    if ( preg_match('#media=[\'|"](.*?)[\'|"]#Si', $css[0][$key], $cssMedia)) {
+                    if (preg_match('#media=[\'|"](.*?)[\'|"]#Si', $css[0][$key], $cssMedia)) {
                         $cssMedia = $cssMedia[1];
                     } else {
                         $cssMedia = '';
                     }
 
-                    if ( !is_file(Path::clean($filenamesource)) ) {
+                    if (!is_file(Path::clean($filenamesource))) {
                         $cssparser = new Css('#jfusionframeless');
                         $cssparser->setUrl($data->integratedURL);
                         $cssparser->ParseStr($values);
                         $content = $cssparser->GetCSS();
                         File::write($filenamesource, $content);
                     }
-                    if ( is_file(Path::clean($filenamesource)) ) {
+                    if (is_file(Path::clean($filenamesource))) {
                         $document->addStyleSheet($urlpath . 'infile/' . $filename, 'text/css', $cssMedia);
                     }
                 }

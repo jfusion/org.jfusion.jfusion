@@ -7,6 +7,8 @@
  */
 use JFusion\Factory;
 
+use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Event\Event;
 use JFusion\Event\LanguageInterface;
 use JFusion\Event\ApplicationInterface;
@@ -310,12 +312,12 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 		$user = new stdClass;
 		if ($username) {
 			if ($activePlugin) {
-				$userlookup = new \JFusion\User\Userinfo($activePlugin);
+				$userlookup = new Userinfo($activePlugin);
 				$userlookup->username = $username;
 
 				$PluginUser = Factory::getUser('joomla_int');
 				$userlookup = $PluginUser->lookupUser($userlookup);
-				if ($userlookup instanceof \JFusion\User\Userinfo) {
+				if ($userlookup instanceof Userinfo) {
 					$user = JFactory::getUser($userlookup->userid);
 				}
 			} else {
@@ -342,7 +344,7 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 	 */
 	function onPlatformUserDelete($event)
 	{
-		$userid = $event->getArgument('$userid');
+		$userid = $event->getArgument('userid');
 
 		$user = JUser::getInstance($userid);
 
@@ -355,6 +357,117 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 		} else {
 			$event->setArgument('error', 'invalid user');
 		}
+	}
+
+	/**
+	 * used for platform user register
+	 *
+	 * @param   Event $event
+	 *
+	 * @return  Event
+	 */
+	function onPlatformUserRegister($event)
+	{
+		$userinfo = $event->getArgument('userinfo', null);
+
+		$error = $debug = array();
+		if ($userinfo instanceof Userinfo) {
+			$plugins = Framework::getSlaves();
+			$plugins[] = Framework::getMaster();
+
+			foreach ($plugins as $key => $plugin) {
+				if ($userinfo->getJname() == $plugin->name) {
+					unset($plugins[$key]);
+				}
+			}
+
+			foreach ($plugins as $plugin) {
+				try {
+					$PluginUserUpdate = Factory::getUser($plugin->name);
+					$existinguser = $PluginUserUpdate->getUser($userinfo);
+
+					if(!$existinguser) {
+						$status = array('error' => array(), 'debug' => array());
+						$PluginUserUpdate->createUser($userinfo, $status);
+						$PluginUserUpdate->mergeStatus($status);
+						$status = $PluginUserUpdate->debugger->get();
+
+						foreach ($status['error'] as $e) {
+							$error[][$plugin->name] = $e;
+						}
+						foreach ($status['debug'] as $d) {
+							$debug[][$plugin->name] = $d;
+						}
+					} else {
+						$error[][$plugin->name] = 'user already exsists';
+					}
+				} catch (Exception $e) {
+					$error[][$plugin->name] = $e->getMessage();
+				}
+			}
+		}
+		$event->addArgument('debug', $debug);
+		$event->addArgument('error', $error);
+	}
+
+	/**
+	 * used for platform user update
+	 *
+	 * @param   Event $event
+	 *
+	 * @return  Event
+	 */
+	function onPlatformUserUpdate($event)
+	{
+		$userinfo = $event->getArgument('userinfo', null);
+		$overwrite = $event->getArgument('overwrite', null);
+
+		$error = $debug = array();
+		if ($userinfo instanceof Userinfo) {
+			$plugins = Framework::getSlaves();
+			$plugins[] = Framework::getMaster();
+
+			foreach ($plugins as $key => $plugin) {
+				if ($userinfo->getJname() == $plugin->name) {
+					unset($plugins[$key]);
+				}
+			}
+			foreach ($plugins as $plugin) {
+				try {
+					$PluginUserUpdate = Factory::getUser($plugin->name);
+					$updateinfo = $userinfo[$plugin->name];
+
+					if ($updateinfo instanceof stdClass) {
+						$userlookup = new Userinfo($plugin->name);
+						$userlookup->username = $updateinfo->username;
+
+						$userlookup = $PluginUserUpdate->lookupUser($userlookup);
+
+						if($userlookup) {
+							$existinguser = $PluginUserUpdate->getUser($updateinfo->username);
+
+							foreach ($updateinfo as $key => $value) {
+								if ($key != 'userid' && isset($existinguser->$key)) {
+									if ($existinguser->$key != $updateinfo->$key) {
+										$existinguser->$key = $updateinfo->$key;
+									}
+								}
+							}
+
+							$debug[][$plugin->name] = $PluginUserUpdate->updateUser($existinguser, $overwrite);
+						} else {
+							$debug[][$plugin->name] = 'invalid user';
+						}
+					} else {
+						$error[][$plugin->name] = 'invalid update user';
+					}
+				} catch (Exception $e) {
+					$error[][$plugin->name] = $e->getMessage();
+				}
+			}
+		}
+		$event->addArgument('debug', $debug);
+		$event->addArgument('error', $error);
 	}
 
 	/**

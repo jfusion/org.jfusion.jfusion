@@ -523,7 +523,11 @@ class executeJFusionHook
         define('_VBULLETIN_JFUSION_HOOK', true);
         define('_JFUSIONAPI_INTERNAL', true);
         require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
-	    $joomla = Platform::getInstance();
+	    /**
+	     * @ignore
+	     * @var $joomla \JFusion\Api\Platform_Joomla
+	     */
+	    $joomla = Platform::getTypeInstance('joomla');
 	    $mainframe = $joomla->getApplication();
 
         $curlFile = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';

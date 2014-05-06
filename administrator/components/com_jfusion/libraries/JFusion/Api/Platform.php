@@ -1,26 +1,29 @@
 <?php namespace JFusion\Api;
-use Exception;
 use JFusion\Factory;
-use JFusion\Framework;
 use JFusion\User\Userinfo;
 use Joomla\Event\Event;
-use stdClass;
 
 /**
  * Intended for direct integration with joomla (loading the joomla framework directly in to other software.)
  */
 class Platform extends Base {
 	/**
+	 * Global platform type objects object
+	 *
+	 * @var Platform[]
+	 */
+	public static $instances = array();
+
+	/**
 	 * Global joomla object
 	 *
-	 * @var    Platform
-	 * @since  11.1
+	 * @var Platform
 	 */
-	public static $joomla = null;
+	public static $instance = null;
 
 	var $activePlugin = null;
 
-	private $globals_backup = array();
+	private $globals = array();
 
 	/**
 	 *
@@ -30,83 +33,33 @@ class Platform extends Base {
 	}
 
 	/**
-	 * Get a joomla object.
+	 * Get a platform type object.
 	 *
-	 * @see     ApiInternal
-	 * @since   11.1
+	 * @param string $type
+	 *
+	 * @return Platform
 	 */
-	public static function getInstance($start = false)
+	public static function getTypeInstance($type)
 	{
-		if (!self::$joomla)
-		{
-			self::$joomla = new Platform();
+		$type = ucfirst(strtolower($type));
+		if (!isset(self::$instances[$type])) {
+			$class = 'Platform_' . $type;
+			self::$instances[$type] = new $class();
 		}
-		if ($start) {
-			self::$joomla->getApplication();
-		}
-		return self::$joomla;
+		return self::$instances[$type];
 	}
 
 	/**
-	 * @return JApplication|JApplicationCms
+	 * Get a platform object.
+	 *
+	 * @return Platform
 	 */
-	public function getApplication()
+	public static function getInstance()
 	{
-		if (!defined('_JEXEC')) {
-			/**
-			 * @TODO determine if we really need session_write_close or if it need to be selectable
-			 */
-//			session_write_close();
-//			session_id(null);
-
-			// trick joomla into thinking we're running through joomla
-			define('_JEXEC', true);
-			define('DS', DIRECTORY_SEPARATOR);
-			define('JPATH_BASE', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
-
-			// load joomla libraries
-			require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'defines.php';
-			define('_JREQUEST_NO_CLEAN', true); // we don't want to clean variables as it can "corrupt" them for some applications, it also clear any globals used...
-
-			if (!class_exists('JVersion')) {
-				include_once(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'version' . DIRECTORY_SEPARATOR . 'version.php');
-			}
-
-			include_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'import.php';
-			require_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'loader.php';
-
-			$autoloaders = spl_autoload_functions();
-			if ($autoloaders && in_array('__autoload', $autoloaders)) {
-				spl_autoload_register('__autoload');
-			}
-
-			require_once JPATH_ROOT . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'framework.php';
-			jimport('joomla.base.object');
-			jimport('joomla.factory');
-			jimport('joomla.filter.filterinput');
-			jimport('joomla.error.error');
-			jimport('joomla.event.dispatcher');
-			jimport('joomla.event.plugin');
-			jimport('joomla.plugin.helper');
-			jimport('joomla.utilities.arrayhelper');
-			jimport('joomla.environment.uri');
-			jimport('joomla.environment.request');
-			jimport('joomla.user.user');
-			jimport('joomla.html.parameter');
-			// JText cannot be loaded with jimport since it's not in a file called text.php but in methods
-			JLoader::register('JText', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'methods.php');
-			JLoader::register('JRoute', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'methods.php');
-
-			//load JFusion's libraries
-			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
-		} elseif (!defined('IN_JOOMLA')) {
-			define('IN_JOOMLA', 1);
-			JFusionFunction::reconnectJoomlaDb();
+		if (!isset(self::$instance)) {
+			self::$instance = new Platform();
 		}
-
-		$mainframe = JFactory::getApplication('site');
-		$GLOBALS['mainframe'] = $mainframe;
-		return $mainframe;
+		return self::$instance;
 	}
 
 	/**
@@ -115,7 +68,7 @@ class Platform extends Base {
 	public function backupGlobal()
 	{
 		foreach ($GLOBALS as $n => $v) {
-			$this->globals_backup[$n] = $v;
+			$this->globals[$n] = $v;
 		}
 	}
 
@@ -124,7 +77,7 @@ class Platform extends Base {
 	 */
 	public function restoreGlobal()
 	{
-		foreach ($this->globals_backup as $n => $v) {
+		foreach ($this->globals as $n => $v) {
 			$GLOBALS[$n] = $v;
 		}
 	}
@@ -178,42 +131,20 @@ class Platform extends Base {
 	 */
 	public function register(Userinfo $userinfo)
 	{
-		$this->getApplication();
+		$event = new Event('onPlatformUserRegister');
+		$event->addArgument('userinfo', $userinfo);
+		$event->addArgument('activePlugin', $this->activePlugin);
 
-		$plugins = Framework::getSlaves();
-		$plugins[] = Framework::getMaster();
+		Factory::getDispatcher()->triggerEvent($event);
 
-		if ($this->activePlugin) {
-			foreach ($plugins as $key => $plugin) {
-				if ($plugin->name == $this->activePlugin) {
-					unset($plugins[$key]);
-				}
-			}
+		$debug = $event->getArgument('debug', null);
+		if ($debug) {
+			$this->debug[] = $debug;
 		}
 
-		foreach ($plugins as $plugin) {
-			try {
-				$PluginUserUpdate = Factory::getUser($plugin->name);
-				$existinguser = $PluginUserUpdate->getUser($userinfo);
-
-				if(!$existinguser) {
-					$status = array('error' => array(), 'debug' => array());
-					$PluginUserUpdate->createUser($userinfo, $status);
-					$PluginUserUpdate->mergeStatus($status);
-					$status = $PluginUserUpdate->debugger->get();
-
-					foreach ($status['error'] as $error) {
-						$this->error[][$plugin->name] = $error;
-					}
-					foreach ($status['debug'] as $debug) {
-						$this->debug[][$plugin->name] = $debug;
-					}
-				} else {
-					$this->error[][$plugin->name] = 'user already exsists';
-				}
-			} catch (Exception $e) {
-				$this->error[][$plugin->name] = $e->getMessage();
-			}
+		$error = $event->getArgument('error', null);
+		if ($error) {
+			$this->error[] = $error;
 		}
 	}
 
@@ -225,48 +156,21 @@ class Platform extends Base {
 	 */
 	public function update($userinfo, $overwrite)
 	{
-		$this->getApplication();
+		$event = new Event('onPlatformUserUpdate');
+		$event->addArgument('userinfo', $userinfo);
+		$event->addArgument('overwrite', $overwrite);
+		$event->addArgument('activePlugin', $this->activePlugin);
 
-		$plugins = Framework::getSlaves();
-		$plugins[] = Framework::getMaster();
+		Factory::getDispatcher()->triggerEvent($event);
 
-		foreach ($plugins as $key => $plugin) {
-			if (!array_key_exists($plugin->name, $userinfo)) {
-				unset($plugins[$key]);
-			}
+		$debug = $event->getArgument('debug', null);
+		if ($debug) {
+			$this->debug[] = $debug;
 		}
-		foreach ($plugins as $plugin) {
-			try {
-				$PluginUserUpdate = Factory::getUser($plugin->name);
-				$updateinfo = $userinfo[$plugin->name];
 
-				if ($updateinfo instanceof stdClass) {
-					$userlookup = new Userinfo($plugin->name);
-					$userlookup->username = $updateinfo->username;
-
-					$userlookup = $PluginUserUpdate->lookupUser($userlookup);
-
-					if($userlookup) {
-						$existinguser = $PluginUserUpdate->getUser($updateinfo->username);
-
-						foreach ($updateinfo as $key => $value) {
-							if ($key != 'userid' && isset($existinguser->$key)) {
-								if ($existinguser->$key != $updateinfo->$key) {
-									$existinguser->$key = $updateinfo->$key;
-								}
-							}
-						}
-
-						$this->debug[][$plugin->name] = $PluginUserUpdate->updateUser($existinguser, $overwrite);
-					} else {
-						$this->error[][$plugin->name] = 'invalid user';
-					}
-				} else {
-					$this->error[][$plugin->name] = 'invalid update user';
-				}
-			} catch (Exception $e) {
-				$this->error[][$plugin->name] = $e->getMessage();
-			}
+		$error = $event->getArgument('error', null);
+		if ($error) {
+			$this->error[] = $error;
 		}
 	}
 
@@ -279,6 +183,7 @@ class Platform extends Base {
 	{
 		$event = new Event('onPlatformUserDelete');
 		$event->addArgument('userid', $userid);
+		$event->addArgument('activePlugin', $this->activePlugin);
 
 		Factory::getDispatcher()->triggerEvent($event);
 
