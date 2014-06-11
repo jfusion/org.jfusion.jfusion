@@ -142,7 +142,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 			    $this->sync_active = $sync_active;
 
 			    JFusionFunction::loadJavascriptLanguage(array('SYNC_PROGRESS', 'SYNC_USERS_TODO', 'CLICK_FOR_MORE_DETAILS', 'CONFLICTS',
-				                                            'UNCHANGED', 'FINISHED', 'PAUSE', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START', 'UPDATED', 'PLUGIN', 'USER', 'USERS',
+				                                            'UNCHANGED', 'FINISHED', 'PAUSE', 'PAUSED', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START', 'UPDATED', 'PLUGIN', 'USER', 'USERS',
 				                                            'NAME', 'CREATED', 'RESUME', 'SYNC_NODATA'));
 
 			    $slave_data = json_encode($this->slave_data);
