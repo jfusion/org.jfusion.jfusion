@@ -119,7 +119,7 @@ class jfusionViewversioncheck extends JViewLegacy
 		$this->JFusionVersion = JText::_('UNKNOWN');
 
 		foreach ($urls as &$url) {
-			$url->data = JFusionFunctionAdmin::getFileData($url->url);
+			$url->data = \JFusion\Framework::getFileData($url->url);
 			$xml = \JFusion\Framework::getXml($url->data, false);
 			if ($xml) {
 				if ($url->url == $jfusionurl->url) {

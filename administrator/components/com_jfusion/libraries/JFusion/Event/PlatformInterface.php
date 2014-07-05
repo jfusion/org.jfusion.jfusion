@@ -55,6 +55,12 @@ interface PlatformInterface
 	 */
 	function onPlatformUserUpdate($event);
 
-
-
+	/**
+	 * used for platform route url
+	 *
+	 * @param   Event   $event
+	 *
+	 * @return  Event
+	 */
+	function onPlatformRoute($event);
 }

@@ -60,7 +60,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        $jversion = new JVersion();
             //get the install xml
 	        $url = 'http://update.jfusion.org/jfusion/joomla/?version=' . $jversion->getShortVersion();
-	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
+	        $VersionDataRaw = \JFusion\Framework::getFileData($url);
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {
 		        $xml = \JFusion\Framework::getXml($VersionDataRaw, false);

@@ -693,6 +693,7 @@ HTML;
 		if ($result) {
 			$tmpinstaller = new JInstaller();
 			$uninstall_result = $tmpinstaller->uninstall($type, $result, 0);
+
 			if (!$uninstall_result) {
 				$color = '#f2dede';
 				$description = JText::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('FAILED');
@@ -825,34 +826,38 @@ HTML;
 			if (array_key_exists ($plugin, $jfusion_plugins)) {
 				//install updates
 				$model = new JFusionModelInstaller(false);
-				$result = $model->installZIP($basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_' . $plugin . '.zip');
-				//remove plugin from install list
-				unset($jfusion_plugins[$plugin]);
+				try {
+					$result = $model->installZIP($basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_' . $plugin . '.zip');
 
-				$message = $result['message'];
-				if ($result['status']) {
+					$message = $result['message'];
+
 					$color = '#dff0d8';
 					$image = '<img src="components/com_jfusion/images/check_good_small.png">';
-				} else {
+				} catch (Exception $e) {
+					$message = $e->getMessage();
+
 					$color = '#f2dede';
 					$image = '<img src="components/com_jfusion/images/check_bad_small.png">';
 				}
 
+				//remove plugin from install list
+				unset($jfusion_plugins[$plugin]);
+
 				$html = <<<HTML
-            <table style="background-color:{$color}; width:100%;">
-                <tr>
-                    <td width="50px">
-                        {$image}
-                    </td>
-                    <td>
-                        <h3>
-                            <strong>
-                                {$message}
-                            </strong>
-                        </h3>
-                    </td>
-                </tr>
-            </table>
+		            <table style="background-color:{$color}; width:100%;">
+		                <tr>
+		                    <td width="50px">
+		                        {$image}
+		                    </td>
+		                    <td>
+		                        <h3>
+		                            <strong>
+		                                {$message}
+		                            </strong>
+		                        </h3>
+		                    </td>
+		                </tr>
+		            </table>
 HTML;
 				echo $html;
 			}
@@ -894,21 +899,20 @@ HTML;
 			}
 
 			$html = <<<HTML
-            <table style="background-color:{$color};width:100%;">
-                <tr style="height: 30px">
-                    <td width="50px">
-                        {$image}
-                    </td>
-                    <td>
-                        <h3>
-                            <strong>
-                                {$message}
-                            </strong>
-                        </h3>
-                    </td>
-                </tr>
-            </table>
-
+	            <table style="background-color:{$color};width:100%;">
+	                <tr style="height: 30px">
+	                    <td width="50px">
+	                        {$image}
+	                    </td>
+	                    <td>
+	                        <h3>
+	                            <strong>
+	                                {$message}
+	                            </strong>
+	                        </h3>
+	                    </td>
+	                </tr>
+	            </table>
 HTML;
 			echo $html;
 

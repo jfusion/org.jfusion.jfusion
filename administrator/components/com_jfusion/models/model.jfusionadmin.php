@@ -197,63 +197,6 @@ HTML;
 
     /**
      * @static
-     * @param $url
-     * @param int $save
-     * @param int $unpack
-     * @return bool|string|array
-     */
-    public static function getFileData($url, $save = 0, $unpack = 0)
-    {
-        ob_start();
-        if (function_exists('curl_init')) {
-            //curl is the preferred function
-            $crl = curl_init();
-            curl_setopt($crl, CURLOPT_URL, $url);
-            curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, 5);
-	        curl_setopt($crl, CURLOPT_TIMEOUT, 20);
-            $FileData = curl_exec($crl);
-            $FileInfo = curl_getinfo($crl);
-            curl_close($crl);
-            if ($FileInfo['http_code'] != 200) {
-                //there was an error
-                \JFusion\Framework::raiseWarning($FileInfo['http_code'] . ' error for file:' . $url);
-                $FileData = false;
-            }
-        } else {
-            //see if we can use fopen to get file
-            $fopen_check = ini_get('allow_url_fopen');
-            if (!empty($fopen_check)) {
-                $FileData = file_get_contents($url);
-            } else {
-                \JFusion\Framework::raiseWarning(JText::_('CURL_DISABLED'));
-                $FileData = false;
-            }
-        }
-
-        if ($save && $FileData !== false) {
-            jimport('joomla.installer.helper');
-            $filename = JInstallerHelper::getFilenameFromURL($url);
-            $config = JFactory::getConfig();
-            $target = $config->get('tmp_path') . DIRECTORY_SEPARATOR . $filename;
-            // Write buffer to file
-            JFile::write($target, $FileData);
-            if ($unpack) {
-                $package = JInstallerHelper::unpack($target);
-                ob_end_clean();
-                $FileData = $package;
-            } else {
-                ob_end_clean();
-                $FileData = $target;
-            }
-        } else {
-            ob_end_clean();
-        }
-        return $FileData;
-    }
-
-    /**
-     * @static
      * @param bool $includeRev
      *
      * @return array

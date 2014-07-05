@@ -361,7 +361,7 @@ JS;
                 if (preg_match_all('#<link(.*?type=[\'|"]text\/css[\'|"][^>]*)>#Si', $html, $css)) {
                     jimport('joomla.filesystem.file');
                     foreach ($css[1] as $values) {
-	                    if( preg_match('#href=[\'|"](.*?)[\'|"]#Si', $values, $cssUrl)) {
+	                    if(preg_match('#href=[\'|"](.*?)[\'|"]#Si', $values, $cssUrl)) {
 		                    $cssUrlRaw = $cssUrl[1];
 
 		                    if (strpos($cssUrlRaw, '/') === 0) {
@@ -375,13 +375,13 @@ JS;
 		                    if (!is_file(Path::clean($filenamesource))) {
 			                    $cssparser = new Css('#jfusionframeless');
 			                    $result = $cssparser->ParseUrl($cssUrlRaw);
-			                    if ($result !== false ) {
+			                    if ($result !== false) {
 				                    $content = $cssparser->GetCSS();
 				                    File::write($filenamesource, $content);
 			                    }
 		                    }
 
-		                    if ( is_file(Path::clean($filenamesource)) ) {
+		                    if (is_file(Path::clean($filenamesource))) {
 			                    $html = str_replace($cssUrlRaw, $urlpath . $filename, $html);
 		                    }
 	                    }

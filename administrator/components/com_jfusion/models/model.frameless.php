@@ -305,7 +305,6 @@ class JFusionFrameless {
 			//set the base href (commented out by mariusvr as this caused errors for people using IE)
 			//$document->setBase($$baseURL_backup);
 
-
 			//restore the backtrack_limit
 			ini_set('pcre.backtrack_limit', $backtrack_limit);
 		}

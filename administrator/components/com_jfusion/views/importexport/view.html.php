@@ -61,7 +61,7 @@ class jfusionViewimportexport extends JViewLegacy
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
 	    $url = 'http://update.jfusion.org/jfusion/joomla/configs.php?version=' . $jversion->getShortVersion();
-        $ConfigList = JFusionFunctionAdmin::getFileData($url);
+        $ConfigList = \JFusion\Framework::getFileData($url);
 
 	    $xml = \JFusion\Framework::getXml($ConfigList, false);
 

@@ -1,4 +1,6 @@
 <?php namespace JFusion\Parser;
+use JFusion\Framework;
+
 /**
  * cssparser class
  *
@@ -247,8 +249,8 @@ class Css {
     	$this->Clear();
 
 		$this->url = htmlspecialchars_decode($url);
-		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
-		$content = \JFusionFunctionAdmin::getFileData($this->url);
+
+		$content = Framework::getFileData($this->url);
 
 		if(strlen($content)) {
 			$this->modifyContent($content);
