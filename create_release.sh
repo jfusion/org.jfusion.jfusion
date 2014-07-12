@@ -61,15 +61,15 @@ TIMESTAMP=$(date +%s)
 case $1 in
 	clear_packages)
 		echo "delete old package zip files"
-		if [ -e ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip ]; then
+#		if [ -e ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip ]; then
 			rm ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip
-		fi
+#		fi
 		;;
 	clear_main)
 		echo "delete old main zip files"
-		if [ -e ${FULLPATH}/*.zip ]; then
+#		if [ -e ${FULLPATH}/*.zip ]; then
         	rm ${FULLPATH}/*.zip
-		fi
+#		fi
 
 		;;
 	clear)
@@ -101,7 +101,10 @@ case $1 in
 		createpackage modules/mod_jfusion_magecustomblock/ side_projects/magento/jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
 		createpackage "plugins/system/magelib.*" side_projects/magento/jfusion_plugin_magelib.zip magelib
 
+
 		cd  ${FULLPATH}
+		mkdir pluginpackages
+
 		for i in components/com_jfusion/plugins/*
 		do
         	if [ -d "$i" ]; then
