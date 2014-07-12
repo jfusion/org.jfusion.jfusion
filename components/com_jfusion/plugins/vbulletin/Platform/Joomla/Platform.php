@@ -600,7 +600,7 @@ class Platform extends Joomla
 			    $query = $db->getQuery(true)
 				    ->select('varname, value')
 				    ->from('#__setting')
-				    ->where('varname = ' . $db->quote('usefileavatar'))
+				    ->where('varname = ' . $db->quote('usefileavatar'), 'OR')
 				    ->where('varname = ' . $db->quote('avatarurl'));
 
 			    $db->setQuery($query);
