@@ -103,6 +103,9 @@ case $1 in
 
 
 		cd  ${FULLPATH}
+		if [ -d "pluginpackages" ]; then
+			rm  pluginpackages -R
+        fi
 		mkdir pluginpackages
 
 		for i in components/com_jfusion/plugins/*
