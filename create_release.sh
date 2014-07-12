@@ -1,11 +1,11 @@
 #!/bin/bash
 createxml(){
-		FILE=$1
-		mv ${FILE}.xml ${FILE}.tmp
-		sed "s/<revision>\$revision\$<\/revision>/<revision>${REVISION}<\/revision>/g" ${FILE}.tmp > ${FILE}.xml
-		mv ${FILE}.xml ${FILE}.tmp
-		sed "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>${TIMESTAMP}<\/timestamp>/g" ${FILE}.tmp > ${FILE}.xml
-		rm ${FILE}.tmp
+	FILE=$1
+	mv ${FILE}.xml ${FILE}.tmp
+	sed "s/<revision>\$revision\$<\/revision>/<revision>${REVISION}<\/revision>/g" ${FILE}.tmp > ${FILE}.xml
+	mv ${FILE}.xml ${FILE}.tmp
+	sed "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>${TIMESTAMP}<\/timestamp>/g" ${FILE}.tmp > ${FILE}.xml
+	rm ${FILE}.tmp
 }
 createpackage(){
 	TARGETPATH=$1
@@ -52,24 +52,22 @@ fi
 
 REVISION=Unknown
 if which git &> /dev/null; then
-		REVISION=$(git rev-parse HEAD)
+	REVISION=$(git rev-parse HEAD)
 else
-		echo "git is not available.  Install git command line client."
+	echo "git is not available.  Install git command line client."
 fi
 TIMESTAMP=$(date +%s)
 
 case $1 in
 	clear_packages)
 		echo "delete old package zip files"
-		if [ -e ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip ]; then
-			rm ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip
-		fi
+		rm ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip
+
 		;;
 	clear_main)
 		echo "delete old main zip files"
-		if [ -e ${FULLPATH}/*.zip ]; then
-			rm ${FULLPATH}/*.zip
-		fi
+		rm ${FULLPATH}/*.zip
+
 		;;
 	clear)
 		$0 clear_main
@@ -101,6 +99,11 @@ case $1 in
 		createpackage "plugins/system/magelib.*" side_projects/magento/jfusion_plugin_magelib.zip magelib
 
 		cd  ${FULLPATH}
+		if [ -d "pluginpackages" ]; then
+			rm  pluginpackages -R
+        fi
+		mkdir pluginpackages
+
 		for i in components/com_jfusion/plugins/*
 		do
         	if [ -d "$i" ]; then
