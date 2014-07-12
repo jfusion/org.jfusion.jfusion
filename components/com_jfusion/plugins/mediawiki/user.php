@@ -295,7 +295,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			try {
 				$query = $db->getQuery(true)
 					->delete('#__user_groups')
-					->where('ug_user = ' .  $db->quote($userinfo->userid));
+					->where('ug_user = ' .  $db->quote($existinguser->userid));
 
 				$db->setQuery($query);
 				$db->execute();
