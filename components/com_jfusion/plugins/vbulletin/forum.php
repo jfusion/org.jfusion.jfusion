@@ -595,7 +595,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $query = $db->getQuery(true)
 				    ->select('varname, value')
 				    ->from('#__setting')
-				    ->where('varname = ' . $db->quote('usefileavatar'))
+				    ->where('varname = ' . $db->quote('usefileavatar'), 'OR')
 				    ->where('varname = ' . $db->quote('avatarurl'));
 
 			    $db->setQuery($query);
