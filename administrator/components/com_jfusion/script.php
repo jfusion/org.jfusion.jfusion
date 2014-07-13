@@ -231,18 +231,26 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			$db->execute();
 
+
+			$adminpath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR;
+
 			//we need to remove a couple parameter files if they exists to prevent duplicates from showing up, and other unused files.
-			$files2delete = array(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'config.xml',
-				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'com_jfusion.xml',
-				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php',
-				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php',
-				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractauth.php',
-				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractuser.php',
-				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractforum.php',
-				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php',
-				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mysql.php',
-				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mysql.reconnect.php',
-				JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mysqli.php');
+			$files2delete = array($adminpath . 'config.xml',
+				$adminpath . 'com_jfusion.xml',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.abstractauth.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.abstractuser.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.abstractforum.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.curlframeless.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.cookie.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'mysql.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'mysql.reconnect.php',
+				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'mysqli.php');
 
 			foreach ($files2delete as $f) {
 				if (file_exists($f)) {

@@ -11,4 +11,3 @@ JFusionFactory::$language = JFactory::getLanguage();
 JFusionFactory::$database = JFactory::getDbo();
 JFusionFactory::$document = JFactory::getDocument();
 JFusionFactory::$application = JFactory::getApplication();
-
