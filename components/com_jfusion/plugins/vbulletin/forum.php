@@ -581,7 +581,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $db = JFusionFactory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
-				    ->select('u.avatarid, u.avatarrevision, avatarpath, NOT ISNULL(c.userid) AS usecustom, c.dateline')
+				    ->select('u.avatarid, u.avatarrevision, avatarpath, c.userid AS usecustom, c.dateline')
 				    ->from('#__user AS u')
 			        ->leftJoin('#__avatar AS a ON a.avatarid = u.avatarid')
 				    ->leftJoin('#__customavatar AS c ON c.userid = u.userid')
@@ -612,7 +612,7 @@ class JFusionForum_vbulletin extends JFusionForum
 				    } else {
 					    $url = $avatar->avatarpath;
 				    }
-			    } elseif (isset($avatar->usecustom)) {
+			    } elseif (!empty($avatar->usecustom)) {
 				    if ($usefileavatar && $avatarurl) {
 					    //avatars are saved to the filesystem
 					    $url = (strpos($avatarurl, 'http') === false) ? $this->params->get('source_url') . $avatarurl : $avatarurl;
