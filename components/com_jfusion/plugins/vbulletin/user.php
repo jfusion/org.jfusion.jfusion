@@ -746,7 +746,7 @@ class JFusionUser_vbulletin extends JFusionUser
 		//check to see if the default groups are different
 		if ($usergroup->defaultgroup != $existinguser->group_id ) {
 			$update_groups = true;
-		} elseif ($this->params->get('compare_displaygroups', true) && $usergroup->displaygroupid != $existinguser->displaygroupid ) {
+		} elseif ($this->params->get('compare_displaygroups', true) && $usergroup->displaygroup != $existinguser->displaygroupid ) {
 			//check to see if the display groups are different
 			$update_groups = true;
 		} elseif ($this->params->get('compare_membergroups', true)) {
