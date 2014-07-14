@@ -106,6 +106,7 @@ class Platform extends Joomla
 	 */
 	function getAvatar($userid)
 	{
+		$avatar = false;
 		try {
 			$db = Factory::getDatabase($this->getJname());
 			$source_url = $this->params->get('source_url', '/');
@@ -148,7 +149,7 @@ class Platform extends Joomla
 				}
 			}
 		} catch (Exception $e) {
-			$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+			$avatar = false;
 		}
 		return $avatar;
 	}

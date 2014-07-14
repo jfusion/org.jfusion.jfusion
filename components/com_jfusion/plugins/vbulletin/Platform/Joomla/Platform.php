@@ -1104,13 +1104,14 @@ class Platform extends Joomla
 				}
 
 				//find the userid attached to Joomla userid
-				$userlookup = new stdClass();
+
+				$userlookup = new Userinfo('joomla_int');
 				$userlookup->userid = $JUser->get('id');
 				$userlookup->username = $JUser->get('username');
 				$userlookup->email = $JUser->get('email');
 
 				$PluginUser = Factory::getUser($this->getJname());
-				$userlookup = $PluginUser->lookupUser($userlookup, 'joomla_int');
+				$userlookup = $PluginUser->lookupUser($userlookup);
 				$vb_userid = (!empty($userlookup)) ? $userlookup->userid : 0;
 
 				//is there a valid VB user logged in?
@@ -1193,11 +1194,11 @@ class Platform extends Joomla
 				}
 
 				//find the Joomla user id attached to the vB user
-				$userlookup = new stdClass();
+				$userlookup = new Userinfo($this->getJname());
 				$userlookup->userid = $session_userid;
 
 				$PluginUser = Factory::getUser($this->getJname());
-				$userlookup = $PluginUser->lookupUser($userlookup, $this->getJname());
+				$userlookup = $PluginUser->lookupUser($userlookup);
 				if (!empty($joomla_persistant_cookie)) {
 					if ($debug) {
 						Framework::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal', $this->getJname());

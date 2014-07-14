@@ -143,7 +143,7 @@ class Platform extends Joomla
 				}
 			}
 		} catch (Exception $e) {
-			$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+			$avatar = false;
 		}
 		return $avatar;
 	}

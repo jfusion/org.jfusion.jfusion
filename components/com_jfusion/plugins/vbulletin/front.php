@@ -527,7 +527,7 @@ JS;
 					    $userinfo = $vbUser->getUser($vbUid, 'userid');
 
 					    $PluginUser = Factory::getUser($profile_plugin);
-					    $userlookup = $PluginUser->lookupUser($userinfo, $this->getJname());
+					    $userlookup = $PluginUser->lookupUser($userinfo);
 					    //now get the id of the selected plugin based on Joomla id
 					    if ($userlookup) {
 						    //get the profile link

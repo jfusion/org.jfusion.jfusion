@@ -331,7 +331,6 @@ class User
 		global $JFusionActive;
 		$JFusionActive = true;
 
-
 		if (!isset($options['skipplugin'])) {
 			$options['skipplugin'] = array();
 		}
@@ -386,7 +385,6 @@ class User
 					Framework::raise('notice', Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $master->name);
 				}
 			}
-
 
 			$slaves = Factory::getPlugins('slave');
 			foreach ($slaves as $slave) {

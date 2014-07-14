@@ -130,7 +130,7 @@ try {
 		                $avatar = $platform->getAvatar($userlookup->userid);
 	                }
 	                if (empty($avatar)) {
-	                    $avatar = 'components/com_jfusion/images/noavatar.png';
+	                    $avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 	                }
 	            }
 	            if ($params->get('pmcount') && $jname != 'joomla_ext') {
@@ -153,7 +153,7 @@ try {
 	            if ($avatar_software != 'jfusion' && $userlookup) {
 	                $avatar = Framework::getAltAvatar($avatar_software, $userlookup);
 	            } else {
-	                $avatar = 'components/com_jfusion/images/noavatar.png';
+	                $avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 	            }
 	        } else {
 	            $avatar = false;
