@@ -742,7 +742,12 @@ class Curl
                                 break;
                             }
                         }
-                        if (isset($result[$i]['form_data']['action'])) {
+	                    /** HJW 14-7-2014
+	                      * we really should use the action field if there is no name field and no id field,
+	                      * otherwise we may trigger a false match too easily
+	                      * (eg match login with www.mydomain.com/login/index.php)
+	                     */
+                        if (isset($result[$i]['form_data']['action']) && !isset($result[$i]['form_data']['id']) && !isset($result[$i]['form_data']['name'])) {
                             if (strpos(strtolower(htmlspecialchars_decode($result[$i]['form_data']['action'])),strtolower($this->options['formid'] )) !== false){
                                 $myfrm = $i;
                                 break;
