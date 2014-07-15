@@ -19,7 +19,6 @@ use JFusion\Plugin\Platform\Joomla;
 
 use \Exception;
 use JFusion\User\Userinfo;
-use JFusionFunction;
 use \JRoute;
 use JText;
 
