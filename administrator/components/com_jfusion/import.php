@@ -15,6 +15,8 @@ $params = JComponentHelper::getParams('com_jfusion');
 
 $config = new Registry();
 
+$config->set('url', JUri::root());
+
 /**
  * Database settings
  */

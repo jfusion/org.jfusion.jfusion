@@ -892,4 +892,16 @@ class Framework
 		ob_end_clean();
 		return $FileData;
 	}
+
+	/**
+	 * @static
+	 *
+	 * @return string
+	 */
+	public static function getNodeID()
+	{
+		$params = Factory::getConfig();
+		$url = $params->get('url');
+		return strtolower(rtrim(parse_url($url, PHP_URL_HOST) . parse_url($url, PHP_URL_PATH), '/'));
+	}
 }

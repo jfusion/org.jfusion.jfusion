@@ -841,8 +841,7 @@ class Plugin_User extends Plugin
 		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
 		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
 
-		$my_ID = rtrim(parse_url(JUri::root(), PHP_URL_HOST) . parse_url(JUri::root(), PHP_URL_PATH), '/');
-		$curl_options['jnodeid'] = strtolower($my_ID);
+		$curl_options['jnodeid'] = Framework::getNodeID();
 
 		// For further simplifying setup we send also an indication if this system is a host. Other hosts should
 		// only perform local joomla login when received this post. We define being a host if we have
@@ -963,8 +962,7 @@ class Plugin_User extends Plugin
         // plugin. This is totally transparent for the the webmaster. No additional setup is needed
 
 
-        $my_ID = rtrim(parse_url(JUri::root(), PHP_URL_HOST).parse_url(JUri::root(), PHP_URL_PATH), '/');
-        $curl_options['jnodeid'] = $my_ID;
+        $curl_options['jnodeid'] = Framework::getNodeID();
         $remotedata = Curl::RemoteReadPage($curl_options);
         return $remotedata;
 
@@ -1027,8 +1025,7 @@ class Plugin_User extends Plugin
 		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
 		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
 
-		$my_ID = rtrim(parse_url(JUri::root(), PHP_URL_HOST) . parse_url(JUri::root(), PHP_URL_PATH), '/');
-		$curl_options['jnodeid'] = strtolower($my_ID);
+		$curl_options['jnodeid'] = Framework::getNodeID();
 
 		// For further simplifying setup we send also an indication if this system is a host. Other hosts should
 		// only perform local joomla login when received this post. We define being a host if we have
