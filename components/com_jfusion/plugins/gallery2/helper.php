@@ -51,11 +51,7 @@ class Helper extends Plugin
             $source_url = $this->params->get('source_url');
             $source_path = $this->params->get('source_path');
 	        $index_file = $source_path . 'embed.php';
-            if (substr($source_url, 0, 1) == '/') {
-                $uri = JUri::getInstance();
-                $base = $uri->toString(array('scheme', 'host', 'port'));
-                $source_url = $base . $source_url;
-            }
+
             $initParams['g2Uri'] = $source_url;
             $initParams['embedUri'] = $this->getEmbedUri($itemId);
             $initParams['loginRedirect'] = JRoute::_('index.php?option=com_user&view=login');

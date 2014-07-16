@@ -20,6 +20,7 @@ use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Front;
 use JFusionFunction;
+use Joomla\Uri\Uri;
 use stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -517,7 +518,7 @@ JS;
 		    if (!empty($profile_plugin)) {
 			    $user = Factory::getUser($profile_plugin);
 			    if ($user->isConfigured()) {
-				    $juri = new JUri($vb_url);
+				    $juri = new Uri($vb_url);
 				    $vbUid = $juri->getVar('u');
 				    if (!empty($vbUid)) {
 					    //first get Joomla id for the vBulletin user
