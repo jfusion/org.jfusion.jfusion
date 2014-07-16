@@ -25,7 +25,6 @@ use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
 use \Exception;
-use JRegistry;
 use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');

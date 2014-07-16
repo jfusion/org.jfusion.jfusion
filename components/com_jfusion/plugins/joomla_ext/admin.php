@@ -20,7 +20,6 @@ use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
-use \JRegistry;
 use \Exception;
 
 defined('_JEXEC') or die('Restricted access');

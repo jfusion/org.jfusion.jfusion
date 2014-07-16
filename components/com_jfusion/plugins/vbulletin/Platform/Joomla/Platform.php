@@ -1714,4 +1714,108 @@ PHP;
 
 		return $php;
 	}
+
+	/**
+	 * @return object
+	 */
+	function getSearchQueryColumns()
+	{
+		$columns = new stdClass();
+		$columns->title = 'p.title';
+		$columns->text = 'p.pagetext';
+		return $columns;
+	}
+
+	/**
+	 * @param object $pluginParam
+	 *
+	 * @return string
+	 */
+	function getSearchQuery(&$pluginParam)
+	{
+		$db = Factory::getDatabase($this->getJname());
+		//need to return threadid, postid, title, text, created, section
+		$query = $db->getQuery(true)
+			->select('p.userid, p.threadid, p.postid, f.forumid, CASE WHEN p.title = "" THEN CONCAT("Re: ",t.title) ELSE p.title END AS title, p.pagetext AS text,
+                    FROM_UNIXTIME(p.dateline, "%Y-%m-%d %h:%i:%s") AS created,
+                    CONCAT_WS( "/", f.title_clean, t.title ) AS section,
+                    t.views AS hits')
+			->from('#__post AS p')
+			->innerJoin('#__thread AS t ON p.threadid = t.threadid')
+			->innerJoin('#__forum AS f on f.forumid = t.forumid');
+
+		return (string)$query;
+	}
+
+	/**
+	 * @param string &$where
+	 * @param JRegistry &$pluginParam
+	 * @param string $ordering
+	 *
+	 * @return void
+	 */
+	function getSearchCriteria(&$where, &$pluginParam, $ordering)
+	{
+		$where.= ' AND p.visible = 1 AND f.password = \'\'';
+
+		if ($pluginParam->get('forum_mode', 0)) {
+			$forumids = $pluginParam->get('selected_forums', array());
+			if (empty($forumids)) {
+				$forumids = array(0);
+			}
+			$where.= ' AND f.forumid IN (' . implode(',', $forumids) . ')';
+		}
+
+		//determine how to sort the results which is required for accurate results when a limit is placed
+		switch ($ordering) {
+			case 'oldest':
+				$sort = 'p.dateline ASC';
+				break;
+			case 'category':
+				$sort = 'section ASC';
+				break;
+			case 'popular':
+				$sort = 't.views DESC, p.dateline DESC';
+				break;
+			case 'alpha':
+				$sort = 'title ASC';
+				break;
+			case 'newest':
+			default:
+				$sort = 'p.dateline DESC';
+				break;
+		}
+		$where .= ' ORDER BY ' . $sort;
+	}
+
+	/**
+	 * @param array &$results
+	 * @param object &$pluginParam
+	 *
+	 * @return void
+	 */
+	function filterSearchResults(&$results, &$pluginParam)
+	{
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
+		 */
+		$platform = Factory::getPlayform('Joomla', $this->getJname());
+		$platform->filterActivityResults($results, 0, 'forumid', true);
+	}
+
+	/**
+	 * @param mixed $post
+	 *
+	 * @return string
+	 */
+	function getSearchResultLink($post)
+	{
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
+		 */
+		$platform = Factory::getPlayform('Joomla', $this->getJname());
+		return $platform->getPostURL($post->threadid, $post->postid);
+	}
 }

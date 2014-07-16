@@ -346,10 +346,8 @@ JS;
             $jname = Factory::getApplication()->input->get('Itemid');
         }
 
-        $document = JFactory::getDocument();
-
-        $sourcepath = JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
-        $urlpath = 'components/com_jfusion/css/' . $jname . '/';
+        $sourcepath = $data->css->sourcepath . $jname . DIRECTORY_SEPARATOR;
+        $urlpath = $data->css->url . $jname . '/';
 
         jimport('joomla.filesystem.file');
         jimport('joomla.filesystem.folder');
@@ -409,7 +407,8 @@ JS;
                         File::write($filenamesource, $content);
                     }
                     if (is_file(Path::clean($filenamesource))) {
-                        $document->addStyleSheet($urlpath . 'infile/' . $filename, 'text/css', $cssMedia);
+	                    $data->css->files[] = $urlpath . 'infile/' . $filename;
+	                    $data->css->media[] = $cssMedia;
                     }
                 }
                 $html = preg_replace('#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', '', $html);
@@ -804,7 +803,7 @@ HTML;
 		$config = Factory::getConfig();
 		$sefenabled = $config->get('sef');
 		if(!empty($sefenabled)) {
-			$uri = \JUri::getInstance();
+			$uri = JUri::getInstance();
 			$current = $uri->toString(array('path', 'query'));
 
 			$menu = JMenu::getInstance('site');

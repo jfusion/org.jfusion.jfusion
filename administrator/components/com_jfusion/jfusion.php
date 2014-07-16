@@ -30,12 +30,6 @@ $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
 include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . 'controller.jfusion.php';
 JFusionFunction::initJavaScript();
 
-
-
-
-
-new JUri();
-
 $controller = new JFusionController();
 // Perform the Request task
 $task = JFactory::getApplication()->input->get('task');

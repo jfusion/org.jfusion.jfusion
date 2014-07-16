@@ -121,6 +121,17 @@ class JFusionFrameless {
 		$data->bodymap = $JFusionParam->get('bodymap', $JFusionParam->get('bodymap'));
 		$data->headermap = $JFusionParam->get('headermap', $JFusionParam->get('headermap'));
 
+
+		$css = new stdClass();
+
+		$css->sourcepath = JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
+		$css->url = 'components/com_jfusion/css/';
+
+		$css->files = array();
+		$css->media = array();
+
+		$data->css = $css;
+
 		return $data;
 	}
 
@@ -300,6 +311,10 @@ class JFusionFrameless {
 
 				// parse the URL's'
 				$JFusionPlugin->parseBody($data);
+			}
+
+			foreach($data->css->files as $key => $file) {
+				$document->addStyleSheet($file, 'text/css', $data->css->media[$key]);
 			}
 
 			//set the base href (commented out by mariusvr as this caused errors for people using IE)

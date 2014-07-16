@@ -14,7 +14,6 @@
  */
 // no direct access
 use JEventDispatcher;
-use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
@@ -23,9 +22,6 @@ use JFusion\Plugin\Plugin_User;
 
 
 use \Exception;
-use JRegistry;
-use JTable;
-use JUser;
 use \RuntimeException;
 use \stdClass;
 

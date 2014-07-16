@@ -22,7 +22,6 @@ use JFusion\Plugin\Plugin_User;
 
 use \RuntimeException;
 use \Exception;
-use \JRegistry;
 use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');

@@ -9,7 +9,6 @@
 
 // no direct access
 use Exception;
-use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Form\Html\Select;

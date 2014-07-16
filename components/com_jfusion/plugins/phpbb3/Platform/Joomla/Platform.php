@@ -1964,4 +1964,108 @@ HTML;
 		}
 		return true;
 	}
+
+	/**
+	 * @return object
+	 */
+	function getSearchQueryColumns() {
+		$columns = new stdClass();
+		$columns->title = 'p.post_subject';
+		$columns->text = 'p.post_text';
+		return $columns;
+	}
+
+	/**
+	 * @param object $pluginParam
+	 * @return string
+	 */
+	function getSearchQuery(&$pluginParam) {
+		$db = Factory::getDatabase($this->getJname());
+		//need to return threadid, postid, title, text, created, section
+		$query = $db->getQuery(true)
+			->select('p.topic_id, p.post_id, p.forum_id, CASE WHEN p.post_subject = "" THEN CONCAT("Re: ",t.topic_title) ELSE p.post_subject END AS title, p.post_text AS text,
+                    FROM_UNIXTIME(p.post_time, "%Y-%m-%d %h:%i:%s") AS created,
+                    CONCAT_WS( "/", f.forum_name, t.topic_title ) AS section,
+                    t.topic_views AS hits')
+			->from('#__posts AS p')
+			->innerJoin('#__topics AS t ON t.topic_id = p.topic_id')
+			->innerJoin('#__forums AS f on f.forum_id = p.forum_id');
+
+		return (string)$query;
+	}
+
+	/**
+	 * @param string $where
+	 * @param JRegistry $pluginParam
+	 * @param string $ordering
+	 *
+	 * @return void
+	 */
+	function getSearchCriteria(&$where, &$pluginParam, $ordering) {
+		$where.= ' AND p.post_approved = 1';
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
+		 */
+		$platform = Factory::getPlayform('Joomla', $this->getJname());
+		if ($pluginParam->get('forum_mode', 0)) {
+			$selected_ids = $pluginParam->get('selected_forums', array());
+			$forumids = $platform->filterForumList($selected_ids);
+		} else {
+			try {
+				$db = Factory::getDatabase($this->getJname());
+				//no forums were selected so pull them all then filter
+
+				$query = $db->getQuery(true)
+					->select('forum_id')
+					->from('#__forums')
+					->where('forum_type = 1')
+					->order('left_id');
+
+				$db->setQuery($query);
+				$forumids = $db->loadColumn();
+				$forumids = $platform->filterForumList($forumids);
+			} catch (Exception $e) {
+				Framework::raiseError($e, $this->getJname());
+				$forumids = array();
+			}
+
+		}
+		if (empty($forumids)) {
+			$forumids = array(0);
+		}
+		//determine how to sort the results which is required for accurate results when a limit is placed
+		switch ($ordering) {
+			case 'oldest':
+				$sort = 'p.post_time ASC';
+				break;
+			case 'category':
+				$sort = 'section ASC';
+				break;
+			case 'popular':
+				$sort = 't.topic_views DESC, p.post_time DESC';
+				break;
+			case 'alpha':
+				$sort = 'title ASC';
+				break;
+			case 'newest':
+			default:
+				$sort = 'p.post_time DESC';
+				break;
+		}
+		$where.= ' AND p.forum_id IN (' . implode(',', $forumids) . ') ORDER BY ' . $sort;
+	}
+
+	/**
+	 * @param mixed $post
+	 * @return string
+	 */
+	function getSearchResultLink($post) {
+		/**
+		 * @ignore
+		 * @var $platform \JFusion\Plugin\Platform\Joomla
+		 */
+		$platform = Factory::getPlayform('Joomla', $this->getJname());
+		return $platform->getPostURL($post->topic_id, $post->post_id);
+	}
 }

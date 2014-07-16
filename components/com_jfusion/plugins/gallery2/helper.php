@@ -16,14 +16,11 @@
 // no direct access
 use GalleryCoreApi;
 use GalleryEmbed;
-use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\Plugin\Plugin;
 
 use Exception;
-use JRoute;
-use JUri;
 
 defined('_JEXEC') or die('Restricted access');
 

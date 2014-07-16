@@ -23,7 +23,6 @@ use GalleryUtilities;
 use JFusion\Factory;
 use JFusion\Plugin\Plugin_Front;
 
-use JRegistry;
 use RuntimeException;
 use stdClass;
 

@@ -20,8 +20,6 @@ use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use Joomla\Registry\Registry;
 
-
-use JUri;
 use \RuntimeException;
 use \Exception;
 use \stdClass;
