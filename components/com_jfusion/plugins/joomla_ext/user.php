@@ -20,6 +20,7 @@ use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 
+use Joomla\Registry\Registry;
 use \RuntimeException;
 use \Exception;
 use \stdClass;
@@ -107,7 +108,7 @@ class User extends Plugin_User
 				}
 
 				// Get the language of the user and store it as variable in the user object
-				$user_params = new JRegistry($result->params);
+				$user_params = new Registry($result->params);
 
 				$result->language = $user_params->get('language', Factory::getLanguage()->getTag());
 
@@ -643,7 +644,7 @@ class User extends Plugin_User
 	public function updateUserLanguage(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$db = Factory::getDatabase($this->getJname());
-		$params = new JRegistry($existinguser->params);
+		$params = new Registry($existinguser->params);
 		$params->set('language', $userinfo->language);
 
 		$query = $db->getQuery(true)

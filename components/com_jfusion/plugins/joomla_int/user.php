@@ -14,6 +14,7 @@
  */
 // no direct access
 use JEventDispatcher;
+use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
@@ -22,6 +23,9 @@ use JFusion\Plugin\Plugin_User;
 
 
 use \Exception;
+use Joomla\Registry\Registry;
+use JTable;
+use JUser;
 use \RuntimeException;
 use \stdClass;
 
@@ -103,7 +107,7 @@ class User extends Plugin_User
 				}
 
 				// Get the language of the user and store it as variable in the user object
-				$user_params = new JRegistry($result->params);
+				$user_params = new Registry($result->params);
 
 				$result->language = $user_params->get('language', Factory::getLanguage()->getTag());
 
@@ -336,7 +340,7 @@ class User extends Plugin_User
 	     */
 
         //get the database ready
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
         //setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
         $username = $userinfo->username;
@@ -437,7 +441,7 @@ class User extends Plugin_User
 
 				        // Update the user related fields for the Joomla sessions table.
 				        try {
-					        $db = JFactory::getDBO();
+					        $db = Factory::getDBO();
 
 					        $query = $db->getQuery(true)
 						        ->update('#__session')
@@ -485,7 +489,7 @@ class User extends Plugin_User
 		}
 
 	    if ($userinfo->id) {
-		    $my = JFactory::getUser();
+		    $my = \JFactory::getUser();
 		    if ($my->id == $userinfo->id) {
 			    // Hit the user last visit field
 			    $my->setLastVisit();
@@ -784,7 +788,7 @@ class User extends Plugin_User
 	public function updateUserLanguage(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$db = Factory::getDatabase($this->getJname());
-		$params = new JRegistry($existinguser->params);
+		$params = new Registry($existinguser->params);
 		$params->set('language', $userinfo->language);
 
 		$query = $db->getQuery(true)

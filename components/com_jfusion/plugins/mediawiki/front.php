@@ -9,7 +9,6 @@
 
 // no direct access
 use JFusion\Plugin\Plugin_Front;
-use Joomla\Uri\Uri;
 
 defined('_JEXEC' ) or die('Restricted access' );
 
@@ -20,18 +19,5 @@ defined('_JEXEC' ) or die('Restricted access' );
  */
 class Front extends Plugin_Front
 {
-    /**
-     * @param $data
-     */
-    function _parseBody(&$data)
-	{
-	    $regex_body		= array();
-	    $replace_body	= array();
 
-		$uri = new Uri($data->integratedURL);
-		$regex_body[]	= '#addButton\("/(.*?)"#mS';
-		$replace_body[]	= 'addButton("' . $uri->toString(array('scheme', 'host')) . '/$1"';
-
-	    $data->body = preg_replace($regex_body, $replace_body, $data->body);
-	}
 }

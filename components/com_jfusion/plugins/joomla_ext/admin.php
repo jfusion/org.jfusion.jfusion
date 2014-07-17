@@ -21,6 +21,7 @@ use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
 use \Exception;
+use Joomla\Registry\Registry;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -241,7 +242,7 @@ class JFusionAdmin_joomla_ext extends Plugin_Admin
 			$db->setQuery($query);
 			$params = $db->loadResult();
 
-			$params = new JRegistry($params);
+			$params = new Registry($params);
 			// Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
 			return ($params->get('allowUserRegistration', false) ? true : false);
 		} catch (Exception $e) {

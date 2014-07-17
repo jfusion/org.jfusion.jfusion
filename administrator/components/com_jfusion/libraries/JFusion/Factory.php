@@ -575,9 +575,6 @@ class Factory
 			//get config values
 			$conf = self::getConfig();
 
-			//prepare the data for creating a database connection
-			$conf = self::getConfig();
-
 			$host = $conf->get('host');
 			$user = $conf->get('user');
 			$password = $conf->get('password');

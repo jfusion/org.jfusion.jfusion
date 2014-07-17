@@ -10,7 +10,9 @@ use JFusion\Plugin\Platform\Joomla;
 use JFusion\User\Userinfo;
 use Joomla\String\String;
 use JFusionFunction;
+use Joomla\Uri\Uri;
 use JRegistry;
+use stdClass;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -220,5 +222,20 @@ class Platform extends Joomla
 	function getSearchResultLink($post)
 	{
 		return 'index.php?title=' . $post->title;
+	}
+
+	/**
+	 * @param $data
+	 */
+	function _parseBody(&$data)
+	{
+		$regex_body		= array();
+		$replace_body	= array();
+
+		$uri = new Uri($data->integratedURL);
+		$regex_body[]	= '#addButton\("/(.*?)"#mS';
+		$replace_body[]	= 'addButton("' . $uri->toString(array('scheme', 'host')) . '/$1"';
+
+		$data->body = preg_replace($regex_body, $replace_body, $data->body);
 	}
 }
