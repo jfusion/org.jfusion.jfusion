@@ -98,6 +98,7 @@ class JFusionAdmin_magento extends JFusionAdmin
      */
     function setupFromPath($softwarePath)
     {
+        define('DB_TYPE', (PHP_VERSION >= 5.5 && extension_loaded('mysqli') ? 'mysqli' : 'mysql'));
         $xmlfile = $softwarePath . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'local.xml';
         $params = array();
         if (file_exists($xmlfile)) {
@@ -112,7 +113,7 @@ class JFusionAdmin_magento extends JFusionAdmin
                 $params['database_user'] = (string)$xml->global->resources->default_setup->connection->username;
                 $params['database_password'] = (string)$xml->global->resources->default_setup->connection->password;
                 $params['database_prefix'] = (string)$xml->global->resources->db->table_prefix;
-                $params['database_type'] = 'mysql';
+                $params['database_type'] = DB_TYPE;
                 $params['source_path'] = $softwarePath;
             }
             unset($xml);
