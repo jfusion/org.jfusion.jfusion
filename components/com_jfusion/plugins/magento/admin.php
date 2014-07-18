@@ -129,28 +129,36 @@ class JFusionAdmin_magento extends JFusionAdmin
             'prefix' => $params['database_prefix']);
         $db =& JDatabase::getInstance($options );
 
+        $params['magento_version'] = $this->normalize_version($this->getMagentoVersion($softwarePath));
+
+        $driver = DB_TYPE;
+        $options = array('driver' => $driver, 'host' => $params['database_host'], 'user' => $params['database_user'],
+            'password' => $params['database_password'], 'database' => $params['database_name'],
+            'prefix' => $params['database_prefix']);
+        $db =JDatabase::getInstance($options );
+
         //Find the cookie lifetime
-        $query = "SELECT value FROM #__core_config_data WHERE path = 'web/cookie/lifetime' ";
+        $query = "SELECT value FROM #__core_config_data WHERE path = ". $db->quote('web/cookie/cookie_lifetime');
         $db->setQuery($query);
         $params['cookie_expires'] = $db-> loadResult();
 
         //Find the cookie path
-        $query = "SELECT value FROM #__core_config_data WHERE path = 'web/cookie/path' ";
+        $query = "SELECT value FROM #__core_config_data WHERE path = ". $db->quote('web/cookie/cookie_path');
         $db->setQuery($query);
         $params['cookie_path'] = $db-> loadResult();
 
         //Find the cookie domain
-        $query = "SELECT value FROM #__core_config_data WHERE path = 'web/cookie/domain' ";
+        $query = "SELECT value FROM #__core_config_data WHERE path = ". $db->quote('web/cookie/cookie_domain');
         $db->setQuery($query);
         $params['cookie_domain'] = $db-> loadResult();
 
         //Find the cookie httponly
-        $query = "SELECT value FROM #__core_config_data WHERE path = 'web/cookie/httponly' ";
+        $query = "SELECT value FROM #__core_config_data WHERE path = ". $db->quote('web/cookie/cookie_httponly');
         $db->setQuery($query);
         $params['httponly'] = $db-> loadResult();
 
         //Find the url (secure == unsecure if no ssl)
-        $query = "SELECT value FROM #__core_config_data WHERE path = 'web/secure/baseurl' ";
+        $query = "SELECT value FROM #__core_config_data WHERE path = ". $db->quote('web/secure/base_url');
         $db->setQuery($query);
         $params['source_url'] = $db-> loadResult();
 
