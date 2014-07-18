@@ -84,11 +84,14 @@ class HtmlFormParser
 				}
 			}
 
-			// form elements: input type = text
-			if (preg_match_all('/<input[^<>]+type=["\']text["\'][^<>]*>/isU', $form, $texts)) {
+			/**
+			 * HJW 18-7-2014 Magento 1.9.01. uses email as type for user credential
+			form elements: input type = email
+			 */
+			if (preg_match_all('/<input[^<>]+type=["\']email["\'][^<>]*>/isU', $form, $texts)) {
 				foreach ($texts[0] as $text) {
 					$this->_return[$this->_counter]['form_elements'][$this->_getName($text)] = array(
-						'type'  => 'text',
+						'type'  => 'email',
 						'value'  =>  $this->_getValue($text),
 						'id'  =>  $this->_getId($text),
 						'class'  =>  $this->_getClass($text)
