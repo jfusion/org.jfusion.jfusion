@@ -712,11 +712,10 @@ class JFusionUser_magento extends JFusionUser {
 	 * @param object $userinfo
 	 * @param object $existinguser
 	 * @param array $status
-	 * @param $jname
 	 *
 	 * @return void
 	 */
-	function updateEmail($userinfo, &$existinguser, &$status, $jname) {
+	function updateEmail($userinfo, &$existinguser, &$status) {
 		//set the userid
 		$user_id = $existinguser->userid;
 		$new_email = $userinfo->email;
