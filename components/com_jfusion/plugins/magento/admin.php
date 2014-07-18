@@ -123,7 +123,7 @@ class JFusionAdmin_magento extends JFusionAdmin
         
         $params['magento_version'] = $this->normalize_version($this->getMagentoVersion($softwarePath));
 
-        $driver = DB_TYPE;
+        $driver = $params['database_type'];
         $options = array('driver' => $driver, 'host' => $params['database_host'], 'user' => $params['database_user'],
             'password' => $params['database_password'], 'database' => $params['database_name'],
             'prefix' => $params['database_prefix']);
