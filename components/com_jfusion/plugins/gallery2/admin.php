@@ -15,17 +15,12 @@
  */
 
 // no direct access
-use GalleryCoreApi;
-use GalleryItem;
-use GalleryUrlGenerator;
-use GalleryUser;
 use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
 use \Exception;
-use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -226,116 +221,6 @@ class Admin extends Plugin_Admin
 		    Framework::raiseError($e, $this->getJname());
 		}
 	    return $result;
-    }
-
-    /**
-     * @param JRegistry $jFusionParam
-     * @param JRegistry $jPluginParam
-     * @param $itemId
-     *
-     * @return array|null
-     */
-    function getSitemapTree($jFusionParam, $jPluginParam, $itemId)
-    {
-        $this->helper->loadGallery2Api(true);
-        global $gallery;
-        $source_url = $this->params->get('source_url');
-        $urlGenerator = new GalleryUrlGenerator();
-        $urlGenerator->init($this->helper->getEmbedUri($itemId), $source_url, null);
-        $album = $jPluginParam->get('album');
-        if ($album == - 1) {
-            $album = 7;
-        }
-        // Fetch all items contained in the root album
-        list($ret, $rootItems) = GalleryCoreApi::fetchChildItemIdsWithPermission($album, 'core.view');
-        if ($ret) {
-            return null;
-        }
-        $parent = $node = new stdClass();
-        $parent->uid = $this->getJname();
-        $tree = $this->_getTree($rootItems, $urlGenerator, $parent);
-        return $tree;
-    }
-    /**
-     * @param $items
-     * @param GalleryUrlGenerator $urlGenerator
-     * @param $parent
-     * @return array|null
-     */
-    function _getTree(&$items, $urlGenerator, $parent)
-    {
-        $albums = array();
-        if (!$items) return null;
-        foreach ($items as $itemId) {
-            // Fetch the details for this item
-	        /**
-	         * @ignore
-	         * @var $helper Helper
-	         * @var $user GalleryUser
-	         * @var $entity GalleryItem
-	         */
-            list($ret, $entity) = GalleryCoreApi::loadEntitiesById($itemId);
-            if ($ret) {
-                // error, skip and continue, catch this error in next component version
-                continue;
-            } // Fetch the details for this item
-            $node = new stdClass();
-            $node->id = $entity->getId();
-            $node->uid = $parent->uid . 'a' . $entity->getId();
-            $node->name = $entity->getTitle();
-            $node->pid = $entity->getParentId();
-            $node->modified = $entity->getModificationTimestamp();
-            $node->type = 'separator'; //fool joomla in not trying to add $Itemid=
-            $node->link = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $node->id), array('forceSessionId' => false, 'forceFullUrl' => true));
-            // Make sure it's an album
-            if ($entity->getCanContainChildren()) {
-                $node->element = 'group';
-                // Get all child items contained in this album and add them to the tree
-                list($ret, $childIds) = GalleryCoreApi::fetchChildItemIdsWithPermission($node->id, 'core.view');
-                if ($ret) {
-                    // error, skip and continue, catch this error in next component version
-                    continue;
-                }
-                $node->tree = $this->_getTree($childIds, $urlGenerator, $node);
-            } else {
-                $node->element = 'element';
-                $node->uid = $parent->uid . 'p' . $entity->getId();
-            }
-            $albums[] = $node;
-        }
-        return $albums;
-    }
-
-    /**
-     * @param $name
-     * @param $value
-     * @param $node
-     * @param $control_name
-     * @return array|string
-     */
-    function show_templateList($name, $value, $node, $control_name)
-    {
-	    $this->helper->loadGallery2Api(false);
-        list($ret, $themes) = GalleryCoreApi::fetchPluginStatus('theme', true);
-        if ($ret) {
-            return array($ret, null);
-        }
-	    $cname = $control_name . '[params][' . $name . ']';
-
-        $output = '<select name="' . $cname . '" id="' . $name . '">';
-
-        $output.= '<option value="" ></option>';
-        foreach ($themes as $id => $status) {
-            if (!empty($status['active'])) {
-                $selected = '';
-                if ($id == $value) {
-                    $selected = 'selected';
-                }
-                $output.= '<option value="' . $id . '" ' . $selected . '>' . $id . '</option>';
-            }
-        }
-        $output.= '</select>';
-        return $output;
     }
 
     /**

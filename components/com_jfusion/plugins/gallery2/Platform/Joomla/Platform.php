@@ -56,6 +56,38 @@ class Platform extends Joomla
 	var $helper;
 
 	/**
+	 * @param $name
+	 * @param $value
+	 * @param $node
+	 * @param $control_name
+	 * @return array|string
+	 */
+	function showTemplateList($name, $value, $node, $control_name)
+	{
+		$this->helper->loadGallery2Api(false);
+		list($ret, $themes) = GalleryCoreApi::fetchPluginStatus('theme', true);
+		if ($ret) {
+			return array($ret, null);
+		}
+		$cname = $control_name . '[params][' . $name . ']';
+
+		$output = '<select name="' . $cname . '" id="' . $name . '">';
+
+		$output.= '<option value="" ></option>';
+		foreach ($themes as $id => $status) {
+			if (!empty($status['active'])) {
+				$selected = '';
+				if ($id == $value) {
+					$selected = 'selected';
+				}
+				$output.= '<option value="' . $id . '" ' . $selected . '>' . $id . '</option>';
+			}
+		}
+		$output.= '</select>';
+		return $output;
+	}
+
+	/**
 	 * @param $config
 	 * @param $view
 	 * @param $pluginParam

@@ -19,6 +19,7 @@ use JFactory;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
+use JFusionFunction;
 use Joomla\Language\Text;
 use JFusion\Plugin\Platform\Joomla;
 use Joomla\Uri\Uri;
