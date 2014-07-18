@@ -327,7 +327,7 @@ class Admin extends Plugin_Admin
 	 * @return string
 	 */
 	function js($name, $value, $node, $control_name) {
-		$document = JFactory::getDocument();
+//		$document = JFactory::getDocument();
 
 		$list = $this->helper->getField();
 
@@ -490,8 +490,11 @@ class Admin extends Plugin_Admin
 			JFusion.Plugin.update();
         });
 JS;
-		$document->addScriptDeclaration($output);
-		return '';
+//		$document->addScriptDeclaration($output);
+
+		$output = '<script type="text/javascript">' . $output . '</script>';
+
+		return $output;
 	}
 
 	/**
