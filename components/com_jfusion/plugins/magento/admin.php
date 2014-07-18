@@ -130,27 +130,27 @@ class JFusionAdmin_magento extends JFusionAdmin
         $db =& JDatabase::getInstance($options );
 
         //Find the cookie lifetime
-        $query = "SELECT data FROM #__core_config_data WHERE path = 'web/cookie/lifetime' ";
+        $query = "SELECT value FROM #__core_config_data WHERE path = 'web/cookie/lifetime' ";
         $db->setQuery($query);
         $params['cookie_expires'] = $db-> loadResult();
 
         //Find the cookie path
-        $query = "SELECT data FROM #__core_config_data WHERE path = 'web/cookie/path' ";
+        $query = "SELECT value FROM #__core_config_data WHERE path = 'web/cookie/path' ";
         $db->setQuery($query);
         $params['cookie_path'] = $db-> loadResult();
 
         //Find the cookie domain
-        $query = "SELECT data FROM #__core_config_data WHERE path = 'web/cookie/domain' ";
+        $query = "SELECT value FROM #__core_config_data WHERE path = 'web/cookie/domain' ";
         $db->setQuery($query);
         $params['cookie_domain'] = $db-> loadResult();
 
         //Find the cookie httponly
-        $query = "SELECT data FROM #__core_config_data WHERE path = 'web/cookie/httponly' ";
+        $query = "SELECT value FROM #__core_config_data WHERE path = 'web/cookie/httponly' ";
         $db->setQuery($query);
         $params['httponly'] = $db-> loadResult();
 
         //Find the url (secure == unsecure if no ssl)
-        $query = "SELECT data FROM #__core_config_data WHERE path = 'web/secure/baseurl' ";
+        $query = "SELECT value FROM #__core_config_data WHERE path = 'web/secure/baseurl' ";
         $db->setQuery($query);
         $params['source_url'] = $db-> loadResult();
 
