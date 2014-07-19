@@ -120,7 +120,7 @@ class JFusionUser_dokuwiki extends Plugin_User
 				    $this->debugger->set('action', 'updated');
 			    } else {
 				    $this->debugger->add('debug', Text::_('NO_USER_FOUND_CREATING_ONE'));
-				    $this->createUser($userinfo, $status);
+				    $this->createUser($userinfo);
 				    if ($this->debugger->isEmpty('error')) {
 					    $this->debugger->set('action', 'created');
 				    }

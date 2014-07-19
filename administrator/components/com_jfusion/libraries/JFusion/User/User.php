@@ -138,10 +138,10 @@ class User
 						if ($autoregister == 1) {
 							try {
 								$debugger->add('init', Text::_('CREATING_MASTER_USER'));
-								$status = array('error' => array(), 'debug' => array());
 								//try to create a Master user
-								$MasterUserPlugin->createUser($authUserinfo, $status);
-								$MasterUserPlugin->mergeStatus($status);
+
+								$MasterUserPlugin->debugger->set(null, array('error' => array(), 'debug' => array()));
+								$MasterUserPlugin->doCreateUser($authUserinfo);
 								$status = $MasterUserPlugin->debugger->get();
 
 								if (empty($status['error'])) {
@@ -577,10 +577,8 @@ class User
 					if ($updateUsername) {
 						if ($master_userinfo instanceof Userinfo) {
 							try {
-								$updateUsernameStatus = array();
-								$JFusionMaster->debugger->set(null, $updateUsernameStatus);
-								$JFusionMaster->updateUsername($userinfo, $master_userinfo, $updateUsernameStatus);
-								$JFusionMaster->mergeStatus($updateUsernameStatus);
+								$JFusionMaster->debugger->set(null, array('error' => array(), 'debug' => array()));
+								$JFusionMaster->updateUsername($userinfo, $master_userinfo);
 								if (!$JFusionMaster->debugger->isEmpty('error')) {
 									$error_info[$master->name . ' ' . Text::_('USERNAME') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR') ] = $JFusionMaster->debugger->get('error');
 								}
@@ -638,10 +636,8 @@ class User
 							$slave_userinfo = $JFusionSlave->getUser($olduserinfo);
 							if ($slave_userinfo instanceof Userinfo) {
 								try {
-									$updateUsernameStatus = array();
-									$JFusionSlave->debugger->set(null, $updateUsernameStatus);
-									$JFusionSlave->updateUsername($master_userinfo, $slave_userinfo, $updateUsernameStatus);
-									$JFusionSlave->mergeStatus($updateUsernameStatus);
+									$JFusionSlave->debugger->set(null, array('error' => array(), 'debug' => array()));
+									$JFusionSlave->updateUsername($master_userinfo, $slave_userinfo);
 									if (!$JFusionSlave->debugger->isEmpty('error')) {
 										$error_info[$slave->name . ' ' . Text::_('USERNAME') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR') ] = $JFusionSlave->debugger->get('error');
 									}

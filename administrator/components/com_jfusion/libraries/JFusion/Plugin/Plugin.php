@@ -69,8 +69,8 @@ class Plugin
 		$jname = $this->getJname();
 		if (!empty($jname)) {
 			//get the params object
-			$this->params = & Factory::getParams($jname);
-			$this->debugger = & Factory::getDebugger($jname);
+			$this->params = &Factory::getParams($jname);
+			$this->debugger = &Factory::getDebugger($jname);
 
 			if (!isset(static::$language[$jname])) {
 				$db = Factory::getDBO();
@@ -197,18 +197,6 @@ class Plugin
 			}
 		}
 		return $result;
-	}
-
-	/**
-	 * @param array &$status
-	 *
-	 * @return array
-	 */
-	final public function mergeStatus(&$status) {
-		if (!empty($status['error']) || !empty($status['debug'])) {
-			$this->debugger->merge($status);
-		}
-		$status = array('error' => array(), 'debug' => array());
 	}
 
 	/**

@@ -245,7 +245,7 @@ class Plugin_User extends Plugin
 					    }
 				    }
 			    } else {
-				    $this->doCreateUser($userinfo);
+				    $this->createUser($userinfo);
 			    }
 		    } else {
 			    throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
@@ -316,6 +316,7 @@ class Plugin_User extends Plugin
 	function doUpdatePassword(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$changed = false;
+
 		if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
 			// add password_clear to existinguser for the Joomla helper routines
 			$existinguser->password_clear = $userinfo->password_clear;
@@ -324,13 +325,11 @@ class Plugin_User extends Plugin
 				$model = Factory::getAuth($this->getJname());
 				if (!$model->checkPassword($existinguser)) {
 					try {
-						$status = array('error' => array(), 'debug' => array());
-						$this->updatePassword($userinfo, $existinguser, $status);
+						$this->updatePassword($userinfo, $existinguser);
 						$changed = true;
 					} catch (Exception $e) {
 						$this->debugger->add('error', Text::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
 					}
-					$this->mergeStatus($status);
 				} else {
 					$this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ':' . Text::_('PASSWORD_VALID'));
 				}
@@ -385,19 +384,18 @@ class Plugin_User extends Plugin
 	function doUpdateEmail(Userinfo $userinfo, Userinfo &$existinguser, $overwrite)
 	{
 		$changed = false;
+
 		if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
 			$this->debugger->add('debug', Text::_('EMAIL_CONFLICT'));
 			$update_email = $this->params->get('update_email', false);
 			if ($update_email || $overwrite) {
 				$this->debugger->add('debug', Text::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
 				try {
-					$status = array('error' => array(), 'debug' => array());
-					$this->updateEmail($userinfo, $existinguser, $status);
+					$this->updateEmail($userinfo, $existinguser);
 					$changed = true;
 				} catch (Exception $e) {
 					$this->debugger->add('error', Text::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage());
 				}
-				$this->mergeStatus($status);
 			} else {
 				//return a email conflict
 				$this->debugger->add('debug', Text::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
@@ -451,29 +449,26 @@ class Plugin_User extends Plugin
 		$changed = false;
 		//check the blocked status
 		if ($existinguser->block != $userinfo->block) {
+
 			$update_block = $this->params->get('update_block', false);
 			if ($update_block || $overwrite) {
 				if ($userinfo->block) {
 					//block the user
 					try {
-						$status = array('error' => array(), 'debug' => array());
-						$this->blockUser($userinfo, $existinguser, $status);
+						$this->blockUser($userinfo, $existinguser);
 						$changed = true;
 					} catch (Exception $e) {
 						$this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
 					}
-					$this->mergeStatus($status);
 					$changed = true;
 				} else {
 					//unblock the user
 					try {
-						$status = array('error' => array(), 'debug' => array());
-						$this->unblockUser($userinfo, $existinguser, $status);
+						$this->unblockUser($userinfo, $existinguser);
 						$changed = true;
 					} catch (Exception $e) {
 						$this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
 					}
-					$this->mergeStatus($status);
 				}
 			} else {
 				//return a debug to inform we skipped this step
@@ -527,28 +522,25 @@ class Plugin_User extends Plugin
 		//check the activation status
 		if (isset($existinguser->activation)) {
 			if ($existinguser->activation != $userinfo->activation) {
+
 				$update_activation = $this->params->get('update_activation', false);
 				if ($update_activation || $overwrite) {
 					if ($userinfo->activation) {
 						//inactive the user
 						try {
-							$status = array('error' => array(), 'debug' => array());
-							$this->inactivateUser($userinfo, $existinguser, $status);
+							$this->inactivateUser($userinfo, $existinguser);
 							$changed = true;
 						} catch (Exception $e) {
 							$this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
 						}
-						$this->mergeStatus($status);
 					} else {
 						//activate the user
 						try {
-							$status = array('error' => array(), 'debug' => array());
-							$this->activateUser($userinfo, $existinguser, $status);
+							$this->activateUser($userinfo, $existinguser);
 							$changed = true;
 						} catch (Exception $e) {
 							$this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
 						}
-						$this->mergeStatus($status);
 					}
 				} else {
 					//return a debug to inform we skipped this step
@@ -597,6 +589,7 @@ class Plugin_User extends Plugin
 		//check activation and block status
 		$create_inactive = $this->params->get('create_inactive', 1);
 		$create_blocked = $this->params->get('create_blocked', 1);
+
 		if ((empty($create_inactive) && !empty($userinfo->activation)) || (empty($create_blocked) && !empty($userinfo->block))) {
 			//block user creation
 			$this->debugger->add('debug', Text::_('SKIPPED_USER_CREATION'));
@@ -605,9 +598,7 @@ class Plugin_User extends Plugin
 		} else {
 			$this->debugger->add('debug', Text::_('NO_USER_FOUND_CREATING_ONE'));
 			try {
-				$status = array('error' => array(), 'debug' => array());
-				$this->createUser($userinfo, $status);
-				$this->mergeStatus($status);
+				$this->createUser($userinfo);
 				if ($this->debugger->isEmpty('error')) {
 					$this->debugger->set('action', 'created');
 				}
@@ -620,8 +611,6 @@ class Plugin_User extends Plugin
 
     /**
      * Function that creates a new user account
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo Object containing the new userinfo
      */

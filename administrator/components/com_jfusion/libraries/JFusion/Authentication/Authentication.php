@@ -364,25 +364,18 @@ class Authentication extends Object
 										$JFusionMaster = Factory::getUser($master->name);
 										//make sure that the password_clear is not already hashed which may be the case for some dual login plugins
 
-										if (strlen($userinfo->password_clear) != 32) {
-											$status = array('error' => array(), 'debug' => array());
-											try {
-												$JFusionMaster->updatePassword($userinfo, $userinfo, $status);
-											} catch (Exception $e) {
-												$JFusionMaster->debugger->add('error', Text::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
+										$JFusionMaster->debugger->set(null, array('error' => array(), 'debug' => array()));
+
+										$JFusionMaster->doUpdatePassword($userinfo, $userinfo);
+
+										$status = $JFusionMaster->debugger->get();
+										if (!empty($status['error'])) {
+											foreach($status['error'] as $error) {
+												$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR') . ': ' . $error);
 											}
-											$JFusionMaster->mergeStatus($status);
-											$status = $JFusionMaster->debugger->get();
-											if (!empty($status['error'])) {
-												foreach($status['error'] as $error) {
-													$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR') . ': ' . $error);
-												}
-												Framework::raise('error', $status['error'], $master->name. ' ' .Text::_('PASSWORD') . ' ' . Text::_('UPDATE'));
-											} else {
-												$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('UPDATE') . ' ' . Text::_('SUCCESS'));
-											}
+											Framework::raise('error', $status['error'], $master->name. ' ' .Text::_('PASSWORD') . ' ' . Text::_('UPDATE'));
 										} else {
-											$debugger->add('debug', $auth_model->name . ' ' . Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE'));
+											$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('UPDATE') . ' ' . Text::_('SUCCESS'));
 										}
 									} else {
 										if (isset($options['show_unsensored'])) {

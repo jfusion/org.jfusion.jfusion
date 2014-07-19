@@ -80,10 +80,12 @@ class Platform extends Joomla
 			$curl_options['secure'] = $this->params->get('secure');
 			$curl_options['httponly'] = $this->params->get('httponly');
 
-			$status = array('error' => '', 'debug' => '');
+			$status = array('error' => array(), 'debug' => array());
 			$status = Curl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
 
-			$this->mergeStatus($status);
+			if (!empty($status['error']) || !empty($status['debug'])) {
+				$this->debugger->merge($status);
+			}
 		}
 	}
 }

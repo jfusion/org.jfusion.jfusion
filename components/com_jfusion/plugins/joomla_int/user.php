@@ -191,7 +191,7 @@ class User extends Plugin_User
 	{
 		$this->debugger->add('debug', Text::_('NO_USER_FOUND_CREATING_ONE'));
 		try {
-			$this->createUser($userinfo, $status);
+			$this->createUser($userinfo);
 			$this->debugger->set('action', 'created');
 		} catch (Exception $e) {
 			$this->debugger->add('error', Text::_('USER_CREATION_ERROR') . $e->getMessage());
