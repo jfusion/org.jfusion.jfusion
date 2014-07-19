@@ -51,13 +51,13 @@ class JFusionUser_elgg extends Plugin_User
 	    $user = null;
 	    try {
 		    //get the identifier
-		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'guid');
 
 		    // Get user info from database
 		    $db = Factory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
-			    ->select('guid as userid, username, name, name as lastname, email, password, salt as password_salt,banned as block')
+			    ->select('guid as userid, username, name, name as lastname, email, password, salt as password_salt, banned as block')
 			    ->from('#__users_entity')
 		        ->where($identifier_type . ' = ' . $db->quote($identifier));
 

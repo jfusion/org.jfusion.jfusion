@@ -51,7 +51,7 @@ class User extends Plugin_User
 	    try {
 	        $db = Factory::getDatabase($this->getJname());
 	        //get the identifier
-	        list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
+	        list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'login', 'email', 'id');
 	        if ($identifier_type == 'login') {
 	            $identifier = $this->filterUsername($identifier);
 	        }

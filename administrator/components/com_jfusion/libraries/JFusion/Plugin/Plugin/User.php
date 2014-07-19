@@ -202,13 +202,10 @@ class Plugin_User extends Plugin
         $status = array('error' => array(), 'debug' => array());
 	    $this->debugger->set(null, $status);
 	    try {
-		    //check to see if a valid $userinfo object was passed on
-		    if (!is_object($userinfo)) {
-			    throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
-		    } else {
+		    if ($userinfo instanceof Userinfo) {
 			    //get the user
 			    $existinguser = $this->getUser($userinfo);
-			    if (!empty($existinguser)) {
+			    if ($existinguser instanceof Userinfo) {
 				    $changed = false;
 				    //a matching user has been found
 				    $this->debugger->add('debug', Text::_('USER_DATA_FOUND'));
@@ -250,6 +247,8 @@ class Plugin_User extends Plugin
 			    } else {
 				    $this->doCreateUser($userinfo);
 			    }
+		    } else {
+			    throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
 		    }
 	    } catch (Exception $e) {
 		    $this->debugger->add('error', $e->getMessage());

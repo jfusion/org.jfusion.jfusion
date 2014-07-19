@@ -135,7 +135,7 @@ class User extends Plugin_User
 		try {
 			$db = Factory::getDatabase($this->getJname());
 			//get the identifier
-			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
+			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'id');
 
 			$query = $db->getQuery(true)
 				->select('*, id as userid')

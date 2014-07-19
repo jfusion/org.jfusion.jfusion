@@ -60,7 +60,7 @@ class User extends Plugin_User
 		try {
 			if($identifier_type == 'auto') {
 				//get the identifier
-				list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'u.username', 'u.email', 'userid');
+				list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'u.username', 'u.email', 'u.userid');
 				if ($identifier_type == 'u.username') {
 					//lower the username for case insensitivity purposes
 					$identifier_type = 'LOWER(u.username)';

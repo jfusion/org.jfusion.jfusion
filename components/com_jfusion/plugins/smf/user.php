@@ -54,7 +54,7 @@ class User extends Plugin_User
 	    $user = null;
 	    try {
 		    //get the identifier
-		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.memberName', 'a.emailAddress', 'userid');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.memberName', 'a.emailAddress', 'a.ID_MEMBER');
 		    // initialise some objects
 		    $db = Factory::getDatabase($this->getJname());
 

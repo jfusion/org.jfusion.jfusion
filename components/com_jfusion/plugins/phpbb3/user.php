@@ -53,7 +53,7 @@ class User extends Plugin_User
 	    $user = null;
 	    try {
 		    //get the identifier
-		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email', 'userid');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email', 'a.user_id');
 		    // Get a database object
 		    $db = Factory::getDatabase($this->getJname());
 		    //make the username case insensitive
