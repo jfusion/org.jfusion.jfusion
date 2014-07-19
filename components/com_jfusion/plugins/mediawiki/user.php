@@ -226,11 +226,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
 	    $existinguser->password = ':A:' . md5($userinfo->password_clear);
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -242,17 +241,16 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser)
     {
 
     }
@@ -260,11 +258,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
@@ -276,7 +273,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
 	/**
@@ -287,7 +284,7 @@ class User extends Plugin_User
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
@@ -310,20 +307,19 @@ class User extends Plugin_User
 				$ug->ug_group = $usergroup;
 
 				$db->insertObject('#__user_groups', $ug, 'ug_user' );
-
-				$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
 			}
+
+			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
 		}
 	}
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $db = Factory::getDatabase($this->getJname());
 	    $ban = new stdClass;
@@ -350,17 +346,16 @@ class User extends Plugin_User
 	    //now append the new user data
 	    $db->insertObject('#__ipblocks', $ban, 'ipb_id' );
 
-	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -371,10 +366,10 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 /*
-    function activateUser(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser, &$status)
+    function activateUser(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser)
     {
         $db = \JFusion\Factory::getDatabase($this->getJname());
 	    $query = $db->getQuery(true)
@@ -385,10 +380,10 @@ class User extends Plugin_User
 
         $db->setQuery($query);
 		$db->execute():
-		$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
-    function inactivateUser(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser, &$status)
+    function inactivateUser(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser)
     {
         $db = \JFusion\Factory::getDatabase($this->getJname());
 
@@ -400,109 +395,105 @@ class User extends Plugin_User
 
         $db->setQuery($query);
 		$db->execute();
-		$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 */
 
-    /**
-     * @param Userinfo $userinfo
-     * @param array $status
-     *
-     * @return void
-     */
-    function createUser(Userinfo $userinfo, &$status)
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return void
+	 */
+    function createUser(Userinfo $userinfo)
     {
-	    try {
-		    //we need to create a new SMF user
-		    $db = Factory::getDatabase($this->getJname());
+	    //we need to create a new SMF user
+	    $db = Factory::getDatabase($this->getJname());
 
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	    } else {
+		    //prepare the user variables
+		    $user = new stdClass;
+		    $user->user_id = NULL;
+		    $user->user_name = $this->filterUsername($userinfo->username);
+		    $user->user_real_name = $userinfo->name;
+		    $user->user_email = $userinfo->email;
+		    $user->user_email_token_expires = null;
+		    $user->user_email_token = '';
+
+		    if (isset($userinfo->password_clear)) {
+			    $user->user_password = ':A:' . md5($userinfo->password_clear);
 		    } else {
-			    //prepare the user variables
-			    $user = new stdClass;
-			    $user->user_id = NULL;
-			    $user->user_name = $this->filterUsername($userinfo->username);
-			    $user->user_real_name = $userinfo->name;
-			    $user->user_email = $userinfo->email;
-			    $user->user_email_token_expires = null;
-			    $user->user_email_token = '';
-
-			    if (isset($userinfo->password_clear)) {
-				    $user->user_password = ':A:' . md5($userinfo->password_clear);
-			    } else {
-				    $user->user_password = ':A:' . $userinfo->password;
-			    }
-			    $user->user_newpass_time = $user->user_newpassword = null;
-
-			    $db->setQuery('SHOW COLUMNS FROM #__user LIKE \'user_options\'');
-			    $db->execute();
-
-			    if ($db->getNumRows() ) {
-				    $user->user_options = ' ';
-			    }
-
-			    $user->user_email_authenticated = $user->user_registration = $user->user_touched = gmdate('YmdHis', time());
-			    $user->user_editcount = 0;
-			    /*
-					if ($userinfo->activation){
-						$user->is_activated = 0;
-						$user->validation_code = $userinfo->activation;
-					} else {
-						$user->is_activated = 1;
-						$user->validation_code = '';
-					}
-			*/
-			    //now append the new user data
-			    $db->insertObject('#__user', $user, 'user_id' );
-
-			    $wgDBprefix = $this->params->get('database_prefix');
-			    $wgDBname = $this->params->get('database_name');
-
-			    if ($wgDBprefix) {
-				    $wfWikiID = $wgDBname . '-' . $wgDBprefix;
-			    } else {
-				    $wfWikiID = $wgDBname;
-			    }
-
-			    $wgSecretKey = $this->helper->getConfig('wgSecretKey');
-			    $wgProxyKey = $this->helper->getConfig('wgProxyKey');
-
-			    if ($wgSecretKey) {
-				    $key = $wgSecretKey;
-			    } elseif ($wgProxyKey) {
-				    $key = $wgProxyKey;
-			    } else {
-				    $key = microtime();
-			    }
-			    //update the stats
-			    $mToken = md5($key . mt_rand(0, 0x7fffffff) . $wfWikiID . $user->user_id);
-
-			    $query = $db->getQuery(true)
-				    ->update('#__user')
-				    ->set('is_activated = 0')
-				    ->set('user_token = ' . $db->quote($mToken))
-				    ->where('user_id = ' . $db->quote($user->user_id));
-
-			    $db->setQuery($query);
-			    $db->execute();
-
-			    //prepare the user variables
-			    foreach($usergroups as $usergroup) {
-				    //prepare the user variables
-				    $ug = new stdClass;
-				    $ug->ug_user = $user->user_id;
-				    $ug->ug_group = $usergroup;
-
-				    $db->insertObject('#__user_groups', $ug, 'ug_user' );
-			    }
-			    //return the good news
-			    $status['debug'][] = Text::_('USER_CREATION');
-			    $status['userinfo'] = $this->getUser($userinfo);
+			    $user->user_password = ':A:' . $userinfo->password;
 		    }
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
+		    $user->user_newpass_time = $user->user_newpassword = null;
+
+		    $db->setQuery('SHOW COLUMNS FROM #__user LIKE \'user_options\'');
+		    $db->execute();
+
+		    if ($db->getNumRows() ) {
+			    $user->user_options = ' ';
+		    }
+
+		    $user->user_email_authenticated = $user->user_registration = $user->user_touched = gmdate('YmdHis', time());
+		    $user->user_editcount = 0;
+		    /*
+			if ($userinfo->activation){
+				$user->is_activated = 0;
+				$user->validation_code = $userinfo->activation;
+			} else {
+				$user->is_activated = 1;
+				$user->validation_code = '';
+			}
+	*/
+		    //now append the new user data
+		    $db->insertObject('#__user', $user, 'user_id' );
+
+		    $wgDBprefix = $this->params->get('database_prefix');
+		    $wgDBname = $this->params->get('database_name');
+
+		    if ($wgDBprefix) {
+			    $wfWikiID = $wgDBname . '-' . $wgDBprefix;
+		    } else {
+			    $wfWikiID = $wgDBname;
+		    }
+
+		    $wgSecretKey = $this->helper->getConfig('wgSecretKey');
+		    $wgProxyKey = $this->helper->getConfig('wgProxyKey');
+
+		    if ($wgSecretKey) {
+			    $key = $wgSecretKey;
+		    } elseif ($wgProxyKey) {
+			    $key = $wgProxyKey;
+		    } else {
+			    $key = microtime();
+		    }
+		    //update the stats
+		    $mToken = md5($key . mt_rand(0, 0x7fffffff) . $wfWikiID . $user->user_id);
+
+		    $query = $db->getQuery(true)
+			    ->update('#__user')
+			    ->set('is_activated = 0')
+			    ->set('user_token = ' . $db->quote($mToken))
+			    ->where('user_id = ' . $db->quote($user->user_id));
+
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    //prepare the user variables
+		    foreach($usergroups as $usergroup) {
+			    //prepare the user variables
+			    $ug = new stdClass;
+			    $ug->ug_user = $user->user_id;
+			    $ug->ug_group = $usergroup;
+
+			    $db->insertObject('#__user_groups', $ug, 'ug_user' );
+		    }
+		    //return the good news
+		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
     }
 }

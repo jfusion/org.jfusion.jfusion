@@ -362,11 +362,10 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		jimport('joomla.user.helper');
 		$existinguser->password_salt = Framework::genRandomPassword(3);
@@ -386,40 +385,38 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+		$this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$apidata = array('userinfo' => $userinfo, 'existinguser' => $existinguser);
 		$response = $this->helper->apiCall('updateEmail', $apidata);
 
 		if($response['success']) {
-			$status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+			$this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 		}
 		foreach ($response['errors'] as $error) {
-			$status['error'][] = Text::_('EMAIL_UPDATE_ERROR') . ' ' . $error;
+			$this->debugger->add('error', Text::_('EMAIL_UPDATE_ERROR') . ' ' . $error);
 		}
 		foreach ($response['debug'] as $debug) {
-			$status['debug'][] = $debug;
+			$this->debugger->add('debug', $debug);
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo &$existinguser
-	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function blockUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$db = Factory::getDatabase($this->getJname());
 
@@ -464,7 +461,7 @@ class User extends Plugin_User
 			$db->insertObject('#__userban', $ban, 'userid');
 		}
 
-		$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 
 		//note that blockUser has been called
 		if (empty($status['aec'])) {
@@ -475,11 +472,10 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function unblockUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$usergroups = $this->getCorrectUserGroups($existinguser);
 		$usergroup = $usergroups[0];
@@ -529,24 +525,23 @@ class User extends Plugin_User
 		}
 
 		if ($response['success']) {
-			$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+			$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 		}
 		foreach ($response['errors'] as $error) {
-			$status['error'][] = Text::_('BLOCK_UPDATE_ERROR') . ': ' . $error;
+			$this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR') . ': ' . $error);
 		}
 		foreach ($response['debug'] as $debug) {
-			$status['debug'][] = $debug;
+			$this->debugger->add('error', $debug);
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function activateUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//found out what usergroup should be used
 		$usergroups = $this->getCorrectUserGroups($existinguser);
@@ -571,17 +566,16 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//found out what usergroup should be used
 		$activationgroup = $this->params->get('activationgroup');
@@ -623,125 +617,122 @@ class User extends Plugin_User
 			$apidata = array('existinguser' => $existinguser);
 			$response = $this->helper->apiCall('inactivateUser', $apidata);
 			if ($response['success']) {
-				$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+				$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 			}
 			foreach ($response['errors'] as $error) {
-				$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $error;
+				$this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $error);
 			}
 			foreach ($response['debug'] as $debug) {
-				$status['debug'][] = $debug;
+				$this->debugger->add('debug', $debug);
 			}
 		} else {
-			$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
-	 * @param array $status
 	 *
+	 * @throws \RuntimeException
 	 * @return void
 	 */
-	function createUser(Userinfo $userinfo, &$status)
+	function createUser(Userinfo $userinfo)
 	{
-		try {
-			//get the default user group and determine if we are using simple or advanced
-			$usergroups = $this->getCorrectUserGroups($userinfo);
+		//get the default user group and determine if we are using simple or advanced
+		$usergroups = $this->getCorrectUserGroups($userinfo);
 
-			//return if we are in advanced user group mode but the master did not pass in a group_id
-			if (empty($usergroups)) {
-				throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
+		//return if we are in advanced user group mode but the master did not pass in a group_id
+		if (empty($usergroups)) {
+			throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
+		} else {
+			$usergroup = $usergroups[0];
+			if (empty($userinfo->activation)) {
+				$defaultgroup = $usergroup->defaultgroup;
+				$setAsNeedsActivation = false;
 			} else {
-				$usergroup = $usergroups[0];
-				if (empty($userinfo->activation)) {
-					$defaultgroup = $usergroup->defaultgroup;
-					$setAsNeedsActivation = false;
-				} else {
-					$defaultgroup = $this->params->get('activationgroup');
-					$setAsNeedsActivation = true;
-				}
-
-				$apidata = array();
-				$apidata['usergroups'] = $usergroup;
-				$apidata['defaultgroup'] = $defaultgroup;
-
-				$usertitle = $this->getDefaultUserTitle($defaultgroup);
-				$userinfo->usertitle = $usertitle;
-
-				if (!isset($userinfo->password_clear)) {
-					//clear password is not available, set a random password for now
-					jimport('joomla.user.helper');
-					$random_password = Framework::getHash(Framework::genRandomPassword(10));
-					$userinfo->password_clear = $random_password;
-				}
-
-				//set the timezone
-				if (!isset($userinfo->timezone)) {
-					$config = Factory::getConfig();
-					$userinfo->timezone = $config->get('offset', 'UTC');
-				}
-
-				$timezone = new DateTimeZone($userinfo->timezone);
-				$offset = $timezone->getOffset(new DateTime('NOW'));
-				$userinfo->timezone = $offset/3600;
-
-				$apidata['userinfo'] = $userinfo;
-
-				//performs some final VB checks before saving
-				$response = $this->helper->apiCall('createUser', $apidata);
-				if ($response['success']) {
-					$userdmid = $response['new_id'];
-					//if we set a temp password, we need to move the hashed password over
-					if (!isset($userinfo->password_clear)) {
-						try {
-							$db = Factory::getDatabase($this->getJname());
-
-							$query = $db->getQuery(true)
-								->update('#__user')
-								->set('password = ' . $db->quote($userinfo->password))
-								->where('userid  = ' . $userdmid);
-
-							$db->setQuery($query);
-							$db->execute();
-						} catch (Exception $e) {
-							$status['debug'][] = Text::_('USER_CREATION_ERROR') . '. '. Text::_('USERID') . ' ' . $userdmid . ': ' . Text::_('MASTER_PASSWORD_NOT_COPIED');
-						}
-					}
-
-					//save the new user
-					$status['userinfo'] = $this->getUser($userinfo);
-
-					//does the user still need to be activated?
-					if ($setAsNeedsActivation) {
-						try {
-							$this->inactivateUser($userinfo, $status['userinfo'], $status);
-						} catch (Exception $e) {
-						}
-					}
-
-					//return the good news
-					$status['debug'][] = Text::_('USER_CREATION') . '. '. Text::_('USERID') . ' ' . $userdmid;
-				}
-				foreach ($response['errors'] as $error) {
-					$status['error'][] = Text::_('USER_CREATION_ERROR') . ' ' . $error;
-				}
-				foreach ($response['debug'] as $debug) {
-					$status['debug'][] = $debug;
-				}
+				$defaultgroup = $this->params->get('activationgroup');
+				$setAsNeedsActivation = true;
 			}
-		} catch (Exception $e) {
-			$status['error'][] = Text::_('ERROR_CREATE_USER') . ': ' . $e->getMessage();
+
+			$apidata = array();
+			$apidata['usergroups'] = $usergroup;
+			$apidata['defaultgroup'] = $defaultgroup;
+
+			$usertitle = $this->getDefaultUserTitle($defaultgroup);
+			$userinfo->usertitle = $usertitle;
+
+			if (!isset($userinfo->password_clear)) {
+				//clear password is not available, set a random password for now
+				jimport('joomla.user.helper');
+				$random_password = Framework::getHash(Framework::genRandomPassword(10));
+				$userinfo->password_clear = $random_password;
+			}
+
+			//set the timezone
+			if (!isset($userinfo->timezone)) {
+				$config = Factory::getConfig();
+				$userinfo->timezone = $config->get('offset', 'UTC');
+			}
+
+			$timezone = new DateTimeZone($userinfo->timezone);
+			$offset = $timezone->getOffset(new DateTime('NOW'));
+			$userinfo->timezone = $offset/3600;
+
+			$apidata['userinfo'] = $userinfo;
+
+			//performs some final VB checks before saving
+			$response = $this->helper->apiCall('createUser', $apidata);
+			if ($response['success']) {
+				$userdmid = $response['new_id'];
+				//if we set a temp password, we need to move the hashed password over
+				if (!isset($userinfo->password_clear)) {
+					try {
+						$db = Factory::getDatabase($this->getJname());
+
+						$query = $db->getQuery(true)
+							->update('#__user')
+							->set('password = ' . $db->quote($userinfo->password))
+							->where('userid  = ' . $userdmid);
+
+						$db->setQuery($query);
+						$db->execute();
+					} catch (Exception $e) {
+						$status['debug'][] = Text::_('USER_CREATION_ERROR') . '. '. Text::_('USERID') . ' ' . $userdmid . ': ' . Text::_('MASTER_PASSWORD_NOT_COPIED');
+					}
+				}
+
+				//save the new user
+				$status['userinfo'] = $this->getUser($userinfo);
+				$this->debugger->set('userinfo', $this->getUser($userinfo));
+
+
+				//does the user still need to be activated?
+				if ($setAsNeedsActivation) {
+					try {
+						$this->inactivateUser($userinfo, $status['userinfo'], $status);
+					} catch (Exception $e) {
+					}
+				}
+
+				//return the good news
+				$this->debugger->add('debug', Text::_('USER_CREATION') . '. '. Text::_('USERID') . ' ' . $userdmid);
+			}
+			foreach ($response['errors'] as $error) {
+				$this->debugger->add('error', Text::_('USER_CREATION_ERROR') . ' ' . $error);
+			}
+			foreach ($response['debug'] as $debug) {
+				$this->debugger->add('debug', $debug);
+			}
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo &$existinguser
-	 * @param array &$status
 	 *
 	 * @return bool
 	 */
-	function executeUpdateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function executeUpdateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$update_groups = false;
 		$usergroups = $this->getCorrectUserGroups($userinfo);
@@ -772,21 +763,19 @@ class User extends Plugin_User
 		}
 
 		if ($update_groups) {
-			$this->updateUsergroup($userinfo, $existinguser, $status);
+			$this->updateUsergroup($userinfo, $existinguser);
 		}
-
 		return $update_groups;
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//check to see if we have a group_id in the $userinfo, if not return
 		$usergroups = $this->getCorrectUserGroups($userinfo);
@@ -808,13 +797,13 @@ class User extends Plugin_User
 			$response = $this->helper->apiCall('updateUsergroup', $apidata);
 
 			if ($response['success']) {
-				$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup->defaultgroup;;
+				$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup->defaultgroup);
 			}
 			foreach ($response['errors'] AS $error) {
-				$status['error'][] = Text::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+				$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $error);
 			}
 			foreach ($response['debug'] as $debug) {
-				$status['debug'][] = $debug;
+				$this->debugger->add('debug', $debug);
 			}
 		}
 	}

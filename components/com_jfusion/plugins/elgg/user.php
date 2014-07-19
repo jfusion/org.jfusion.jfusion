@@ -209,11 +209,10 @@ class JFusionUser_elgg extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo &$existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
 	    jimport('joomla.user.helper');
 	    $existinguser->password_salt = Framework::genRandomPassword(8);
 	    $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
@@ -228,7 +227,8 @@ class JFusionUser_elgg extends Plugin_User
 	    $db->setQuery($query);
 
 	    $db->execute();
-	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+
+	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
@@ -315,11 +315,10 @@ class JFusionUser_elgg extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
@@ -332,19 +331,18 @@ class JFusionUser_elgg extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
     
     /**
      * @param Userinfo $userinfo      holds the new user data
      * @param Userinfo &$existinguser holds the existing user data
-     * @param array  &$status       Status array
      *
      * @access public
      *
      * @return void
      */
-    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
@@ -353,14 +351,17 @@ class JFusionUser_elgg extends Plugin_User
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
-        if($user) {
+	    /**
+	     * TODO: THROW ERROR INSTEAD
+	     */
+	    if($user) {
         	if ($user->ban()) {
-				$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		        $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
         	} else {
-        		$status['error'][] = Text::_('BLOCK_UPDATE_ERROR');
+		        $this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR'));
         	}
         } else {
-        	$status['error'][] = Text::_('BLOCK_UPDATE_ERROR');
+	        $this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR'));
 		}
     }
 
@@ -369,13 +370,12 @@ class JFusionUser_elgg extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo holds the new user data
 	 * @param Userinfo $existinguser
-	 * @param array                  $status
 	 *
 	 * @access   public
 	 *
 	 * @return void
 	 */
-    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
@@ -384,25 +384,27 @@ class JFusionUser_elgg extends Plugin_User
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
+	    /**
+	     * TODO: THROW ERROR INSTEAD
+	     */
         if($user) {
         	if ($user->unban()) {
-				$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		        $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
         	} else {
-        		$status['error'][] = Text::_('BLOCK_UPDATE_ERROR');
+		        $this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR'));
         	}
         } else {
-        	$status['error'][] = Text::_('BLOCK_UPDATE_ERROR');
+	        $this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR'));
 		}
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo &$existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser) {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
@@ -410,25 +412,27 @@ class JFusionUser_elgg extends Plugin_User
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
+	    /**
+	     * TODO: THROW ERROR INSTEAD
+	     */
         if($user) {
         	if (elgg_set_user_validation_status($user->guid, 1, 'validated:jfusion')) {
-				$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		        $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
         	} else {
-        		$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
+		        $this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR'));
         	}
         } else {
-        	$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
+	        $this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR'));
 		}    
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo &$existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 		if (defined('externalpage')) {
         	define('externalpage', true);	
         }
@@ -436,14 +440,17 @@ class JFusionUser_elgg extends Plugin_User
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
+	    /**
+	     * TODO: THROW ERROR INSTEAD
+	     */
         if($user) {
         	if (elgg_set_user_validation_status($user->guid, 0)) {
-				$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		        $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
         	} else {
-        		$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
+		        $this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR'));
         	}
         } else {
-        	$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
+	        $this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR'));
 		}    
     }
 }

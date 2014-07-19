@@ -61,12 +61,10 @@ class User extends Plugin_User
 	 *  customer_entity_text
 	 *  customer_entity_varchar
 	 *
-	 * @param $status
-	 *
 	 * @throws RuntimeException
 	 * @return Soapclient
 	 */
-	function connectToApi(&$status) {
+	function connectToApi() {
 		$apipath = $this->params->get('source_url') . 'index.php/api/?wsdl';
 		$apiuser = $this->params->get('apiuser', '');
 		$apikey = $this->params->get('apikey', '');
@@ -78,7 +76,7 @@ class User extends Plugin_User
 
 				$proxi = new Soapclient($apipath);
 				if($proxi->login($apiuser, $apikey)) {
-					$status['debug'][] = 'Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey;
+					$this->debugger->add('debug', 'Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey);
 				}
 			} catch (Soapfault $fault) {
 				/** @noinspection PhpUndefinedFieldInspection */
@@ -486,16 +484,16 @@ class User extends Plugin_User
 
 	/**
 	 * @param Userinfo $userinfo
-	 * @param array $status
 	 *
+	 * @throws \RuntimeException
 	 * @return void
 	 */
-	function createUser(Userinfo $userinfo, &$status) {
+	function createUser(Userinfo $userinfo) {
 		$magentoVersion = $this->params->get('magento_version', '1.7');
 
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
-			$status['error'][] = Text::_('ERROR_CREATING_USER') . ': ' . Text::_('USERGROUP_MISSING');
+			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 		} else {
 			$usergroup = $usergroups[0];
 			$db = Factory::getDataBase($this->getJname());
@@ -586,11 +584,11 @@ class User extends Plugin_User
 			//now append the new user data
 			$errors = $this->update_create_Magentouser($magento_user, 0);
 			if ($errors) {
-				$status['error'][] = Text::_('USER_CREATION_ERROR') . $errors;
+				throw new RuntimeException($errors);
 			} else {
 				//return the good news
-				$status['debug'][] = Text::_('USER_CREATION');
-				$status['userinfo'] = $this->getUser($userinfo);
+				$this->debugger->add('debug', Text::_('USER_CREATION'));
+				$this->debugger->set('userinfo', $this->getUser($userinfo));
 			}
 		}
 	}
@@ -598,11 +596,10 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
 		$magentoVersion = $this->params->get('magento_version', '1.7');
 
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
@@ -626,46 +623,45 @@ class User extends Plugin_User
      *
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function updateUsername(Userinfo $userinfo, Userinfo &$existinguser) {
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
+	 * @throws \RuntimeException
 	 * @return void
 	 */
-	function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function activateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
 		$this->fillMagentouser($magento_user, 'is_active', 1);
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
 		if ($errors) {
-			$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
+			throw new RuntimeException(Text::_('ACTIVATION_UPDATE_ERROR'));
 		} else {
-			$status['debug'][] = Text::_('ACTIVATION_UPDATE') ;
+			$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
+	 * @throws \RuntimeException
 	 * @return void
 	 */
-	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
         $this->fillMagentouser($magento_user, 'is_active', 0);
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
 		if ($errors) {
-			$status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR');
+			throw new RuntimeException(Text::_('ACTIVATION_UPDATE_ERROR'));
 		} else {
-			$status['debug'][] = Text::_('ACTIVATION_UPDATE') ;
+			$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 		}
 	}
 
@@ -689,7 +685,7 @@ class User extends Plugin_User
 				// for the time being. Speed is not a great issue here
 				// connect to host
 				try {
-					$proxi = $this->connectToApi($status);
+					$proxi = $this->connectToApi();
 
 					try {
 						$proxi->call('customer.delete', $user_id);
@@ -716,12 +712,11 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
-	 * @param $jname
 	 *
+	 * @throws \RuntimeException
 	 * @return void
 	 */
-	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status, $jname) {
+	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser) {
 		//set the userid
 		$user_id = $existinguser->userid;
 		$new_email = $userinfo->email;
@@ -729,31 +724,31 @@ class User extends Plugin_User
 		// this can be complicated so we are going to use the Magento customer API
 		// for the time being. Speed is not a great issue here
 		// connect to host
-		$proxi = $this->connectToApi($status);
+		$proxi = $this->connectToApi();
 
 		try {
 			$proxi->call('customer.update', array($user_id, $update));
 		} catch (Soapfault $fault) {
 			/** @noinspection PhpUndefinedFieldInspection */
-			$status['error'][] = 'Magento API: Could not update email of user with id ' . $user_id . ' , message: ' . $fault->faultstring;
+			throw new RuntimeException('Magento API: Could not update email of user with id ' . $user_id . ' , message: ' . $fault->faultstring);
 		}
 		try {
 			$proxi->endSession();
 		} catch (Soapfault $fault) {
 			/** @noinspection PhpUndefinedFieldInspection */
-			$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
+			throw new RuntimeException('Magento API: Could not end this session, message: ' . $fault->faultstring);
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
+	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
@@ -769,7 +764,8 @@ class User extends Plugin_User
 
 			$db->setQuery($query);
 			$db->execute();
-			$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+
+			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
 		}
 	}
 }

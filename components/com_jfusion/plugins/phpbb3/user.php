@@ -393,11 +393,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
 	    /**
 	     * @ignore
 	     * @var $auth Auth
@@ -422,21 +421,19 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser) {
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -454,12 +451,12 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
+	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
@@ -589,11 +586,10 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo &$existinguser
-	 * @param array &$status
 	 *
 	 * @return bool
 	 */
-	function executeUpdateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function executeUpdateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$update_groups = false;
 		$usergroups = $this->getCorrectUserGroups($userinfo);
@@ -619,20 +615,18 @@ class User extends Plugin_User
 		}
 
 		if ($update_groups) {
-			$this->updateUsergroup($userinfo, $existinguser, $status);
+			$this->updateUsergroup($userinfo, $existinguser);
 		}
-
 		return $update_groups;
 	}
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //block the user
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -648,11 +642,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //unblock the user
 	    $db = Factory::getDatabase($this->getJname());
 	    $query = $db->getQuery(true)
@@ -668,11 +661,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //activate the user
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -692,11 +684,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //set activation key
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -713,205 +704,201 @@ class User extends Plugin_User
 	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
-    /**
-     * @param Userinfo $userinfo
-     * @param array $status
-     *
-     * @return void
-     */
-    function createUser(Userinfo $userinfo, &$status) {
-	    try {
-		    //found out what usergroup should be used
-		    $db = Factory::getDatabase($this->getJname());
-		    $update_block = $this->params->get('update_block');
-		    $update_activation = $this->params->get('update_activation');
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
-		    } else {
-			    $usergroup = $usergroups[0];
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return void
+	 */
+    function createUser(Userinfo $userinfo) {
+	    //found out what usergroup should be used
+	    $db = Factory::getDatabase($this->getJname());
+	    $update_block = $this->params->get('update_block');
+	    $update_activation = $this->params->get('update_activation');
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	    } else {
+		    $usergroup = $usergroups[0];
 
-			    if (!isset($usergroup->groups)) {
-				    $usergroup->groups = array($usergroup->defaultgroup);
-			    } else if (!in_array($usergroup->defaultgroup, $usergroup->groups)) {
-				    $usergroup->groups[] = $usergroup->defaultgroup;
-			    }
-
-			    $username_clean = $this->filterUsername($userinfo->username);
-
-			    //prevent anonymous user being created
-			    if ($username_clean == 'anonymous') {
-				    throw new RuntimeException('reserved username');
-			    } else {
-				    //prepare the variables
-				    $user = new stdClass;
-				    $user->user_id = null;
-				    $user->username = $userinfo->username;
-				    $user->username_clean = $username_clean;
-				    if (isset($userinfo->password_clear)) {
-					    /**
-					     * @ignore
-					     * @var $auth Auth
-					     */
-					    $auth = Factory::getAuth($this->getJname());
-					    $user->user_password = $auth->HashPassword($userinfo->password_clear);
-				    } else {
-					    $user->user_password = $userinfo->password;
-				    }
-				    $user->user_pass_convert = 0;
-				    $user->user_email = strtolower($userinfo->email);
-				    $user->user_email_hash = crc32(strtolower($userinfo->email)) . strlen($userinfo->email);
-				    $user->group_id = $usergroup->defaultgroup;
-				    $user->user_permissions = '';
-				    $user->user_allow_pm = 1;
-				    $user->user_actkey = '';
-				    $user->user_ip = '';
-				    $user->user_regdate = time();
-				    $user->user_passchg = time();
-				    $user->user_options = 895;
-				    if (!empty($userinfo->activation) && $update_activation) {
-					    $user->user_inactive_reason = 1;
-					    $user->user_actkey = $userinfo->activation;
-					    $user->user_type = 1;
-				    } else {
-					    $user->user_inactive_reason = 0;
-					    $user->user_type = 0;
-				    }
-				    $user->user_inactive_time = 0;
-				    $user->user_lastmark = time();
-				    $user->user_lastvisit = 0;
-				    $user->user_lastpost_time = 0;
-				    $user->user_lastpage = '';
-				    $user->user_posts = 0;
-				    $user->user_colour = '';
-				    $user->user_occ = '';
-				    $user->user_interests = '';
-				    $user->user_avatar = '';
-				    $user->user_avatar_type = 0;
-				    $user->user_avatar_width = 0;
-				    $user->user_avatar_height = 0;
-				    $user->user_new_privmsg = 0;
-				    $user->user_unread_privmsg = 0;
-				    $user->user_last_privmsg = 0;
-				    $user->user_message_rules = 0;
-				    $user->user_emailtime = 0;
-				    $user->user_notify = 0;
-				    $user->user_notify_pm = 1;
-				    $user->user_allow_pm = 1;
-				    $user->user_allow_viewonline = 1;
-				    $user->user_allow_viewemail = 1;
-				    $user->user_allow_massemail = 1;
-				    $user->user_sig = '';
-				    $user->user_sig_bbcode_uid = '';
-				    $user->user_sig_bbcode_bitfield = '';
-				    //Find some default values
-
-				    $query = $db->getQuery(true)
-					    ->select('config_name, config_value')
-					    ->from('#__config')
-					    ->where('config_name IN (\'board_timezone\', \'default_dateformat\', \'default_lang\', \'default_style\', \'board_dst\', \'rand_seed\')');
-
-				    $db->setQuery($query);
-				    $rows = $db->loadObjectList();
-				    $config = array();
-				    foreach ($rows as $row) {
-					    $config[$row->config_name] = $row->config_value;
-				    }
-				    $user->user_timezone = $config['board_timezone'];
-				    $user->user_dateformat = $config['default_dateformat'];
-				    $user->user_lang = $config['default_lang'];
-				    $user->user_style = $config['default_style'];
-				    $user->user_dst = $config['board_dst'];
-				    $user->user_full_folder = - 4;
-				    $user->user_notify_type = 0;
-				    //generate a unique id
-				    jimport('joomla.user.helper');
-				    $user->user_form_salt = Framework::genRandomPassword(13);
-
-				    //update the user colour, avatar, etc to the groups if applicable
-				    $query = $db->getQuery(true)
-					    ->select('group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height')
-					    ->from('#__groups')
-					    ->where('group_id = ' . $usergroup->defaultgroup);
-
-				    $db->setQuery($query);
-				    $group_attribs = $db->loadAssoc();
-				    if (!empty($group_attribs)) {
-					    foreach($group_attribs AS $k => $v) {
-						    if (!empty($v)) {
-							    $user->{str_replace('group_', 'user_', $k)} = $v;
-						    }
-					    }
-				    }
-
-				    $db->insertObject('#__users', $user, 'user_id');
-
-				    foreach($usergroup->groups as $group) {
-						$newgroup = new stdClass;
-					    $newgroup->group_id = (int)$group;
-					    $newgroup->user_id = (int)$user->user_id;
-					    $newgroup->group_leader = 0;
-					    $newgroup->user_pending = 0;
-
-					    $db->insertObject('#__user_group', $newgroup);
-				    }
-
-				    //update the total user count
-				    $query = $db->getQuery(true)
-					    ->update('#__config')
-					    ->set('config_value = config_value + 1')
-					    ->where('config_name = ' . $db->quote('num_users'));
-
-				    $db->setQuery($query);
-				    $db->execute();
-
-				    //update the newest username
-				    $query = $db->getQuery(true)
-					    ->update('#__config')
-					    ->set('config_value = ' . $db->quote($userinfo->username))
-					    ->where('config_name = ' . $db->quote('newest_username'));
-
-				    $db->setQuery($query);
-				    $db->execute();
-
-				    //update the newest userid
-				    $query = $db->getQuery(true)
-					    ->update('#__config')
-					    ->set('config_value = ' . (int)$user->user_id )
-					    ->where('config_name = ' . $db->quote('newest_user_id'));
-
-				    $db->setQuery($query);
-				    $db->execute();
-
-				    //get the username color
-				    if (!empty($user->user_colour)) {
-					    //set the correct new username color
-					    $query = $db->getQuery(true)
-						    ->update('#__config')
-						    ->set('config_value = ' . $db->quote($user->user_colour))
-						    ->where('config_name = ' . $db->quote('newest_user_colour'));
-
-					    $db->setQuery($query);
-					    $db->execute();
-				    }
-				    if (!empty($userinfo->block) && $update_block) {
-					    try {
-						    $ban = new stdClass;
-						    $ban->ban_userid = $user->user_id;
-						    $ban->ban_start = time();
-
-						    $db->insertObject('#__banlist', $ban);
-					    } catch (Exception $e) {
-							throw new RuntimeException(Text::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage());
-					    }
-				    }
-				    //return the good news
-				    $this->debugger->add('debug', Text::_('USER_CREATION'));
-				    $this->debugger->set('userinfo', $this->getUser($userinfo));
-			    }
+		    if (!isset($usergroup->groups)) {
+			    $usergroup->groups = array($usergroup->defaultgroup);
+		    } else if (!in_array($usergroup->defaultgroup, $usergroup->groups)) {
+			    $usergroup->groups[] = $usergroup->defaultgroup;
 		    }
-	    } catch (Exception $e) {
-		    $this->debugger->add('error', Text::_('ERROR_CREATE_USER') . ' ' . $e->getMessage());
+
+		    $username_clean = $this->filterUsername($userinfo->username);
+
+		    //prevent anonymous user being created
+		    if ($username_clean == 'anonymous') {
+			    throw new RuntimeException('reserved username');
+		    } else {
+			    //prepare the variables
+			    $user = new stdClass;
+			    $user->user_id = null;
+			    $user->username = $userinfo->username;
+			    $user->username_clean = $username_clean;
+			    if (isset($userinfo->password_clear)) {
+				    /**
+				     * @ignore
+				     * @var $auth Auth
+				     */
+				    $auth = Factory::getAuth($this->getJname());
+				    $user->user_password = $auth->HashPassword($userinfo->password_clear);
+			    } else {
+				    $user->user_password = $userinfo->password;
+			    }
+			    $user->user_pass_convert = 0;
+			    $user->user_email = strtolower($userinfo->email);
+			    $user->user_email_hash = crc32(strtolower($userinfo->email)) . strlen($userinfo->email);
+			    $user->group_id = $usergroup->defaultgroup;
+			    $user->user_permissions = '';
+			    $user->user_allow_pm = 1;
+			    $user->user_actkey = '';
+			    $user->user_ip = '';
+			    $user->user_regdate = time();
+			    $user->user_passchg = time();
+			    $user->user_options = 895;
+			    if (!empty($userinfo->activation) && $update_activation) {
+				    $user->user_inactive_reason = 1;
+				    $user->user_actkey = $userinfo->activation;
+				    $user->user_type = 1;
+			    } else {
+				    $user->user_inactive_reason = 0;
+				    $user->user_type = 0;
+			    }
+			    $user->user_inactive_time = 0;
+			    $user->user_lastmark = time();
+			    $user->user_lastvisit = 0;
+			    $user->user_lastpost_time = 0;
+			    $user->user_lastpage = '';
+			    $user->user_posts = 0;
+			    $user->user_colour = '';
+			    $user->user_occ = '';
+			    $user->user_interests = '';
+			    $user->user_avatar = '';
+			    $user->user_avatar_type = 0;
+			    $user->user_avatar_width = 0;
+			    $user->user_avatar_height = 0;
+			    $user->user_new_privmsg = 0;
+			    $user->user_unread_privmsg = 0;
+			    $user->user_last_privmsg = 0;
+			    $user->user_message_rules = 0;
+			    $user->user_emailtime = 0;
+			    $user->user_notify = 0;
+			    $user->user_notify_pm = 1;
+			    $user->user_allow_pm = 1;
+			    $user->user_allow_viewonline = 1;
+			    $user->user_allow_viewemail = 1;
+			    $user->user_allow_massemail = 1;
+			    $user->user_sig = '';
+			    $user->user_sig_bbcode_uid = '';
+			    $user->user_sig_bbcode_bitfield = '';
+			    //Find some default values
+
+			    $query = $db->getQuery(true)
+				    ->select('config_name, config_value')
+				    ->from('#__config')
+				    ->where('config_name IN (\'board_timezone\', \'default_dateformat\', \'default_lang\', \'default_style\', \'board_dst\', \'rand_seed\')');
+
+			    $db->setQuery($query);
+			    $rows = $db->loadObjectList();
+			    $config = array();
+			    foreach ($rows as $row) {
+				    $config[$row->config_name] = $row->config_value;
+			    }
+			    $user->user_timezone = $config['board_timezone'];
+			    $user->user_dateformat = $config['default_dateformat'];
+			    $user->user_lang = $config['default_lang'];
+			    $user->user_style = $config['default_style'];
+			    $user->user_dst = $config['board_dst'];
+			    $user->user_full_folder = - 4;
+			    $user->user_notify_type = 0;
+			    //generate a unique id
+			    jimport('joomla.user.helper');
+			    $user->user_form_salt = Framework::genRandomPassword(13);
+
+			    //update the user colour, avatar, etc to the groups if applicable
+			    $query = $db->getQuery(true)
+				    ->select('group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height')
+				    ->from('#__groups')
+				    ->where('group_id = ' . $usergroup->defaultgroup);
+
+			    $db->setQuery($query);
+			    $group_attribs = $db->loadAssoc();
+			    if (!empty($group_attribs)) {
+				    foreach($group_attribs AS $k => $v) {
+					    if (!empty($v)) {
+						    $user->{str_replace('group_', 'user_', $k)} = $v;
+					    }
+				    }
+			    }
+
+			    $db->insertObject('#__users', $user, 'user_id');
+
+			    foreach($usergroup->groups as $group) {
+				    $newgroup = new stdClass;
+				    $newgroup->group_id = (int)$group;
+				    $newgroup->user_id = (int)$user->user_id;
+				    $newgroup->group_leader = 0;
+				    $newgroup->user_pending = 0;
+
+				    $db->insertObject('#__user_group', $newgroup);
+			    }
+
+			    //update the total user count
+			    $query = $db->getQuery(true)
+				    ->update('#__config')
+				    ->set('config_value = config_value + 1')
+				    ->where('config_name = ' . $db->quote('num_users'));
+
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    //update the newest username
+			    $query = $db->getQuery(true)
+				    ->update('#__config')
+				    ->set('config_value = ' . $db->quote($userinfo->username))
+				    ->where('config_name = ' . $db->quote('newest_username'));
+
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    //update the newest userid
+			    $query = $db->getQuery(true)
+				    ->update('#__config')
+				    ->set('config_value = ' . (int)$user->user_id )
+				    ->where('config_name = ' . $db->quote('newest_user_id'));
+
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    //get the username color
+			    if (!empty($user->user_colour)) {
+				    //set the correct new username color
+				    $query = $db->getQuery(true)
+					    ->update('#__config')
+					    ->set('config_value = ' . $db->quote($user->user_colour))
+					    ->where('config_name = ' . $db->quote('newest_user_colour'));
+
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
+			    if (!empty($userinfo->block) && $update_block) {
+				    try {
+					    $ban = new stdClass;
+					    $ban->ban_userid = $user->user_id;
+					    $ban->ban_start = time();
+
+					    $db->insertObject('#__banlist', $ban);
+				    } catch (Exception $e) {
+					    throw new RuntimeException(Text::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage());
+				    }
+			    }
+			    //return the good news
+			    $this->debugger->add('debug', Text::_('USER_CREATION'));
+			    $this->debugger->set('userinfo', $this->getUser($userinfo));
+		    }
 	    }
     }
 

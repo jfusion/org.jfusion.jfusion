@@ -164,11 +164,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUsername(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//generate the filtered integration username
 		$db = Factory::getDatabase($this->getJname());
@@ -203,11 +202,10 @@ class User extends Plugin_User
 	 * Function that creates a new user account
 	 *
 	 * @param Userinfo $userinfo Object containing the new userinfo
-	 * @param array  &$status  Array containing the errors and result of the function
 	 *
 	 * @throws RuntimeException
 	 */
-	public function createUser(Userinfo $userinfo, &$status)
+	public function createUser(Userinfo $userinfo)
 	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		//get the default user group and determine if we are using simple or advanced
@@ -311,7 +309,7 @@ class User extends Plugin_User
 				//update the user's group to the correct group if they are an admin
 				if ($isadmin) {
 					$this->fireUserPlugins = false;
-					$this->updateUsergroup($userinfo, $createdUser, $status);
+					$this->updateUsergroup($userinfo, $createdUser);
 					$this->fireUserPlugins = true;
 				}
 
@@ -319,8 +317,8 @@ class User extends Plugin_User
 				$joomla_user = $this->getUser($userinfo);
 				if ($joomla_user) {
 					//report back success
-					$this->debugger->set('userinfo', $joomla_user);
 					$this->debugger->add('debug', Text::_('USER_CREATION'));
+					$this->debugger->set('userinfo', $joomla_user);
 				} else {
 					throw new RuntimeException(Text::_('COULD_NOT_CREATE_USER'));
 				}
@@ -512,11 +510,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo          Object containing the new userinfo
 	 * @param Userinfo &$existinguser     Object containing the old userinfo
-	 * @param array  &$status           Array containing the errors and result of the function
 	 *
 	 * @throws RuntimeException
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		//make sure the group exists
@@ -563,11 +560,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateEmail(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$db = Factory::getDatabase($this->getJname());
 
@@ -587,12 +583,11 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @throws Exception
 	 * @return string updates are passed on into the $status array
 	 */
-	public function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updatePassword(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		if (strlen($userinfo->password_clear) > 55) {
 			throw new Exception(Text::_('JLIB_USER_ERROR_PASSWORD_TOO_LONG'));
@@ -623,11 +618,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function blockUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//block the user
 		$db = Factory::getDatabase($this->getJname());
@@ -648,11 +642,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function unblockUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//unblock the user
 		$db = Factory::getDatabase($this->getJname());
@@ -673,11 +666,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function activateUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//unblock the user
 		$db = Factory::getDatabase($this->getJname());
@@ -699,11 +691,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//unblock the user
 		$db = Factory::getDatabase($this->getJname());

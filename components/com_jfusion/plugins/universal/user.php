@@ -203,12 +203,11 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$db = Factory::getDatabase($this->getJname());
 		$maped = $this->helper->getMap();
@@ -245,18 +244,17 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+			$this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
 	 * @return void
 	 */
-	function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function updateUsername(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 
 	}
@@ -264,18 +262,18 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array $status
 	 *
+	 * @throws \RuntimeException
 	 * @return void
 	 */
-	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$userid = $this->helper->getFieldType('USERID');
 		$email = $this->helper->getFieldType('EMAIL');
 		if (!$userid) {
-			$status['error'][] = Text::_('EMAIL_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_USERID_SET');
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 		} else if (!$email) {
-			$status['error'][] = Text::_('EMAIL_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_EMAIL_SET');
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_EMAIL_SET'));
 		} else {
 			$db = Factory::getDatabase($this->getJname());
 
@@ -287,19 +285,18 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+			$this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//get the usergroup and determine if working in advanced or simple mode
 		$usergroups = $this->getCorrectUserGroups($userinfo);
@@ -321,9 +318,9 @@ class User extends Plugin_User
 				$type = 'group';
 			}
 			if ( !isset($userid) ) {
-				$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_USERID_MAPPED');
+				$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_USERID_MAPPED'));
 			} else if ( !isset($group) ) {
-				$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_GROUP_MAPPED');
+				$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_GROUP_MAPPED'));
 			} else if ($type == 'user') {
 				$usergroup = $usergroups[0];
 
@@ -335,7 +332,7 @@ class User extends Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 
-				$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+				$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup));
 			} else {
 				$maped = $this->helper->getMap('group');
 
@@ -379,7 +376,7 @@ class User extends Plugin_User
 					}
 					$db->insertObject('#__' . $this->helper->getTable('group'), $addgroup );
 
-					$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+					$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup));
 				}
 			}
 		}
@@ -388,12 +385,11 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function blockUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$userid = $this->helper->getFieldType('USERID');
 		$active = $this->helper->getFieldType('ACTIVE');
@@ -402,7 +398,7 @@ class User extends Plugin_User
 		if (!$userid) {
 			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 		} else if (!$active && !$inactive) {
-			$status['debug'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET'));
 		} else {
 			$userStatus = null;
 			if ($userinfo->block) {
@@ -431,7 +427,7 @@ class User extends Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 
-				$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+				$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 			}
 		}
 	}
@@ -439,12 +435,11 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function unblockUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$userid = $this->helper->getFieldType('USERID');
 		$active = $this->helper->getFieldType('ACTIVE');
@@ -452,7 +447,7 @@ class User extends Plugin_User
 		if (!$userid) {
 			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 		} else if (!$active && !$inactive) {
-			$status['debug'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET'));
 		} else {
 			$userStatus = null;
 			if ( isset($inactive) ) $userStatus = $inactive->value['off'];
@@ -467,26 +462,26 @@ class User extends Plugin_User
 
 			$db->setQuery($query);
 			$db->execute();
-			$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+
+			$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function activateUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$userid = $this->helper->getFieldType('USERID');
 		$activecode = $this->helper->getFieldType('ACTIVECODE');
 		if (!$userid) {
 			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 		} else if (!$activecode) {
-			$status['debug'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_ACTIVECODE_SET');
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_ACTIVECODE_SET'));
 		} else {
 			$db = Factory::getDatabase($this->getJname());
 
@@ -498,26 +493,25 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$userid = $this->helper->getFieldType('USERID');
 		$activecode = $this->helper->getFieldType('ACTIVECODE');
 		if (!$userid) {
 			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 		} else if (!$activecode) {
-			$status['debug'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('UNIVERSAL_NO_ACTIVECODE_SET');
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_ACTIVECODE_SET'));
 		} else {
 			$db = Factory::getDatabase($this->getJname());
 
@@ -528,164 +522,161 @@ class User extends Plugin_User
 
 			$db->setQuery($query);
 			$db->execute();
-			$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+
+			$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 		}
 	}
 
 	/**
 	 * @param Userinfo $userinfo
-	 * @param array $status
 	 *
+	 * @throws \RuntimeException
 	 * @return void
 	 */
-	function createUser(Userinfo $userinfo, &$status)
+	function createUser(Userinfo $userinfo)
 	{
-		try {
-			$usergroups = $this->getCorrectUserGroups($userinfo);
-			if(empty($usergroups)) {
-				throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+		$usergroups = $this->getCorrectUserGroups($userinfo);
+		if(empty($usergroups)) {
+			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+		} else {
+			$usergroup = $usergroups[0];
+
+			$userid = $this->helper->getFieldType('USERID');
+			if(empty($userid)) {
+				throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
 			} else {
-				$usergroup = $usergroups[0];
-
-				$userid = $this->helper->getFieldType('USERID');
-				if(empty($userid)) {
-					throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
+				$password = $this->helper->getFieldType('PASSWORD');
+				if(empty($password)) {
+					throw new RuntimeException(Text::_('UNIVERSAL_NO_PASSWORD_SET'));
 				} else {
-					$password = $this->helper->getFieldType('PASSWORD');
-					if(empty($password)) {
-						throw new RuntimeException(Text::_('UNIVERSAL_NO_PASSWORD_SET'));
+					$email = $this->helper->getFieldType('EMAIL');
+					if(empty($email)) {
+						throw new RuntimeException(Text::_('UNIVERSAL_NO_EMAIL_SET'));
 					} else {
-						$email = $this->helper->getFieldType('EMAIL');
-						if(empty($email)) {
-							throw new RuntimeException(Text::_('UNIVERSAL_NO_EMAIL_SET'));
-						} else {
-							$user = new stdClass;
-							$maped = $this->helper->getMap();
-							$db = Factory::getDatabase($this->getJname());
-							foreach ($maped as $value) {
-								$field = $value->field;
-								foreach ($value->type as $type) {
-									switch ($type) {
-										case 'USERID':
-											$query = 'SHOW COLUMNS FROM #__' . $this->helper->getTable() . ' where Field = ' . $db->quote($field) . ' AND Extra like \'%auto_increment%\'';
-											$db->setQuery($query);
-											$fieldslist = $db->loadObject();
-											if ($fieldslist) {
-												$user->$field = NULL;
-											} else {
-												$f = $this->helper->getQuery(array('USERID'));
+						$user = new stdClass;
+						$maped = $this->helper->getMap();
+						$db = Factory::getDatabase($this->getJname());
+						foreach ($maped as $value) {
+							$field = $value->field;
+							foreach ($value->type as $type) {
+								switch ($type) {
+									case 'USERID':
+										$query = 'SHOW COLUMNS FROM #__' . $this->helper->getTable() . ' where Field = ' . $db->quote($field) . ' AND Extra like \'%auto_increment%\'';
+										$db->setQuery($query);
+										$fieldslist = $db->loadObject();
+										if ($fieldslist) {
+											$user->$field = NULL;
+										} else {
+											$f = $this->helper->getQuery(array('USERID'));
 
-												$query = $db->getQuery(true)
-													->select($f)
-													->from('#__' . $this->helper->getTable())
-													->order('userid DESC');
+											$query = $db->getQuery(true)
+												->select($f)
+												->from('#__' . $this->helper->getTable())
+												->order('userid DESC');
 
-												$db->setQuery($query, 0 , 1);
-												$value = $db->loadResult();
-												if (!$value) {
-													$value = 1;
-												} else {
-													$value++;
-												}
-												$user->$field = $value;
-											}
-											break;
-										case 'REALNAME':
-											$user->$field = $userinfo->name;
-											break;
-										case 'FIRSTNAME':
-											list($firstname,) = explode(' ', $userinfo->name , 2);
-											$user->$field = $firstname;
-											break;
-										case 'LASTNAME':
-											list(, $lastname) = explode(' ', $userinfo->name , 2);
-											$user->$field = $lastname;
-											break;
-										case 'GROUP':
-											$user->$field = base64_decode($usergroup);
-											break;
-										case 'USERNAME':
-											$user->$field = $userinfo->username;
-											break;
-										case 'EMAIL':
-											$user->$field = $userinfo->email;
-											break;
-										case 'ACTIVE':
-											if ($userinfo->block){
-												$user->$field = $value->value['off'];
+											$db->setQuery($query, 0 , 1);
+											$value = $db->loadResult();
+											if (!$value) {
+												$value = 1;
 											} else {
-												$user->$field = $value->value['on'];
+												$value++;
 											}
-											break;
-										case 'INACTIVE':
-											if ($userinfo->block){
-												$user->$field = $value->value['on'];
-											} else {
-												$user->$field = $value->value['off'];
-											}
-											break;
-										case 'PASSWORD':
-											$user->$field = $this->helper->getHashedPassword($value->fieldtype, $value->value, $userinfo);
-											break;
-										case 'SALT':
-											if (!isset($userinfo->password_salt)) {
-												$user->$field = $this->helper->getValue($value->fieldtype, $value->value, $userinfo);
-											} else {
-												$user->$field = $userinfo->password_salt;
-											}
-											break;
-										case 'DEFAULT':
-											$val = isset($value->value) ? $value->value : null;
-											$user->$field = $this->helper->getValue($value->fieldtype, $val, $userinfo);
-											break;
-									}
+											$user->$field = $value;
+										}
+										break;
+									case 'REALNAME':
+										$user->$field = $userinfo->name;
+										break;
+									case 'FIRSTNAME':
+										list($firstname,) = explode(' ', $userinfo->name , 2);
+										$user->$field = $firstname;
+										break;
+									case 'LASTNAME':
+										list(, $lastname) = explode(' ', $userinfo->name , 2);
+										$user->$field = $lastname;
+										break;
+									case 'GROUP':
+										$user->$field = base64_decode($usergroup);
+										break;
+									case 'USERNAME':
+										$user->$field = $userinfo->username;
+										break;
+									case 'EMAIL':
+										$user->$field = $userinfo->email;
+										break;
+									case 'ACTIVE':
+										if ($userinfo->block){
+											$user->$field = $value->value['off'];
+										} else {
+											$user->$field = $value->value['on'];
+										}
+										break;
+									case 'INACTIVE':
+										if ($userinfo->block){
+											$user->$field = $value->value['on'];
+										} else {
+											$user->$field = $value->value['off'];
+										}
+										break;
+									case 'PASSWORD':
+										$user->$field = $this->helper->getHashedPassword($value->fieldtype, $value->value, $userinfo);
+										break;
+									case 'SALT':
+										if (!isset($userinfo->password_salt)) {
+											$user->$field = $this->helper->getValue($value->fieldtype, $value->value, $userinfo);
+										} else {
+											$user->$field = $userinfo->password_salt;
+										}
+										break;
+									case 'DEFAULT':
+										$val = isset($value->value) ? $value->value : null;
+										$user->$field = $this->helper->getValue($value->fieldtype, $val, $userinfo);
+										break;
 								}
 							}
-							//now append the new user data
-							$db->insertObject('#__' . $this->helper->getTable(), $user, $userid->field );
+						}
+						//now append the new user data
+						$db->insertObject('#__' . $this->helper->getTable(), $user, $userid->field );
 
-							$group = $this->helper->getFieldType('GROUP');
+						$group = $this->helper->getFieldType('GROUP');
 
-							if ( !isset($group) ) {
-								$groupuserid = $this->helper->getFieldType('USERID', 'group');
-								$group = $this->helper->getFieldType('GROUP', 'group');
-								if ( !isset($groupuserid) ) {
-									$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_USERID_MAPPED');
-								} else if ( !isset($group) ) {
-									$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_GROUP_MAPPED');
-								} else {
-									$addgroup = new stdClass;
+						if ( !isset($group) ) {
+							$groupuserid = $this->helper->getFieldType('USERID', 'group');
+							$group = $this->helper->getFieldType('GROUP', 'group');
+							if ( !isset($groupuserid) ) {
+								$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_USERID_MAPPED'));
+							} else if ( !isset($group) ) {
+								$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_GROUP_MAPPED'));
+							} else {
+								$addgroup = new stdClass;
 
-									$maped = $this->helper->getMap('group');
-									foreach ($maped as $value) {
-										$field = $value->field;
-										foreach ($value->type as $type) {
-											switch ($type) {
-												case 'USERID':
-													$field2 = $userid->field;
-													$addgroup->$field = $user->$field2;
-													break;
-												case 'GROUP':
-													$addgroup->$field = base64_decode($usergroup);
-													break;
-												case 'DEFAULT':
-													$addgroup->$field = $this->helper->getValue($value->fieldtype, $value->value, $userinfo);
-													break;
-											}
+								$maped = $this->helper->getMap('group');
+								foreach ($maped as $value) {
+									$field = $value->field;
+									foreach ($value->type as $type) {
+										switch ($type) {
+											case 'USERID':
+												$field2 = $userid->field;
+												$addgroup->$field = $user->$field2;
+												break;
+											case 'GROUP':
+												$addgroup->$field = base64_decode($usergroup);
+												break;
+											case 'DEFAULT':
+												$addgroup->$field = $this->helper->getValue($value->fieldtype, $value->value, $userinfo);
+												break;
 										}
 									}
-									$db->insertObject('#__' . $this->helper->getTable('group'), $addgroup, $groupuserid->field);
 								}
+								$db->insertObject('#__' . $this->helper->getTable('group'), $addgroup, $groupuserid->field);
 							}
-							//return the good news
-							$status['debug'][] = Text::_('USER_CREATION');
-							$status['userinfo'] = $this->getUser($userinfo);
 						}
+						//return the good news
+						$this->debugger->add('debug', Text::_('USER_CREATION'));
+						$this->debugger->set('userinfo', $this->getUser($userinfo));
 					}
 				}
 			}
-		} catch (Exception $e) {
-			$status['error'][] = Text::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
 		}
 	}
 }

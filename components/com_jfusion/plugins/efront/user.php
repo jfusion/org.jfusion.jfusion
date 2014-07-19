@@ -225,11 +225,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
 	    $md5_key = $this->params->get('md5_key');
 	    $existinguser->password = md5($userinfo->password_clear . $md5_key);
 	    $db = Factory::getDatabase($this->getJname());
@@ -248,22 +247,20 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo &$existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser) {
         // not implemented in jFusion 1.x
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser) {
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -274,17 +271,16 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -295,17 +291,16 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //unblock the user
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -316,17 +311,16 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -337,17 +331,16 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo &$existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -358,141 +351,135 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
      * @param Userinfo $userinfo
-     * @param array &$status
      *
      * @return void
      */
-    function createUser(Userinfo $userinfo, &$status) {
+    function createUser(Userinfo $userinfo) {
        /**
         * NOTE: eFront does a character check on the user credentials. I think we are ok (HW): if (preg_match("/^.*[$\/\'\"]+.*$/", $parameter))
         */
-        $status = array('error' => array(), 'debug' => array());
-	    try {
-	        $db = Factory::getDatabase($this->getJname());
-	        //prepare the variables
-	        $user = new stdClass;
-	        $user->id = null;
-	        $user->login = $this->filterUsername($userinfo->username);
-	        $parts = explode(' ', $userinfo->name);
-	        $user->name = trim($parts[0]);
-	        if (count($parts) > 1) {
-	            // construct the lastname
-	            $lastname = '';
-	            for ($i = 1;$i < (count($parts));$i++) {
-	                $lastname = $lastname . ' ' . $parts[$i];
-	            }
-	            $user->surname = trim($lastname);
-	        } else {
-	            // eFront needs Firstname AND Lastname, so add a dot when lastname is empty
-	            $user->surname = '.';
-	        }
-	        $user->email = $userinfo->email;
+	    $db = Factory::getDatabase($this->getJname());
+	    //prepare the variables
+	    $user = new stdClass;
+	    $user->id = null;
+	    $user->login = $this->filterUsername($userinfo->username);
+	    $parts = explode(' ', $userinfo->name);
+	    $user->name = trim($parts[0]);
+	    if (count($parts) > 1) {
+		    // construct the lastname
+		    $lastname = '';
+		    for ($i = 1;$i < (count($parts));$i++) {
+			    $lastname = $lastname . ' ' . $parts[$i];
+		    }
+		    $user->surname = trim($lastname);
+	    } else {
+		    // eFront needs Firstname AND Lastname, so add a dot when lastname is empty
+		    $user->surname = '.';
+	    }
+	    $user->email = $userinfo->email;
 
-	        $usergroups = $this->getCorrectUserGroups($userinfo);
-	        if (empty($usergroups)) {
-		        throw new RuntimeException(Text::_('USERGROUP_MISSING'));
-	        } else {
-	            $usergroup = $usergroups[0];
-	            $user_types_ID = 0;
-	            switch ($usergroup){
-	                case 0:
-	                    $user_type = 'student';
-	                    break;
-	                case 1:
-	                    $user_type = 'professor';
-	                    break;
-	                case 2:
-	                    $user_type = 'administrator';
-	                    break;
-	                default:
-	                    // correct id
-	                    $user_types_ID = $usergroup - 2;
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	    } else {
+		    $usergroup = $usergroups[0];
+		    $user_types_ID = 0;
+		    switch ($usergroup){
+			    case 0:
+				    $user_type = 'student';
+				    break;
+			    case 1:
+				    $user_type = 'professor';
+				    break;
+			    case 2:
+				    $user_type = 'administrator';
+				    break;
+			    default:
+				    // correct id
+				    $user_types_ID = $usergroup - 2;
 
-	                    $query = $db->getQuery(true)
-		                    ->select('basic_user_type')
-		                    ->from('#__user_types')
-		                    ->where('id = ' . $db->quote($user_types_ID));
+				    $query = $db->getQuery(true)
+					    ->select('basic_user_type')
+					    ->from('#__user_types')
+					    ->where('id = ' . $db->quote($user_types_ID));
 
-	                    $db->setQuery($query);
-	                    $user_type = $db->loadResult();
-	            }
-	            $user->user_type = $user_type;
-	            $user->user_types_ID = $user_types_ID;
-	            if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-	                $md5_key = $this->params->get('md5_key');
-	                $user->password = md5($userinfo->password_clear . $md5_key);
-	            } else {
-	                $user->password = $userinfo->password;
-	            }
-	            // note that we will plan to propagate the language setting for a user from version 2.0
-	            // for now we just use the default defined in eFront
-		        $query = $db->getQuery(true)
-			        ->select('value')
-			        ->from('#__configuration')
-			        ->where('name = ' . $db->quote('default_language'));
+				    $db->setQuery($query);
+				    $user_type = $db->loadResult();
+		    }
+		    $user->user_type = $user_type;
+		    $user->user_types_ID = $user_types_ID;
+		    if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
+			    $md5_key = $this->params->get('md5_key');
+			    $user->password = md5($userinfo->password_clear . $md5_key);
+		    } else {
+			    $user->password = $userinfo->password;
+		    }
+		    // note that we will plan to propagate the language setting for a user from version 2.0
+		    // for now we just use the default defined in eFront
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__configuration')
+			    ->where('name = ' . $db->quote('default_language'));
 
-	            $db->setQuery($query);
-	            $default_language = $db->loadResult();
-	            $user->languages_NAME = $default_language;
-	            $user->active = 1;
-	            $user->comments = null;
-	            $user->timestamp = time();
-	            $user->pending = 0;
-	            $user->avatar = null;
-	            $user->additional_accounts = null;
-	            $user->viewed_license =0;
-	            $user->need_mod_init =1;
+		    $db->setQuery($query);
+		    $default_language = $db->loadResult();
+		    $user->languages_NAME = $default_language;
+		    $user->active = 1;
+		    $user->comments = null;
+		    $user->timestamp = time();
+		    $user->pending = 0;
+		    $user->avatar = null;
+		    $user->additional_accounts = null;
+		    $user->viewed_license =0;
+		    $user->need_mod_init =1;
 
-		        $db->insertObject('#__users', $user, 'id');
+		    $db->insertObject('#__users', $user, 'id');
 
-                // we need to create the user directories. Can't use Joomla API because it uses the Joomla Root Path
-                $uploadpath = $this->params->get('uploadpath');
-                $user_dir = $uploadpath . $user->login . '/';
-                if (is_dir($user_dir)) {
-	                $this->helper->delete_directory($user_dir); //If the folder already exists, delete it first, including files
-                }
-                // we are not interested in the result of the deletion, just continue
-                if (mkdir($user_dir, 0755) || is_dir($user_dir))
-                {
-	                //Now, the directory either gets created, or already exists (in case errors happened above). In both cases, we continue
-	                //Create personal messages attachments folders
-	                mkdir($user_dir . 'message_attachments/', 0755);
-	                mkdir($user_dir . 'message_attachments/Incoming/', 0755);
-	                mkdir($user_dir . 'message_attachments/Sent/', 0755);
-	                mkdir($user_dir . 'message_attachments/Drafts/', 0755);
-	                mkdir($user_dir . 'avatars/', 0755);
+		    // we need to create the user directories. Can't use Joomla API because it uses the Joomla Root Path
+		    $uploadpath = $this->params->get('uploadpath');
+		    $user_dir = $uploadpath . $user->login . '/';
+		    if (is_dir($user_dir)) {
+			    $this->helper->delete_directory($user_dir); //If the folder already exists, delete it first, including files
+		    }
+		    // we are not interested in the result of the deletion, just continue
+		    if (mkdir($user_dir, 0755) || is_dir($user_dir))
+		    {
+			    //Now, the directory either gets created, or already exists (in case errors happened above). In both cases, we continue
+			    //Create personal messages attachments folders
+			    mkdir($user_dir . 'message_attachments/', 0755);
+			    mkdir($user_dir . 'message_attachments/Incoming/', 0755);
+			    mkdir($user_dir . 'message_attachments/Sent/', 0755);
+			    mkdir($user_dir . 'message_attachments/Drafts/', 0755);
+			    mkdir($user_dir . 'avatars/', 0755);
 
-	                //Create database representations for personal messages folders (it has nothing to do with filesystem database representation)
-	                $f_folder = new stdClass;
-	                $f_folder->id = null;
-	                $f_folder->name = 'Incoming';
-	                $f_folder->users_LOGIN = $user->login;
-	                $db->insertObject('#__f_folders', $f_folder, 'id');
+			    //Create database representations for personal messages folders (it has nothing to do with filesystem database representation)
+			    $f_folder = new stdClass;
+			    $f_folder->id = null;
+			    $f_folder->name = 'Incoming';
+			    $f_folder->users_LOGIN = $user->login;
+			    $db->insertObject('#__f_folders', $f_folder, 'id');
 
-	                $f_folder->id = null;
-	                $f_folder->name = 'Sent';
-	                $f_folder->users_LOGIN = $user->login;
-	                $db->insertObject('#__f_folders', $f_folder, 'id');
+			    $f_folder->id = null;
+			    $f_folder->name = 'Sent';
+			    $f_folder->users_LOGIN = $user->login;
+			    $db->insertObject('#__f_folders', $f_folder, 'id');
 
-	                $f_folder->id = null;
-	                $f_folder->name = 'Drafts';
-	                $f_folder->users_LOGIN = $user->login;
-	                $db->insertObject('#__f_folders', $f_folder, 'id');
+			    $f_folder->id = null;
+			    $f_folder->name = 'Drafts';
+			    $f_folder->users_LOGIN = $user->login;
+			    $db->insertObject('#__f_folders', $f_folder, 'id');
 
-	                // for eFront Educational and enterprise versions we now should assign skill gap tests
-	                // not sure I should implemented it, anyway I have only the community version to work on
-                }
-                //return the good news
-                $status['debug'][] = Text::_('USER_CREATION');
-                $status['userinfo'] = $this->getUser($userinfo);
-	        }
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('ERROR_CREATE_USER') . ': ' . $e->getMessage();
+			    // for eFront Educational and enterprise versions we now should assign skill gap tests
+			    // not sure I should implemented it, anyway I have only the community version to work on
+		    }
+		    //return the good news
+		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
     }
 
@@ -501,7 +488,7 @@ class User extends Plugin_User
      *
      * @return array|bool
      */
-    function deleteUser(Userinfo $userinfo){
+    function deleteUser(Userinfo $userinfo) {
         // we are using the api function remove_user here. 
         // User deletion is not a time critical function and deleting a user is
         // more often than not a complicated task in this type of software.
@@ -575,12 +562,12 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo &$existinguser
-	 * @param array  &$status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-    function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
+    {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
 		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
@@ -610,7 +597,8 @@ class User extends Plugin_User
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+
+		    $this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
 	    }
     }
 }

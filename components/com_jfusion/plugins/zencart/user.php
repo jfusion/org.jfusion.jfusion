@@ -148,11 +148,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo &$existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $existinguser->password = '';
 	    for ($i = 0; $i < 10; $i++) {
@@ -181,30 +180,29 @@ class User extends Plugin_User
 	    $db->execute();
 
 	    $db->transactionCommit();
-	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+
+	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser)
     {
         // no username in oscommerce
-
     }
 
-    /**
-     * @param Userinfo $userinfo
-     * @param Userinfo &$existinguser
-     * @param array &$status
-     *
-     * @return void
-     */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	/**
+	 * @param Userinfo $userinfo
+	 * @param Userinfo &$existinguser
+	 *
+	 * @throws \Exception
+	 * @return void
+	 */
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser)
     {
         try {
             $osCversion = $this->params->get('osCversion');
@@ -236,17 +234,17 @@ class User extends Plugin_User
             if (isset($db)) {
                 $db->transactionRollback();
             }
-            $status['error'][] = Text::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
+	        throw $e;
         }
     }
 
-    /**
-     * @param Userinfo $userinfo
-     * @param array $status
-     *
-     * @return void
-     */
-    function createUser(Userinfo $userinfo, &$status)
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \Exception
+	 * @return void
+	 */
+    function createUser(Userinfo $userinfo)
     {
         try {
             $db = Factory::getDatabase($this->getJname());
@@ -325,8 +323,9 @@ class User extends Plugin_User
                         $ok = $db->insertObject('#__customers_info', $user_1, 'customers_info_id');
                         if ($ok) {
                             $db->transactionCommit();
-                            $status['debug'][] = Text::_('USER_CREATION');
-                            $status['userinfo'] = $this->getUser($userinfo);
+
+	                        $this->debugger->add('debug', Text::_('USER_CREATION'));
+	                        $this->debugger->set('userinfo', $this->getUser($userinfo));
                         }
                     }
                 }
@@ -335,7 +334,7 @@ class User extends Plugin_User
             if (isset($db)) {
                 $db->transactionRollback();
             }
-            $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . $e->getMessage();
+	        throw $e;
         }
     }
 
@@ -460,12 +459,11 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo &$existinguser
-	 * @param array  &$status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
@@ -482,7 +480,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+		    $this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
 	    }
     }
 }

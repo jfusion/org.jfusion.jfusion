@@ -160,11 +160,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo &$existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function blockUser(Userinfo $userinfo, &$existinguser, &$status) {
+    function blockUser(Userinfo $userinfo, &$existinguser) {
 	    $db = Factory::getDatabase($this->getJname());
 	    $user = new stdClass;
 	    $user->uid = $existinguser->userid;
@@ -187,18 +186,18 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+
+	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    $db = Factory::getDatabase($this->getJname());
 	    //found out what the old usergroup was
 
@@ -235,18 +234,18 @@ class User extends Plugin_User
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+
+		    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 	    }
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
 	    jimport('joomla.user.helper');
 	    $existinguser->password_salt = Framework::genRandomPassword(6);
 	    $existinguser->password = md5(md5($existinguser->password_salt) . md5($userinfo->password_clear));
@@ -261,18 +260,17 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo &$existinguser
-	 * @param array  &$status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
@@ -290,72 +288,67 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup;
+		    $this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
 	    }
     }
 
-    /**
-     * @param Userinfo $userinfo
-     * @param array $status
-     *
-     * @return void
-     */
-    function createUser(Userinfo $userinfo, &$status) {
-	    try {
-		    //found out what usergroup should be used
-		    $db = Factory::getDatabase($this->getJname());
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . Text::_('USERGROUP_MISSING');
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return void
+	 */
+    function createUser(Userinfo $userinfo) {
+	    //found out what usergroup should be used
+	    $db = Factory::getDatabase($this->getJname());
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	    } else {
+		    $usergroup = $usergroups[0];
+		    //prepare the variables
+		    $user = new stdClass;
+		    $user->uid = null;
+		    $user->username = $userinfo->username;
+		    $user->email = $userinfo->email;
+		    jimport('joomla.user.helper');
+		    if (isset($userinfo->password_clear)) {
+			    //we can update the password
+			    $user->salt = Framework::genRandomPassword(6);
+			    $user->password = md5(md5($user->salt) . md5($userinfo->password_clear));
+			    $user->loginkey = Framework::genRandomPassword(50);
 		    } else {
-			    $usergroup = $usergroups[0];
-			    //prepare the variables
-			    $user = new stdClass;
-			    $user->uid = null;
-			    $user->username = $userinfo->username;
-			    $user->email = $userinfo->email;
-			    jimport('joomla.user.helper');
-			    if (isset($userinfo->password_clear)) {
-				    //we can update the password
+			    $user->password = $userinfo->password;
+			    if (!isset($userinfo->password_salt)) {
 				    $user->salt = Framework::genRandomPassword(6);
-				    $user->password = md5(md5($user->salt) . md5($userinfo->password_clear));
-				    $user->loginkey = Framework::genRandomPassword(50);
 			    } else {
-				    $user->password = $userinfo->password;
-				    if (!isset($userinfo->password_salt)) {
-					    $user->salt = Framework::genRandomPassword(6);
-				    } else {
-					    $user->salt = $userinfo->password_salt;
-				    }
-				    $user->loginkey = Framework::genRandomPassword(50);
+				    $user->salt = $userinfo->password_salt;
 			    }
-			    if (!empty($userinfo->activation)) {
-				    $user->usergroup = $this->params->get('activationgroup');
-			    } elseif (!empty($userinfo->block)) {
-				    $user->usergroup = 7;
-			    } else {
-				    $user->usergroup = $usergroup;
-			    }
-			    //now append the new user data
-			    $db->insertObject('#__users', $user, 'uid');
-
-			    //return the good news
-			    $status['debug'][] = Text::_('USER_CREATION');
-			    $status['userinfo'] = $this->getUser($userinfo);
+			    $user->loginkey = Framework::genRandomPassword(50);
 		    }
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('USER_CREATION_ERROR') . $e->getMessage();
+		    if (!empty($userinfo->activation)) {
+			    $user->usergroup = $this->params->get('activationgroup');
+		    } elseif (!empty($userinfo->block)) {
+			    $user->usergroup = 7;
+		    } else {
+			    $user->usergroup = $usergroup;
+		    }
+		    //now append the new user data
+		    $db->insertObject('#__users', $user, 'uid');
+
+		    //return the good news
+		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -366,21 +359,22 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+
+	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
-    /**
-     * @param Userinfo $userinfo
-     * @param Userinfo $existinguser
-     * @param array $status
-     *
-     * @return void
-     */
-    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	/**
+	 * @param Userinfo $userinfo
+	 * @param Userinfo $existinguser
+	 *
+	 * @throws \RuntimeException
+	 * @return void
+	 */
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //found out what usergroup should be used
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
 	    if (empty($usergroups)) {
-		    $status['error'][] = Text::_('ACTIVATION_UPDATE_ERROR') . ': ' . Text::_('USERGROUP_MISSING');
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
 	    } else {
 		    $usergroup = $usergroups[0];
 		    //update the usergroup
@@ -393,18 +387,18 @@ class User extends Plugin_User
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+
+		    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	    }
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //found out what usergroup should be used
 	    $usergroup = $this->params->get('activationgroup');
 	    //update the usergroup
@@ -417,6 +411,7 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
+
 	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 }
