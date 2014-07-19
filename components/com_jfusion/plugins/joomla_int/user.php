@@ -47,6 +47,8 @@ jimport('joomla.user.helper');
  */
 class User extends Plugin_User
 {
+	private $fireUserPlugins = true;
+
 	/**
 	 * gets the userinfo from the JFusion integrated software. Definition of object:
 	 *
@@ -308,7 +310,9 @@ class User extends Plugin_User
 
 				//update the user's group to the correct group if they are an admin
 				if ($isadmin) {
-					$this->updateUsergroup($userinfo, $createdUser, $status, false);
+					$this->fireUserPlugins = false;
+					$this->updateUsergroup($userinfo, $createdUser, $status);
+					$this->fireUserPlugins = true;
 				}
 
 				//check to see if the user exists now
@@ -509,11 +513,10 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo          Object containing the new userinfo
 	 * @param Userinfo &$existinguser     Object containing the old userinfo
 	 * @param array  &$status           Array containing the errors and result of the function
-	 * @param bool   $fire_user_plugins needs more detail
 	 *
 	 * @throws RuntimeException
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status, $fire_user_plugins = true)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
 	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		//make sure the group exists
@@ -525,7 +528,7 @@ class User extends Plugin_User
 
 			jimport('joomla.user.helper');
 
-			if ($fire_user_plugins) {
+			if ($this->fireUserPlugins) {
 				// Get the old user
 				$old = new JUser($existinguser->userid);
 				//Fire the onBeforeStoreUser event.
@@ -536,9 +539,7 @@ class User extends Plugin_User
 			$query = $db->getQuery(true)
 				->delete('#__user_usergroup_map')
 				->where('user_id = ' . $db->quote($existinguser->userid));
-
 			$db->setQuery($query);
-
 			$db->execute();
 
 			foreach ($usergroups as $group) {
@@ -549,7 +550,7 @@ class User extends Plugin_User
 				$db->insertObject('#__user_usergroup_map', $temp);
 			}
 			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups));
-			if ($fire_user_plugins) {
+			if ($this->fireUserPlugins) {
 				//Fire the onAfterStoreUser event
 				$updated = new JUser($existinguser->userid);
 				$dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
