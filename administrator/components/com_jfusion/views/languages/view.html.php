@@ -53,7 +53,7 @@ class jfusionViewlanguages extends JViewLegacy
 
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
-        $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/jfusion/joomla/?version=' . $jversion->getShortVersion());
+        $data = \JFusion\Framework::getFileData('http://update.jfusion.org/jfusion/joomla/?version=' . $jversion->getShortVersion());
 
 	    $xml = \JFusion\Framework::getXml($data, false);
         if ($xml) {

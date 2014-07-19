@@ -795,9 +795,9 @@ JS;
 
 		    $filename = JFactory::getApplication()->input->get('url');
 
-		    if( !empty($filename) ) {
+		    if(!empty($filename)) {
 			    $filename = base64_decode($filename);
-			    $ConfigFile = JFusionFunctionAdmin::getFileData($filename);
+			    $ConfigFile = \JFusion\Framework::getFileData($filename);
 			    if (!empty($ConfigFile)) {
 				    $xml = \JFusion\Framework::getXml($ConfigFile, false);
 			    }

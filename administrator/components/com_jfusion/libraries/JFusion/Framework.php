@@ -854,4 +854,54 @@ class Framework
 
 		return substr($randomStr, 0, $length);
 	}
+
+	/**
+	 * @static
+	 * @param $url
+	 *
+	 * @return bool|string|array
+	 */
+	public static function getFileData($url)
+	{
+		ob_start();
+		if (function_exists('curl_init')) {
+			//curl is the preferred function
+			$crl = curl_init();
+			curl_setopt($crl, CURLOPT_URL, $url);
+			curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, 5);
+			curl_setopt($crl, CURLOPT_TIMEOUT, 20);
+			$FileData = curl_exec($crl);
+			$FileInfo = curl_getinfo($crl);
+			curl_close($crl);
+			if ($FileInfo['http_code'] != 200) {
+				//there was an error
+				Framework::raiseWarning($FileInfo['http_code'] . ' error for file:' . $url);
+				$FileData = false;
+			}
+		} else {
+			//see if we can use fopen to get file
+			$fopen_check = ini_get('allow_url_fopen');
+			if (!empty($fopen_check)) {
+				$FileData = file_get_contents($url);
+			} else {
+				Framework::raiseWarning(Text::_('CURL_DISABLED'));
+				$FileData = false;
+			}
+		}
+		ob_end_clean();
+		return $FileData;
+	}
+
+	/**
+	 * @static
+	 *
+	 * @return string
+	 */
+	public static function getNodeID()
+	{
+		$params = Factory::getConfig();
+		$url = $params->get('url');
+		return strtolower(rtrim(parse_url($url, PHP_URL_HOST) . parse_url($url, PHP_URL_PATH), '/'));
+	}
 }

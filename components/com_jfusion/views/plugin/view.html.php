@@ -73,13 +73,13 @@ class jfusionViewPlugin extends JViewLegacy {
 
         $data = JFusionFrameless::initData($this->jname);
 
-        $JFusionPlugin = \JFusion\Factory::getFront($data->jname);
+	    $platform = \JFusion\Factory::getPlayform('Joomla', $data->jname);
 
-	    if (!$JFusionPlugin->isConfigured()) {
+	    if (!$platform->isConfigured()) {
 		    throw new RuntimeException($data->jname . ' ' . JText::_('NOT_FOUND'));
 	    }
 
-        $url = $JFusionPlugin->getWrapperURL($data);
+        $url = $platform->getWrapperURL($data);
 
         //set params
         $this->url = $url;

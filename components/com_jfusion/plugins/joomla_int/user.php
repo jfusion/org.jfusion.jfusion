@@ -23,7 +23,7 @@ use JFusion\Plugin\Plugin_User;
 
 
 use \Exception;
-use JRegistry;
+use Joomla\Registry\Registry;
 use JTable;
 use JUser;
 use \RuntimeException;
@@ -47,6 +47,8 @@ jimport('joomla.user.helper');
  */
 class User extends Plugin_User
 {
+	private $fireUserPlugins = true;
+
 	/**
 	 * gets the userinfo from the JFusion integrated software. Definition of object:
 	 *
@@ -60,7 +62,7 @@ class User extends Plugin_User
 		try {
 			$db = Factory::getDatabase($this->getJname());
 
-			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
+			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'id');
 
 			$query = $db->getQuery(true)
 				->select('id as userid, activation, username, name, password, email, block, params')
@@ -107,7 +109,7 @@ class User extends Plugin_User
 				}
 
 				// Get the language of the user and store it as variable in the user object
-				$user_params = new JRegistry($result->params);
+				$user_params = new Registry($result->params);
 
 				$result->language = $user_params->get('language', Factory::getLanguage()->getTag());
 
@@ -162,11 +164,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUsername(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//generate the filtered integration username
 		$db = Factory::getDatabase($this->getJname());
@@ -201,11 +202,10 @@ class User extends Plugin_User
 	 * Function that creates a new user account
 	 *
 	 * @param Userinfo $userinfo Object containing the new userinfo
-	 * @param array  &$status  Array containing the errors and result of the function
 	 *
 	 * @throws RuntimeException
 	 */
-	public function createUser(Userinfo $userinfo, &$status)
+	public function createUser(Userinfo $userinfo)
 	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		//get the default user group and determine if we are using simple or advanced
@@ -308,15 +308,17 @@ class User extends Plugin_User
 
 				//update the user's group to the correct group if they are an admin
 				if ($isadmin) {
-					$this->updateUsergroup($userinfo, $createdUser, $status, false);
+					$this->fireUserPlugins = false;
+					$this->updateUsergroup($userinfo, $createdUser);
+					$this->fireUserPlugins = true;
 				}
 
 				//check to see if the user exists now
 				$joomla_user = $this->getUser($userinfo);
 				if ($joomla_user) {
 					//report back success
-					$this->debugger->set('userinfo', $joomla_user);
 					$this->debugger->add('debug', Text::_('USER_CREATION'));
+					$this->debugger->set('userinfo', $joomla_user);
 				} else {
 					throw new RuntimeException(Text::_('COULD_NOT_CREATE_USER'));
 				}
@@ -340,7 +342,7 @@ class User extends Plugin_User
 	     */
 
         //get the database ready
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
         //setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
         $username = $userinfo->username;
@@ -441,7 +443,7 @@ class User extends Plugin_User
 
 				        // Update the user related fields for the Joomla sessions table.
 				        try {
-					        $db = JFactory::getDBO();
+					        $db = Factory::getDBO();
 
 					        $query = $db->getQuery(true)
 						        ->update('#__session')
@@ -488,9 +490,9 @@ class User extends Plugin_User
 		    $options['clientid'] = array($options['clientid']);
 		}
 
-	    if ($userinfo->id) {
-		    $my = JFactory::getUser();
-		    if ($my->id == $userinfo->id) {
+	    if ($userinfo->userid) {
+		    $my = \JFactory::getUser();
+		    if ($my->id == $userinfo->userid) {
 			    // Hit the user last visit field
 			    $my->setLastVisit();
 			    // Destroy the php session for this user
@@ -498,7 +500,7 @@ class User extends Plugin_User
 		    }
 		    //destroy the Joomla session but do so directly based on what $options is
 		    $table = JTable::getInstance('session');
-		    $table->destroy($userinfo->id, $options['clientid']);
+		    $table->destroy($userinfo->userid, $options['clientid']);
 	    }
         return array();
     }
@@ -508,12 +510,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo          Object containing the new userinfo
 	 * @param Userinfo &$existinguser     Object containing the old userinfo
-	 * @param array  &$status           Array containing the errors and result of the function
-	 * @param bool   $fire_user_plugins needs more detail
 	 *
 	 * @throws RuntimeException
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status, $fire_user_plugins = true)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		//make sure the group exists
@@ -525,7 +525,7 @@ class User extends Plugin_User
 
 			jimport('joomla.user.helper');
 
-			if ($fire_user_plugins) {
+			if ($this->fireUserPlugins) {
 				// Get the old user
 				$old = new JUser($existinguser->userid);
 				//Fire the onBeforeStoreUser event.
@@ -536,9 +536,7 @@ class User extends Plugin_User
 			$query = $db->getQuery(true)
 				->delete('#__user_usergroup_map')
 				->where('user_id = ' . $db->quote($existinguser->userid));
-
 			$db->setQuery($query);
-
 			$db->execute();
 
 			foreach ($usergroups as $group) {
@@ -549,7 +547,7 @@ class User extends Plugin_User
 				$db->insertObject('#__user_usergroup_map', $temp);
 			}
 			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups));
-			if ($fire_user_plugins) {
+			if ($this->fireUserPlugins) {
 				//Fire the onAfterStoreUser event
 				$updated = new JUser($existinguser->userid);
 				$dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
@@ -562,11 +560,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateEmail(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$db = Factory::getDatabase($this->getJname());
 
@@ -586,12 +583,11 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @throws Exception
 	 * @return string updates are passed on into the $status array
 	 */
-	public function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updatePassword(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		if (strlen($userinfo->password_clear) > 55) {
 			throw new Exception(Text::_('JLIB_USER_ERROR_PASSWORD_TOO_LONG'));
@@ -622,11 +618,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function blockUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//block the user
 		$db = Factory::getDatabase($this->getJname());
@@ -647,11 +642,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function unblockUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//unblock the user
 		$db = Factory::getDatabase($this->getJname());
@@ -672,11 +666,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function activateUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//unblock the user
 		$db = Factory::getDatabase($this->getJname());
@@ -698,11 +691,10 @@ class User extends Plugin_User
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @return string updates are passed on into the $status array
 	 */
-	public function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		//unblock the user
 		$db = Factory::getDatabase($this->getJname());
@@ -788,7 +780,7 @@ class User extends Plugin_User
 	public function updateUserLanguage(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$db = Factory::getDatabase($this->getJname());
-		$params = new JRegistry($existinguser->params);
+		$params = new Registry($existinguser->params);
 		$params->set('language', $userinfo->language);
 
 		$query = $db->getQuery(true)

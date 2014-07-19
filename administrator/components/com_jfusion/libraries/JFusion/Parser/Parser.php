@@ -12,7 +12,8 @@
  * @link      http://www.jfusion.org
  */
 
-use Joomla\Uri\Uri;
+use JFusion\Factory;
+use Joomla\Event\Event;
 
 /**
  * Class for JFusionParse
@@ -245,13 +246,12 @@ class Parser
                 $return = $text . "\n\n";
             }
         } elseif ($tag == 'img') {
-            $joomla_url = JFusionFunction::getJoomlaURL();
-            $juri = new Uri($joomla_url);
-            $path = $juri->getPath();
-            if ($path != '/'){
-                $matches = str_replace($path, '', $matches);
-            }
-            $url = JRoute::_($joomla_url . $matches);
+	        $event = new Event('onPlatformRoute');
+	        $event->addArgument('url', $matches);
+
+	        Factory::getDispatcher()->triggerEvent($event);
+
+	        $url = $event->getArgument('url', null);
             $return = $url;
         }
         return $return;
@@ -314,6 +314,13 @@ class Parser
      */
     public function __url($matches)
     {
-    	return '[url=' . JRoute::_(JFusionFunction::getJoomlaURL() . $matches[1]) . ']' . $matches[2] . '[/url]';
+	    $event = new Event('onPlatformRoute');
+	    $event->addArgument('url', $matches[1]);
+
+	    Factory::getDispatcher()->triggerEvent($event);
+
+	    $url = $event->getArgument('url', null);
+
+    	return '[url=' . $url . ']' . $matches[2] . '[/url]';
     }
 }

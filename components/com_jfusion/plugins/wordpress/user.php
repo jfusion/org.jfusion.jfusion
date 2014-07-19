@@ -58,7 +58,7 @@ class User extends Plugin_User
 	    $user = null;
 	    try {
 		    //get the identifier
-		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'user_login', 'user_email', 'ID');
 		    // Get a database object
 		    $db = Factory::getDatabase($this->getJname());
 		    //make the username case insensitive
@@ -288,11 +288,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
 	    // get the encryption PHP file
 	    if (!class_exists('PasswordHashOrg')) {
 		    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
@@ -310,28 +309,26 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
 	}
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser) {
 		// not implemented in jFusion 1.x
 	}
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -343,18 +340,17 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 	}
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser) {
 		// not supported for Wordpress
 	    throw new RuntimeException('Blocking not supported by Wordpress');
 	}
@@ -362,21 +358,19 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	}
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //activate the user
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -387,17 +381,17 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+
+	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //set activation key
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -409,112 +403,108 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
-    /**
-     * @param Userinfo $userinfo
-     * @param array $status
-     *
-     * @return void
-     */
-    function createUser(Userinfo $userinfo, &$status) {
-	    try {
-		    //find out what usergroup should be used
-		    $db = Factory::getDatabase($this->getJname());
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return void
+	 */
+    function createUser(Userinfo $userinfo) {
+	    //find out what usergroup should be used
+	    $db = Factory::getDatabase($this->getJname());
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	    } else {
+		    $update_activation = $this->params->get('update_activation');
+		    $default_role_id = $usergroups[0];
+		    $default_role_name = strtolower($this->helper->getUsergroupNameWP($default_role_id));
+		    $default_role = array();
+		    $default_role[$default_role_name] = 1;
+
+		    $default_userlevel = $this->helper->WP_userlevel_from_role(0, $default_role_name);
+		    if (isset($userinfo->password_clear)) {
+			    //we can update the password
+			    if (!class_exists('PasswordHashOrg')) {
+				    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
+			    }
+			    $t_hasher = new PasswordHashOrg(8, true);
+			    $user_password = $t_hasher->HashPassword($userinfo->password_clear);
+			    unset($t_hasher);
 		    } else {
-			    $update_activation = $this->params->get('update_activation');
-			    $default_role_id = $usergroups[0];
-			    $default_role_name = strtolower($this->helper->getUsergroupNameWP($default_role_id));
-			    $default_role = array();
-			    $default_role[$default_role_name] = 1;
-
-			    $default_userlevel = $this->helper->WP_userlevel_from_role(0, $default_role_name);
-			    if (isset($userinfo->password_clear)) {
-				    //we can update the password
-				    if (!class_exists('PasswordHashOrg')) {
-					    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
-				    }
-				    $t_hasher = new PasswordHashOrg(8, true);
-				    $user_password = $t_hasher->HashPassword($userinfo->password_clear);
-				    unset($t_hasher);
-			    } else {
-				    $user_password = $userinfo->password;
-			    }
-			    if (!empty($userinfo->activation) && $update_activation) {
-				    $user_activation_key = $userinfo->activation;
-			    } else {
-				    $user_activation_key = '';
-			    }
-
-			    //prepare the variables
-			    $user = new stdClass;
-			    $user->ID = null;
-			    $user->user_login = $this->filterUsername($userinfo->username);
-			    $user->user_pass = $user_password;
-			    $user->user_nicename = strtolower($userinfo->username);
-			    $user->user_email = strtolower($userinfo->email);
-			    $user->user_url = '';
-			    $user->user_registered = date('Y-m-d H:i:s', time()); // seems WP has a switch to use GMT. Could not find that
-			    $user->user_activation_key = $user_activation_key;
-			    $user->user_status = 0;
-			    $user->display_name = $userinfo->username;
-			    //now append the new user data
-			    $db->insertObject('#__users', $user, 'ID');
-
-			    // get new ID
-			    $user_id = $db->insertid();
-
-			    // have to set user metadata
-			    $metadata = array();
-
-			    $parts = explode(' ', $userinfo->name);
-			    $metadata['first_name'] = trim($parts[0]);
-			    if ($parts[(count($parts) - 1) ]) {
-				    for ($i = 1;$i < (count($parts));$i++) {
-					    if (isset($metadata['last_name'])) {
-						    $metadata['last_name'] .= ' ' . trim($parts[$i]);
-					    } else {
-						    $metadata['last_name'] = trim($parts[$i]);
-					    }
-				    }
-			    }
-
-			    $database_prefix = $this->params->get('database_prefix');
-
-			    $metadata['nickname'] = $userinfo->username;
-			    $metadata['description'] = '';
-			    $metadata['rich_editing'] = 'true';
-			    $metadata['comment_shortcuts'] = 'false';
-			    $metadata['admin_color'] = 'fresh';
-			    $metadata['use_ssl'] = '0';
-			    $metadata['aim'] = '';
-			    $metadata['yim'] = '';
-			    $metadata['jabber'] = '';
-			    $metadata[$database_prefix . 'capabilities'] = serialize($default_role);
-			    $metadata[$database_prefix . 'user_level'] = sprintf('%u', $default_userlevel);
-			    //		$metadata['default_password_nag'] = '0'; //no nag! can be omitted
-
-			    $meta = new stdClass;
-			    $meta->umeta_id = null;
-			    $meta->user_id = $user_id;
-
-			    $keys=array_keys($metadata);
-			    foreach($keys as $key){
-				    $meta->meta_key = $key;
-				    $meta->meta_value = $metadata[$key];
-				    $meta->umeta_id = null;
-				    $db->insertObject('#__usermeta', $meta, 'umeta_id');
-			    }
-			    //return the good news
-			    $status['userinfo'] = $this->getUser($userinfo);
-			    $status['debug'][] = Text::_('USER_CREATION');
+			    $user_password = $userinfo->password;
 		    }
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('USER_CREATION_ERROR') . $e->getMessage();
+		    if (!empty($userinfo->activation) && $update_activation) {
+			    $user_activation_key = $userinfo->activation;
+		    } else {
+			    $user_activation_key = '';
+		    }
+
+		    //prepare the variables
+		    $user = new stdClass;
+		    $user->ID = null;
+		    $user->user_login = $this->filterUsername($userinfo->username);
+		    $user->user_pass = $user_password;
+		    $user->user_nicename = strtolower($userinfo->username);
+		    $user->user_email = strtolower($userinfo->email);
+		    $user->user_url = '';
+		    $user->user_registered = date('Y-m-d H:i:s', time()); // seems WP has a switch to use GMT. Could not find that
+		    $user->user_activation_key = $user_activation_key;
+		    $user->user_status = 0;
+		    $user->display_name = $userinfo->username;
+		    //now append the new user data
+		    $db->insertObject('#__users', $user, 'ID');
+
+		    // get new ID
+		    $user_id = $db->insertid();
+
+		    // have to set user metadata
+		    $metadata = array();
+
+		    $parts = explode(' ', $userinfo->name);
+		    $metadata['first_name'] = trim($parts[0]);
+		    if ($parts[(count($parts) - 1) ]) {
+			    for ($i = 1;$i < (count($parts));$i++) {
+				    if (isset($metadata['last_name'])) {
+					    $metadata['last_name'] .= ' ' . trim($parts[$i]);
+				    } else {
+					    $metadata['last_name'] = trim($parts[$i]);
+				    }
+			    }
+		    }
+
+		    $database_prefix = $this->params->get('database_prefix');
+
+		    $metadata['nickname'] = $userinfo->username;
+		    $metadata['description'] = '';
+		    $metadata['rich_editing'] = 'true';
+		    $metadata['comment_shortcuts'] = 'false';
+		    $metadata['admin_color'] = 'fresh';
+		    $metadata['use_ssl'] = '0';
+		    $metadata['aim'] = '';
+		    $metadata['yim'] = '';
+		    $metadata['jabber'] = '';
+		    $metadata[$database_prefix . 'capabilities'] = serialize($default_role);
+		    $metadata[$database_prefix . 'user_level'] = sprintf('%u', $default_userlevel);
+		    //		$metadata['default_password_nag'] = '0'; //no nag! can be omitted
+
+		    $meta = new stdClass;
+		    $meta->umeta_id = null;
+		    $meta->user_id = $user_id;
+
+		    $keys=array_keys($metadata);
+		    foreach($keys as $key){
+			    $meta->meta_key = $key;
+			    $meta->meta_value = $metadata[$key];
+			    $meta->umeta_id = null;
+			    $db->insertObject('#__usermeta', $meta, 'umeta_id');
+		    }
+		    //return the good news
+		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
 	}
 
@@ -643,12 +633,12 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
+	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
@@ -674,7 +664,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
+			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
 		}
 	}
 }

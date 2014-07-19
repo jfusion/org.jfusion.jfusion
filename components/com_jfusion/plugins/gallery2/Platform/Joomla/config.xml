@@ -9,7 +9,7 @@
                     <option value="0">HIDE</option>
                     <option value="1">SHOW</option>
                 </field>
-                <field name="show_templateList" default="" type="JFusionCustomParam" label="Gallery Template" description="Gallery Template"/>
+                <field name="platform.showTemplateList" default="" type="JFusionCustomParam" label="Gallery Template" description="Gallery Template"/>
             </fieldset>
         </fields>
     </form>

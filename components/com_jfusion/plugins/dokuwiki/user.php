@@ -52,7 +52,8 @@ class JFusionUser_dokuwiki extends Plugin_User
     function updateUser(Userinfo $userinfo, $overwrite = 0) {
         // Initialise some variables
         $userinfo->username = $this->filterUsername($userinfo->username);
-        $status = array('error' => array(), 'debug' => array());
+	    $status = array('error' => array(), 'debug' => array());
+	    $this->debugger->set(null, $status);
         //check to see if a valid $userinfo object was passed on
 	    try {
 		    if (!is_object($userinfo)) {
@@ -63,37 +64,37 @@ class JFusionUser_dokuwiki extends Plugin_User
 			    if (!empty($existinguser)) {
 				    $changes = array();
 				    //a matching user has been found
-				    $status['debug'][] = Text::_('USER_DATA_FOUND');
+				    $this->debugger->add('debug', Text::_('USER_DATA_FOUND'));
 				    if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
-					    $status['debug'][] = Text::_('EMAIL_CONFLICT');
+					    $this->debugger->add('debug', Text::_('EMAIL_CONFLICT'));
 					    $update_email = $this->params->get('update_email', false);
 					    if ($update_email || $overwrite) {
-						    $status['debug'][] = Text::_('EMAIL_CONFLICT_OVERWITE_ENABLED');
+						    $this->debugger->add('debug', Text::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
 						    $changes['mail'] = $userinfo->email;
-						    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+						    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 					    } else {
 						    //return a email conflict
-						    $status['debug'][] = Text::_('EMAIL_CONFLICT_OVERWITE_DISABLED');
-						    $status['userinfo'] = $existinguser;
+						    $this->debugger->add('debug', Text::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
+						    $this->debugger->set('userinfo', $existinguser);
 						    throw new RuntimeException(Text::_('EMAIL') . ' ' . Text::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 					    }
 				    }
 				    if ($existinguser->name != $userinfo->name) {
 					    $changes['name'] = $userinfo->name;
 				    } else {
-					    $status['debug'][] = Text::_('SKIPPED_NAME_UPDATE');
+					    $this->debugger->add('debug', Text::_('SKIPPED_NAME_UPDATE'));
 				    }
 				    if (isset($userinfo->password_clear) && strlen($userinfo->password_clear)) {
 					    if (!$this->helper->auth->verifyPassword($userinfo->password_clear, $existinguser->password)) {
 						    // add password_clear to existinguser for the Joomla helper routines
 						    $existinguser->password_clear = $userinfo->password_clear;
 						    $changes['pass'] = $userinfo->password_clear;
-						    $status['debug'][] = Text::_('PASSWORD_UPDATE')  . ': ' . substr($userinfo->password_clear, 0, 6) . '********';
+						    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE')  . ': ' . substr($userinfo->password_clear, 0, 6) . '********');
 					    } else {
-						    $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_VALID');
+						    $this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_VALID'));
 					    }
 				    } else {
-					    $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE');
+					    $this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE'));
 				    }
 				    //check for advanced usergroup sync
 
@@ -103,7 +104,7 @@ class JFusionUser_dokuwiki extends Plugin_User
 						    if (!$this->compareUserGroups($existinguser, $usergroups)) {
 							    $changes['grps'] = $usergroups;
 						    } else {
-							    $status['debug'][] = Text::_('SKIPPED_GROUP_UPDATE') . ': ' . Text::_('GROUP_VALID');
+							    $this->debugger->add('debug', Text::_('SKIPPED_GROUP_UPDATE') . ': ' . Text::_('GROUP_VALID'));
 						    }
 					    } else {
 						    throw new RuntimeException(Text::_('GROUP_UPDATE_ERROR') . ': ' . Text::_('USERGROUP_MISSING'));
@@ -114,20 +115,22 @@ class JFusionUser_dokuwiki extends Plugin_User
 						    throw new RuntimeException('ERROR: Updating ' . $userinfo->username);
 					    }
 				    }
-				    $status['userinfo'] = $existinguser;
-				    $status['action'] = 'updated';
+
+				    $this->debugger->set('userinfo', $existinguser);
+				    $this->debugger->set('action', 'updated');
 			    } else {
-				    $status['debug'][] = Text::_('NO_USER_FOUND_CREATING_ONE');
+				    $this->debugger->add('debug', Text::_('NO_USER_FOUND_CREATING_ONE'));
 				    $this->createUser($userinfo, $status);
-				    if (empty($status['error'])) {
-					    $status['action'] = 'created';
+				    if ($this->debugger->isEmpty('error')) {
+					    $this->debugger->set('action', 'created');
 				    }
 			    }
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = $e->getMessage();
+		    $this->debugger->add('error', $e->getMessage());
 	    }
-        return $status;
+	    $status = $this->debugger->get();
+	    return $status;
     }
 
     /**
@@ -183,9 +186,9 @@ class JFusionUser_dokuwiki extends Plugin_User
         $user[$username] = $username;
 
         if (!$this->helper->auth->deleteUsers($user)) {
-            $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . 'No User Deleted';
+            $status['error'][] = Text::_('USER_DELETION_ERROR') . ': ' . $username;
         } else {
-            $status['debug'][] = Text::_('USER_DELETION') . ' ' . $username;
+            $status['debug'][] = Text::_('USER_DELETION') . ': ' . $username;
         }
         return $status;
     }
@@ -262,72 +265,65 @@ class JFusionUser_dokuwiki extends Plugin_User
         return strtolower($username);
     }
 
-    /**
-     * @param Userinfo $userinfo
-     * @param array &$status
-     *
-     * @return void
-     */
-    function createUser(Userinfo $userinfo, &$status) {
-	    try {
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws RuntimeException
+	 * @return void
+	 */
+    function createUser(Userinfo $userinfo) {
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	    } else {
+		    if (isset($userinfo->password_clear)) {
+			    $pass = $userinfo->password_clear;
 		    } else {
-			    if (isset($userinfo->password_clear)) {
-				    $pass = $userinfo->password_clear;
-			    } else {
-				    $pass = $userinfo->password;
-			    }
-			    $userinfo->username = $this->filterUsername($userinfo->username);
-
-			    $usergroup = explode(',', $usergroups[0]);
-			    if (!count($usergroup)) $usergroup = null;
-
-			    //now append the new user data
-			    if (!$this->helper->auth->createUser($userinfo->username, $pass, $userinfo->name, $userinfo->email, $usergroup)) {
-				    //return the error
-					throw new RuntimeException();
-			    }
-			    //return the good news
-			    $status['debug'][] = Text::_('USER_CREATION');
-			    $status['userinfo'] = $this->getUser($userinfo);
+			    $pass = $userinfo->password;
 		    }
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
+		    $userinfo->username = $this->filterUsername($userinfo->username);
+
+		    $usergroup = explode(',', $usergroups[0]);
+		    if (!count($usergroup)) $usergroup = null;
+
+		    //now append the new user data
+		    if (!$this->helper->auth->createUser($userinfo->username, $pass, $userinfo->name, $userinfo->email, $usergroup)) {
+			    //return the error
+			    throw new RuntimeException();
+		    }
+		    //return the good news;
+		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser)
     {
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser)
     {
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
     {
     }
 }

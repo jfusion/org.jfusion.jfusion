@@ -60,7 +60,7 @@ class User extends Plugin_User
 	    try {
 		    //get the identifier
 
-		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, null, 'email', 'userid');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, null, 'email', 'id_customer');
 
 		    // Get user info from database
 		    $db = Factory::getDatabase($this->getJname());
@@ -171,11 +171,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
 	    $this->helper->loadFramework();
 
 	    $existinguser->password = Tools::encrypt($userinfo->password_clear);
@@ -190,126 +189,122 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 
 	    $db->execute();
-	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+
+	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
-    /**
-     * @param Userinfo $userinfo
-     * @param array $status
-     *
-     * @return void
-     */
-    function createUser(Userinfo $userinfo, &$status) {
-	    try {
-		    $db = Factory::getDatabase($this->getJname());
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return void
+	 */
+    function createUser(Userinfo $userinfo) {
+	    $db = Factory::getDatabase($this->getJname());
 
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    throw new RuntimeException('USERGROUP_MISSING');
-		    } else {
-			    $this->helper->loadFramework();
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException('USERGROUP_MISSING');
+	    } else {
+		    $this->helper->loadFramework();
 
-			    $source_path = $this->params->get('source_path');
+		    $source_path = $this->params->get('source_path');
 
-			    /* split full name into first and with/or without middlename, and lastname */
-			    $usernames = explode(' ', $userinfo->name);
+		    /* split full name into first and with/or without middlename, and lastname */
+		    $usernames = explode(' ', $userinfo->name);
 
-			    $firstname = $usernames[0];
-			    $lastname = '';
-			    if (count($usernames)) {
-				    $lastname = $usernames[count($usernames)-1];
-			    }
-
-			    if (isset($userinfo->password_clear)) {
-				    $password = Tools::encrypt($userinfo->password_clear);
-			    } else {
-				    $password = $userinfo->password;
-			    }
-
-			    if (!Validate::isName($firstname)) {
-				    throw new RuntimeException(Tools::displayError('first name wrong'));
-			    } elseif (!Validate::isName($lastname)) {
-				    throw new RuntimeException(Tools::displayError('second name wrong'));
-			    } elseif (!Validate::isEmail($userinfo->email)) {
-				    throw new RuntimeException(Tools::displayError('e-mail not valid'));
-			    } elseif (!Validate::isPasswd($password)) {
-				    throw new RuntimeException(Tools::displayError('invalid password'));
-			    } else {
-				    $now = date('Y-m-d h:m:s');
-				    $ps_customer = new stdClass;
-				    $ps_customer->id_customer = null;
-				    $ps_customer->id_gender = 1;
-				    $ps_customer->id_default_group = $usergroups[0];
-				    $ps_customer->secure_key = md5(uniqid(rand(), true));
-				    $ps_customer->email = $userinfo->email;
-				    $ps_customer->passwd = $password;
-				    $ps_customer->last_passwd_gen = date('Y-m-d h:m:s', strtotime('-6 hours'));
-				    $ps_customer->birthday = date('Y-m-d', mktime(0, 0, 0, '01', '01', '2000'));
-				    $ps_customer->lastname = $lastname;
-				    $ps_customer->newsletter = 0;
-				    $ps_customer->ip_registration_newsletter = $_SERVER['REMOTE_ADDR'];
-				    $ps_customer->optin = 0;
-				    $ps_customer->firstname = $firstname;
-				    $ps_customer->active = 1;
-				    $ps_customer->deleted = 0;
-				    $ps_customer->date_add = $now;
-				    $ps_customer->date_upd = $now;
-
-				    /* enter customer account into prestashop database */ // if all information is validated
-				    $db->insertObject('#__customer', $ps_customer, 'id_customer');
-
-				    // enter customer group into database
-				    $ps_address = new stdClass;
-				    $ps_address->id_customer = $ps_customer->id_customer;
-				    $ps_address->id_address = null;
-				    $ps_address->id_country = 17;
-				    $ps_address->id_state = 0;
-				    $ps_address->id_manufacturer = 0;
-				    $ps_address->id_supplier = 0;
-				    $ps_address->alias = 'My address';
-				    $ps_address->company = '';
-				    $ps_address->lastname = $lastname;
-				    $ps_address->firstname = $firstname;
-				    $ps_address->address1 = 'Update with your real address';
-				    $ps_address->address2 = '';
-				    $ps_address->postcode = 'Postcode';
-				    $ps_address->city = 'Not known';
-				    $ps_address->other = '';
-				    $ps_address->phone = '';
-				    $ps_address->phone_mobile = '';
-				    $ps_address->date_add = $now;
-				    $ps_address->date_upd = $now;
-				    $ps_address->active = 1;
-				    $ps_address->deleted = 0;
-
-				    $usergroups = $this->getCorrectUserGroups($userinfo);
-
-				    foreach($usergroups as $value) {
-					    $ps_customer_group = new stdClass;
-					    $ps_customer_group->id_customer = $ps_customer->id_customer;
-					    $ps_customer_group->id_group = $value;
-					    $db->insertObject('#__customer_group', $ps_customer_group);
-				    }
-
-				    $db->insertObject('#__address', $ps_address);
-
-				    $status['debug'][] = Text::_('USER_CREATION');
-				    $status['userinfo'] = $this->getUser($userinfo);
-			    }
+		    $firstname = $usernames[0];
+		    $lastname = '';
+		    if (count($usernames)) {
+			    $lastname = $usernames[count($usernames)-1];
 		    }
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('USER_CREATION_ERROR') . ' ' . $e->getMessage();
+
+		    if (isset($userinfo->password_clear)) {
+			    $password = Tools::encrypt($userinfo->password_clear);
+		    } else {
+			    $password = $userinfo->password;
+		    }
+
+		    if (!Validate::isName($firstname)) {
+			    throw new RuntimeException(Tools::displayError('first name wrong'));
+		    } elseif (!Validate::isName($lastname)) {
+			    throw new RuntimeException(Tools::displayError('second name wrong'));
+		    } elseif (!Validate::isEmail($userinfo->email)) {
+			    throw new RuntimeException(Tools::displayError('e-mail not valid'));
+		    } elseif (!Validate::isPasswd($password)) {
+			    throw new RuntimeException(Tools::displayError('invalid password'));
+		    } else {
+			    $now = date('Y-m-d h:m:s');
+			    $ps_customer = new stdClass;
+			    $ps_customer->id_customer = null;
+			    $ps_customer->id_gender = 1;
+			    $ps_customer->id_default_group = $usergroups[0];
+			    $ps_customer->secure_key = md5(uniqid(rand(), true));
+			    $ps_customer->email = $userinfo->email;
+			    $ps_customer->passwd = $password;
+			    $ps_customer->last_passwd_gen = date('Y-m-d h:m:s', strtotime('-6 hours'));
+			    $ps_customer->birthday = date('Y-m-d', mktime(0, 0, 0, '01', '01', '2000'));
+			    $ps_customer->lastname = $lastname;
+			    $ps_customer->newsletter = 0;
+			    $ps_customer->ip_registration_newsletter = $_SERVER['REMOTE_ADDR'];
+			    $ps_customer->optin = 0;
+			    $ps_customer->firstname = $firstname;
+			    $ps_customer->active = 1;
+			    $ps_customer->deleted = 0;
+			    $ps_customer->date_add = $now;
+			    $ps_customer->date_upd = $now;
+
+			    /* enter customer account into prestashop database */ // if all information is validated
+			    $db->insertObject('#__customer', $ps_customer, 'id_customer');
+
+			    // enter customer group into database
+			    $ps_address = new stdClass;
+			    $ps_address->id_customer = $ps_customer->id_customer;
+			    $ps_address->id_address = null;
+			    $ps_address->id_country = 17;
+			    $ps_address->id_state = 0;
+			    $ps_address->id_manufacturer = 0;
+			    $ps_address->id_supplier = 0;
+			    $ps_address->alias = 'My address';
+			    $ps_address->company = '';
+			    $ps_address->lastname = $lastname;
+			    $ps_address->firstname = $firstname;
+			    $ps_address->address1 = 'Update with your real address';
+			    $ps_address->address2 = '';
+			    $ps_address->postcode = 'Postcode';
+			    $ps_address->city = 'Not known';
+			    $ps_address->other = '';
+			    $ps_address->phone = '';
+			    $ps_address->phone_mobile = '';
+			    $ps_address->date_add = $now;
+			    $ps_address->date_upd = $now;
+			    $ps_address->active = 1;
+			    $ps_address->deleted = 0;
+
+			    $usergroups = $this->getCorrectUserGroups($userinfo);
+
+			    foreach($usergroups as $value) {
+				    $ps_customer_group = new stdClass;
+				    $ps_customer_group->id_customer = $ps_customer->id_customer;
+				    $ps_customer_group->id_group = $value;
+				    $db->insertObject('#__customer_group', $ps_customer_group);
+			    }
+
+			    $db->insertObject('#__address', $ps_address);
+
+			    $this->debugger->add('debug', Text::_('USER_CREATION'));
+			    $this->debugger->set('userinfo', $this->getUser($userinfo));
+		    }
 	    }
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser) {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -321,17 +316,16 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    /* change the 'active' field of the customer in the ps_customer table to 1 */
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -343,17 +337,16 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 	    /* change the 'active' field of the customer in the ps_customer table to 0 */
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -365,18 +358,18 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
+	{
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
 			throw new RuntimeException(Text::_('USERGROUP_MISSING'));
@@ -405,7 +398,8 @@ class User extends Plugin_User
 				$group->id_group = $value;
 				$db->insertObject('#__customer_group', $group);
 			}
-			$status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
+
+			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
 		}
     }
 }

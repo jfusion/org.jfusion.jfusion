@@ -121,6 +121,17 @@ class JFusionFrameless {
 		$data->bodymap = $JFusionParam->get('bodymap', $JFusionParam->get('bodymap'));
 		$data->headermap = $JFusionParam->get('headermap', $JFusionParam->get('headermap'));
 
+
+		$css = new stdClass();
+
+		$css->sourcepath = JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
+		$css->url = 'components/com_jfusion/css/';
+
+		$css->files = array();
+		$css->media = array();
+
+		$data->css = $css;
+
 		return $data;
 	}
 
@@ -144,11 +155,11 @@ class JFusionFrameless {
 
 		if (!$data->isPlugin) {
 			require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php');
-			$JFusionPlugin = new \JFusion\Plugin\Plugin_Front(null);
+			$platform = \JFusion\Factory::getPlayform('Joomla', null);
 		} else {
-			$JFusionPlugin = \JFusion\Factory::getFront($data->jname);
+			$platform = \JFusion\Factory::getPlayform('Joomla', $data->jname);
 
-			if (!$JFusionPlugin->isConfigured()) {
+			if (!$platform->isConfigured()) {
 				throw new RuntimeException($data->jname . ' ' . JText::_('NOT_FOUND'));
 			}
 
@@ -180,8 +191,8 @@ class JFusionFrameless {
 
 		$REQUEST = $_REQUEST; // backup variables
 
-		$JFusionPlugin->data = $data;
-		$JFusionPlugin->getBuffer($data);
+		$platform->data = $data;
+		$platform->getBuffer($data);
 
 		$_REQUEST = $REQUEST; // restore backup
 
@@ -210,7 +221,7 @@ class JFusionFrameless {
 		$backtrack_limit = ini_get ('pcre.backtrack_limit');
 		ini_set('pcre.backtrack_limit', strlen($data->buffer) * 2);
 
-		$JFusionPlugin->parseBuffer($data);
+		$platform->parseBuffer($data);
 
 		// Check if we found something
 		if (!strlen($data->header) || !strlen($data->body)) {
@@ -269,7 +280,7 @@ class JFusionFrameless {
 				//remove above set meta data from software's header
 				$data->header = preg_replace($regex_header, $replace_header, $data->header);
 
-				$JFusionPlugin->parseHeader($data);
+				$platform->parseHeader($data);
 
 				if ($data->default_css) {
 					$document->addStyleSheet(JUri::base() . '/components/com_jfusion/css/default.css');
@@ -281,11 +292,11 @@ class JFusionFrameless {
 					$data->style = '';
 				}
 
-				$JFusionPlugin->parseCSS($data, $data->header);
+				$platform->parseCSS($data, $data->header);
 
 				$document->addCustomTag($data->header);
 
-				$pathway = $JFusionPlugin->getPathWay();
+				$pathway = $platform->getPathWay();
 				if (is_array($pathway)) {
 					$breadcrumbs = $mainframe->getPathWay();
 					foreach ($pathway as $path) {
@@ -296,15 +307,18 @@ class JFusionFrameless {
 
 			// Output the body
 			if (isset($data->body)) {
-				$JFusionPlugin->parseCSS($data, $data->body, true);
+				$platform->parseCSS($data, $data->body, true);
 
 				// parse the URL's'
-				$JFusionPlugin->parseBody($data);
+				$platform->parseBody($data);
+			}
+
+			foreach($data->css->files as $key => $file) {
+				$document->addStyleSheet($file, 'text/css', $data->css->media[$key]);
 			}
 
 			//set the base href (commented out by mariusvr as this caused errors for people using IE)
 			//$document->setBase($$baseURL_backup);
-
 
 			//restore the backtrack_limit
 			ini_set('pcre.backtrack_limit', $backtrack_limit);

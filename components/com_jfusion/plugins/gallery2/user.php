@@ -303,12 +303,12 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo &$existinguser
-	 * @param array  &$status
 	 *
 	 * @throws RuntimeException
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
+	{
 	    $this->helper->loadGallery2Api(false);
         $usergroups = $this->getCorrectUserGroups($userinfo);
         if (empty($usergroups)) {
@@ -330,7 +330,7 @@ class User extends Plugin_User
                     }
                 }
             }
-            $status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups);
+	        $this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
         }
         GalleryEmbed::done();
     }
@@ -338,11 +338,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
         /**
          * @ignore
          * @var $user GalleryUser
@@ -355,7 +354,7 @@ class User extends Plugin_User
         //Set Write Lock
         list($ret,) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
-            $status['error'][] = $ret->getErrorMessage();
+	        $this->debugger->add('error', $ret->getErrorMessage());
         }
         //Check Password
         $changed = false;
@@ -365,15 +364,15 @@ class User extends Plugin_User
 	            $user->setHashedPassword($testcrypt);
                 $changed = true;
             } else {
-                $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_VALID');
+	            $this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_VALID'));
             }
         } else {
-            $status['debug'][] = Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE');
+	        $this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE'));
         }
         if ($changed) {
             $ret = $user->save();
             if ($ret) {
-                $status['error'][] = $ret->getErrorMessage();
+	            $this->debugger->add('error', $ret->getErrorMessage());
             }
         }
         GalleryEmbed::done();
@@ -382,11 +381,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo &$existinguser
-     * @param array &$status
      *
      * @return void
      */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser) {
 	    /**
 	     * @ignore
 	     * @var $user GalleryUser
@@ -399,14 +397,14 @@ class User extends Plugin_User
         //Set Write Lock
         list($ret,) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
-            $status['error'][] = $ret->getErrorMessage();
+	        $this->debugger->add('error', $ret->getErrorMessage());
         } else {
             //Set new Email
 	        $user->setEmail($userinfo->email);
             //Save to DB
             $ret = $user->save();
             if ($ret) {
-                $status['error'][] = $ret->getErrorMessage();
+	            $this->debugger->add('error', $ret->getErrorMessage());
             }
         }
         GalleryEmbed::done();

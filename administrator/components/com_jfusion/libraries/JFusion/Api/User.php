@@ -1,5 +1,6 @@
 <?php namespace JFusion\Api;
 use JFusion\Factory;
+use JFusion\User\Userinfo;
 
 /**
  *
@@ -13,7 +14,13 @@ class User extends Base {
 		$plugin = isset($this->payload['plugin']) ? $this->payload['plugin'] : 'joomla_int';
 
 		$userPlugin = Factory::getUser($plugin);
-		return $userPlugin->getUser($this->payload['username']);
+		$userinfo = $this->payload['username'];
+		if ($userinfo instanceof Userinfo) {
+			$userinfo = $userPlugin->getUser($this->payload['username']);
+		} else {
+			$userinfo = null;
+		}
+		return $userinfo;
 	}
 
 	/**

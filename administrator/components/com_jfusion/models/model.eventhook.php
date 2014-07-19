@@ -471,6 +471,31 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 	}
 
 	/**
+	 * used for platform route url
+	 *
+	 * @param   Event $event
+	 *
+	 * @return  Event
+	 */
+	function onPlatformRoute($event)
+	{
+		// TODO: Implement onPlatformRoute() method.
+		$url = $event->getArgument('url', null);
+
+		if ($url) {
+			$joomla_url = JFusionFunction::getJoomlaURL();
+			$juri = new JUri($joomla_url);
+			$path = $juri->getPath();
+			if ($path != '/') {
+				$url = str_replace($path, '', $url);
+			}
+			$url = JRoute::_($joomla_url . $url);
+
+			$event->setArgument('url', $url);
+		}
+	}
+
+	/**
 	 * get default url
 	 *
 	 * @param Event $event

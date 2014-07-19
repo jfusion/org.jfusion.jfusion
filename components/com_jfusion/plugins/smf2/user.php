@@ -37,7 +37,7 @@ class User extends Plugin_User
 	    $user = null;
 	    try {
 		    //get the identifier
-		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.member_name', 'a.email_address', 'userid');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.member_name', 'a.email_address', 'a.id_member');
 
 		    // initialise some objects
 		    $db = Factory::getDatabase($this->getJname());
@@ -220,11 +220,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updatePassword(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $existinguser->password = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
 	    $existinguser->password_salt = substr(md5(rand()), 0, 4);
@@ -240,17 +239,17 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 
 	    $db->execute();
-	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+
+	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updateUsername(Userinfo $userinfo, Userinfo &$existinguser)
     {
 
     }
@@ -258,11 +257,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function updateEmail(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    //we need to update the email
 	    $db = Factory::getDatabase($this->getJname());
@@ -275,20 +273,19 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
 	/**
 	 * @param Userinfo $userinfo      holds the new user data
 	 * @param Userinfo &$existinguser holds the existing user data
-	 * @param array  &$status       Status array
 	 *
 	 * @throws RuntimeException
 	 * @access public
 	 *
 	 * @return void
 	 */
-	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    //get the usergroup and determine if working in advanced or simple mode
 
@@ -327,18 +324,17 @@ class User extends Plugin_User
 		    $existinggroups = $existinguser->groups;
 		    $existinggroups[] = $existinguser->group_id;
 
-		    $status['debug'][] = Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinggroups) . ' -> ' . implode(' , ', $groups);
+			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinggroups) . ' -> ' . implode(' , ', $groups));
 	    }
     }
 
 	/**
 	 * @param Userinfo &$userinfo
 	 * @param Userinfo &$existinguser
-	 * @param array &$status
 	 *
 	 * @return bool
 	 */
-	function executeUpdateUsergroup(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+	function executeUpdateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
 	{
 		$update_groups = false;
 		$usergroups = $this->getCorrectUserGroups($userinfo);
@@ -365,7 +361,7 @@ class User extends Plugin_User
 		}
 
 		if ($update_groups) {
-			$this->updateUsergroup($userinfo, $existinguser, $status);
+			$this->updateUsergroup($userinfo, $existinguser);
 		}
 
 		return $update_groups;
@@ -374,11 +370,10 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function blockUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $db = Factory::getDatabase($this->getJname());
 	    $ban = new stdClass;
@@ -396,24 +391,24 @@ class User extends Plugin_User
 	    try {
 		    $db->insertObject('#__ban_groups', $ban, 'id_ban_group' );
 	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+		    $this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage());
 	    }
 
 	    $ban_item = new stdClass;
 	    $ban_item->id_ban_group = $ban->id_ban_group;
 	    $ban_item->id_member = $existinguser->userid;
 	    $db->insertObject('#__ban_items', $ban_item, 'id_ban' );
-	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+
+	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function unblockUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -431,17 +426,16 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function activateUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -454,17 +448,16 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
      * @param Userinfo $userinfo
      * @param Userinfo $existinguser
-     * @param array $status
      *
      * @return void
      */
-    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status)
+    function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
 	    $db = Factory::getDatabase($this->getJname());
 
@@ -477,105 +470,101 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
-    /**
-     * @param Userinfo $userinfo
-     * @param array $status
-     *
-     * @return void
-     */
-    function createUser(Userinfo $userinfo, &$status)
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return void
+	 */
+    function createUser(Userinfo $userinfo)
     {
-	    try {
-		    //we need to create a new SMF user
-		    $db = Factory::getDatabase($this->getJname());
+	    //we need to create a new SMF user
+	    $db = Factory::getDatabase($this->getJname());
 
-		    $usergroups = $this->getCorrectUserGroups($userinfo);
-		    if (empty($usergroups)) {
-			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	    } else {
+		    $usergroup = $usergroups[0];
+
+		    if (!isset($usergroup->groups)) {
+			    $usergroup->groups = array();
+		    }
+
+		    //prepare the user variables
+		    $user = new stdClass;
+		    $user->id_member = NULL;
+		    $user->member_name = $userinfo->username;
+		    $user->real_name = $userinfo->name;
+		    $user->email_address = $userinfo->email;
+
+		    if (isset($userinfo->password_clear)) {
+			    $user->passwd = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
+			    $user->password_salt = substr(md5(rand()), 0, 4);
 		    } else {
-			    $usergroup = $usergroups[0];
+			    $user->passwd = $userinfo->password;
 
-			    if (!isset($usergroup->groups)) {
-				    $usergroup->groups = array();
-			    }
-
-			    //prepare the user variables
-			    $user = new stdClass;
-			    $user->id_member = NULL;
-			    $user->member_name = $userinfo->username;
-			    $user->real_name = $userinfo->name;
-			    $user->email_address = $userinfo->email;
-
-			    if (isset($userinfo->password_clear)) {
-				    $user->passwd = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
+			    if (!isset($userinfo->password_salt)) {
 				    $user->password_salt = substr(md5(rand()), 0, 4);
 			    } else {
-				    $user->passwd = $userinfo->password;
-
-				    if (!isset($userinfo->password_salt)) {
-					    $user->password_salt = substr(md5(rand()), 0, 4);
-				    } else {
-					    $user->password_salt = $userinfo->password_salt;
-				    }
+				    $user->password_salt = $userinfo->password_salt;
 			    }
-
-			    $user->posts = 0 ;
-			    $user->date_registered = time();
-
-			    if ($userinfo->activation){
-				    $user->is_activated = 0;
-				    $user->validation_code = $userinfo->activation;
-			    } else {
-				    $user->is_activated = 1;
-				    $user->validation_code = '';
-			    }
-
-			    $user->personal_text = '';
-			    $user->pm_email_notify = 1;
-			    $user->hide_email = 1;
-			    $user->id_theme = 0;
-
-			    $user->id_group = $usergroup->defaultgroup;
-			    $user->additional_groups = join(',', $usergroup->groups);
-			    $user->id_post_group = $usergroup->postgroup;
-
-			    //now append the new user data
-			    $db->insertObject('#__members', $user, 'id_member' );
-
-			    //update the stats
-
-			    $query = $db->getQuery(true)
-				    ->update('#__settings')
-				    ->set('value = value + 1')
-				    ->where('variable = ' . $db->quote('totalMembers'));
-
-			    $db->setQuery($query);
-			    $db->execute();
-
-			    $date = strftime('%Y-%m-%d');
-
-			    $query = $db->getQuery(true)
-				    ->update('#__log_activity')
-				    ->set('registers = registers + 1')
-				    ->where('date = ' . $db->quote($date));
-
-
-			    $db->setQuery($query);
-			    $db->execute();
-
-			    $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $user->id_member . '), (\'latestRealName\', ' . $db->quote($userinfo->name) . ')';
-			    $db->setQuery($query);
-			    $db->execute();
-
-			    //return the good news
-			    $status['debug'][] = Text::_('USER_CREATION');
-			    $status['userinfo'] = $this->getUser($userinfo);
 		    }
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
+
+		    $user->posts = 0 ;
+		    $user->date_registered = time();
+
+		    if ($userinfo->activation){
+			    $user->is_activated = 0;
+			    $user->validation_code = $userinfo->activation;
+		    } else {
+			    $user->is_activated = 1;
+			    $user->validation_code = '';
+		    }
+
+		    $user->personal_text = '';
+		    $user->pm_email_notify = 1;
+		    $user->hide_email = 1;
+		    $user->id_theme = 0;
+
+		    $user->id_group = $usergroup->defaultgroup;
+		    $user->additional_groups = join(',', $usergroup->groups);
+		    $user->id_post_group = $usergroup->postgroup;
+
+		    //now append the new user data
+		    $db->insertObject('#__members', $user, 'id_member' );
+
+		    //update the stats
+
+		    $query = $db->getQuery(true)
+			    ->update('#__settings')
+			    ->set('value = value + 1')
+			    ->where('variable = ' . $db->quote('totalMembers'));
+
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $date = strftime('%Y-%m-%d');
+
+		    $query = $db->getQuery(true)
+			    ->update('#__log_activity')
+			    ->set('registers = registers + 1')
+			    ->where('date = ' . $db->quote($date));
+
+
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $user->id_member . '), (\'latestRealName\', ' . $db->quote($userinfo->name) . ')';
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    //return the good news
+		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
     }
 

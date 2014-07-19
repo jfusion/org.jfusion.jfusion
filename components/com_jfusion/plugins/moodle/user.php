@@ -135,7 +135,7 @@ class User extends Plugin_User
 		try {
 			$db = Factory::getDatabase($this->getJname());
 			//get the identifier
-			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'userid');
+			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'id');
 
 			$query = $db->getQuery(true)
 				->select('*, id as userid')
@@ -276,14 +276,11 @@ class User extends Plugin_User
 
 	/**
 	 * Function that updates the user password
-	 * $status['error'] (contains any error messages)
-	 * $status['debug'] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
 		if ($this->params->get('passwordsaltmain')) {
 			$existinguser->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));
 		} else {
@@ -299,34 +296,26 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+		$this->debugger->add('debug', Text::_('PASSWORD_UPDATE')  . ': ' . substr($existinguser->password, 0, 6) . '********');
 	}
 
 	/**
 	 * Function that updates the username
-	 * $status['error'] (contains any error messages)
-	 * $status['debug'] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 *
-	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function updateUsername(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function updateUsername(Userinfo $userinfo, Userinfo &$existinguser) {
 		// not implemented in jFusion 1.x
 	}
 
 	/**
 	 * Function that updates the user email address
-	 * $status['error'] (contains any error messages)
-	 * $status['debug'] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 *
-	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function updateEmail(Userinfo $userinfo, Userinfo &$existinguser) {
 		//TODO ? check for duplicates, or leave it at db error
 		//we need to update the email
 		$db = Factory::getDatabase($this->getJname());
@@ -339,21 +328,18 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+		$this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 	}
 
 	/**
 	 * Function that updates the blocks the user account
-	 * $status['error'] (contains any error messages)
-	 * $status['debug'] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @throws RuntimeException
 	 */
-	function blockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function blockUser(Userinfo $userinfo, Userinfo &$existinguser) {
 		$db = Factory::getDatabase($this->getJname());
 		$query = $db->getQuery(true)
 			->select('value')
@@ -370,7 +356,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+			$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 		} else {
 			throw new RuntimeException(Text::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET'));
 		}
@@ -378,16 +364,13 @@ class User extends Plugin_User
 
 	/**
 	 * Function that unblocks the user account
-	 * $status['error'] (contains any error messages)
-	 * $status['debug'] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 *
 	 * @throws RuntimeException
 	 */
-	function unblockUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function unblockUser(Userinfo $userinfo, Userinfo &$existinguser) {
 		$db = Factory::getDatabase($this->getJname());
 		$query = $db->getQuery(true)
 			->select('value')
@@ -405,7 +388,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$status['debug'][] = Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+			$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 		} else {
 			throw new RuntimeException(Text::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET'));
 		}
@@ -413,14 +396,11 @@ class User extends Plugin_User
 
 	/**
 	 * Function that activates the users account
-	 * $status['error'] (contains any error messages)
-	 * $status['debug'] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function activateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function activateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 		//activate the user
 		$db = Factory::getDatabase($this->getJname());
 
@@ -432,19 +412,16 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
 	 * Function that inactivates the users account
-	 * $status['error'] (contains any error messages)
-	 * $status['debug'] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo      Object containing the new userinfo
 	 * @param Userinfo &$existinguser Object containing the old userinfo
-	 * @param array  &$status       Array containing the errors and result of the function
 	 */
-	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser, &$status) {
+	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 		$db = Factory::getDatabase($this->getJname());
 
 		$query = $db->getQuery(true)
@@ -455,153 +432,148 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
 	 * Function that creates a new user account
-	 * $status['error'] (contains any error messages)
-	 * $status['debug'] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo Object containing the new userinfo
-	 * @param array  &$status  Array containing the errors and result of the function
+	 *
+	 * @throws \RuntimeException
 	 * @return void
 	 */
-	function createUser(Userinfo $userinfo, &$status) {
-		try {
-			// first find out if the user already exists, but with deleted flag set
-			$db = Factory::getDatabase($this->getJname());
-			//get the identifier
-			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'id');
+	function createUser(Userinfo $userinfo) {
+		// first find out if the user already exists, but with deleted flag set
+		$db = Factory::getDatabase($this->getJname());
+		//get the identifier
+		list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email', 'id');
 
+		$query = $db->getQuery(true)
+			->select('*')
+			->from('#__user')
+			->where($identifier_type . ' = ' . $db->quote($identifier));
+
+		$db->setQuery($query);
+		$result = $db->loadObject();
+		if ($result) {
+			//We have a record, probably with the deleted flag set.
+			// Thus for Moodle internal working we need to use this record and resurrect the user
 			$query = $db->getQuery(true)
-				->select('*')
-				->from('#__user')
-				->where($identifier_type . ' = ' . $db->quote($identifier));
-
+				->update('#__user')
+				->set('deleted = 0')
+				->where('id = ' . $db->quote($result->id));
 			$db->setQuery($query);
-			$result = $db->loadObject();
-			if ($result) {
-				//We have a record, probably with the deleted flag set.
-				// Thus for Moodle internal working we need to use this record and resurrect the user
-				$query = $db->getQuery(true)
-					->update('#__user')
-					->set('deleted = 0')
-					->where('id = ' . $db->quote($result->id));
-				$db->setQuery($query);
-				$db->execute();
+			$db->execute();
+		} else {
+			//find out what usergroup should be used
+			$db = Factory::getDatabase($this->getJname());
+
+			$usergroups = $this->getCorrectUserGroups($userinfo);
+			if (empty($usergroups)) {
+				throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
 			} else {
-				//find out what usergroup should be used
-				$db = Factory::getDatabase($this->getJname());
+				// get some config items
+				$query = $db->getQuery(true)
+					->select('value')
+					->from('#__config')
+					->where('name = ' . $db->quote('mnet_localhost_id'));
 
-				$usergroups = $this->getCorrectUserGroups($userinfo);
-				if (empty($usergroups)) {
-					throw new RuntimeException(Text::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
+				$db->setQuery($query);
+				$mnet_localhost_id = $db->loadResult();
+
+				$query = $db->getQuery(true)
+					->select('value')
+					->from('#__config')
+					->where('name = ' . $db->quote('lang'));
+
+				$db->setQuery($query);
+				$lang = $db->loadResult();
+
+				$query = $db->getQuery(true)
+					->select('value')
+					->from('#__config')
+					->where('name = ' . $db->quote('country'));
+
+				$db->setQuery($query);
+				$country = $db->loadResult();
+
+				//prepare the variables
+				$user = new stdClass;
+				$user->id = null;
+				$user->auth = 'manual';
+				if ($userinfo->activation) {
+					$user->confirmed = 0;
 				} else {
-					// get some config items
-					$query = $db->getQuery(true)
-						->select('value')
-						->from('#__config')
-						->where('name = ' . $db->quote('mnet_localhost_id'));
-
-					$db->setQuery($query);
-					$mnet_localhost_id = $db->loadResult();
-
-					$query = $db->getQuery(true)
-						->select('value')
-						->from('#__config')
-						->where('name = ' . $db->quote('lang'));
-
-					$db->setQuery($query);
-					$lang = $db->loadResult();
-
-					$query = $db->getQuery(true)
-						->select('value')
-						->from('#__config')
-						->where('name = ' . $db->quote('country'));
-
-					$db->setQuery($query);
-					$country = $db->loadResult();
-
-					//prepare the variables
-					$user = new stdClass;
-					$user->id = null;
-					$user->auth = 'manual';
-					if ($userinfo->activation) {
-						$user->confirmed = 0;
-					} else {
-						$user->confirmed = 1;
-					}
-					$user->policyagreed = !$userinfo->block; // just write, true doesn't harm
-					$user->deleted = 0;
-					$user->mnethostid = $mnet_localhost_id;
-					$user->username = $userinfo->username;
-					if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-						if ($this->params->get('passwordsaltmain')) {
-							$user->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));
-						} else {
-							$user->password = md5($userinfo->password_clear);
-						}
-					} else {
-						if (!empty($userinfo->password_salt)) {
-							$user->password = $userinfo->password . ':' . $userinfo->password_salt;
-						} else {
-							$user->password = $userinfo->password;
-						}
-					}
-					// $user->idnumber= ??
-					$parts = explode(' ', $userinfo->name);
-					$user->firstname = trim($parts[0]);
-					$lastname = '';
-					if ($parts[(count($parts) - 1) ]) {
-						for ($i = 1;$i < (count($parts));$i++) {
-							if (!empty($lastname)) {
-								$lastname = $lastname . ' ' . $parts[$i];
-							} else {
-								$lastname = $parts[$i];
-							}
-
-						}
-					}
-					$user->lastname = trim($lastname);
-					$user->email = strtolower($userinfo->email);
-					$user->country = $country;
-					$user->lang = $lang;
-					$user->firstaccess = time();
-					$user->timemodified = time();
-					//now append the new user data
-					$db->insertObject('#__user', $user, 'id');
-
-					// get new ID
-					$userid = $db->insertid();
-					// have to set user preferences
-					$user_1 = new stdClass;
-					$user_1->id = null;
-					$user_1->userid = $userid;
-					$user_1->name = 'auth_forcepasswordchange';
-					$user_1->value = 0;
-					$db->insertObject('#__user_preferences', $user_1, 'id');
-
-					$user_1->id = null;
-					$user_1->userid = $userid;
-					$user_1->name = 'email_bounce_count';
-					$user_1->value = 1;
-					$db->insertObject('#__user_preferences', $user_1, 'id');
-
-					$user_1->id = null;
-					$user_1->userid = $userid;
-					$user_1->name = 'email_send_count';
-					$user_1->value = 1;
-					$db->insertObject('#__user_preferences', $user_1, 'id');
+					$user->confirmed = 1;
 				}
-			}
+				$user->policyagreed = !$userinfo->block; // just write, true doesn't harm
+				$user->deleted = 0;
+				$user->mnethostid = $mnet_localhost_id;
+				$user->username = $userinfo->username;
+				if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
+					if ($this->params->get('passwordsaltmain')) {
+						$user->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));
+					} else {
+						$user->password = md5($userinfo->password_clear);
+					}
+				} else {
+					if (!empty($userinfo->password_salt)) {
+						$user->password = $userinfo->password . ':' . $userinfo->password_salt;
+					} else {
+						$user->password = $userinfo->password;
+					}
+				}
+				// $user->idnumber= ??
+				$parts = explode(' ', $userinfo->name);
+				$user->firstname = trim($parts[0]);
+				$lastname = '';
+				if ($parts[(count($parts) - 1) ]) {
+					for ($i = 1;$i < (count($parts));$i++) {
+						if (!empty($lastname)) {
+							$lastname = $lastname . ' ' . $parts[$i];
+						} else {
+							$lastname = $parts[$i];
+						}
 
-			//return the good news
-			$status['userinfo'] = $this->getUser($userinfo);
-			$status['debug'][] = Text::_('USER_CREATION');
-		} catch (Exception $e) {
-			$status['error'][] = Text::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
+					}
+				}
+				$user->lastname = trim($lastname);
+				$user->email = strtolower($userinfo->email);
+				$user->country = $country;
+				$user->lang = $lang;
+				$user->firstaccess = time();
+				$user->timemodified = time();
+				//now append the new user data
+				$db->insertObject('#__user', $user, 'id');
+
+				// get new ID
+				$userid = $db->insertid();
+				// have to set user preferences
+				$user_1 = new stdClass;
+				$user_1->id = null;
+				$user_1->userid = $userid;
+				$user_1->name = 'auth_forcepasswordchange';
+				$user_1->value = 0;
+				$db->insertObject('#__user_preferences', $user_1, 'id');
+
+				$user_1->id = null;
+				$user_1->userid = $userid;
+				$user_1->name = 'email_bounce_count';
+				$user_1->value = 1;
+				$db->insertObject('#__user_preferences', $user_1, 'id');
+
+				$user_1->id = null;
+				$user_1->userid = $userid;
+				$user_1->name = 'email_send_count';
+				$user_1->value = 1;
+				$db->insertObject('#__user_preferences', $user_1, 'id');
+			}
 		}
+
+		//return the good news
+		$this->debugger->set('userinfo', $this->getUser($userinfo));
+		$this->debugger->add('debug', Text::_('USER_CREATION'));
 	}
 
 	/**
@@ -636,8 +608,10 @@ class User extends Plugin_User
 		}
 		return $status;
 	}
+
 	/*
-	public function updateUsergroup($userinfo, &$existinguser, &$status, $jname) {
+	public function updateUsergroup($userinfo, &$existinguser)
+	{
 		Moodles groupings depend on the course. In the current implementation you can map groups FROM moodles
 		roles to usertype. because of the connection between courses, roles and groups the reverse is (not yet) possible.
 		We have to come up with a way to handle this

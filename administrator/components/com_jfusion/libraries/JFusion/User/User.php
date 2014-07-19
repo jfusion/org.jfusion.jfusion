@@ -118,15 +118,15 @@ class User
 					//other auth plugin enabled get the userinfo again
 					//temp userinfo to see if the user exists in the master
 
-					$auth_userinfo = new Userinfo('joomla_int');
-					$auth_userinfo->username = $credentials['username'];
-					$auth_userinfo->email = $credentials['email'];
-					$auth_userinfo->password_clear = $credentials['password'];
-					$auth_userinfo->name = $credentials['fullname'];
+					$authUserinfo = new Userinfo('joomla_int');
+					$authUserinfo->username = $credentials['username'];
+					$authUserinfo->email = $credentials['email'];
+					$authUserinfo->password_clear = $credentials['password'];
+					$authUserinfo->name = $credentials['fullname'];
 
 					//get the userinfo for real
 					try {
-						$userinfo = $MasterUserPlugin->getUser($auth_userinfo);
+						$userinfo = $MasterUserPlugin->getUser($authUserinfo);
 					} catch (Exception $e) {
 						$userinfo = null;
 					}
@@ -140,7 +140,7 @@ class User
 								$debugger->add('init', Text::_('CREATING_MASTER_USER'));
 								$status = array('error' => array(), 'debug' => array());
 								//try to create a Master user
-								$MasterUserPlugin->createUser($auth_userinfo, $status);
+								$MasterUserPlugin->createUser($authUserinfo, $status);
 								$MasterUserPlugin->mergeStatus($status);
 								$status = $MasterUserPlugin->debugger->get();
 
@@ -150,7 +150,7 @@ class User
 									if (!empty($status['userinfo'])) {
 										$userinfo = $status['userinfo'];
 									} else {
-										$userinfo = $MasterUserPlugin->getUser($auth_userinfo);
+										$userinfo = $MasterUserPlugin->getUser($authUserinfo);
 									}
 
 									$debugger->add('init', Text::_('MASTER') . ' ' . Text::_('USER') . ' ' . Text::_('CREATE') . ' ' . Text::_('SUCCESS'));
@@ -331,7 +331,6 @@ class User
 		global $JFusionActive;
 		$JFusionActive = true;
 
-
 		if (!isset($options['skipplugin'])) {
 			$options['skipplugin'] = array();
 		}
@@ -361,32 +360,37 @@ class User
 				$JFusionMaster = Factory::getUser($master->name);
 				$userlookup = $JFusionMaster->lookupUser($userinfo);
 				$debugger->set('userlookup', $userlookup);
-				$MasterUser = $JFusionMaster->getUser($userlookup);
-				if (isset($options['show_unsensored'])) {
-					$details = $MasterUser->toObject();
-				} else {
-					$details = $MasterUser->getAnonymizeed();
-				}
-				$debugger->set('masteruser', $details);
-
-				//check if a user was found
-				if (!empty($MasterUser)) {
+				if ($userlookup instanceof Userinfo) {
+					$details = null;
 					try {
-						$MasterSession = $JFusionMaster->destroySession($MasterUser, $options);
-						if (!empty($MasterSession['error'])) {
-							Framework::raise('error', $MasterSession['error'], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
-						}
-						if (!empty($MasterSession['debug'])) {
-							$debugger->set($master->name . ' logout', $MasterSession['debug']);
-						}
+						$MasterUser = $JFusionMaster->getUser($userlookup);
 					} catch (Exception $e) {
-						Framework::raiseError($e, $JFusionMaster->getJname());
+						$MasterUser = null;
 					}
-				} else {
-					Framework::raise('notice', Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $master->name);
+					if ($MasterUser instanceof Userinfo) {
+						if (isset($options['show_unsensored'])) {
+							$details = $MasterUser->toObject();
+						} else {
+							$details = $MasterUser->getAnonymizeed();
+						}
+
+						try {
+							$MasterSession = $JFusionMaster->destroySession($MasterUser, $options);
+							if (!empty($MasterSession['error'])) {
+								Framework::raise('error', $MasterSession['error'], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
+							}
+							if (!empty($MasterSession['debug'])) {
+								$debugger->set($master->name . ' logout', $MasterSession['debug']);
+							}
+						} catch (Exception $e) {
+							Framework::raiseError($e, $JFusionMaster->getJname());
+						}
+					} else {
+						Framework::raise('notice', Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $master->name);
+					}
+					$debugger->set('masteruser', $details);
 				}
 			}
-
 
 			$slaves = Factory::getPlugins('slave');
 			foreach ($slaves as $slave) {
@@ -395,35 +399,37 @@ class User
 					if ($slave->dual_login == 1) {
 						$JFusionSlave = Factory::getUser($slave->name);
 						$userlookup = $JFusionSlave->lookupUser($userinfo);
-						try {
-							$SlaveUser = $JFusionSlave->getUser($userlookup);
-						} catch (Exception $e) {
-							$SlaveUser = null;
-						}
-						if (isset($options['show_unsensored'])) {
-							$info = $SlaveUser->toObject();
-						} else {
-							$info = $SlaveUser->getAnonymizeed();
-						}
-
-						$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('DETAILS') , $info);
-
-						//check if a user was found
-						if ($SlaveUser) {
-							$SlaveSession = array();
+						if ($userlookup instanceof Userinfo) {
+							$info = null;
 							try {
-								$SlaveSession = $JFusionSlave->destroySession($SlaveUser, $options);
-								if (!empty($SlaveSession['error'])) {
-									Framework::raise('error', $SlaveSession['error'], $slave->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
-								}
-								if (!empty($SlaveSession['debug'])) {
-									$debugger->set($slave->name . ' logout', $SlaveSession['debug']);
-								}
+								$SlaveUser = $JFusionSlave->getUser($userlookup);
 							} catch (Exception $e) {
-								Framework::raiseError($e, $JFusionSlave->getJname());
+								$SlaveUser = null;
 							}
-						} else {
-							Framework::raise('notice', Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $slave->name);
+							if ($SlaveUser instanceof Userinfo) {
+								if (isset($options['show_unsensored'])) {
+									$info = $SlaveUser->toObject();
+								} else {
+									$info = $SlaveUser->getAnonymizeed();
+								}
+
+								$SlaveSession = array();
+								try {
+									$SlaveSession = $JFusionSlave->destroySession($SlaveUser, $options);
+									if (!empty($SlaveSession['error'])) {
+										Framework::raise('error', $SlaveSession['error'], $slave->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
+									}
+									if (!empty($SlaveSession['debug'])) {
+										$debugger->set($slave->name . ' logout', $SlaveSession['debug']);
+									}
+								} catch (Exception $e) {
+									Framework::raiseError($e, $JFusionSlave->getJname());
+								}
+							} else {
+								Framework::raise('notice', Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $slave->name);
+							}
+
+							$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('DETAILS') , $info);
 						}
 					}
 				}
