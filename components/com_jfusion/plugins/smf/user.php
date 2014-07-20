@@ -124,69 +124,66 @@ class User extends Plugin_User
         return $user;
     }
 
-    /**
-     * delete user
-     *
-     * @param Userinfo $userinfo holds the new user data
-     *
-     * @access public
-     *
-     * @return array
-     */
+	/**
+	 * delete user
+	 *
+	 * @param Userinfo $userinfo holds the new user data
+	 *
+	 * @throws \RuntimeException
+	 * @access public
+	 *
+	 * @return array
+	 */
     function deleteUser(Userinfo $userinfo)
     {
-	    try {
-	        //setup status array to hold debug info and errors
-	        $status = array('error' => array(), 'debug' => array());
-	        $db = Factory::getDatabase($this->getJname());
+	    //setup status array to hold debug info and errors
+	    $status = array('error' => array(), 'debug' => array());
+	    $db = Factory::getDatabase($this->getJname());
 
+	    $query = $db->getQuery(true)
+		    ->delete('#__members')
+		    ->where('memberName = ' . $db->quote($userinfo->username));
+
+	    $db->setQuery($query);
+	    $db->execute();
+
+	    //update the stats
+	    $query = $db->getQuery(true)
+		    ->update('#__settings')
+		    ->set('value = value - 1')
+		    ->where('variable = ' . $db->quote('totalMembers'));
+
+	    $db->setQuery($query);
+	    $db->execute();
+
+	    $query = $db->getQuery(true)
+		    ->select('MAX(ID_MEMBER) as ID_MEMBER')
+		    ->from('#__members')
+		    ->where('is_activated = 1');
+
+	    $db->setQuery($query);
+	    $resultID = $db->loadObject();
+	    if (!$resultID) {
+		    //return the error
+		    throw new RuntimeException($userinfo->username);
+	    } else {
 		    $query = $db->getQuery(true)
-			    ->delete('#__members')
-			    ->where('memberName = ' . $db->quote($userinfo->username));
-
-	        $db->setQuery($query);
-		    $db->execute();
-
-		    //update the stats
-		    $query = $db->getQuery(true)
-			    ->update('#__settings')
-			    ->set('value = value - 1')
-			    ->where('variable = ' . $db->quote('totalMembers'));
-
-		    $db->setQuery($query);
-		    $db->execute();
-
-		    $query = $db->getQuery(true)
-			    ->select('MAX(ID_MEMBER) as ID_MEMBER')
+			    ->select('realName as name')
 			    ->from('#__members')
-			    ->where('is_activated = 1');
+			    ->where('ID_MEMBER = ' . $db->quote($resultID->ID_MEMBER));
 
-		    $db->setQuery($query);
-		    $resultID = $db->loadObject();
-		    if (!$resultID) {
+		    $db->setQuery($query, 0 , 1);
+		    $resultName = $db->loadObject();
+		    if (!$resultName) {
 			    //return the error
-			    $status['error'][] = Text::_('USER_DELETION_ERROR');
+			    throw new RuntimeException($userinfo->username);
 		    } else {
-			    $query = $db->getQuery(true)
-				    ->select('realName as name')
-				    ->from('#__members')
-				    ->where('ID_MEMBER = ' . $db->quote($resultID->ID_MEMBER));
+			    $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $resultID->ID_MEMBER . '), (\'latestRealName\', ' . $db->quote($resultName->name) . ')';
+			    $db->setQuery($query);
+			    $db->execute();
 
-			    $db->setQuery($query, 0 , 1);
-			    $resultName = $db->loadObject();
-			    if (!$resultName) {
-				    //return the error
-				    $status['error'][] = Text::_('USER_DELETION_ERROR');
-			    } else {
-				    $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $resultID->ID_MEMBER . '), (\'latestRealName\', ' . $db->quote($resultName->name) . ')';
-				    $db->setQuery($query);
-				    $db->execute();
-
-				    $status['debug'][] = Text::_('USER_DELETION') . ' ' . $userinfo->username;
-			    }
+			    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 		    }
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $e->getMessage();
 	    }
         return $status;
     }

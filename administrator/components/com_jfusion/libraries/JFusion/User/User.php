@@ -465,23 +465,20 @@ class User
 				$JFusionMaster = Factory::getUser($master->name);
 				try {
 					$MasterUser = $JFusionMaster->getUser($userinfo);
-				} catch (Exception $e) {
-					$MasterUser = null;
-				}
-				if ($MasterUser) {
-					try {
+
+					if ($MasterUser instanceof Userinfo) {
 						$status = $JFusionMaster->deleteUser($MasterUser);
 						if (!empty($status['error'])) {
-							$error_info[$master->name . ' ' . Text::_('ERROR') ] = $status['error'];
+							$error_info[$master->name . ' ' . Text::_('USER_DELETION_ERROR') ] = $status['error'];
 						}
 						if (!empty($status['debug'])) {
 							$debug_info[$master->name] = $status['debug'];
 						}
-					} catch (Exception $e) {
-						$error_info[$master->name . ' ' . Text::_('ERROR') ] = $e->getMessage();
+					} else {
+						$debug_info[$master->name] = Text::_('NO_USER_DATA_FOUND');
 					}
-				} else {
-					$debug_info[$master->name] = Text::_('NO_USER_DATA_FOUND');
+				} catch (Exception $e) {
+					$error_info[$master->name . ' ' . Text::_('USER_DELETION_ERROR') ] = $e->getMessage();
 				}
 			} else {
 				$debug_info[$master->name] = Text::_('DELETE_DISABLED');
@@ -494,27 +491,22 @@ class User
 				$deleteEnabled = $params->get('allow_delete_users', 0);
 				if ($deleteEnabled) {
 					$JFusionSlave = Factory::getUser($slave->name);
-
 					try {
 						$SlaveUser = $JFusionSlave->getUser($userinfo);
-					} catch (Exception $e) {
-						$SlaveUser = null;
-					}
 
-					if ($SlaveUser) {
-						try {
+						if ($SlaveUser instanceof Userinfo) {
 							$status = $JFusionSlave->deleteUser($SlaveUser);
 							if (!empty($status['error'])) {
-								$error_info[$slave->name . ' ' . Text::_('ERROR') ] = $status['error'];
+								$error_info[$slave->name . ' ' . Text::_('USER_DELETION_ERROR') ] = $status['error'];
 							}
 							if (!empty($status['debug'])) {
 								$debug_info[$slave->name] = $status['debug'];
 							}
-						} catch (Exception $e) {
-							$error_info[$slave->name . ' ' . Text::_('ERROR') ] = $e->getMessage();
+						} else {
+							$debug_info[$slave->name] = Text::_('NO_USER_DATA_FOUND');
 						}
-					} else {
-						$debug_info[$slave->name] = Text::_('NO_USER_DATA_FOUND');
+					} catch (Exception $e) {
+						$error_info[$slave->name . ' ' . Text::_('USER_DELETION_ERROR') ] = $e->getMessage();
 					}
 				} else {
 					$debug_info[$slave->name] = Text::_('DELETE') . ' ' . Text::_('DISABLED');

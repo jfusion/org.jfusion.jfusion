@@ -110,33 +110,30 @@ class User extends Plugin_User
 
     /**
      * @param Userinfo $userinfo
+     *
      * @return array
      */
     function deleteUser(Userinfo $userinfo) {
-	    try {
-	        //setup status array to hold debug info and errors
-	        $status = array('error' => array(), 'debug' => array());
+	    //setup status array to hold debug info and errors
+	    $status = array('error' => array(), 'debug' => array());
 
-	        $db = Factory::getDatabase($this->getJname());
+	    $db = Factory::getDatabase($this->getJname());
 
-		    $query = $db->getQuery(true)
-			    ->delete('#__user')
-			    ->where('user_name = ' .  $db->quote($userinfo->username));
+	    $query = $db->getQuery(true)
+		    ->delete('#__user')
+		    ->where('user_name = ' .  $db->quote($userinfo->username));
 
-			$db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $query = $db->getQuery(true)
-			    ->delete('#__user_groups')
-			    ->where('ug_user = ' .  $db->quote($userinfo->userid));
+	    $query = $db->getQuery(true)
+		    ->delete('#__user_groups')
+		    ->where('ug_user = ' .  $db->quote($userinfo->userid));
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = Text::_('USER_DELETION') . ' ' . $userinfo->username;
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' .  $e->getMessage();
-	    }
+	    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 		return $status;
     }
 
@@ -279,9 +276,9 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
-	 * @param array  $status
 	 *
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
+	 *
 	 * @return void
 	 */
 	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)

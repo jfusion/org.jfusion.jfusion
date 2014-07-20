@@ -668,6 +668,7 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 *
+	 * @throws \RuntimeException
 	 * @return array
 	 */
 	function deleteUser(Userinfo $userinfo) {
@@ -675,36 +676,27 @@ class User extends Plugin_User
 		$status = array('error' => array(), 'debug' => array());
 		//set the userid
 		//check to see if a valid $userinfo object was passed on
-		if (!is_object($userinfo)) {
-			$status['error'][] = Text::_('NO_USER_DATA_FOUND');
-		} else {
-			$existinguser = $this->getUser($userinfo);
-			if (!empty($existinguser)) {
-				$user_id = $existinguser->userid;
-				// this can be complicated so we are going to use the Magento customer API
-				// for the time being. Speed is not a great issue here
-				// connect to host
-				try {
-					$proxi = $this->connectToApi();
 
-					try {
-						$proxi->call('customer.delete', $user_id);
-						$status['debug'][] = 'Magento API: Delete user with id ' . $user_id . ' , email ' . $userinfo->email;
-					} catch (Soapfault $fault) {
-						/** @noinspection PhpUndefinedFieldInspection */
-						$status['error'][] = 'Magento API: Could not delete user with id ' . $user_id . ' , message: ' . $fault->faultstring;
-					}
+		$user_id = $userinfo->userid;
+		// this can be complicated so we are going to use the Magento customer API
+		// for the time being. Speed is not a great issue here
+		// connect to host
 
-					try {
-						$proxi->endSession();
-					} catch (Soapfault $fault) {
-						/** @noinspection PhpUndefinedFieldInspection */
-						$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
-					}
-				} catch (Exception $e) {
-					$status['error'][] = $e->getMessage();
-				}
-			}
+		$proxi = $this->connectToApi();
+
+		try {
+			$proxi->call('customer.delete', $userinfo->userid);
+			$status['debug'][] = 'Magento API: Delete user with id ' . $userinfo->userid . ' , email ' . $userinfo->email;
+		} catch (Soapfault $fault) {
+			/** @noinspection PhpUndefinedFieldInspection */
+			$status['error'][] = 'Magento API: Could not delete user with id ' . $userinfo->userid . ' , message: ' . $fault->faultstring;
+		}
+
+		try {
+			$proxi->endSession();
+		} catch (Soapfault $fault) {
+			/** @noinspection PhpUndefinedFieldInspection */
+			throw new RuntimeException('Magento API: Could not end this session, message: ' . $fault->faultstring);
 		}
 		return $status;
 	}

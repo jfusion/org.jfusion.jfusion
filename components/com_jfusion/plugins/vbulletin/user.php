@@ -155,9 +155,7 @@ class User extends Plugin_User
 	function deleteUser(Userinfo $userinfo)
 	{
 		//setup status array to hold debug info and errors
-		$status = array();
-		$status['debug'] = array();
-		$status['error'] = array();
+		$status = array('error' => array(), 'debug' => array());
 
 		$apidata = array('userinfo' => $userinfo);
 		$response = $this->helper->apiCall('deleteUser', $apidata);
@@ -166,7 +164,7 @@ class User extends Plugin_User
 			$status['debug'][] = Text::_('USER_DELETION') . ' ' . $userinfo->userid;
 		}
 		foreach ($response['errors'] as $error) {
-			$status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $error;
+			$status['error'][] = $error;
 		}
 		foreach ($response['debug'] as $debug) {
 			$status['debug'][] = $debug;

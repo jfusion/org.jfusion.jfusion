@@ -338,121 +338,112 @@ class User extends Plugin_User
         }
     }
 
-    /**
-     * @param Userinfo $userinfo
-     *
-     * @return array|bool
-     */
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return array|bool
+	 */
     function deleteUser(Userinfo $userinfo)
     {
         $status = array('error' => array(), 'debug' => array());
-        try {
-            $db = Factory::getDatabase($this->getJname());
-            //setup status array to hold debug info and errors
 
-            //set the userid
-            //check to see if a valid $userinfo object was passed on
-            if (!is_object($userinfo)) {
-                throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
-            }
-            $existinguser = $this->getUser($userinfo);
-            if (!empty($existinguser)) {
-                $querys = array();
-                $errors = array();
-                $debug = array();
-                $user_id = $existinguser->userid;
+	    $db = Factory::getDatabase($this->getJname());
+	    //setup status array to hold debug info and errors
 
-                // Delete userrecordosc2 & osc3 & osczen & oscxt &oscmax
-                $querys[] = $db->getQuery(true)
-                    ->delete('#__customers')
-                    ->where('customers_id = ' . $db->quote($user_id));
-                $errors[] = 'Error Could not delete userrecord with userid ' . $user_id;
-                $debug[] = 'Deleted userrecord of user with id ' . $user_id;
+	    //set the userid
+	    //check to see if a valid $userinfo object was passed on
 
-                // delete adressbook items osc2 & osc3 & osczen & oscxt & oscmax
-                $querys[] = $db->getQuery(true)
-                    ->delete('#__address_book')
-                    ->where('customers_id = ' . $db->quote($user_id));
-                $errors[] = 'Error Could not delete addressbookitems with userid ' . $user_id;
-                $debug[] = 'Deleted addressbook items of user with id ' . $user_id;
+	    $querys = array();
+	    $errors = array();
+	    $debug = array();
+	    $user_id = $userinfo->userid;
 
-                // delete customer from who's on line osc2 & osc3 & osczen & oscxt & oscmax
-                $querys[] = $db->getQuery(true)
-                    ->delete('#__whos_online')
-                    ->where('customers_id = ' . $db->quote($user_id));
-                $errors[] = 'Error Could not delete customer on line with userid ' . $user_id;
-                $debug[] = 'Deleted customer online entry of user with id ' . $user_id;
+	    // Delete userrecordosc2 & osc3 & osczen & oscxt &oscmax
+	    $querys[] = $db->getQuery(true)
+		    ->delete('#__customers')
+		    ->where('customers_id = ' . $db->quote($user_id));
+	    $errors[] = 'Error Could not delete userrecord with userid ' . $user_id;
+	    $debug[] = 'Deleted userrecord of user with id ' . $user_id;
 
-                // delete review items osc2 & osc3 &  osczen & oscxt
-                $delete_reviews = $this->params->get('delete_reviews');
-                if ($delete_reviews == '1') {
-                    try {
-                        $query = $db->getQuery(true)
-                            ->select('reviews_id')
-                            ->from('#__reviews')
-                            ->where('customers_id = ' . $db->quote((int)$user_id));
+	    // delete adressbook items osc2 & osc3 & osczen & oscxt & oscmax
+	    $querys[] = $db->getQuery(true)
+		    ->delete('#__address_book')
+		    ->where('customers_id = ' . $db->quote($user_id));
+	    $errors[] = 'Error Could not delete addressbookitems with userid ' . $user_id;
+	    $debug[] = 'Deleted addressbook items of user with id ' . $user_id;
 
-                        $db->setQuery($query);
-                        $db->execute();
-                        $reviews = $db->loadObjectList();
-                        foreach ($reviews as $review) {
-                            $db->setQuery('DELETE from #__reviews_description where reviews_id = \'' . (int)$review->reviews_id . '\'');
-                            $db->execute();
-                        }
-                    } catch (Exception $e) {
+	    // delete customer from who's on line osc2 & osc3 & osczen & oscxt & oscmax
+	    $querys[] = $db->getQuery(true)
+		    ->delete('#__whos_online')
+		    ->where('customers_id = ' . $db->quote($user_id));
+	    $errors[] = 'Error Could not delete customer on line with userid ' . $user_id;
+	    $debug[] = 'Deleted customer online entry of user with id ' . $user_id;
 
-                    }
-                    $querys[] = $db->getQuery(true)
-                        ->delete('#__reviews')
-                        ->where('customers_id = ' . (int)$user_id);
-                    $errors[] = 'Error Could not delete customer reviews with userid ' . $user_id;
-                    $debug[] = 'Deleted customer rieviews of user with id ' . $user_id;
-                } else {
-                    $querys[] = (string)$db->getQuery(true)
-                        ->update('#__reviews')
-                        ->set('customers_id = null')
-                        ->where('customers_id  = ' . $db->Quote((int)$user_id));
+	    // delete review items osc2 & osc3 &  osczen & oscxt
+	    $delete_reviews = $this->params->get('delete_reviews');
+	    if ($delete_reviews == '1') {
+		    try {
+			    $query = $db->getQuery(true)
+				    ->select('reviews_id')
+				    ->from('#__reviews')
+				    ->where('customers_id = ' . $db->quote((int)$user_id));
 
-                    $errors[] = 'Error Could not delete customer reviews with userid ' . $user_id;
-                    $debug[] = 'Deleted customer rieviews of user with id ' . $user_id;
-                }
+			    $db->setQuery($query);
+			    $db->execute();
+			    $reviews = $db->loadObjectList();
+			    foreach ($reviews as $review) {
+				    $db->setQuery('DELETE from #__reviews_description where reviews_id = \'' . (int)$review->reviews_id . '\'');
+				    $db->execute();
+			    }
+		    } catch (Exception $e) {
+		    }
 
-                // Delete user info osc2 & osczen & oscxt
-                $querys[] = $db->getQuery(true)
-                    ->delete('#__customers_info')
-                    ->where('customers_info_id = ' . $db->quote($user_id));
-                $errors[] = 'Error Could not delete useinfo with userid ' . $user_id;
-                $debug[] = 'Deleted userinfo of user with id ' . $user_id;
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__reviews')
+			    ->where('customers_id = ' . (int)$user_id);
+		    $errors[] = 'Error Could not delete customer reviews with userid ' . $user_id;
+		    $debug[] = 'Deleted customer rieviews of user with id ' . $user_id;
+	    } else {
+		    $querys[] = (string)$db->getQuery(true)
+			    ->update('#__reviews')
+			    ->set('customers_id = null')
+			    ->where('customers_id  = ' . $db->Quote((int)$user_id));
 
-                // delete  customer basket osc2 & osczen
-                $querys[] = $db->getQuery(true)
-                    ->delete('#__customers_basket')
-                    ->where('customers_id = ' . $db->quote($user_id));
-                $errors[] = 'Error Could not delete customer basket with userid ' . $user_id;
-                $debug[] = 'Deleted customer basket items of user with id ' . $user_id;
+		    $errors[] = 'Error Could not delete customer reviews with userid ' . $user_id;
+		    $debug[] = 'Deleted customer rieviews of user with id ' . $user_id;
+	    }
 
-                // delete  customer basket attributes osc2 & osczen
-                $querys[] = $db->getQuery(true)
-                    ->delete('#__customers_basket_attributes')
-                    ->where('customers_id = ' . $db->quote($user_id));
-                $errors[] = 'Error Could not delete customer basket attributes with userid ' . $user_id;
-                $debug[] = 'Deleted customer basket attributes items of user with id ' . $user_id;
+	    // Delete user info osc2 & osczen & oscxt
+	    $querys[] = $db->getQuery(true)
+		    ->delete('#__customers_info')
+		    ->where('customers_info_id = ' . $db->quote($user_id));
+	    $errors[] = 'Error Could not delete useinfo with userid ' . $user_id;
+	    $debug[] = 'Deleted userinfo of user with id ' . $user_id;
 
-                foreach ($querys as $key => $value) {
-                    try {
-                        $db->setQuery($value);
-                        $db->execute();
-                        $status['debug'][] = $debug[$key];
-                    } catch (Exception $e) {
-                        $status['error'][] = $errors[$key] . ': ' . $e->getMessage();
-                        break;
-                    }
-                }
-                return $status;
-            }
-        } catch (Exception $e) {
-            $status['error'][] = $e->getMessage();
-        }
+	    // delete  customer basket osc2 & osczen
+	    $querys[] = $db->getQuery(true)
+		    ->delete('#__customers_basket')
+		    ->where('customers_id = ' . $db->quote($user_id));
+	    $errors[] = 'Error Could not delete customer basket with userid ' . $user_id;
+	    $debug[] = 'Deleted customer basket items of user with id ' . $user_id;
+
+	    // delete  customer basket attributes osc2 & osczen
+	    $querys[] = $db->getQuery(true)
+		    ->delete('#__customers_basket_attributes')
+		    ->where('customers_id = ' . $db->quote($user_id));
+	    $errors[] = 'Error Could not delete customer basket attributes with userid ' . $user_id;
+	    $debug[] = 'Deleted customer basket attributes items of user with id ' . $user_id;
+
+	    foreach ($querys as $key => $value) {
+		    try {
+			    $db->setQuery($value);
+			    $db->execute();
+			    $status['debug'][] = $debug[$key];
+		    } catch (Exception $e) {
+			    throw new RuntimeException($errors[$key]);
+		    }
+	    }
         return $status;
     }
 

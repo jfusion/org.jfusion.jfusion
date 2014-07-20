@@ -578,34 +578,29 @@ class User extends Plugin_User
 
 	/**
 	 * Function that deletes a user account
-	 * $status['error'] (contains any error messages)
-	 * $status['debug'] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo Object containing the existing userinfo
 	 *
+	 * @throws \RuntimeException
 	 * @return array status Array containing the errors and result of the function
 	 */
 	function deleteUser(Userinfo $userinfo) {
 		$status = array('debug' => array(), 'error' => array());
-		try {
-			//setup status array to hold debug info and errors
-			if (!is_object($userinfo)) {
-				throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
-			}
-			$db = Factory::getDatabase($this->getJname());
 
-			$query = $db->getQuery(true)
-				->update('#__user')
-				->set('deleted = 1')
-				->where('id = ' . (int)$userinfo->userid);
+		//setup status array to hold debug info and errors
 
-			$db->setQuery($query);
-			$db->execute();
+		$db = Factory::getDatabase($this->getJname());
 
-			$status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;
-		} catch (Exception $e) {
-			$status['error'][] = Text::_('USER_DELETION_ERROR') . ': ' . $e->getMessage();
-		}
+		$query = $db->getQuery(true)
+			->update('#__user')
+			->set('deleted = 1')
+			->where('id = ' . (int)$userinfo->userid);
+
+		$db->setQuery($query);
+		$db->execute();
+
+		$status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;
+
 		return $status;
 	}
 

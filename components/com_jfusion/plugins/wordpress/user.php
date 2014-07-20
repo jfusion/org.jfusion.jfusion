@@ -516,41 +516,58 @@ class User extends Plugin_User
     function deleteUser(Userinfo $userinfo) {
 		//setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
-	    try {
-		    if (!is_object($userinfo)) {
-			    throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
-		    }
 
-		    $db = Factory::getDatabase($this->getJname());
-		    $reassign = $this->params->get('reassign_blogs');
-		    $reassign_to = $this->params->get('reassign_username');
-		    $user_id = $userinfo->userid;
+	    $db = Factory::getDatabase($this->getJname());
+	    $reassign = $this->params->get('reassign_blogs');
+	    $reassign_to = $this->params->get('reassign_username');
+	    $user_id = $userinfo->userid;
 
-		    // decide if we need to reassign
-		    if (($reassign == '1') && (trim($reassign_to))){
-			    // see if we have a valid user
-			    $query = $db->getQuery(true)
-				    ->select('*')
-				    ->from('#__users')
-				    ->where('user_login = ' . $db->quote($reassign_to));
+	    // decide if we need to reassign
+	    if (($reassign == '1') && (trim($reassign_to))){
+		    // see if we have a valid user
+		    $query = $db->getQuery(true)
+			    ->select('*')
+			    ->from('#__users')
+			    ->where('user_login = ' . $db->quote($reassign_to));
 
-			    $db->setQuery($query);
-			    $result = $db->loadObject();
-			    if (!$result) {
-				    $reassign = '';
-			    } else {
-				    $reassign = $result->ID;
-			    }
-		    } else {
+		    $db->setQuery($query);
+		    $result = $db->loadObject();
+		    if (!$result) {
 			    $reassign = '';
+		    } else {
+			    $reassign = $result->ID;
 		    }
+	    } else {
+		    $reassign = '';
+	    }
 
-		    // handle posts and links
-		    if ($reassign){
+	    // handle posts and links
+	    if ($reassign){
+		    $query = $db->getQuery(true)
+			    ->select('ID')
+			    ->from('#__posts')
+			    ->where('post_author = ' . $user_id);
+
+		    $db->setQuery($query);
+		    if ($db->execute()) {
+			    $results = $db->loadObjectList();
+			    if ($results) {
+				    foreach ($results as $row) {
+					    $query = $db->getQuery(true)
+						    ->update('#__posts')
+						    ->set('post_author = ' . $reassign)
+						    ->where('ID = ' . (int)$row->ID);
+
+					    $db->setQuery($query);
+					    $db->execute();
+				    }
+				    $status['debug'][] = 'Reassigned posts from user with id ' . $user_id . ' to user ' . $reassign;
+			    }
+
 			    $query = $db->getQuery(true)
-				    ->select('ID')
-				    ->from('#__posts')
-				    ->where('post_author = ' . $user_id);
+				    ->select('link_id')
+				    ->from('#__links')
+				    ->where('link_owner = ' . $user_id);
 
 			    $db->setQuery($query);
 			    if ($db->execute()) {
@@ -558,75 +575,52 @@ class User extends Plugin_User
 				    if ($results) {
 					    foreach ($results as $row) {
 						    $query = $db->getQuery(true)
-							    ->update('#__posts')
-							    ->set('post_author = ' . $reassign)
-							    ->where('ID = ' . (int)$row->ID);
+							    ->update('#__links')
+							    ->set('link_owner = ' . $reassign)
+							    ->where('link_id = ' . $row->link_id);
 
 						    $db->setQuery($query);
 						    $db->execute();
 					    }
-					    $status['debug'][] = 'Reassigned posts from user with id ' . $user_id . ' to user ' . $reassign;
-				    }
-
-				    $query = $db->getQuery(true)
-					    ->select('link_id')
-					    ->from('#__links')
-				        ->where('link_owner = ' . $user_id);
-
-				    $db->setQuery($query);
-				    if ($db->execute()) {
-					    $results = $db->loadObjectList();
-					    if ($results) {
-						    foreach ($results as $row) {
-							    $query = $db->getQuery(true)
-								    ->update('#__links')
-								    ->set('link_owner = ' . $reassign)
-								    ->where('link_id = ' . $row->link_id);
-
-							    $db->setQuery($query);
-							    $db->execute();
-						    }
-						    $status['debug'][] = 'Reassigned links from user with id ' . $user_id . ' to user ' . $reassign;
-					    }
+					    $status['debug'][] = 'Reassigned links from user with id ' . $user_id . ' to user ' . $reassign;
 				    }
 			    }
-		    } else {
-			    $query = $db->getQuery(true)
-				    ->delete('#__posts')
-				    ->where('post_author = ' . $user_id);
-
-			    $db->setQuery($query);
-			    $db->execute();
-			    $status['debug'][] = 'Deleted posts from user with id ' . $user_id;
-
-			    $query = $db->getQuery(true)
-				    ->delete('#__links')
-				    ->where('link_owner = ' . $user_id);
-
-			    $db->setQuery($query);
-			    $db->execute();
-			    $status['debug'][] = 'Deleted links from user ' . $user_id;
 		    }
-		    // now delete the user
+	    } else {
 		    $query = $db->getQuery(true)
-			    ->delete('#__users')
-			    ->where('ID = ' . $user_id);
+			    ->delete('#__posts')
+			    ->where('post_author = ' . $user_id);
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = 'Deleted userrecord of user with userid ' . $user_id;
+		    $status['debug'][] = 'Deleted posts from user with id ' . $user_id;
 
-		    // delete usermeta
 		    $query = $db->getQuery(true)
-			    ->delete('#__usermeta')
-			    ->where('user_id = ' . $user_id);
+			    ->delete('#__links')
+			    ->where('link_owner = ' . $user_id);
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = 'Deleted usermetarecord of user with userid ' . $user_id;
-	    } catch (Exception $e) {
-		    $status['error'][] = $e->getMessage();
+		    $status['debug'][] = 'Deleted links from user ' . $user_id;
 	    }
+	    // now delete the user
+	    $query = $db->getQuery(true)
+		    ->delete('#__users')
+		    ->where('ID = ' . $user_id);
+
+	    $db->setQuery($query);
+	    $db->execute();
+	    $status['debug'][] = 'Deleted userrecord of user with userid ' . $user_id;
+
+	    // delete usermeta
+	    $query = $db->getQuery(true)
+		    ->delete('#__usermeta')
+		    ->where('user_id = ' . $user_id);
+
+	    $db->setQuery($query);
+	    $db->execute();
+	    $status['debug'][] = 'Deleted usermetarecord of user with userid ' . $user_id;
+
 		return $status;
 	}
 

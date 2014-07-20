@@ -111,54 +111,51 @@ class User extends Plugin_User
 	/**
 	 * @param Userinfo $userinfo
 	 *
+	 * @throws \RuntimeException
 	 * @return array
 	 */
 	function deleteUser(Userinfo $userinfo)
 	{
 		//setup status array to hold debug info and errors
 		$status = array('error' => array(), 'debug' => array());
-		try {
-			$userid = $this->helper->getFieldType('USERID');
-			if (!$userid) {
-				$status['error'][] = Text::_('USER_DELETION_ERROR') . ': ' . Text::_('UNIVERSAL_NO_USERID_SET');
-			} else {
-				$db = Factory::getDatabase($this->getJname());
+		$userid = $this->helper->getFieldType('USERID');
+		if (!$userid) {
+			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
+		} else {
+			$db = Factory::getDatabase($this->getJname());
+
+			$query = $db->getQuery(true)
+				->delete('#__' . $this->helper->getTable())
+				->where($userid->field . ' = ' . $db->quote($userinfo->userid));
+
+			$db->setQuery($query);
+			$db->execute();
+
+			$group = $this->helper->getFieldType('GROUP', 'group');
+			if ( isset($group) ) {
+				$userid = $this->helper->getFieldType('USERID', 'group');
 
 				$query = $db->getQuery(true)
-					->delete('#__' . $this->helper->getTable())
+					->delete('#__' . $this->helper->getTable('group'))
 					->where($userid->field . ' = ' . $db->quote($userinfo->userid));
 
-				$db->setQuery($query);
-				$db->execute();
-
-				$group = $this->helper->getFieldType('GROUP', 'group');
-				if ( isset($group) ) {
-					$userid = $this->helper->getFieldType('USERID', 'group');
-
-					$query = $db->getQuery(true)
-						->delete('#__' . $this->helper->getTable('group'))
-						->where($userid->field . ' = ' . $db->quote($userinfo->userid));
-
-					$maped = $this->helper->getMap('group');
-					foreach ($maped as $value) {
-						$field = $value->field;
-						foreach ($value->type as $type) {
-							switch ($type) {
-								case 'DEFAULT':
-									if ($value->fieldtype == 'VALUE') {
-										$query->where($field . ' = ' . $db->quote($value->value));
-									}
-									break;
-							}
+				$maped = $this->helper->getMap('group');
+				foreach ($maped as $value) {
+					$field = $value->field;
+					foreach ($value->type as $type) {
+						switch ($type) {
+							case 'DEFAULT':
+								if ($value->fieldtype == 'VALUE') {
+									$query->where($field . ' = ' . $db->quote($value->value));
+								}
+								break;
 						}
 					}
-					$db->setQuery($query);
-					$db->execute();
-					$status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 				}
+				$db->setQuery($query);
+				$db->execute();
+				$status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 			}
-		} catch (Exception $e) {
-			$status['error'][] = Text::_('USER_DELETION_ERROR') . ': ' . $e->getMessage();
 		}
 		return $status;
 	}

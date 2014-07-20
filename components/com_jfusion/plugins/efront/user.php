@@ -354,11 +354,12 @@ class User extends Plugin_User
 	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
-    /**
-     * @param Userinfo $userinfo
-     *
-     * @return void
-     */
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return void
+	 */
     function createUser(Userinfo $userinfo) {
        /**
         * NOTE: eFront does a character check on the user credentials. I think we are ok (HW): if (preg_match("/^.*[$\/\'\"]+.*$/", $parameter))
@@ -483,11 +484,12 @@ class User extends Plugin_User
 	    }
     }
 
-    /**
-     * @param Userinfo $userinfo
-     *
-     * @return array|bool
-     */
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return array|bool
+	 */
     function deleteUser(Userinfo $userinfo) {
         // we are using the api function remove_user here. 
         // User deletion is not a time critical function and deleting a user is
@@ -497,65 +499,56 @@ class User extends Plugin_User
         
     	// check apiuser existence
         $status = array('error' => array(), 'debug' => array());
-        if (!is_object($userinfo)) {
-            $status['error'][] = Text::_('NO_USER_DATA_FOUND');
-        } else {
-	        try {
-		        $existinguser = $this->getUser($userinfo);
-	        } catch (Exception $e) {
-		        $existinguser = null;
-	        }
-            if (!empty($existinguser)) {
-                $apiuser = $this->params->get('apiuser');
-                $apikey = $this->params->get('apikey');
-                $login = $existinguser->username;
-                $jname = $this->getJname();
-                if (!$apiuser || !$apikey) {
-                    $status['error'][] = Text::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION');
-                } else {
-                    // get token
-                    $curl_options['action'] = 'token';
-                    $status = $this->helper->send_to_api($curl_options, $status);
-                    if (!$status['error']) {
-                        $result = $status['result'][0];
-                        $token = $result->token;
-                        // login
-                        $curl_options['action'] = 'login';
-                        $curl_options['parms'] = '&token=' . $token . '&username=' . $apiuser . '&password=' . $apikey;
-                        $status = $this->helper->send_to_api($curl_options, $status);
-                        if (!$status['error']){
-                            $result = $status['result'][0];
-                            if($result->status == 'ok'){
-                                // logged in (must logout later)
-                                // delete user
-                                $curl_options['action'] = 'remove_user';
-                                $curl_options['parms'] = '&token=' . $token . '&login=' . $login;
-                                $status = $this->helper->send_to_api($curl_options, $status);
-                                $errorstatus = $status;
-                                if ($status['error']){
-                                    $status['debug'][] = $status['error'][0];
-                                    $status['error'] = array();
-                                }
-                                $result = $status['result'][0];
-                                if($result->status != 'ok'){
-                                    $errorstatus['debug'][] = $jname . ' eFront API--' . $result->message;
-                                }
-                                // logout
-                                $curl_options['action'] = 'logout';
-                                $curl_options['parms'] = '&token=' . $token;
-                                $status = $this->helper->send_to_api($curl_options, $status);
-                                $result = $status['result'][0];
-                                if($result->status != 'ok'){
-                                    $errorstatus['error'][] = $jname . ' eFront API--' . $result->message;
-                                    return $errorstatus;
-                                }
-                            }
-                            $status['debug'][] = Text::_('DELETED') . ' ' . Text::_('USER') . ' ' . $login;
-                        }
-                    }
-                }
-            }
-        }
+
+	    $apiuser = $this->params->get('apiuser');
+	    $apikey = $this->params->get('apikey');
+	    $login = $userinfo->username;
+	    $jname = $this->getJname();
+	    if (!$apiuser || !$apikey) {
+		    throw new RuntimeException(Text::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'));
+	    } else {
+		    // get token
+		    $curl_options['action'] = 'token';
+		    $status = $this->helper->send_to_api($curl_options, $status);
+		    if (!$status['error']) {
+			    $result = $status['result'][0];
+			    $token = $result->token;
+			    // login
+			    $curl_options['action'] = 'login';
+			    $curl_options['parms'] = '&token=' . $token . '&username=' . $apiuser . '&password=' . $apikey;
+			    $status = $this->helper->send_to_api($curl_options, $status);
+			    if (!$status['error']){
+				    $result = $status['result'][0];
+				    if($result->status == 'ok'){
+					    // logged in (must logout later)
+					    // delete user
+					    $curl_options['action'] = 'remove_user';
+					    $curl_options['parms'] = '&token=' . $token . '&login=' . $login;
+					    $status = $this->helper->send_to_api($curl_options, $status);
+					    $errorstatus = $status;
+					    if ($status['error']){
+						    $status['debug'][] = $status['error'][0];
+						    $status['error'] = array();
+					    }
+					    $result = $status['result'][0];
+					    if($result->status != 'ok'){
+						    $errorstatus['debug'][] = $jname . ' eFront API--' . $result->message;
+					    }
+					    // logout
+					    $curl_options['action'] = 'logout';
+					    $curl_options['parms'] = '&token=' . $token;
+					    $status = $this->helper->send_to_api($curl_options, $status);
+					    $result = $status['result'][0];
+					    if($result->status != 'ok'){
+						    $errorstatus['error'][] = $jname . ' eFront API--' . $result->message;
+						    return $errorstatus;
+					    }
+				    }
+				    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $login;
+			    }
+		    }
+	    }
+
         return $status;
     }
 

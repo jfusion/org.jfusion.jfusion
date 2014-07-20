@@ -15,7 +15,10 @@
 
 use JFusion\Factory;
 use JFusion\Framework;
+use JFusion\User\Userinfo;
 use Joomla\Language\Text;
+
+use RuntimeException;
 
 use stdClass;
 use Exception;
@@ -195,60 +198,75 @@ class Usersync
 		    try {
 			    if (isset($error['action']) && isset($synclog[$id]) && $error['action']) {
 				    $data = unserialize($synclog[$id]->data);
-				    if ($error['action'] == '1') {
-					    $userinfo = Factory::getUser($data['conflict']['jname'])->getUser($data['conflict']['userinfo']);
 
-					    $userPlugin = Factory::getUser($data['user']['jname']);
-					    $status = $userPlugin->updateUser($userinfo, 1);
-					    if (!empty($status['error'])) {
-						    Framework::raise('error', $status['error'], $data['user']['jname'] . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
-					    } else {
-						    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $data['user']['jname']);
-						    static::markResolved($id);
-						    $userPlugin->updateLookup($data['user']['userinfo'], $userinfo);
-					    }
-				    } elseif ($error['action'] == '2') {
-					    $userinfo = Factory::getUser($data['user']['jname'])->getUser($data['user']['userinfo']);
+				    $conflictuserinfo = $data['conflict']['userinfo'];
+				    $useruserinfo = $data['user']['userinfo'];
 
-					    $userPlugin = Factory::getUser($data['conflict']['jname']);
+				    $conflictjname = $data['conflict']['jname'];
+				    $userjname = $data['user']['jname'];
+				    if ($conflictuserinfo instanceof Userinfo && $useruserinfo instanceof Userinfo) {
+					    switch ($error['action']) {
+						    case '1':
+							    $userinfo = Factory::getUser($conflictjname)->getUser($conflictuserinfo);
 
-					    $status = $userPlugin->updateUser($userinfo, 1);
-					    if (!empty($status['error'])) {
-						    Framework::raise('error', $status['error'], $data['conflict']['jname'] . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
-					    } else {
-						    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $data['conflict']['jname']);
-						    static::markResolved($id);
-						    $userPlugin->updateLookup($userinfo, $data['user']['userinfo']);
-					    }
-				    } elseif ($error['action'] == '3') {
-					    //delete the first entity
-					    //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
-					    global $JFusionActive;
-					    $JFusionActive = 1;
+							    $userPlugin = Factory::getUser($userjname);
+							    $status = $userPlugin->updateUser($userinfo, 1);
+							    if (!empty($status['error'])) {
+								    Framework::raise('error', $status['error'], $userjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
+							    } else {
+								    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $userjname);
+								    static::markResolved($id);
+								    $userPlugin->updateLookup($useruserinfo, $userinfo);
+							    }
+							    break;
+						    case '2':
+							    $userinfo = Factory::getUser($userjname)->getUser($useruserinfo);
 
-					    $userPlugin = Factory::getUser($error['user_jname']);
-					    $status = $userPlugin->deleteUser($data['user']['userinfo']);
-					    if (!empty($status['error'])) {
-						    Framework::raise('error', $status['error'], $error['user_jname'] . ' ' . Text::_('ERROR') . ' ' .  Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username']);
-					    } else {
-						    static::markResolved($id);
-						    Framework::raiseMessage(Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
-						    $userPlugin->deleteLookup($data['user']['userinfo']);
+							    $userPlugin = Factory::getUser($conflictjname);
+
+							    $status = $userPlugin->updateUser($userinfo, 1);
+							    if (!empty($status['error'])) {
+								    Framework::raise('error', $status['error'], $conflictjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
+							    } else {
+								    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $conflictjname);
+								    static::markResolved($id);
+								    $userPlugin->updateLookup($userinfo, $useruserinfo);
+							    }
+							    break;
+						    case '3':
+							    //delete the first entity
+							    //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
+							    global $JFusionActive;
+							    $JFusionActive = 1;
+
+							    $userPlugin = Factory::getUser($error['user_jname']);
+							    $status = $userPlugin->deleteUser($useruserinfo);
+							    if (!empty($status['error'])) {
+								    Framework::raise('error', $status['error'], $error['user_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['user_username']);
+							    } else {
+								    static::markResolved($id);
+								    Framework::raiseMessage(Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
+								    $userPlugin->deleteLookup($useruserinfo);
+							    }
+							    break;
+						    case '4':
+							    //delete the second entity (conflicting plugin)
+							    //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
+							    global $JFusionActive;
+							    $JFusionActive = 1;
+							    $userPlugin = Factory::getUser($error['conflict_jname']);
+							    $status = $userPlugin->deleteUser($conflictuserinfo);
+							    if (!empty($status['error'])) {
+								    Framework::raise('error', $status['error'], $error['conflict_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['conflict_username']);
+							    } else {
+								    static::markResolved($id);
+								    Framework::raiseMessage(Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);
+								    $userPlugin->deleteLookup($conflictuserinfo);
+							    }
+							    break;
 					    }
-				    } elseif ($error['action'] == '4') {
-					    //delete the second entity (conflicting plugin)
-					    //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
-					    global $JFusionActive;
-					    $JFusionActive = 1;
-					    $userPlugin = Factory::getUser($error['conflict_jname']);
-					    $status = $userPlugin->deleteUser($data['conflict']['userinfo']);
-					    if (!empty($status['error'])) {
-						    Framework::raise('error', $status['error'], $error['conflict_jname'] . ' ' . Text::_('ERROR') . ' ' . Text::_('DELETING') . ' ' .  Text::_('USER') . ' ' . $error['conflict_username']);
-					    } else {
-						    static::markResolved($id);
-						    Framework::raiseMessage(Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);
-						    $userPlugin->deleteLookup($data['conflict']['userinfo']);
-					    }
+				    } else {
+					    throw new RuntimeException('Incorrect User Object type');
 				    }
 			    }
 		    } catch (Exception $e) {

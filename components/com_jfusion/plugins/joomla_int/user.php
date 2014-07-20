@@ -331,11 +331,12 @@ class User extends Plugin_User
 		}
 	}
 
-    /**
-     * @param Userinfo $userinfo
-     *
-     * @return array
-     */
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return array
+	 */
     function deleteUser(Userinfo $userinfo) {
 	    /**
 	     * TODO need to be changed as deleting the user is not correct
@@ -367,7 +368,7 @@ class User extends Plugin_User
 
             $db->setQuery($query);
             $db->execute();
-            $status['debug'][] = Text::_('USER_DELETION') . ' ' . $username;
+		    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $username;
         } else {
             //this user was NOT create by JFusion. Therefore we need to delete it in the Joomla user table only
 
@@ -389,10 +390,10 @@ class User extends Plugin_User
                 //delete it from the Joomla usertable
                 $user = JUser::getInstance($userid);
                 $user->delete();
-                $status['debug'][] = Text::_('USER_DELETION') . ' ' . $username;
+	            $status['debug'][] = Text::_('USER_DELETION') . ': ' . $username;
             } else {
                 //could not find user and return an error
-                $status['error'][] = Text::_('ERROR_DELETE') . $username;
+	            throw new RuntimeException($username);
             }
         }
         return $status;

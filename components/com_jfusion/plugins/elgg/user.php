@@ -93,11 +93,12 @@ class JFusionUser_elgg extends Plugin_User
         return $user;
     }
 
-    /**
-     * @param Userinfo $userinfo
-     *
-     * @return array
-     */
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return array
+	 */
     function deleteUser(Userinfo $userinfo) {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
@@ -108,12 +109,12 @@ class JFusionUser_elgg extends Plugin_User
         $user = get_user_by_username($userinfo->username);
         if($user) {
         	if ($user->delete()) {
-            	$status['debug'][] = Text::_('USER_DELETION') . ' ' . $userinfo->username;
+		        $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
         	} else {
-        		$status['error'][] = Text::_('USER_DELETION_ERROR');
+		        throw new RuntimeException($userinfo->username);
         	}
         } else {
-        	$status['error'][] = Text::_('USER_DELETION_ERROR');
+	        throw new RuntimeException($userinfo->username);
 		}
 		return $status;
     }

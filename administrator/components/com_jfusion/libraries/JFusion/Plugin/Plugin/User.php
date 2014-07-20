@@ -620,8 +620,6 @@ class Plugin_User extends Plugin
 
     /**
      * Function that deletes a user account
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo Object containing the existing userinfo
      *

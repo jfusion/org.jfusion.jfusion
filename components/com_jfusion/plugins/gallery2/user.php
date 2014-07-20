@@ -201,11 +201,12 @@ class User extends Plugin_User
         return $status;
     }
 
-    /**
-     * @param Userinfo $userinfo
-     *
-     * @return array
-     */
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return array
+	 */
     function deleteUser(Userinfo $userinfo) {
         //setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
@@ -219,24 +220,24 @@ class User extends Plugin_User
         //Fetch GalleryUser
         list($ret, $user) = GalleryCoreApi::fetchUserByUserName($username);
         if ($ret) {
-            $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
+	        throw new RuntimeException($userinfo->username . ': ' . $ret->getErrorMessage());
         } else {
             //Get Write Lock
             list($ret, $lockId) = GalleryCoreApi::acquireWriteLock($user->getId());
             if ($ret) {
-                $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
+	            throw new RuntimeException($userinfo->username . ': ' . $ret->getErrorMessage());
             } else {
                 //Delete User name
                 $ret = $user->delete();
                 if ($ret) {
-                    $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
+	                throw new RuntimeException($userinfo->username . ': ' . $ret->getErrorMessage());
                 } else {
                     //Release Lock
                     $ret = GalleryCoreApi::releaseLocks($lockId);
                     if ($ret) {
-                        $status['error'][] = Text::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
+	                    throw new RuntimeException($userinfo->username . ': ' . $ret->getErrorMessage());
                     } else {
-                        $status['debug'][] = Text::_('USER_DELETION') . ' ' . $userinfo->username;
+	                    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
                     }
                 }
             }

@@ -174,11 +174,12 @@ class JFusionUser_dokuwiki extends Plugin_User
         return $user;
     }
 
-    /**
-     * @param Userinfo $userinfo
-     *
-     * @return array
-     */
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return array
+	 */
     function deleteUser(Userinfo $userinfo) {
         //setup status array to hold debug info and errors
         $status = array('error' => array(), 'debug' => array());
@@ -186,7 +187,7 @@ class JFusionUser_dokuwiki extends Plugin_User
         $user[$username] = $username;
 
         if (!$this->helper->auth->deleteUsers($user)) {
-            $status['error'][] = Text::_('USER_DELETION_ERROR') . ': ' . $username;
+	        throw new RuntimeException($username);
         } else {
             $status['debug'][] = Text::_('USER_DELETION') . ': ' . $username;
         }

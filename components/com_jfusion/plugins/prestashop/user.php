@@ -113,27 +113,20 @@ class User extends Plugin_User
      * @return array
      */
     function deleteUser(Userinfo $userinfo) {
-	    try {
-		    /* Warning: this function mimics the original prestashop function which is a suggestive deletion,
-				all user information remains in the table for past reference purposes. To delete everything associated
-				with an account and an account itself, you will have to manually delete them from the table yourself. */
-		    // get the identifier
-		    $identifier = $userinfo;
-		    if (is_object($userinfo)) {
-			    $identifier = $userinfo->id_customer;
-		    }
-		    $db = Factory::getDatabase($this->getJname());
+	    /* Warning: this function mimics the original prestashop function which is a suggestive deletion,
+		all user information remains in the table for past reference purposes. To delete everything associated
+		with an account and an account itself, you will have to manually delete them from the table yourself. */
+	    // get the identifier
 
-		    $query = $db->getQuery(true)
-			    ->update('#__customer')
-			    ->set('deleted = 1')
-			    ->where('id_customer = ' . $db->quote($identifier));
+	    $db = Factory::getDatabase($this->getJname());
 
-		    $db->setQuery($query);
-		    $status['debug'][] = 'Deleted user';
-	    } catch (Exception $e) {
-		    $status['error'][] = $e->getMessage();
-	    }
+	    $query = $db->getQuery(true)
+		    ->update('#__customer')
+		    ->set('deleted = 1')
+		    ->where('id_customer = ' . $db->quote($userinfo->userid));
+
+	    $db->setQuery($query);
+	    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 		return $status;
     }
 

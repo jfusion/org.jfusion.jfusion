@@ -312,38 +312,34 @@ class User extends Plugin_User
      * @return array
      */
     function deleteUser(Userinfo $userinfo) {
-	    try {
-	        //get the database ready
-	        $db = Factory::getDatabase($this->getJname());
-	        //setup status array to hold debug info and errors
-	        $status = array('error' => array(), 'debug' => array());
-	        $userid = $userinfo->userid;
+	    //get the database ready
+	    $db = Factory::getDatabase($this->getJname());
+	    //setup status array to hold debug info and errors
+	    $status = array('error' => array(), 'debug' => array());
+	    $userid = $userinfo->userid;
 
-		    $query = $db->getQuery(true)
-		        ->delete('#__users')
-			    ->where('id = ' . (int)$userid);
+	    $query = $db->getQuery(true)
+		    ->delete('#__users')
+		    ->where('id = ' . (int)$userid);
 
-	        $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $query = $db->getQuery(true)
-			    ->delete('#__user_profiles')
-			    ->where('user_id = ' . (int)$userid);
+	    $query = $db->getQuery(true)
+		    ->delete('#__user_profiles')
+		    ->where('user_id = ' . (int)$userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $query = $db->getQuery(true)
-			    ->delete('#__user_usergroup_map')
-			    ->where('user_id = ' . (int)$userid);
+	    $query = $db->getQuery(true)
+		    ->delete('#__user_usergroup_map')
+		    ->where('user_id = ' . (int)$userid);
 
-		    $db->setQuery($query);
-		    $db->execute();
+	    $db->setQuery($query);
+	    $db->execute();
 
-		    $status['debug'][] = Text::_('USER_DELETION') . ' ' . $userinfo->username;
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('ERROR_DELETE') . ' ' . $userinfo->username . ' ' . $e->getMessage();
-	    }
+	    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
         return $status;
     }
 
