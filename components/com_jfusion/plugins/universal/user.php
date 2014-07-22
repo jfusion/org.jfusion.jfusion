@@ -17,8 +17,6 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
 require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.abstractuser.php');
 require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jplugin.php');
 
-require_once(dirname(__FILE__).DS.'map.php');
-
 /**
  * JFusion User Class for universal
  * For detailed descriptions on these functions please check the model.abstractuser.php
