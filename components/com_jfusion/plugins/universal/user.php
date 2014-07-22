@@ -10,8 +10,6 @@
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'map.php');
-
 /**
  * JFusion User Class for universal
  * For detailed descriptions on these functions please check the model.abstractuser.php
