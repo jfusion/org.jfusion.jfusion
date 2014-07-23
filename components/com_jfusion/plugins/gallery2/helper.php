@@ -145,7 +145,7 @@ class Helper extends Plugin
 	    }
 	    if (!strpos($uri, '?')) {
 		    $uri .= '/';
-	    }
+        }
         return $uri;
     }
 
