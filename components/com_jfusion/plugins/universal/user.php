@@ -8,7 +8,6 @@
  */
 
 // no direct access
-use Exception;
 use JFusion\Factory;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
@@ -17,8 +16,6 @@ use RuntimeException;
 use stdClass;
 
 defined('_JEXEC' ) or die('Restricted access' );
-
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'map.php');
 
 /**
  * JFusion User Class for universal

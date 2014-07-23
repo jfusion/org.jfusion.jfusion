@@ -501,7 +501,7 @@ class executeJFusionHook
 
         //parse AJAX output
 	    if (defined('_VBJNAME')) {
-		    $public = \JFusion\Factory::getFront(_VBJNAME);
+		    $platform = \JFusion\Factory::getPlayform('Joomla', _VBJNAME);
 		    $params = \JFusion\Factory::getParams(_VBJNAME);
 
 		    $jdata = new stdClass();
@@ -511,7 +511,7 @@ class executeJFusionHook
 		    $jdata->baseURL = JFusionFunction::getPluginURL($jdata->Itemid);
 		    //Get the integrated URL
 		    $jdata->integratedURL = $params->get('source_url');
-		    $public->parseBody($jdata);
+		    $platform->parseBody($jdata);
 	    }
     }
 

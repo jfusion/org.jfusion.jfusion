@@ -51,8 +51,8 @@ class JFusionFrameless {
 		$data->baseURL = JFusionFunction::getPluginURL($data->Itemid);
 
 		//Get the full current URL
-		$query = $uri->getQuery ();
-		$url = $uri->current ();
+		$query = $uri->getQuery();
+		$url = $uri->current();
 		$data->fullURL = $query ? $url . '?' . $query : $url;
 		$data->fullURL = str_replace('&', '&amp;', $data->fullURL);
 

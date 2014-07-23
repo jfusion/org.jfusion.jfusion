@@ -626,21 +626,21 @@ JS;
 		$config = Factory::getConfig();
 		$sefenabled = $config->get('sef');
 		if(!empty($sefenabled)) {
-			$uri = JUri::getInstance();
-			$current = $uri->toString(array('path', 'query'));
+			$current = new Uri($data->fullURL);
+			$current = $current->toString();
 
-			$menu = JMenu::getInstance('site');
-			$item = $menu->getActive();
-			$index = '/' . $item->route;
+			$index = new Uri($data->baseURL);
+			$index = $index->toString(array('path', 'query'));
+
 			$pos = strpos($current, $index);
 			if ($pos !== false) {
 				$current = substr($current, $pos + strlen($index));
 			}
-			$current = ltrim($current , '/');
 		} else {
 			$current = Factory::getApplication()->input->get('jfile') . '?';
 			$current .= $this->curlFramelessBuildUrl('GET');
 		}
+		$current = ltrim($current , '/');
 
 		$url .= $current;
 		$post = $this->curlFramelessBuildUrl('POST');
