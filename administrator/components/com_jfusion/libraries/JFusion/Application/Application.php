@@ -8,6 +8,7 @@
  */
 
 use JFusion\Factory;
+use JFusion\User\Userinfo;
 use Joomla\Event\Event;
 use Joomla\Input\Input;
 
@@ -242,11 +243,28 @@ class Application
 	 */
 	public static function loadScriptLanguage($keys) {
 		if (!empty($keys)) {
-			$event = new Event('onApplicationRoute');
+			$event = new Event('onApplicationLoadScriptLanguage');
 
 			$event->setArgument('keys', $keys);
 
 			Factory::getDispatcher()->triggerEvent($event);
+		}
+	}
+
+	/**
+	 * Load Script language
+	 */
+	public static function getUser() {
+		$event = new Event('onApplicationGetUser');
+
+		Factory::getDispatcher()->triggerEvent($event);
+
+		$user = $event->getArgument('user', null);
+
+		if ($user instanceof Userinfo) {
+			return $user;
+		} else {
+			return new Userinfo(null);
 		}
 	}
 }

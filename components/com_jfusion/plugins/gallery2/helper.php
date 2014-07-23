@@ -75,7 +75,7 @@ class Helper extends Plugin
                         Framework::raiseWarning('Error while setting cookie path', $this->getJname());
                     } else {
                         if ($fullInit) {
-	                        $user = \JFusionFunction::getJoomlaUser((object)JFactory::getUser());
+	                        $user = Factory::getApplication()->getUser();
                             if ($user->userid != 0) {
 	                            try {
 		                            $userPlugin = Factory::getUser($this->getJname());

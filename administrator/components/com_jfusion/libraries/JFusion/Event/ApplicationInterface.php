@@ -96,5 +96,13 @@ interface ApplicationInterface
 	 * @param Event $event
 	 * @return  Event
 	 */
-	public function onLoadScriptLanguage($event);
+	public function onApplicationLoadScriptLanguage($event);
+
+	/**
+	 * Load Script language
+	 *
+	 * @param Event $event
+	 * @return  Event
+	 */
+	public function onApplicationGetUser($event);
 }
