@@ -10,6 +10,7 @@ namespace Joomla\Form;
 
 use Joomla\Form\Html\Select as HtmlSelect;
 use Joomla\Language\Text;
+use SimpleXMLElement;
 
 /**
  * Form Field class for the Joomla Framework.
@@ -84,6 +85,10 @@ class Field_List extends Field
 	{
 		$options = array();
 
+		/**
+		 * @ignore
+		 * @var SimpleXMLElement $option
+		 */
 		foreach ($this->element->children() as $option)
 		{
 			// Only add <option /> elements.

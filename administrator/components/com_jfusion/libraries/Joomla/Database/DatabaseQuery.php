@@ -94,7 +94,7 @@ abstract class DatabaseQuery
 	/**
 	 * The join element.
 	 *
-	 * @var    Query\QueryElement
+	 * @var    Query\QueryElement[]
 	 * @since  1.0
 	 */
 	protected $join = null;

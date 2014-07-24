@@ -9,6 +9,7 @@
 namespace Joomla\Language;
 
 use Joomla\String\String;
+use SimpleXMLElement;
 
 /**
  * Allows for quoting in language .ini files.
@@ -1358,6 +1359,10 @@ class Language
 
 		$metadata = array();
 
+		/**
+		 * @ignore
+		 * @var SimpleXMLElement $child
+		 */
 		foreach ($xml->metadata->children() as $child)
 		{
 			$metadata[$child->getName()] = (string) $child;

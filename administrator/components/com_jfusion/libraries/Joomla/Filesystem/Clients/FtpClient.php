@@ -129,7 +129,7 @@ class FtpClient
 	private $lineEndings = array('UNIX' => "\n", 'WIN' => "\r\n");
 
 	/**
-	 * @var    array  JClientFtp instances container.
+	 * @var    FtpClient[]  JClientFtp instances container.
 	 * @since  1.0
 	 */
 	protected static $instances = array();

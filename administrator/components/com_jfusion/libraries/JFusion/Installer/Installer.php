@@ -352,6 +352,10 @@ class Installer
 		}
 
 		// Process each file in the $files array (children of $tagName).
+		/**
+		 * @ignore
+		 * @var SimpleXMLElement $file
+		 */
 		foreach ($element->children() as $file)
 		{
 			$path['src'] = $source . '/' . $file;
@@ -529,6 +533,10 @@ class Installer
 		// A list of folders to delete
 		$folders_deleted = array();
 
+		/**
+		 * @ignore
+		 * @var SimpleXMLElement $file
+		 */
 		foreach ($new_files as $file)
 		{
 			switch ($file->getName())
