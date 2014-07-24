@@ -522,7 +522,7 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 	 *
 	 * @return  Event
 	 */
-	public function onLoadScriptLanguage($event)
+	public function onApplicationLoadScriptLanguage($event)
 	{
 		JFusionFunction::loadJavascriptLanguage($event->getArgument('keys', array()));
 	}

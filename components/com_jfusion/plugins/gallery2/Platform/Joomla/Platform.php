@@ -31,6 +31,7 @@ use Joomla\Language\Text;
 use JFusion\Plugin\Platform\Joomla;
 use JFusion\Plugins\gallery2\Helper;
 use JRegistry;
+use JRoute;
 use RuntimeException;
 use stdClass;
 
@@ -206,7 +207,7 @@ class Platform extends Joomla
 
 						$source_url = $this->params->get('source_url');
 						$urlGenerator = new GalleryUrlGenerator();
-						$urlGenerator->init($this->helper->getEmbedUri($config['itemid']), $source_url, null);
+						$urlGenerator->init($this->getEmbedUri($config['itemid']), $source_url, null);
 						$gallery->setUrlGenerator($urlGenerator);
 					}
 
@@ -360,7 +361,10 @@ class Platform extends Joomla
 	 * @return array
 	 */
 	function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid, $ordering) {
-		$this->helper->loadGallery2Api(true, $itemid);
+		$initParams = array();
+		$initParams['embedUri'] = $this->getEmbedUri($itemid);
+		$initParams['loginRedirect'] = JRoute::_('index.php?option=com_user&view=login');
+		$this->helper->loadGallery2Api(true, $initParams);
 		global $gallery;
 		$urlGenerator = $gallery->getUrlGenerator();
 		/* start preparing */
@@ -435,7 +439,10 @@ class Platform extends Joomla
 			$_SERVER['PATH_INFO'] = $path_info;
 		}
 
-		$this->helper->loadGallery2Api(true);
+		$initParams = array();
+		$initParams['loginRedirect'] = JRoute::_('index.php?option=com_user&view=login');
+		$this->helper->loadGallery2Api(true, $initParams);
+
 		global $gallery, $user;
 		$album = $data->mParam->get('album', -1);
 		if ($album != - 1) {
@@ -686,5 +693,41 @@ class Platform extends Joomla
 			}
 		}
 		return $pathway;
+	}
+
+	/**
+	 * @param null $itemId
+	 * @return string
+	 */
+	function getEmbedUri($itemId = null) {
+		$mainframe = Factory::getApplication();
+		$id = $mainframe->input->get('Itemid', -1);
+		if ($itemId !== null) {
+			$id = $itemId;
+		}
+		//Create Gallery Embed Path
+		$path = 'index.php?option=com_jfusion';
+		if ($id > 0) {
+			$path .= '&Itemid=' . $id;
+		} else if ($this->getJname() == $itemId) {
+			$source_url = $this->params->get('source_url');
+			return $source_url;
+		} else {
+			$path .= '&view=frameless&jname=' . $this->getJname();
+		}
+
+		//added check to prevent fatal error when creating session from outside joomla
+		if (class_exists('JRoute')) {
+			$uri = JRoute::_($path, false);
+		} else {
+			$uri = $path;
+		}
+		if (Factory::getConfig()->get('sef_suffix')) {
+			$uri = str_replace('.html', '', $uri);
+		}
+		if (!strpos($uri, '?')) {
+			$uri .= '/';
+		}
+		return $uri;
 	}
 }

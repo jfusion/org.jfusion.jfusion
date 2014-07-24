@@ -43,18 +43,21 @@ class Helper extends Plugin
 
     /**
      * @param $fullInit
-     * @param null $itemId
+     * @param array $params
+     *
      * @return bool
      */
-    function loadGallery2Api($fullInit, $itemId = null) {
+    function loadGallery2Api($fullInit, $params = array()) {
         if (!$this->loadedGallery) {
             $source_url = $this->params->get('source_url');
             $source_path = $this->params->get('source_path');
 	        $index_file = $source_path . 'embed.php';
 
+	        $initParams = array();
+	        foreach($params as $key => $value) {
+		        $initParams[$key] = $value;
+	        }
             $initParams['g2Uri'] = $source_url;
-            $initParams['embedUri'] = $this->getEmbedUri($itemId);
-            $initParams['loginRedirect'] = JRoute::_('index.php?option=com_user&view=login');
             $initParams['fullInit'] = $fullInit;
             if (!is_file($index_file)) {
                 Framework::raiseWarning('The path to the Gallery2(path: ' . $index_file . ') embed file set in the component preferences does not exist', $this->getJname());
@@ -111,42 +114,6 @@ class Helper extends Plugin
             }
         }
         return $this->loadedGallery;
-    }
-
-    /**
-     * @param null $itemId
-     * @return string
-     */
-    function getEmbedUri($itemId = null) {
-        $mainframe = Factory::getApplication();
-        $id = $mainframe->input->get('Itemid', -1);
-        if ($itemId !== null) {
-            $id = $itemId;
-        }
-        //Create Gallery Embed Path
-        $path = 'index.php?option=com_jfusion';
-        if ($id > 0) {
-            $path .= '&Itemid=' . $id;
-        } else if ($this->getJname() == $itemId) {
-            $source_url = $this->params->get('source_url');
-            return $source_url;
-        } else {
-            $path .= '&view=frameless&jname=' . $this->getJname();
-        }
-
-        //added check to prevent fatal error when creating session from outside joomla
-        if (class_exists('JRoute')) {
-            $uri = JRoute::_($path, false);
-        } else {
-            $uri = $path;
-        }
-	    if (Factory::getConfig()->get('sef_suffix')) {
-		    $uri = str_replace('.html', '', $uri);
-	    }
-	    if (!strpos($uri, '?')) {
-		    $uri .= '/';
-        }
-        return $uri;
     }
 
     /**
