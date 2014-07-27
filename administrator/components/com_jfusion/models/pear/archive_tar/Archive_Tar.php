@@ -147,6 +147,7 @@ class Archive_Tar extends PEAR
         }
         $this->_tarname = $p_tarname;
         if ($this->_compress) { // assert zlib or bz2 extension support
+	        $extname = null;
             if ($this->_compress_type == 'gz')
                 $extname = 'zlib';
             else if ($this->_compress_type == 'bz2')

@@ -303,6 +303,8 @@ class plgUserJfusion extends JPlugin
 		    //php 5.3 does not allow plugins to contain pass by references
 		    //use a global for the login checker instead
 
+		    $password = JFactory::getApplication()->input->post->get('password', null, 'raw');
+
 		    $debugger = JFusionFactory::getDebugger('jfusion-loginchecker');
 		    $debugger->set(null, array());
 		    $debugger->set('init', array());
@@ -345,7 +347,7 @@ class plgUserJfusion extends JPlugin
 				    $auth_userinfo = new stdClass();
 				    $auth_userinfo->username = $user['username'];
 				    $auth_userinfo->email = $user['email'];
-				    $auth_userinfo->password_clear = $user['password'];
+				    $auth_userinfo->password_clear = $password;
 				    $auth_userinfo->name = $user['fullname'];
 				    //get the userinfo for real
 				    try {
@@ -420,7 +422,7 @@ class plgUserJfusion extends JPlugin
 
 			    if ($success === 0) {
 				    //apply the clear text password to the user object
-				    $userinfo->password_clear = $user['password'];
+				    $userinfo->password_clear = $password;
 
 				    //if logging in via Joomla backend, create a Joomla session and do nothing else to prevent lockouts
 				    if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
