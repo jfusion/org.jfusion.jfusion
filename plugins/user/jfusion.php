@@ -176,8 +176,9 @@ class plgUserJfusion extends JPlugin
 
 			$JFuser = new \JFusion\User\User();
 
-			$result = $JFuser->login($user, $jfusionoptions);
+			$user['password'] = Factory::getApplication()->input->get('password', null, 'raw');
 
+			$result = $JFuser->login($user, $jfusionoptions);
 			if ($result) {
 				//Clean up the joomla session table
 				$conf = JFactory::getConfig();
@@ -199,12 +200,12 @@ class plgUserJfusion extends JPlugin
 					$allow_redirect_login = $params->get('allow_redirect_login', 0);
 					$redirecturl_login = $params->get('redirecturl_login', '');
 					$source_url = $params->get('source_url', '');
-					$jfc = Factory::getCookies();
+					$cookies = Factory::getCookies();
 					if ($allow_redirect_login && !empty($redirecturl_login)) {
 						// only redirect if we are in the frontend and allowed and have an URL
-						$jfc->executeRedirect($source_url, $redirecturl_login);
+						$cookies->executeRedirect($source_url, $redirecturl_login);
 					} else {
-						$jfc->executeRedirect($source_url);
+						$cookies->executeRedirect($source_url);
 					}
 				}
 			}

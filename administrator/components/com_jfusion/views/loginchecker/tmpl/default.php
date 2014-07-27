@@ -37,18 +37,18 @@ echo JFusionFunctionAdmin::getDonationBanner();
 	        <tbody>
 		        <tr>
 			        <td width="200px">
-				        <label for="check_usernam"><?php echo JText::_('USERNAME'); ?></label>
+				        <label for="username"><?php echo JText::_('USERNAME'); ?></label>
 					</td>
 					<td>
-					    <input id="check_usernam" type="text" name="check_username" size="40"/>
+					    <input id="username" type="text" name="username" size="40"/>
 					</td>
 				</tr>
 				<tr>
 					<td width="100px">
-						<label for="check_password"><?php echo JText::_('PASSWORD'); ?></label>
+						<label for="password"><?php echo JText::_('PASSWORD'); ?></label>
 					</td>
 					<td>
-					    <input id="check_password" type="password" name="check_password" size="40"/>
+					    <input id="password" type="password" name="password" size="40"/>
 					</td>
 				</tr>
 				<tr>

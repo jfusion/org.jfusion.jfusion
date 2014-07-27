@@ -87,8 +87,9 @@ class User
 			}
 
 			//allow for the detection of external mods to exclude jfusion plugins
-			$jnodeid = strtolower(Factory::getApplication()->input->get('jnodeid'));
-			if (!empty($jnodeid)) {
+			$jnodeid = Factory::getApplication()->input->get('jnodeid', null);
+			if ($jnodeid) {
+				$jnodeid = strtolower($jnodeid);
 				$JFusionActivePlugin = $jnodeid;
 				$options['skipplugin'][] = $jnodeid;
 			}
