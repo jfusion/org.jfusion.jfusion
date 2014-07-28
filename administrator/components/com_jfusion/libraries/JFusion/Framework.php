@@ -382,24 +382,6 @@ class Framework
 				$message = $jname . ': ' . $message;
 			}
 			$app->enqueueMessage($message, strtolower($type));
-			/**
-			 * TODO: REMOVE
-
-			switch(strtolower($type)) {
-				case 'notice':
-					static::raiseNotice($message, $jname);
-					break;
-				case 'error':
-					static::raiseError($message, $jname);
-					break;
-				case 'warning':
-					static::raiseWarning($message, $jname);
-					break;
-				case 'message':
-					static::raiseMessage($message, $jname);
-					break;
-			}
-			 */
 		}
 	}
 

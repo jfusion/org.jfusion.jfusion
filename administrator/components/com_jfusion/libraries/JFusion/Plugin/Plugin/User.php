@@ -345,8 +345,6 @@ class Plugin_User extends Plugin
 
     /**
      * Function that updates the user password
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo      Object containing the new userinfo
      * @param Userinfo &$existinguser Object containing the old userinfo
@@ -360,8 +358,6 @@ class Plugin_User extends Plugin
 
     /**
      * Function that updates the username
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo      Object containing the new userinfo
      * @param Userinfo &$existinguser Object containing the old userinfo
@@ -410,8 +406,6 @@ class Plugin_User extends Plugin
 
     /**
      * Function that updates the user email address
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo      Object containing the new userinfo
      * @param Userinfo &$existinguser Object containing the old userinfo
@@ -425,8 +419,6 @@ class Plugin_User extends Plugin
 
     /**
      * Function that updates the usergroup
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo      Object containing the new userinfo
      * @param Userinfo &$existinguser Object containing the old userinfo
@@ -481,8 +473,6 @@ class Plugin_User extends Plugin
 
     /**
      * Function that updates the blocks the user account
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo      Object containing the new userinfo
      * @param Userinfo &$existinguser Object containing the old userinfo
@@ -496,8 +486,6 @@ class Plugin_User extends Plugin
 
     /**
      * Function that unblocks the user account
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo      Object containing the new userinfo
      * @param Userinfo &$existinguser Object containing the old userinfo
@@ -553,8 +541,6 @@ class Plugin_User extends Plugin
 	}
     /**
      * Function that activates the users account
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo      Object containing the new userinfo
      * @param Userinfo &$existinguser Object containing the old userinfo
@@ -568,8 +554,6 @@ class Plugin_User extends Plugin
 
     /**
      * Function that inactivates the users account
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo      Object containing the new userinfo
      * @param Userinfo &$existinguser Object containing the old userinfo

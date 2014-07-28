@@ -1150,7 +1150,7 @@ class Platform extends Joomla
 						try {
 							$status = $userPlugin->createSession($userinfo, $options);
 							if ($debug) {
-								Framework::raise('notice', $status, $this->getJname());
+								Framework::raise(LogLevel::NOTICE, $status, $this->getJname());
 							}
 						} catch (Exception $e) {
 							Framework::raise(LogLevel::ERROR, $e, $this->getJname());
@@ -1169,7 +1169,7 @@ class Platform extends Joomla
 						try {
 							$status = $JoomlaUser->destroySession($userinfo, $options);
 							if ($debug) {
-								Framework::raise('notice', $status, $this->getJname());
+								Framework::raise(LogLevel::NOTICE, $status, $this->getJname());
 							}
 						} catch (Exception $e) {
 							Framework::raise(LogLevel::ERROR, $e, $JoomlaUser->getJname());
@@ -1246,7 +1246,7 @@ class Platform extends Joomla
 						try {
 							$status = $JoomlaUser->createSession($userinfo, $options);
 							if ($debug) {
-								Framework::raise('notice', $status, $this->getJname());
+								Framework::raise(LogLevel::NOTICE, $status, $this->getJname());
 							}
 						} catch (Exception $e) {
 							Framework::raise(LogLevel::ERROR, $e, $JoomlaUser->getJname());

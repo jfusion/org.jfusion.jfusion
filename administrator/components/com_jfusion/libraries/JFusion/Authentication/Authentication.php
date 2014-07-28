@@ -374,7 +374,7 @@ class Authentication extends Object
 											foreach($status['error'] as $error) {
 												$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR') . ': ' . $error);
 											}
-											Framework::raise('error', $status['error'], $master->name. ' ' .Text::_('PASSWORD') . ' ' . Text::_('UPDATE'));
+											Framework::raise(LogLevel::ERROR, $status['error'], $master->name. ' ' .Text::_('PASSWORD') . ' ' . Text::_('UPDATE'));
 										} else {
 											$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('UPDATE') . ' ' . Text::_('SUCCESS'));
 										}

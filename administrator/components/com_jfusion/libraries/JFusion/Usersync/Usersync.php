@@ -213,7 +213,7 @@ class Usersync
 							    $userPlugin = Factory::getUser($userjname);
 							    $status = $userPlugin->updateUser($userinfo, 1);
 							    if (!empty($status['error'])) {
-								    Framework::raise('error', $status['error'], $userjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
+								    Framework::raise(LogLevel::ERROR, $status['error'], $userjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
 							    } else {
 								    Framework::raise(LogLevel::INFO, Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $userjname);
 								    static::markResolved($id);
@@ -227,7 +227,7 @@ class Usersync
 
 							    $status = $userPlugin->updateUser($userinfo, 1);
 							    if (!empty($status['error'])) {
-								    Framework::raise('error', $status['error'], $conflictjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
+								    Framework::raise(LogLevel::ERROR, $status['error'], $conflictjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
 							    } else {
 								    Framework::raise(LogLevel::INFO, Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $conflictjname);
 								    static::markResolved($id);
@@ -243,7 +243,7 @@ class Usersync
 							    $userPlugin = Factory::getUser($error['user_jname']);
 							    $status = $userPlugin->deleteUser($useruserinfo);
 							    if (!empty($status['error'])) {
-								    Framework::raise('error', $status['error'], $error['user_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['user_username']);
+								    Framework::raise(LogLevel::ERROR, $status['error'], $error['user_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['user_username']);
 							    } else {
 								    static::markResolved($id);
 								    Framework::raise(LogLevel::INFO, Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
@@ -258,7 +258,7 @@ class Usersync
 							    $userPlugin = Factory::getUser($error['conflict_jname']);
 							    $status = $userPlugin->deleteUser($conflictuserinfo);
 							    if (!empty($status['error'])) {
-								    Framework::raise('error', $status['error'], $error['conflict_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['conflict_username']);
+								    Framework::raise(LogLevel::ERROR, $status['error'], $error['conflict_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['conflict_username']);
 							    } else {
 								    static::markResolved($id);
 								    Framework::raise(LogLevel::INFO, Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);

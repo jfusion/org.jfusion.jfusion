@@ -15,6 +15,7 @@
 
 // no direct access
 use JFusion\Framework;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC' ) or die('Restricted access' );
 
@@ -210,7 +211,7 @@ class JFusionDiscussBotHelper {
 
 		$platform->checkThreadExists($this->params, $this->article, $threadinfo, $status);
 		if (!empty($status['error'])) {
-			Framework::raise('error', $status['error'], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
+			Framework::raise(LogLevel::ERROR, $status['error'], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
 		} else {
 			if ($status['action'] != 'unchanged') {
 				if ($status['action'] == 'created') {

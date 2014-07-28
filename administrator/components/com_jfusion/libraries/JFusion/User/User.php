@@ -159,7 +159,7 @@ class User
 								} else {
 									//could not create user
 									$debugger->add('init', $master->name . ' ' . Text::_('USER') . ' ' . Text::_('CREATE') . ' ' . Text::_('ERROR') . ' ' . $status['error']);
-									Framework::raise('error', $status['error'], $master->name . ': ' . Text::_('USER') . ' ' . Text::_('CREATE'));
+									Framework::raise(LogLevel::ERROR, $status['error'], $master->name . ': ' . Text::_('USER') . ' ' . Text::_('CREATE'));
 									$success = -1;
 								}
 							} catch (Exception $e) {
@@ -216,7 +216,7 @@ class User
 
 									if (!empty($MasterSession['error'])) {
 										$debugger->set($master->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $MasterSession['error']);
-										Framework::raise('error', $MasterSession['error'], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
+										Framework::raise(LogLevel::ERROR, $MasterSession['error'], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
 										/**
 										 * TODO replace below code ? or just login slaves as well?
 										 */
@@ -255,7 +255,7 @@ class User
 										}
 										if (!empty($SlaveUser['error'])) {
 											$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR'), $SlaveUser['error']);
-											Framework::raise('error', $SlaveUser['error'], $slave->name . ': ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
+											Framework::raise(LogLevel::ERROR, $SlaveUser['error'], $slave->name . ': ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
 										} else {
 											//make sure the userinfo is available
 											if (empty($SlaveUser['userinfo'])) {
@@ -280,7 +280,7 @@ class User
 													$SlaveSession = $SlaveUserPlugin->createSession($SlaveUser['userinfo'], $options);
 													if (!empty($SlaveSession['error'])) {
 														$debugger->set($slave->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $SlaveSession['error']);
-														Framework::raise('error', $SlaveSession['error'], $slave->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
+														Framework::raise(LogLevel::ERROR, $SlaveSession['error'], $slave->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
 													}
 													if (!empty($SlaveSession['debug'])) {
 														$debugger->set($slave->name . ' ' . Text::_('SESSION') . ' ' . Text::_('DEBUG'), $SlaveSession['debug']);
@@ -379,7 +379,7 @@ class User
 						try {
 							$MasterSession = $JFusionMaster->destroySession($MasterUser, $options);
 							if (!empty($MasterSession['error'])) {
-								Framework::raise('error', $MasterSession['error'], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
+								Framework::raise(LogLevel::ERROR, $MasterSession['error'], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
 							}
 							if (!empty($MasterSession['debug'])) {
 								$debugger->set($master->name . ' logout', $MasterSession['debug']);
@@ -388,7 +388,7 @@ class User
 							Framework::raise(LogLevel::ERROR, $e, $JFusionMaster->getJname());
 						}
 					} else {
-						Framework::raise('notice', Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $master->name);
+						Framework::raise(LogLevel::NOTICE, Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $master->name);
 					}
 					$debugger->set('masteruser', $details);
 				}
@@ -419,7 +419,7 @@ class User
 								try {
 									$SlaveSession = $JFusionSlave->destroySession($SlaveUser, $options);
 									if (!empty($SlaveSession['error'])) {
-										Framework::raise('error', $SlaveSession['error'], $slave->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
+										Framework::raise(LogLevel::ERROR, $SlaveSession['error'], $slave->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
 									}
 									if (!empty($SlaveSession['debug'])) {
 										$debugger->set($slave->name . ' logout', $SlaveSession['debug']);
@@ -428,7 +428,7 @@ class User
 									Framework::raise(LogLevel::ERROR, $e, $JFusionSlave->getJname());
 								}
 							} else {
-								Framework::raise('notice', Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $slave->name);
+								Framework::raise(LogLevel::NOTICE, Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $slave->name);
 							}
 
 							$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('DETAILS') , $info);
