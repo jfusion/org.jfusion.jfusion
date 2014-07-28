@@ -10,7 +10,6 @@ namespace Joomla\Form;
 
 use Joomla\Form\Html\Select as HtmlSelect;
 use Joomla\Language\Text;
-use SimpleXMLElement;
 use UnexpectedValueException;
 
 /**
@@ -44,7 +43,7 @@ class Field_GroupedList extends Field
 
 		/**
 		 * @ignore
-		 * @var SimpleXMLElement $element
+		 * @var \SimpleXMLElement $element
 		 */
 		foreach ($this->element->children() as $element)
 		{
@@ -92,7 +91,7 @@ class Field_GroupedList extends Field
 					// Iterate through the children and build an array of options.
 					/**
 					 * @ignore
-					 * @var SimpleXMLElement $option
+					 * @var \SimpleXMLElement $option
 					 */
 					foreach ($element->children() as $option)
 					{

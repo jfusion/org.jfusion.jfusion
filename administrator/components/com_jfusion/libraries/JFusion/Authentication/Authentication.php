@@ -15,6 +15,7 @@ use JFusion\Object\Object;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 
+use Psr\Log\LogLevel;
 use \stdClass;
 use \Exception;
 
@@ -307,7 +308,7 @@ class Authentication extends Object
 						try {
 							$check = $model->checkPassword($userinfo);
 						} catch (Exception $e) {
-							Framework::raiseError($e, $model->getJname());
+							Framework::raise(LogLevel::ERROR, $e, $model->getJname());
 							$check = false;
 						}
 						if ($check) {
@@ -385,7 +386,7 @@ class Authentication extends Object
 										}
 									}
 								} catch (Exception $e) {
-									Framework::raiseError($e);
+									Framework::raise(LogLevel::ERROR, $e);
 								}
 							}
 						}

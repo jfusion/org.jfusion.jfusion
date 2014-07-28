@@ -14,6 +14,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -63,21 +65,21 @@ class JFusionFunctionAdmin
         $userPlugin = true;
         $authPlugin = true;
         if (!static::isPluginInstalled('jfusion', 'authentication', false)) {
-            \JFusion\Framework::raiseWarning(JText::_('FUSION_MISSING_AUTH'));
+            \JFusion\Framework::raise(LogLevel::WARNING, JText::_('FUSION_MISSING_AUTH'));
             $authPlugin = false;
         }
         if (!static::isPluginInstalled('jfusion', 'user', false)) {
-            \JFusion\Framework::raiseWarning(JText::_('FUSION_MISSING_USER'));
+            \JFusion\Framework::raise(LogLevel::WARNING, JText::_('FUSION_MISSING_USER'));
             $userPlugin = false;
         }
         if ($authPlugin && $userPlugin) {
             $jAuth = static::isPluginInstalled('jfusion', 'user', true);
             $jUser = static::isPluginInstalled('jfusion', 'authentication', true);
             if (!$jAuth) {
-                \JFusion\Framework::raiseNotice(JText::_('FUSION_READY_TO_USE_AUTH'));
+                \JFusion\Framework::raise(LogLevel::NOTICE, JText::_('FUSION_READY_TO_USE_AUTH'));
             }
             if (!$jUser) {
-                \JFusion\Framework::raiseNotice(JText::_('FUSION_READY_TO_USE_USER'));
+                \JFusion\Framework::raise(LogLevel::NOTICE, JText::_('FUSION_READY_TO_USE_USER'));
             }
         }
     }
@@ -139,12 +141,12 @@ class JFusionFunctionAdmin
 		if (!$db->loadResult()) {
 			$result = false;
 			$task = 'plugindisplay';
-			\JFusion\Framework::raiseWarning(JText::_('NO_MASTER_WARNING'));
+			\JFusion\Framework::raise(LogLevel::WARNING, JText::_('NO_MASTER_WARNING'));
 		} else if (\JFusion\Framework::getUserGroups() === false) {
 			// Prevent to loginchecker without any usergroups configured.
 			$result = false;
 			$task = 'usergroups';
-			\JFusion\Framework::raiseWarning(JText::_('NO_USERGROUPS_ERROR'));
+			\JFusion\Framework::raise(LogLevel::WARNING, JText::_('NO_USERGROUPS_ERROR'));
 		}
 
 		if ($result === false) {

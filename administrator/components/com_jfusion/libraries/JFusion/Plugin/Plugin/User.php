@@ -20,6 +20,7 @@ use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use Joomla\Registry\Registry;
 
+use Psr\Log\LogLevel;
 use \RuntimeException;
 use \Exception;
 use \stdClass;
@@ -1245,7 +1246,7 @@ class Plugin_User extends Plugin
 					$db->updateObject('#__jfusion_users_plugin', $first, 'autoid');
 				}
 			} catch (Exception $e) {
-				Framework::raiseError($e);
+				Framework::raise(LogLevel::ERROR, $e);
 			}
 		}
 	}
@@ -1270,7 +1271,7 @@ class Plugin_User extends Plugin
 				$db->setQuery($query);
 				$db->execute();
 			} catch (Exception $e) {
-				Framework::raiseError($e);
+				Framework::raise(LogLevel::ERROR, $e);
 			}
 		}
 	}

@@ -15,6 +15,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 /**
  * Load the JFusion framework if installed
@@ -68,7 +70,7 @@ class plgSystemJfusion extends JPlugin
      */
     function onAfterInitialise()
     {
-        //\JFusion\Framework::raiseNotice('system plugin called');
+        //\JFusion\Framework::raise(LogLevel::NOTICE, 'system plugin called');
         $session = JFactory::getSession();
         //initialise some vars
         ob_start();
@@ -90,7 +92,7 @@ class plgSystemJfusion extends JPlugin
                 $_REQUEST = $_REQUEST + $backup['request'];
                 $session->clear('JFusionVarBackup');
                 if ($debug) {
-                    \JFusion\Framework::raiseNotice('Form variables restored.');
+                    \JFusion\Framework::raise(LogLevel::NOTICE, 'Form variables restored.');
                 }
             }
         } else {
@@ -111,12 +113,12 @@ class plgSystemJfusion extends JPlugin
 		                $changed = $platform->syncSessions($keepalive);
 		                if (!empty($changed)) {
 			                if ($debug) {
-				                \JFusion\Framework::raiseNotice('session changed', $master->name);
+				                \JFusion\Framework::raise(LogLevel::NOTICE, 'session changed', $master->name);
 			                }
 			                $refresh = true;
 		                }
 	                } catch (Exception $e) {
-		                \JFusion\Framework::raiseError($e, $platform->getJname());
+		                \JFusion\Framework::raise(LogLevel::ERROR, $e, $platform->getJname());
 	                }
                 }
                 //slave plugins
@@ -133,12 +135,12 @@ class plgSystemJfusion extends JPlugin
 		                    $changed = $platform->syncSessions($keepalive);
 		                    if (!empty($changed)) {
 			                    if ($debug) {
-				                    \JFusion\Framework::raiseNotice('session changed', $plugin->name);
+				                    \JFusion\Framework::raise(LogLevel::NOTICE, 'session changed', $plugin->name);
 			                    }
 			                    $refresh = true;
 		                    }
 	                    } catch (Exception $e) {
-		                    \JFusion\Framework::raiseError($e, $platform->getJname());
+		                    \JFusion\Framework::raise(LogLevel::ERROR, $e, $platform->getJname());
 	                    }
                     }
                 }
@@ -165,7 +167,7 @@ class plgSystemJfusion extends JPlugin
                 $backup['files'] = $_FILES;
                 $session->set('JFusionVarBackup', $backup);
                 if ($debug) {
-                    \JFusion\Framework::raiseNotice('Refresh is true');
+                    \JFusion\Framework::raise(LogLevel::NOTICE, 'Refresh is true');
                 }
                 $uri = JUri::getInstance();
                 //add a variable to ensure refresh
@@ -202,7 +204,7 @@ class plgSystemJfusion extends JPlugin
 				try {
 					$platform->setLanguageFrontEnd($userinfo);
 				} catch (Exception $e) {
-					\JFusion\Framework::raiseError($e, $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
+					\JFusion\Framework::raise(LogLevel::ERROR, $e, $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
 				}
 			}
 			$slaves = \JFusion\Framework::getSlaves();
@@ -216,7 +218,7 @@ class plgSystemJfusion extends JPlugin
 					try {
 						$platform->setLanguageFrontEnd($userinfo);
 					} catch (Exception $e) {
-						\JFusion\Framework::raiseError($e, $slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
+						\JFusion\Framework::raise(LogLevel::ERROR, $e, $slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
 					}
 				}
 			}

@@ -15,7 +15,6 @@ use Joomla\Language\Text;
 use Joomla\Filesystem\Path;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
-use SimpleXMLElement;
 
 /**
  * Form Class for the Joomla Framework.
@@ -73,7 +72,7 @@ class Form
 	/**
 	 * Form instances.
 	 *
-	 * @var    array
+	 * @var    Form[]
 	 * @since  1.0
 	 */
 	protected static $forms = array();
@@ -213,7 +212,7 @@ class Form
 		// Filter the fields.
 		/**
 		 * @ignore
-		 * @var SimpleXMLElement $field
+		 * @var \SimpleXMLElement $field
 		 */
 		foreach ($fields as $field)
 		{
@@ -360,7 +359,7 @@ class Form
 		// Build the result array from the found field elements.
 		/**
 		 * @ignore
-		 * @var SimpleXMLElement $element
+		 * @var \SimpleXMLElement $element
 		 */
 		foreach ($elements as $element)
 		{
@@ -406,7 +405,7 @@ class Form
 
 			/**
 			 * @ignore
-			 * @var SimpleXMLElement $element
+			 * @var \SimpleXMLElement $element
 			 */
 			foreach ($elements as &$element)
 			{
@@ -527,7 +526,7 @@ class Form
 		// Build the result array from the found field elements.
 		/**
 		 * @ignore
-		 * @var SimpleXMLElement $element
+		 * @var \SimpleXMLElement $element
 		 */
 		foreach ($elements as $element)
 		{
@@ -637,7 +636,7 @@ class Form
 	 * method will move on to the next field to load.
 	 *
 	 * @param   string    $data    The name of an XML string or object.
-	 * @param bool|string $replace Flag to toggle whether form fields should be replaced if a field
+	 * @param   bool      $replace Flag to toggle whether form fields should be replaced if a field
 	 *                             already exists with the same group/name.
 	 * @param bool|string $xpath   An optional xpath to search for the fields.
 	 *
@@ -759,10 +758,10 @@ class Form
 	 * fields in the new XML file unless the $reset parameter has been set
 	 * to false.
 	 *
-	 * @param   string    $file  The filesystem path of an XML file.
-	 * @param bool|string $reset Flag to toggle whether form fields should be replaced if a field
-	 *                           already exists with the same group/name.
-	 * @param bool|string $xpath An optional xpath to search for the fields.
+	 * @param   string  $file   The filesystem path of an XML file.
+	 * @param   bool  $reset  Flag to toggle whether form fields should be replaced if a field
+	 *                          already exists with the same group/name.
+	 * @param   bool|string  $xpath  An optional xpath to search for the fields.
 	 *
 	 * @return  boolean  True on success, false otherwise.
 	 *
@@ -1097,7 +1096,7 @@ class Form
 		// Validate the fields.
 		/**
 		 * @ignore
-		 * @var SimpleXMLElement $field
+		 * @var \SimpleXMLElement $field
 		 */
 		foreach ($fields as $field)
 		{
@@ -1214,6 +1213,9 @@ class Form
 					// If it looks like an internal link, then add the root.
 					if (substr($value, 0) == 'index.php')
 					{
+						/**
+						 * TODO: replace root() do not exists
+						 */
 						$value = Uri::root() . $value;
 					}
 
@@ -1225,6 +1227,9 @@ class Form
 				// If relative URLS are allowed we assume that URLs without protocols are internal.
 				elseif (!$protocol && $element['relative'])
 				{
+					/**
+					 * TODO: replace getInstance() do not exists
+					 */
 					$host = Uri::getInstance('SERVER')->gethost();
 
 					// If it starts with the host string, just prepend the protocol.
@@ -1235,6 +1240,9 @@ class Form
 					else
 					// Otherwise prepend the root.
 					{
+						/**
+						 * TODO: replace root() do not exists
+						 */
 						$value = Uri::root() . $value;
 					}
 				}
@@ -1372,7 +1380,7 @@ class Form
 			// Get all of the field elements with the correct name for the fields elements.
 			/**
 			 * @ignore
-			 * @var SimpleXMLElement $element
+			 * @var \SimpleXMLElement $element
 			 */
 			foreach ($elements as $element)
 			{
@@ -1394,7 +1402,7 @@ class Form
 
 			/**
 			 * @ignore
-			 * @var SimpleXMLElement $field
+			 * @var \SimpleXMLElement $field
 			 */
 			foreach ($fields as &$field)
 			{
@@ -1505,7 +1513,7 @@ class Form
 			// Get all of the field elements for the fields elements.
 			/**
 			 * @ignore
-			 * @var SimpleXMLElement $element
+			 * @var \SimpleXMLElement $element
 			 */
 			foreach ($elements as $element)
 			{
@@ -1522,6 +1530,10 @@ class Form
 					{
 						$groupNames = explode('.', $group);
 
+						/**
+						 * @ignore
+						 * @var \SimpleXMLElement $field
+						 */
 						foreach ($tmp as $field)
 						{
 							// Get the names of the groups that the field is in.
@@ -1601,7 +1613,7 @@ class Form
 				// Check to make sure that there are no parent groups for each element.
 				/**
 				 * @ignore
-				 * @var SimpleXMLElement $element
+				 * @var \SimpleXMLElement $element
 				 */
 				foreach ($current as $element)
 				{
@@ -1854,28 +1866,24 @@ class Form
 	/**
 	 * Method to get an instance of a form.
 	 *
-	 * @param   string    $name    The name of the form.
-	 * @param   string    $data    The name of an XML file or string to load as the form definition.
-	 * @param   array     $options An array of form options.
-	 * @param bool|string $replace Flag to toggle whether form fields should be replaced if a field
-	 *                             already exists with the same group/name.
-	 * @param bool|string $xpath   An optional xpath to search for the fields.
+	 * @param   string  $name     The name of the form.
+	 * @param   string  $data     The name of an XML file or string to load as the form definition.
+	 * @param   array   $options  An array of form options.
+	 * @param   bool  $replace  Flag to toggle whether form fields should be replaced if a field
+	 *                            already exists with the same group/name.
+	 * @param   bool|string  $xpath    An optional xpath to search for the fields.
 	 *
-	 * @throws \RuntimeException if the form could not be loaded.
-	 * @throws \InvalidArgumentException if no data provided.
 	 * @return  Form   Instance of this class.
 	 *
 	 * @since   1.0
+	 * @throws  \InvalidArgumentException if no data provided.
+	 * @throws  \RuntimeException if the form could not be loaded.
 	 */
 	public static function getInstance($name, $data = null, $options = array(), $replace = true, $xpath = false)
 	{
 		// Reference to array with form instances
 		$forms = &self::$forms;
 
-		/**
-		 * @ignore
-		 * @var Form[] $forms
-		 */
 		// Only instantiate the form if it does not already exist.
 		if (!isset($forms[$name]))
 		{
@@ -1993,7 +2001,7 @@ class Form
 
 		/**
 		 * @ignore
-		 * @var SimpleXMLElement $child
+		 * @var \SimpleXMLElement $child
 		 */
 		foreach ($new->children() as $child)
 		{

@@ -19,6 +19,7 @@ use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
+use Psr\Log\LogLevel;
 use \RuntimeException;
 use \Exception;
 use \JComponentHelper;
@@ -90,7 +91,7 @@ class Admin extends Plugin_Admin
 			$db->setQuery($query, $limitstart, $limit);
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			$userlist = array();
 		}
 		return $userlist;
@@ -113,7 +114,7 @@ class Admin extends Plugin_Admin
 			//getting the results
 			return $db->loadResult();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			return 0;
 		}
 	}
@@ -185,7 +186,7 @@ class Admin extends Plugin_Admin
 			$db->setQuery($query);
 			$group = $db->loadResult();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $jname);
+			Framework::raise(LogLevel::ERROR, $e, $jname);
 			$group = '';
 		}
 		return $group;

@@ -21,6 +21,7 @@ use JFusion\Framework;
 use JFusion\Plugin\Plugin;
 
 use Exception;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -60,7 +61,7 @@ class Helper extends Plugin
             $initParams['g2Uri'] = $source_url;
             $initParams['fullInit'] = $fullInit;
             if (!is_file($index_file)) {
-                Framework::raiseWarning('The path to the Gallery2(path: ' . $index_file . ') embed file set in the component preferences does not exist', $this->getJname());
+                Framework::raise(LogLevel::WARNING, 'The path to the Gallery2(path: ' . $index_file . ') embed file set in the component preferences does not exist', $this->getJname());
             } else {
                 if (!class_exists('GalleryEmbed')) {
                     require_once $index_file;
@@ -71,11 +72,11 @@ class Helper extends Plugin
                 }
                 $ret = GalleryEmbed::init($initParams);
                 if ($ret) {
-                    Framework::raiseWarning('Error while initialising Gallery2 API', $this->getJname());
+                    Framework::raise(LogLevel::WARNING, 'Error while initialising Gallery2 API', $this->getJname());
                 } else {
                     $ret = GalleryCoreApi::setPluginParameter('module', 'core', 'cookie.path', '/');
                     if ($ret) {
-                        Framework::raiseWarning('Error while setting cookie path', $this->getJname());
+                        Framework::raise(LogLevel::WARNING, 'Error while setting cookie path', $this->getJname());
                     } else {
                         if ($fullInit) {
 	                        $user = Factory::getApplication()->getUser();
@@ -87,7 +88,7 @@ class Helper extends Plugin
 		                            $options['noframework'] = true;
 		                            $userPlugin->createSession($g2_user, $options);
 	                            } catch (Exception $e) {
-		                            Framework::raiseError($e, $this->getJname());
+		                            Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	                            }
                             } else {
                                 // commented out we will need to keep an eye on if this will cause problems..

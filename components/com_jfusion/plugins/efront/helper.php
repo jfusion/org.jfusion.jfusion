@@ -20,6 +20,7 @@ use JFusion\Framework;
 use JFusion\Plugin\Plugin;
 
 use \Exception;
+use Psr\Log\LogLevel;
 use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -112,7 +113,7 @@ class Helper extends Plugin
 			    return $user_type['name'] . ' (' . $user_type['basic_user_type'] . ')';
 		    }
 	    } catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return false;
     }
@@ -175,7 +176,7 @@ class Helper extends Plugin
 		        $user_types[] = $group;
 	        }
 	    } catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
         return $user_types;
     }

@@ -27,6 +27,7 @@ use Joomla\Uri\Uri;
 use JPath;
 use JRegistry;
 use JText;
+use Psr\Log\LogLevel;
 use stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -179,11 +180,11 @@ if (!defined(\'_JEXEC\'))';
 
 				//check to see if all vars are set
 				if (empty($joomla_url)) {
-					Framework::raiseWarning(Text::_('MISSING') . ' Joomla URL', $this->getJname());
+					Framework::raise(LogLevel::WARNING, Text::_('MISSING') . ' Joomla URL', $this->getJname());
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-					Framework::raiseWarning(Text::_('MISSING') . ' ItemID', $this->getJname());
+					Framework::raise(LogLevel::WARNING, Text::_('MISSING') . ' ItemID', $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					Framework::raiseWarning(Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
+					Framework::raise(LogLevel::WARNING, Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
 				} else {
 					if ($error == 0) {
 						//get the joomla path from the file
@@ -487,7 +488,7 @@ PHP;
 		}
 
 		if (!is_file($index_file)) {
-			Framework::raiseWarning('The path to the DokuWiki index file set in the component preferences does not exist', $this->getJname());
+			Framework::raise(LogLevel::WARNING, 'The path to the DokuWiki index file set in the component preferences does not exist', $this->getJname());
 		} else {
 			//set the current directory to dokuwiki
 			chdir($source_path);
@@ -511,7 +512,7 @@ PHP;
 			chdir(JPATH_SITE);
 			// Log an error if we could not include the file
 			if (!$rs) {
-				Framework::raiseWarning('Could not find DokuWiki in the specified directory', $this->getJname());
+				Framework::raise(LogLevel::WARNING, 'Could not find DokuWiki in the specified directory', $this->getJname());
 			}
 		}
 	}

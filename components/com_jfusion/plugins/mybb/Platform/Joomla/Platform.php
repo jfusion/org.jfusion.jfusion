@@ -18,6 +18,7 @@ use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\Plugin\Platform\Joomla;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -110,7 +111,7 @@ class Platform extends Joomla
 
 		    $query[LCP] = (string)$q . $limiter;
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return $query;
     }
@@ -131,7 +132,7 @@ class Platform extends Joomla
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $results = null;
 	    }
         return $results;
@@ -153,7 +154,7 @@ class Platform extends Joomla
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -175,7 +176,7 @@ class Platform extends Joomla
 		    //getting the results
 		    return $db->loadObjectList();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    return array();
 	    }
     }
@@ -201,7 +202,7 @@ class Platform extends Joomla
 			    return array('unread' => $pminfo->unreadpms, 'total' => $pminfo->totalpms);
 		    }
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return array('unread' => 0, 'total' => 0);
     }
@@ -241,7 +242,7 @@ class Platform extends Joomla
 
 		    $url = $this->params->get('source_url') . $avatar;
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $url = '';
 	    }
         return $url;
@@ -262,7 +263,7 @@ class Platform extends Joomla
 		//combine the path and filename
 		$index_file = $source_path . $jfile;
 		if (!is_file($index_file)) {
-			\JFusion\Framework::raiseWarning('The path to the requested does not exist', $this->getJname());
+			\JFusion\Framework::raise(LogLevel::WARNING, 'The path to the requested does not exist', $this->getJname());
 		} else {
 			//set the current directory to MyBB
 			chdir($source_path);

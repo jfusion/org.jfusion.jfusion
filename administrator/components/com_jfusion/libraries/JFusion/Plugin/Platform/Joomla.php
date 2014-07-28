@@ -25,6 +25,7 @@ use Joomla\Language\Text;
 
 use JFusionFunction;
 use JRegistry;
+use Psr\Log\LogLevel;
 use \stdClass;
 
 /**
@@ -706,7 +707,7 @@ JS;
      */
 	function createCustomCaptcha(&$dbparams)
 	{
-		Framework::raiseError(Text::_('DISCUSSBOT_ERROR') . ': ' . Text::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'), $this->getJname());
+		Framework::raise(LogLevel::ERROR, Text::_('DISCUSSBOT_ERROR') . ': ' . Text::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'), $this->getJname());
 		return '';
 	}
 
@@ -786,7 +787,7 @@ JS;
      */
 	function verifyCustomCaptcha(&$dbparams)
 	{
-		Framework::raiseError(Text::_('DISCUSSBOT_ERROR') . ': ' . Text::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'), $this->getJname());
+		Framework::raise(LogLevel::ERROR, Text::_('DISCUSSBOT_ERROR') . ': ' . Text::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'), $this->getJname());
 		return false;
 	}
 

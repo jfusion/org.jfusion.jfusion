@@ -15,6 +15,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -114,7 +116,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 				    $master_data['total'] = $JFusionPlugin->getUserCount();
 			    } catch(Exception $e) {
 				    $master_data['total'] = 0;
-				    \JFusion\Framework::raiseWarning($e, $JFusionPlugin->getJname());
+				    \JFusion\Framework::raise(LogLevel::WARNING, $e, $JFusionPlugin->getJname());
 			    }
 			    $master_data['jname'] = $master->name;
 
@@ -126,7 +128,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 					    $slave_data[$slave->name]['total'] = $JFusionSlave->getUserCount();
 				    } catch(Exception $e) {
 					    $slave_data[$slave->name]['total'] = 0;
-					    \JFusion\Framework::raiseWarning($e, $JFusionSlave->getJname());
+					    \JFusion\Framework::raise(LogLevel::WARNING, $e, $JFusionSlave->getJname());
 				    }
 
 
@@ -168,7 +170,7 @@ JS;
 
 			    parent::display();
 		    } else {
-			    \JFusion\Framework::raiseWarning(JText::_('SYNC_NOCONFIG'));
+			    \JFusion\Framework::raise(LogLevel::WARNING, JText::_('SYNC_NOCONFIG'));
 		    }
 	    }
     }

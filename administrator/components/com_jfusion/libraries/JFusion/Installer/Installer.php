@@ -8,12 +8,13 @@
  */
 
 use JFusion\Factory;
+use JFusion\Framework;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\Path;
 use Joomla\Language\Text;
-use Joomla\Log\Log;
 
+use Psr\Log\LogLevel;
 use RuntimeException;
 use SimpleXMLElement;
 
@@ -88,6 +89,18 @@ class Installer
 	 */
 	public function __construct()
 	{
+	}
+
+	/**
+	 * Logs with an arbitrary level.
+	 *
+	 * @param mixed $level
+	 * @param string $message
+	 *
+	 * @return null
+	 */
+	private function log($level, $message) {
+		Framework::raise($level, $message);
 	}
 
 	/**
@@ -227,7 +240,7 @@ class Installer
 		// Raise abort warning
 		if ($msg)
 		{
-			Log::add($msg, Log::WARNING, 'jerror');
+			$this->log(LogLevel::WARNING, $msg);
 		}
 
 		while ($step != null)
@@ -284,7 +297,7 @@ class Installer
 	public function parseFiles(SimpleXMLElement $element, $cid = 0, $oldFiles = null, $oldMD5 = null)
 	{
 		// Get the array of file nodes to process; we checked whether this had children above.
-		if (!$element || !count($element->children()))
+		if (!$element || !$element->children()->count())
 		{
 			// Either the tag does not exist or has no children (hence no files to process) therefore we return zero files processed.
 			return 0;
@@ -324,7 +337,7 @@ class Installer
 		{
 			$oldEntries = $oldFiles->children();
 
-			if (count($oldEntries))
+			if ($oldEntries->count())
 			{
 				$deletions = $this->findDeletedFiles($oldEntries, $element->children());
 
@@ -376,8 +389,7 @@ class Installer
 
 				if (!Folder::create($newdir))
 				{
-					Log::add(Text::sprintf('JLIB_INSTALLER_ERROR_CREATE_DIRECTORY', $newdir), Log::WARNING, 'jerror');
-
+					$this->log(LogLevel::WARNING, Text::sprintf('JLIB_INSTALLER_ERROR_CREATE_DIRECTORY', $newdir));
 					return false;
 				}
 			}
@@ -434,7 +446,7 @@ class Installer
 					 * The source file does not exist.  Nothing to copy so set an error
 					 * and return false.
 					 */
-					Log::add(Text::sprintf('JLIB_INSTALLER_ERROR_NO_FILE', $filesource), Log::WARNING, 'jerror');
+					$this->log(LogLevel::WARNING, Text::sprintf('JLIB_INSTALLER_ERROR_NO_FILE', $filesource));
 
 					return false;
 				}
@@ -449,7 +461,7 @@ class Installer
 
 					// The destination file already exists and the overwrite flag is false.
 					// Set an error and return false.
-					Log::add(Text::sprintf('JLIB_INSTALLER_ERROR_FILE_EXISTS', $filedest), Log::WARNING, 'jerror');
+					$this->log(LogLevel::WARNING, Text::sprintf('JLIB_INSTALLER_ERROR_FILE_EXISTS', $filedest));
 
 					return false;
 				}
@@ -460,7 +472,7 @@ class Installer
 					{
 						if (!(Folder::copy($filesource, $filedest, null, $overwrite)))
 						{
-							Log::add(Text::sprintf('JLIB_INSTALLER_ERROR_FAIL_COPY_FOLDER', $filesource, $filedest), Log::WARNING, 'jerror');
+							$this->log(LogLevel::WARNING, Text::sprintf('JLIB_INSTALLER_ERROR_FAIL_COPY_FOLDER', $filesource, $filedest));
 
 							return false;
 						}
@@ -471,12 +483,12 @@ class Installer
 					{
 						if (!(File::copy($filesource, $filedest, null)))
 						{
-							Log::add(Text::sprintf('JLIB_INSTALLER_ERROR_FAIL_COPY_FILE', $filesource, $filedest), Log::WARNING, 'jerror');
+							$this->log(LogLevel::WARNING, Text::sprintf('JLIB_INSTALLER_ERROR_FAIL_COPY_FILE', $filesource, $filedest));
 
 							// In 3.2, TinyMCE language handling changed.  Display a special notice in case an older language pack is installed.
 							if (strpos($filedest, 'media/editors/tinymce/jscripts/tiny_mce/langs'))
 							{
-								Log::add(Text::_('JLIB_INSTALLER_NOT_ERROR'), Log::WARNING, 'jerror');
+								$this->log(LogLevel::WARNING, Text::_('JLIB_INSTALLER_NOT_ERROR'));
 							}
 
 							return false;

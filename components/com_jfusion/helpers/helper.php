@@ -8,6 +8,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -113,7 +115,7 @@ class JFusionHelper {
 
 		    return $modules [$identifier];
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseWarning($e);
+		    \JFusion\Framework::raise(LogLevel::WARNING, $e);
 		    return false;
 	    }
 	}

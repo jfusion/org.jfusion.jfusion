@@ -8,7 +8,7 @@
 
 namespace Joomla\Filesystem;
 
-use Joomla\Log\Log;
+use Joomla\Filesystem\Exception\FilesystemException;
 
 /**
  * A File handling class
@@ -64,6 +64,8 @@ class File
 	 * @return  boolean  True on success
 	 *
 	 * @since   1.0
+	 * @throws  FilesystemException
+	 * @throws  \UnexpectedValueException
 	 */
 	public static function copy($src, $dest, $path = null, $use_streams = false)
 	{
@@ -77,31 +79,25 @@ class File
 		// Check src path
 		if (!is_readable($src))
 		{
-			Log::add(__METHOD__ . ': Cannot find or read file: ' . $src, Log::WARNING, 'jerror');
-
-			return false;
+			throw new \UnexpectedValueException(__METHOD__ . ': Cannot find or read file: ' . $src);
 		}
 
 		if ($use_streams)
 		{
 			$stream = Stream::getStream();
 
-			if (!$stream->copy($src, $dest))
-			{
-				Log::add(sprintf('%1$s(%2$s, %3$s): %4$s', __METHOD__, $src, $dest, $stream->getError()), Log::WARNING, 'jerror');
-
-				return false;
+			try {
+				$stream->copy($src, $dest);
+			} catch(\Exception $e) {
+				throw new FilesystemException(sprintf('%1$s(%2$s, %3$s): %4$s', __METHOD__, $src, $dest, $e->getMessage()));
 			}
-
 			return true;
 		}
 		else
 		{
 			if (!@ copy($src, $dest))
 			{
-				Log::add(__METHOD__ . ': Copy failed.', Log::WARNING, 'jerror');
-
-				return false;
+				throw new FilesystemException(__METHOD__ . ': Copy failed.');
 			}
 
 			return true;
@@ -116,6 +112,7 @@ class File
 	 * @return  boolean  True on success
 	 *
 	 * @since   1.0
+	 * @throws  FilesystemException
 	 */
 	public static function delete($file)
 	{
@@ -131,16 +128,11 @@ class File
 
 			// In case of restricted permissions we zap it one way or the other
 			// as long as the owner is either the webserver or the ftp
-			if (@unlink($file))
-			{
-				// Do nothing
-			}
-			else
+			if (!@ unlink($file))
 			{
 				$filename = basename($file);
-				Log::add(__METHOD__ . ': Failed deleting ' . $filename, Log::WARNING, 'jerror');
 
-				return false;
+				throw new FilesystemException(__METHOD__ . ': Failed deleting ' . $filename);
 			}
 		}
 
@@ -158,6 +150,7 @@ class File
 	 * @return  boolean  True on success
 	 *
 	 * @since   1.0
+	 * @throws  FilesystemException
 	 */
 	public static function move($src, $dest, $path = '', $use_streams = false)
 	{
@@ -177,22 +170,18 @@ class File
 		{
 			$stream = Stream::getStream();
 
-			if (!$stream->move($src, $dest))
-			{
-				Log::add(__METHOD__ . ': ' . $stream->getError(), Log::WARNING, 'jerror');
-
-				return false;
+			try {
+				$stream->move($src, $dest);
+			} catch (\Exception $e) {
+				throw new FilesystemException(__METHOD__ . ': ' . $e->getMessage());
 			}
-
 			return true;
 		}
 		else
 		{
 			if (!@ rename($src, $dest))
 			{
-				Log::add(__METHOD__ . ': Rename failed.', Log::WARNING, 'jerror');
-
-				return false;
+				throw new FilesystemException(__METHOD__ . ': Rename failed.');
 			}
 
 			return true;
@@ -209,6 +198,7 @@ class File
 	 * @return  boolean  True on success
 	 *
 	 * @since   1.0
+	 * @throws  FilesystemException
 	 */
 	public static function write($file, &$buffer, $use_streams = false)
 	{
@@ -227,11 +217,10 @@ class File
 			// Beef up the chunk size to a meg
 			$stream->set('chunksize', (1024 * 1024));
 
-			if (!$stream->writeFile($file, $buffer))
-			{
-				Log::add(sprintf('%1$s(%2$s): %3$s', __METHOD__, $file, $stream->getError()), Log::WARNING, 'jerror');
-
-				return false;
+			try {
+				$stream->writeFile($file, $buffer);
+			} catch (\Exception $e) {
+				throw new FilesystemException(sprintf('%1$s(%2$s): %3$s', __METHOD__, $file, $e->getMessage()));
 			}
 
 			return true;
@@ -255,6 +244,7 @@ class File
 	 * @return  boolean  True on success
 	 *
 	 * @since   1.0
+	 * @throws  FilesystemException
 	 */
 	public static function upload($src, $dest, $use_streams = false)
 	{
@@ -273,13 +263,11 @@ class File
 		{
 			$stream = Stream::getStream();
 
-			if (!$stream->upload($src, $dest))
-			{
-				Log::add(__METHOD__ . ': ' . $stream->getError(), Log::WARNING, 'jerror');
-
-				return false;
+			try {
+				$stream->upload($src, $dest);
+			} catch (\Exception $e) {
+				throw new FilesystemException(__METHOD__ . ': ' . $e->getMessage());
 			}
-
 			return true;
 		}
 		else
@@ -293,15 +281,13 @@ class File
 				}
 				else
 				{
-					Log::add(__METHOD__ . ': Failed to change file permissions.', Log::WARNING, 'jerror');
+					throw new FilesystemException(__METHOD__ . ': Failed to change file permissions.');
 				}
 			}
 			else
 			{
-				Log::add(__METHOD__ . ': Failed to move file.', Log::WARNING, 'jerror');
+				throw new FilesystemException(__METHOD__ . ': Failed to move file.');
 			}
-
-			return false;
 		}
 	}
 }

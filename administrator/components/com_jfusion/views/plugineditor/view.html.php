@@ -15,6 +15,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -100,7 +102,7 @@ class jfusionViewplugineditor extends JViewLegacy
 		        try {
 			        $JFusionPlugin->debugConfig();
 		        } catch (Exception $e) {
-			        \JFusion\Framework::raiseError($e, $JFusionPlugin->getJname());
+			        \JFusion\Framework::raise(LogLevel::ERROR, $e, $JFusionPlugin->getJname());
 		        }
 	        }
             //render view

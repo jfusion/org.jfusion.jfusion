@@ -21,6 +21,7 @@ use JFusion\Framework;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
 
@@ -99,7 +100,7 @@ class User extends Plugin_User
 			    $user->bind($result);
 		    }
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
 	    return $user;
 	}

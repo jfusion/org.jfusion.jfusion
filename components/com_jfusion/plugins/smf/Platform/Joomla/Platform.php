@@ -25,6 +25,7 @@ use Joomla\Language\Text;
 use JFusion\Plugin\Platform\Joomla;
 use Joomla\Uri\Uri;
 use JRegistry;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
 
@@ -144,7 +145,7 @@ class Platform extends Joomla
 			        }
 		        }
 	        } catch (Exception $e) {
-				Framework::raiseError($e, $this->getJname());
+				Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	        }
         }
 
@@ -255,7 +256,7 @@ class Platform extends Joomla
 			    }
 		    }
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
     }
 
@@ -319,7 +320,7 @@ class Platform extends Joomla
 			    $newstatus = ($latest_read_msgid !== false && $post->postid > $latest_read_msgid) ? 1 : 0;
 		    }
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return $newstatus;
     }
@@ -343,7 +344,7 @@ class Platform extends Joomla
 		    //getting the results
 		    return $db->loadObjectList('id');
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			return array();
 	    }
     }
@@ -381,7 +382,7 @@ class Platform extends Joomla
 		        $totalCount = $db->loadResult();
 		        return array('unread' => $unreadCount, 'total' => $totalCount);
 	        } catch (Exception $e) {
-				Framework::raiseError($e, $this->getJname());
+				Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	        }
         }
         return array('unread' => 0, 'total' => 0);
@@ -450,7 +451,7 @@ class Platform extends Joomla
 			    }
 		    }
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $url = false;
 	    }
         return $url;
@@ -839,7 +840,7 @@ HTML;
 
 		    $posts = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $posts = array();
 	    }
         return $posts;
@@ -865,7 +866,7 @@ HTML;
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -921,7 +922,7 @@ HTML;
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $results = null;
 	    }
         return $results;
@@ -943,7 +944,7 @@ HTML;
 		    $db->setQuery($query);
 		    $locked = $db->loadResult();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $locked = true;
 	    }
         return $locked;
@@ -1007,7 +1008,7 @@ HTML;
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			return 0;
 		}
 	}
@@ -1030,7 +1031,7 @@ HTML;
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			return 0;
 		}
 	}
@@ -1112,7 +1113,7 @@ HTML;
 						}
 					}
 				} catch (Exception $e) {
-					Framework::raiseError($e, $this->getJname());
+					Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 				}
 			}
 			$options['custom_smileys'] = $custom_smileys;
@@ -1243,11 +1244,11 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
 
 				//check to see if all vars are set
 				if (empty($joomla_url)) {
-					Framework::raiseWarning(Text::_('MISSING') . ' Joomla URL', $this->getJname(), $this->getJname());
+					Framework::raise(LogLevel::WARNING, Text::_('MISSING') . ' Joomla URL', $this->getJname(), $this->getJname());
 				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-					Framework::raiseWarning(Text::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
+					Framework::raise(LogLevel::WARNING, Text::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
 				} else if (!$this->isValidItemID($joomla_itemid)) {
-					Framework::raiseWarning(Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname(), $this->getJname());
+					Framework::raise(LogLevel::WARNING, Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname(), $this->getJname());
 				} else if($error == 0) {
 					//get the joomla path from the file
 					jimport('joomla.filesystem.file');
@@ -1447,7 +1448,7 @@ HTML;
 				}
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 	}
 
@@ -1514,7 +1515,7 @@ HTML;
 			try {
 				$JFusionUser->destroySession(null, null);
 			} catch (Exception $e) {
-				Framework::raiseError($e, $this->getJname());
+				Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			}
 
 			//destroy the Joomla session
@@ -1559,7 +1560,7 @@ HTML;
 		$source_path = $this->params->get('source_path');
 		$index_file = $source_path . 'index.php';
 		if (!is_file($index_file)) {
-			Framework::raiseWarning('The path to the SMF index file set in the component preferences does not exist', $this->getJname());
+			Framework::raise(LogLevel::WARNING, 'The path to the SMF index file set in the component preferences does not exist', $this->getJname());
 			return null;
 		}
 		//set the current directory to SMF
@@ -1586,7 +1587,7 @@ HTML;
 		chdir(JPATH_SITE);
 		// Log an error if we could not include the file
 		if (!$rs) {
-			Framework::raiseWarning('Could not find SMF in the specified directory', $this->getJname());
+			Framework::raise(LogLevel::WARNING, 'Could not find SMF in the specified directory', $this->getJname());
 		}
 		$document = JFactory::getDocument();
 		$document->addScript(JFusionFunction::getJoomlaURL() . JFUSION_PLUGIN_DIR_URL . $this->getJname() . '/js/script.js');
@@ -1772,7 +1773,7 @@ HTML;
 		$extra = $matches[2];
 
 		$baseURL = $this->data->baseURL;
-		//\JFusion\Framework::raiseWarning($url, $this->getJname());
+		//\JFusion\Framework::raise(LogLevel::WARNING, $url, $this->getJname());
 		$url = htmlspecialchars_decode($url);
 		$Itemid = Factory::getApplication()->input->getInt('Itemid');
 		$extra = stripslashes($extra);
@@ -1848,7 +1849,7 @@ HTML;
 		$url = $matches[1];
 		$baseURL = $this->data->baseURL;
 
-		//\JFusion\Framework::raiseWarning($url, $this->getJname());
+		//\JFusion\Framework::raise(LogLevel::WARNING, $url, $this->getJname());
 		//split up the timeout from url
 		$parts = explode(';url=', $url);
 		$timeout = $parts[0];
@@ -1885,7 +1886,7 @@ HTML;
 			$redirectURL .= '#' . $fragment;
 		}
 		$return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
-		//\JFusion\Framework::raiseWarning(htmlentities($return), $this->getJname());
+		//\JFusion\Framework::raise(LogLevel::WARNING, htmlentities($return), $this->getJname());
 		return $return;
 	}
 
@@ -2042,7 +2043,7 @@ HTML;
 					}
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 		return $pathway;
 	}

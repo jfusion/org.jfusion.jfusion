@@ -15,6 +15,7 @@
 
 // no direct access
 use JFusion\Installer\Plugin;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -70,10 +71,10 @@ class JFusionModelInstaller extends InstallerModelInstall
 		if ($this->raise) {
 			switch($type) {
 				case 'message':
-					\JFusion\Framework::raiseMessage($msg, $jname);
+					\JFusion\Framework::raise(LogLevel::INFO, $msg, $jname);
 					break;
 				case 'error':
-					\JFusion\Framework::raiseError($msg, $jname);
+					\JFusion\Framework::raise(LogLevel::ERROR, $msg, $jname);
 					break;
 			}
 		}

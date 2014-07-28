@@ -26,6 +26,7 @@ use Joomla\Uri\Uri;
 use JPluginHelper;
 use JRegistry;
 use JUri;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
 use JFusion\Plugins\vbulletin\Helper;
@@ -83,7 +84,7 @@ class Platform extends Joomla
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $results = null;
 	    }
         return $results;
@@ -108,7 +109,7 @@ class Platform extends Joomla
 		    $open = $db->loadResult();
 		    $locked = ($open) ? false : true;
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $locked = true;
 	    }
         return $locked;
@@ -342,7 +343,7 @@ class Platform extends Joomla
 		    $db->setQuery($query);
 		    $threadinfo = $db->loadAssoc();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $threadinfo = null;
 	    }
         return $threadinfo;
@@ -393,7 +394,7 @@ class Platform extends Joomla
 
 		    $foruminfo['depth'] = substr_count($foruminfo['parentlist'], ',') - 1;
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $foruminfo = array();
 	    }
 
@@ -453,7 +454,7 @@ class Platform extends Joomla
 
 		    $posts = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $posts = array();
 	    }
         return $posts;
@@ -477,7 +478,7 @@ class Platform extends Joomla
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -555,7 +556,7 @@ class Platform extends Joomla
 		    $pmcount['total'] = $vbPMData->pmtotal;
 		    $pmcount['unread'] = $vbPMData->pmunread;
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return $pmcount;
     }
@@ -632,7 +633,7 @@ class Platform extends Joomla
 			    }
 		    }
 	    } catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return $url;
     }
@@ -663,7 +664,7 @@ class Platform extends Joomla
 			        }
 		        }
 	        } catch (Exception $e) {
-				Framework::raiseError($e, $this->getJname());
+				Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	        }
         }
 
@@ -769,7 +770,7 @@ class Platform extends Joomla
 			    $newstatus = ($marktime !== false && $post->lastpost > $marktime) ? 1 : 0;
 		    }
 	    } catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return $newstatus;
     }
@@ -808,7 +809,7 @@ class Platform extends Joomla
 			    $results = $array;
 		    }
 	    } catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return $results;
     }
@@ -948,7 +949,7 @@ class Platform extends Joomla
 			    }
 		    }
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $forumPerms = array();
 		    $groupPerms = null;
 	    }
@@ -1066,7 +1067,7 @@ class Platform extends Joomla
 			$userPlugin = Factory::getUser($this->getJname());
 			$debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
 			if ($debug) {
-				Framework::raiseNotice('keep alive called', $this->getJname());
+				Framework::raise(LogLevel::NOTICE, 'keep alive called', $this->getJname());
 			}
 			$options = array();
 			//retrieve the values for vb cookies
@@ -1103,7 +1104,7 @@ class Platform extends Joomla
 			if (!$JUser->get('guest', true)) {
 				//user logged into Joomla so let's check for an active vb session
 				if ($debug) {
-					Framework::raiseNotice('Joomla user logged in', $this->getJname());
+					Framework::raise(LogLevel::NOTICE, 'Joomla user logged in', $this->getJname());
 				}
 
 				//find the userid attached to Joomla userid
@@ -1121,17 +1122,17 @@ class Platform extends Joomla
 				$vb_session = ((!empty($cookie_userid) && !empty($cookie_password) && $cookie_userid == $vb_userid) || (!empty($session_userid) && $session_userid == $vb_userid)) ? 1 : 0;
 
 				if ($debug) {
-					Framework::raiseNotice('vB session active: ' . $vb_session, $this->getJname());
+					Framework::raise(LogLevel::NOTICE, 'vB session active: ' . $vb_session, $this->getJname());
 				}
 
 				//create a new session if one does not exist and either keep alive is enabled or a joomla persistent cookie exists
 				if (!$vb_session) {
 					if ((!empty($keepalive) || !empty($joomla_persistant_cookie))) {
 						if ($debug) {
-							Framework::raiseNotice('vbulletin guest', $this->getJname());
-							Framework::raiseNotice('cookie_sessionhash = '. $cookie_sessionhash, $this->getJname());
-							Framework::raiseNotice('session_userid = '. $session_userid, $this->getJname());
-							Framework::raiseNotice('vb_userid = ' . $vb_userid, $this->getJname());
+							Framework::raise(LogLevel::NOTICE, 'vbulletin guest', $this->getJname());
+							Framework::raise(LogLevel::NOTICE, 'cookie_sessionhash = '. $cookie_sessionhash, $this->getJname());
+							Framework::raise(LogLevel::NOTICE, 'session_userid = '. $session_userid, $this->getJname());
+							Framework::raise(LogLevel::NOTICE, 'vb_userid = ' . $vb_userid, $this->getJname());
 						}
 						//enable remember me as this is a keep alive function anyway
 						$options['remember'] = 1;
@@ -1152,13 +1153,13 @@ class Platform extends Joomla
 								Framework::raise('notice', $status, $this->getJname());
 							}
 						} catch (Exception $e) {
-							Framework::raiseError($e, $this->getJname());
+							Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 						}
 						//signal that session was changed
 						return 1;
 					} else {
 						if ($debug) {
-							Framework::raiseNotice('keep alive disabled or no persistant session found so calling Joomla\'s destorySession', $this->getJname());
+							Framework::raise(LogLevel::NOTICE, 'keep alive disabled or no persistant session found so calling Joomla\'s destorySession', $this->getJname());
 						}
 						$JoomlaUser = Factory::getUser('joomla_int');
 
@@ -1171,28 +1172,28 @@ class Platform extends Joomla
 								Framework::raise('notice', $status, $this->getJname());
 							}
 						} catch (Exception $e) {
-							Framework::raiseError($e, $JoomlaUser->getJname());
+							Framework::raise(LogLevel::ERROR, $e, $JoomlaUser->getJname());
 						}
 					}
 				} elseif ($debug) {
-					Framework::raiseNotice('Nothing done as both Joomla and vB have active sessions.', $this->getJname());
+					Framework::raise(LogLevel::NOTICE, 'Nothing done as both Joomla and vB have active sessions.', $this->getJname());
 				}
 			} elseif (!empty($session_userid) || (!empty($cookie_userid) && !empty($cookie_password))) {
 				//the user is not logged into Joomla and we have an active vB session
 
 				if ($debug) {
-					Framework::raiseNotice('Joomla has a guest session', $this->getJname());
+					Framework::raise(LogLevel::NOTICE, 'Joomla has a guest session', $this->getJname());
 				}
 
 				if (!empty($cookie_userid) && $cookie_userid != $session_userid) {
 					try {
 						$status = $userPlugin->destroySession(null, null);
 						if ($debug) {
-							Framework::raiseNotice('Cookie userid did not match session userid thus destroyed vB\'s session.', $this->getJname());
-							Framework::raise('notice', $status, $this->getJname());
+							Framework::raise(LogLevel::NOTICE, 'Cookie userid did not match session userid thus destroyed vB\'s session.', $this->getJname());
+							Framework::raise(LogLevel::NOTICE, $status, $this->getJname());
 						}
 					} catch (Exception $e) {
-						Framework::raiseError($e, $this->getJname());
+						Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 					}
 				}
 
@@ -1204,28 +1205,28 @@ class Platform extends Joomla
 				$userlookup = $PluginUser->lookupUser($userlookup);
 				if (!empty($joomla_persistant_cookie)) {
 					if ($debug) {
-						Framework::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal', $this->getJname());
+						Framework::raise(LogLevel::NOTICE, 'Joomla persistant cookie found so let Joomla handle renewal', $this->getJname());
 					}
 					return 0;
 				} elseif (empty($keepalive)) {
 					if ($debug) {
-						Framework::raiseNotice('Keep alive disabled so kill vBs session', $this->getJname());
+						Framework::raise(LogLevel::NOTICE, 'Keep alive disabled so kill vBs session', $this->getJname());
 					}
 					//something fishy or user chose not to use remember me so let's destroy vB's session
 					try {
 						$userPlugin->destroySession(null, null);
 					} catch (Exception $e) {
-						Framework::raiseError($e, $this->getJname());
+						Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 					}
 					return 1;
 				} elseif ($debug) {
-					Framework::raiseNotice('Keep alive enabled so renew Joomla\'s session', $this->getJname());
+					Framework::raise(LogLevel::NOTICE, 'Keep alive enabled so renew Joomla\'s session', $this->getJname());
 				}
 
 				$joomlaid = $JUser->get('id');
 				if ($joomlaid) {
 					if ($debug) {
-						Framework::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.', $this->getJname());
+						Framework::raise(LogLevel::NOTICE, 'Found a phpBB user so attempting to renew Joomla\'s session.', $this->getJname());
 					}
 					//get the user's info
 					$db = JFactory::getDBO();
@@ -1248,7 +1249,7 @@ class Platform extends Joomla
 								Framework::raise('notice', $status, $this->getJname());
 							}
 						} catch (Exception $e) {
-							Framework::raiseError($e, $JoomlaUser->getJname());
+							Framework::raise(LogLevel::ERROR, $e, $JoomlaUser->getJname());
 						}
 
 						//no need to signal refresh as Joomla will recognize this anyway
@@ -1257,7 +1258,7 @@ class Platform extends Joomla
 				}
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 		return 0;
 	}
@@ -1321,7 +1322,7 @@ class Platform extends Joomla
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			return 0;
 		}
 	}
@@ -1343,7 +1344,7 @@ class Platform extends Joomla
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			return 0;
 		}
 	}
@@ -1392,7 +1393,7 @@ class Platform extends Joomla
 					}
 				}
 			} catch (Exception $e) {
-				Framework::raiseError($e, $this->getJname());
+				Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			}
 
 			$options['custom_smileys'] = $custom_smileys;
@@ -1421,7 +1422,7 @@ class Platform extends Joomla
 						$vb_bbcodes[$bb->bbcodetag] = array('mode' => 4, 'template' => $template, 'class' => 'inline', 'allow_in' => array('block', 'inline', 'link', 'list', 'listitem', 'columns', 'image'));
 					}
 				} catch (Exception $e) {
-					Framework::raiseError($e, $this->getJname());
+					Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 				}
 			}
 
@@ -1454,7 +1455,7 @@ class Platform extends Joomla
 					$vb_bbcodes_plain = $db->loadColumn();
 				}
 			} catch (Exception $e) {
-				Framework::raiseError($e, $this->getJname());
+				Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			}
 
 			if (!empty($vb_bbcodes_plain)) {
@@ -1587,9 +1588,9 @@ HTML;
 				if ($action != 'disable') {
 					$secret = $this->params->get('vb_secret', null);
 					if (empty($secret)) {
-						Framework::raiseWarning(Text::_('VB_SECRET_EMPTY'));
+						Framework::raise(LogLevel::WARNING, Text::_('VB_SECRET_EMPTY'));
 					} else if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
-						Framework::raiseWarning(Text::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
+						Framework::raise(LogLevel::WARNING, Text::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
 					} else {
 						//install the hook
 						$php = $this->getHookPHP($hook, $itemid);
@@ -1608,7 +1609,7 @@ HTML;
 				}
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 	}
 
@@ -1839,7 +1840,7 @@ PHP;
 		//frameless integration is only supported for 3.x
 		$version = $this->helper->getVersion();
 		if ((int) substr($version, 0, 1) > 3) {
-			Framework::raiseWarning(Text::sprintf('VB_FRAMELESS_NOT_SUPPORTED', $version), $this->getJname());
+			Framework::raise(LogLevel::WARNING, Text::sprintf('VB_FRAMELESS_NOT_SUPPORTED', $version), $this->getJname());
 		} else {
 
 			try {
@@ -1855,12 +1856,12 @@ PHP;
 				$db->setQuery($query);
 				$active = $db->loadResult();
 			} catch (Exception $e) {
-				Framework::raiseError($e, $this->getJname());
+				Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 				$active = 0;
 			}
 
 			if ($active != '1') {
-				Framework::raiseWarning(Text::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'), $this->getJname());
+				Framework::raise(LogLevel::WARNING, Text::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'), $this->getJname());
 			} else {
 				//have to clear this as it shows up in some text boxes
 				unset($q);
@@ -1933,7 +1934,7 @@ PHP;
 					$index_file = $source_path . DIRECTORY_SEPARATOR . $jfile;
 				}
 				if (!is_file($index_file)) {
-					Framework::raiseWarning('The path to the requested does not exist', $this->getJname());
+					Framework::raise(LogLevel::WARNING, 'The path to the requested does not exist', $this->getJname());
 				} else {
 					//set the current directory to vBulletin
 					chdir($source_path);
@@ -2254,7 +2255,7 @@ JS;
 				$pathway[] = $crumb;
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 		return $pathway;
 	}
@@ -2295,7 +2296,7 @@ JS;
 				}
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 		return $url;
 	}

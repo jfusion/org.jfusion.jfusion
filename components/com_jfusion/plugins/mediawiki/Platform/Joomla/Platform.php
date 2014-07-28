@@ -12,6 +12,7 @@ use Joomla\String\String;
 use JFusionFunction;
 use Joomla\Uri\Uri;
 use JRegistry;
+use Psr\Log\LogLevel;
 use stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -163,7 +164,7 @@ class Platform extends Joomla
 			    $output .= '</ul>';
 		    }
 	    } catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return $output;
 	}

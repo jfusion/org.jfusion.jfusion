@@ -8,6 +8,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or trigger_error('Restricted access');
 
 try {
@@ -69,6 +71,6 @@ try {
 		throw new RuntimeException(JText::_('Plugin system magelib not installed or activated!'));
 	}
 } catch (Exception $e) {
-	\JFusion\Framework::raiseError($e, 'mod_jfusion_magecart');
+	\JFusion\Framework::raise(LogLevel::ERROR, $e, 'mod_jfusion_magecart');
 	echo $e->getMessage();
 }

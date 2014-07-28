@@ -20,6 +20,7 @@ use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\Path;
 use Joomla\Language\Text;
 use Joomla\Uri\Uri;
+use Psr\Log\LogLevel;
 use stdClass;
 
 /**
@@ -102,7 +103,7 @@ class Plugin_Platform extends Plugin
 		}
 		if ( isset($status['error']) ) {
 			foreach ($status['error'] as $value) {
-				Framework::raiseWarning($value, $this->getJname());
+				Framework::raise(LogLevel::WARNING, $value, $this->getJname());
 			}
 		}
 	}
@@ -580,7 +581,7 @@ JS;
 		if (!empty($fragment)) {
 			$url .= '#' . $fragment;
 		}
-		//Framework::raiseWarning(htmlentities($return), $this->getJname());
+		//Framework::raise(LogLevel::WARNING, htmlentities($return), $this->getJname());
 		return $timeout . $url;
 	}
 

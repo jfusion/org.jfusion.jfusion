@@ -8,7 +8,6 @@
 
 namespace Joomla\Form;
 
-use SimpleXMLElement;
 use stdClass;
 use Joomla\Language\Text;
 
@@ -86,7 +85,7 @@ class Field_Radio extends Field
 
 		/**
 		 * @ignore
-		 * @var SimpleXMLElement $option
+		 * @var \SimpleXMLElement $option
 		 */
 		foreach ($this->element->children() as $option)
 		{

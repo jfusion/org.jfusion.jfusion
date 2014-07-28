@@ -26,6 +26,7 @@ use \Exception;
 use Joomla\Registry\Registry;
 use JTable;
 use JUser;
+use Psr\Log\LogLevel;
 use \RuntimeException;
 use \stdClass;
 
@@ -154,7 +155,7 @@ class User extends Plugin_User
 				$user->bind($result);
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 		return $user;
 	}

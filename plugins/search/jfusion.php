@@ -15,6 +15,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 /**
  * Load the JFusion framework
@@ -144,7 +146,7 @@ class plgSearchJfusion extends JPlugin
 			try {
 				$results = $platform->getSearchResults($text, $phrase, $pluginParam, $itemid, $ordering);
 			} catch (Exception $e) {
-				\JFusion\Framework::raiseError($e, $platform->getJname());
+				\JFusion\Framework::raise(LogLevel::ERROR, $e, $platform->getJname());
 				$results = array();
 			}
 			if (is_array($results)) {

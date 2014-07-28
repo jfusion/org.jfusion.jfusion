@@ -19,6 +19,7 @@ use JFusion\Framework;
 use JFusion\Plugin\Platform\Joomla;
 
 use \Exception;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -63,7 +64,7 @@ class Platform extends Joomla
 		    $avatar = $db->loadResult();
 		    $url = $this->params->get('avatar_url') . $avatar;
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $url = '';
 	    }
         return $url;
@@ -117,7 +118,7 @@ class Platform extends Joomla
 			$db->setQuery($query);
 			$result = $db->loadResult();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			$result = 0;
 		}
 		return $result;

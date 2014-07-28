@@ -9,15 +9,11 @@
 namespace Joomla\Language;
 
 use Joomla\String\String;
-use SimpleXMLElement;
 
 /**
  * Allows for quoting in language .ini files.
  */
-if (!defined('_QQ_')) {
-	define('_QQ_', '"');
-}
-
+define('_QQ_', '"');
 
 /**
  * Languages/translation handler class
@@ -836,7 +832,7 @@ class Language
 	 */
 	protected function parse($filename)
 	{
-		$track_errors = 0;
+		$track_errors = null;
 		if ($this->debug)
 		{
 			// Capture hidden PHP errors from the parsing.
@@ -1296,6 +1292,10 @@ class Language
 
 		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
 
+		/**
+		 * @ignore
+		 * @var $file \SplFileInfo
+		 */
 		foreach ($iterator as $file)
 		{
 			$langs    = array();
@@ -1361,7 +1361,7 @@ class Language
 
 		/**
 		 * @ignore
-		 * @var SimpleXMLElement $child
+		 * @var $child \SimpleXMLElement
 		 */
 		foreach ($xml->metadata->children() as $child)
 		{

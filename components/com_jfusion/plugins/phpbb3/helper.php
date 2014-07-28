@@ -18,6 +18,7 @@ use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\Plugin\Plugin;
 use \Exception;
+use Psr\Log\LogLevel;
 use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -228,7 +229,7 @@ class Helper extends Plugin
 			    $this->parse_bbcode($text);
 		    }
 	    } catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
 
         $bbcode = new stdClass;

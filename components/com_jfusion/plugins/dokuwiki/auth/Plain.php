@@ -9,6 +9,7 @@
  * @author     Jan Schumann <js@schumann-it.com>
  */
 use JFusion\Framework;
+use Psr\Log\LogLevel;
 
 /**
  * Class Auth_Plain
@@ -314,7 +315,7 @@ class Auth_Plain extends Auth_Basic {
 	 * @param $string
 	 */
 	function debug($string) {
-		Framework::raiseWarning($string, $this->helper->getJname());
+		Framework::raise(LogLevel::WARNING, $string, $this->helper->getJname());
 	}
 
 

@@ -8,6 +8,8 @@
 */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
@@ -178,7 +180,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 	    try {
 		    $this->forumSelectOptions = $platform->getForumList();
 	    } catch (Exception $e) {
-			\JFusion\Framework::raiseError($e, $platform->getJname());
+			\JFusion\Framework::raise(LogLevel::ERROR, $e, $platform->getJname());
 	    }
 
 		//joomla select options

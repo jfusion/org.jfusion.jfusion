@@ -16,6 +16,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC' ) or die('Restricted access' );
 
@@ -230,7 +231,7 @@ class plgContentJfusion extends JPlugin
 									$content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
 								}
 							}
-							Framework::raiseNotice($content);
+							Framework::raise(LogLevel::NOTICE, $content);
 						} else {
 							$this->helper->debug('In manual mode...checking to see if article has been initialized');
 							if ($threadinfo->valid && $threadinfo->published == 1 && $threadinfo->manual == 1) {
@@ -246,7 +247,7 @@ class plgContentJfusion extends JPlugin
 				}
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
+			Framework::raise(LogLevel::ERROR, $e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
 		}
 	}
 
@@ -275,7 +276,7 @@ class plgContentJfusion extends JPlugin
 
 				//check to see if a valid $content object was passed on
 				if (!is_object($this->article)){
-					Framework::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+					Framework::raise(LogLevel::ERROR, JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
 				} else {
 					//make sure there is a plugin
 					if (!empty($this->jname)) {
@@ -335,9 +336,9 @@ class plgContentJfusion extends JPlugin
 									$data->error = false;
 								} else if ($show_discussion !== '') {
 									$data->error = false;
-									Framework::raiseNotice('jfusion.discussion.visibility set to ' . $show_discussion);
+									Framework::raise(LogLevel::NOTICE, 'jfusion.discussion.visibility set to ' . $show_discussion);
 								} else {
-									Framework::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
+									Framework::raise(LogLevel::ERROR, 'Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
 								}
 								$this->renderJSONResponce($data);
 							}
@@ -367,7 +368,7 @@ class plgContentJfusion extends JPlugin
 				echo new JResponseJson(null, JText::_('DISCUSSBOT_ERROR') . ': ' . $e->getMessage(), true);
 				exit();
 			} else {
-				Framework::raiseError($e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
+				Framework::raise(LogLevel::ERROR, $e->getMessage(), JText::_('DISCUSSBOT_ERROR'));
 			}
 		}
 	}
@@ -668,11 +669,12 @@ HTML;
 				if ($submittedArticleId == $this->article->id) {
 					$status = $this->helper->checkThreadExists(0, 1);
 
+
 					if (!empty($status['error'])) {
 						Framework::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
 					} else {
 						$data->error = false;
-						Framework::raiseMessage(JText::sprintf('THREAD_CREATED_SUCCESSFULLY', $this->article->title), JText::_('SUCCESS'));
+						Framework::raise(LogLevel::INFO, JText::sprintf('THREAD_CREATED_SUCCESSFULLY', $this->article->title), JText::_('SUCCESS'));
 					}
 				} else {
 					throw new RuntimeException(JText::_('ARTICLE_MICH_MACH'));
@@ -781,7 +783,7 @@ HTML;
 							} else {
 								$msg = JText::_('SUCCESSFUL_POST');
 							}
-							Framework::raiseMessage($msg, JText::_('SUCCESS'));
+							Framework::raise(LogLevel::INFO, $msg, JText::_('SUCCESS'));
 						}
 					} else {
 						throw new RuntimeException(JText::_('THREADID_NOT_FOUND'));
@@ -1318,7 +1320,7 @@ HTML;
 HTML;
 			}
 		} catch(Exception $e) {
-			Framework::raiseError($e);
+			Framework::raise(LogLevel::ERROR, $e);
 			$button_output = $e->getMessage();
 		}
 		return $button_output;

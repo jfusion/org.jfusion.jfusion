@@ -16,6 +16,8 @@
  * @var $this jfusionViewsynchistory
  */
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 //display the paypal donation button
 echo JFusionFunctionAdmin::getDonationBanner();
@@ -58,7 +60,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 			$row_count = 0;
 			if (empty($this->rows)) {
 			    $this->rows = array();
-			    \JFusion\Framework::raiseWarning(JText::_('NO_USERSYNC_DATA'));
+			    \JFusion\Framework::raise(LogLevel::WARNING, JText::_('NO_USERSYNC_DATA'));
 			}
 			foreach ($this->rows as $record) {
 			    ?><tr class="row<?php echo ($row_count % 2);?>"><?php

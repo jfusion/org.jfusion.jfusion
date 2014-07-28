@@ -14,6 +14,7 @@ use JFusion\Framework;
 use Joomla\Form\Html\Select;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
+use Psr\Log\LogLevel;
 use stdClass;
 
 defined('_JEXEC' ) or die('Restricted access' );
@@ -85,7 +86,7 @@ class Admin extends Plugin_Admin
 			$db->setQuery($query, $limitstart, $limit);
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			$userlist = array();
 		}
 		return $userlist;
@@ -109,7 +110,7 @@ class Admin extends Plugin_Admin
 			//getting the results
 			return $db->loadResult();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			return 0;
 		}
 	}
@@ -529,15 +530,15 @@ JS;
 			$email = $this->helper->getFieldType('EMAIL');
 
 			if ( !$userid ) {
-				Framework::raiseWarning(Text::_('NO_USERID_DEFINED'), $this->getJname());
+				Framework::raise(LogLevel::WARNING, Text::_('NO_USERID_DEFINED'), $this->getJname());
 			}
 
 			if ( !$email ) {
-				Framework::raiseWarning(Text::_('NO_EMAIL_DEFINED'), $this->getJname());
+				Framework::raise(LogLevel::WARNING, Text::_('NO_EMAIL_DEFINED'), $this->getJname());
 			}
 
 			if ( !$username ) {
-				Framework::raiseWarning(Text::_('NO_USERNAME_DEFINED'), $this->getJname());
+				Framework::raise(LogLevel::WARNING, Text::_('NO_USERNAME_DEFINED'), $this->getJname());
 			}
 			$grouptable = $this->helper->getTable('group');
 			if ($grouptable) {
@@ -545,18 +546,18 @@ JS;
 				$group_group = $this->helper->getFieldType('GROUP', 'group');
 
 				if ( !$group_userid ) {
-					Framework::raiseWarning(Text::_('NO_GROUP_USERID_DEFINED'), $this->getJname());
+					Framework::raise(LogLevel::WARNING, Text::_('NO_GROUP_USERID_DEFINED'), $this->getJname());
 				}
 				if ( !$group_group ) {
-					Framework::raiseWarning(Text::_('NO_GROUP_GROUPID_DEFINED'), $this->getJname());
+					Framework::raise(LogLevel::WARNING, Text::_('NO_GROUP_GROUPID_DEFINED'), $this->getJname());
 				}
 			}
 			$grouplist = $this->getUsergroupList();
 			if (empty($grouplist)) {
-				Framework::raiseWarning(Text::_('NO_GROUPS_MAPPED'), $this->getJname());
+				Framework::raise(LogLevel::WARNING, Text::_('NO_GROUPS_MAPPED'), $this->getJname());
 			}
 		} else {
-			Framework::raiseWarning(Text::_('NO_USERTABLE_DEFINED'), $this->getJname());
+			Framework::raise(LogLevel::WARNING, Text::_('NO_USERTABLE_DEFINED'), $this->getJname());
 		}
 	}
 }

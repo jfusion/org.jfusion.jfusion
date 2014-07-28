@@ -19,6 +19,7 @@
 use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
+use Psr\Log\LogLevel;
 use \RuntimeException;
 use \stdClass;
 
@@ -78,7 +79,7 @@ class Admin extends Plugin_Admin
 		$config = $this->helper->getConf($softwarePath);
 		$params = array();
 		if ($config === false) {
-			Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $softwarePath . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+			Framework::raise(LogLevel::WARNING, Text::_('WIZARD_FAILURE') . ': ' . $softwarePath . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 			return false;
 		} else {
 			if (isset($config['cookie_name'])) {
@@ -113,7 +114,7 @@ class Admin extends Plugin_Admin
 
 		if ($conf) {
 			if ($conf['authtype'] != 'authmysql' && $conf['authtype'] != 'authplain') {
-				Framework::raiseError(Text::_('UNSUPPORTED_AUTHTYPE') . ': ' . $conf['authtype'], $this->getJname());
+				Framework::raise(LogLevel::ERROR, Text::_('UNSUPPORTED_AUTHTYPE') . ': ' . $conf['authtype'], $this->getJname());
 			}
 		}
 	}

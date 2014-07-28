@@ -16,6 +16,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -187,7 +188,7 @@ class modjfusionActivityHelper
 	            try {
 		            $r->output->newpost = $platform->checkReadStatus($r);
 	            } catch (Exception $e) {
-		            Framework::raiseError($e, $platform->getJname());
+		            Framework::raise(LogLevel::ERROR, $e, $platform->getJname());
 	            }
 
                 $r->output->body = $r->body;

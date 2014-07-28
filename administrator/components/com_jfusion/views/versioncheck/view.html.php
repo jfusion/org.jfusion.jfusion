@@ -15,6 +15,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -271,7 +273,7 @@ JS;
 
 			//cleanup for the next function call
 		} else {
-			\JFusion\Framework::raiseError(JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), $name);
+			\JFusion\Framework::raise(LogLevel::ERROR, JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), $name);
 		}
 		return $output;
 	}

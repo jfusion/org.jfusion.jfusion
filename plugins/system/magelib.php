@@ -8,13 +8,16 @@
 */
 
 // no direct access
+use JFusion\Framework;
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or trigger_error('Restricted access');
 
 $factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
 if(file_exists($factory_file)):
 	require_once $factory_file;
 else:
-	\JFusion\Framework::raiseWarning('MageLib: The file ' . $factory_file . ' doesn\'t exists. Please install JFusion component or update it.');
+	Framework::raise(LogLevel::WARNING, 'MageLib: The file ' . $factory_file . ' doesn\'t exists. Please install JFusion component or update it.');
 endif;
 
 /**
@@ -111,7 +114,7 @@ class plgSystemMagelib {
 
 				$error_message = get_class($this) . '::loadAndStartMagentoBootstrap - ' . $error_message;
 
-				\JFusion\Framework::raiseWarning($error_message);
+				Framework::raise(LogLevel::WARNING, $error_message);
 				return false;
 			}
 			

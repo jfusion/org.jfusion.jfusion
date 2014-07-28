@@ -19,6 +19,7 @@ use JFusion\Framework;
 
 use Joomla\Language\Text;
 use JFusion\Plugin\Platform\Joomla;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -85,11 +86,11 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 
 			//check to see if all vars are set
 			if (empty($joomla_url)) {
-				Framework::raiseWarning(Text::_('MISSING') . ' Joomla URL', $this->getJname());
+				Framework::raise(LogLevel::WARNING, Text::_('MISSING') . ' Joomla URL', $this->getJname());
 			} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-				Framework::raiseWarning(Text::_('MISSING') . ' ItemID', $this->getJname());
+				Framework::raise(LogLevel::WARNING, Text::_('MISSING') . ' ItemID', $this->getJname());
 			} else if (!$this->isValidItemID($joomla_itemid)) {
-				Framework::raiseWarning(Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
+				Framework::raise(LogLevel::WARNING, Text::_('MISSING') . ' ItemID ' . Text::_('MUST BE') . ' ' . $this->getJname(), $this->getJname());
 			} else {
 				header('Content-disposition: attachment; filename=jfusion_' . $this->getJname() . '_redirectcode.txt');
 				header('Pragma: no-cache');

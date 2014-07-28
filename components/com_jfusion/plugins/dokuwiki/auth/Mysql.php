@@ -10,6 +10,7 @@
  * @author     Jan Schumann <js@schumann-it.com>
  */
 use JFusion\Framework;
+use Psr\Log\LogLevel;
 
 /**
  * Class Jfusion_DokuWiki_Mysql
@@ -894,7 +895,7 @@ class Auth_Mysql extends Auth_Basic {
 	 */
 	function debug($string) {
 		if(!$this->getConf('debug')) return;
-		Framework::raiseWarning($string, $this->helper->getJname());
+		Framework::raise(LogLevel::WARNING, $string, $this->helper->getJname());
 	}
 
 	/**

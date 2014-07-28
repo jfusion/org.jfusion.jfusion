@@ -20,6 +20,7 @@ use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
+use Psr\Log\LogLevel;
 use Soapfault;
 
 defined('_JEXEC') or die('Restricted access');
@@ -101,7 +102,7 @@ class Admin extends Plugin_Admin
         if (file_exists($xmlfile)) {
 	        $xml = Framework::getXml($xmlfile);
             if (!$xml) {
-                Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+                Framework::raise(LogLevel::WARNING, Text::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	            return false;
             } else {
                 //save the parameters into array
@@ -115,7 +116,7 @@ class Admin extends Plugin_Admin
             }
             unset($xml);
         } else {
-            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raise(LogLevel::WARNING, Text::_('WIZARD_FAILURE') . ': ' . $xmlfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         }
         
@@ -209,14 +210,14 @@ class Admin extends Plugin_Admin
 	    $db->setQuery($query);
 	    $no_users = $db->loadResult();
 	    if ($no_users <= 0) {
-		    Framework::raiseWarning(Text::_('MAGENTO_NEED_API_USER'), $this->getJname());
+		    Framework::raise(LogLevel::WARNING, Text::_('MAGENTO_NEED_API_USER'), $this->getJname());
 	    } else {
 		    // check if we have valid parameters  for apiuser and api key
 		    $apipath = $this->params->get('source_url') . 'index.php/api/?wsdl';
 		    $apiuser = $this->params->get('apiuser');
 		    $apikey = $this->params->get('apikey');
 		    if (!$apiuser || !$apikey) {
-			    Framework::raiseWarning(Text::_('MAGENTO_NO_API_DATA'), $this->getJname());
+			    Framework::raise(LogLevel::WARNING, Text::_('MAGENTO_NO_API_DATA'), $this->getJname());
 		    } else {
 			    //finally check if the apiuser and apikey are valid
 			    try {
@@ -235,7 +236,7 @@ class Admin extends Plugin_Admin
 				    }
 			    } catch (Soapfault $fault) {
 				    /** @noinspection PhpUndefinedFieldInspection */
-				    Framework::raiseWarning(Text::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
+				    Framework::raise(LogLevel::WARNING, Text::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
 			    }
 			    /*
 				$query = $db->getQuery(true)
@@ -256,7 +257,7 @@ class Admin extends Plugin_Admin
 					$params_hash_sha256 = hash('sha256', $apikey);
 				}
 				if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
-					\JFusion\Framework::raiseWarning(Text::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
+					\JFusion\Framework::raise(LogLevel::WARNING, Text::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());
 				}
 			*/
 		    }
@@ -271,11 +272,11 @@ class Admin extends Plugin_Admin
 		    $db->setQuery($query);
 		    $value = $db->loadResult();
 		    if ($value) {
-			    Framework::raiseWarning(Text::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'), $this->getJname());
+			    Framework::raise(LogLevel::WARNING, Text::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'), $this->getJname());
 		    }
 		    // we need to have the curl library installed
 		    if (!extension_loaded('curl')) {
-			    Framework::raiseWarning(Text::_('CURL_NOTINSTALLED'), $this->getJname());
+			    Framework::raise(LogLevel::WARNING, Text::_('CURL_NOTINSTALLED'), $this->getJname());
 		    }
 	    } catch (Exception $e) {
 

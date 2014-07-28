@@ -18,6 +18,7 @@
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -182,6 +183,6 @@ try {
 	//render the login module
 	require_once JModuleHelper::getLayoutPath('mod_jfusion_login', $layout);
 } catch (Exception $e) {
-	Framework::raiseError($e, 'mod_jfusion_login');
+	Framework::raise(LogLevel::ERROR, $e, 'mod_jfusion_login');
 	echo $e->getMessage();
 }

@@ -8,6 +8,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or trigger_error('Restricted access');
 
 require_once 'helper/default.php';
@@ -37,6 +39,6 @@ try {
 		throw new RuntimeException(JText::_('Plugin system magelib not installed or activated!'));
 	}
 } catch (Exception $e) {
-	\JFusion\Framework::raiseError($e, 'mod_jfusion_mageselectblock');
+	\JFusion\Framework::raise(LogLevel::ERROR, $e, 'mod_jfusion_mageselectblock');
 	echo $e->getMessage();
 }

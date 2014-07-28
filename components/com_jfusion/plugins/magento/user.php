@@ -20,6 +20,7 @@ use JFusion\Framework;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use Soapfault;
 use stdClass;
@@ -112,7 +113,7 @@ class User extends Plugin_User
 			}
 			return $eav_entity_types[$eav_entity_code];
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			return false;
 		}
 	}
@@ -152,7 +153,7 @@ class User extends Plugin_User
 			}
 			return $eav_attributes[$entity_type_code];
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			return false;
 		}
 
@@ -213,7 +214,7 @@ class User extends Plugin_User
 				$result = $filled_object;
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 		return $result;
 	}

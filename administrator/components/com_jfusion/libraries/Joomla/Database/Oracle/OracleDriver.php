@@ -217,8 +217,7 @@ class OracleDriver extends PdoDriver
 		$query->select('dbms_metadata.get_ddl(:type, :tableName)');
 		$query->from('dual');
 
-		$t = 'TABLE';
-		$query->bind(':type', $t);
+		$query->bind(':type', 'TABLE');
 
 		// Sanitize input to an array and iterate over the list.
 		settype($tables, 'array');

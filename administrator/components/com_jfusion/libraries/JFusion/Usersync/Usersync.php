@@ -18,6 +18,7 @@ use JFusion\Framework;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 
+use Psr\Log\LogLevel;
 use RuntimeException;
 
 use stdClass;
@@ -214,7 +215,7 @@ class Usersync
 							    if (!empty($status['error'])) {
 								    Framework::raise('error', $status['error'], $userjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
 							    } else {
-								    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $userjname);
+								    Framework::raise(LogLevel::INFO, Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $userjname);
 								    static::markResolved($id);
 								    $userPlugin->updateLookup($useruserinfo, $userinfo);
 							    }
@@ -228,7 +229,7 @@ class Usersync
 							    if (!empty($status['error'])) {
 								    Framework::raise('error', $status['error'], $conflictjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
 							    } else {
-								    Framework::raiseMessage(Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $conflictjname);
+								    Framework::raise(LogLevel::INFO, Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $conflictjname);
 								    static::markResolved($id);
 								    $userPlugin->updateLookup($userinfo, $useruserinfo);
 							    }
@@ -245,7 +246,7 @@ class Usersync
 								    Framework::raise('error', $status['error'], $error['user_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['user_username']);
 							    } else {
 								    static::markResolved($id);
-								    Framework::raiseMessage(Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
+								    Framework::raise(LogLevel::INFO, Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
 								    $userPlugin->deleteLookup($useruserinfo);
 							    }
 							    break;
@@ -260,7 +261,7 @@ class Usersync
 								    Framework::raise('error', $status['error'], $error['conflict_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['conflict_username']);
 							    } else {
 								    static::markResolved($id);
-								    Framework::raiseMessage(Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);
+								    Framework::raise(LogLevel::INFO, Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);
 								    $userPlugin->deleteLookup($conflictuserinfo);
 							    }
 							    break;
@@ -270,7 +271,7 @@ class Usersync
 				    }
 			    }
 		    } catch (Exception $e) {
-			    Framework::raiseError($e);
+			    Framework::raise(LogLevel::ERROR, $e);
 		    }
 	    }
     }
@@ -474,7 +475,7 @@ class Usersync
 			    }
 		    }
 	    } catch (Exception $e) {
-		    Framework::raiseError($e);
+		    Framework::raise(LogLevel::ERROR, $e);
 	    }
     }
 

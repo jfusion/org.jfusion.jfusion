@@ -29,7 +29,6 @@ class Helper
 	 */
 	public static function remotefsize($url)
 	{
-		$ftpid = null;
 		$sch = parse_url($url, PHP_URL_SCHEME);
 
 		if (($sch != 'http') && ($sch != 'https') && ($sch != 'ftp') && ($sch != 'ftps'))
@@ -77,6 +76,7 @@ class Helper
 				$pass = '';
 			}
 
+			$ftpid = null;
 			switch ($sch)
 			{
 				case 'ftp':
@@ -110,7 +110,6 @@ class Helper
 
 			return $ftpsize;
 		}
-		return false;
 	}
 
 	/**
@@ -158,7 +157,7 @@ class Helper
 		{
 			$pass = '';
 		}
-		$ftpid = null;
+
 		switch ($sch)
 		{
 			case 'ftp':

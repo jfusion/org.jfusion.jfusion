@@ -14,6 +14,8 @@
 */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC' ) or die('Restricted access' );
 
 /**
@@ -186,6 +188,6 @@ try {
 		throw new RuntimeException(JText::_('NO_COMPONENT'));
 	}
 } catch (Exception $e) {
-	\JFusion\Framework::raiseError($e, 'mod_jfusion_activity');
+	\JFusion\Framework::raise(LogLevel::ERROR, $e, 'mod_jfusion_activity');
 	echo $e->getMessage();
 }

@@ -15,6 +15,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -51,7 +53,7 @@ class jfusionViewwizard extends JViewLegacy
 	        $this->jname = $jname;
             parent::display($tpl);
         } else {
-            \JFusion\Framework::raiseWarning(JText::_('NONE_SELECTED'));
+            \JFusion\Framework::raise(LogLevel::WARNING, JText::_('NONE_SELECTED'));
         }
     }
 }

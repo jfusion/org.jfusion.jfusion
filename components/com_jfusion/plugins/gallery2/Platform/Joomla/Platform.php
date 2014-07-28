@@ -32,6 +32,7 @@ use JFusion\Plugin\Platform\Joomla;
 use JFusion\Plugins\gallery2\Helper;
 use JRegistry;
 use JRoute;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
 
@@ -320,7 +321,7 @@ class Platform extends Joomla
 			$db->setQuery($query);
 			$result = $db->loadResult();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			$result = 0;
 		}
 		return $result;
@@ -346,7 +347,7 @@ class Platform extends Joomla
 			$db->setQuery($query);
 			$result = $db->loadResult();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 			$result = 0;
 		}
 		return $result;
@@ -521,7 +522,7 @@ class Platform extends Joomla
 		$extra = $matches[2];
 		$baseURL = $this->data->baseURL;
 
-		//\JFusion\Framework::raiseWarning($url, $this->getJname());
+		//\JFusion\Framework::raise(LogLevel::WARNING, $url, $this->getJname());
 		$url = htmlspecialchars_decode($url);
 		$Itemid = Factory::getApplication()->input->getInt('Itemid');
 		$extra = stripslashes($extra);

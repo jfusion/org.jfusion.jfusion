@@ -19,6 +19,7 @@ use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\Plugin\Plugin;
+use Psr\Log\LogLevel;
 use stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -63,7 +64,7 @@ class Helper extends Plugin
 				    $usergroups[] = $group;
 			    }
 		    } catch (Exception $e) {
-			    Framework::raiseError($e, $this->getJname());
+			    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    }
 	    }
 		return $usergroups;
@@ -124,7 +125,7 @@ class Helper extends Plugin
 				$roles_ser = $db->loadResult();
 				$allroles = unserialize($roles_ser);
 			} catch (Exception $e) {
-				Framework::raiseError($e, $this->getJname());
+				Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 				$allroles = array();
 			}
 		}

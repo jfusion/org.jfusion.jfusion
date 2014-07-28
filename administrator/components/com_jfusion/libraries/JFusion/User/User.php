@@ -11,6 +11,7 @@ use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Language\Text;
+use Psr\Log\LogLevel;
 use RuntimeException;
 
 /**
@@ -199,7 +200,7 @@ class User
 										$debugger->set($slave->name . ' ' . Text::_('USERINFO'), $SlaveUser['userinfo']);
 									}
 								} catch (Exception $e) {
-									Framework::raiseError($e, $slave->name);
+									Framework::raise(LogLevel::ERROR, $e, $slave->name);
 									$debugger->add($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR'), $e->getMessage());
 								}
 							}
@@ -229,7 +230,7 @@ class User
 									}
 								} catch (Exception $e) {
 									$debugger->set($master->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $e->getMessage());
-									Framework::raiseError($e, $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
+									Framework::raise(LogLevel::ERROR, $e, $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
 									/**
 									 * TODO replace below code ? or just login slaves as well?
 									 */
@@ -286,12 +287,12 @@ class User
 													}
 												} catch (Exception $e) {
 													$debugger->set($slave->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $e->getMessage());
-													Framework::raiseError($e, $SlaveUserPlugin->getJname());
+													Framework::raise(LogLevel::ERROR, $e, $SlaveUserPlugin->getJname());
 												}
 											}
 										}
 									} catch (Exception $e) {
-										Framework::raiseError($e, $slave->name);
+										Framework::raise(LogLevel::ERROR, $e, $slave->name);
 										$debugger->add('error', $e->getMessage());
 									}
 								}
@@ -302,7 +303,7 @@ class User
 				}
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e);
+			Framework::raise(LogLevel::ERROR, $e);
 			$debugger->add('error', $e->getMessage());
 		}
 		ob_end_clean();
@@ -384,7 +385,7 @@ class User
 								$debugger->set($master->name . ' logout', $MasterSession['debug']);
 							}
 						} catch (Exception $e) {
-							Framework::raiseError($e, $JFusionMaster->getJname());
+							Framework::raise(LogLevel::ERROR, $e, $JFusionMaster->getJname());
 						}
 					} else {
 						Framework::raise('notice', Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $master->name);
@@ -424,7 +425,7 @@ class User
 										$debugger->set($slave->name . ' logout', $SlaveSession['debug']);
 									}
 								} catch (Exception $e) {
-									Framework::raiseError($e, $JFusionSlave->getJname());
+									Framework::raise(LogLevel::ERROR, $e, $JFusionSlave->getJname());
 								}
 							} else {
 								Framework::raise('notice', Text::_('LOGOUT') . ' ' . Text::_('COULD_NOT_FIND_USER'), $slave->name);

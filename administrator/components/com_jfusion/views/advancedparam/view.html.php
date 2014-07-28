@@ -14,6 +14,8 @@
  * @link       http://www.jfusion.org
  */
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 /**
@@ -320,10 +322,10 @@ HTML;
 				if (!array_key_exists($newPlugin, $value)) {
 					$value[$newPlugin] = array('jfusionplugin' => $newPlugin);
 				} else {
-					\JFusion\Framework::raiseError(JText::_('NOT_ADDED_TWICE'), $newPlugin);
+					\JFusion\Framework::raise(LogLevel::ERROR, JText::_('NOT_ADDED_TWICE'), $newPlugin);
 				}
 			} else {
-				\JFusion\Framework::raiseError(JText::_('MUST_SELLECT_PLUGIN'));
+				\JFusion\Framework::raise(LogLevel::ERROR, JText::_('MUST_SELLECT_PLUGIN'));
 			}
 			$this->saveParam($value);
 		} else if ($task == 'remove') {
@@ -331,7 +333,7 @@ HTML;
 			if (array_key_exists($rmPlugin, $value)) {
 				unset($value[$rmPlugin]);
 			} else {
-				\JFusion\Framework::raiseError(JText::_('NOT_PLUGIN_REMOVE'));
+				\JFusion\Framework::raise(LogLevel::ERROR, JText::_('NOT_PLUGIN_REMOVE'));
 			}
 			$this->saveParam($value);
 		}

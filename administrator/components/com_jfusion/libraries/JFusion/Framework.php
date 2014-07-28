@@ -17,6 +17,7 @@ use Joomla\Language\Text;
 
 
 use JFusion\Parser\Parser;
+use Psr\Log\LogLevel;
 use \stdClass;
 use \SimpleXMLElement;
 use \Exception;
@@ -104,7 +105,7 @@ class Framework
 
 		    $db->execute();
 	    } catch (Exception $e) {
-		    static::raiseWarning($e);
+		    static::raise(LogLevel::WARNING, $e);
 	    }
     }
 
@@ -342,83 +343,23 @@ class Framework
 		}
 
 		if ($xml === false) {
-			static::raiseError(Text::_('JLIB_UTIL_ERROR_XML_LOAD'));
+			static::raise(LogLevel::ERROR, Text::_('JLIB_UTIL_ERROR_XML_LOAD'));
 
 			if ($isFile) {
-				static::raiseError($data);
+				static::raise(LogLevel::ERROR, $data);
 			}
 			foreach (libxml_get_errors() as $error) {
-				static::raiseError($error->message);
+				static::raise(LogLevel::ERROR, $error->message);
 			}
 		}
 		return $xml;
 	}
 
 	/**
-	 * @param string|RuntimeException $msg
-	 * @param string           $jname
-	 */
-	public static function raiseMessage($msg, $jname = '') {
-		$app = Factory::getApplication();
-		if ($msg instanceof Exception) {
-			$msg = $msg->getMessage();
-		}
-		if (!empty($jname)) {
-			$msg = $jname . ': ' . $msg;
-		}
-		$app->enqueueMessage($msg, 'message');
-	}
-
-	/**
-	 * @param string|RuntimeException $msg
-	 * @param string           $jname
-	 */
-	public static function raiseNotice($msg, $jname = '') {
-		$app = Factory::getApplication();
-		if ($msg instanceof Exception) {
-			$msg = $msg->getMessage();
-		}
-		if (!empty($jname)) {
-			$msg = $jname . ': ' . $msg;
-		}
-		$app->enqueueMessage($msg, 'notice');
-	}
-
-	/**
-	 * @param string|RuntimeException $msg
-	 * @param string           $jname
-	 */
-	public static function raiseWarning($msg, $jname = '') {
-		$app = Factory::getApplication();
-		if ($msg instanceof Exception) {
-			$msg = $msg->getMessage();
-		}
-		if (!empty($jname)) {
-			$msg = $jname . ': ' . $msg;
-		}
-		$app->enqueueMessage($msg, 'warning');
-	}
-
-	/**
-	 * @param string|RuntimeException $msg
-	 * @param string           $jname
-	 */
-	public static function raiseError($msg, $jname = '') {
-		$app = Factory::getApplication();
-		if ($msg instanceof Exception) {
-			$msg = $msg->getMessage();
-		}
-		if (!empty($jname)) {
-			$msg = $jname . ': ' . $msg;
-		}
-		$app->enqueueMessage($msg, 'error');
-	}
-
-	/**
 	 * Raise warning function that can handle arrays
 	 *
 	 * @param        $type
-	 * @param array  $message   message itself
+	 * @param array|string|Exception  $message   message itself
 	 * @param string $jname
 	 *
 	 * @return string nothing
@@ -433,6 +374,17 @@ class Framework
 				static::raise($type, $msg, $msgtype);
 			}
 		} else {
+			$app = Factory::getApplication();
+			if ($message instanceof Exception) {
+				$message = $message->getMessage();
+			}
+			if (!empty($jname)) {
+				$message = $jname . ': ' . $message;
+			}
+			$app->enqueueMessage($message, strtolower($type));
+			/**
+			 * TODO: REMOVE
+
 			switch(strtolower($type)) {
 				case 'notice':
 					static::raiseNotice($message, $jname);
@@ -447,6 +399,7 @@ class Framework
 					static::raiseMessage($message, $jname);
 					break;
 			}
+			 */
 		}
 	}
 
@@ -876,7 +829,7 @@ class Framework
 			curl_close($crl);
 			if ($FileInfo['http_code'] != 200) {
 				//there was an error
-				Framework::raiseWarning($FileInfo['http_code'] . ' error for file:' . $url);
+				Framework::raise(LogLevel::WARNING, $FileInfo['http_code'] . ' error for file:' . $url);
 				$FileData = false;
 			}
 		} else {
@@ -885,7 +838,7 @@ class Framework
 			if (!empty($fopen_check)) {
 				$FileData = file_get_contents($url);
 			} else {
-				Framework::raiseWarning(Text::_('CURL_DISABLED'));
+				Framework::raise(LogLevel::WARNING, Text::_('CURL_DISABLED'));
 				$FileData = false;
 			}
 		}

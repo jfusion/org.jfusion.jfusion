@@ -21,6 +21,7 @@ use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
 use \Exception;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -65,7 +66,7 @@ class Admin extends Plugin_Admin
         //try to open the file
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raise(LogLevel::WARNING, Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
             //get the default parameters object
         } else {
@@ -127,7 +128,7 @@ class Admin extends Plugin_Admin
 	        $db->setQuery($query, $limitstart, $limit);
 	        $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $userlist = array();
 		}
         return $userlist;
@@ -151,7 +152,7 @@ class Admin extends Plugin_Admin
 	        //getting the results
 	        $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $no_users = 0;
 		}
         return $no_users;
@@ -218,7 +219,7 @@ class Admin extends Plugin_Admin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 	    return $result;
     }

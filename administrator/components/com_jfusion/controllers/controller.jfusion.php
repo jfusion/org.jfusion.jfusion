@@ -14,6 +14,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -73,7 +75,7 @@ class JFusionController extends JControllerLegacy
 			    try {
 				    $params = $JFusionPlugin->setupFromPath($post['source_path']);
 			    } catch (Exception $e) {
-				    \JFusion\Framework::raiseError($e, $JFusionPlugin->getJname());
+				    \JFusion\Framework::raise(LogLevel::ERROR, $e, $JFusionPlugin->getJname());
 				    $params = array();
 			    }
 
@@ -88,7 +90,7 @@ class JFusionController extends JControllerLegacy
 						    $status = 1;
 					    }
 				    } catch (Exception $e) {
-					    \JFusion\Framework::raiseError($e, $JFusionPlugin->getJname());
+					    \JFusion\Framework::raise(LogLevel::ERROR, $e, $JFusionPlugin->getJname());
 				    }
 				    $JFusionPlugin->updateStatus($status);
 				    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, JText::_('WIZARD_SUCCESS'), 'message');
@@ -657,7 +659,7 @@ class JFusionController extends JControllerLegacy
         $db = JFactory::getDBO();
         $syncid = JFactory::getApplication()->input->get('syncid', array(), 'array');
         if(!is_array($syncid) || empty($syncid)) {
-            \JFusion\Framework::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
+            \JFusion\Framework::raise(LogLevel::WARNING, JText::_('NO_SYNCID_SELECTED'));
         } else {
             foreach ($syncid as $key => $value) {
 	            $query = $db->getQuery(true)
@@ -687,7 +689,7 @@ class JFusionController extends JControllerLegacy
     {
         $syncid = JFactory::getApplication()->input->get('syncid', array(), 'array');
         if(!is_array($syncid) || empty($syncid)) {
-            \JFusion\Framework::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
+            \JFusion\Framework::raise(LogLevel::WARNING, JText::_('NO_SYNCID_SELECTED'));
 	        $this->setRedirect('index.php?option=com_jfusion&task=synchistory');
         } else {
             foreach ($syncid as $key => $value) {
@@ -921,7 +923,7 @@ JS;
 		    }
 		    $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $jname . ': ' . JText::_('IMPORT_SUCCESS'));
 	    } catch (Exception $e) {
-		    \JFusion\Framework::raiseWarning($e, $jname);
+		    \JFusion\Framework::raise(LogLevel::WARNING, $e, $jname);
 		    $mainframe->redirect('index.php?option=com_jfusion&task=importexport&jname=' . $jname);
 	    }
         exit();
@@ -1033,9 +1035,9 @@ JS;
 			foreach ($plugin as $index => $group) {
 				if ($group === null) {
 					if ($index == 0) {
-						\JFusion\Framework::raiseError(JText::_('NO_DEFAULT_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
+						\JFusion\Framework::raise(LogLevel::ERROR, JText::_('NO_DEFAULT_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
 					} else if (($master && $master->name == $jname) || (isset($updateusergroups[$jname]) && $updateusergroups[$jname])) {
-						\JFusion\Framework::raiseError(JText::_('NO_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
+						\JFusion\Framework::raise(LogLevel::ERROR, JText::_('NO_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
 					}
 				}
 			}
@@ -1055,13 +1057,13 @@ JS;
 		$table->bind($post);
 		// pre-save checks
 		if (!$table->check()) {
-			\JFusion\Framework::raiseWarning($table->getError());
+			\JFusion\Framework::raise(LogLevel::WARNING, $table->getError());
 		} else {
 			// save the changes
 			if (!$table->store()) {
-				\JFusion\Framework::raiseWarning($table->getError());
+				\JFusion\Framework::raise(LogLevel::WARNING, $table->getError());
 			} else {
-				\JFusion\Framework::raiseMessage(JText::_('USERGROUPS_SAVED'));
+				\JFusion\Framework::raise(LogLevel::INFO, JText::_('USERGROUPS_SAVED'));
 			}
 		}
 		$this->setRedirect('index.php?option=com_jfusion&task=usergroups');

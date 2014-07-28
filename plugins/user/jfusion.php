@@ -17,6 +17,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 /**
@@ -245,7 +246,7 @@ class plgUserJfusion extends JPlugin
 			try {
 				$JoomlaUser->destroySession($userinfo, $options);
 			} catch (Exception $e) {
-				Framework::raiseError($e, $JoomlaUser->getJname());
+				Framework::raise(LogLevel::ERROR, $e, $JoomlaUser->getJname());
 			}
 		}
 
@@ -400,7 +401,7 @@ class plgUserJfusion extends JPlugin
 								/**
 								 * @TODO Probably should raise a plugin error but this event is not error checked.
 								 */
-								Framework::raiseWarning(JText::_('ERROR_SENDING_EMAIL'));
+								Framework::raise(LogLevel::WARNING, JText::_('ERROR_SENDING_EMAIL'));
 							}
 						}
 					}

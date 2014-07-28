@@ -23,6 +23,7 @@ use JFusion\User\Userinfo;
 use Joomla\Form\Html\Select;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
 
@@ -135,7 +136,7 @@ class User extends Plugin_User
 				$user->bind($result);
 			}
 		} catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 		return $user;
 	}
@@ -871,7 +872,7 @@ class User extends Plugin_User
 		try {
 			$usergroups = $admin->getUsergroupList();
 		} catch (Exception $e) {
-			Framework::raiseError($e, $admin->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $admin->getJname());
 		}
 
 		array_unshift($usergroups, Select::option( '0', '- Select a Group -', 'id', 'name'));

@@ -333,7 +333,7 @@ class MysqliDriver extends DatabaseDriver
 	/**
 	 * Get the number of returned rows for the previous executed SQL statement.
 	 *
-	 * @param   \mysqli_result  $cursor  An optional database cursor resource to extract the row count from.
+	 * @param   resource  $cursor  An optional database cursor resource to extract the row count from.
 	 *
 	 * @return  integer   The number of returned rows.
 	 *

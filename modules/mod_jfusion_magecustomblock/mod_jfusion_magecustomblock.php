@@ -8,6 +8,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or trigger_error('Restricted access');
 /**
  * @ignore
@@ -55,7 +57,7 @@ try {
 					}
 					echo $output;
 				} else {
-					\JFusion\Framework::raiseNotice('MODULE_BAD_CONFIGURED: ' . $module->title);
+					\JFusion\Framework::raise(LogLevel::NOTICE,'MODULE_BAD_CONFIGURED: ' . $module->title);
 				}
 			} else {
 				$xml = '<block type="core/text_list" name="content">' . $xml_output . '</block>';
@@ -78,6 +80,6 @@ try {
 		throw new RuntimeException(JText::_('Plugin system magelib not installed or activated!'));
 	}
 } catch (Exception $e) {
-	\JFusion\Framework::raiseError($e, 'mod_jfusion_magecustomblock');
+	\JFusion\Framework::raise(LogLevel::ERROR, $e, 'mod_jfusion_magecustomblock');
 	echo $e->getMessage();
 }

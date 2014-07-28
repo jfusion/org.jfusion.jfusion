@@ -21,6 +21,7 @@ use Joomla\Language\Text;
 use JFusion\Plugin\Plugin;
 use Joomla\Uri\Uri;
 use JFusionFunction;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -189,7 +190,7 @@ class Helper extends Plugin
                 $vbulletin->db->query_first('SET names \'' . $this->params->get('database_charset', 'utf8') . '\'');
                 $GLOBALS['db'] = $vbulletin->db;
             } else {
-                Framework::raiseWarning(Text::_('SOURCE_PATH_NOT_FOUND'), $this->getJname());
+                Framework::raise(LogLevel::WARNING, Text::_('SOURCE_PATH_NOT_FOUND'), $this->getJname());
                 $return = false;
             }
         } elseif (defined('VB_AREA') && VB_AREA == 'JFusion') {
@@ -404,7 +405,7 @@ class Helper extends Plugin
 			    }
 		    }
 	    } catch (Exception $e) {
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return $url;
     }

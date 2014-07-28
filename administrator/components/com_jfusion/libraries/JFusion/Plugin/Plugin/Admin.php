@@ -19,6 +19,7 @@ use JFusion\Framework;
 use Joomla\Registry\Registry;
 use Joomla\Language\Text;
 
+use Psr\Log\LogLevel;
 use RuntimeException;
 use Exception;
 
@@ -217,7 +218,7 @@ class Plugin_Admin extends Plugin
 			$db->execute();
 		} catch (Exception $e) {
 			//there was an error saving the parameters
-			Framework::raiseError($e, $this->getJname());
+			Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		}
 	}
 
@@ -245,10 +246,10 @@ class Plugin_Admin extends Plugin
 	    $plugin = $db->loadObject();
 	    //output a warning to the administrator if the allowRegistration setting is wrong
 	    if ($new_registration && $plugin->slave == 1) {
-		    Framework::raiseNotice(Text::_('DISABLE_REGISTRATION'), $jname);
+		    Framework::raise(LogLevel::NOTICE, Text::_('DISABLE_REGISTRATION'), $jname);
 	    }
 	    if (!$new_registration && $plugin->master == 1) {
-		    Framework::raiseNotice(Text::_('ENABLE_REGISTRATION'), $jname);
+		    Framework::raise(LogLevel::NOTICE, Text::_('ENABLE_REGISTRATION'), $jname);
 	    }
 	    //most dual login problems are due to incorrect cookie domain settings
 	    //therefore we should check it and output a warning if needed.
@@ -268,7 +269,7 @@ class Plugin_Admin extends Plugin
 				    $correct_domain = '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
 			    }
 			    if ($correct_domain != $cookie_domain && !$this->allowEmptyCookieDomain()) {
-				    Framework::raiseNotice(Text::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain, $jname);
+				    Framework::raise(LogLevel::NOTICE, Text::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain, $jname);
 			    }
 		    }
 	    }
@@ -277,7 +278,7 @@ class Plugin_Admin extends Plugin
 	    $cookie_path = $this->params->get('cookie_path',-1);
 	    if ($cookie_path!==-1) {
 		    if ($cookie_path != '/' && !$this->allowEmptyCookiePath()) {
-			    Framework::raiseNotice(Text::_('BEST_COOKIE_PATH') . ' /', $jname);
+			    Framework::raise(LogLevel::NOTICE, Text::_('BEST_COOKIE_PATH') . ' /', $jname);
 		    }
 	    }
 
@@ -425,7 +426,7 @@ JS;
 							$post['source_path'] .= DIRECTORY_SEPARATOR;
 						}
 						if (!is_dir($post['source_path'])) {
-							Framework::raiseWarning(Text::_('SOURCE_PATH_NOT_FOUND'));
+							Framework::raise(LogLevel::WARNING, Text::_('SOURCE_PATH_NOT_FOUND'));
 						}
 					}
 				}
@@ -466,7 +467,7 @@ JS;
 			}
 		} catch (Exception $e ) {
 			//there was an error saving the parameters
-			Framework::raiseError($e, $jname);
+			Framework::raise(LogLevel::ERROR, $e, $jname);
 		}
 		return $result;
 	}

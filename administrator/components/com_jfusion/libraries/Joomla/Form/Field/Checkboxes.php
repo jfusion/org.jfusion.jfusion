@@ -10,7 +10,6 @@ namespace Joomla\Form;
 
 use Joomla\Form\Html\Select as HtmlSelect;
 use Joomla\Language\Text;
-use SimpleXMLElement;
 
 /**
  * Form Field class for the Joomla Framework.
@@ -110,7 +109,7 @@ class Field_Checkboxes extends Field
 
 		/**
 		 * @ignore
-		 * @var SimpleXMLElement $option
+		 * @var \SimpleXMLElement $option
 		 */
 		foreach ($this->element->children() as $option)
 		{

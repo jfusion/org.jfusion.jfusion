@@ -15,6 +15,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'defines.php';
@@ -84,7 +86,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 
 	        parent::display();
         } else {
-            \JFusion\Framework::raiseWarning(JText::_('NO_JFUSION_TABLE'));
+            \JFusion\Framework::raise(LogLevel::WARNING, JText::_('NO_JFUSION_TABLE'));
         }
     }
 
@@ -269,7 +271,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    try {
 				    $record->registration = $JFusionPlugin->allowRegistration();
 			    } catch (Exception $e) {
-				    \JFusion\Framework::raiseError($e, $JFusionPlugin->getJname());
+				    \JFusion\Framework::raise(LogLevel::ERROR, $e, $JFusionPlugin->getJname());
 				    $record->registration = false;
 			    }
 
@@ -286,7 +288,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    try {
 				    $usergroup = $JFusionPlugin->getDefaultUsergroup();
 			    } catch (Exception $e) {
-				    \JFusion\Framework::raiseError($e, $JFusionPlugin->getJname());
+				    \JFusion\Framework::raise(LogLevel::ERROR, $e, $JFusionPlugin->getJname());
 				    $usergroup = null;
 			    }
 
@@ -298,7 +300,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				    $record->usergrouptext = $usergroup;
 			    } else {
 				    $record->usergrouptext = '<img src="components/com_jfusion/images/cross.png" border="0" alt="' . JText::_('DISABLED') . '" />' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP') ;
-				    \JFusion\Framework::raiseWarning(JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP'), $record->name);
+				    \JFusion\Framework::raise(LogLevel::WARNING, JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP'), $record->name);
 			    }
 		    } else {
 			    $record->usergrouptext = '';
@@ -367,7 +369,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 					$plugin_xml = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $JFusionPlugin->getName() . DIRECTORY_SEPARATOR . 'jfusion.xml';
 					if(!file_exists($plugin_xml)) {
 						$record->status = 0;
-						\JFusion\Framework::raiseWarning(JText::_('NO_FILES'), $record->name);
+						\JFusion\Framework::raise(LogLevel::WARNING, JText::_('NO_FILES'), $record->name);
 					} else {
 						$record->status = 1;
 					}
@@ -376,7 +378,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 						try {
 							$JFusionPlugin->debugConfig();
 						} catch (Exception $e) {
-							\JFusion\Framework::raiseError($e, $record->name);
+							\JFusion\Framework::raise(LogLevel::ERROR, $e, $record->name);
 							$record->status = 0;
 						}
 					}

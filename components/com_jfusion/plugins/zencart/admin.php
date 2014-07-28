@@ -21,6 +21,7 @@ use JFusion\Framework;
 use Joomla\Database\DatabaseFactory;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
+use Psr\Log\LogLevel;
 use stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -59,7 +60,7 @@ class Admin extends Plugin_Admin
         $params['source_path'] = $softwarePath;
 
         if (!file_exists($myfile)) {
-            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raise(LogLevel::WARNING, Text::_('WIZARD_FAILURE') . ': ' . $myfile . ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
             return false;
         } else {
             include_once($myfile);
@@ -125,7 +126,7 @@ class Admin extends Plugin_Admin
             //getting the results
             $userlist = $db->loadObjectList();
         } catch (Exception $e) {
-            Framework::raiseError($e, $this->getJname());
+            Framework::raise(LogLevel::ERROR, $e, $this->getJname());
             $userlist = array();
         }
         return $userlist;
@@ -148,7 +149,7 @@ class Admin extends Plugin_Admin
             //getting the results
             $no_users = $db->loadResult();
         } catch (Exception $e) {
-            Framework::raiseError($e, $this->getJname());
+            Framework::raise(LogLevel::ERROR, $e, $this->getJname());
             $no_users = 0;
         }
         return $no_users;

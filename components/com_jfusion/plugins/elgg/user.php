@@ -22,6 +22,7 @@ use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 
 use \Exception;
+use Psr\Log\LogLevel;
 use \RuntimeException;
 use \stdClass;
 
@@ -88,7 +89,7 @@ class JFusionUser_elgg extends Plugin_User
 			    $user->bind($result);
 		    }
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         return $user;
     }
@@ -150,7 +151,7 @@ class JFusionUser_elgg extends Plugin_User
 	    try {
 		    $this->destroySession(null, null);
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 	    }
         $status = array('error' => array(), 'debug' => array());
 

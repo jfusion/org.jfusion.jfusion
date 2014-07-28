@@ -15,6 +15,8 @@
  */
 
 // no direct access
+use Psr\Log\LogLevel;
+
 defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'defines.php';
@@ -90,7 +92,7 @@ class jfusionViewusergroups extends JViewLegacy {
 		        try {
 			        $groups[$plugin->name] = $admin->getUsergroupList();
 		        } catch (Exception $e) {
-			        \JFusion\Framework::raiseError($e, $admin->getJname());
+			        \JFusion\Framework::raise(LogLevel::ERROR, $e, $admin->getJname());
 		        }
 	        }
 
@@ -119,7 +121,7 @@ JS;
 
 	        parent::display();
         } else {
-            \JFusion\Framework::raiseWarning(JText::_('NO_JFUSION_TABLE'));
+            \JFusion\Framework::raise(LogLevel::WARNING, JText::_('NO_JFUSION_TABLE'));
         }
     }
 }

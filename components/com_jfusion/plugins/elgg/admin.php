@@ -21,6 +21,7 @@ use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 
 use \Exception;
+use Psr\Log\LogLevel;
 use \stdClass;
 
 defined('_JEXEC') or die('Restricted access');
@@ -63,7 +64,7 @@ class Admin extends Plugin_Admin
         //check if the file exists
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
-            Framework::raiseWarning(Text::_('WIZARD_FAILURE') . ': ' . $myfile. ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
+            Framework::raise(LogLevel::WARNING, Text::_('WIZARD_FAILURE') . ': ' . $myfile. ' ' . Text::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             //parse the file line by line to get only the config variables
@@ -124,7 +125,7 @@ class Admin extends Plugin_Admin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -147,7 +148,7 @@ class Admin extends Plugin_Admin
 	        //getting the results
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-		    Framework::raiseError($e, $this->getJname());
+		    Framework::raise(LogLevel::ERROR, $e, $this->getJname());
 		    return 0;
 	    }
     }

@@ -1,4 +1,6 @@
 <?php
+use Psr\Log\LogLevel;
+
 /**
  * Created by JetBrains PhpStorm.
  * User: fanno
@@ -247,7 +249,7 @@ class com_jfusionInstallerScript
 			foreach ($files2delete as $f) {
 				if (file_exists($f)) {
 					if (!JFile::delete($f)) {
-						\JFusion\Framework::raiseWarning(JText::sprintf('UPGRADE_UNABLE_TO_REMOVE_FILE', $f));
+						\JFusion\Framework::raise(LogLevel::WARNING, JText::sprintf('UPGRADE_UNABLE_TO_REMOVE_FILE', $f));
 					}
 				}
 			}

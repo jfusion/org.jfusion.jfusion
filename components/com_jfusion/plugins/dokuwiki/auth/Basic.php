@@ -11,6 +11,7 @@
  * @author     Jan Schumann <js@jschumann-it.com>
  */
 use JFusion\Framework;
+use Psr\Log\LogLevel;
 
 /**
  * Class Basic
@@ -237,6 +238,6 @@ class Auth_Basic {
 	 * @param $string
 	 */
 	function debug($string) {
-		Framework::raiseWarning($string);
+		Framework::raise(LogLevel::WARNING, $string);
 	}
 }
