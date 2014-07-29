@@ -207,7 +207,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    if ($login_type != 1 && !function_exists('deregister_globals')) {
 					    //let phpbb3 handle login
 					    $source_path = $this->params->get('source_path');
-					    if (!file_exists($source_path . 'common.php')) {
+					    if (file_exists($source_path . 'common.php')) {
 						    //set the current directory to phpBB3
 						    chdir($source_path);
 						    /* set scope for variables required later */
