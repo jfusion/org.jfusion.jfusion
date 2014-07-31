@@ -110,7 +110,7 @@ class JFusionUser_elgg extends Plugin_User
         $user = get_user_by_username($userinfo->username);
         if($user) {
         	if ($user->delete()) {
-		        $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
+		        $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
         	} else {
 		        throw new RuntimeException($userinfo->username);
         	}
@@ -127,15 +127,15 @@ class JFusionUser_elgg extends Plugin_User
      * @return array
      */
     function destroySession(Userinfo $userinfo, $option) {
-        $status = array('error' => array(), 'debug' => array());
+        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
         /*
         NOTE:
         !Can not include elgg engine and use core elgg logout functions since it conflicts with Community Builder Logout function!
         unsetting the elgg cookies has been problematic as well.
         */
         $expire = -3600;
-        $status['debug'][] = $this->addCookie('Elgg', '', $expire, $this->params->get('cookie_path'), $this->params->get('cookie_domain'));
-        $status['debug'][] = $this->addCookie('elggperm', '', $expire, '/', $this->params->get('cookie_domain'));
+        $status[LogLevel::DEBUG][] = $this->addCookie('Elgg', '', $expire, $this->params->get('cookie_path'), $this->params->get('cookie_domain'));
+        $status[LogLevel::DEBUG][] = $this->addCookie('elggperm', '', $expire, '/', $this->params->get('cookie_domain'));
         return array();
     }
 
@@ -184,7 +184,7 @@ class JFusionUser_elgg extends Plugin_User
                     $code = (md5($user->name . $user->username . time() . rand()));
                     $user->code = md5($code);
                     $_SESSION['code'] = $code;
-                    if (($persistent)) $status['debug'][] = $this->addCookie('elggperm', $code, (86400 * 30), '/', $this->params->get('cookie_domain'));
+                    if (($persistent)) $status[LogLevel::DEBUG][] = $this->addCookie('elggperm', $code, (86400 * 30), '/', $this->params->get('cookie_domain'));
                     if (!$user->save() || !elgg_trigger_event('login', 'user', $user)) {
                         unset($_SESSION['username']);
                         unset($_SESSION['name']);
@@ -192,7 +192,7 @@ class JFusionUser_elgg extends Plugin_User
                         unset($_SESSION['guid']);
                         unset($_SESSION['id']);
                         unset($_SESSION['user']);
-                        $status['debug'][] = $this->addCookie('elggperm', '', -3600, '/', $this->params->get('cookie_domain'));
+                        $status[LogLevel::DEBUG][] = $this->addCookie('elggperm', '', -3600, '/', $this->params->get('cookie_domain'));
                     } else {
                         // Users privilege has been elevated, so change the session id (help prevent session hijacking)
                         //session_regenerate_id();
@@ -230,87 +230,83 @@ class JFusionUser_elgg extends Plugin_User
 
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
+	    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
-    /**
-     * @param Userinfo $userinfo
-     * @param array &$status
-     *
-     * @return void
-     */
-    function createUser(Userinfo $userinfo, &$status) {
-	    try {
-	        //found out what usergroup should be used
-	        $usergroups = $this->getCorrectUserGroups($userinfo);
-	        if (empty($usergroups)) {
-		        throw new RuntimeException(Text::_('USERGROUP_MISSING'));
-	        } else {
-	            $usergroup = $usergroups[0];
-	            //prepare the variables
-	            $user = new stdClass;
-	            $user->uid = null;
-	            $user->username = $userinfo->username;
-	            $user->email = $userinfo->email;
-	            jimport('joomla.user.helper');
-	            if (isset($userinfo->password_clear)) {
-	                $user->password = $userinfo->password_clear;
-	            } else {
-	                //generate a random one for now
-	                $user->password = Framework::genRandomPassword(12);
-	            }
-	            /**
-	             * @TODO add usergroup functionality
-	             */
-	            if (!empty($userinfo->activation)) {
-	                $user->usergroup = 2;
-	            } elseif (!empty($userinfo->block)) {
-	                $user->usergroup = 7;
-	            } else {
-	                $user->usergroup = $usergroup;
-	            }
-	            if (defined('externalpage')) {
-	                define('externalpage', true);
-	            }
-	            require_once $this->params->get('source_path') . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
-	            // Get variables
-	            global $CONFIG;
-	            $username = $user->username;
-	            $password = $user->password;
-	            $password2 = $user->password;
-	            $email = $user->email;
-	            $name = $userinfo->name;
-	            // For now, just try and register the user
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \RuntimeException
+	 * @return void
+	 */
+    function createUser(Userinfo $userinfo) {
+	    //found out what usergroup should be used
+	    $usergroups = $this->getCorrectUserGroups($userinfo);
+	    if (empty($usergroups)) {
+		    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+	    } else {
+		    $usergroup = $usergroups[0];
+		    //prepare the variables
+		    $user = new stdClass;
+		    $user->uid = null;
+		    $user->username = $userinfo->username;
+		    $user->email = $userinfo->email;
+		    jimport('joomla.user.helper');
+		    if (isset($userinfo->password_clear)) {
+			    $user->password = $userinfo->password_clear;
+		    } else {
+			    //generate a random one for now
+			    $user->password = Framework::genRandomPassword(12);
+		    }
+		    /**
+		     * @TODO add usergroup functionality
+		     */
+		    if (!empty($userinfo->activation)) {
+			    $user->usergroup = 2;
+		    } elseif (!empty($userinfo->block)) {
+			    $user->usergroup = 7;
+		    } else {
+			    $user->usergroup = $usergroup;
+		    }
+		    if (defined('externalpage')) {
+			    define('externalpage', true);
+		    }
+		    require_once $this->params->get('source_path') . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+		    // Get variables
+		    global $CONFIG;
+		    $username = $user->username;
+		    $password = $user->password;
+		    $password2 = $user->password;
+		    $email = $user->email;
+		    $name = $userinfo->name;
+		    // For now, just try and register the user
 
-		        if (((trim($password) != '') && (strcmp($password, $password2) == 0)) && ($guid = register_user($username, $password, $name, $email, true))) {
-			        // commented out, if user is created by admin validated emails or not user can still login.., don't think this is what we want as i added update validation functions.
-			        //                $new_user = get_entity($guid);
-			        //                $new_user->admin_created = true;
-			        if (empty($userinfo->password_clear)) {
-				        //we need to update the password
-				        $db = Factory::getDatabase($this->getJname());
+		    if (((trim($password) != '') && (strcmp($password, $password2) == 0)) && ($guid = register_user($username, $password, $name, $email, true))) {
+			    // commented out, if user is created by admin validated emails or not user can still login.., don't think this is what we want as i added update validation functions.
+			    //                $new_user = get_entity($guid);
+			    //                $new_user->admin_created = true;
+			    if (empty($userinfo->password_clear)) {
+				    //we need to update the password
+				    $db = Factory::getDatabase($this->getJname());
 
-				        $query = $db->getQuery(true)
-					        ->update('#__users_entity')
-					        ->set('password = ' . $db->quote($userinfo->password))
-					        ->set('salt = ' . $db->quote($userinfo->password_salt))
-					        ->where('username = ' . $db->quote($username));
+				    $query = $db->getQuery(true)
+					    ->update('#__users_entity')
+					    ->set('password = ' . $db->quote($userinfo->password))
+					    ->set('salt = ' . $db->quote($userinfo->password_salt))
+					    ->where('username = ' . $db->quote($username));
 
-				        $db->setQuery($query);
-				        $db->execute();
-			        }
-			        //return the good news
-			        $status['debug'][] = Text::_('USER_CREATION');
-			        $status['userinfo'] = $this->getUser($userinfo);
-			        //notify_user($new_user->guid, $CONFIG->site->guid, elgg_echo('useradd:subject'), sprintf(elgg_echo('useradd:body'), $name, $CONFIG->site->name, $CONFIG->site->url, $username, $password));
-			        //system_message(sprintf(elgg_echo('adduser:ok'), $CONFIG->sitename));
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
+			    //return the good news
+			    $status[LogLevel::DEBUG][] = Text::_('USER_CREATION');
+			    $status['userinfo'] = $this->getUser($userinfo);
+			    //notify_user($new_user->guid, $CONFIG->site->guid, elgg_echo('useradd:subject'), sprintf(elgg_echo('useradd:body'), $name, $CONFIG->site->name, $CONFIG->site->url, $username, $password));
+			    //system_message(sprintf(elgg_echo('adduser:ok'), $CONFIG->sitename));
 
-		        } else {
-			        //register_error(elgg_echo('adduser:bad'));
-		        }
-	        }
-	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('USER_CREATION_ERROR') . ' : ' . $e->getMessage();
+		    } else {
+			    //register_error(elgg_echo('adduser:bad'));
+		    }
 	    }
     }
 
@@ -333,7 +329,7 @@ class JFusionUser_elgg extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+	    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
     
     /**
@@ -358,12 +354,12 @@ class JFusionUser_elgg extends Plugin_User
 	     */
 	    if($user) {
         	if ($user->ban()) {
-		        $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+		        $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
         	} else {
-		        $this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR'));
+		        $this->debugger->addError(Text::_('BLOCK_UPDATE_ERROR'));
         	}
         } else {
-	        $this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR'));
+	        $this->debugger->addError(Text::_('BLOCK_UPDATE_ERROR'));
 		}
     }
 
@@ -391,12 +387,12 @@ class JFusionUser_elgg extends Plugin_User
 	     */
         if($user) {
         	if ($user->unban()) {
-		        $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+		        $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
         	} else {
-		        $this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR'));
+		        $this->debugger->addError(Text::_('BLOCK_UPDATE_ERROR'));
         	}
         } else {
-	        $this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR'));
+	        $this->debugger->addError(Text::_('BLOCK_UPDATE_ERROR'));
 		}
     }
 
@@ -419,12 +415,12 @@ class JFusionUser_elgg extends Plugin_User
 	     */
         if($user) {
         	if (elgg_set_user_validation_status($user->guid, 1, 'validated:jfusion')) {
-		        $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		        $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
         	} else {
-		        $this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR'));
+		        $this->debugger->addError(Text::_('ACTIVATION_UPDATE_ERROR'));
         	}
         } else {
-	        $this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR'));
+	        $this->debugger->addError(Text::_('ACTIVATION_UPDATE_ERROR'));
 		}    
     }
 
@@ -447,12 +443,12 @@ class JFusionUser_elgg extends Plugin_User
 	     */
         if($user) {
         	if (elgg_set_user_validation_status($user->guid, 0)) {
-		        $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		        $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
         	} else {
-		        $this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR'));
+		        $this->debugger->addError(Text::_('ACTIVATION_UPDATE_ERROR'));
         	}
         } else {
-	        $this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR'));
+	        $this->debugger->addError(Text::_('ACTIVATION_UPDATE_ERROR'));
 		}    
     }
 }

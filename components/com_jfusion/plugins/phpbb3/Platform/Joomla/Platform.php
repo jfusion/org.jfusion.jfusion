@@ -820,7 +820,7 @@ class Platform extends Joomla
 				$status['threadinfo']->postid = $postid;
 			}
 		} catch (Exception $e) {
-			$status['error'] = $e->getMessage();
+			$status[LogLevel::ERROR] = $e->getMessage();
 		}
 	}
 
@@ -891,7 +891,7 @@ class Platform extends Joomla
 			$db->setQuery($query);
 			$db->execute();
 		} catch (Exception $e) {
-			$status['error'][] = $e->getMessage();
+			$status[LogLevel::ERROR][] = $e->getMessage();
 		}
 	}
 
@@ -1075,7 +1075,7 @@ class Platform extends Joomla
 				$status['post_moderated'] = ($post_approved) ? 0 : 1;
 			}
 		} catch (Exception $e) {
-			$status['error'][] = $e->getMessage();
+			$status[LogLevel::ERROR][] = $e->getMessage();
 		}
 		return $status;
 	}
@@ -1321,9 +1321,9 @@ class Platform extends Joomla
 								$phpbb_cookie_domain = '';
 							}
 							//delete the cookies
-							$status['debug'][] = $userPlugin->addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-							$status['debug'][] = $userPlugin->addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-							$status['debug'][] = $userPlugin->addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+							$status[LogLevel::DEBUG][] = $userPlugin->addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+							$status[LogLevel::DEBUG][] = $userPlugin->addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+							$status[LogLevel::DEBUG][] = $userPlugin->addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
 							$return = 1;
 						} elseif ($debug) {
 							Framework::raise(LogLevel::NOTICE, 'Keep alive enabled so renew Joomla\'s session', $this->getJname());

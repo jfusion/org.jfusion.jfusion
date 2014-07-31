@@ -136,7 +136,7 @@ class User extends Plugin_User
      */
     function destroySession(Userinfo $userinfo, $options)
     {
-	    $status = array('error' => array(), 'debug' => array());
+	    $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 	    try {
 	        $db = Factory::getDatabase($this->getJname());
 	        //get the cookie parameters
@@ -159,13 +159,13 @@ class User extends Plugin_User
 		    try {
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['debug'][] = 'Error could not update the last visit field ' . $e->getMessage();
+			    $status[LogLevel::DEBUG][] = 'Error could not update the last visit field ' . $e->getMessage();
 		    }
 
 	        //delete the cookies
-	        $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-	        $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-	        $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+	        $status[LogLevel::DEBUG][] = $this->addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+	        $status[LogLevel::DEBUG][] = $this->addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+	        $status[LogLevel::DEBUG][] = $this->addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
 
 	        $_COOKIE[$phpbb_cookie_name . '_u'] = '';
 	        $_COOKIE[$phpbb_cookie_name . '_sid'] = '';
@@ -185,9 +185,9 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = 'Deleted the session';
+		    $status[LogLevel::DEBUG][] = 'Deleted the session';
 	    } catch (Exception $e) {
-		    $status['debug'][] = 'Error could not delete the session:' . $e->getMessage();
+		    $status[LogLevel::DEBUG][] = 'Error could not delete the session:' . $e->getMessage();
 	    }
         return $status;
     }
@@ -247,9 +247,9 @@ class User extends Plugin_User
 						    }
 						    $result = $auth->login($userinfo->username, $userinfo->password_clear, $remember, 1, 0);
 						    if ($result['status'] == LOGIN_SUCCESS) {
-							    $status['debug'][] = Text::_('CREATED') . ' ' . Text::_('PHPBB') . ' ' . Text::_('SESSION');
+							    $status[LogLevel::DEBUG][] = Text::_('CREATED') . ' ' . Text::_('PHPBB') . ' ' . Text::_('SESSION');
 						    } else {
-							    $status['debug'][] = Text::_('ERROR') . ' ' . Text::_('PHPBB') . ' ' . Text::_('SESSION');
+							    $status[LogLevel::DEBUG][] = Text::_('ERROR') . ' ' . Text::_('PHPBB') . ' ' . Text::_('SESSION');
 						    }
 						    //change the current directory back to Joomla.
 						    chdir(JPATH_SITE);
@@ -304,7 +304,7 @@ class User extends Plugin_User
 								    $jdb->setQuery($query);
 								    $persistant_cookie_userid = $jdb->loadResult();
 								    if ($persistant_cookie_userid == $userinfo->userid) {
-									    $status['debug'][] = Text::_('SKIPPED_CREATING_PERSISTANT_COOKIE');
+									    $status[LogLevel::DEBUG][] = Text::_('SKIPPED_CREATING_PERSISTANT_COOKIE');
 									    $create_persistant_cookie = false;
 									    //going to assume that since a persistent cookie exists, $options['remember'] was originally set
 									    //$options['remember'] does not get set if Joomla remember me plugin reinitiated the login
@@ -346,8 +346,8 @@ class User extends Plugin_User
 						    $jdb->insertObject('#__sessions', $session_obj);
 
 						    //Set cookies
-						    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_u', $userid, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-						    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_sid', $session_key, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly, true);
+						    $status[LogLevel::DEBUG][] = $this->addCookie($phpbb_cookie_name . '_u', $userid, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+						    $status[LogLevel::DEBUG][] = $this->addCookie($phpbb_cookie_name . '_sid', $session_key, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly, true);
 
 						    //Force the values into the $_COOKIE variable just in case Joomla remember me plugin fired this in which the cookie will not be available until after the browser refreshes.  This will hopefully trick phpBB into thinking the cookie is present now and thus handle sessions correctly when in frameless mode
 						    $_COOKIE[$phpbb_cookie_name . '_u'] = $userid;
@@ -364,7 +364,7 @@ class User extends Plugin_User
 							    $session_key_ins->last_login = $session_start;
 							    $jdb->insertObject('#__sessions_keys', $session_key_ins);
 
-							    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_k', $key_id, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly, true);
+							    $status[LogLevel::DEBUG][] = $this->addCookie($phpbb_cookie_name . '_k', $key_id, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly, true);
 							    $_COOKIE[$phpbb_cookie_name . '_k'] = $key_id;
 						    }
 					    } else {
@@ -416,7 +416,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
+	    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
@@ -446,7 +446,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+	    $this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
 	/**
@@ -508,7 +508,7 @@ class User extends Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 			} catch (Exception $e) {
-				$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->addError(Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			}
 
 			foreach($usergroup->groups as $group) {
@@ -531,7 +531,7 @@ class User extends Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 			} catch (Exception $e) {
-				$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->addError(Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			}
 
 			try {
@@ -544,7 +544,7 @@ class User extends Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 			} catch (Exception $e) {
-				$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->addError(Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			}
 
 			try {
@@ -556,7 +556,7 @@ class User extends Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 			} catch (Exception $e) {
-				$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->addError(Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 			}
 
 			$query = $db->getQuery(true)
@@ -576,11 +576,11 @@ class User extends Plugin_User
 					$db->setQuery($query);
 					$db->execute();
 				} catch (Exception $e) {
-					$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+					$this->debugger->addError(Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 				}
 			}
 			//log the group change success
-			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroup->groups));
+			$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroup->groups));
 		}
     }
 
@@ -637,7 +637,7 @@ class User extends Plugin_User
 
 	    $db->insertObject('#__banlist', $ban);
 
-	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -656,7 +656,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -679,7 +679,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
@@ -702,7 +702,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
 	/**
@@ -897,7 +897,7 @@ class User extends Plugin_User
 				    }
 			    }
 			    //return the good news
-			    $this->debugger->add('debug', Text::_('USER_CREATION'));
+			    $this->debugger->addDebug(Text::_('USER_CREATION'));
 			    $this->debugger->set('userinfo', $this->getUser($userinfo));
 		    }
 	    }
@@ -961,7 +961,7 @@ class User extends Plugin_User
 				    }
 			    }
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not retrieve a list of topics that still contain reported posts by user ' . $user_id . ': ' . $e->getMessage();
+			    $status[LogLevel::ERROR][] = 'Error Could not retrieve a list of topics that still contain reported posts by user ' . $user_id . ': ' . $e->getMessage();
 		    }
 
 		    if (sizeof($keep_report_topics)) {
@@ -979,7 +979,7 @@ class User extends Plugin_User
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not update post reported flag: ' . $e->getMessage();
+			    $status[LogLevel::ERROR][] = 'Error Could not update post reported flag: ' . $e->getMessage();
 		    }
 
 		    if (sizeof($report_topics)) {
@@ -992,7 +992,7 @@ class User extends Plugin_User
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status['error'][] = 'Error Could not update topics reported flag: ' . $e->getMessage();
+				    $status[LogLevel::ERROR][] = 'Error Could not update topics reported flag: ' . $e->getMessage();
 			    }
 		    }
 	    }
@@ -1005,7 +1005,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not delete reports by user ' . $user_id . ': ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not delete reports by user ' . $user_id . ': ' . $e->getMessage();
 	    }
 
 	    //update all topics started by and posts by the user to anonymous
@@ -1021,7 +1021,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not update forum last poster for user ' . $user_id . ': ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not update forum last poster for user ' . $user_id . ': ' . $e->getMessage();
 	    }
 
 	    try {
@@ -1034,7 +1034,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not update posts by user ' . $user_id . ': ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not update posts by user ' . $user_id . ': ' . $e->getMessage();
 	    }
 
 	    try {
@@ -1046,7 +1046,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not update edited posts by user ' . $user_id . ': ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not update edited posts by user ' . $user_id . ': ' . $e->getMessage();
 	    }
 
 	    try {
@@ -1060,7 +1060,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not update topics by user ' . $user_id . ': ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not update topics by user ' . $user_id . ': ' . $e->getMessage();
 	    }
 
 	    try {
@@ -1074,7 +1074,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not update last topic poster for user ' . $user_id . ': ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not update last topic poster for user ' . $user_id . ': ' . $e->getMessage();
 	    }
 
 	    // Since we change every post by this author, we need to count this amount towards the anonymous user
@@ -1096,7 +1096,7 @@ class User extends Plugin_User
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not update the number of posts for anonymous user: ' . $e->getMessage();
+			    $status[LogLevel::ERROR][] = 'Error Could not update the number of posts for anonymous user: ' . $e->getMessage();
 		    }
 	    }
 	    $table_ary = array('users', 'user_group', 'topics_watch', 'forums_watch', 'acl_users', 'topics_track', 'topics_posted', 'forums_track', 'profile_fields_data', 'moderator_cache', 'drafts', 'bookmarks');
@@ -1109,7 +1109,7 @@ class User extends Plugin_User
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not delete records from ' . $table . ' for user ' . $user_id . ': ' . $e->getMessage();
+			    $status[LogLevel::ERROR][] = 'Error Could not delete records from ' . $table . ' for user ' . $user_id . ': ' . $e->getMessage();
 		    }
 	    }
 
@@ -1131,7 +1131,7 @@ class User extends Plugin_User
 			    }
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not retrieve undeliverd messages to user ' . $user_id . ': ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not retrieve undeliverd messages to user ' . $user_id . ': ' . $e->getMessage();
 	    }
 
 	    if (!empty($undelivered_msg)) {
@@ -1143,7 +1143,7 @@ class User extends Plugin_User
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not delete private messages for user ' . $user_id . ': ' . $e->getMessage();
+			    $status[LogLevel::ERROR][] = 'Error Could not delete private messages for user ' . $user_id . ': ' . $e->getMessage();
 		    }
 	    }
 
@@ -1156,7 +1156,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not delete private messages that are in no folder from user ' . $user_id . ': ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not delete private messages that are in no folder from user ' . $user_id . ': ' . $e->getMessage();
 	    }
 
 	    try {
@@ -1168,7 +1168,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not delete private messages to user ' . $user_id . ': ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not delete private messages to user ' . $user_id . ': ' . $e->getMessage();
 	    }
 
 	    try {
@@ -1180,7 +1180,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not update rest of private messages for user ' . $user_id . ' to anonymous: ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not update rest of private messages for user ' . $user_id . ' to anonymous: ' . $e->getMessage();
 	    }
 
 	    try {
@@ -1191,7 +1191,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = 'Error Could not update rest of private messages for user ' . $user_id . ' to anonymous: ' . $e->getMessage();
+		    $status[LogLevel::ERROR][] = 'Error Could not update rest of private messages for user ' . $user_id . ' to anonymous: ' . $e->getMessage();
 	    }
 
 	    foreach ($undelivered_user as $_user_id => $ary) {
@@ -1208,7 +1208,7 @@ class User extends Plugin_User
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status['error'][] = 'Error Could not update the number of PMs for user ' . $_user_id . ' for user ' . $user_id . ' was deleted: ' . $e->getMessage();
+			    $status[LogLevel::ERROR][] = 'Error Could not update the number of PMs for user ' . $_user_id . ' for user ' . $user_id . ' was deleted: ' . $e->getMessage();
 		    }
 	    }
 	    //update the total user count
@@ -1267,7 +1267,7 @@ class User extends Plugin_User
 		    }
 	    }
 
-	    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $user_id;
+	    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $user_id;
 
         return $status;
     }

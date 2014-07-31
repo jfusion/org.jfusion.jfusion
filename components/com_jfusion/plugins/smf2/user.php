@@ -120,7 +120,7 @@ class User extends Plugin_User
     function deleteUser(Userinfo $userinfo)
     {
 	    //setup status array to hold debug info and errors
-	    $status = array('error' => array(), 'debug' => array());
+	    $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -165,7 +165,7 @@ class User extends Plugin_User
 			    $db->setQuery($query);
 			    $db->execute();
 
-			    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
+			    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 		    }
 	    }
 		return $status;
@@ -179,9 +179,9 @@ class User extends Plugin_User
      */
     function destroySession(Userinfo $userinfo, $options)
     {
-        $status = array('error' => array(), 'debug' => array());
+        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 	    try {
-	        $status['debug'][] = $this->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
+	        $status[LogLevel::DEBUG][] = $this->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 
 		    $db = Factory::getDatabase($this->getJname());
 
@@ -192,7 +192,7 @@ class User extends Plugin_User
 		    $db->setQuery($query, 0, 1);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status['error'][] = $e->getMessage();
+		    $status[LogLevel::ERROR][] = $e->getMessage();
 	    }
 		return $status;
      }
@@ -238,7 +238,7 @@ class User extends Plugin_User
 
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
+	    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
@@ -271,7 +271,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+	    $this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
 	/**
@@ -322,7 +322,7 @@ class User extends Plugin_User
 		    $existinggroups = $existinguser->groups;
 		    $existinggroups[] = $existinguser->group_id;
 
-			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinggroups) . ' -> ' . implode(' , ', $groups));
+			$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinggroups) . ' -> ' . implode(' , ', $groups));
 	    }
     }
 
@@ -389,7 +389,7 @@ class User extends Plugin_User
 	    try {
 		    $db->insertObject('#__ban_groups', $ban, 'id_ban_group' );
 	    } catch (Exception $e) {
-		    $this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage());
+		    $this->debugger->addError(Text::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage());
 	    }
 
 	    $ban_item = new stdClass;
@@ -397,7 +397,7 @@ class User extends Plugin_User
 	    $ban_item->id_member = $existinguser->userid;
 	    $db->insertObject('#__ban_items', $ban_item, 'id_ban' );
 
-	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -424,7 +424,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -446,7 +446,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
@@ -468,7 +468,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
 	/**
@@ -561,7 +561,7 @@ class User extends Plugin_User
 		    $db->execute();
 
 		    //return the good news
-		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->addDebug(Text::_('USER_CREATION'));
 		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
     }

@@ -99,7 +99,7 @@ class plgAuthenticationjfusion extends JPlugin
 			    $joomlaAuth = new plgAuthenticationJoomla($dispatcher, (array) ($plugin));
 				$joomlaAuth->onUserAuthenticate($credentials, $options, $response);
 
-			    $authResponce->debugger->add('debug', JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED'));
+			    $authResponce->debugger->addDebug(JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED'));
 		    }
 
 		    if (isset($response->status) && $response->status != JAuthentication::STATUS_SUCCESS) {

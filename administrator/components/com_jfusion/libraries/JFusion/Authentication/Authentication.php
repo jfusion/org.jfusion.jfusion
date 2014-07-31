@@ -286,7 +286,7 @@ class Authentication extends Object
 				 */
 				$debug = false;
 				if (!empty($options['skip_password_check']) && $debug === true) {
-					$debugger->add('debug', Text::_('SKIPPED') . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK'));
+					$debugger->addDebug(Text::_('SKIPPED') . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK'));
 					$response->status = Authentication::STATUS_SUCCESS;
 					$response->email = $userinfo->email;
 					$response->fullname = $userinfo->name;
@@ -313,7 +313,7 @@ class Authentication extends Object
 						}
 						if ($check) {
 							//found a match
-							$debugger->add('debug', $master->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' . Text::_('SUCCESS'));
+							$debugger->addDebug($master->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' . Text::_('SUCCESS'));
 							$response->status = Authentication::STATUS_SUCCESS;
 							$response->email = $userinfo->email;
 							$response->fullname = $userinfo->name;
@@ -322,9 +322,9 @@ class Authentication extends Object
 						} else {
 							$testcrypt = $model->generateEncryptedPassword($userinfo);
 							if (isset($options['show_unsensored'])) {
-								$debugger->add('debug', $master->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' . $testcrypt . ' vs ' . $userinfo->password);
+								$debugger->addDebug($master->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' . $testcrypt . ' vs ' . $userinfo->password);
 							} else {
-								$debugger->add('debug', $master->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
+								$debugger->addDebug($master->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
 							}
 
 							//otherwise check the other authentication models
@@ -355,7 +355,7 @@ class Authentication extends Object
 
 									if ($check) {
 										//found a match
-										$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' . Text::_('SUCCESS'));
+										$debugger->addDebug($auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' . Text::_('SUCCESS'));
 										$response->status = Authentication::STATUS_SUCCESS;
 										$response->email = $userinfo->email;
 										$response->fullname = $userinfo->name;
@@ -370,19 +370,19 @@ class Authentication extends Object
 										$JFusionMaster->doUpdatePassword($userinfo, $userinfo);
 
 										$status = $JFusionMaster->debugger->get();
-										if (!empty($status['error'])) {
-											foreach($status['error'] as $error) {
-												$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR') . ': ' . $error);
+										if (!empty($status[LogLevel::ERROR])) {
+											foreach($status[LogLevel::ERROR] as $error) {
+												$debugger->addDebug($auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR') . ': ' . $error);
 											}
-											Framework::raise(LogLevel::ERROR, $status['error'], $master->name. ' ' .Text::_('PASSWORD') . ' ' . Text::_('UPDATE'));
+											Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], $master->name. ' ' .Text::_('PASSWORD') . ' ' . Text::_('UPDATE'));
 										} else {
-											$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('UPDATE') . ' ' . Text::_('SUCCESS'));
+											$debugger->addDebug($auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('UPDATE') . ' ' . Text::_('SUCCESS'));
 										}
 									} else {
 										if (isset($options['show_unsensored'])) {
-											$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' .  $testcrypt . ' vs ' . $userinfo->password);
+											$debugger->addDebug($auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' .  $testcrypt . ' vs ' . $userinfo->password);
 										} else {
-											$debugger->add('debug', $auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
+											$debugger->addDebug($auth_model->name . ' ' . Text::_('PASSWORD') . ' ' . Text::_('ENCRYPTION') . ' ' . Text::_('CHECK') . ': ' .  substr($testcrypt, 0, 6) . '******** vs ' . substr($userinfo->password, 0, 6) . '********');
 										}
 									}
 								} catch (Exception $e) {
@@ -394,12 +394,12 @@ class Authentication extends Object
 				}
 			} else {
 				$response->error_message = Text::_('USER_NOT_EXIST');
-				$debugger->add('debug', Text::_('USER_NOT_EXIST'));
+				$debugger->addDebug(Text::_('USER_NOT_EXIST'));
 			}
 		} else {
 			$response->status = Authentication::STATUS_UNKNOWN;
 			$response->error_message = Text::_('JOOMLA_AUTH_PLUGIN_USED_NO_MASTER');
-			$debugger->add('debug', Text::_('JOOMLA_AUTH_PLUGIN_USED_NO_MASTER'));
+			$debugger->addDebug(Text::_('JOOMLA_AUTH_PLUGIN_USED_NO_MASTER'));
 		}
 		$response->debugger = $debugger;
 

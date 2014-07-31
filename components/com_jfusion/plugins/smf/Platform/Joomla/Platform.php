@@ -585,7 +585,7 @@ class Platform extends Joomla
 			    $status['threadinfo']->postid = $postid;
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = $e->getMessage();
+		    $status[LogLevel::ERROR][] = $e->getMessage();
 	    }
     }
 
@@ -629,7 +629,7 @@ class Platform extends Joomla
 		    $post_row->ID_MSG = $postid;
 		    $db->updateObject('#__messages', $post_row, 'ID_MSG');
 	    } catch (Exception $e) {
-		    $status['error'][] = $e->getMessage();
+		    $status[LogLevel::ERROR][] = $e->getMessage();
 	    }
     }
 
@@ -809,7 +809,7 @@ HTML;
 			    $db->execute();
 		    }
 	    } catch (Exception $e) {
-		    $status['error'] = $e->getMessage();
+		    $status[LogLevel::ERROR] = $e->getMessage();
 	    }
         return $status;
     }

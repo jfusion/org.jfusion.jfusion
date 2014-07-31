@@ -134,7 +134,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
+	    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 		return $status;
     }
 
@@ -158,14 +158,14 @@ class User extends Plugin_User
    		$_SESSION['wsToken'] = '';
 	    $this->helper->closeSession();
 
-        $status['debug'][] = $this->addCookie($cookie_name  . 'UserName', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-        $status['debug'][] = $this->addCookie($cookie_name  . 'UserID', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-        $status['debug'][] = $this->addCookie($cookie_name  . 'Token', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status[LogLevel::DEBUG][] = $this->addCookie($cookie_name  . 'UserName', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status[LogLevel::DEBUG][] = $this->addCookie($cookie_name  . 'UserID', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status[LogLevel::DEBUG][] = $this->addCookie($cookie_name  . 'Token', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
 
    		$now = time();
         $expiration = 86400;
 
-        $status['debug'][] = $this->addCookie('LoggedOut', $now, $expiration, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status[LogLevel::DEBUG][] = $this->addCookie('LoggedOut', $now, $expiration, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
 		return $status;
      }
 
@@ -189,15 +189,15 @@ class User extends Plugin_User
             $cookie_name = $this->helper->getCookieName();
 			$this->helper->startSession($options);
 
-			$status['debug'][] = $this->addCookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+			$status[LogLevel::DEBUG][] = $this->addCookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             $_SESSION['wsUserName'] = $userinfo->username;
 
-			$status['debug'][] = $this->addCookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+			$status[LogLevel::DEBUG][] = $this->addCookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             $_SESSION['wsUserID'] = $userinfo->userid;
 
             $_SESSION[ 'wsToken'] = $userinfo->user_token;
             if (!empty($options['remember'])) {
-	            $status['debug'][] = $this->addCookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+	            $status[LogLevel::DEBUG][] = $this->addCookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             }
 
 			$this->helper->closeSession();
@@ -239,7 +239,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
+	    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
@@ -271,7 +271,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+	    $this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
 	/**
@@ -307,7 +307,7 @@ class User extends Plugin_User
 				$db->insertObject('#__user_groups', $ug, 'ug_user' );
 			}
 
-			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
+			$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
 		}
 	}
 
@@ -344,7 +344,7 @@ class User extends Plugin_User
 	    //now append the new user data
 	    $db->insertObject('#__ipblocks', $ban, 'ipb_id' );
 
-	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -364,7 +364,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 /*
     function activateUser(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser)
@@ -378,7 +378,7 @@ class User extends Plugin_User
 
         $db->setQuery($query);
 		$db->execute():
-		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		$this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     function inactivateUser(\JFusion\User\Userinfo $userinfo, \JFusion\User\Userinfo &$existinguser)
@@ -393,7 +393,7 @@ class User extends Plugin_User
 
         $db->setQuery($query);
 		$db->execute();
-		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		$this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 */
 
@@ -490,7 +490,7 @@ class User extends Plugin_User
 			    $db->insertObject('#__user_groups', $ug, 'ug_user' );
 		    }
 		    //return the good news
-		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->addDebug(Text::_('USER_CREATION'));
 		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
     }

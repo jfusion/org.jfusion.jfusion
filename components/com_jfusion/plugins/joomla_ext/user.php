@@ -171,7 +171,7 @@ class User extends Plugin_User
 		//generate the filtered integration username
 		$db = Factory::getDatabase($this->getJname());
 		$username_clean = $this->filterUsername($userinfo->username);
-		$this->debugger->add('debug', Text::_('USERNAME') . ': ' . $userinfo->username . ' -> ' . Text::_('FILTERED_USERNAME') . ':' . $username_clean);
+		$this->debugger->addDebug(Text::_('USERNAME') . ': ' . $userinfo->username . ' -> ' . Text::_('FILTERED_USERNAME') . ':' . $username_clean);
 
 		$query = $db->getQuery(true)
 			->update('#__users')
@@ -181,7 +181,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', Text::_('USERNAME_UPDATE') . ': ' . $username_clean);
+		$this->debugger->addDebug(Text::_('USERNAME_UPDATE') . ': ' . $username_clean);
 	}
 
 	/**
@@ -189,12 +189,12 @@ class User extends Plugin_User
 	 */
 	function doCreateUser(Userinfo $userinfo)
 	{
-		$this->debugger->add('debug', Text::_('NO_USER_FOUND_CREATING_ONE'));
+		$this->debugger->addDebug(Text::_('NO_USER_FOUND_CREATING_ONE'));
 		try {
 			$this->createUser($userinfo);
 			$this->debugger->set('action', 'created');
 		} catch (Exception $e) {
-			$this->debugger->add('error', Text::_('USER_CREATION_ERROR') . $e->getMessage());
+			$this->debugger->addError(Text::_('USER_CREATION_ERROR') . $e->getMessage());
 		}
 	}
 
@@ -243,7 +243,7 @@ class User extends Plugin_User
 
 					$db->setQuery($query);
 				}
-				$this->debugger->add('debug', Text::_('USERNAME') . ': ' . $userinfo->username . ' ' . Text::_('FILTERED_USERNAME') . ': ' . $username_clean);
+				$this->debugger->addDebug(Text::_('USERNAME') . ': ' . $userinfo->username . ' ' . Text::_('FILTERED_USERNAME') . ': ' . $username_clean);
 
 				//create a Joomla password hash if password_clear is available
 				if (!empty($userinfo->password_clear)) {
@@ -295,13 +295,13 @@ class User extends Plugin_User
 				if ($joomla_user) {
 					//report back success
 					$this->debugger->set('userinfo', $joomla_user);
-					$this->debugger->add('debug', Text::_('USER_CREATION'));
+					$this->debugger->addDebug(Text::_('USER_CREATION'));
 				} else {
 					throw new RuntimeException(Text::_('COULD_NOT_CREATE_USER'));
 				}
 			} else {
 				//Joomla does not allow duplicate emails report error
-				$this->debugger->add('debug', Text::_('USERNAME') . ' ' . Text::_('CONFLICT') . ': ' . $existinguser->username . ' -> ' . $userinfo->username);
+				$this->debugger->addDebug(Text::_('USERNAME') . ' ' . Text::_('CONFLICT') . ': ' . $existinguser->username . ' -> ' . $userinfo->username);
 				$this->debugger->set('userinfo', $existinguser);
 				throw new RuntimeException(Text::_('EMAIL_CONFLICT') . '. UserID: ' . $existinguser->userid . ' JFusionPlugin: ' . $this->getJname());
 			}
@@ -310,13 +310,14 @@ class User extends Plugin_User
 
     /**
      * @param Userinfo $userinfo
+     *
      * @return array
      */
     function deleteUser(Userinfo $userinfo) {
 	    //get the database ready
 	    $db = Factory::getDatabase($this->getJname());
 	    //setup status array to hold debug info and errors
-	    $status = array('error' => array(), 'debug' => array());
+	    $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 	    $userid = $userinfo->userid;
 
 	    $query = $db->getQuery(true)
@@ -340,7 +341,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
+	    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
         return $status;
     }
 
@@ -403,7 +404,7 @@ class User extends Plugin_User
 
 				$db->insertObject('#__user_usergroup_map', $temp);
 			}
-			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups));
+			$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups));
 		}
 	}
 
@@ -427,7 +428,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+		$this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 	}
 
 	/**
@@ -461,7 +462,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', Text::_('PASSWORD_UPDATE')  . ': ' . substr($password, 0, 6) . '********');
+			$this->debugger->addDebug(Text::_('PASSWORD_UPDATE')  . ': ' . substr($password, 0, 6) . '********');
 		}
 	}
 
@@ -486,7 +487,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+		$this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 	}
 
 	/**
@@ -510,7 +511,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+		$this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 	}
 
 	/**
@@ -535,7 +536,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		$this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
@@ -560,7 +561,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		$this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
@@ -605,16 +606,16 @@ class User extends Plugin_User
 			try {
 				$this->updateUserLanguage($userinfo, $existinguser);
 				$existinguser->language = $userinfo->language;
-				$this->debugger->add('debug', Text::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
+				$this->debugger->addDebug(Text::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
 
 				$existinguser->language = $userinfo->language;
 				$changed = true;
 			} catch (Exception $e) {
-				$this->debugger->add('error', Text::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->addError(Text::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
 			}
 		} else {
 			//return a debug to inform we skipped this step
-			$this->debugger->add('debug', Text::_('LANGUAGE_NOT_UPDATED'));
+			$this->debugger->addDebug(Text::_('LANGUAGE_NOT_UPDATED'));
 		}
 		return $changed;
 	}
@@ -643,6 +644,6 @@ class User extends Plugin_User
 		$db->setQuery($query);
 
 		$db->execute();
-		$this->debugger->add('debug', Text::_('LANGUAGE_UPDATE') . ' ' . $existinguser->language);
+		$this->debugger->addDebug(Text::_('LANGUAGE_UPDATE') . ' ' . $existinguser->language);
 	}
 }

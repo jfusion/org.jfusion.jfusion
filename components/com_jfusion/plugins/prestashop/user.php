@@ -127,7 +127,7 @@ class User extends Plugin_User
 		    ->where('id_customer = ' . $db->quote($userinfo->userid));
 
 	    $db->setQuery($query);
-	    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
+	    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 		return $status;
     }
 
@@ -184,7 +184,7 @@ class User extends Plugin_User
 
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
+	    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
 	/**
@@ -286,7 +286,7 @@ class User extends Plugin_User
 
 			    $db->insertObject('#__address', $ps_address);
 
-			    $this->debugger->add('debug', Text::_('USER_CREATION'));
+			    $this->debugger->addDebug(Text::_('USER_CREATION'));
 			    $this->debugger->set('userinfo', $this->getUser($userinfo));
 		    }
 	    }
@@ -310,7 +310,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+	    $this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
     /**
@@ -331,7 +331,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
@@ -352,7 +352,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
 	/**
@@ -393,7 +393,7 @@ class User extends Plugin_User
 				$db->insertObject('#__customer_group', $group);
 			}
 
-			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
+			$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
 		}
     }
 }

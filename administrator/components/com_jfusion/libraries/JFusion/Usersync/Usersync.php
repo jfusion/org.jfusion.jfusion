@@ -215,8 +215,8 @@ class Usersync
 									$userPlugin->updateUser($userinfo, 1);
 
 									$status = $userPlugin->debugger->get();
-									if (!empty($status['error'])) {
-										Framework::raise(LogLevel::ERROR, $status['error'], $userjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
+									if (!empty($status[LogLevel::ERROR])) {
+										Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], $userjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
 									} else {
 										Framework::raise(LogLevel::INFO, Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $userjname);
 										static::markResolved($id);
@@ -232,8 +232,8 @@ class Usersync
 								    $userPlugin->updateUser($userinfo, 1);
 
 								    $status = $userPlugin->debugger->get();
-								    if (!empty($status['error'])) {
-									    Framework::raise(LogLevel::ERROR, $status['error'], $conflictjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
+								    if (!empty($status[LogLevel::ERROR])) {
+									    Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], $conflictjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
 								    } else {
 									    Framework::raise(LogLevel::INFO, Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $conflictjname);
 									    static::markResolved($id);
@@ -251,8 +251,8 @@ class Usersync
 							    $userPlugin->deleteUser($useruserinfo);
 
 							    $status = $userPlugin->debugger->get();
-							    if (!empty($status['error'])) {
-								    Framework::raise(LogLevel::ERROR, $status['error'], $error['user_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['user_username']);
+							    if (!empty($status[LogLevel::ERROR])) {
+								    Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], $error['user_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['user_username']);
 							    } else {
 								    static::markResolved($id);
 								    Framework::raise(LogLevel::INFO, Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
@@ -268,8 +268,8 @@ class Usersync
 							    $userPlugin->deleteUser($conflictuserinfo);
 
 							    $status = $userPlugin->debugger->get();
-							    if (!empty($status['error'])) {
-								    Framework::raise(LogLevel::ERROR, $status['error'], $error['conflict_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['conflict_username']);
+							    if (!empty($status[LogLevel::ERROR])) {
+								    Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], $error['conflict_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['conflict_username']);
 							    } else {
 								    static::markResolved($id);
 								    Framework::raise(LogLevel::INFO, Text::_('SUCCESS') . ' ' . Text::_('DELETING') . ' ' . Text::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);
@@ -394,7 +394,7 @@ class Usersync
 										    }
 									    }
 								    } catch (Exception $e) {
-									    $status['error'] = $e->getMessage();
+									    $status[LogLevel::ERROR] = $e->getMessage();
 									    $UpdateUserInfo = null;
 								    }
 
@@ -407,13 +407,13 @@ class Usersync
 								    $sync_log->username = $userlist[$j]->username;
 								    $sync_log->email = $userlist[$j]->email;
 
-								    if (!$userinfo instanceof Userinfo || !empty($status['error'])) {
+								    if (!$userinfo instanceof Userinfo || !empty($status[LogLevel::ERROR])) {
 									    $status['action'] = 'error';
-									    $sync_log->message = (is_array($status['error'])) ? implode('; ', $status['error']) : $status['error'];
+									    $sync_log->message = (is_array($status[LogLevel::ERROR])) ? implode('; ', $status[LogLevel::ERROR]) : $status[LogLevel::ERROR];
 									    $error = array();
 									    $error['conflict']['userinfo'] = $UpdateUserInfo;
-									    $error['conflict']['error'] = $status['error'];
-									    $error['conflict']['debug'] = (!empty($status['debug'])) ? $status['debug'] : '';
+									    $error['conflict']['error'] = $status[LogLevel::ERROR];
+									    $error['conflict']['debug'] = (!empty($status[LogLevel::DEBUG])) ? $status[LogLevel::DEBUG] : '';
 									    $error['conflict']['jname'] = $action_reverse_name;
 									    $error['user']['jname'] = $action_name;
 									    $error['user']['userinfo'] = $userinfo;

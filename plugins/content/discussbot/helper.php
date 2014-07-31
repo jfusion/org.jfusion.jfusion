@@ -210,8 +210,8 @@ class JFusionDiscussBotHelper {
 		}
 
 		$platform->checkThreadExists($this->params, $this->article, $threadinfo, $status);
-		if (!empty($status['error'])) {
-			Framework::raise(LogLevel::ERROR, $status['error'], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
+		if (!empty($status[LogLevel::ERROR])) {
+			Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
 		} else {
 			if ($status['action'] != 'unchanged') {
 				if ($status['action'] == 'created') {

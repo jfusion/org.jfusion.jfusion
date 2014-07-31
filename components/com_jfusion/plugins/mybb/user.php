@@ -5,6 +5,7 @@ use JFusion\Framework;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
 
@@ -83,7 +84,8 @@ class User extends Plugin_User
      * @return array
      */
     function destroySession(Userinfo $userinfo, $options) {
-        $status = array('error' => array(), 'debug' => array());
+        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
+
         $cookiedomain = $this->params->get('cookie_domain');
         $cookiepath = $this->params->get('cookie_path', '/');
         //Set cookie values
@@ -95,11 +97,11 @@ class User extends Plugin_User
         $remove_cookies = array('mybb', 'mybbuser', 'mybbadmin');
         if ($cookiedomain) {
             foreach ($remove_cookies as $name) {
-                $status['debug'][] = $this->addCookie($name,  '', $expires, $cookiepath, '', $cookiedomain);
+                $status[LogLevel::DEBUG][] = $this->addCookie($name,  '', $expires, $cookiepath, '', $cookiedomain);
             }
         } else {
             foreach ($remove_cookies as $name) {
-                $status['debug'][] = $this->addCookie($name,  '', $expires, $cookiepath, '');
+                $status[LogLevel::DEBUG][] = $this->addCookie($name,  '', $expires, $cookiepath, '');
             }
         }
         return $status;
@@ -111,11 +113,11 @@ class User extends Plugin_User
      * @return array
      */
     function createSession(Userinfo $userinfo, $options) {
-        $status = array('error' => array(), 'debug' => array());
+        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
         //do not create sessions for blocked users
 	    try {
 	        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-	            $status['error'][] = Text::_('FUSION_BLOCKED_USER');
+	            $status[LogLevel::ERROR][] = Text::_('FUSION_BLOCKED_USER');
 	        } else {
 	            //get cookiedomain, cookiepath (theIggs solution)
 	            $cookiedomain = $this->params->get('cookie_domain', '');
@@ -149,10 +151,10 @@ class User extends Plugin_User
 		        }
 		        $cookiepath = str_replace(array("\n", "\r"), '', $cookiepath);
 		        $cookiedomain = str_replace(array("\n", "\r"), '', $cookiedomain);
-		        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly , true);
+		        $status[LogLevel::DEBUG][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly , true);
 	        }
 	    } catch (Exception $e) {
-		    $status['error'][] = $e->getMessage();
+		    $status[LogLevel::ERROR][] = $e->getMessage();
 	    }
         return $status;
     }
@@ -187,7 +189,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
 	/**
@@ -235,7 +237,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+		    $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 	    }
     }
 
@@ -260,7 +262,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
+	    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
 	/**
@@ -288,7 +290,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
+		    $this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
 	    }
     }
 
@@ -337,7 +339,7 @@ class User extends Plugin_User
 		    $db->insertObject('#__users', $user, 'uid');
 
 		    //return the good news
-		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->addDebug(Text::_('USER_CREATION'));
 		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
     }
@@ -360,7 +362,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+	    $this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
 	/**
@@ -388,7 +390,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	    }
     }
 
@@ -412,6 +414,6 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status['debug'][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    $status[LogLevel::DEBUG][] = Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
 }

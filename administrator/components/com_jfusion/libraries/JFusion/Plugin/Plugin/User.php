@@ -144,7 +144,7 @@ class Plugin_User extends Plugin
     /**
      * Function that automatically logs out the user from the integrated software
      * $result['error'] (contains any error messages)
-     * $result['debug'] (contains information on what was done)
+     * $result[LogLevel::DEBUG] (contains information on what was done)
      *
      * @param Userinfo $userinfo contains the userinfo
      * @param array $options  contains Array with the login options, such as remember_me
@@ -153,16 +153,14 @@ class Plugin_User extends Plugin
      */
     function destroySession(Userinfo $userinfo, $options)
     {
-        $result = array();
-        $result['error'] = array();
-        $result['debug'] = array();
+	    $result = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
         return $result;
     }
 
     /**
      * Function that automatically logs in the user from the integrated software
      * $result['error'] (contains any error messages)
-     * $result['debug'] (contains information on what was done)
+     * $result[LogLevel::DEBUG] (contains information on what was done)
      *
      * @param Userinfo $userinfo contains the userinfo
      * @param array  $options  contains array with the login options, such as remember_me     *
@@ -171,7 +169,8 @@ class Plugin_User extends Plugin
      */
     function createSession(Userinfo $userinfo, $options)
     {
-        return array();
+	    $result = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
+        return $result;
     }
 
     /**
@@ -206,7 +205,7 @@ class Plugin_User extends Plugin
 		    if ($existinguser instanceof Userinfo) {
 			    $changed = false;
 			    //a matching user has been found
-			    $this->debugger->add('debug', Text::_('USER_DATA_FOUND'));
+			    $this->debugger->addDebug(Text::_('USER_DATA_FOUND'));
 
 			    if($this->doUpdateEmail($userinfo, $existinguser, $overwrite)) {
 				    $changed = true;
@@ -246,7 +245,7 @@ class Plugin_User extends Plugin
 			    $this->createUser($userinfo);
 		    }
 	    } catch (Exception $e) {
-		    $this->debugger->add('error', $e->getMessage());
+		    $this->debugger->addError($e->getMessage());
 	    }
         return null;
     }
@@ -268,10 +267,10 @@ class Plugin_User extends Plugin
 					if ($usergroup_updated) {
 						$changed = true;
 					} else {
-						$this->debugger->add('debug', Text::_('SKIPPED_GROUP_UPDATE') . ':' . Text::_('GROUP_VALID'));
+						$this->debugger->addDebug(Text::_('SKIPPED_GROUP_UPDATE') . ':' . Text::_('GROUP_VALID'));
 					}
 				} catch (Exception $e) {
-					$this->debugger->add('error', Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
+					$this->debugger->addError(Text::_('GROUP_UPDATE_ERROR') . ' ' . $e->getMessage());
 				}
 			}
 		}
@@ -280,8 +279,6 @@ class Plugin_User extends Plugin
 
     /**
      * Function that determines if the usergroup needs to be updated and executes updateUsergroup if it does
-     * $status['error'] (contains any error messages)
-     * $status['debug'] (contains information on what was done)
      *
      * @param Userinfo $userinfo      Object containing the new userinfo
      * @param Userinfo &$existinguser Object containing the old userinfo
@@ -322,16 +319,16 @@ class Plugin_User extends Plugin
 						$this->updatePassword($userinfo, $existinguser);
 						$changed = true;
 					} catch (Exception $e) {
-						$this->debugger->add('error', Text::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
+						$this->debugger->addError(Text::_('PASSWORD_UPDATE_ERROR') . ' ' . $e->getMessage());
 					}
 				} else {
-					$this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ':' . Text::_('PASSWORD_VALID'));
+					$this->debugger->addDebug(Text::_('SKIPPED_PASSWORD_UPDATE') . ':' . Text::_('PASSWORD_VALID'));
 				}
 			} catch (Exception $e) {
-				$this->debugger->add('error', Text::_('SKIPPED_PASSWORD_UPDATE') . ':' . $e->getMessage());
+				$this->debugger->addError(Text::_('SKIPPED_PASSWORD_UPDATE') . ':' . $e->getMessage());
 			}
 		} else {
-			$this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE'));
+			$this->debugger->addDebug(Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE'));
 		}
 		return $changed;
 	}
@@ -346,7 +343,7 @@ class Plugin_User extends Plugin
      */
     function updatePassword(Userinfo $userinfo, Userinfo &$existinguser)
     {
-	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
+	    $this->debugger->addDebug(__METHOD__ . ' function not implemented');
     }
 
     /**
@@ -359,7 +356,7 @@ class Plugin_User extends Plugin
      */
     function updateUsername(Userinfo $userinfo, Userinfo &$existinguser)
     {
-	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
+	    $this->debugger->addDebug(__METHOD__ . ' function not implemented');
     }
 
 
@@ -376,19 +373,19 @@ class Plugin_User extends Plugin
 		$changed = false;
 
 		if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
-			$this->debugger->add('debug', Text::_('EMAIL_CONFLICT'));
+			$this->debugger->addDebug(Text::_('EMAIL_CONFLICT'));
 			$update_email = $this->params->get('update_email', false);
 			if ($update_email || $overwrite) {
-				$this->debugger->add('debug', Text::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
+				$this->debugger->addDebug(Text::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
 				try {
 					$this->updateEmail($userinfo, $existinguser);
 					$changed = true;
 				} catch (Exception $e) {
-					$this->debugger->add('error', Text::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage());
+					$this->debugger->addError(Text::_('EMAIL_UPDATE_ERROR') . ' ' . $e->getMessage());
 				}
 			} else {
 				//return a email conflict
-				$this->debugger->add('debug', Text::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
+				$this->debugger->addDebug(Text::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
 
 				$this->debugger->set('userinfo', $existinguser);
 				throw new RuntimeException(Text::_('EMAIL') . ' ' . Text::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
@@ -407,7 +404,7 @@ class Plugin_User extends Plugin
      */
     function updateEmail(Userinfo $userinfo, Userinfo &$existinguser)
     {
-	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
+	    $this->debugger->addDebug(__METHOD__ . ' function not implemented');
     }
 
     /**
@@ -420,7 +417,7 @@ class Plugin_User extends Plugin
      */
 	public function updateUsergroup(Userinfo $userinfo, Userinfo &$existinguser)
     {
-	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
+	    $this->debugger->addDebug(__METHOD__ . ' function not implemented');
     }
 
 	/**
@@ -444,7 +441,7 @@ class Plugin_User extends Plugin
 						$this->blockUser($userinfo, $existinguser);
 						$changed = true;
 					} catch (Exception $e) {
-						$this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
+						$this->debugger->addError(Text::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
 					}
 					$changed = true;
 				} else {
@@ -453,12 +450,12 @@ class Plugin_User extends Plugin
 						$this->unblockUser($userinfo, $existinguser);
 						$changed = true;
 					} catch (Exception $e) {
-						$this->debugger->add('error', Text::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
+						$this->debugger->addError(Text::_('BLOCK_UPDATE_ERROR') . ' ' . $e->getMessage());
 					}
 				}
 			} else {
 				//return a debug to inform we skipped this step
-				$this->debugger->add('debug', Text::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+				$this->debugger->addDebug(Text::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 			}
 		}
 		return $changed;
@@ -474,7 +471,7 @@ class Plugin_User extends Plugin
      */
     function blockUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
-	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
+	    $this->debugger->addDebug(__METHOD__ . ' function not implemented');
     }
 
     /**
@@ -487,7 +484,7 @@ class Plugin_User extends Plugin
      */
     function unblockUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
-	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
+	    $this->debugger->addDebug(__METHOD__ . ' function not implemented');
     }
 
 
@@ -513,7 +510,7 @@ class Plugin_User extends Plugin
 							$this->inactivateUser($userinfo, $existinguser);
 							$changed = true;
 						} catch (Exception $e) {
-							$this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
+							$this->debugger->addError(Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
 						}
 					} else {
 						//activate the user
@@ -521,12 +518,12 @@ class Plugin_User extends Plugin
 							$this->activateUser($userinfo, $existinguser);
 							$changed = true;
 						} catch (Exception $e) {
-							$this->debugger->add('error', Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
+							$this->debugger->addError(Text::_('ACTIVATION_UPDATE_ERROR') . ' ' . $e->getMessage());
 						}
 					}
 				} else {
 					//return a debug to inform we skipped this step
-					$this->debugger->add('debug', Text::_('SKIPPED_ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+					$this->debugger->addDebug(Text::_('SKIPPED_ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 				}
 			}
 		}
@@ -542,7 +539,7 @@ class Plugin_User extends Plugin
      */
     function activateUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
-	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
+	    $this->debugger->addDebug(__METHOD__ . ' function not implemented');
     }
 
     /**
@@ -555,7 +552,7 @@ class Plugin_User extends Plugin
      */
     function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser)
     {
-	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
+	    $this->debugger->addDebug(__METHOD__ . ' function not implemented');
     }
 
 
@@ -570,18 +567,18 @@ class Plugin_User extends Plugin
 
 		if ((empty($create_inactive) && !empty($userinfo->activation)) || (empty($create_blocked) && !empty($userinfo->block))) {
 			//block user creation
-			$this->debugger->add('debug', Text::_('SKIPPED_USER_CREATION'));
+			$this->debugger->addDebug(Text::_('SKIPPED_USER_CREATION'));
 			$this->debugger->set('debug', 'unchanged');
 			$this->debugger->set('userinfo', null);
 		} else {
-			$this->debugger->add('debug', Text::_('NO_USER_FOUND_CREATING_ONE'));
+			$this->debugger->addDebug(Text::_('NO_USER_FOUND_CREATING_ONE'));
 			try {
 				$this->createUser($userinfo);
 				if ($this->debugger->isEmpty('error')) {
 					$this->debugger->set('action', 'created');
 				}
 			} catch (Exception $e) {
-				$this->debugger->add('error', Text::_('USER_CREATION_ERROR') . $e->getMessage());
+				$this->debugger->addError(Text::_('USER_CREATION_ERROR') . $e->getMessage());
 			}
 		}
 	}
@@ -633,15 +630,15 @@ class Plugin_User extends Plugin
 			try {
 				$this->updateUserLanguage($userinfo, $existinguser);
 				$existinguser->language = $userinfo->language;
-				$this->debugger->add('debug', Text::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
+				$this->debugger->addDebug(Text::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language);
 
 				$changed = true;
 			} catch (Exception $e) {
-				$this->debugger->add('error', Text::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
+				$this->debugger->addError(Text::_('LANGUAGE_UPDATED_ERROR') . ' ' . $e->getMessage());
 			}
 		} else {
 			//return a debug to inform we skipped this step
-			$this->debugger->add('debug', Text::_('LANGUAGE_NOT_UPDATED'));
+			$this->debugger->addDebug(Text::_('LANGUAGE_NOT_UPDATED'));
 		}
 		return $changed;
 	}
@@ -654,7 +651,7 @@ class Plugin_User extends Plugin
      */
     function updateUserLanguage(Userinfo $userinfo, Userinfo &$existinguser)
     {
-	    $this->debugger->add('debug', __METHOD__ . ' function not implemented');
+	    $this->debugger->addDebug(__METHOD__ . ' function not implemented');
     }
 
 	/**
@@ -822,7 +819,7 @@ class Plugin_User extends Plugin
 		if (!empty($jnodeid)) {
 			if($jnodeid == Factory::getPluginNodeId($this->getJname())) {
 				// do not create a session, this integration started the log in and the user is already logged in
-				$status['debug'][] = Text::_('ALREADY_LOGGED_IN');
+				$status[LogLevel::DEBUG][] = Text::_('ALREADY_LOGGED_IN');
 				return $status;
 			}
 		}
@@ -869,7 +866,7 @@ class Plugin_User extends Plugin
 			default:
 				$status = Curl::RemoteLogin($curl_options);
 		}
-		$status['debug'][] = Text::_('CURL_LOGINTYPE') . '=' . $type;
+		$status[LogLevel::DEBUG][] = Text::_('CURL_LOGINTYPE') . '=' . $type;
 		return $status;
 	}
 
@@ -1007,7 +1004,7 @@ class Plugin_User extends Plugin
 		if (!empty($jnodeid)) {
 			if($jnodeid == Factory::getPluginNodeId($this->getJname())) {
 				// do not delete a session, this integration started the log out and the user is already logged out
-				$status['debug'][] = Text::_('ALREADY_LOGGED_OUT');
+				$status[LogLevel::DEBUG][] = Text::_('ALREADY_LOGGED_OUT');
 				return $status;
 			}
 		}
@@ -1043,7 +1040,7 @@ class Plugin_User extends Plugin
 			default:
 				$status = Curl::RemoteLogout($curl_options);
 		}
-		$status['debug'][] = Text::_('CURL_LOGOUTTYPE') . '=' . $type;
+		$status[LogLevel::DEBUG][] = Text::_('CURL_LOGOUTTYPE') . '=' . $type;
 		return $status;
 	}
 

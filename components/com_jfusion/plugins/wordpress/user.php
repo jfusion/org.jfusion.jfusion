@@ -172,7 +172,7 @@ class User extends Plugin_User
     function destroySession(Userinfo $userinfo, $options) {
 	    require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 
-        $status = array('error' => array(), 'debug' => array());
+	    $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 		$wpnonce = array();
 
 		$logout_url = $this->params->get('logout_url');
@@ -206,7 +206,7 @@ class User extends Plugin_User
 		
 		$remotedata = $curl->ReadPage();
 		if (!empty($curl->status['error'])) {
-			$curl->status['debug'][] = Text::_('CURL_COULD_NOT_READ_PAGE: ') . $curl->options['post_url'];
+			$curl->status[LogLevel::DEBUG][] = Text::_('CURL_COULD_NOT_READ_PAGE: ') . $curl->options['post_url'];
 		} else {
 	        // get _wpnonce security value
 	        preg_match('/action=logout.+?_wpnonce=([\w\s-]*)["\']/i', $remotedata, $wpnonce);
@@ -215,7 +215,7 @@ class User extends Plugin_User
 				$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
 	        } else {
 	          // non wpnonce, we are probably not on the logout page. Just report
-	          $status['debug'][] = Text::_('NO_WPNONCE_FOUND: ');
+	          $status[LogLevel::DEBUG][] = Text::_('NO_WPNONCE_FOUND: ');
 
 	          //try to delete all cookies
 	          $cookie_name = $this->params->get('cookie_name');
@@ -310,7 +310,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
+	    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
 	}
 
     /**
@@ -341,7 +341,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+	    $this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 	}
 
 	/**
@@ -383,7 +383,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
     /**
@@ -404,7 +404,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
@@ -504,7 +504,7 @@ class User extends Plugin_User
 			    $db->insertObject('#__usermeta', $meta, 'umeta_id');
 		    }
 		    //return the good news
-		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->addDebug(Text::_('USER_CREATION'));
 		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
 	}
@@ -562,7 +562,7 @@ class User extends Plugin_User
 					    $db->setQuery($query);
 					    $db->execute();
 				    }
-				    $status['debug'][] = 'Reassigned posts from user with id ' . $user_id . ' to user ' . $reassign;
+				    $status[LogLevel::DEBUG][] = 'Reassigned posts from user with id ' . $user_id . ' to user ' . $reassign;
 			    }
 
 			    $query = $db->getQuery(true)
@@ -583,7 +583,7 @@ class User extends Plugin_User
 						    $db->setQuery($query);
 						    $db->execute();
 					    }
-					    $status['debug'][] = 'Reassigned links from user with id ' . $user_id . ' to user ' . $reassign;
+					    $status[LogLevel::DEBUG][] = 'Reassigned links from user with id ' . $user_id . ' to user ' . $reassign;
 				    }
 			    }
 		    }
@@ -594,7 +594,7 @@ class User extends Plugin_User
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = 'Deleted posts from user with id ' . $user_id;
+		    $status[LogLevel::DEBUG][] = 'Deleted posts from user with id ' . $user_id;
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__links')
@@ -602,7 +602,7 @@ class User extends Plugin_User
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status['debug'][] = 'Deleted links from user ' . $user_id;
+		    $status[LogLevel::DEBUG][] = 'Deleted links from user ' . $user_id;
 	    }
 	    // now delete the user
 	    $query = $db->getQuery(true)
@@ -611,7 +611,7 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = 'Deleted userrecord of user with userid ' . $user_id;
+	    $status[LogLevel::DEBUG][] = 'Deleted userrecord of user with userid ' . $user_id;
 
 	    // delete usermeta
 	    $query = $db->getQuery(true)
@@ -620,7 +620,7 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status['debug'][] = 'Deleted usermetarecord of user with userid ' . $user_id;
+	    $status[LogLevel::DEBUG][] = 'Deleted usermetarecord of user with userid ' . $user_id;
 
 		return $status;
 	}
@@ -659,7 +659,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
+			$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
 		}
 	}
 }

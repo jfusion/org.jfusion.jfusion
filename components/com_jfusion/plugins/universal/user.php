@@ -12,6 +12,7 @@ use JFusion\Factory;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
 
@@ -114,7 +115,7 @@ class User extends Plugin_User
 	function deleteUser(Userinfo $userinfo)
 	{
 		//setup status array to hold debug info and errors
-		$status = array('error' => array(), 'debug' => array());
+		$status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 		$userid = $this->helper->getFieldType('USERID');
 		if (!$userid) {
 			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
@@ -151,7 +152,7 @@ class User extends Plugin_User
 				}
 				$db->setQuery($query);
 				$db->execute();
-				$status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
+				$status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 			}
 		}
 		return $status;
@@ -164,12 +165,14 @@ class User extends Plugin_User
 	 * @return array
 	 */
 	function destroySession(Userinfo $userinfo, $options) {
+		$status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
+
 		$cookie_backup = $_COOKIE;
 		$_COOKIE = array();
 		$_COOKIE['jfusionframeless'] = true;
 		$status = $this->curlLogout($userinfo, $options, 'no_brute_force');
 		$_COOKIE = $cookie_backup;
-		$status['debug'][] = $this->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
+		$status[LogLevel::DEBUG][] = $this->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 		return $status;
 	}
 
@@ -180,10 +183,10 @@ class User extends Plugin_User
 	 * @return array|string
 	 */
 	function createSession(Userinfo $userinfo, $options) {
-		$status = array('error' => array(), 'debug' => array());
+		$status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-			$status['error'][] = Text::_('FUSION_BLOCKED_USER');
+			$status[LogLevel::ERROR][] = Text::_('FUSION_BLOCKED_USER');
 		} else {
 			$cookie_backup = $_COOKIE;
 			$_COOKIE = array();
@@ -238,7 +241,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
+			$this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
 		}
 	}
 
@@ -279,7 +282,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+			$this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 		}
 	}
 
@@ -312,9 +315,9 @@ class User extends Plugin_User
 				$type = 'group';
 			}
 			if ( !isset($userid) ) {
-				$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_USERID_MAPPED'));
+				$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_USERID_MAPPED'));
 			} else if ( !isset($group) ) {
-				$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_GROUP_MAPPED'));
+				$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_GROUP_MAPPED'));
 			} else if ($type == 'user') {
 				$usergroup = $usergroups[0];
 
@@ -326,7 +329,7 @@ class User extends Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 
-				$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup));
+				$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup));
 			} else {
 				$maped = $this->helper->getMap('group');
 
@@ -370,7 +373,7 @@ class User extends Plugin_User
 					}
 					$db->insertObject('#__' . $this->helper->getTable('group'), $addgroup );
 
-					$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup));
+					$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup));
 				}
 			}
 		}
@@ -421,7 +424,7 @@ class User extends Plugin_User
 				$db->setQuery($query);
 				$db->execute();
 
-				$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+				$this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 			}
 		}
 	}
@@ -457,7 +460,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+			$this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 		}
 	}
 
@@ -487,7 +490,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+			$this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 		}
 	}
 
@@ -517,7 +520,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+			$this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 		}
 	}
 
@@ -638,9 +641,9 @@ class User extends Plugin_User
 							$groupuserid = $this->helper->getFieldType('USERID', 'group');
 							$group = $this->helper->getFieldType('GROUP', 'group');
 							if ( !isset($groupuserid) ) {
-								$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_USERID_MAPPED'));
+								$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_USERID_MAPPED'));
 							} else if ( !isset($group) ) {
-								$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_GROUP_MAPPED'));
+								$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . Text::_('NO_GROUP_MAPPED'));
 							} else {
 								$addgroup = new stdClass;
 
@@ -666,7 +669,7 @@ class User extends Plugin_User
 							}
 						}
 						//return the good news
-						$this->debugger->add('debug', Text::_('USER_CREATION'));
+						$this->debugger->addDebug(Text::_('USER_CREATION'));
 						$this->debugger->set('userinfo', $this->getUser($userinfo));
 					}
 				}

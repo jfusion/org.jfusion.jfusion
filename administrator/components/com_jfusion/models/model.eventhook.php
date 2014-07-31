@@ -20,6 +20,7 @@ use JFusion\Event\PlatformInterface;
 
 
 use Joomla\Uri\Uri;
+use Psr\Log\LogLevel;
 
 
 /**
@@ -391,10 +392,10 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 						$PluginUserUpdate->doCreateUser($userinfo);
 						$status = $PluginUserUpdate->debugger->get();
 
-						foreach ($status['error'] as $e) {
+						foreach ($status[LogLevel::ERROR] as $e) {
 							$error[][$plugin->name] = $e;
 						}
-						foreach ($status['debug'] as $d) {
+						foreach ($status[LogLevel::DEBUG] as $d) {
 							$debug[][$plugin->name] = $d;
 						}
 					} else {

@@ -10,6 +10,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
+use Psr\Log\LogLevel;
 
 /**
  * Main debugging class which is used for detailed outputs
@@ -44,6 +45,20 @@ class Debugger {
 				$this->data[$key][] = $value;
 			}
 		}
+	}
+
+	/**
+	 * @param $value
+	 */
+	public function addError($value) {
+		$this->add(LogLevel::ERROR, $value);
+	}
+
+	/**
+	 * @param $value
+	 */
+	public function addDebug($value) {
+		$this->add(LogLevel::DEBUG, $value);
 	}
 
 	/**

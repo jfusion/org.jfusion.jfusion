@@ -20,6 +20,7 @@ use JFusion\Plugin\Plugin_User;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use \Exception;
+use Psr\Log\LogLevel;
 use \RuntimeException;
 use \stdClass;
 
@@ -59,17 +60,17 @@ class JFusionUser_dokuwiki extends Plugin_User
 		    if ($existinguser instanceof Userinfo) {
 			    $changes = array();
 			    //a matching user has been found
-			    $this->debugger->add('debug', Text::_('USER_DATA_FOUND'));
+			    $this->debugger->addDebug(Text::_('USER_DATA_FOUND'));
 			    if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
-				    $this->debugger->add('debug', Text::_('EMAIL_CONFLICT'));
+				    $this->debugger->addDebug(Text::_('EMAIL_CONFLICT'));
 				    $update_email = $this->params->get('update_email', false);
 				    if ($update_email || $overwrite) {
-					    $this->debugger->add('debug', Text::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
+					    $this->debugger->addDebug(Text::_('EMAIL_CONFLICT_OVERWITE_ENABLED'));
 					    $changes['mail'] = $userinfo->email;
-					    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+					    $this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 				    } else {
 					    //return a email conflict
-					    $this->debugger->add('debug', Text::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
+					    $this->debugger->addDebug(Text::_('EMAIL_CONFLICT_OVERWITE_DISABLED'));
 					    $this->debugger->set('userinfo', $existinguser);
 					    throw new RuntimeException(Text::_('EMAIL') . ' ' . Text::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 				    }
@@ -77,19 +78,19 @@ class JFusionUser_dokuwiki extends Plugin_User
 			    if ($existinguser->name != $userinfo->name) {
 				    $changes['name'] = $userinfo->name;
 			    } else {
-				    $this->debugger->add('debug', Text::_('SKIPPED_NAME_UPDATE'));
+				    $this->debugger->addDebug(Text::_('SKIPPED_NAME_UPDATE'));
 			    }
 			    if (isset($userinfo->password_clear) && strlen($userinfo->password_clear)) {
 				    if (!$this->helper->auth->verifyPassword($userinfo->password_clear, $existinguser->password)) {
 					    // add password_clear to existinguser for the Joomla helper routines
 					    $existinguser->password_clear = $userinfo->password_clear;
 					    $changes['pass'] = $userinfo->password_clear;
-					    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE')  . ': ' . substr($userinfo->password_clear, 0, 6) . '********');
+					    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE')  . ': ' . substr($userinfo->password_clear, 0, 6) . '********');
 				    } else {
-					    $this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_VALID'));
+					    $this->debugger->addDebug(Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_VALID'));
 				    }
 			    } else {
-				    $this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE'));
+				    $this->debugger->addDebug(Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE'));
 			    }
 			    //check for advanced usergroup sync
 
@@ -99,7 +100,7 @@ class JFusionUser_dokuwiki extends Plugin_User
 					    if (!$this->compareUserGroups($existinguser, $usergroups)) {
 						    $changes['grps'] = $usergroups;
 					    } else {
-						    $this->debugger->add('debug', Text::_('SKIPPED_GROUP_UPDATE') . ': ' . Text::_('GROUP_VALID'));
+						    $this->debugger->addDebug(Text::_('SKIPPED_GROUP_UPDATE') . ': ' . Text::_('GROUP_VALID'));
 					    }
 				    } else {
 					    throw new RuntimeException(Text::_('GROUP_UPDATE_ERROR') . ': ' . Text::_('USERGROUP_MISSING'));
@@ -117,14 +118,14 @@ class JFusionUser_dokuwiki extends Plugin_User
 				    return $existinguser;
 			    }
 		    } else {
-			    $this->debugger->add('debug', Text::_('NO_USER_FOUND_CREATING_ONE'));
+			    $this->debugger->addDebug(Text::_('NO_USER_FOUND_CREATING_ONE'));
 			    $this->createUser($userinfo);
 			    if ($this->debugger->isEmpty('error')) {
 				    $this->debugger->set('action', 'created');
 			    }
 		    }
 	    } catch (Exception $e) {
-		    $this->debugger->add('error', $e->getMessage());
+		    $this->debugger->addError($e->getMessage());
 	    }
 	    return null;
     }
@@ -178,14 +179,14 @@ class JFusionUser_dokuwiki extends Plugin_User
 	 */
     function deleteUser(Userinfo $userinfo) {
         //setup status array to hold debug info and errors
-        $status = array('error' => array(), 'debug' => array());
+        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
         $username = $this->filterUsername($userinfo->username);
         $user[$username] = $username;
 
         if (!$this->helper->auth->deleteUsers($user)) {
 	        throw new RuntimeException($username);
         } else {
-            $status['debug'][] = Text::_('USER_DELETION') . ': ' . $username;
+            $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $username;
         }
         return $status;
     }
@@ -197,7 +198,7 @@ class JFusionUser_dokuwiki extends Plugin_User
      * @return array
      */
     function destroySession(Userinfo $userinfo, $options) {
-        $status = array('error' => array(), 'debug' => array());
+        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 
         $cookie_path = $this->params->get('cookie_path', '/');
         $cookie_domain = $this->params->get('cookie_domain');
@@ -208,12 +209,12 @@ class JFusionUser_dokuwiki extends Plugin_User
 	    $this->helper->defineConstants();
 
         $time = -3600;
-        $status['debug'][] = $this->addCookie(DOKU_COOKIE, '', $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
+        $status[LogLevel::DEBUG][] = $this->addCookie(DOKU_COOKIE, '', $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
         // remove blank domain name cookie just in case we are using wrapper
         $source_url = $this->params->get('source_url');
         $cookie_path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
         $cookie_path = preg_replace('#//+#', '/', "/$cookie_path/");
-        $status['debug'][] = $this->addCookie(DOKU_COOKIE, '', $time, $cookie_path, '', $cookie_secure, $httponly);
+        $status[LogLevel::DEBUG][] = $this->addCookie(DOKU_COOKIE, '', $time, $cookie_path, '', $cookie_secure, $httponly);
 
         return $status;
     }
@@ -225,7 +226,7 @@ class JFusionUser_dokuwiki extends Plugin_User
      * @return array
      */
     function createSession(Userinfo $userinfo, $options) {
-        $status = array('error' => array(), 'debug' => array());
+        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 
         if(!empty($userinfo->password_clear)) {
             //set login cookie
@@ -246,7 +247,7 @@ class JFusionUser_dokuwiki extends Plugin_User
 			} else {
                 $cookie_value = base64_encode($userinfo->username . '|' . $sticky . '|' . $pass);
 			}
-            $status['debug'][] = $this->addCookie(DOKU_COOKIE, $cookie_value, 60*60*24*365, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
+            $status[LogLevel::DEBUG][] = $this->addCookie(DOKU_COOKIE, $cookie_value, 60*60*24*365, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
         }
 
         return $status;
@@ -289,7 +290,7 @@ class JFusionUser_dokuwiki extends Plugin_User
 			    throw new RuntimeException();
 		    }
 		    //return the good news;
-		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->addDebug(Text::_('USER_CREATION'));
 		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
     }

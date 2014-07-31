@@ -101,8 +101,8 @@ class Plugin_Platform extends Plugin
 			$mainframe = Factory::getApplication();
 			$mainframe->redirect($location);
 		}
-		if ( isset($status['error']) ) {
-			foreach ($status['error'] as $value) {
+		if ( isset($status[LogLevel::ERROR]) ) {
+			foreach ($status[LogLevel::ERROR] as $value) {
 				Framework::raise(LogLevel::WARNING, $value, $this->getJname());
 			}
 		}
@@ -750,7 +750,7 @@ JS;
 		}
 
 		if (curl_error($ch)) {
-			$status['error'][] = Text::_('CURL_ERROR_MSG') . ': ' . curl_error($ch) . ' URL:' . $url;
+			$status[LogLevel::ERROR][] = Text::_('CURL_ERROR_MSG') . ': ' . curl_error($ch) . ' URL:' . $url;
 			curl_close($ch);
 			return $status;
 		}

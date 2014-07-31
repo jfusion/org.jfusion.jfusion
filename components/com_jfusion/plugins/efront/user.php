@@ -110,11 +110,11 @@ class User extends Plugin_User
             $expires = $this->params->get('secure', false);
 	        $name = 'cookie_login';
 	        $value = $userinfo->username;
-	        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+	        $status[LogLevel::DEBUG][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 
 	        $name = 'cookie_password';
 	        $value = '';
-	        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+	        $status[LogLevel::DEBUG][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 
 			//unset($_COOKIE['cookie_login']);
 			//unset($_COOKIE['cookie_password']);
@@ -142,9 +142,9 @@ class User extends Plugin_User
 		        try {
 			        $db->insertObject('#__logs', $log, 'id');
 
-			        $status['debug'][] = 'Logged the logout action for user ' . $userinfo->username;
+			        $status[LogLevel::DEBUG][] = 'Logged the logout action for user ' . $userinfo->username;
 		        } catch (Exception $e) {
-			        $status['debug'][] = 'Error Could not log the logout action for user ' . $userinfo->username . ': ' . $e->getMessage();
+			        $status[LogLevel::DEBUG][] = 'Error Could not log the logout action for user ' . $userinfo->username . ': ' . $e->getMessage();
 		        }
 	        }
 	    } catch (Exception $e) {
@@ -197,14 +197,14 @@ class User extends Plugin_User
                         }
                         $name = 'cookie_login';
                         $value = $userinfo->username;
-                        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+                        $status[LogLevel::DEBUG][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 
                         $name = 'cookie_password';
                         $value = $user->password;
-                        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+                        $status[LogLevel::DEBUG][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
                     }
                 } catch (Exception $e) {
-                    $status['error'][] = $e->getMessage();
+                    $status[LogLevel::ERROR][] = $e->getMessage();
                 }
 
         return $status;
@@ -242,7 +242,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 
 	    $db->execute();
-	    $status['debug'][] = Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
@@ -272,7 +272,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+	    $this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
     }
 
     /**
@@ -292,7 +292,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -312,7 +312,7 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+	    $this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
     }
 
     /**
@@ -332,7 +332,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
     /**
@@ -352,7 +352,7 @@ class User extends Plugin_User
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+	    $this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
     }
 
 	/**
@@ -480,7 +480,7 @@ class User extends Plugin_User
 			    // not sure I should implemented it, anyway I have only the community version to work on
 		    }
 		    //return the good news
-		    $this->debugger->add('debug', Text::_('USER_CREATION'));
+		    $this->debugger->addDebug(Text::_('USER_CREATION'));
 		    $this->debugger->set('userinfo', $this->getUser($userinfo));
 	    }
     }
@@ -499,7 +499,7 @@ class User extends Plugin_User
         // modules without loading the complete website. 
         
     	// check apiuser existence
-        $status = array('error' => array(), 'debug' => array());
+        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 
 	    $apiuser = $this->params->get('apiuser');
 	    $apikey = $this->params->get('apikey');
@@ -527,9 +527,9 @@ class User extends Plugin_User
 					    $curl_options['parms'] = '&token=' . $token . '&login=' . $login;
 					    $status = $this->helper->send_to_api($curl_options, $status);
 					    $errorstatus = $status;
-					    if ($status['error']){
-						    $status['debug'][] = $status['error'][0];
-						    $status['error'] = array();
+					    if ($status[LogLevel::ERROR]){
+						    $status[LogLevel::DEBUG][] = $status[LogLevel::ERROR][0];
+						    $status[LogLevel::ERROR] = array();
 					    }
 					    $result = $status['result'][0];
 					    if($result->status != 'ok'){
@@ -545,7 +545,7 @@ class User extends Plugin_User
 						    return $errorstatus;
 					    }
 				    }
-				    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $login;
+				    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $login;
 			    }
 		    }
 	    }
@@ -592,7 +592,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
+		    $this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
 	    }
     }
 }

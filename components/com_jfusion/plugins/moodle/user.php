@@ -183,8 +183,8 @@ class User extends Plugin_User
 
 	/**
 	 * Function that automatically logs out the user from the integrated software
-	 * $result['error'] (contains any error messages)
-	 * $result['debug'] (contains information on what was done)
+	 * $result[LogLevel::ERROR] (contains any error messages)
+	 * $result[LogLevel::DEBUG] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo contains the userinfo
 	 * @param array $options  contains Array with the login options, such as remember_me
@@ -193,7 +193,7 @@ class User extends Plugin_User
 	 */
 	function destroySession(Userinfo $userinfo, $options)
     {
-        $status = array('error' => array(), 'debug' => array());
+        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 
         // find out if moodle stores its sessions on disk or in the database
 
@@ -215,7 +215,7 @@ class User extends Plugin_User
         $postfix = $db->loadResult();
         $cookieName = 'MoodleSession'.$postfix;
         $currentSession = $_COOKIE[$cookieName];
-        $sessionFile = $this->params->get('dataroot', '').'sessions/sess_'.$currentSession;
+        $sessionFile = $this->params->get('dataroot', '') . 'sessions/sess_' . $currentSession;
         // find out the current session name
 
         if ($dbsessions){
@@ -225,13 +225,13 @@ class User extends Plugin_User
 
             $db->setQuery($query);
             $db->execute();
-            $status['debug'][]='Moodle: session '.$currentSession. ' deleted in database';
+            $status[LogLevel::DEBUG][] = 'Moodle: session ' . $currentSession . ' deleted in database';
         } else {
             $result = unlink($sessionFile);
             if ($result) {
-                $status['debug'][]='Moodle: session '.$currentSession. ' deleted as file';
+                $status[LogLevel::DEBUG][] = 'Moodle: session ' . $currentSession . ' deleted as file';
             } else {
-                $status['debug'][]='Moodle: session '.$currentSession. ' could not delete file '.$sessionFile;
+                $status[LogLevel::DEBUG][] = 'Moodle: session ' . $currentSession . ' could not delete file ' . $sessionFile;
             }
         }
 
@@ -240,8 +240,8 @@ class User extends Plugin_User
 
 	/**
 	 * Function that automatically logs in the user from the integrated software
-	 * $result['error'] (contains any error messages)
-	 * $result['debug'] (contains information on what was done)
+	 * $result[LogLevel::ERROR] (contains any error messages)
+	 * $result[LogLevel::DEBUG] (contains information on what was done)
 	 *
 	 * @param Userinfo $userinfo contains the userinfo
 	 * @param array  $options  contains array with the login options, such as remember_me     *
@@ -266,9 +266,9 @@ class User extends Plugin_User
 		// check if the login was successful
 		if (!empty($status['cURL']['moodle'])) {
 			$loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);
-			$status['debug'][] = Text::_('CURL_MOODLE_USER') . " " . $loggedin_user;
+			$status[LogLevel::DEBUG][] = Text::_('CURL_MOODLE_USER') . ' ' . $loggedin_user;
 			if ($loggedin_user != $userinfo->username) {
-				$status['debug'][] = Text::_('CURL_LOGIN_FAILURE');
+				$status[LogLevel::DEBUG][] = Text::_('CURL_LOGIN_FAILURE');
 			}
 		}
 		return $status;
@@ -296,7 +296,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', Text::_('PASSWORD_UPDATE')  . ': ' . substr($existinguser->password, 0, 6) . '********');
+		$this->debugger->addDebug(Text::_('PASSWORD_UPDATE')  . ': ' . substr($existinguser->password, 0, 6) . '********');
 	}
 
 	/**
@@ -328,7 +328,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+		$this->debugger->addDebug(Text::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 	}
 
 	/**
@@ -356,7 +356,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+			$this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 		} else {
 			throw new RuntimeException(Text::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET'));
 		}
@@ -388,7 +388,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
+			$this->debugger->addDebug(Text::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block);
 		} else {
 			throw new RuntimeException(Text::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET'));
 		}
@@ -412,7 +412,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		$this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
@@ -432,7 +432,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+		$this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 	}
 
 	/**
@@ -573,7 +573,7 @@ class User extends Plugin_User
 
 		//return the good news
 		$this->debugger->set('userinfo', $this->getUser($userinfo));
-		$this->debugger->add('debug', Text::_('USER_CREATION'));
+		$this->debugger->addDebug(Text::_('USER_CREATION'));
 	}
 
 	/**
@@ -585,7 +585,7 @@ class User extends Plugin_User
 	 * @return array status Array containing the errors and result of the function
 	 */
 	function deleteUser(Userinfo $userinfo) {
-		$status = array('error' => array(), 'debug' => array());
+		$status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 
 		//setup status array to hold debug info and errors
 
@@ -599,7 +599,7 @@ class User extends Plugin_User
 		$db->setQuery($query);
 		$db->execute();
 
-		$status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;
+		$status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;
 
 		return $status;
 	}

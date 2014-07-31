@@ -217,22 +217,22 @@ class Joomla extends Plugin_Platform
 				//datetime content was last updated
 				$contentModified = Factory::getDate($contentitem->modified)->toUnix();
 
-				$status['debug'][] = 'Thread exists...comparing dates';
-				$status['debug'][] = 'Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified) . ')';
-				$status['debug'][] = 'Thread Modification Date: ' . $postModified . '  (' . date('Y-m-d H:i:s', $postModified) . ')';
-				$status['debug'][] = 'Is ' . $contentModified . ' > ' . $postModified . ' ?';
+				$status[LogLevel::DEBUG][] = 'Thread exists...comparing dates';
+				$status[LogLevel::DEBUG][] = 'Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified) . ')';
+				$status[LogLevel::DEBUG][] = 'Thread Modification Date: ' . $postModified . '  (' . date('Y-m-d H:i:s', $postModified) . ')';
+				$status[LogLevel::DEBUG][] = 'Is ' . $contentModified . ' > ' . $postModified . ' ?';
 				if($contentModified > $postModified && $postModified != 0) {
-					$status['debug'][] = 'Yes...attempting to update thread';
+					$status[LogLevel::DEBUG][] = 'Yes...attempting to update thread';
 					//update the post if the content has been updated
 					$this->updateThread($dbparams, $existingthread, $contentitem, $status);
 					if (empty($status['error'])) {
 	                	$status['action'] = 'updated';
 	            	}
 				} else {
-					$status['debug'][] = 'No...thread unchanged';
+					$status[LogLevel::DEBUG][] = 'No...thread unchanged';
 				}
 			} else {
-				$status['debug'][] = 'Thread does not exist...attempting to create thread';
+				$status[LogLevel::DEBUG][] = 'Thread does not exist...attempting to create thread';
 		    	//thread does not exist; create it
 	            $this->createThread($dbparams, $contentitem, $forumid, $status);
 	            if (empty($status['error'])) {
@@ -240,7 +240,7 @@ class Joomla extends Plugin_Platform
 	            }
 	        }
 		} else {
-			$status['error'][] = Text::_('FORUM_NOT_CONFIGURED');
+			$status[LogLevel::ERROR][] = Text::_('FORUM_NOT_CONFIGURED');
 		}
 	}
 
@@ -804,8 +804,8 @@ JS;
 	 */
 	function createPost($params, $ids, $contentitem, Userinfo $userinfo, $postinfo)
 	{
-        $status = array('error' => array(), 'debug' => array());
-        $status['debug'] = Text::_('METHOD_NOT_IMPLEMENTED');
+        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
+        $status[LogLevel::DEBUG] = Text::_('METHOD_NOT_IMPLEMENTED');
 		return $status;
 	}
 

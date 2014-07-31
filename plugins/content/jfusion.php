@@ -670,8 +670,8 @@ HTML;
 					$status = $this->helper->checkThreadExists(0, 1);
 
 
-					if (!empty($status['error'])) {
-						Framework::raise(LogLevel::ERROR, $status['error'], JText::_('DISCUSSBOT_ERROR'));
+					if (!empty($status[LogLevel::ERROR])) {
+						Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], JText::_('DISCUSSBOT_ERROR'));
 					} else {
 						$data->error = false;
 						Framework::raise(LogLevel::INFO, JText::sprintf('THREAD_CREATED_SUCCESSFULLY', $this->article->title), JText::_('SUCCESS'));
@@ -750,8 +750,8 @@ HTML;
 
 						$status = $platform->createPost($this->params, $threadinfo, $this->article, $userinfo, $postinfo);
 
-						if (!empty($status['error'])) {
-							Framework::raise(LogLevel::ERROR, $status['error'], JText::_('DISCUSSBOT_ERROR'));
+						if (!empty($status[LogLevel::ERROR])) {
+							Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], JText::_('DISCUSSBOT_ERROR'));
 						} else {
 							$threadinfo = $this->helper->getThreadInfo(true);
 

@@ -426,7 +426,7 @@ class Platform extends Joomla
 				$status['threadinfo']->postid = $postid;
 			}
 		} catch (Exception $e) {
-			$status['error'][] = $e->getMessage();
+			$status[LogLevel::ERROR][] = $e->getMessage();
 		}
 	}
 
@@ -471,7 +471,7 @@ class Platform extends Joomla
 			$post_row->id_msg 			= $postid;
 			$db->updateObject('#__messages', $post_row, 'id_msg');
 		} catch (Exception $e) {
-			$status['error'] = $e->getMessage();
+			$status[LogLevel::ERROR] = $e->getMessage();
 		}
 	}
 
@@ -668,7 +668,7 @@ HTML;
 				$status['post_moderated'] = ($post_approved) ? 0 : 1;
 			}
 		} catch (Exception $e) {
-			$status['error'] = $e->getMessage();
+			$status[LogLevel::ERROR] = $e->getMessage();
 		}
 		return $status;
 	}

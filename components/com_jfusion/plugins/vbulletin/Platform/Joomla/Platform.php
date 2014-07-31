@@ -186,7 +186,7 @@ class Platform extends Joomla
 
 		            $db->execute();
 	            } catch (Exception $e) {
-		            $status['error'][] = $e->getMessage();
+		            $status[LogLevel::ERROR][] = $e->getMessage();
 	            }
             }
 
@@ -196,10 +196,10 @@ class Platform extends Joomla
 			$status['threadinfo']->postid = $postid;
 		}
 	    foreach ($response['errors'] as $error) {
-		    $status['error'][] = $error;
+		    $status[LogLevel::ERROR][] = $error;
 	    }
 	    foreach ($response['debug'] as $debug) {
-		    $status['debug'][] = $debug;
+		    $status[LogLevel::DEBUG][] = $debug;
 	    }
     }
 
@@ -214,7 +214,7 @@ class Platform extends Joomla
      */
     function createPost($params, $ids, $contentitem, Userinfo $userinfo, $postinfo)
     {
-        $status = array('error' => array(), 'debug' => array());
+	    $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 	    try {
 		    if ($userinfo->guest) {
 			    $userinfo->username = $postinfo->username;
@@ -279,17 +279,17 @@ class Platform extends Joomla
 				    $status['postid'] = $id;
 			    }
 			    foreach ($response['errors'] as $error) {
-				    $status['error'][] = $error;
+				    $status[LogLevel::ERROR][] = $error;
 			    }
 			    foreach ($response['debug'] as $debug) {
-				    $status['debug'][] = $debug;
+				    $status[LogLevel::DEBUG][] = $debug;
 			    }
 
 			    //update moderation status to tell discussion bot to notify user
 			    $status['post_moderated'] = ($post_approved) ? 0 : 1;
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = Text::_('USERNAME_IN_USE');
+		    $status[LogLevel::ERROR][] = Text::_('USERNAME_IN_USE');
 	    }
         return $status;
     }
@@ -316,10 +316,10 @@ class Platform extends Joomla
         );
         $response = $this->helper->apiCall('updateThread', $apidata);
 	    foreach ($response['errors'] as $error) {
-		    $status['error'][] =  $error;
+		    $status[LogLevel::ERROR][] =  $error;
 	    }
 	    foreach ($response['debug'] as $debug) {
-		    $status['debug'][] = $debug;
+		    $status[LogLevel::DEBUG][] = $debug;
 	    }
     }
 

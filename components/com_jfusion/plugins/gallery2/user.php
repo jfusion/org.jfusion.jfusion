@@ -14,6 +14,7 @@
  */
 
 // no direct access
+use Exception;
 use GalleryCoreApi;
 use GalleryEmbed;
 use GalleryStatus;
@@ -23,6 +24,7 @@ use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 
+use Psr\Log\LogLevel;
 use \RuntimeException;
 use \stdClass;
 
@@ -237,7 +239,7 @@ class User extends Plugin_User
                     if ($ret) {
 	                    throw new RuntimeException($userinfo->username . ': ' . $ret->getErrorMessage());
                     } else {
-	                    $status['debug'][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
+	                    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
                     }
                 }
             }
@@ -245,60 +247,62 @@ class User extends Plugin_User
         return $status;
     }
 
-    /**
-     * @param Userinfo $userinfo
-     * @param array &$status
-     *
-     * @return void
-     */
-    function createUser(Userinfo $userinfo, &$status) {
+	/**
+	 * @param Userinfo $userinfo
+	 *
+	 * @throws \Exception
+	 * @return Userinfo|null
+	 */
+    function createUser(Userinfo $userinfo) {
 	    $this->helper->loadGallery2Api(false);
-        $usergroups = $this->getCorrectUserGroups($userinfo);
-        if (empty($usergroups)) {
-            $status['error'][] = Text::_('ERROR_CREATE_USER') . ': ' . Text::_('USERGROUP_MISSING');
-        } else {
-	        /**
-	         * @ignore
-	         * @var $user GalleryUser
-	         */
-	        list($ret, $user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
-            if ($ret) {
-                $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . $userinfo->username;
-            } else {
-                if (!isset($user)) {
-                    $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
-                }
-                $ret = $user->create($userinfo->username);
-                if ($ret) {
-                    $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
-                } else {
-                    $testcrypt = $userinfo->password;
-                    if (isset($userinfo->password_clear)) {
-                        $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear);
-                    }
-	                $user->setHashedPassword($testcrypt);
-	                $user->setUserName($userinfo->username);
-	                $user->setEmail($userinfo->email);
-	                $user->setFullName($userinfo->name);
-                    $ret = $user->save();
-                    if ($ret) {
-                        $status['error'][] = Text::_('ERROR_CREATE_USER') . ' ' . $this->getJname() . ' : ' . $userinfo->username;
-                    } else {
-                        foreach ($usergroups as $group) {
-                            $ret = GalleryCoreApi::addUserToGroup($user->id, (int)$group);
-                            if ($ret) {
-                                $status['error'][] = Text::_('GROUP_UPDATE_ERROR') . ': ' . $ret->getErrorMessage();
-                            }
-                        }
-                        $status['userinfo'] = $this->_getUser($user);
-                        if (empty($status['error'])) {
-                            $status['action'] = 'created';
-                        }
-                    }
-                }
-            }
-        }
-        GalleryEmbed::done();
+	    try {
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
+		    if (empty($usergroups)) {
+			    throw new RuntimeException(Text::_('USERGROUP_MISSING'));
+		    } else {
+			    /**
+			     * @ignore
+			     * @var $user GalleryUser
+			     */
+			    list($ret, $user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
+			    if ($ret) {
+				    throw new RuntimeException($userinfo->username);
+			    } else {
+				    if (!isset($user)) {
+					    throw new RuntimeException($userinfo->username);
+				    }
+				    $ret = $user->create($userinfo->username);
+				    if ($ret) {
+					    throw new RuntimeException($userinfo->username);
+				    } else {
+					    $testcrypt = $userinfo->password;
+					    if (isset($userinfo->password_clear)) {
+						    $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear);
+					    }
+					    $user->setHashedPassword($testcrypt);
+					    $user->setUserName($userinfo->username);
+					    $user->setEmail($userinfo->email);
+					    $user->setFullName($userinfo->name);
+					    $ret = $user->save();
+					    if ($ret) {
+						    throw new RuntimeException($userinfo->username);
+					    } else {
+						    foreach ($usergroups as $group) {
+							    $ret = GalleryCoreApi::addUserToGroup($user->id, (int)$group);
+							    if ($ret) {
+								    throw new RuntimeException(Text::_('GROUP_UPDATE_ERROR') . ': ' . $ret->getErrorMessage());
+							    }
+						    }
+						    GalleryEmbed::done();
+						    return $this->_getUser($user);
+					    }
+				    }
+			    }
+		    }
+	    } catch (Exception $e) {
+		    GalleryEmbed::done();
+		    throw $e;
+	    }
     }
 
 	/**
@@ -331,7 +335,7 @@ class User extends Plugin_User
                     }
                 }
             }
-	        $this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
+	        $this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . implode(' , ', $usergroups));
         }
         GalleryEmbed::done();
     }
@@ -355,7 +359,7 @@ class User extends Plugin_User
         //Set Write Lock
         list($ret,) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
-	        $this->debugger->add('error', $ret->getErrorMessage());
+	        $this->debugger->addError($ret->getErrorMessage());
         }
         //Check Password
         $changed = false;
@@ -365,15 +369,15 @@ class User extends Plugin_User
 	            $user->setHashedPassword($testcrypt);
                 $changed = true;
             } else {
-	            $this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_VALID'));
+	            $this->debugger->addDebug(Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_VALID'));
             }
         } else {
-	        $this->debugger->add('debug', Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE'));
+	        $this->debugger->addDebug(Text::_('SKIPPED_PASSWORD_UPDATE') . ': ' . Text::_('PASSWORD_UNAVAILABLE'));
         }
         if ($changed) {
             $ret = $user->save();
             if ($ret) {
-	            $this->debugger->add('error', $ret->getErrorMessage());
+	            $this->debugger->addError($ret->getErrorMessage());
             }
         }
         GalleryEmbed::done();
@@ -398,14 +402,14 @@ class User extends Plugin_User
         //Set Write Lock
         list($ret,) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
-	        $this->debugger->add('error', $ret->getErrorMessage());
+	        $this->debugger->addError($ret->getErrorMessage());
         } else {
             //Set new Email
 	        $user->setEmail($userinfo->email);
             //Save to DB
             $ret = $user->save();
             if ($ret) {
-	            $this->debugger->add('error', $ret->getErrorMessage());
+	            $this->debugger->addError($ret->getErrorMessage());
             }
         }
         GalleryEmbed::done();

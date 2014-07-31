@@ -77,7 +77,7 @@ class User extends Plugin_User
 
 				$proxi = new Soapclient($apipath);
 				if($proxi->login($apiuser, $apikey)) {
-					$this->debugger->add('debug', 'Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey);
+					$this->debugger->addDebug('Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey);
 				}
 			} catch (Soapfault $fault) {
 				/** @noinspection PhpUndefinedFieldInspection */
@@ -590,7 +590,7 @@ class User extends Plugin_User
 				throw new RuntimeException($errors);
 			} else {
 				//return the good news
-				$this->debugger->add('debug', Text::_('USER_CREATION'));
+				$this->debugger->addDebug(Text::_('USER_CREATION'));
 				$this->debugger->set('userinfo', $this->getUser($userinfo));
 			}
 		}
@@ -600,6 +600,7 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 * @param Userinfo $existinguser
 	 *
+	 * @throws \RuntimeException
 	 * @return void
 	 */
 	function updatePassword(Userinfo $userinfo, Userinfo &$existinguser) {
@@ -615,9 +616,9 @@ class User extends Plugin_User
 		}
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
 		if ($errors) {
-			$status['error'][] = Text::_('PASSWORD_UPDATE_ERROR');
+			throw new RuntimeException($existinguser->username);
 		} else {
-			$status['debug'][] = Text::_('PASSWORD_UPDATE');
+			$this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ': ' . substr($existinguser->password, 0, 6) . '********');
 		}
 	}
 
@@ -646,7 +647,7 @@ class User extends Plugin_User
 		if ($errors) {
 			throw new RuntimeException(Text::_('ACTIVATION_UPDATE_ERROR'));
 		} else {
-			$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+			$this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 		}
 	}
 
@@ -664,7 +665,7 @@ class User extends Plugin_User
 		if ($errors) {
 			throw new RuntimeException(Text::_('ACTIVATION_UPDATE_ERROR'));
 		} else {
-			$this->debugger->add('debug', Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
+			$this->debugger->addDebug(Text::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation);
 		}
 	}
 
@@ -689,10 +690,10 @@ class User extends Plugin_User
 
 		try {
 			$proxi->call('customer.delete', $userinfo->userid);
-			$status['debug'][] = 'Magento API: Delete user with id ' . $userinfo->userid . ' , email ' . $userinfo->email;
+			$status[LogLevel::DEBUG][] = 'Magento API: Delete user with id ' . $userinfo->userid . ' , email ' . $userinfo->email;
 		} catch (Soapfault $fault) {
 			/** @noinspection PhpUndefinedFieldInspection */
-			$status['error'][] = 'Magento API: Could not delete user with id ' . $userinfo->userid . ' , message: ' . $fault->faultstring;
+			$status[LogLevel::ERROR][] = 'Magento API: Could not delete user with id ' . $userinfo->userid . ' , message: ' . $fault->faultstring;
 		}
 
 		try {
@@ -760,7 +761,7 @@ class User extends Plugin_User
 			$db->setQuery($query);
 			$db->execute();
 
-			$this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
+			$this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
 		}
 	}
 }

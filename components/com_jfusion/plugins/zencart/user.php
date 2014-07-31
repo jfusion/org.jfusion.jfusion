@@ -182,7 +182,7 @@ class User extends Plugin_User
 
 	    $db->transactionCommit();
 
-	    $this->debugger->add('debug', Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
+	    $this->debugger->addDebug(Text::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********');
     }
 
     /**
@@ -325,7 +325,7 @@ class User extends Plugin_User
                         if ($ok) {
                             $db->transactionCommit();
 
-	                        $this->debugger->add('debug', Text::_('USER_CREATION'));
+	                        $this->debugger->addDebug(Text::_('USER_CREATION'));
 	                        $this->debugger->set('userinfo', $this->getUser($userinfo));
                         }
                     }
@@ -347,7 +347,7 @@ class User extends Plugin_User
 	 */
     function deleteUser(Userinfo $userinfo)
     {
-        $status = array('error' => array(), 'debug' => array());
+	    $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 
 	    $db = Factory::getDatabase($this->getJname());
 	    //setup status array to hold debug info and errors
@@ -440,7 +440,7 @@ class User extends Plugin_User
 		    try {
 			    $db->setQuery($value);
 			    $db->execute();
-			    $status['debug'][] = $debug[$key];
+			    $status[LogLevel::DEBUG][] = $debug[$key];
 		    } catch (Exception $e) {
 			    throw new RuntimeException($errors[$key]);
 		    }
@@ -472,7 +472,7 @@ class User extends Plugin_User
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $this->debugger->add('debug', Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
+		    $this->debugger->addDebug(Text::_('GROUP_UPDATE') . ': ' . implode(' , ', $existinguser->groups) . ' -> ' . $usergroup);
 	    }
     }
 }

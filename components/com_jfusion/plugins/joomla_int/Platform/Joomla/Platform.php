@@ -234,7 +234,7 @@ class Platform extends Joomla
 
 			$user->updateUserLanguage($userinfo, $existinguser);
 		} else {
-			$this->debugger->add('debug', JText::_('NO_USER_DATA_FOUND'));
+			$this->debugger->addDebug(JText::_('NO_USER_DATA_FOUND'));
 		}
 	}
 }

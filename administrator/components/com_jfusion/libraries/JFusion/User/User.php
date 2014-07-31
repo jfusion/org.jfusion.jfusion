@@ -146,7 +146,7 @@ class User
 								$MasterUserPlugin->doCreateUser($authUserinfo);
 								$status = $MasterUserPlugin->debugger->get();
 
-								if (empty($status['error'])) {
+								if (empty($status[LogLevel::ERROR])) {
 									//success
 									//make sure the userinfo is available
 									if (!empty($status['userinfo'])) {
@@ -158,8 +158,8 @@ class User
 									$debugger->add('init', Text::_('MASTER') . ' ' . Text::_('USER') . ' ' . Text::_('CREATE') . ' ' . Text::_('SUCCESS'));
 								} else {
 									//could not create user
-									$debugger->add('init', $master->name . ' ' . Text::_('USER') . ' ' . Text::_('CREATE') . ' ' . Text::_('ERROR') . ' ' . $status['error']);
-									Framework::raise(LogLevel::ERROR, $status['error'], $master->name . ': ' . Text::_('USER') . ' ' . Text::_('CREATE'));
+									$debugger->add('init', $master->name . ' ' . Text::_('USER') . ' ' . Text::_('CREATE') . ' ' . Text::_('ERROR') . ' ' . $status[LogLevel::ERROR]);
+									Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], $master->name . ': ' . Text::_('USER') . ' ' . Text::_('CREATE'));
 									$success = -1;
 								}
 							} catch (Exception $e) {
@@ -193,11 +193,11 @@ class User
 											//make sure the userinfo is available
 											$SlaveUserInfo = $JFusionSlave->getUser($userinfo);
 										}
-										if (!empty($SlaveUser['error'])) {
-											$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR'), $SlaveUser['error']);
+										if (!empty($SlaveUser[LogLevel::ERROR])) {
+											$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR'), $SlaveUser[LogLevel::ERROR]);
 										}
-										if (!empty($SlaveUser['debug'])) {
-											$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE') . ' ' . Text::_('DEBUG'), $SlaveUser['debug']);
+										if (!empty($SlaveUser[LogLevel::DEBUG])) {
+											$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE') . ' ' . Text::_('DEBUG'), $SlaveUser[LogLevel::DEBUG]);
 										}
 
 										$debugger->set($slave->name . ' ' . Text::_('USERINFO'), $SlaveUserInfo);
@@ -217,9 +217,9 @@ class User
 								try {
 									$MasterSession = $MasterUserPlugin->createSession($userinfo, $options);
 
-									if (!empty($MasterSession['error'])) {
-										$debugger->set($master->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $MasterSession['error']);
-										Framework::raise(LogLevel::ERROR, $MasterSession['error'], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
+									if (!empty($MasterSession[LogLevel::ERROR])) {
+										$debugger->set($master->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $MasterSession[LogLevel::ERROR]);
+										Framework::raise(LogLevel::ERROR, $MasterSession[LogLevel::ERROR], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
 										/**
 										 * TODO replace below code ? or just login slaves as well?
 										 */
@@ -227,8 +227,8 @@ class User
 											$success = -1;
 										}
 									}
-									if (!empty($MasterSession['debug'])) {
-										$debugger->set($master->name . ' ' . Text::_('SESSION') . ' ' . Text::_('DEBUG'), $MasterSession['debug']);
+									if (!empty($MasterSession[LogLevel::DEBUG])) {
+										$debugger->set($master->name . ' ' . Text::_('SESSION') . ' ' . Text::_('DEBUG'), $MasterSession[LogLevel::DEBUG]);
 										//report the error back
 									}
 								} catch (Exception $e) {
@@ -257,12 +257,12 @@ class User
 
 
 										$SlaveUser = $SlaveUserPlugin->debugger->get();
-										if (!empty($SlaveUser['debug'])) {
-											$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE') . ' ' . Text::_('DEBUG'), $SlaveUser['debug']);
+										if (!empty($SlaveUser[LogLevel::DEBUG])) {
+											$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE') . ' ' . Text::_('DEBUG'), $SlaveUser[LogLevel::DEBUG]);
 										}
-										if (!empty($SlaveUser['error'])) {
-											$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR'), $SlaveUser['error']);
-											Framework::raise(LogLevel::ERROR, $SlaveUser['error'], $slave->name . ': ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
+										if (!empty($SlaveUser[LogLevel::ERROR])) {
+											$debugger->set($slave->name . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE') . ' ' . Text::_('ERROR'), $SlaveUser[LogLevel::ERROR]);
+											Framework::raise(LogLevel::ERROR, $SlaveUser[LogLevel::ERROR], $slave->name . ': ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
 										} else {
 											if (!$SlaveUserInfo instanceof UserInfo) {
 												//make sure the userinfo is available
@@ -286,12 +286,12 @@ class User
 												if (!in_array($slave->name, $options['skipplugin']) && $slave->dual_login == 1) {
 													try {
 														$SlaveSession = $SlaveUserPlugin->createSession($SlaveUserInfo, $options);
-														if (!empty($SlaveSession['error'])) {
-															$debugger->set($slave->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $SlaveSession['error']);
-															Framework::raise(LogLevel::ERROR, $SlaveSession['error'], $slave->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
+														if (!empty($SlaveSession[LogLevel::ERROR])) {
+															$debugger->set($slave->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $SlaveSession[LogLevel::ERROR]);
+															Framework::raise(LogLevel::ERROR, $SlaveSession[LogLevel::ERROR], $slave->name . ': ' . Text::_('SESSION') . ' ' . Text::_('CREATE'));
 														}
-														if (!empty($SlaveSession['debug'])) {
-															$debugger->set($slave->name . ' ' . Text::_('SESSION') . ' ' . Text::_('DEBUG'), $SlaveSession['debug']);
+														if (!empty($SlaveSession[LogLevel::DEBUG])) {
+															$debugger->set($slave->name . ' ' . Text::_('SESSION') . ' ' . Text::_('DEBUG'), $SlaveSession[LogLevel::DEBUG]);
 														}
 													} catch (Exception $e) {
 														$debugger->set($slave->name . ' ' . Text::_('SESSION') . ' ' . Text::_('ERROR'), $e->getMessage());
@@ -302,7 +302,7 @@ class User
 										}
 									} catch (Exception $e) {
 										Framework::raise(LogLevel::ERROR, $e, $slave->name);
-										$debugger->add('error', $e->getMessage());
+										$debugger->addError($e->getMessage());
 									}
 								}
 								$success = 1;
@@ -313,7 +313,7 @@ class User
 			}
 		} catch (Exception $e) {
 			Framework::raise(LogLevel::ERROR, $e);
-			$debugger->add('error', $e->getMessage());
+			$debugger->addError($e->getMessage());
 		}
 		ob_end_clean();
 	    return ($success === 1);
@@ -387,11 +387,11 @@ class User
 
 						try {
 							$MasterSession = $JFusionMaster->destroySession($MasterUser, $options);
-							if (!empty($MasterSession['error'])) {
-								Framework::raise(LogLevel::ERROR, $MasterSession['error'], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
+							if (!empty($MasterSession[LogLevel::ERROR])) {
+								Framework::raise(LogLevel::ERROR, $MasterSession[LogLevel::ERROR], $master->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
 							}
-							if (!empty($MasterSession['debug'])) {
-								$debugger->set($master->name . ' logout', $MasterSession['debug']);
+							if (!empty($MasterSession[LogLevel::DEBUG])) {
+								$debugger->set($master->name . ' logout', $MasterSession[LogLevel::DEBUG]);
 							}
 						} catch (Exception $e) {
 							Framework::raise(LogLevel::ERROR, $e, $JFusionMaster->getJname());
@@ -427,11 +427,11 @@ class User
 								$SlaveSession = array();
 								try {
 									$SlaveSession = $JFusionSlave->destroySession($SlaveUser, $options);
-									if (!empty($SlaveSession['error'])) {
-										Framework::raise(LogLevel::ERROR, $SlaveSession['error'], $slave->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
+									if (!empty($SlaveSession[LogLevel::ERROR])) {
+										Framework::raise(LogLevel::ERROR, $SlaveSession[LogLevel::ERROR], $slave->name . ': ' . Text::_('SESSION') . ' ' . Text::_('DESTROY'));
 									}
-									if (!empty($SlaveSession['debug'])) {
-										$debugger->set($slave->name . ' logout', $SlaveSession['debug']);
+									if (!empty($SlaveSession[LogLevel::DEBUG])) {
+										$debugger->set($slave->name . ' logout', $SlaveSession[LogLevel::DEBUG]);
 									}
 								} catch (Exception $e) {
 									Framework::raise(LogLevel::ERROR, $e, $JFusionSlave->getJname());
@@ -479,11 +479,11 @@ class User
 
 					if ($MasterUser instanceof Userinfo) {
 						$status = $JFusionMaster->deleteUser($MasterUser);
-						if (!empty($status['error'])) {
-							$error_info[$master->name . ' ' . Text::_('USER_DELETION_ERROR') ] = $status['error'];
+						if (!empty($status[LogLevel::ERROR])) {
+							$error_info[$master->name . ' ' . Text::_('USER_DELETION_ERROR') ] = $status[LogLevel::ERROR];
 						}
-						if (!empty($status['debug'])) {
-							$debug_info[$master->name] = $status['debug'];
+						if (!empty($status[LogLevel::DEBUG])) {
+							$debug_info[$master->name] = $status[LogLevel::DEBUG];
 						}
 					} else {
 						$debug_info[$master->name] = Text::_('NO_USER_DATA_FOUND');
@@ -507,11 +507,11 @@ class User
 
 						if ($SlaveUser instanceof Userinfo) {
 							$status = $JFusionSlave->deleteUser($SlaveUser);
-							if (!empty($status['error'])) {
-								$error_info[$slave->name . ' ' . Text::_('USER_DELETION_ERROR') ] = $status['error'];
+							if (!empty($status[LogLevel::ERROR])) {
+								$error_info[$slave->name . ' ' . Text::_('USER_DELETION_ERROR') ] = $status[LogLevel::ERROR];
 							}
-							if (!empty($status['debug'])) {
-								$debug_info[$slave->name] = $status['debug'];
+							if (!empty($status[LogLevel::DEBUG])) {
+								$debug_info[$slave->name] = $status[LogLevel::DEBUG];
 							}
 						} else {
 							$debug_info[$slave->name] = Text::_('NO_USER_DATA_FOUND');
@@ -589,7 +589,7 @@ class User
 									$debug_info[$master->name . ' ' . Text::_('USERNAME') . ' ' . Text::_('UPDATE') . ' ' . Text::_('DEBUG') ] = $JFusionMaster->debugger->get('debug');
 								}
 							} catch (Exception $e) {
-								$status['error'][] = Text::_('USERNAME_UPDATE_ERROR') . ': ' . $e->getMessage();
+								$status[LogLevel::ERROR][] = Text::_('USERNAME_UPDATE_ERROR') . ': ' . $e->getMessage();
 							}
 						} else {
 							$error_info[$master->name] = Text::_('NO_USER_DATA_FOUND');
@@ -601,11 +601,11 @@ class User
 						$MasterUserInfo = $JFusionMaster->updateUser($userinfo, 1);
 						$MasterUser = $JFusionMaster->debugger->get();
 
-						if (!empty($MasterUser['error'])) {
-							$error_info[$master->name] = $MasterUser['error'];
+						if (!empty($MasterUser[LogLevel::ERROR])) {
+							$error_info[$master->name] = $MasterUser[LogLevel::ERROR];
 						}
-						if (!empty($MasterUser['debug'])) {
-							$debug_info[$master->name] = $MasterUser['debug'];
+						if (!empty($MasterUser[LogLevel::DEBUG])) {
+							$debug_info[$master->name] = $MasterUser[LogLevel::DEBUG];
 						}
 						if (!$MasterUserInfo instanceof Userinfo) {
 							//make sure the userinfo is available
@@ -651,7 +651,7 @@ class User
 										$debug_info[$slave->name . ' ' . Text::_('USERNAME') . ' ' . Text::_('UPDATE') . ' ' . Text::_('DEBUG') ] = $JFusionSlave->debugger->get('debug');
 									}
 								}  catch (Exception $e) {
-									$status['error'][] = Text::_('USERNAME_UPDATE_ERROR') . ': ' . $e->getMessage();
+									$status[LogLevel::ERROR][] = Text::_('USERNAME_UPDATE_ERROR') . ': ' . $e->getMessage();
 								}
 							} else {
 								$error_info[$slave->name] = Text::_('NO_USER_DATA_FOUND');
@@ -662,11 +662,11 @@ class User
 
 						$SlaveUser = $JFusionSlave->debugger->get();
 
-						if (!empty($SlaveUser['error'])) {
-							$error_info[$slave->name] = $SlaveUser['error'];
+						if (!empty($SlaveUser[LogLevel::ERROR])) {
+							$error_info[$slave->name] = $SlaveUser[LogLevel::ERROR];
 						}
-						if (!empty($SlaveUser['debug'])) {
-							$debug_info[$slave->name] = $SlaveUser['debug'];
+						if (!empty($SlaveUser[LogLevel::DEBUG])) {
+							$debug_info[$slave->name] = $SlaveUser[LogLevel::DEBUG];
 						}
 
 						if (!$SlaveUserInfo instanceof Userinfo) {

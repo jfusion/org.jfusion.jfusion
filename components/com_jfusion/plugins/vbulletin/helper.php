@@ -99,7 +99,7 @@ class Helper extends Plugin
                         if (strpos($curl_response, '<!DOCTYPE') !== false) {
                             //the page was rendered rather than the hook catching
                             $status['errors'][] = Text::_('VB_API_HOOK_NOT_INSTALLED');
-	                        $status['debug'][] = htmlspecialchars($curl_response);
+	                        $status[LogLevel::DEBUG][] = htmlspecialchars($curl_response);
                         } else {
                             //there is probably a php error or warning
                             if (($pos = strpos($curl_response, '{')) !== false) {
@@ -109,9 +109,9 @@ class Helper extends Plugin
                                 } else {
 	                                $status = $response;
                                 }
-	                            $status['debug'][] = htmlspecialchars(substr($curl_response, 0, $pos));
+	                            $status[LogLevel::DEBUG][] = htmlspecialchars(substr($curl_response, 0, $pos));
                             } else {
-	                            $status['debug'][] = htmlspecialchars($curl_response);
+	                            $status[LogLevel::DEBUG][] = htmlspecialchars($curl_response);
                                 if (empty($curl_response)) {
                                     $curl_response = Text::_('VB_API_HOOK_NOT_INSTALLED');
                                 }
