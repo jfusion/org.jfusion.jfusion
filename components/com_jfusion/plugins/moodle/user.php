@@ -194,7 +194,6 @@ class User extends Plugin_User
 	function destroySession(Userinfo $userinfo, $options)
     {
         $status = array('error' => array(), 'debug' => array());
-        $status = array('debug' => array(), 'error' => array());
 
         // find out if moodle stores its sessions on disk or in the database
 
@@ -586,7 +585,7 @@ class User extends Plugin_User
 	 * @return array status Array containing the errors and result of the function
 	 */
 	function deleteUser(Userinfo $userinfo) {
-		$status = array('debug' => array(), 'error' => array());
+		$status = array('error' => array(), 'debug' => array());
 
 		//setup status array to hold debug info and errors
 
