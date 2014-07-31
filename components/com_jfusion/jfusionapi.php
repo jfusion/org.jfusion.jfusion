@@ -806,10 +806,9 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 			// trick joomla into thinking we're running through joomla
 			define('_JEXEC', true);
-			define('JPATH_PLATFORM', true);
-
 			define('DS', DIRECTORY_SEPARATOR);
 			define('JPATH_BASE', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
+			define('JPATH_PLATFORM', JPATH_BASE . DIRECTORY_SEPARATOR . 'libraries');
 
 			// load joomla libraries
 			require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'defines.php';
