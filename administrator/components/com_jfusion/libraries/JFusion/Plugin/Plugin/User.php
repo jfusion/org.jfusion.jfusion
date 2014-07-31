@@ -196,66 +196,59 @@ class Plugin_User extends Plugin
      *
      * @throws RuntimeException
      *
-     * @return array result Array containing the result of the user update
+     * @return Userinfo|null returns updated userinfo
      */
     function updateUser(Userinfo $userinfo, $overwrite = 0)
     {
-        $status = array('error' => array(), 'debug' => array());
-	    $this->debugger->set(null, $status);
 	    try {
-		    if ($userinfo instanceof Userinfo) {
-			    //get the user
-			    $existinguser = $this->getUser($userinfo);
-			    if ($existinguser instanceof Userinfo) {
-				    $changed = false;
-				    //a matching user has been found
-				    $this->debugger->add('debug', Text::_('USER_DATA_FOUND'));
+			//get the user
+		    $existinguser = $this->getUser($userinfo);
+		    if ($existinguser instanceof Userinfo) {
+			    $changed = false;
+			    //a matching user has been found
+			    $this->debugger->add('debug', Text::_('USER_DATA_FOUND'));
 
-				    if($this->doUpdateEmail($userinfo, $existinguser, $overwrite)) {
-					    $changed = true;
-				    }
+			    if($this->doUpdateEmail($userinfo, $existinguser, $overwrite)) {
+				    $changed = true;
+			    }
 
-				    if($this->doUpdatePassword($userinfo, $existinguser)) {
-					    $changed = true;
-				    }
+			    if($this->doUpdatePassword($userinfo, $existinguser)) {
+				    $changed = true;
+			    }
 
-				    if ($this->doUpdateBlock($userinfo, $existinguser, $overwrite)) {
-					    $changed = true;
-				    }
+			    if ($this->doUpdateBlock($userinfo, $existinguser, $overwrite)) {
+				    $changed = true;
+			    }
 
-				    if($this->doUpdateActivate($userinfo, $existinguser, $overwrite)) {
-					    $changed = true;
-				    }
+			    if($this->doUpdateActivate($userinfo, $existinguser, $overwrite)) {
+				    $changed = true;
+			    }
 
-				    if($this->doUpdateUsergroup($userinfo, $existinguser)) {
-					    $changed = true;
-				    }
+			    if($this->doUpdateUsergroup($userinfo, $existinguser)) {
+				    $changed = true;
+			    }
 
-				    if($this->doUserLanguage($userinfo, $existinguser)) {
-					    $changed = true;
-				    }
+			    if($this->doUserLanguage($userinfo, $existinguser)) {
+				    $changed = true;
+			    }
 
-				    if ($this->debugger->isEmpty('error')) {
-					    if ($changed == true) {
-						    $this->debugger->set('action', 'updated');
-						    //let's get updated information
-						    $this->debugger->set('userinfo', $this->getUser($userinfo));
-					    } else {
-						    $this->debugger->set('action', 'unchanged');
-						    $this->debugger->set('userinfo', $existinguser);
-					    }
+			    if ($this->debugger->isEmpty('error')) {
+				    if ($changed == true) {
+					    $this->debugger->set('action', 'updated');
+					    //let's get updated information
+					    return $this->getUser($userinfo);
+				    } else {
+					    $this->debugger->set('action', 'unchanged');
+					    return $existinguser;
 				    }
-			    } else {
-				    $this->createUser($userinfo);
 			    }
 		    } else {
-			    throw new RuntimeException(Text::_('NO_USER_DATA_FOUND'));
+			    $this->createUser($userinfo);
 		    }
 	    } catch (Exception $e) {
 		    $this->debugger->add('error', $e->getMessage());
 	    }
-	    $status = $this->debugger->get();
-        return $status;
+        return null;
     }
 
 	/**

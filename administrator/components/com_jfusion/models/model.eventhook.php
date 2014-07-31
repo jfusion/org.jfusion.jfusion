@@ -387,7 +387,7 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 					$existinguser = $PluginUserUpdate->getUser($userinfo);
 
 					if(!$existinguser) {
-						$PluginUserUpdate->debugger->set(null, array('error' => array(), 'debug' => array()));
+						$PluginUserUpdate->resetDebugger();
 						$PluginUserUpdate->doCreateUser($userinfo);
 						$status = $PluginUserUpdate->debugger->get();
 
@@ -452,8 +452,11 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 									}
 								}
 							}
+							$PluginUserUpdate->resetDebugger();
 
-							$debug[][$plugin->name] = $PluginUserUpdate->updateUser($existinguser, $overwrite);
+							$PluginUserUpdate->updateUser($existinguser, $overwrite);
+
+							$debug[][$plugin->name] = $PluginUserUpdate->debugger->get();
 						} else {
 							$debug[][$plugin->name] = 'invalid user';
 						}

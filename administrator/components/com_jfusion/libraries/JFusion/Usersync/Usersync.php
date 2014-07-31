@@ -209,29 +209,36 @@ class Usersync
 					    switch ($error['action']) {
 						    case '1':
 							    $userinfo = Factory::getUser($conflictjname)->getUser($conflictuserinfo);
+								if ($userinfo instanceof Userinfo) {
+									$userPlugin = Factory::getUser($userjname);
+									$userPlugin->resetDebugger();
+									$userPlugin->updateUser($userinfo, 1);
 
-							    $userPlugin = Factory::getUser($userjname);
-							    $status = $userPlugin->updateUser($userinfo, 1);
-							    if (!empty($status['error'])) {
-								    Framework::raise(LogLevel::ERROR, $status['error'], $userjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
-							    } else {
-								    Framework::raise(LogLevel::INFO, Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $userjname);
-								    static::markResolved($id);
-								    $userPlugin->updateLookup($useruserinfo, $userinfo);
-							    }
+									$status = $userPlugin->debugger->get();
+									if (!empty($status['error'])) {
+										Framework::raise(LogLevel::ERROR, $status['error'], $userjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
+									} else {
+										Framework::raise(LogLevel::INFO, Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $userjname);
+										static::markResolved($id);
+										$userPlugin->updateLookup($useruserinfo, $userinfo);
+									}
+								}
 							    break;
 						    case '2':
 							    $userinfo = Factory::getUser($userjname)->getUser($useruserinfo);
+							    if ($userinfo instanceof Userinfo) {
+								    $userPlugin = Factory::getUser($conflictjname);
+								    $userPlugin->resetDebugger();
+								    $userPlugin->updateUser($userinfo, 1);
 
-							    $userPlugin = Factory::getUser($conflictjname);
-
-							    $status = $userPlugin->updateUser($userinfo, 1);
-							    if (!empty($status['error'])) {
-								    Framework::raise(LogLevel::ERROR, $status['error'], $conflictjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
-							    } else {
-								    Framework::raise(LogLevel::INFO, Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $conflictjname);
-								    static::markResolved($id);
-								    $userPlugin->updateLookup($userinfo, $useruserinfo);
+								    $status = $userPlugin->debugger->get();
+								    if (!empty($status['error'])) {
+									    Framework::raise(LogLevel::ERROR, $status['error'], $conflictjname . ' ' . Text::_('USER') . ' ' . Text::_('UPDATE'));
+								    } else {
+									    Framework::raise(LogLevel::INFO, Text::_('USER') . ' ' . $userinfo->username . ' ' . Text::_('UPDATE'), $conflictjname);
+									    static::markResolved($id);
+									    $userPlugin->updateLookup($userinfo, $useruserinfo);
+								    }
 							    }
 							    break;
 						    case '3':
@@ -241,7 +248,9 @@ class Usersync
 							    $JFusionActive = 1;
 
 							    $userPlugin = Factory::getUser($error['user_jname']);
-							    $status = $userPlugin->deleteUser($useruserinfo);
+							    $userPlugin->deleteUser($useruserinfo);
+
+							    $status = $userPlugin->debugger->get();
 							    if (!empty($status['error'])) {
 								    Framework::raise(LogLevel::ERROR, $status['error'], $error['user_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['user_username']);
 							    } else {
@@ -256,7 +265,9 @@ class Usersync
 							    global $JFusionActive;
 							    $JFusionActive = 1;
 							    $userPlugin = Factory::getUser($error['conflict_jname']);
-							    $status = $userPlugin->deleteUser($conflictuserinfo);
+							    $userPlugin->deleteUser($conflictuserinfo);
+
+							    $status = $userPlugin->debugger->get();
 							    if (!empty($status['error'])) {
 								    Framework::raise(LogLevel::ERROR, $status['error'], $error['conflict_jname'] . ' ' . Text::_('USER_DELETION_ERROR') . ': ' . $error['conflict_username']);
 							    } else {
@@ -326,7 +337,7 @@ class Usersync
 				    $user_batch = $syncdata['userbatch'];
 				    //we should start with the import of slave users into the master
 				    if ($syncdata['slave_data']) {
-					    for ($i = $plugin_offset; $i < count($syncdata['slave_data']);$i++) {
+					    for ($i = $plugin_offset; $i < count($syncdata['slave_data']); $i++) {
 						    $syncdata['plugin_offset'] = $i;
 						    //get a list of users
 						    $jname = $syncdata['slave_data'][$i]['jname'];
@@ -349,30 +360,42 @@ class Usersync
 								    $user_offset = 0;
 							    }
 							    //perform the actual sync
-							    for ($j = $user_offset;$j < count($userlist);$j++) {
+							    for ($j = $user_offset;$j < count($userlist); $j++) {
 								    $syncdata['user_offset']++;
 								    $status = array();
 								    $userinfo = null;
+								    $UpdateUserInfo = null;
 								    try {
 									    if ($action == 'master') {
 										    $userinfo = $SlaveUser->getUser($userlist[$j]);
-										    $status = $MasterUser->updateUser($userinfo);
+										    if ($userinfo instanceof Userinfo) {
+											    $MasterUser->resetDebugger();
+											    $UpdateUserInfo = $MasterUser->updateUser($userinfo);
+
+											    $status = $MasterUser->debugger->get();
+
+											    if (!$UpdateUserInfo instanceof Userinfo) {
+												    //make sure the userinfo is available
+												    $UpdateUserInfo = $MasterUser->getUser($userinfo);
+											    }
+										    }
 									    } else {
 										    $userinfo = $MasterUser->getUser($userlist[$j]);
-										    $status = $SlaveUser->updateUser($userinfo);
-									    }
+										    if ($userinfo instanceof Userinfo) {
+											    $SlaveUser->resetDebugger();
+											    $UpdateUserInfo = $SlaveUser->updateUser($userinfo);
 
-									    //populate userinfo if not done by plugin
-									    if (empty($status['userinfo'])) {
-										    if ($action == 'master') {
-											    $status['userinfo'] = $MasterUser->getUser($userlist[$j]);
-										    } else {
-											    $status['userinfo'] = $SlaveUser->getUser($userlist[$j]);
+											    $status = $SlaveUser->debugger->get();
+
+											    if (!$UpdateUserInfo instanceof Userinfo) {
+												    //make sure the userinfo is available
+												    $UpdateUserInfo = $SlaveUser->getUser($userinfo);
+											    }
 										    }
 									    }
 								    } catch (Exception $e) {
 									    $status['error'] = $e->getMessage();
-									    $status['userinfo'] = null;
+									    $UpdateUserInfo = null;
 								    }
 
 								    $sync_log = new stdClass;
@@ -384,28 +407,30 @@ class Usersync
 								    $sync_log->username = $userlist[$j]->username;
 								    $sync_log->email = $userlist[$j]->email;
 
-								    if (!empty($status['error'])) {
+								    if (!$userinfo instanceof Userinfo || !empty($status['error'])) {
 									    $status['action'] = 'error';
 									    $sync_log->message = (is_array($status['error'])) ? implode('; ', $status['error']) : $status['error'];
-									    $sync_error = array();
-									    $sync_error['conflict']['userinfo'] = $status['userinfo'];
-									    $sync_error['conflict']['error'] = $status['error'];
-									    $sync_error['conflict']['debug'] = (!empty($status['debug'])) ? $status['debug'] : '';
-									    $sync_error['conflict']['jname'] = $action_reverse_name;
-									    $sync_error['user']['jname'] = $action_name;
-									    $sync_error['user']['userinfo'] = $userinfo;
-									    $sync_error['user']['userlist'] = $userlist[$j];
-									    $sync_log->data = serialize($sync_error);
+									    $error = array();
+									    $error['conflict']['userinfo'] = $UpdateUserInfo;
+									    $error['conflict']['error'] = $status['error'];
+									    $error['conflict']['debug'] = (!empty($status['debug'])) ? $status['debug'] : '';
+									    $error['conflict']['jname'] = $action_reverse_name;
+									    $error['user']['jname'] = $action_name;
+									    $error['user']['userinfo'] = $userinfo;
+									    $error['user']['userlist'] = $userlist[$j];
+									    $sync_log->data = serialize($error);
 									    $syncdata['sync_errors']++;
 								    } else {
 									    //usersync loggin enabled
-									    $sync_log->username = isset($status['userinfo']->username) ? $status['userinfo']->username : $userinfo->username;
-									    $sync_log->email = isset($status['userinfo']->email) ? $status['userinfo']->email : $userinfo->email;
-									    //update the lookup table
-									    if ($action == 'master') {
-										    $MasterUser->updateLookup($status['userinfo'], $userinfo);
-									    } else {
-										    $SlaveUser->updateLookup($userinfo, $status['userinfo']);
+									    $sync_log->username = isset($UpdateUserInfo->username) ? $UpdateUserInfo->username : $userinfo->username;
+									    $sync_log->email = isset($UpdateUserInfo->email) ? $UpdateUserInfo->email : $userinfo->email;
+									    if ($UpdateUserInfo instanceof Userinfo) {
+										    //update the lookup table
+										    if ($action == 'master') {
+											    $MasterUser->updateLookup($UpdateUserInfo, $userinfo);
+										    } else {
+											    $SlaveUser->updateLookup($userinfo, $UpdateUserInfo);
+										    }
 									    }
 								    }
 								    $sync_log->action = $status['action'];

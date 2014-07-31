@@ -229,4 +229,10 @@ class Plugin
 		}
 		return $mod_file;
 	}
+
+	final public function resetDebugger() {
+		if ($this->debugger instanceof Debugger) {
+			$this->debugger->set(null, array('error' => array(), 'debug' => array()));
+		}
+	}
 }

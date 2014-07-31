@@ -365,7 +365,7 @@ class Authentication extends Object
 										$JFusionMaster = Factory::getUser($master->name);
 										//make sure that the password_clear is not already hashed which may be the case for some dual login plugins
 
-										$JFusionMaster->debugger->set(null, array('error' => array(), 'debug' => array()));
+										$JFusionMaster->resetDebugger();
 
 										$JFusionMaster->doUpdatePassword($userinfo, $userinfo);
 
