@@ -158,7 +158,7 @@ class JFusionAdmin_magento extends JFusionAdmin
         $db->setQuery($query);
         $params['httponly'] = $db-> loadResult();
 
-        //Find the url (secure == unsecure if no ssl)
+        //Find the url (secure == none secure if no ssl)
         $query = "SELECT value FROM #__core_config_data WHERE path = ". $db->quote('web/secure/base_url');
         $db->setQuery($query);
         $params['source_url'] = $db-> loadResult();
