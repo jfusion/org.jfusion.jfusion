@@ -23,7 +23,7 @@ defined('_JEXEC') or die('Restricted access');
  * @category   JFusion
  * @package    JFusionPlugins
  * @subpackage Wordpress
- * @author     JFusion Team -- Hek Wevers <webmaster@jfusion.org>
+ * @author     JFusion Team -- Henk Wevers <webmaster@jfusion.org>
  * @copyright  2010 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org */
