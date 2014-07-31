@@ -9,7 +9,7 @@ class Platform_Joomla extends Platform {
 	 */
 	public function getApplication()
 	{
-		if (!defined('_JEXEC')) {
+		if (!defined('_JEXEC') && !defined('JPATH_PLATFORM')) {
 			/**
 			 * @TODO determine if we really need session_write_close or if it need to be selectable
 			 */
@@ -18,6 +18,7 @@ class Platform_Joomla extends Platform {
 
 			// trick joomla into thinking we're running through joomla
 			define('_JEXEC', true);
+			define('JPATH_PLATFORM', true);
 			define('DS', DIRECTORY_SEPARATOR);
 			define('JPATH_BASE', dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
 
