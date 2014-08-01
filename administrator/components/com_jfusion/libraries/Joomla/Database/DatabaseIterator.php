@@ -50,7 +50,7 @@ abstract class DatabaseIterator implements \Countable, \Iterator
 	/**
 	 * A numeric or string key for the current database record.
 	 *
-	 * @var    scalar
+	 * @var    integer|float|string|boolean ( scalar )
 	 * @since  1.0
 	 */
 	private $key;
@@ -126,7 +126,7 @@ abstract class DatabaseIterator implements \Countable, \Iterator
 	/**
 	 * The key of the current element in the iterator.
 	 *
-	 * @return  scalar
+	 * @return  integer|float|string|boolean ( scalar )
 	 *
 	 * @see     Iterator::key()
 	 * @since   1.0
