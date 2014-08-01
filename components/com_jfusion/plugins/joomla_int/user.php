@@ -187,22 +187,28 @@ class User extends Plugin_User
 
 	/**
 	 * @param Userinfo $userinfo
+	 *
+	 * @return \JFusion\User\Userinfo|null
 	 */
 	function doCreateUser(Userinfo $userinfo)
 	{
+		$user = null;
 		$this->debugger->addDebug(Text::_('NO_USER_FOUND_CREATING_ONE'));
 		try {
-			$this->createUser($userinfo);
+			$user = $this->createUser($userinfo);
 			$this->debugger->set('action', 'created');
 		} catch (Exception $e) {
 			$this->debugger->addError(Text::_('USER_CREATION_ERROR') . $e->getMessage());
 		}
+		return $user;
 	}
 
 	/**
 	 * Function that creates a new user account
 	 *
 	 * @param Userinfo $userinfo Object containing the new userinfo
+	 *
+	 * @return Userinfo|null
 	 *
 	 * @throws RuntimeException
 	 */
@@ -317,9 +323,7 @@ class User extends Plugin_User
 				//check to see if the user exists now
 				$joomla_user = $this->getUser($userinfo);
 				if ($joomla_user) {
-					//report back success
-					$this->debugger->addDebug(Text::_('USER_CREATION'));
-					$this->debugger->set('userinfo', $joomla_user);
+					return $joomla_user;
 				} else {
 					throw new RuntimeException(Text::_('COULD_NOT_CREATE_USER'));
 				}

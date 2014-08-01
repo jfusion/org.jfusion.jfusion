@@ -243,10 +243,12 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \Exception
-	 * @return void
+	 *
+	 * @return Userinfo
 	 */
     function createUser(Userinfo $userinfo)
     {
+	    $newuser = null;
         try {
             $db = Factory::getDatabase($this->getJname());
             //prepare the variables
@@ -324,9 +326,7 @@ class User extends Plugin_User
                         $ok = $db->insertObject('#__customers_info', $user_1, 'customers_info_id');
                         if ($ok) {
                             $db->transactionCommit();
-
-	                        $this->debugger->addDebug(Text::_('USER_CREATION'));
-	                        $this->debugger->set('userinfo', $this->getUser($userinfo));
+	                        $newuser = $this->getUser($userinfo);
                         }
                     }
                 }
@@ -337,6 +337,7 @@ class User extends Plugin_User
             }
 	        throw $e;
         }
+	    return $newuser;
     }
 
 	/**

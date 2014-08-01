@@ -295,139 +295,136 @@ class Platform extends Joomla
       * @param JRegistry &$dbparams with discussion bot parameters
       * @param object &$contentitem object containing content information
       * @param int $forumid Id of forum to create thread
-      * @param array &$status contains errors and status of actions
       *
-      * @return void
+      * @return stdClass
      */
-	function createThread(&$dbparams, &$contentitem, $forumid, &$status)
+	function createThread(&$dbparams, &$contentitem, $forumid)
 	{
-		try {
-			//setup some variables
-			$userid = $this->getThreadAuthor($dbparams, $contentitem);
-			$db = Factory::getDatabase($this->getJname());
-			$subject = trim(strip_tags($contentitem->title));
+		//setup some variables
+		$userid = $this->getThreadAuthor($dbparams, $contentitem);
+		$db = Factory::getDatabase($this->getJname());
+		$subject = trim(strip_tags($contentitem->title));
 
-			//prepare the content body
-			$text = $this->prepareFirstPostBody($dbparams, $contentitem);
+		//prepare the content body
+		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
-			//the user information
-			$query = $db->getQuery(true)
-				->select('member_name, email_address')
-				->from('#__members')
-				->where('id_member = ' . $userid);
+		//the user information
+		$query = $db->getQuery(true)
+			->select('member_name, email_address')
+			->from('#__members')
+			->where('id_member = ' . $userid);
 
-			$db->setQuery($query);
-			$smfUser = $db->loadObject();
+		$db->setQuery($query);
+		$smfUser = $db->loadObject();
 
-			if ($dbparams->get('use_content_created_date', false)) {
-				$timezone = Factory::getConfig()->get('offset');
-				$timestamp = strtotime($contentitem->created);
-				//undo Joomla timezone offset
-				$timestamp += ($timezone * 3600);
-			} else {
-				$timestamp = time();
-			}
-
-			$topic_row = new stdClass();
-
-			$topic_row->is_sticky = 0;
-			$topic_row->id_board = $forumid;
-			$topic_row->id_first_msg = $topic_row->id_last_msg = 0;
-			$topic_row->id_member_started = $topic_row->id_member_updated =  $userid;
-			$topic_row->id_poll = 0;
-			$topic_row->num_replies = 0;
-			$topic_row->num_views = 0;
-			$topic_row->locked = 0;
-
-			$db->insertObject('#__topics', $topic_row, 'id_topic' );
-			$topicid = $db->insertid();
-
-			$post_row = new stdClass();
-			$post_row->id_board			= $forumid;
-			$post_row->id_topic 		= $topicid;
-			$post_row->poster_time		= $timestamp;
-			$post_row->id_member		= $userid;
-			$post_row->subject			= $subject;
-			$post_row->poster_name		= $smfUser->member_name;
-			$post_row->poster_email		= $smfUser->email_address;
-			$post_row->poster_ip			= $_SERVER['REMOTE_ADDR'];
-			$post_row->smileys_enabled	= 1;
-			$post_row->modified_time		= 0;
-			$post_row->modified_name		= '';
-			$post_row->body				= $text;
-			$post_row->icon				= 'xx';
-
-			$db->insertObject('#__messages', $post_row, 'id_msg');
-
-			$postid = $db->insertid();
-
-			$post_row = new stdClass();
-			$post_row->id_msg = $postid;
-			$post_row->id_msg_modified = $postid;
-
-			$db->updateObject('#__messages', $post_row, 'id_msg' );
-
-			$topic_row = new stdClass();
-
-			$topic_row->id_first_msg	= $postid;
-			$topic_row->id_last_msg		= $postid;
-			$topic_row->id_topic 		= $topicid;
-
-			$db->updateObject('#__topics', $topic_row, 'id_topic' );
-
-			$forum_stats = new stdClass();
-			$forum_stats->id_board =  $forumid;
-
-			$query = $db->getQuery(true)
-				->select('m.poster_time')
-				->from('#__messages AS m')
-				->innerJoin('#__boards AS b ON b.id_last_msg = m.id_msg')
-				->where('b.id_board = ' . $forumid);
-
-			$db->setQuery($query);
-			$lastPostTime = (int) $db->loadResult();
-			if($dbparams->get('use_content_created_date', false)) {
-				//only update the last post for the board if it really is newer
-				$updateLastPost = ($timestamp > $lastPostTime) ? true : false;
-			} else {
-				$updateLastPost = true;
-			}
-
-			if($updateLastPost) {
-				$forum_stats->id_last_msg =  $postid;
-				$forum_stats->id_msg_updated =  $postid;
-			}
-
-			$query = $db->getQuery(true)
-				->select('num_topics, num_posts')
-				->from('#__boards')
-				->where('id_board = ' . $forumid);
-
-			$db->setQuery($query);
-			$num = $db->loadObject();
-			$forum_stats->num_posts =  $num->num_posts +1;
-			$forum_stats->num_topics =  $num->num_topics +1;
-
-			$db->updateObject('#__boards', $forum_stats, 'id_board' );
-
-			if ($updateLastPost) {
-				$query = 'REPLACE INTO #__log_topics SET id_member = ' . $userid . ', id_topic = ' . $topicid . ', id_msg = ' . ($postid + 1);
-				$db->setQuery($query);
-				$db->execute();
-
-				$query = 'REPLACE INTO #__log_boards SET id_member = ' . $userid . ', id_board = ' . $forumid . ', id_msg = ' . $postid;
-				$db->setQuery($query);
-				$db->execute();
-			}
-			if(!empty($topicid) && !empty($postid)) {
-				//add information to update forum lookup
-				$status['threadinfo']->forumid = $forumid;
-				$status['threadinfo']->threadid = $topicid;
-				$status['threadinfo']->postid = $postid;
-			}
-		} catch (Exception $e) {
-			$status[LogLevel::ERROR][] = $e->getMessage();
+		if ($dbparams->get('use_content_created_date', false)) {
+			$timezone = Factory::getConfig()->get('offset');
+			$timestamp = strtotime($contentitem->created);
+			//undo Joomla timezone offset
+			$timestamp += ($timezone * 3600);
+		} else {
+			$timestamp = time();
 		}
+
+		$topic_row = new stdClass();
+
+		$topic_row->is_sticky = 0;
+		$topic_row->id_board = $forumid;
+		$topic_row->id_first_msg = $topic_row->id_last_msg = 0;
+		$topic_row->id_member_started = $topic_row->id_member_updated =  $userid;
+		$topic_row->id_poll = 0;
+		$topic_row->num_replies = 0;
+		$topic_row->num_views = 0;
+		$topic_row->locked = 0;
+
+		$db->insertObject('#__topics', $topic_row, 'id_topic' );
+		$topicid = $db->insertid();
+
+		$post_row = new stdClass();
+		$post_row->id_board			= $forumid;
+		$post_row->id_topic 		= $topicid;
+		$post_row->poster_time		= $timestamp;
+		$post_row->id_member		= $userid;
+		$post_row->subject			= $subject;
+		$post_row->poster_name		= $smfUser->member_name;
+		$post_row->poster_email		= $smfUser->email_address;
+		$post_row->poster_ip			= $_SERVER['REMOTE_ADDR'];
+		$post_row->smileys_enabled	= 1;
+		$post_row->modified_time		= 0;
+		$post_row->modified_name		= '';
+		$post_row->body				= $text;
+		$post_row->icon				= 'xx';
+
+		$db->insertObject('#__messages', $post_row, 'id_msg');
+
+		$postid = $db->insertid();
+
+		$post_row = new stdClass();
+		$post_row->id_msg = $postid;
+		$post_row->id_msg_modified = $postid;
+
+		$db->updateObject('#__messages', $post_row, 'id_msg' );
+
+		$topic_row = new stdClass();
+
+		$topic_row->id_first_msg	= $postid;
+		$topic_row->id_last_msg		= $postid;
+		$topic_row->id_topic 		= $topicid;
+
+		$db->updateObject('#__topics', $topic_row, 'id_topic' );
+
+		$forum_stats = new stdClass();
+		$forum_stats->id_board =  $forumid;
+
+		$query = $db->getQuery(true)
+			->select('m.poster_time')
+			->from('#__messages AS m')
+			->innerJoin('#__boards AS b ON b.id_last_msg = m.id_msg')
+			->where('b.id_board = ' . $forumid);
+
+		$db->setQuery($query);
+		$lastPostTime = (int) $db->loadResult();
+		if($dbparams->get('use_content_created_date', false)) {
+			//only update the last post for the board if it really is newer
+			$updateLastPost = ($timestamp > $lastPostTime) ? true : false;
+		} else {
+			$updateLastPost = true;
+		}
+
+		if($updateLastPost) {
+			$forum_stats->id_last_msg =  $postid;
+			$forum_stats->id_msg_updated =  $postid;
+		}
+
+		$query = $db->getQuery(true)
+			->select('num_topics, num_posts')
+			->from('#__boards')
+			->where('id_board = ' . $forumid);
+
+		$db->setQuery($query);
+		$num = $db->loadObject();
+		$forum_stats->num_posts =  $num->num_posts +1;
+		$forum_stats->num_topics =  $num->num_topics +1;
+
+		$db->updateObject('#__boards', $forum_stats, 'id_board' );
+
+		if ($updateLastPost) {
+			$query = 'REPLACE INTO #__log_topics SET id_member = ' . $userid . ', id_topic = ' . $topicid . ', id_msg = ' . ($postid + 1);
+			$db->setQuery($query);
+			$db->execute();
+
+			$query = 'REPLACE INTO #__log_boards SET id_member = ' . $userid . ', id_board = ' . $forumid . ', id_msg = ' . $postid;
+			$db->setQuery($query);
+			$db->execute();
+		}
+		$threadinfo = new stdClass();
+		if(!empty($topicid) && !empty($postid)) {
+			//add information to update forum lookup
+			$threadinfo->forumid = $forumid;
+			$threadinfo->threadid = $topicid;
+			$threadinfo->postid = $postid;
+		}
+		return $threadinfo;
 	}
 
 	 /**
@@ -435,44 +432,39 @@ class Platform extends Joomla
 	  * @param JRegistry &$dbparams with discussion bot parameters
 	  * @param object &$existingthread with existing thread info
 	  * @param object &$contentitem object containing content information
-	  * @param array &$status contains errors and status of actions
 	  *
 	  * @return void
      **/
-	function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
+	function updateThread(&$dbparams, &$existingthread, &$contentitem)
 	{
-		try {
-			$postid = $existingthread->postid;
+		$postid = $existingthread->postid;
 
-			//setup some variables
-			$db = Factory::getDatabase($this->getJname());
-			$subject = trim(strip_tags($contentitem->title));
+		//setup some variables
+		$db = Factory::getDatabase($this->getJname());
+		$subject = trim(strip_tags($contentitem->title));
 
-			//prepare the content body
-			$text = $this->prepareFirstPostBody($dbparams, $contentitem);
+		//prepare the content body
+		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
-	        $timestamp = time();
-			$userid = $dbparams->get('default_user');
+		$timestamp = time();
+		$userid = $dbparams->get('default_user');
 
-			$query = $db->getQuery(true)
-				->select('member_name')
-				->from('#__members')
-				->where('id_member = ' . $userid);
+		$query = $db->getQuery(true)
+			->select('member_name')
+			->from('#__members')
+			->where('id_member = ' . $userid);
 
-			$db->setQuery($query);
-			$smfUser = $db->loadObject();
+		$db->setQuery($query);
+		$smfUser = $db->loadObject();
 
-			$post_row = new stdClass();
-			$post_row->subject			= $subject;
-			$post_row->body				= $text;
-			$post_row->modified_time 	= $timestamp;
-			$post_row->modified_name 	= $smfUser->member_name;
-			$post_row->id_msg_modified	= $postid;
-			$post_row->id_msg 			= $postid;
-			$db->updateObject('#__messages', $post_row, 'id_msg');
-		} catch (Exception $e) {
-			$status[LogLevel::ERROR] = $e->getMessage();
-		}
+		$post_row = new stdClass();
+		$post_row->subject			= $subject;
+		$post_row->body				= $text;
+		$post_row->modified_time 	= $timestamp;
+		$post_row->modified_name 	= $smfUser->member_name;
+		$post_row->id_msg_modified	= $postid;
+		$post_row->id_msg 			= $postid;
+		$db->updateObject('#__messages', $post_row, 'id_msg');
 	}
 
 	/**
@@ -523,154 +515,155 @@ HTML;
 	 * Creates a post from the quick reply
 	 *
 	 * @param JRegistry $params      object with discussion bot parameters
-	 * @param stdClass $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
-	 * @param object $contentitem object of content item
-	 * @param Userinfo $userinfo    object info of the forum user
-	 * @param stdClass $postinfo object with post info
+	 * @param stdClass  $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
+	 * @param object    $contentitem object of content item
+	 * @param Userinfo  $userinfo    object info of the forum user
+	 * @param stdClass  $postinfo    object with post info
 	 *
-	 * @return array with status
+	 * @throws \RuntimeException
+	 * @return stdClass
 	 */
 	function createPost($params, $ids, $contentitem, Userinfo $userinfo, $postinfo)
 	{
-        $status = array('error' => array(), 'debug' => array());
-		try {
-			if($userinfo->guest) {
-				$userinfo->username = $postinfo->username;
-				$userinfo->email = $postinfo->email;
-				$userinfo->userid = null;
-				if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
-					throw new RuntimeException(Text::_('GUEST_FIELDS_MISSING'));
-				} else {
-					//check to see if user exists to prevent user hijacking
-					$JFusionUser = Factory::getUser($this->getJname());
-					$existinguser = $JFusionUser->getUser($userinfo);
-					if(!empty($existinguser)) {
-						throw new RuntimeException(Text::_('USERNAME_IN_USE'));
-					}
+		$post = new stdClass();
+		$post->postid = 0;
+		$post->moderated = 0;
 
-					//check for email
-					$existinguser = $JFusionUser->getUser($userinfo->email);
-					if(!empty($existinguser)) {
-						throw new RuntimeException(Text::_('EMAIL_IN_USE'));
-					}
+		if($userinfo->guest) {
+			$userinfo->username = $postinfo->username;
+			$userinfo->email = $postinfo->email;
+			$userinfo->userid = null;
+			if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
+				throw new RuntimeException(Text::_('GUEST_FIELDS_MISSING'));
+			} else {
+				//check to see if user exists to prevent user hijacking
+				$JFusionUser = Factory::getUser($this->getJname());
+				$existinguser = $JFusionUser->getUser($userinfo);
+				if(!empty($existinguser)) {
+					throw new RuntimeException(Text::_('USERNAME_IN_USE'));
+				}
+
+				//check for email
+				$existinguser = $JFusionUser->getUser($userinfo->email);
+				if(!empty($existinguser)) {
+					throw new RuntimeException(Text::_('EMAIL_IN_USE'));
 				}
 			}
+		}
 
-			//setup some variables
-			$userid = $userinfo->userid;
-			$db = Factory::getDatabase($this->getJname());
-			$front = Factory::getFront($this->getJname());
-			//strip out html from post
-			$text = strip_tags($postinfo->text);
+		//setup some variables
+		$userid = $userinfo->userid;
+		$db = Factory::getDatabase($this->getJname());
+		$front = Factory::getFront($this->getJname());
+		//strip out html from post
+		$text = strip_tags($postinfo->text);
 
-			if(!empty($text)) {
-				$this->prepareText($text, 'forum', new JRegistry());
+		if(!empty($text)) {
+			$this->prepareText($text, 'forum', new JRegistry());
 
-				//get some topic information
+			//get some topic information
+			$query = $db->getQuery(true)
+				->select('t.id_first_msg , t.num_replies, m.subject')
+				->from('#__messages')
+				->innerJoin('#__topics as t ON t.id_topic = m.id_topic')
+				->where('id_topic = ' . $ids->threadid)
+				->where('m.id_msg = t.id_first_msg');
+
+			$db->setQuery($query);
+			$topic = $db->loadObject();
+
+			//the user information
+			if($userinfo->guest) {
+				$smfUser = new stdClass();
+				$smfUser->member_name = $userinfo->username;
+				$smfUser->email_address = $userinfo->email;
+			} else {
 				$query = $db->getQuery(true)
-					->select('t.id_first_msg , t.num_replies, m.subject')
-					->from('#__messages')
-					->innerJoin('#__topics as t ON t.id_topic = m.id_topic')
-					->where('id_topic = ' . $ids->threadid)
-					->where('m.id_msg = t.id_first_msg');
+					->select('member_name, email_address')
+					->from('#__members')
+					->where('id_member = ' . $userid);
 
 				$db->setQuery($query);
-				$topic = $db->loadObject();
-
-				//the user information
-				if($userinfo->guest) {
-					$smfUser = new stdClass();
-					$smfUser->member_name = $userinfo->username;
-					$smfUser->email_address = $userinfo->email;
-				} else {
-					$query = $db->getQuery(true)
-						->select('member_name, email_address')
-						->from('#__members')
-						->where('id_member = ' . $userid);
-
-					$db->setQuery($query);
-					$smfUser = $db->loadObject();
-				}
-
-	            $timestamp = time();
-
-				$post_approved = ($userinfo->guest && $params->get('moderate_guests', 1)) ? 0 : 1;
-
-				$post_row = new stdClass();
-				$post_row->id_board			= $ids->forumid;
-				$post_row->id_topic 		= $ids->threadid;
-				$post_row->poster_time		= $timestamp;
-				$post_row->id_member		= $userid;
-				$post_row->subject			= 'Re: ' . $topic->subject;
-				$post_row->poster_name		= $smfUser->member_name;
-				$post_row->poster_email		= $smfUser->email_address;
-				$post_row->poster_ip		= $_SERVER["REMOTE_ADDR"];
-				$post_row->smileys_enabled	= 1;
-				$post_row->modified_time	= 0;
-				$post_row->modified_name	= '';
-				$post_row->body				= $text;
-				$post_row->icon				= 'xx';
-				$post_row->approved 		= $post_approved;
-
-				$db->insertObject('#__messages', $post_row, 'id_msg');
-
-				$postid = $db->insertid();
-
-				$post_row = new stdClass();
-				$post_row->id_msg = $postid;
-				$post_row->id_msg_modified = $postid;
-				$db->updateObject('#__messages', $post_row, 'id_msg' );
-
-				//store the postid
-				$status['postid'] = $postid;
-
-				//only update the counters if the post is approved
-				if($post_approved) {
-					$topic_row = new stdClass();
-					$topic_row->id_last_msg			= $postid;
-					$topic_row->id_member_updated	= (int) $userid;
-					$topic_row->num_replies			= $topic->num_replies + 1;
-					$topic_row->id_topic			= $ids->threadid;
-					$db->updateObject('#__topics', $topic_row, 'id_topic' );
-
-					$forum_stats = new stdClass();
-					$forum_stats->id_last_msg 		=  $postid;
-					$forum_stats->id_msg_updated	=  $postid;
-
-					$query = $db->getQuery(true)
-						->select('num_posts')
-						->from('#__boards')
-						->where('id_member = ' . $ids->forumid);
-
-					$db->setQuery($query);
-					$num = $db->loadObject();
-					$forum_stats->num_posts = $num->num_posts + 1;
-					$forum_stats->id_board 			= $ids->forumid;
-					$db->updateObject('#__boards', $forum_stats, 'id_board' );
-
-		            //update stats for threadmarking purposes
-	                $query = 'REPLACE INTO #__log_topics SET id_member = ' . $userid . ', id_topic = ' . $ids->threadid . ', id_msg = ' . ($postid + 1);
-					$db->setQuery($query);
-					$db->execute();
-
-	                $query = 'REPLACE INTO #__log_boards SET id_member = ' . $userid . ', id_board = ' . $ids->forumid . ', id_msg = ' . $postid;
-					$db->setQuery($query);
-					$db->execute();
-				} else {
-					//add the post to the approval queue
-					$approval_queue = new stdClass;
-					$approval_queue->id_msg = $postid;
-
-					$db->insertObject('#__approval_queue', $approval_queue);
-				}
-
-				//update moderation status to tell discussion bot to notify user
-				$status['post_moderated'] = ($post_approved) ? 0 : 1;
+				$smfUser = $db->loadObject();
 			}
-		} catch (Exception $e) {
-			$status[LogLevel::ERROR] = $e->getMessage();
+
+			$timestamp = time();
+
+			$post_approved = ($userinfo->guest && $params->get('moderate_guests', 1)) ? 0 : 1;
+
+			$post_row = new stdClass();
+			$post_row->id_board			= $ids->forumid;
+			$post_row->id_topic 		= $ids->threadid;
+			$post_row->poster_time		= $timestamp;
+			$post_row->id_member		= $userid;
+			$post_row->subject			= 'Re: ' . $topic->subject;
+			$post_row->poster_name		= $smfUser->member_name;
+			$post_row->poster_email		= $smfUser->email_address;
+			$post_row->poster_ip		= $_SERVER["REMOTE_ADDR"];
+			$post_row->smileys_enabled	= 1;
+			$post_row->modified_time	= 0;
+			$post_row->modified_name	= '';
+			$post_row->body				= $text;
+			$post_row->icon				= 'xx';
+			$post_row->approved 		= $post_approved;
+
+			$db->insertObject('#__messages', $post_row, 'id_msg');
+
+			$postid = $db->insertid();
+
+			$post_row = new stdClass();
+			$post_row->id_msg = $postid;
+			$post_row->id_msg_modified = $postid;
+			$db->updateObject('#__messages', $post_row, 'id_msg' );
+
+			//store the postid
+			$post->postid = $postid;
+
+			//only update the counters if the post is approved
+			if($post_approved) {
+				$topic_row = new stdClass();
+				$topic_row->id_last_msg			= $postid;
+				$topic_row->id_member_updated	= (int) $userid;
+				$topic_row->num_replies			= $topic->num_replies + 1;
+				$topic_row->id_topic			= $ids->threadid;
+				$db->updateObject('#__topics', $topic_row, 'id_topic' );
+
+				$forum_stats = new stdClass();
+				$forum_stats->id_last_msg 		=  $postid;
+				$forum_stats->id_msg_updated	=  $postid;
+
+				$query = $db->getQuery(true)
+					->select('num_posts')
+					->from('#__boards')
+					->where('id_member = ' . $ids->forumid);
+
+				$db->setQuery($query);
+				$num = $db->loadObject();
+				$forum_stats->num_posts = $num->num_posts + 1;
+				$forum_stats->id_board 			= $ids->forumid;
+				$db->updateObject('#__boards', $forum_stats, 'id_board' );
+
+				//update stats for threadmarking purposes
+				$query = 'REPLACE INTO #__log_topics SET id_member = ' . $userid . ', id_topic = ' . $ids->threadid . ', id_msg = ' . ($postid + 1);
+				$db->setQuery($query);
+				$db->execute();
+
+				$query = 'REPLACE INTO #__log_boards SET id_member = ' . $userid . ', id_board = ' . $ids->forumid . ', id_msg = ' . $postid;
+				$db->setQuery($query);
+				$db->execute();
+			} else {
+				//add the post to the approval queue
+				$approval_queue = new stdClass;
+				$approval_queue->id_msg = $postid;
+
+				$db->insertObject('#__approval_queue', $approval_queue);
+			}
+
+			//update moderation status to tell discussion bot to notify user
+			$post->moderated = ($post_approved) ? 0 : 1;
 		}
-		return $status;
+
+		return $post;
 	}
 
 	/**

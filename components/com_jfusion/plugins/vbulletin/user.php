@@ -633,10 +633,12 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return void
+	 *
+	 * @return Userinfo
 	 */
 	function createUser(Userinfo $userinfo)
 	{
+		$newuser = null;
 		//get the default user group and determine if we are using simple or advanced
 		$usergroups = $this->getCorrectUserGroups($userinfo);
 
@@ -681,6 +683,13 @@ class User extends Plugin_User
 
 			//performs some final VB checks before saving
 			$response = $this->helper->apiCall('createUser', $apidata);
+			foreach ($response['errors'] as $error) {
+				throw new RuntimeException($error);
+			}
+			foreach ($response['debug'] as $debug) {
+				$this->debugger->addDebug($debug);
+			}
+
 			if ($response['success']) {
 				$userdmid = $response['new_id'];
 				//if we set a temp password, we need to move the hashed password over
@@ -700,29 +709,19 @@ class User extends Plugin_User
 					}
 				}
 
-				//save the new user
-				$status['userinfo'] = $this->getUser($userinfo);
-				$this->debugger->set('userinfo', $this->getUser($userinfo));
-
+				$newuser = $this->getUser($userinfo);
 
 				//does the user still need to be activated?
 				if ($setAsNeedsActivation) {
 					try {
-						$this->inactivateUser($userinfo, $status['userinfo'], $status);
+						$this->inactivateUser($userinfo, $newuser);
 					} catch (Exception $e) {
 					}
 				}
-
-				//return the good news
-				$this->debugger->addDebug(Text::_('USER_CREATION') . '. '. Text::_('USERID') . ' ' . $userdmid);
-			}
-			foreach ($response['errors'] as $error) {
-				$this->debugger->addError(Text::_('USER_CREATION_ERROR') . ' ' . $error);
-			}
-			foreach ($response['debug'] as $debug) {
-				$this->debugger->addDebug($debug);
+				$newuser = $this->getUser($userinfo);
 			}
 		}
+		return $newuser;
 	}
 
 	/**

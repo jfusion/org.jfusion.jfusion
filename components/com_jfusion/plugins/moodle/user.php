@@ -441,7 +441,8 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo Object containing the new userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return void
+	 *
+	 * @return Userinfo
 	 */
 	function createUser(Userinfo $userinfo) {
 		// first find out if the user already exists, but with deleted flag set
@@ -572,8 +573,7 @@ class User extends Plugin_User
 		}
 
 		//return the good news
-		$this->debugger->set('userinfo', $this->getUser($userinfo));
-		$this->debugger->addDebug(Text::_('USER_CREATION'));
+		return $this->getUser($userinfo);
 	}
 
 	/**

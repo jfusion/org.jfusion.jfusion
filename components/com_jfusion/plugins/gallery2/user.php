@@ -248,6 +248,7 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \Exception
+	 *
 	 * @return Userinfo|null
 	 */
     function createUser(Userinfo $userinfo) {

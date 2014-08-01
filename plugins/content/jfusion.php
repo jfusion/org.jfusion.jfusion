@@ -748,11 +748,9 @@ HTML;
 						$postinfo->name = JFactory::getApplication()->input->post->getString('guest_name', '');
 						$postinfo->email = JFactory::getApplication()->input->post->getString('guest_email', '');
 
-						$status = $platform->createPost($this->params, $threadinfo, $this->article, $userinfo, $postinfo);
+						try {
+							$createdPost = $platform->createPost($this->params, $threadinfo, $this->article, $userinfo, $postinfo);
 
-						if (!empty($status[LogLevel::ERROR])) {
-							Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], JText::_('DISCUSSBOT_ERROR'));
-						} else {
 							$threadinfo = $this->helper->getThreadInfo(true);
 
 							//if pagination is set, set $limitstart so that we go to the added post
@@ -772,18 +770,18 @@ HTML;
 							$this->helper->output['posts'] = $this->preparePosts();
 
 							//take note of the created post
-							$this->postid = $status['postid'];
+							$this->postid = $createdPost->postid;
 
 							$data->posts = $this->helper->renderFile('default_posts.php');
 							$data->error = false;
 
-							if (isset($status['post_moderated'])) {
-								$this->moderated = $status['post_moderated'];
-								$msg = ($this->moderated) ? JText::_('SUCCESSFUL_POST_MODERATED') : JText::_('SUCCESSFUL_POST');
-							} else {
-								$msg = JText::_('SUCCESSFUL_POST');
-							}
+							$this->moderated = isset($createdPost->moderated) ? $createdPost->moderated : 0;
+
+							$msg = ($this->moderated) ? JText::_('SUCCESSFUL_POST_MODERATED') : JText::_('SUCCESSFUL_POST');
+
 							Framework::raise(LogLevel::INFO, $msg, JText::_('SUCCESS'));
+						} catch (Exception $e) {
+							Framework::raise(LogLevel::ERROR, $e, JText::_('DISCUSSBOT_ERROR'));
 						}
 					} else {
 						throw new RuntimeException(JText::_('THREADID_NOT_FOUND'));
@@ -805,7 +803,7 @@ HTML;
 		}
 	}
 
-	/*
+	/**
 	 * unpublishDiscussion
 	 */
 	public function unpublishDiscussion()
@@ -869,7 +867,7 @@ HTML;
 		}
 	}
 
-	/*
+	/**
 	 * publishDiscussion
 	 */
 	public function publishDiscussion()

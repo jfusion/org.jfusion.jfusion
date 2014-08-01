@@ -298,7 +298,8 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return void
+	 *
+	 * @return Userinfo
 	 */
     function createUser(Userinfo $userinfo) {
 	    //found out what usergroup should be used
@@ -339,8 +340,7 @@ class User extends Plugin_User
 		    $db->insertObject('#__users', $user, 'uid');
 
 		    //return the good news
-		    $this->debugger->addDebug(Text::_('USER_CREATION'));
-		    $this->debugger->set('userinfo', $this->getUser($userinfo));
+		    return $this->getUser($userinfo);
 	    }
     }
 

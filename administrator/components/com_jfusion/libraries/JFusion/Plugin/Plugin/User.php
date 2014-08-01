@@ -242,7 +242,7 @@ class Plugin_User extends Plugin
 				    }
 			    }
 		    } else {
-			    $this->createUser($userinfo);
+			    return $this->createUser($userinfo);
 		    }
 	    } catch (Exception $e) {
 		    $this->debugger->addError($e->getMessage());
@@ -558,9 +558,13 @@ class Plugin_User extends Plugin
 
 	/**
 	 * @param Userinfo $userinfo
+	 *
+	 * @return Userinfo|null
 	 */
 	function doCreateUser(Userinfo $userinfo)
 	{
+		$user = null;
+
 		//check activation and block status
 		$create_inactive = $this->params->get('create_inactive', 1);
 		$create_blocked = $this->params->get('create_blocked', 1);
@@ -569,28 +573,29 @@ class Plugin_User extends Plugin
 			//block user creation
 			$this->debugger->addDebug(Text::_('SKIPPED_USER_CREATION'));
 			$this->debugger->set('debug', 'unchanged');
-			$this->debugger->set('userinfo', null);
 		} else {
 			$this->debugger->addDebug(Text::_('NO_USER_FOUND_CREATING_ONE'));
 			try {
-				$this->createUser($userinfo);
-				if ($this->debugger->isEmpty('error')) {
-					$this->debugger->set('action', 'created');
-				}
+				$user = $this->createUser($userinfo);
+				$this->debugger->addDebug(Text::_('USER_CREATION'));
+				$this->debugger->set('action', 'created');
 			} catch (Exception $e) {
 				$this->debugger->addError(Text::_('USER_CREATION_ERROR') . $e->getMessage());
 			}
 		}
+		return $user;
 	}
-
 
     /**
      * Function that creates a new user account
      *
      * @param Userinfo $userinfo Object containing the new userinfo
+     *
+     * @return Userinfo
      */
-    function createUser(Userinfo $userinfo)
+    public function createUser(Userinfo $userinfo)
     {
+	    return null;
     }
 
     /**

@@ -13,6 +13,7 @@
  * @link      http://www.jfusion.org
  */
 
+use Exception;
 use JCategories;
 use JCategoryNode;
 use JEventDispatcher;
@@ -192,16 +193,19 @@ class Joomla extends Plugin_Platform
         return '';
     }
 
-    /**
-     * Checks to see if a thread already exists for the content item and calls the appropriate function
-     *
-     * @param JRegistry 	&$dbparams		object with discussion bot parameters
-     * @param object 	&$contentitem 	object containing content information
-     * @param object|int 	&$threadinfo 	object with threadinfo from lookup table
-     * @param array 	&$status        object with debug, error, and action static
-     */
-	function checkThreadExists(&$dbparams, &$contentitem, &$threadinfo, &$status)
+	/**
+	 * Checks to see if a thread already exists for the content item and calls the appropriate function
+	 *
+	 * @param JRegistry  &$dbparams    object with discussion bot parameters
+	 * @param object     &$contentitem object containing content information
+	 * @param object|int &$threadinfo  object with threadinfo from lookup table
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
+	function checkThreadExists(&$dbparams, &$contentitem, &$threadinfo)
 	{
+		$action = 'unknown';
 		$threadid = (int) (is_object($threadinfo)) ? $threadinfo->threadid : $threadinfo;
 		$forumid = $this->getDefaultForum($dbparams, $contentitem);
 		$existingthread = (empty($threadid)) ? false : $this->getThread($threadid);
@@ -217,31 +221,37 @@ class Joomla extends Plugin_Platform
 				//datetime content was last updated
 				$contentModified = Factory::getDate($contentitem->modified)->toUnix();
 
-				$status[LogLevel::DEBUG][] = 'Thread exists...comparing dates';
-				$status[LogLevel::DEBUG][] = 'Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified) . ')';
-				$status[LogLevel::DEBUG][] = 'Thread Modification Date: ' . $postModified . '  (' . date('Y-m-d H:i:s', $postModified) . ')';
-				$status[LogLevel::DEBUG][] = 'Is ' . $contentModified . ' > ' . $postModified . ' ?';
+				$this->debugger->addDebug('Thread exists...comparing dates');
+				$this->debugger->addDebug('Content Modification Date: ' . $contentModified . ' (' . date('Y-m-d H:i:s', $contentModified) . ')');
+				$this->debugger->addDebug('Thread Modification Date: ' . $postModified . '  (' . date('Y-m-d H:i:s', $postModified) . ')');
+				$this->debugger->addDebug('Is ' . $contentModified . ' > ' . $postModified . ' ?');
 				if($contentModified > $postModified && $postModified != 0) {
-					$status[LogLevel::DEBUG][] = 'Yes...attempting to update thread';
+					$this->debugger->addDebug('Yes...attempting to update thread');
 					//update the post if the content has been updated
-					$this->updateThread($dbparams, $existingthread, $contentitem, $status);
-					if (empty($status['error'])) {
-	                	$status['action'] = 'updated';
-	            	}
+					try {
+						$this->updateThread($dbparams, $existingthread, $contentitem);
+
+						$action = 'updated';
+					} catch (Exception $e) {
+						throw $e;
+					}
 				} else {
-					$status[LogLevel::DEBUG][] = 'No...thread unchanged';
+					$this->debugger->addDebug('No...thread unchanged');
 				}
 			} else {
-				$status[LogLevel::DEBUG][] = 'Thread does not exist...attempting to create thread';
+				$this->debugger->addDebug('Thread does not exist...attempting to create thread');
 		    	//thread does not exist; create it
-	            $this->createThread($dbparams, $contentitem, $forumid, $status);
-	            if (empty($status['error'])) {
-	                $status['action'] = 'created';
-	            }
+				try {
+					$threadinfo = $this->createThread($dbparams, $contentitem, $forumid);
+					$action = 'created';
+				} catch (Exception $e) {
+					throw $e;
+				}
 	        }
 		} else {
-			$status[LogLevel::ERROR][] = Text::_('FORUM_NOT_CONFIGURED');
+			throw new \RuntimeException(Text::_('FORUM_NOT_CONFIGURED'));
 		}
+		return $action;
 	}
 
     /**
@@ -399,16 +409,18 @@ class Joomla extends Plugin_Platform
 		return $id;
 	}
 
-    /**
-     * Creates new thread and posts first post
-     *
-     * @param object &$params      discussion bot parameters
-     * @param object &$contentitem containing content information
-     * @param int    $forumid      forum to create thread
-     * @param array &$status      status object for feedback of function
-     */
-    function createThread(&$params, &$contentitem, $forumid, &$status)
+	/**
+	 * Creates new thread and posts first post
+	 *
+	 * @param object &$params      discussion bot parameters
+	 * @param object &$contentitem containing content information
+	 * @param int    $forumid      forum to create thread
+	 *
+	 * @return \stdClass
+	 */
+    function createThread(&$params, &$contentitem, $forumid)
     {
+	    return new stdClass();
     }
 
     /**
@@ -417,9 +429,8 @@ class Joomla extends Plugin_Platform
      * @param object &$params         discussion bot parameters
      * @param object &$existingthread existing thread info
      * @param object &$contentitem    content item
-     * @param array &$status         status object for feedback of function
      */
-    function updateThread(&$params, &$existingthread, &$contentitem, &$status)
+    function updateThread(&$params, &$existingthread, &$contentitem)
     {
     }
 
@@ -795,18 +806,21 @@ JS;
 	 * Creates a post from the quick reply
 	 *
 	 * @param JRegistry $params      object with discussion bot parameters
-	 * @param stdClass $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
-	 * @param object $contentitem object of content item
-	 * @param Userinfo $userinfo    object info of the forum user
-	 * @param stdClass $postinfo object with post info
+	 * @param stdClass  $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
+	 * @param object    $contentitem object of content item
+	 * @param Userinfo  $userinfo    object info of the forum user
+	 * @param stdClass  $postinfo    object with post info
 	 *
-	 * @return array with status
+	 * @throws \RuntimeException
+	 * @return stdClass
 	 */
 	function createPost($params, $ids, $contentitem, Userinfo $userinfo, $postinfo)
 	{
-        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
-        $status[LogLevel::DEBUG] = Text::_('METHOD_NOT_IMPLEMENTED');
-		return $status;
+		$post = new stdClass();
+		$post->postid = 0;
+		$post->moderated = 0;
+
+		throw new \RuntimeException(Text::_('METHOD_NOT_IMPLEMENTED'));
 	}
 
     /**

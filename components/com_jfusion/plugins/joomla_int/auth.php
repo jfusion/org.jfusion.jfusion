@@ -100,8 +100,7 @@ class Auth extends Plugin_Auth
 			$user = Factory::getUser($this->getJname());
 			$old = $user->getUser($userinfo);
 			if ($old) {
-				$status = array('error' => array(), 'debug' => array());
-				$user->updatePassword($userinfo, $old, $status);
+				$user->updatePassword($userinfo, $old);
 			}
 		}
 		return $match;

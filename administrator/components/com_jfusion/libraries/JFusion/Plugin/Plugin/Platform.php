@@ -93,18 +93,17 @@ class Plugin_Platform extends Plugin
 	function getBuffer(&$data)
 	{
 		trigger_error('&$data deprecreated use $this->data instead', E_USER_DEPRECATED);
-		$status = $this->curlFrameless($data);
+		try {
+			$this->curlFrameless($data);
 
-		if ( isset($data->location) ) {
-			$location = str_replace($data->integratedURL, '', $data->location);
-			$location = $this->fixUrl(array(1 => $location));
-			$mainframe = Factory::getApplication();
-			$mainframe->redirect($location);
-		}
-		if ( isset($status[LogLevel::ERROR]) ) {
-			foreach ($status[LogLevel::ERROR] as $value) {
-				Framework::raise(LogLevel::WARNING, $value, $this->getJname());
+			if (isset($data->location)) {
+				$location = str_replace($data->integratedURL, '', $data->location);
+				$location = $this->fixUrl(array(1 => $location));
+				$mainframe = Factory::getApplication();
+				$mainframe->redirect($location);
 			}
+		} catch (\Exception $e) {
+			Framework::raise(LogLevel::WARNING, $e, $this->getJname());
 		}
 	}
 
@@ -615,12 +614,11 @@ JS;
 
 	/**
 	 * @param $data
-	 * @return array
+	 *
+	 * @throws \RuntimeException
 	 */
 	private function curlFrameless(&$data) {
 		require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.cookie.php');
-
-		$status = array('error' => array(), 'debug' => array());
 
 		$url = $data->source_url;
 
@@ -749,20 +747,19 @@ JS;
 			$cookies->addCookie($cookie->name, urldecode($cookie->value), $cookie->expires, $data->cookie_path, $data->cookie_domain);
 		}
 
-		if (curl_error($ch)) {
-			$status[LogLevel::ERROR][] = Text::_('CURL_ERROR_MSG') . ': ' . curl_error($ch) . ' URL:' . $url;
+		if (curl_errno($ch)) {
+			$errorMessage = curl_error($ch);
 			curl_close($ch);
-			return $status;
-		}
+			throw new \RuntimeException(Text::_('CURL_ERROR_MSG') . ': ' . $errorMessage . ' URL:' . $url);
+		} else {
+			curl_close($ch);
 
-		curl_close($ch);
-
-		if (count($filepath)) {
-			foreach($filepath as $value) {
-				unlink($value);
+			if (count($filepath)) {
+				foreach($filepath as $value) {
+					unlink($value);
+				}
 			}
 		}
-		return $status;
 	}
 
 	/**

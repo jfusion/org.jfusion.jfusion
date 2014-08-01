@@ -120,10 +120,7 @@ class JFusionUser_dokuwiki extends Plugin_User
 			    }
 		    } else {
 			    $this->debugger->addDebug(Text::_('NO_USER_FOUND_CREATING_ONE'));
-			    $this->createUser($userinfo);
-			    if ($this->debugger->isEmpty('error')) {
-				    $this->debugger->set('action', 'created');
-			    }
+			    return $this->createUser($userinfo);
 		    }
 	    } catch (Exception $e) {
 		    $this->debugger->addError($e->getMessage());
@@ -265,7 +262,7 @@ class JFusionUser_dokuwiki extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws RuntimeException
-	 * @return void
+	 * @return Userinfo
 	 */
     function createUser(Userinfo $userinfo) {
 	    $usergroups = $this->getCorrectUserGroups($userinfo);
@@ -288,8 +285,7 @@ class JFusionUser_dokuwiki extends Plugin_User
 			    throw new RuntimeException();
 		    }
 		    //return the good news;
-		    $this->debugger->addDebug(Text::_('USER_CREATION'));
-		    $this->debugger->set('userinfo', $this->getUser($userinfo));
+		    return $this->getUser($userinfo);
 	    }
     }
 

@@ -237,7 +237,8 @@ class JFusionUser_elgg extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return void
+	 *
+	 * @return Userinfo
 	 */
     function createUser(Userinfo $userinfo) {
 	    //found out what usergroup should be used
@@ -299,13 +300,11 @@ class JFusionUser_elgg extends Plugin_User
 				    $db->execute();
 			    }
 			    //return the good news
-			    $status[LogLevel::DEBUG][] = Text::_('USER_CREATION');
-			    $status['userinfo'] = $this->getUser($userinfo);
 			    //notify_user($new_user->guid, $CONFIG->site->guid, elgg_echo('useradd:subject'), sprintf(elgg_echo('useradd:body'), $name, $CONFIG->site->name, $CONFIG->site->url, $username, $password));
 			    //system_message(sprintf(elgg_echo('adduser:ok'), $CONFIG->sitename));
-
+				return $this->getUser($userinfo);
 		    } else {
-			    //register_error(elgg_echo('adduser:bad'));
+			    throw new RuntimeException('adduser:bad');
 		    }
 	    }
     }

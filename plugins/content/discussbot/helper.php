@@ -201,23 +201,18 @@ class JFusionDiscussBotHelper {
 			}
 		}
 
-		$status = array('error' => array(), 'debug' => array());
-		$status['action'] = 'unchanged';
-		if ($threadinfo) {
-			$status['threadinfo'] = $threadinfo;
-		} else {
-			$status['threadinfo'] = new stdClass();
+		$platform->resetDebugger();
+		$platform->debugger->set('action', 'unchanged');
+		if (!$threadinfo) {
+			$threadinfo = new stdClass();
 		}
 
-		$platform->checkThreadExists($this->params, $this->article, $threadinfo, $status);
-		if (!empty($status[LogLevel::ERROR])) {
-			Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
-		} else {
-			if ($status['action'] != 'unchanged') {
-				if ($status['action'] == 'created') {
-					$threadinfo = $status['threadinfo'];
-				}
+		$platform->debugger->set('threadinfo', $threadinfo);
 
+		try {
+			$action = $platform->checkThreadExists($this->params, $this->article, $threadinfo);
+			$platform->debugger->set('action', $action);
+			if ($action != 'unchanged') {
 				//catch in case plugins screwed up
 				if (!empty($threadinfo->threadid)) {
 					//update the lookup table
@@ -225,7 +220,13 @@ class JFusionDiscussBotHelper {
 					//set the status to true since it was just created
 				}
 			}
+		} catch (Exception $e) {
+			Framework::raise(LogLevel::ERROR, $e, $this->jname. ' ' . JText::_('FORUM') . ' ' . JText::_('UPDATE'));
 		}
+		$platform->debugger->set('threadinfo', $threadinfo);
+
+		$status = $platform->debugger->get();
+
 		$this->setThreadInfo($threadinfo);
 
 		$this->debug($status, $force_new);
@@ -653,7 +654,7 @@ JS;
 	}
 
 	/**
-	 * @param $text
+	 * @param string|array $text
 	 * @param bool $save
 	 */
 	public function debug($text, $save = false)

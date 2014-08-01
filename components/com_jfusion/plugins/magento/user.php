@@ -354,7 +354,7 @@ class User extends Plugin_User
 	 * @param $entity_id
 	 * @return bool
 	 */
-	function update_create_Magentouser($user, $entity_id) {
+	function updateCreateMagentoUser($user, $entity_id) {
 		try {
 			$db = Factory::getDataBase($this->getJname());
 			$sqlDateTime = date('Y-m-d H:i:s', time());
@@ -489,7 +489,8 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return void
+	 *
+	 * @return Userinfo
 	 */
 	function createUser(Userinfo $userinfo) {
 		$magentoVersion = $this->params->get('magento_version', '1.7');
@@ -585,13 +586,12 @@ class User extends Plugin_User
 			$this->fillMagentouser($magento_user, 'store_id', $default_store_id);
 			$this->fillMagentouser($magento_user, 'website_id', $default_website_id);
 			//now append the new user data
-			$errors = $this->update_create_Magentouser($magento_user, 0);
+			$errors = $this->updateCreateMagentoUser($magento_user, 0);
 			if ($errors) {
 				throw new RuntimeException($errors);
 			} else {
 				//return the good news
-				$this->debugger->addDebug(Text::_('USER_CREATION'));
-				$this->debugger->set('userinfo', $this->getUser($userinfo));
+				return $this->getUser($userinfo);
 			}
 		}
 	}
@@ -614,7 +614,7 @@ class User extends Plugin_User
 			$password_salt = $this->getRandomString(32);
 			$this->fillMagentouser($magento_user, 'password_hash', hash('sha256', $password_salt . $userinfo->password_clear) . ':' . $password_salt);
 		}
-		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
+		$errors = $this->updateCreateMagentoUser($magento_user, $existinguser->userid);
 		if ($errors) {
 			throw new RuntimeException($existinguser->username);
 		} else {
@@ -643,7 +643,7 @@ class User extends Plugin_User
 	function activateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
 		$this->fillMagentouser($magento_user, 'is_active', 1);
-		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
+		$errors = $this->updateCreateMagentoUser($magento_user, $existinguser->userid);
 		if ($errors) {
 			throw new RuntimeException(Text::_('ACTIVATION_UPDATE_ERROR'));
 		} else {
@@ -661,7 +661,7 @@ class User extends Plugin_User
 	function inactivateUser(Userinfo $userinfo, Userinfo &$existinguser) {
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
         $this->fillMagentouser($magento_user, 'is_active', 0);
-		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
+		$errors = $this->updateCreateMagentoUser($magento_user, $existinguser->userid);
 		if ($errors) {
 			throw new RuntimeException(Text::_('ACTIVATION_UPDATE_ERROR'));
 		} else {

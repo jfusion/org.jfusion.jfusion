@@ -115,15 +115,14 @@ class Platform extends Joomla
         return $locked;
     }
 
-    /**
-     * @param JRegistry &$dbparams
-     * @param object &$contentitem
-     * @param int $forumid
-     * @param array &$status
-     *
-     * @return void
-     */
-    function createThread(&$dbparams, &$contentitem, $forumid, &$status)
+	/**
+	 * @param JRegistry &$dbparams
+	 * @param object    &$contentitem
+	 * @param int       $forumid
+	 *
+	 * @return stdClass
+	 */
+    function createThread(&$dbparams, &$contentitem, $forumid)
     {
         $userid = $this->getThreadAuthor($dbparams, $contentitem);
 
@@ -152,6 +151,8 @@ class Platform extends Joomla
             'text' => $text
         );
         $response = $this->helper->apiCall('createThread', $apidata);
+
+	    $threadinfo = new stdClass();
 
         if ($response['success']) {
             $threadid = $response['new_id'];
@@ -186,123 +187,120 @@ class Platform extends Joomla
 
 		            $db->execute();
 	            } catch (Exception $e) {
-		            $status[LogLevel::ERROR][] = $e->getMessage();
+		            $this->debugger->addError($e->getMessage());
 	            }
             }
 
 			//add information to update forum lookup
-			$status['threadinfo']->forumid = $forumid;
-			$status['threadinfo']->threadid = $threadid;
-			$status['threadinfo']->postid = $postid;
+	        $threadinfo->forumid = $forumid;
+	        $threadinfo->threadid = $threadid;
+	        $threadinfo->postid = $postid;
 		}
 	    foreach ($response['errors'] as $error) {
-		    $status[LogLevel::ERROR][] = $error;
+		    $this->debugger->addError($error);
 	    }
 	    foreach ($response['debug'] as $debug) {
-		    $status[LogLevel::DEBUG][] = $debug;
+		    $this->debugger->addDebug($debug);
 	    }
+	    return $threadinfo;
     }
 
-    /**
-     * @param JRegistry $params
-     * @param stdClass $ids         stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
-     * @param object $contentitem
-     * @param Userinfo $userinfo
-     * @param stdClass $postinfo object with post info
-     *
-     * @return array
-     */
+	/**
+	 * @param JRegistry $params
+	 * @param stdClass  $ids      stdClass with forum id ($ids->forumid, thread id ($ids->threadid) and first post id ($ids->postid)
+	 * @param object    $contentitem
+	 * @param Userinfo  $userinfo
+	 * @param stdClass  $postinfo object with post info
+	 *
+	 * @throws \RuntimeException
+	 * @return stdClass
+	 */
     function createPost($params, $ids, $contentitem, Userinfo $userinfo, $postinfo)
     {
-	    $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
-	    try {
-		    if ($userinfo->guest) {
-			    $userinfo->username = $postinfo->username;
-			    $userinfo->userid = 0;
-			    if (empty($userinfo->username)) {
-				    throw new RuntimeException(Text::_('GUEST_FIELDS_MISSING'));
-			    } else {
-				    $db = Factory::getDatabase($this->getJname());
+	    $post = new stdClass();
+	    $post->postid = 0;
+	    $post->moderated = 0;
 
+	    if ($userinfo->guest) {
+		    $userinfo->username = $postinfo->username;
+		    $userinfo->userid = 0;
+		    if (empty($userinfo->username)) {
+			    throw new RuntimeException(Text::_('GUEST_FIELDS_MISSING'));
+		    } else {
+			    $db = Factory::getDatabase($this->getJname());
+
+			    $query = $db->getQuery(true)
+				    ->select('COUNT(*)')
+				    ->from('#__user')
+				    ->where('LOWER(username) = ' . $db->quote(strtolower($userinfo->username)), 'OR')
+				    ->where('LOWER(email) = ' . $db->quote(strtolower($userinfo->username)));
+
+			    $db->setQuery($query);
+			    $result = $db->loadResult();
+			    if (!empty($result)) {
+				    throw new RuntimeException(Text::_('USERNAME_IN_USE'));
+			    }
+
+			    $name_field = $this->params->get('name_field');
+			    if (!empty($name_field)) {
 				    $query = $db->getQuery(true)
 					    ->select('COUNT(*)')
-					    ->from('#__user')
-					    ->where('LOWER(username) = ' . $db->quote(strtolower($userinfo->username)), 'OR')
-					    ->where('LOWER(email) = ' . $db->quote(strtolower($userinfo->username)));
+					    ->from('#__userfield')
+					    ->where('LOWER(' . $name_field . ') = ' . strtolower($db->quote($userinfo->username)), 'OR')
+					    ->where('LOWER(' . $name_field . ') = ' . strtolower($db->quote($userinfo->username)));
 
 				    $db->setQuery($query);
 				    $result = $db->loadResult();
 				    if (!empty($result)) {
 					    throw new RuntimeException(Text::_('USERNAME_IN_USE'));
 				    }
-
-				    $name_field = $this->params->get('name_field');
-				    if (!empty($name_field)) {
-					    $query = $db->getQuery(true)
-						    ->select('COUNT(*)')
-						    ->from('#__userfield')
-						    ->where('LOWER(' . $name_field . ') = ' . strtolower($db->quote($userinfo->username)), 'OR')
-						    ->where('LOWER(' . $name_field . ') = ' . strtolower($db->quote($userinfo->username)));
-
-					    $db->setQuery($query);
-					    $result = $db->loadResult();
-					    if (!empty($result)) {
-						    throw new RuntimeException(Text::_('USERNAME_IN_USE'));
-					    }
-				    }
 			    }
 		    }
-		    //strip out html from post
-		    $text = strip_tags($postinfo->text);
-
-		    if (!empty($text)) {
-			    $foruminfo = $this->getForumInfo($ids->forumid);
-			    $threadinfo = $this->getThreadInfo($ids->threadid, $params);
-			    $post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $params->get('moderate_guests', 1))) ? 0 : 1;
-			    $title = 'Re: ' . $threadinfo['title'];
-			    $this->prepareText($title, 'forum', new JRegistry());
-
-			    $apidata = array(
-				    'userinfo' => $this->helper->convertUserData($userinfo),
-				    'ids' => $ids,
-				    'ipaddress' => $_SERVER['REMOTE_ADDR'],
-				    'title' => $title,
-				    'text' => $text,
-				    'post_approved' => $post_approved
-			    );
-			    $response = $this->helper->apiCall('createPost', $apidata);
-
-			    if ($response['success']) {
-				    $id = $response['new_id'];
-
-				    //store post id
-				    $status['postid'] = $id;
-			    }
-			    foreach ($response['errors'] as $error) {
-				    $status[LogLevel::ERROR][] = $error;
-			    }
-			    foreach ($response['debug'] as $debug) {
-				    $status[LogLevel::DEBUG][] = $debug;
-			    }
-
-			    //update moderation status to tell discussion bot to notify user
-			    $status['post_moderated'] = ($post_approved) ? 0 : 1;
-		    }
-	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = Text::_('USERNAME_IN_USE');
 	    }
-        return $status;
+	    //strip out html from post
+	    $text = strip_tags($postinfo->text);
+
+	    if (!empty($text)) {
+		    $foruminfo = $this->getForumInfo($ids->forumid);
+		    $threadinfo = $this->getThreadInfo($ids->threadid, $params);
+		    $post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $params->get('moderate_guests', 1))) ? 0 : 1;
+		    $title = 'Re: ' . $threadinfo['title'];
+		    $this->prepareText($title, 'forum', new JRegistry());
+
+		    $apidata = array(
+			    'userinfo' => $this->helper->convertUserData($userinfo),
+			    'ids' => $ids,
+			    'ipaddress' => $_SERVER['REMOTE_ADDR'],
+			    'title' => $title,
+			    'text' => $text,
+			    'post_approved' => $post_approved
+		    );
+		    $response = $this->helper->apiCall('createPost', $apidata);
+
+		    if ($response['success']) {
+			    $post->postid = $response['new_id'];
+		    }
+		    foreach ($response['errors'] as $error) {
+			    throw new RuntimeException($error);
+		    }
+		    foreach ($response['debug'] as $debug) {
+			    $this->debugger->addDebug($debug);
+		    }
+
+		    //update moderation status to tell discussion bot to notify user
+		    $post->moderated = ($post_approved) ? 0 : 1;
+	    }
+        return $post;
     }
 
     /**
      * @param JRegistry &$dbparams
      * @param object &$existingthread
      * @param object &$contentitem
-     * @param array &$status
      *
      * @return void
      */
-    function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
+    function updateThread(&$dbparams, &$existingthread, &$contentitem)
     {
         //strip title of all html characters and convert entities back to applicable characters (to prevent double encoding by vB)
         $title = trim(strip_tags(html_entity_decode($contentitem->title)));

@@ -186,16 +186,20 @@ class User extends Plugin_User
 
 	/**
 	 * @param Userinfo $userinfo
+	 *
+	 * @return \JFusion\User\Userinfo|null|void
 	 */
 	function doCreateUser(Userinfo $userinfo)
 	{
+		$user = null;
 		$this->debugger->addDebug(Text::_('NO_USER_FOUND_CREATING_ONE'));
 		try {
-			$this->createUser($userinfo);
+			$user = $this->createUser($userinfo);
 			$this->debugger->set('action', 'created');
 		} catch (Exception $e) {
 			$this->debugger->addError(Text::_('USER_CREATION_ERROR') . $e->getMessage());
 		}
+		return $user;
 	}
 
 	/**
@@ -204,6 +208,8 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo Object containing the new userinfo
 	 *
 	 * @throws RuntimeException
+	 *
+	 * @return Userinfo
 	 */
 	public function createUser(Userinfo $userinfo)
 	{
@@ -294,15 +300,11 @@ class User extends Plugin_User
 				$joomla_user = $this->getUser($userinfo);
 				if ($joomla_user) {
 					//report back success
-					$this->debugger->set('userinfo', $joomla_user);
-					$this->debugger->addDebug(Text::_('USER_CREATION'));
+					return $joomla_user;
 				} else {
 					throw new RuntimeException(Text::_('COULD_NOT_CREATE_USER'));
 				}
 			} else {
-				//Joomla does not allow duplicate emails report error
-				$this->debugger->addDebug(Text::_('USERNAME') . ' ' . Text::_('CONFLICT') . ': ' . $existinguser->username . ' -> ' . $userinfo->username);
-				$this->debugger->set('userinfo', $existinguser);
 				throw new RuntimeException(Text::_('EMAIL_CONFLICT') . '. UserID: ' . $existinguser->userid . ' JFusionPlugin: ' . $this->getJname());
 			}
 		}

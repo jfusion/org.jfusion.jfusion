@@ -190,7 +190,8 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return void
+	 *
+	 * @return Userinfo
 	 */
     function createUser(Userinfo $userinfo) {
 	    $db = Factory::getDatabase($this->getJname());
@@ -285,8 +286,7 @@ class User extends Plugin_User
 
 			    $db->insertObject('#__address', $ps_address);
 
-			    $this->debugger->addDebug(Text::_('USER_CREATION'));
-			    $this->debugger->set('userinfo', $this->getUser($userinfo));
+			    return $this->getUser($userinfo);
 		    }
 	    }
     }

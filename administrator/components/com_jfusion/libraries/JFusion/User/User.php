@@ -143,25 +143,8 @@ class User
 								//try to create a Master user
 
 								$MasterUserPlugin->resetDebugger();
-								$MasterUserPlugin->doCreateUser($authUserinfo);
-								$status = $MasterUserPlugin->debugger->get();
-
-								if (empty($status[LogLevel::ERROR])) {
-									//success
-									//make sure the userinfo is available
-									if (!empty($status['userinfo'])) {
-										$userinfo = $status['userinfo'];
-									} else {
-										$userinfo = $MasterUserPlugin->getUser($authUserinfo);
-									}
-
-									$debugger->add('init', Text::_('MASTER') . ' ' . Text::_('USER') . ' ' . Text::_('CREATE') . ' ' . Text::_('SUCCESS'));
-								} else {
-									//could not create user
-									$debugger->add('init', $master->name . ' ' . Text::_('USER') . ' ' . Text::_('CREATE') . ' ' . Text::_('ERROR') . ' ' . $status[LogLevel::ERROR]);
-									Framework::raise(LogLevel::ERROR, $status[LogLevel::ERROR], $master->name . ': ' . Text::_('USER') . ' ' . Text::_('CREATE'));
-									$success = -1;
-								}
+								$userinfo = $MasterUserPlugin->doCreateUser($authUserinfo);
+								$debugger->add('init', Text::_('MASTER') . ' ' . Text::_('USER') . ' ' . Text::_('CREATE') . ' ' . Text::_('SUCCESS'));
 							} catch (Exception $e) {
 								throw new RuntimeException($master->name . ' ' . Text::_('USER') . ' ' . Text::_('CREATE') . ' ' . Text::_('ERROR') . ' ' . $e->getMessage());
 							}

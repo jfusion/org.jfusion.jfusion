@@ -121,8 +121,6 @@ class User extends Plugin_User
 			//unset($_COOKIE['cookie_login']);
 			//unset($_COOKIE['cookie_password']);
 
-
-
 		    $query = $db->getQuery(true)
 			    ->select('action')
 			    ->from('#__logs')
@@ -361,7 +359,8 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return void
+	 *
+	 * @return Userinfo
 	 */
     function createUser(Userinfo $userinfo) {
        /**
@@ -482,8 +481,7 @@ class User extends Plugin_User
 			    // not sure I should implemented it, anyway I have only the community version to work on
 		    }
 		    //return the good news
-		    $this->debugger->addDebug(Text::_('USER_CREATION'));
-		    $this->debugger->set('userinfo', $this->getUser($userinfo));
+		    return $this->getUser($userinfo);
 	    }
     }
 
