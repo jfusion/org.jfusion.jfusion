@@ -343,12 +343,11 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return array|bool
+	 *
+	 * @return boolean returns true on success and false on error
 	 */
     function deleteUser(Userinfo $userinfo)
     {
-	    $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
-
 	    $db = Factory::getDatabase($this->getJname());
 	    //setup status array to hold debug info and errors
 
@@ -440,12 +439,12 @@ class User extends Plugin_User
 		    try {
 			    $db->setQuery($value);
 			    $db->execute();
-			    $status[LogLevel::DEBUG][] = $debug[$key];
+			    $this->debugger->addDebug($debug[$key]);
 		    } catch (Exception $e) {
 			    throw new RuntimeException($errors[$key]);
 		    }
 	    }
-        return $status;
+        return true;
     }
 
 	/**

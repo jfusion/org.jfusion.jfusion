@@ -907,16 +907,14 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return array
+	 *
+	 * @return boolean returns true on success and false on error
 	 */
     function deleteUser(Userinfo $userinfo) {
-	    //setup status array to hold debug info and errors
-	    $status = array('error' => array(), 'debug' => array());
-
 	    //retreive the database object
 	    $db = Factory::getDatabase($this->getJname());
 	    //set the userid
-	    $user_id = $userinfo->userid;
+//	    $user_id = $userinfo->userid;
 	    // Before we begin, we will remove the reports the user issued.
 
 	    $report_posts = $report_topics = array();
@@ -924,7 +922,7 @@ class User extends Plugin_User
 		    $query = $db->getQuery(true)
 			    ->select('r.post_id, p.topic_id')
 			    ->from('#__reports r, #__posts p')
-			    ->where('r.user_id = ' . (int)$user_id)
+			    ->where('r.user_id = ' . (int)$userinfo->userid)
 			    ->where('p.post_id = r.post_id');
 
 		    $db->setQuery($query);
@@ -936,7 +934,7 @@ class User extends Plugin_User
 			    }
 		    }
 	    } catch (RuntimeException $e) {
-		    throw new RuntimeException('Error Could not retrieve reported posts/topics by user ' . $user_id . ': ' . $e->getMessage());
+		    throw new RuntimeException('Error Could not retrieve reported posts/topics by user ' . $userinfo->userid . ': ' . $e->getMessage());
 	    }
 
 	    if (sizeof($report_posts)) {
@@ -961,7 +959,7 @@ class User extends Plugin_User
 				    }
 			    }
 		    } catch (Exception $e) {
-			    $status[LogLevel::ERROR][] = 'Error Could not retrieve a list of topics that still contain reported posts by user ' . $user_id . ': ' . $e->getMessage();
+			    $this->debugger->addError('Error Could not retrieve a list of topics that still contain reported posts by user ' . $userinfo->userid . ': ' . $e->getMessage());
 		    }
 
 		    if (sizeof($keep_report_topics)) {
@@ -979,7 +977,7 @@ class User extends Plugin_User
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status[LogLevel::ERROR][] = 'Error Could not update post reported flag: ' . $e->getMessage();
+			    $this->debugger->addError('Error Could not update post reported flag: ' . $e->getMessage());
 		    }
 
 		    if (sizeof($report_topics)) {
@@ -992,7 +990,7 @@ class User extends Plugin_User
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
-				    $status[LogLevel::ERROR][] = 'Error Could not update topics reported flag: ' . $e->getMessage();
+				    $$this->debugger->addError('Error Could not update topics reported flag: ' . $e->getMessage());
 			    }
 		    }
 	    }
@@ -1001,11 +999,11 @@ class User extends Plugin_User
 		    // Remove reports
 		    $query = $db->getQuery(true)
 			    ->delete('#__reports')
-			    ->where('user_id = ' . (int)$user_id);
+			    ->where('user_id = ' . (int)$userinfo->userid);
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not delete reports by user ' . $user_id . ': ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not delete reports by user ' . $userinfo->userid . ': ' . $e->getMessage());
 	    }
 
 	    //update all topics started by and posts by the user to anonymous
@@ -1016,12 +1014,12 @@ class User extends Plugin_User
 			    ->set('forum_last_poster_id = 1')
 			    ->set('forum_last_poster_name = ' . $db->quote($post_username))
 			    ->set('forum_last_poster_colour = ' . $db->quote(''))
-			    ->where('forum_last_poster_id = ' . $user_id);
+			    ->where('forum_last_poster_id = ' . $userinfo->userid);
 
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not update forum last poster for user ' . $user_id . ': ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not update forum last poster for user ' . $userinfo->userid . ': ' . $e->getMessage());
 	    }
 
 	    try {
@@ -1029,24 +1027,24 @@ class User extends Plugin_User
 			    ->update('#__posts')
 			    ->set('poster_id = 1')
 			    ->set('post_username = ' . $db->quote($post_username))
-			    ->where('poster_id = ' . $user_id);
+			    ->where('poster_id = ' . $userinfo->userid);
 
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not update posts by user ' . $user_id . ': ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not update posts by user ' . $userinfo->userid . ': ' . $e->getMessage());
 	    }
 
 	    try {
 		    $query = $db->getQuery(true)
 			    ->update('#__posts')
 			    ->set('post_edit_user = 1')
-			    ->where('post_edit_user = ' . $user_id);
+			    ->where('post_edit_user = ' . $userinfo->userid);
 
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not update edited posts by user ' . $user_id . ': ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not update edited posts by user ' . $userinfo->userid . ': ' . $e->getMessage());
 	    }
 
 	    try {
@@ -1055,12 +1053,12 @@ class User extends Plugin_User
 			    ->set('topic_poster = 1')
 			    ->set('topic_first_poster_name = ' . $db->quote($post_username))
 			    ->set('topic_first_poster_colour = ' . $db->quote(''))
-			    ->where('topic_poster = ' . $user_id);
+			    ->where('topic_poster = ' . $userinfo->userid);
 
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not update topics by user ' . $user_id . ': ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not update topics by user ' . $userinfo->userid . ': ' . $e->getMessage());
 	    }
 
 	    try {
@@ -1069,19 +1067,19 @@ class User extends Plugin_User
 			    ->set('topic_last_poster_id = 1')
 			    ->set('topic_last_poster_name = ' . $db->quote($post_username))
 			    ->set('topic_last_poster_colour = ' . $db->quote(''))
-			    ->where('topic_last_poster_id = ' . $user_id);
+			    ->where('topic_last_poster_id = ' . $userinfo->userid);
 
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not update last topic poster for user ' . $user_id . ': ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not update last topic poster for user ' . $userinfo->userid . ': ' . $e->getMessage());
 	    }
 
 	    // Since we change every post by this author, we need to count this amount towards the anonymous user
 	    $query = $db->getQuery(true)
 		    ->select('user_posts')
 		    ->from('#__users')
-		    ->where('user_id = ' . $user_id);
+		    ->where('user_id = ' . $userinfo->userid);
 
 	    $db->setQuery($query);
 	    $user_posts = $db->loadResult();
@@ -1096,7 +1094,7 @@ class User extends Plugin_User
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status[LogLevel::ERROR][] = 'Error Could not update the number of posts for anonymous user: ' . $e->getMessage();
+			    $this->debugger->addError('Error Could not update the number of posts for anonymous user: ' . $e->getMessage());
 		    }
 	    }
 	    $table_ary = array('users', 'user_group', 'topics_watch', 'forums_watch', 'acl_users', 'topics_track', 'topics_posted', 'forums_track', 'profile_fields_data', 'moderator_cache', 'drafts', 'bookmarks');
@@ -1104,12 +1102,12 @@ class User extends Plugin_User
 		    try {
 			    $query = $db->getQuery(true)
 				    ->delete('#__' . $table)
-				    ->where('user_id = ' . $user_id);
+				    ->where('user_id = ' . $userinfo->userid);
 
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status[LogLevel::ERROR][] = 'Error Could not delete records from ' . $table . ' for user ' . $user_id . ': ' . $e->getMessage();
+			    $this->debugger->addError('Error Could not delete records from ' . $table . ' for user ' . $userinfo->userid . ': ' . $e->getMessage());
 		    }
 	    }
 
@@ -1119,7 +1117,7 @@ class User extends Plugin_User
 		    $query = $db->getQuery(true)
 			    ->select('msg_id, user_id')
 			    ->from('#__privmsgs_to')
-			    ->where('author_id = ' . $user_id)
+			    ->where('author_id = ' . $userinfo->userid)
 			    ->where('folder_id = -3');
 
 		    $db->setQuery($query);
@@ -1131,7 +1129,7 @@ class User extends Plugin_User
 			    }
 		    }
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not retrieve undeliverd messages to user ' . $user_id . ': ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not retrieve undeliverd messages to user ' . $userinfo->userid . ': ' . $e->getMessage());
 	    }
 
 	    if (!empty($undelivered_msg)) {
@@ -1143,32 +1141,32 @@ class User extends Plugin_User
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status[LogLevel::ERROR][] = 'Error Could not delete private messages for user ' . $user_id . ': ' . $e->getMessage();
+			    $this->debugger->addError('Error Could not delete private messages for user ' . $userinfo->userid . ': ' . $e->getMessage());
 		    }
 	    }
 
 	    try {
 		    $query = $db->getQuery(true)
 			    ->delete('#__privmsgs_to')
-			    ->where('author_id = ' . $user_id)
+			    ->where('author_id = ' . $userinfo->userid)
 			    ->where('folder_id = -3');
 
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not delete private messages that are in no folder from user ' . $user_id . ': ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not delete private messages that are in no folder from user ' . $userinfo->userid . ': ' . $e->getMessage());
 	    }
 
 	    try {
 		    // Delete all to-information
 		    $query = $db->getQuery(true)
 			    ->delete('#__privmsgs_to')
-			    ->where('user_id = ' . $user_id);
+			    ->where('user_id = ' . $userinfo->userid);
 
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not delete private messages to user ' . $user_id . ': ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not delete private messages to user ' . $userinfo->userid . ': ' . $e->getMessage());
 	    }
 
 	    try {
@@ -1176,26 +1174,26 @@ class User extends Plugin_User
 		    $query = $db->getQuery(true)
 			    ->update('#__privmsgs_to')
 			    ->set('author_id = 1')
-			    ->where('author_id = ' . $user_id);
+			    ->where('author_id = ' . $userinfo->userid);
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not update rest of private messages for user ' . $user_id . ' to anonymous: ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not update rest of private messages for user ' . $userinfo->userid . ' to anonymous: ' . $e->getMessage());
 	    }
 
 	    try {
 		    $query = $db->getQuery(true)
 			    ->update('#__privmsgs')
 			    ->set('author_id = 1')
-			    ->where('author_id = ' . $user_id);
+			    ->where('author_id = ' . $userinfo->userid);
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
-		    $status[LogLevel::ERROR][] = 'Error Could not update rest of private messages for user ' . $user_id . ' to anonymous: ' . $e->getMessage();
+		    $this->debugger->addError('Error Could not update rest of private messages for user ' . $userinfo->userid . ' to anonymous: ' . $e->getMessage());
 	    }
 
-	    foreach ($undelivered_user as $_user_id => $ary) {
-		    if ($_user_id == $user_id) {
+	    foreach ($undelivered_user as $userid => $ary) {
+		    if ($userid == $userinfo->userid) {
 			    continue;
 		    }
 		    try {
@@ -1203,12 +1201,12 @@ class User extends Plugin_User
 				    ->update('#__users')
 				    ->set('user_new_privmsg = user_new_privmsg - ' . sizeof($ary))
 				    ->set('user_unread_privmsg = user_unread_privmsg - ' . sizeof($ary))
-				    ->where('user_id = '. $_user_id);
+				    ->where('user_id = '. $userid);
 
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
-			    $status[LogLevel::ERROR][] = 'Error Could not update the number of PMs for user ' . $_user_id . ' for user ' . $user_id . ' was deleted: ' . $e->getMessage();
+			    $this->debugger->addError('Error Could not update the number of PMs for user ' . $userid . ' for user ' . $userinfo->userid . ' was deleted: ' . $e->getMessage());
 		    }
 	    }
 	    //update the total user count
@@ -1225,7 +1223,7 @@ class User extends Plugin_User
 		    ->select('COUNT(*)')
 		    ->from('#__config')
 		    ->where('config_name = ' . $db->quote('newest_user_id'))
-		    ->where('config_value = ' . $db->quote($user_id));
+		    ->where('config_value = ' . $db->quote($userinfo->userid));
 
 	    $db->setQuery($query);
 	    if ($db->loadResult()) {
@@ -1266,10 +1264,7 @@ class User extends Plugin_User
 			    $db->execute();
 		    }
 	    }
-
-	    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $user_id;
-
-        return $status;
+        return true;
     }
 
 	/**

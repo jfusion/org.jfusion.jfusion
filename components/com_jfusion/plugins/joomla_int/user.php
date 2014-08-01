@@ -336,9 +336,11 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return array
+	 *
+	 * @return boolean returns true on success and false on error
 	 */
     function deleteUser(Userinfo $userinfo) {
+	    $deleted = false;
 	    /**
 	     * TODO need to be changed as deleting the user is not correct
 	     */
@@ -346,14 +348,13 @@ class User extends Plugin_User
         //get the database ready
         $db = Factory::getDBO();
         //setup status array to hold debug info and errors
-        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
-        $username = $userinfo->username;
+
         //since the jfusion_user table will be updated to the user's email if they use it as an identifier, we must check for both the username and email
 
 	    $query = $db->getQuery(true)
 		    ->select('id')
 		    ->from('#__jfusion_users')
-		    ->where('username = ' . $db->quote($username), 'OR')
+		    ->where('username = ' . $db->quote($userinfo->username), 'OR')
 		    ->where('LOWER(username) = ' . $db->quote(strtolower($userinfo->email)));
 
         $db->setQuery($query);
@@ -369,14 +370,14 @@ class User extends Plugin_User
 
             $db->setQuery($query);
             $db->execute();
-		    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $username;
+		    $deleted = true;
         } else {
             //this user was NOT create by JFusion. Therefore we need to delete it in the Joomla user table only
 
 	        $query = $db->getQuery(true)
 		        ->select('id')
 		        ->from('#__users')
-		        ->where('username  = ' . $db->quote($username));
+		        ->where('username  = ' . $db->quote($userinfo->username));
 
             $db->setQuery($query);
             $userid = $db->loadResult();
@@ -391,13 +392,14 @@ class User extends Plugin_User
                 //delete it from the Joomla usertable
                 $user = JUser::getInstance($userid);
                 $user->delete();
-	            $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $username;
+
+	            $deleted = true;
             } else {
                 //could not find user and return an error
-	            throw new RuntimeException($username);
+	            throw new RuntimeException($userinfo->username);
             }
         }
-        return $status;
+        return $deleted;
     }
 
     /**

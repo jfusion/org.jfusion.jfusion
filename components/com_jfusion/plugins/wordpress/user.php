@@ -512,12 +512,9 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      *
-     * @return array
+     * @return boolean returns true on success and false on error
      */
     function deleteUser(Userinfo $userinfo) {
-		//setup status array to hold debug info and errors
-        $status = array('error' => array(), 'debug' => array());
-
 	    $db = Factory::getDatabase($this->getJname());
 	    $reassign = $this->params->get('reassign_blogs');
 	    $reassign_to = $this->params->get('reassign_username');
@@ -562,7 +559,7 @@ class User extends Plugin_User
 					    $db->setQuery($query);
 					    $db->execute();
 				    }
-				    $status[LogLevel::DEBUG][] = 'Reassigned posts from user with id ' . $user_id . ' to user ' . $reassign;
+				    $this->debugger->addDebug('Reassigned posts from user with id ' . $user_id . ' to user ' . $reassign);
 			    }
 
 			    $query = $db->getQuery(true)
@@ -583,7 +580,7 @@ class User extends Plugin_User
 						    $db->setQuery($query);
 						    $db->execute();
 					    }
-					    $status[LogLevel::DEBUG][] = 'Reassigned links from user with id ' . $user_id . ' to user ' . $reassign;
+					    $this->debugger->addDebug('Reassigned links from user with id ' . $user_id . ' to user ' . $reassign);
 				    }
 			    }
 		    }
@@ -594,7 +591,7 @@ class User extends Plugin_User
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status[LogLevel::DEBUG][] = 'Deleted posts from user with id ' . $user_id;
+		    $this->debugger->addDebug('Deleted posts from user with id ' . $user_id);
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__links')
@@ -602,7 +599,7 @@ class User extends Plugin_User
 
 		    $db->setQuery($query);
 		    $db->execute();
-		    $status[LogLevel::DEBUG][] = 'Deleted links from user ' . $user_id;
+		    $this->debugger->addDebug('Deleted links from user ' . $user_id);
 	    }
 	    // now delete the user
 	    $query = $db->getQuery(true)
@@ -611,7 +608,7 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status[LogLevel::DEBUG][] = 'Deleted userrecord of user with userid ' . $user_id;
+	    $this->debugger->addDebug('Deleted userrecord of user with userid ' . $user_id);
 
 	    // delete usermeta
 	    $query = $db->getQuery(true)
@@ -620,9 +617,9 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-	    $status[LogLevel::DEBUG][] = 'Deleted usermetarecord of user with userid ' . $user_id;
+	    $this->debugger->addDebug('Deleted usermetarecord of user with userid ' . $user_id);
 
-		return $status;
+		return true;
 	}
 
 	/**

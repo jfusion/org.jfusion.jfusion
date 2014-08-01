@@ -24,7 +24,6 @@ use JFusion\User\Userinfo;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_User;
 
-use Psr\Log\LogLevel;
 use \RuntimeException;
 use \stdClass;
 
@@ -207,12 +206,10 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return array
+	 * @return boolean returns true on success and false on error
 	 */
     function deleteUser(Userinfo $userinfo) {
-        //setup status array to hold debug info and errors
-        $status = array('error' => array(), 'debug' => array());
-        $username = $userinfo->username;
+	    $deleted = false;
 	    /**
 	     * @ignore
 	     * @var $user GalleryUser
@@ -220,7 +217,7 @@ class User extends Plugin_User
 	     */
 	    $this->helper->loadGallery2Api(false);
         //Fetch GalleryUser
-        list($ret, $user) = GalleryCoreApi::fetchUserByUserName($username);
+        list($ret, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         if ($ret) {
 	        throw new RuntimeException($userinfo->username . ': ' . $ret->getErrorMessage());
         } else {
@@ -239,12 +236,12 @@ class User extends Plugin_User
                     if ($ret) {
 	                    throw new RuntimeException($userinfo->username . ': ' . $ret->getErrorMessage());
                     } else {
-	                    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
+	                    $deleted = true;
                     }
                 }
             }
         }
-        return $status;
+        return $deleted;
     }
 
 	/**

@@ -14,6 +14,7 @@
  */
 
 // no direct access
+
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
@@ -23,6 +24,7 @@ use \Exception;
 use Psr\Log\LogLevel;
 use \RuntimeException;
 use \stdClass;
+use Symfony\Component\Yaml\Exception\DumpException;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -489,9 +491,10 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return array|bool
+	 * @return boolean returns true on success and false on error
 	 */
     function deleteUser(Userinfo $userinfo) {
+	    $deleted = false;
         // we are using the api function remove_user here. 
         // User deletion is not a time critical function and deleting a user is
         // more often than not a complicated task in this type of software.
@@ -499,7 +502,6 @@ class User extends Plugin_User
         // modules without loading the complete website. 
         
     	// check apiuser existence
-        $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 
 	    $apiuser = $this->params->get('apiuser');
 	    $apikey = $this->params->get('apikey');
@@ -510,47 +512,47 @@ class User extends Plugin_User
 	    } else {
 		    // get token
 		    $curl_options['action'] = 'token';
-		    $status = $this->helper->send_to_api($curl_options, $status);
-		    if (!$status['error']) {
-			    $result = $status['result'][0];
-			    $token = $result->token;
-			    // login
-			    $curl_options['action'] = 'login';
-			    $curl_options['parms'] = '&token=' . $token . '&username=' . $apiuser . '&password=' . $apikey;
-			    $status = $this->helper->send_to_api($curl_options, $status);
-			    if (!$status['error']){
-				    $result = $status['result'][0];
-				    if($result->status == 'ok'){
-					    // logged in (must logout later)
-					    // delete user
-					    $curl_options['action'] = 'remove_user';
-					    $curl_options['parms'] = '&token=' . $token . '&login=' . $login;
-					    $status = $this->helper->send_to_api($curl_options, $status);
-					    $errorstatus = $status;
-					    if ($status[LogLevel::ERROR]){
-						    $status[LogLevel::DEBUG][] = $status[LogLevel::ERROR][0];
-						    $status[LogLevel::ERROR] = array();
-					    }
-					    $result = $status['result'][0];
-					    if($result->status != 'ok'){
-						    $errorstatus['debug'][] = $jname . ' eFront API--' . $result->message;
-					    }
-					    // logout
-					    $curl_options['action'] = 'logout';
-					    $curl_options['parms'] = '&token=' . $token;
-					    $status = $this->helper->send_to_api($curl_options, $status);
-					    $result = $status['result'][0];
-					    if($result->status != 'ok'){
-						    $errorstatus['error'][] = $jname . ' eFront API--' . $result->message;
-						    return $errorstatus;
-					    }
+
+		    $result = $this->helper->sendToApi($curl_options);
+
+		    $token = $result->token;
+		    // login
+		    $curl_options['action'] = 'login';
+		    $curl_options['parms'] = '&token=' . $token . '&username=' . $apiuser . '&password=' . $apikey;
+		    $result = $this->helper->sendToApi($curl_options);
+
+		    if($result->status == 'ok') {
+			    // logged in (must logout later)
+			    // delete user
+			    $curl_options['action'] = 'remove_user';
+			    $curl_options['parms'] = '&token=' . $token . '&login=' . $login;
+			    try {
+				    $result = $this->helper->sendToApi($curl_options);
+
+				    if($result->status != 'ok') {
+					    $this->debugger->addDebug('eFront API: ' . $result->message);
+					    $deleted = true;
 				    }
-				    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $login;
+			    } catch (Exception $e) {
+				    $this->debugger->addDebug($e->getMessage());
 			    }
+
+			    // logout
+			    $curl_options['action'] = 'logout';
+			    $curl_options['parms'] = '&token=' . $token;
+			    try {
+				    $result = $this->helper->sendToApi($curl_options);
+
+				    if($result->status != 'ok') {
+					    $this->debugger->addDebug('eFront API: ' . $result->message);
+				    }
+			    } catch (Exception $e) {
+			    }
+		    } else {
+			    throw new RuntimeException('eFront API: login failed');
 		    }
 	    }
-
-        return $status;
+        return $deleted;
     }
 
 	/**

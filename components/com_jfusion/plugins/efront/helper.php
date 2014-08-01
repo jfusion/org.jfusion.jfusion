@@ -20,8 +20,11 @@ use JFusion\Framework;
 use JFusion\Plugin\Plugin;
 
 use \Exception;
+use Joomla\Language\Text;
 use Psr\Log\LogLevel;
+use SimpleXMLElement;
 use \stdClass;
+use Symfony\Component\Yaml\Exception\RuntimeException;
 
 defined('_JEXEC') or die('Restricted access');
 
@@ -180,18 +183,18 @@ class Helper extends Plugin
 		}
         return $user_types;
     }
-    /**
-     * connects to api, using username and password
-     * returns token, or empty string when not successful
-     *
-     * @param array $curl_options
-     * @param array $status
-     *
-     * @return array
-     */
-    function send_to_api($curl_options, $status) {
-        $status = array('error' => array(), 'debug' => array());
 
+	/**
+	 * connects to api, using username and password
+	 * returns token, or empty string when not successful
+	 *
+	 * @param array $curl_options
+	 *
+	 * @throws \RuntimeException
+	 * @return SimpleXMLElement|null
+	 */
+    function sendToApi($curl_options) {
+	    $result = null;
         $source_url = Factory::getParams($this->getJname())->get('source_url');
         // prevent user error by not supplying trailing backslash.
         if (!(substr($source_url, -1) == '/')) {
@@ -201,7 +204,6 @@ class Helper extends Plugin
         ltrim($source_url);
         $apipath = $source_url . 'api.php?action=';
         $post_url = $apipath . $curl_options['action'] . $curl_options['parms'];
- //       $status['debug'][] = Text::_('EFRONT_API_POST') . ' post url: ' . $post_url;
         
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
@@ -240,11 +242,11 @@ class Helper extends Plugin
         }
         $remotedata = curl_exec($ch);
         if (curl_error($ch)) {
-            $status['error'][] = 'EFRONT_API_POST CURL_ERROR_MSG : ' . curl_error($ch);
+	        throw new \RuntimeException(Text::_('EFRONT_API_POST') . ' ' . Text::_('CURL_ERROR_MSG') . ': ' . curl_error($ch));
         } else {
-            $status['result'][] = simplexml_load_string($remotedata);
+	        $result = simplexml_load_string($remotedata);
         }
         curl_close($ch);
-        return $status;
+        return $result;
     }
 }

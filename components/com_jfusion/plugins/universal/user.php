@@ -110,12 +110,11 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return array
+	 *
+	 * @return boolean returns true on success and false on error
 	 */
 	function deleteUser(Userinfo $userinfo)
 	{
-		//setup status array to hold debug info and errors
-		$status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 		$userid = $this->helper->getFieldType('USERID');
 		if (!$userid) {
 			throw new RuntimeException(Text::_('UNIVERSAL_NO_USERID_SET'));
@@ -130,7 +129,7 @@ class User extends Plugin_User
 			$db->execute();
 
 			$group = $this->helper->getFieldType('GROUP', 'group');
-			if ( isset($group) ) {
+			if (isset($group)) {
 				$userid = $this->helper->getFieldType('USERID', 'group');
 
 				$query = $db->getQuery(true)
@@ -152,10 +151,9 @@ class User extends Plugin_User
 				}
 				$db->setQuery($query);
 				$db->execute();
-				$status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 			}
 		}
-		return $status;
+		return true;
 	}
 
 	/**

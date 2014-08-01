@@ -598,14 +598,13 @@ class Plugin_User extends Plugin
      *
      * @param Userinfo $userinfo Object containing the existing userinfo
      *
-     * @return array status Array containing the errors and result of the function
+     * @return boolean returns true on success and false on error
      */
     function deleteUser(Userinfo $userinfo)
     {
         //setup status array to hold debug info and errors
-        $status = array('error' => array(), 'debug' => array());
-        $status['error'][] = Text::_('DELETE_FUNCTION_MISSING');
-        return $status;
+	    $this->debugger->addError(Text::_('DELETE_FUNCTION_MISSING'));
+        return false;
     }
 
 	/**

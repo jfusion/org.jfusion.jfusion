@@ -133,12 +133,10 @@ class User extends Plugin_User
 	 * @throws \RuntimeException
 	 * @access public
 	 *
-	 * @return array
+	 * @return boolean returns true on success and false on error
 	 */
     function deleteUser(Userinfo $userinfo)
     {
-	    //setup status array to hold debug info and errors
-	    $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -182,11 +180,9 @@ class User extends Plugin_User
 			    $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $resultID->ID_MEMBER . '), (\'latestRealName\', ' . $db->quote($resultName->name) . ')';
 			    $db->setQuery($query);
 			    $db->execute();
-
-			    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
 		    }
 	    }
-        return $status;
+        return true;
     }
 
     /**

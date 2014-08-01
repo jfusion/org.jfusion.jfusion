@@ -112,12 +112,9 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      *
-     * @return array
+     * @return boolean returns true on success and false on error
      */
     function deleteUser(Userinfo $userinfo) {
-	    //setup status array to hold debug info and errors
-	    $status = array('error' => array(), 'debug' => array());
-
 	    $db = Factory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -133,9 +130,7 @@ class User extends Plugin_User
 
 	    $db->setQuery($query);
 	    $db->execute();
-
-	    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
-		return $status;
+		return true;
     }
 
     /**

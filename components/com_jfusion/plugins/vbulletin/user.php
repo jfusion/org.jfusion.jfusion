@@ -151,26 +151,26 @@ class User extends Plugin_User
 
 	/**
 	 * @param Userinfo $userinfo
-	 * @return array
+	 *
+	 * @return boolean returns true on success and false on error
 	 */
 	function deleteUser(Userinfo $userinfo)
 	{
-		//setup status array to hold debug info and errors
-		$status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
-
+		$result = false;
 		$apidata = array('userinfo' => $userinfo);
 		$response = $this->helper->apiCall('deleteUser', $apidata);
 
 		if ($response['success']) {
-			$status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ' ' . $userinfo->userid;
+			$this->debugger->addDebug(Text::_('USER_DELETION') . ' ' . $userinfo->userid);
+			$result = true;
 		}
 		foreach ($response['errors'] as $error) {
-			$status[LogLevel::ERROR][] = $error;
+			$this->debugger->addError($error);
 		}
 		foreach ($response[LogLevel::DEBUG] as $debug) {
-			$status[LogLevel::DEBUG][] = $debug;
+			$this->debugger->addDebug($debug);
 		}
-		return $status;
+		return $result;
 	}
 
 	/**

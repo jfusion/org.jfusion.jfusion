@@ -111,7 +111,7 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      *
-     * @return array
+     * @return boolean returns true on success and false on error
      */
     function deleteUser(Userinfo $userinfo) {
 	    /* Warning: this function mimics the original prestashop function which is a suggestive deletion,
@@ -127,8 +127,7 @@ class User extends Plugin_User
 		    ->where('id_customer = ' . $db->quote($userinfo->userid));
 
 	    $db->setQuery($query);
-	    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
-		return $status;
+		return true;
     }
 
 

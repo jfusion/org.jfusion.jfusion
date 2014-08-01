@@ -582,7 +582,8 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo Object containing the existing userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return array status Array containing the errors and result of the function
+	 *
+	 * @return boolean returns true on success and false on error
 	 */
 	function deleteUser(Userinfo $userinfo) {
 		$status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());

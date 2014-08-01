@@ -311,38 +311,35 @@ class User extends Plugin_User
     /**
      * @param Userinfo $userinfo
      *
-     * @return array
+     * @return boolean returns true on success and false on error
      */
     function deleteUser(Userinfo $userinfo) {
 	    //get the database ready
 	    $db = Factory::getDatabase($this->getJname());
 	    //setup status array to hold debug info and errors
-	    $status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
-	    $userid = $userinfo->userid;
 
 	    $query = $db->getQuery(true)
 		    ->delete('#__users')
-		    ->where('id = ' . (int)$userid);
+		    ->where('id = ' . (int)$userinfo->userid);
 
 	    $db->setQuery($query);
 	    $db->execute();
 
 	    $query = $db->getQuery(true)
 		    ->delete('#__user_profiles')
-		    ->where('user_id = ' . (int)$userid);
+		    ->where('user_id = ' . (int)$userinfo->userid);
 
 	    $db->setQuery($query);
 	    $db->execute();
 
 	    $query = $db->getQuery(true)
 		    ->delete('#__user_usergroup_map')
-		    ->where('user_id = ' . (int)$userid);
+		    ->where('user_id = ' . (int)$userinfo->userid);
 
 	    $db->setQuery($query);
 	    $db->execute();
 
-	    $status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->username;
-        return $status;
+        return true;
     }
 
     /**

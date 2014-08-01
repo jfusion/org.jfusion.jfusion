@@ -478,7 +478,12 @@ class User
 					$MasterUser = $JFusionMaster->getUser($userinfo);
 
 					if ($MasterUser instanceof Userinfo) {
-						$status = $JFusionMaster->deleteUser($MasterUser);
+						$JFusionMaster->resetDebugger();
+						$deleteStatus = $JFusionMaster->deleteUser($MasterUser);
+						$status = $JFusionMaster->debugger->get();
+						if ($deleteStatus) {
+							$status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->userid . ' ( ' . $userinfo->username . ' )';
+						}
 						if (!empty($status[LogLevel::ERROR])) {
 							$error_info[$master->name . ' ' . Text::_('USER_DELETION_ERROR') ] = $status[LogLevel::ERROR];
 						}
@@ -506,7 +511,12 @@ class User
 						$SlaveUser = $JFusionSlave->getUser($userinfo);
 
 						if ($SlaveUser instanceof Userinfo) {
-							$status = $JFusionSlave->deleteUser($SlaveUser);
+							$JFusionSlave->resetDebugger();
+							$deleteStatus = $JFusionSlave->deleteUser($SlaveUser);
+							$status = $JFusionSlave->debugger->get();
+							if ($deleteStatus) {
+								$status[LogLevel::DEBUG][] = Text::_('USER_DELETION') . ': ' . $userinfo->userid . ' ( ' . $userinfo->username . ' )';
+							}
 							if (!empty($status[LogLevel::ERROR])) {
 								$error_info[$slave->name . ' ' . Text::_('USER_DELETION_ERROR') ] = $status[LogLevel::ERROR];
 							}

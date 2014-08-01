@@ -673,11 +673,11 @@ class User extends Plugin_User
 	 * @param Userinfo $userinfo
 	 *
 	 * @throws \RuntimeException
-	 * @return array
+	 *
+	 * @return boolean returns true on success and false on error
 	 */
 	function deleteUser(Userinfo $userinfo) {
-		//setup status array to hold debug info and errors
-		$status = array('error' => array(), 'debug' => array());
+		$deleted = false;
 		//set the userid
 		//check to see if a valid $userinfo object was passed on
 
@@ -690,10 +690,11 @@ class User extends Plugin_User
 
 		try {
 			$proxi->call('customer.delete', $userinfo->userid);
-			$status[LogLevel::DEBUG][] = 'Magento API: Delete user with id ' . $userinfo->userid . ' , email ' . $userinfo->email;
+
+			$deleted = true;
 		} catch (Soapfault $fault) {
 			/** @noinspection PhpUndefinedFieldInspection */
-			$status[LogLevel::ERROR][] = 'Magento API: Could not delete user with id ' . $userinfo->userid . ' , message: ' . $fault->faultstring;
+			$this->debugger->addError('Magento API: Could not delete user with id ' . $userinfo->userid . ' , message: ' . $fault->faultstring);
 		}
 
 		try {
@@ -702,7 +703,7 @@ class User extends Plugin_User
 			/** @noinspection PhpUndefinedFieldInspection */
 			throw new RuntimeException('Magento API: Could not end this session, message: ' . $fault->faultstring);
 		}
-		return $status;
+		return $deleted;
 	}
 
 	/**
