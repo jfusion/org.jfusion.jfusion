@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use Exception;
 use JFusion\Curl\Curl;
 use JFusion\Factory;
@@ -24,8 +23,6 @@ use JFusion\Plugin\Plugin_User;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion User Class for Wordpress 3+
@@ -206,7 +203,7 @@ class User extends Plugin_User
 		
 		$remotedata = $curl->ReadPage();
 		if (!empty($curl->status['error'])) {
-			$curl->status[LogLevel::DEBUG][] = Text::_('CURL_COULD_NOT_READ_PAGE: ') . $curl->options['post_url'];
+			$status[LogLevel::DEBUG][] = Text::_('CURL_COULD_NOT_READ_PAGE') . ': ' . $curl->options['post_url'];
 		} else {
 	        // get _wpnonce security value
 	        preg_match('/action=logout.+?_wpnonce=([\w\s-]*)["\']/i', $remotedata, $wpnonce);

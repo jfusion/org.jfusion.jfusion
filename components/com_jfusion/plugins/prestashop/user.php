@@ -1,6 +1,5 @@
 <?php namespace JFusion\Plugins\prestashop;
 
-
 /**
  * JFusion User Class for PrestaShop
  * 
@@ -15,8 +14,6 @@
  * @link       http://www.jfusion.org
  */
 
-
-// no direct access
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
@@ -28,9 +25,6 @@ use RuntimeException;
 use stdClass;
 use Tools;
 use Validate;
-
-defined('_JEXEC') or die('Restricted access');
-
 
 /**
  * JFusion User Class for PrestaShop

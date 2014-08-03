@@ -14,11 +14,8 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Plugin\Plugin_Auth;
 use JFusion\User\Userinfo;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion auth plugin class

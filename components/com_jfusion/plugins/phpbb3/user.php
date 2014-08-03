@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
@@ -23,8 +22,6 @@ use \Exception;
 use Psr\Log\LogLevel;
 use \RuntimeException;
 use \stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion User Class for phpBB3

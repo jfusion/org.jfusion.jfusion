@@ -14,7 +14,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use Exception;
 use Joomla\Database\DatabaseDriver;
 use JFusion\Factory;
@@ -24,9 +23,6 @@ use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 use Psr\Log\LogLevel;
 use stdClass;
-
-defined('_JEXEC') or die('Restricted access');
-
 
 /**
  * JFusion Admin Class for Moodle 1.8+

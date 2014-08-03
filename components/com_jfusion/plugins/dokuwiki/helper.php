@@ -13,11 +13,8 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFile;
 use JFusion\Plugin\Plugin;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Helper Class for Dokuwiki

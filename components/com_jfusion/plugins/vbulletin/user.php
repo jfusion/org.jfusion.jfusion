@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -26,8 +25,6 @@ use JFusion\Plugin\Plugin_User;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
-
-defined('_JEXEC' ) or die('Restricted access' );
 
 /**
  * JFusion Admin Class for vBulletin

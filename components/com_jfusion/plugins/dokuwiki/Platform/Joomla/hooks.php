@@ -1,6 +1,6 @@
 <?php
 
-	/**
+/**
  * file containing hook function for dokuwiki
  *
  * PHP version 5
@@ -14,10 +14,7 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Factory;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Hooks for dokuwiki

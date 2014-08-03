@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
@@ -25,8 +24,6 @@ use Psr\Log\LogLevel;
 use \RuntimeException;
 use \Exception;
 use \stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 //require the standard joomla user functions
 jimport('joomla.user.helper');

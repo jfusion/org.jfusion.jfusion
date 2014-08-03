@@ -12,10 +12,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-// no direct access
+
 use JFusion\Plugin\Plugin_Front;
 
-defined('_JEXEC') or die('Restricted access');
 global $baseURL, $fullURL, $integratedURL, $vbsefmode;
 /**
  * JFusion Public Class for vBulletin

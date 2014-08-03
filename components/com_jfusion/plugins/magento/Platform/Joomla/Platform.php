@@ -13,14 +13,11 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Curl\Curl;
 use JFusion\Factory;
 use JFusion\Plugin\Platform\Joomla;
 use JText;
 use Psr\Log\LogLevel;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Authentication Class for an external Joomla database

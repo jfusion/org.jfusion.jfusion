@@ -13,10 +13,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-// no direct access
+
 use JFusion\Plugin\Plugin_Front;
 
-defined('_JEXEC') or die('Restricted access');
 /**
  * JFusion Public Class for SMF 1.1.x
  * For detailed descriptions on these functions please check the model.abstractpublic.php

@@ -14,7 +14,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
@@ -25,8 +24,6 @@ use JFusion\Plugin\Plugin_Admin;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Admin Class for vBulletin

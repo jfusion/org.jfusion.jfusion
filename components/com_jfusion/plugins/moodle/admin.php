@@ -14,7 +14,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use Exception;
 use JFile;
 use JFolder;
@@ -28,8 +27,6 @@ use Psr\Log\LogLevel;
 use RuntimeException;
 use SimpleXMLElement;
 use stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Admin Class for Moodle 1.8+

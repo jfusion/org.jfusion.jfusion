@@ -19,10 +19,6 @@ use JFusion\Plugin\Plugin_Auth;
 use JFusion\User\Userinfo;
 use JUserHelper;
 
-
-// no direct access
-defined('_JEXEC') or die('Restricted access');
-
 /**
  * JFusion Authentication class for the internal Joomla database
  * For detailed descriptions on these functions please check the model.abstractauth.php

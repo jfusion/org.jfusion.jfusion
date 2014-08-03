@@ -14,10 +14,7 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Plugin\Plugin_Front;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion public class for DokuWiki

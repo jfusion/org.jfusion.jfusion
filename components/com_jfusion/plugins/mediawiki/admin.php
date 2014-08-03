@@ -1,13 +1,12 @@
 <?php namespace JFusion\Plugins\mediawiki;
 
 /**
-* @package JFusion_mediawiki
-* @author JFusion development team
-* @copyright Copyright (C) 2008 JFusion. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package JFusion_mediawiki
+ * @author JFusion development team
+ * @copyright Copyright (C) 2008 JFusion. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
-// no direct access
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
@@ -15,8 +14,6 @@ use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 use Psr\Log\LogLevel;
 use stdClass;
-
-defined('_JEXEC' ) or die('Restricted access' );
 
 /**
  * JFusion Admin Class for mediawiki 1.1.x

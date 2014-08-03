@@ -14,15 +14,12 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\Plugin\Plugin;
 use Psr\Log\LogLevel;
 use stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * Helper functions for the Wordpress plugin

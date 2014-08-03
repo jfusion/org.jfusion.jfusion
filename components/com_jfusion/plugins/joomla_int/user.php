@@ -12,7 +12,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-// no direct access
+
 use JEventDispatcher;
 use JFactory;
 use JFusion\Factory;
@@ -29,8 +29,6 @@ use JUser;
 use Psr\Log\LogLevel;
 use \RuntimeException;
 use \stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 //require the standard joomla user functions
 jimport('joomla.user.helper');

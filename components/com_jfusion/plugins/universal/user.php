@@ -7,7 +7,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 
-// no direct access
 use JFusion\Factory;
 use JFusion\User\Userinfo;
 use Joomla\Language\Text;
@@ -15,8 +14,6 @@ use JFusion\Plugin\Plugin_User;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
-
-defined('_JEXEC' ) or die('Restricted access' );
 
 /**
  * JFusion User Class for universal

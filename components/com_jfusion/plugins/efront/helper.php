@@ -14,7 +14,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\Plugin\Plugin;
@@ -25,8 +24,6 @@ use Psr\Log\LogLevel;
 use SimpleXMLElement;
 use \stdClass;
 use Symfony\Component\Yaml\Exception\RuntimeException;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Hooks for dokuwiki

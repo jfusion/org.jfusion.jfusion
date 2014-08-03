@@ -1,6 +1,5 @@
 <?php namespace JFusion\Plugins\mediawiki\Platform\Joomla;
 
-// no direct access
 use DateTimeZone;
 use Exception;
 use JDate;
@@ -14,8 +13,6 @@ use Joomla\Uri\Uri;
 use JRegistry;
 use Psr\Log\LogLevel;
 use stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * @category   JFusion

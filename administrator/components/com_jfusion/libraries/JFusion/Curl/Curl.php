@@ -12,11 +12,8 @@
  * @link      http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Factory;
 use Joomla\Language\Text;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * Singleton static only class that creates instances for each specific JFusion plugin.
@@ -182,11 +179,11 @@ class Curl
 
 
 	/**
-	 * curl redir exec
+	 * curlRedirectExec
 	 *
 	 * @return string something
 	 */
-	function curl_redir_exec()
+	function curlRedirectExec()
 	{
 		static $curl_loops = 0;
 		static $curl_max_loops = 20;
@@ -225,7 +222,7 @@ class Curl
 			*/
 			$new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . ($url['query'] ? '?' . $url['query'] : '');
 			curl_setopt($this->ch, CURLOPT_URL, $new_url);
-			return $this->curl_redir_exec();
+			return $this->curlRedirectExec();
 		} else {
 			$curl_loops=0;
 			return $lastdata;
@@ -233,7 +230,7 @@ class Curl
 	}
 
 	/**
-	 * function read_header
+	 * function readHeader
 	 * Basic  code was found on Svetlozar Petrovs website http://svetlozar.net/page/free-code.html.
 	 * The code is free to use and similar code can be found on other places on the net.
 	 *
@@ -242,13 +239,13 @@ class Curl
 	 *
 	 * @return string something
 	 */
-	function read_header($ch, $string)
+	function readHeader($ch, $string)
 	{
 		$length = strlen($string);
-		if (!strncmp($string, "Location:", 9)) {
+		if (!strncmp($string, 'Location:', 9)) {
 			$this->location = trim(substr($string, 9, -1));
 		}
-		if (!strncmp($string, "Set-Cookie:", 11)) {
+		if (!strncmp($string, 'Set-Cookie:', 11)) {
 			//	header($string, false);
 			$cookiestr = trim(substr($string, 11, -1));
 			$cookie = explode(';', $cookiestr);
@@ -610,13 +607,13 @@ class Curl
 			curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, 1);
 		}
 		curl_setopt($this->ch, CURLOPT_MAXREDIRS, 2);
-		curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
+		curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'readHeader'));
 		if (empty($this->options['brute_force'])) {
 			curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
 		}
 
 		if (!empty($this->options['httpauth'])) {
-			curl_setopt($this->ch, CURLOPT_USERPWD, "{$this->options['httpauth_username']}:{$this->options['httpauth_password']}");
+			curl_setopt($this->ch, CURLOPT_USERPWD, $this->options['httpauth_username'] . ':' . $this->options['httpauth_password']);
 
 			switch ($this->options['httpauth']) {
 				case "basic":
@@ -645,7 +642,7 @@ class Curl
 		if (empty($open_basedir) && empty($safe_mode)) {
 			$remotedata = curl_exec($this->ch);
 		} else {
-			$remotedata = $this->curl_redir_exec();
+			$remotedata = $this->curlRedirectExec();
 		}
 		if ($this->options['debug']) {
 			$this->status['cURL']['data'][] = $remotedata;
@@ -660,29 +657,6 @@ class Curl
 		}
 		return $remotedata;
 	}
-
-	/**
-	 * function RemoteLogin
-	 * Smart function to programatically login to an JFusion integration
-	 * Will determine what to post (including, optionally, hidden form inputs) and what cookies to set.
-	 * Will then login.
-	 * In addition to username and password the function only needs an URL to a page with a loginform
-	 * and the ID of the loginform.
-	 * Including button information and hidden input posts is optionally
-	 *
-	 * 29-07-2011 Modified to handle logout as well when the loginform is used for logout
-	 * just call as login and add $curl_options['logout'] = '1'
-	 *
-	 * @param array $options curl options
-	 *
-	 * @return string something
-	 */
-	public static function RemoteLogin($options)
-	{
-		$curl = new Curl($options);
-		return $curl->login();
-	}
-
 
 	/**
 	 * preforms a login
@@ -956,7 +930,7 @@ class Curl
 							curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 							curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
 							curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
-							curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
+							curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'readHeader'));
 							if (empty($this->options['brute_force'])) {
 								curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
 							}
@@ -968,7 +942,7 @@ class Curl
 						curl_setopt($this->ch, CURLOPT_POST, 1);
 						curl_setopt($this->ch, CURLOPT_POSTFIELDS, $post_params . $strParameters);
 						if (!empty($this->options['httpauth'])) {
-							curl_setopt($this->ch, CURLOPT_USERPWD, "{$this->options['httpauth_username']}:{$this->options['httpauth_password']}");
+							curl_setopt($this->ch, CURLOPT_USERPWD, $this->options['httpauth_username'] . ':' . $this->options['httpauth_password']);
 							curl_setopt($this->ch, CURLOPT_HTTPAUTH, $this->options['httpauth']);
 						}
 
@@ -998,36 +972,6 @@ class Curl
 		return $this->status;
 	}
 
-
-
-    /**
-     * ReadPage
-     *
-     * @param array $options curl options
-
-     * @return string something
-     */
-    public static function RemoteReadPage($options)
-    {
-        $curl = new Curl($options);
-        return $curl->ReadPage();
-    }
-
-
-
-    /**
-	 * RemoteLogout
-	 *
-	 * @param array $options curl options
-	 *
-	 * @return string something
-	 */
-	public static function RemoteLogout($options)
-	{
-		$curl = new Curl($options);
-		return $curl->logout();
-	}
-
 	/**
 	 * RemoteLogout
 	 *
@@ -1054,13 +998,13 @@ class Curl
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
 			curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
-			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
+			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'readHeader'));
 			curl_setopt($this->ch, CURLOPT_URL, $this->options['post_url']);
 			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($this->ch, CURLOPT_VERBOSE, $this->options['debug']); // Display communication with server
 
 			if (!empty($this->options['httpauth'])) {
-				curl_setopt($this->ch, CURLOPT_USERPWD, "{$this->options['httpauth_username']}:{$this->options['httpauth_password']}");
+				curl_setopt($this->ch, CURLOPT_USERPWD, $this->options['httpauth_username'] . ':' . $this->options['httpauth_password']);
 
 				switch ($this->options['httpauth']) {
 					case "basic":
@@ -1105,18 +1049,6 @@ class Curl
 	/**
 	 * remote logout url
 	 *
-	 * @param array $options curl options
-	 *
-	 * @return string something
-	 */
-	public static function RemoteLogoutUrl($options)
-	{
-		$curl = new Curl($options);
-		return $curl->logoutUrl();
-	}
-	/**
-	 * remote logout url
-	 *
 	 * @return string something
 	 */
 	public function logoutUrl()
@@ -1136,7 +1068,7 @@ class Curl
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
 			curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
-			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
+			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'readHeader'));
 			curl_setopt($this->ch, CURLOPT_URL, $this->options['post_url']);
 			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
@@ -1158,11 +1090,11 @@ class Curl
 				curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->options['postfields']);
 			}
 			curl_setopt($this->ch, CURLOPT_MAXREDIRS, 2);
-			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'read_header'));
+			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this, 'readHeader'));
 			curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
 
 			if (!empty($this->options['httpauth'])) {
-				curl_setopt($this->ch, CURLOPT_USERPWD, "{$this->options['httpauth_username']}:{$this->options['httpauth_password']}");
+				curl_setopt($this->ch, CURLOPT_USERPWD, $this->options['httpauth_username'] . ':' . $this->options['httpauth_password']);
 
 				switch ($this->options['httpauth']) {
 					case "basic":
@@ -1191,7 +1123,7 @@ class Curl
 			if (empty($open_basedir) && empty($safe_mode)) {
 				$remotedata = curl_exec($this->ch);
 			} else {
-				$remotedata = $this->curl_redir_exec();
+				$remotedata = $this->curlRedirectExec();
 			}
 			if ($this->options['debug']) {
 				$this->status['cURL']['data'][] = $remotedata;

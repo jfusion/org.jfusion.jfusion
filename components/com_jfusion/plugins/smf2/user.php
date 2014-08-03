@@ -1,13 +1,12 @@
 <?php namespace JFusion\Plugins\smf2;
 
 /**
-* @package JFusion_SMF
-* @author JFusion development team
-* @copyright Copyright (C) 2008 JFusion. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package JFusion_SMF
+ * @author JFusion development team
+ * @copyright Copyright (C) 2008 JFusion. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
-// no direct access
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
@@ -17,8 +16,6 @@ use JFusion\Plugin\Plugin_User;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
-
-defined('_JEXEC' ) or die('Restricted access' );
 
 /**
  * JFusion User Class for SMF 1.1.x

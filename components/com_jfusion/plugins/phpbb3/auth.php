@@ -1,7 +1,7 @@
 <?php namespace jfusion\plugins\phpbb3;
 
- /*
- * 
+/**
+ *
  * PHP version 5
  * 
  * @category   JFusion
@@ -13,11 +13,8 @@
  * @link       http://www.jfusion.org
  */
  
-// no direct access
 use JFusion\Plugin\Plugin_Auth;
 use JFusion\User\Userinfo;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Authentication Class for phpBB3

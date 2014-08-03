@@ -24,9 +24,6 @@ use \RuntimeException;
 use \Exception;
 use \JComponentHelper;
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
-
 /**
  * JFusion Admin class for the internal Joomla database
  * For detailed descriptions on these functions please check the model.abstractadmin.php

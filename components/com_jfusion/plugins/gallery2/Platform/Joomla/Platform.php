@@ -13,7 +13,6 @@
 	 * @link       http://www.jfusion.org
 	 */
 
-// no direct access
 use Exception;
 use GalleryCapabilities;
 use GalleryCoreApi;
@@ -35,8 +34,6 @@ use JRoute;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Forum Class for phpBB3

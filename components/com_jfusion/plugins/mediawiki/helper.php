@@ -1,9 +1,7 @@
 <?php namespace JFusion\Plugins\mediawiki;
 
-// no direct access
 use JFusion\Plugin\Plugin;
 
-defined('_JEXEC') or die('Restricted access');
 /**
  * JFusionHelper_mediawiki class
  *

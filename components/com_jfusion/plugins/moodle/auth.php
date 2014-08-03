@@ -42,14 +42,10 @@
  *    You can find texlib in Moodles lib directory. Be aware that texlib uses an other open source lib.
  *    The characterset 'oldcharset' can be found in the moodle language files
  *    If you are unsure how to do all this you can contact me
- *
  */
 
-// no direct access
 use JFusion\Plugin\Plugin_Auth;
 use JFusion\User\Userinfo;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Authentication Class for Moodle 1.8+

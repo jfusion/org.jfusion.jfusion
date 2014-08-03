@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
@@ -24,8 +23,6 @@ use Psr\Log\LogLevel;
 use RuntimeException;
 use Soapfault;
 use stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion User Class for Magento 1.1

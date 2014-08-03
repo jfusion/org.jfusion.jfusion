@@ -12,8 +12,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-// no direct access
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * Class Soapclient

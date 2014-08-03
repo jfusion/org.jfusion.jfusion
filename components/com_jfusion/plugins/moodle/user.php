@@ -25,7 +25,6 @@
  * without the need to use the site policy
  */
 
-// no direct access
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
@@ -35,8 +34,6 @@ use JFusion\Plugin\Plugin_User;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion User Class for Moodle 1.8+

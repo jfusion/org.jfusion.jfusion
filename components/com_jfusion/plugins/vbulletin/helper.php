@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use Exception;
 use JFusion\Factory;
 use JFusion\Framework;
@@ -22,8 +21,6 @@ use JFusion\Plugin\Plugin;
 use Joomla\Uri\Uri;
 use JFusionFunction;
 use Psr\Log\LogLevel;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Helper Class for vBulletin

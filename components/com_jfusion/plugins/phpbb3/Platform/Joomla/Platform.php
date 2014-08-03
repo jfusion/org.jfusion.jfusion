@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFactory;
 use JFile;
 use JFusion\Factory;
@@ -31,8 +30,6 @@ use JUri;
 use Psr\Log\LogLevel;
 use \stdClass;
 use \RuntimeException;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Forum Class for phpBB3

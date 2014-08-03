@@ -14,15 +14,12 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Factory;
 use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 use \Exception;
 use Psr\Log\LogLevel;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Admin Class for eFront 3.5+

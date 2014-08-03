@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFile;
 use JFolder;
 use JFusion\Factory;
@@ -29,8 +28,6 @@ use JRegistry;
 use JText;
 use Psr\Log\LogLevel;
 use stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Authentication Class for an external Joomla database

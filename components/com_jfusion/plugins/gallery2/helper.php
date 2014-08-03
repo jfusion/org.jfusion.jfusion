@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use GalleryCoreApi;
 use GalleryEmbed;
 use JFusion\Factory;
@@ -22,8 +21,6 @@ use JFusion\Plugin\Plugin;
 
 use Exception;
 use Psr\Log\LogLevel;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion plugin class for Gallery2

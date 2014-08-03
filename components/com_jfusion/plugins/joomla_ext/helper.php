@@ -13,13 +13,10 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Plugin\Plugin;
 
 use \JCrypt;
 use \PasswordHash;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Helper Class for joomla_ext

@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use Exception;
 use JFactory;
 use JFusion\Factory;
@@ -30,8 +29,6 @@ use Psr\Log\LogLevel;
 use RuntimeException;
 use stdClass;
 use JFusion\Plugins\vbulletin\Helper;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Forum Class for vBulletin

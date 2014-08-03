@@ -752,7 +752,7 @@ class Plugin_User extends Plugin
 	{
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 		$curl_options = array();
-		$status = array('error' => array(), 'debug' => array());
+		$status = array(LogLevel::ERROR => array(), LogLevel::DEBUG => array());
 		$source_url = $this->params->get('source_url');
 		$login_url = $this->params->get('login_url');
 		//prevent user error by not supplying trailing forward slash
@@ -861,14 +861,13 @@ class Plugin_User extends Plugin
 		switch ($type) {
 			case 'url':
 //              $status = JFusionCurl::RemoteLoginUrl($curl_options);
-				$status['error'][] = Text::_('CURL_LOGINTYPE_NOT_SUPPORTED');
+				$status[LogLevel::ERROR][] = Text::_('CURL_LOGINTYPE_NOT_SUPPORTED');
 				break;
 			case 'brute_force':
 				$curl_options['brute_force'] = $type;
-				$status = Curl::RemoteLogin($curl_options);
-				break;
 			default:
-				$status = Curl::RemoteLogin($curl_options);
+				$curl = new Curl($options);
+				$status = $curl->login();
 		}
 		$status[LogLevel::DEBUG][] = Text::_('CURL_LOGINTYPE') . '=' . $type;
 		return $status;
@@ -915,9 +914,8 @@ class Plugin_User extends Plugin
 
 
         $curl_options['jnodeid'] = Framework::getNodeID();
-        $remotedata = Curl::RemoteReadPage($curl_options);
-        return $remotedata;
-
+	    $curl = new Curl($curl_options);
+	    return $curl->ReadPage();
     }
 
 
@@ -1033,16 +1031,17 @@ class Plugin_User extends Plugin
 		$curl_options['integrationtype'] = $integrationtype;
 
 		$type = strtolower($type);
+		$curl = new Curl($curl_options);
 		switch ($type) {
 			case 'url':
-				$status = Curl::RemoteLogoutUrl($curl_options);
+				$status = $curl->logoutUrl();
 				break;
 			case 'form':
-				$status = Curl::RemoteLogin($curl_options);
+				$status = $curl->login();
 				break;
 			case 'brute_force':
 			default:
-				$status = Curl::RemoteLogout($curl_options);
+				$status = $curl->logout();
 		}
 		$status[LogLevel::DEBUG][] = Text::_('CURL_LOGOUTTYPE') . '=' . $type;
 		return $status;

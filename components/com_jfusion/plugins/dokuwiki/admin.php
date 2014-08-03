@@ -14,16 +14,12 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
-
 use JFusion\Framework;
 use Joomla\Language\Text;
 use JFusion\Plugin\Plugin_Admin;
 use Psr\Log\LogLevel;
 use \RuntimeException;
 use \stdClass;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion admin class for DokuWiki

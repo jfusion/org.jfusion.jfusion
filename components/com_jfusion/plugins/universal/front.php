@@ -1,16 +1,13 @@
 <?php namespace JFusion\Plugins\universal;
 
 /**
-* @package JFusion_universal
-* @author JFusion development team
-* @copyright Copyright (C) 2008 JFusion. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package JFusion_universal
+ * @author JFusion development team
+ * @copyright Copyright (C) 2008 JFusion. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
-// no direct access
 use JFusion\Plugin\Plugin_Front;
-
-defined('_JEXEC' ) or die('Restricted access' );
 
 /**
  * JFusion Public Class for universal plugin

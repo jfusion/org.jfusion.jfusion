@@ -13,9 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
-
 /**
  * Function that registers the JFusion phpBB3 hooks
  *

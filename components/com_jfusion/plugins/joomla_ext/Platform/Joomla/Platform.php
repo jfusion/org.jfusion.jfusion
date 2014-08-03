@@ -13,7 +13,6 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Factory;
 use JFusion\Plugin\Platform\Joomla;
 use JFusion\Plugins\joomla_ext\Helper;
@@ -22,8 +21,6 @@ use JFusion\User\Userinfo;
 use \JRoute;
 use \Exception;
 use JText;
-
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Authentication Class for an external Joomla database

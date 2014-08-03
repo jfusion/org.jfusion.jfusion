@@ -13,14 +13,12 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
 use JFusion\Factory;
 use JFusion\Plugin\Plugin_Auth;
 
 use JFusion\User\Userinfo;
 use \PasswordHash;
 use \JCrypt;
-defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Authentication Class for an external Joomla database
