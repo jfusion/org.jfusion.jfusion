@@ -20,7 +20,7 @@ jimport('joomla.user.helper');
 
 /**
  * JFusion User Class for the internal Joomla database
- * For detailed descriptions on these functions please check the model.abstractuser.php
+ * For detailed descriptions on these functions please check JFusionUser
  * @category   JFusion
  * @package    JFusionPlugins
  * @subpackage Joomla_int

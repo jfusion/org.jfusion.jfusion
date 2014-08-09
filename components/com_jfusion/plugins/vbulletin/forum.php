@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Forum Class for vBulletin
- * For detailed descriptions on these functions please check the model.abstractforum.php
+ * For detailed descriptions on these functions please check JFusionForum
  *
  * @category   JFusion
  * @package    JFusionPlugins

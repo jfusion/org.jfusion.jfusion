@@ -142,7 +142,6 @@ class JFusionFrameless {
 		$document = JFactory::getDocument();
 
 		if (!$data->isPlugin) {
-			require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php');
 			$JFusionPlugin = new JFusionPublic();
 		} else {
 			$JFusionPlugin = JFusionFactory::getPublic($data->jname);

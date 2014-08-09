@@ -21,7 +21,7 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Admin Class for PrestaShop
- * For detailed descriptions on these functions please check the model.abstractadmin.php
+ * For detailed descriptions on these functions please check JFusionAdmin
  *
  * @category   JFusion
  * @package    JFusionPlugins

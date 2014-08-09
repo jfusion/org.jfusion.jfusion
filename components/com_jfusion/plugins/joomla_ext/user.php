@@ -20,7 +20,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.user.helper');
 /**
  * JFusion User Class for an external Joomla database
- * For detailed descriptions on these functions please check the model.abstractadmin.php
+ * For detailed descriptions on these functions please check JFusionAdmin
  * 
  * @category   JFusion
  * @package    JFusionPlugins

@@ -16,7 +16,7 @@
 defined('_JEXEC') or die('Restricted access');
 /**
  * JFusion Authentication Class for vBulletin
- * For detailed descriptions on these functions please check the model.abstractauth.php
+ * For detailed descriptions on these functions please check JFusionAuth
  *
  * @category   JFusion
  * @package    JFusionPlugins

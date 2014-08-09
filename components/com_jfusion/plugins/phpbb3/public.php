@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Public Class for phpBB3
- * For detailed descriptions on these functions please check the model.abstractpublic.php
+ * For detailed descriptions on these functions please check JFusionPublic
  *
  * @category   JFusion
  * @package    JFusionPlugins

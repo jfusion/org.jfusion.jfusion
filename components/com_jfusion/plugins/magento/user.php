@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion User Class for Magento 1.1
- * For detailed descriptions on these functions please check the model.abstractuser.php
+ * For detailed descriptions on these functions please check JFusionUser
  *
  * @category   JFusion
  * @package    JFusionPlugins

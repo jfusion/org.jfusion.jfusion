@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 global $baseURL, $fullURL, $integratedURL, $vbsefmode;
 /**
  * JFusion Public Class for vBulletin
- * For detailed descriptions on these functions please check the model.abstractpublic.php
+ * For detailed descriptions on these functions please check JFusionPublic
  *
  * @category   JFusion
  * @package    JFusionPlugins
