@@ -1,0 +1,7 @@
+{
+    "require": {
+        "php": ">=5.3.10",
+        "jfusion/core": ">=1.0"
+    },
+    "minimum-stability" : "dev"
+}

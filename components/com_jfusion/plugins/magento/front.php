@@ -17,7 +17,7 @@ use JFusion\Plugin\Plugin_Front;
 
 /**
  * JFusion Public Class for Magento 1.1
- * For detailed descriptions on these functions please check the model.abstractpublic.php
+ * For detailed descriptions on these functions please check Plugin_Front
  * 
  * @category   JFusion
  * @package    JFusionPlugins

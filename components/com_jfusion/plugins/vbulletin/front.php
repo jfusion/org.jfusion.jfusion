@@ -18,7 +18,7 @@ use JFusion\Plugin\Plugin_Front;
 global $baseURL, $fullURL, $integratedURL, $vbsefmode;
 /**
  * JFusion Public Class for vBulletin
- * For detailed descriptions on these functions please check the model.abstractpublic.php
+ * For detailed descriptions on these functions please check Plugin_Front
  *
  * @category   JFusion
  * @package    JFusionPlugins
