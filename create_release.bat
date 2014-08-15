@@ -1,6 +1,6 @@
 @echo off
 SET FULLPATH=%~dp0
-SET PLUGIN_DIR=%FULLPATH%components\com_jfusion\plugins\
+SET PLUGIN_DIR=%FULLPATH%gitplugins\
 setlocal enableextensions
 
 :START
@@ -69,6 +69,7 @@ endlocal & goto :EOF
 goto end
 
 :CREATE_ALL
+	call :CheckoutPlugins
 	call :createPackages
 	call :createMain
 goto end
@@ -78,6 +79,7 @@ goto end
 goto end
 
 :CREATE_MAIN
+	call :CheckoutPlugins
 	call :createMain
 goto end
 
@@ -107,14 +109,13 @@ endlocal & goto :EOF
 	call :CreatePackage plugins\content\* administrator\components\com_jfusion\packages\jfusion_plugin_content.zip
 	call :CreatePackage plugins\system\jfusion.* administrator\components\com_jfusion\packages\jfusion_plugin_system.zip
 
-
 	echo Create the jfusion plugin packages
 
-	FOR /f "tokens=*" %%G IN ('dir /d /b /a:d components\com_jfusion\plugins\') DO (
-		if exist %FULLPATH%components\com_jfusion\plugins\%%G\jfusion.xml (
-			call :CreatePackage components\com_jfusion\plugins\%%G pluginpackages\jfusion_%%G.zip
+	FOR /f "tokens=*" %%G IN ('dir /d /b /a:d gitplugins\') DO (
+		if exist %FULLPATH%gitplugins\%%G\jfusion.xml (
+			call :CreatePackage gitplugins\%%G pluginpackages\jfusion_%%G.zip
 		) else (
-			echo Error: %FULLPATH%components\com_jfusion\plugins\%%G\jfusion.xml was not found
+			echo Error: %FULLPATH%gitplugins\%%G\jfusion.xml was not found
 		)
 	)
 
@@ -129,22 +130,21 @@ endlocal & goto :EOF
 endlocal & goto :EOF
 
 :createMain
-	call :RunComposer
-
 	echo Prepare the files for packaging
 
-	IF NOT EXIST %FULLPATH%\vendor (
-		echo "Missing Framework install with composer"
-		pause
-   		goto end
-	)
+	cd %FULLPATH%
+	call composer update --no-dev
 
 	md tmp
 	md tmp\admin
 	md tmp\admin\vendor
 	c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%vendor\*.*" "%FULLPATH%\tmp\admin\vendor" > NUL
 	c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%administrator\components\com_jfusion\*.*" "%FULLPATH%\tmp\admin" > NUL
-	c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%pluginpackages\*.*" "%FULLPATH%tmp\admin\packages\" > NUL
+
+	if exist "%FULLPATH%pluginpackages\*.*" (
+		c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%pluginpackages\*.*" "%FULLPATH%tmp\admin\packages\" > NUL
+	)
+
 	del "%FULLPATH%tmp\admin\jfusion.xml"
 
 	md tmp\admin\language
@@ -219,18 +219,45 @@ endlocal & goto :EOF
 	del %FILE%.tmp
 endlocal & goto :EOF
 
-:RunComposer
-	cd %FULLPATH%
-	call composer update --no-dev
-endlocal
-goto :EOF
+:CheckoutPlugins
+	setlocal enableextensions
+	call :CheckoutPlugin dokuwiki
+	call :CheckoutPlugin efront
+	call :CheckoutPlugin elgg
+	call :CheckoutPlugin gallery2
+	call :CheckoutPlugin joomla_ext
+	call :CheckoutPlugin joomla_int
+	call :CheckoutPlugin magento
+	call :CheckoutPlugin mediawiki
+	call :CheckoutPlugin moodle
+	call :CheckoutPlugin mybb
+	call :CheckoutPlugin phpbb3
+	call :CheckoutPlugin prestashop
+	call :CheckoutPlugin smf
+	call :CheckoutPlugin smf2
+	call :CheckoutPlugin universal
+	call :CheckoutPlugin vbulletin
+	call :CheckoutPlugin wordpress
+	call :CheckoutPlugin zencart
+endlocal & goto :EOF
 
 :CheckoutPlugin
-	REM setlocal enableextensions
-	REM setlocal EnableDelayedExpansion
-	call git clone "https://github.com/jfusion/org.jfusion.plugin.%1" "%PLUGIN_DIR%test_%1"
-endlocal
-goto :EOF
+	setlocal enableextensions
+	echo Building Plugin %1
+	if NOT exist %PLUGIN_DIR% (
+		mkdir "%PLUGIN_DIR%"
+	)
+
+	cd "%PLUGIN_DIR%"
+	if NOT exist %PLUGIN_DIR%%1 (
+		call git clone "https://github.com/jfusion/org.jfusion.plugin.%1" "%PLUGIN_DIR%%1"
+	)
+	cd %1
+	call git fetch --all
+	call git reset --hard origin/master
+
+	call composer update --no-dev
+endlocal & goto :EOF
 
 :end
-echo Complete
+echo Build Complete
