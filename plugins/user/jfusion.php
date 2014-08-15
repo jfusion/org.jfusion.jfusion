@@ -798,28 +798,12 @@ class plgUserJfusion extends JPlugin
         if (!JPluginHelper::isEnabled('user','joomla')) {
 	        $master = JFusionFunction::getMaster();
 	        if ($master->name == 'joomla_int') {
-		        $userInfo = JFactory::getUser();
-		        $levels = implode(',', $userInfo->getAuthorisedViewLevels());
-
-		        $db = JFactory::getDbo();
-		        $query = $db->getQuery(true);
-
-		        $query->select('folder, type, element, params')
-			        ->from('#__extensions')
-			        ->where('type =' . $db->Quote('plugin'))
-			        ->where('element =' . $db->Quote('joomla'))
-			        ->where('folder =' . $db->Quote('user'))
-			        ->where('access IN (' . $levels . ')');
-
-		        $plugin = $db->setQuery($query,0,1)->loadObject();
-
-		        $params = new JRegistry;
-		        $params->loadString($plugin->params);
 
 		        // Initialise variables.
 		        $app    = JFactory::getApplication();
 		        $config = JFactory::getConfig();
-		        $mail_to_user = $params->get('mail_to_user', 0); // change default to 0 to prevent user email spam! while running sync
+
+		        $mail_to_user = $this->params->get('mail_to_user', 0);
 
 		        if ($isnew) {
 			        /**
