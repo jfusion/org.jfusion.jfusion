@@ -1,6 +1,6 @@
 @echo off
 SET FULLPATH=%~dp0
-SET PLUGIN_DIR="%FULLPATH%components\com_jfusion\plugins"
+SET PLUGIN_DIR=%FULLPATH%components\com_jfusion\plugins\
 setlocal enableextensions
 
 :START
@@ -9,15 +9,18 @@ IF NOT EXIST administrator echo JFusion files not found. goto end
 echo Looking for required commands...
 IF NOT EXIST c:\WINDOWS\system32\7za.exe (
 	echo "7za.exe does not exist!  Please see create_release_readme.txt".
+	pause
 	goto end
 )
 IF NOT EXIST c:\WINDOWS\system32\sed.exe (
-	echo "sed.exe does not exist! Please see create_release_readme.txt". 
+	echo "sed.exe does not exist! Please see create_release_readme.txt".
+	pause
 	goto end
 )
 IF NOT EXIST "C:\Program Files\Git\bin\git.exe"  (
 	IF NOT EXIST "C:\Program Files (x86)\Git\bin\git.exe"  (
-		echo "Git client not installed!  Please see create_release_readme.txt". 
+		echo "Git client not installed!  Please see create_release_readme.txt".
+		pause
 		goto end
 	)
 )
@@ -29,6 +32,7 @@ for /f "tokens=*" %%a in ( 'git rev-parse HEAD' ) do ( set REVISION=%%a )
 call :GetTimeStamp TIMESTAMP
 
 cls
+echo Run "composer update" to install the required frameworks if not already up to date!
 echo Choices:
 echo 1 - Create Main Packages
 echo 2 - Create Plugin and Module Packages
@@ -125,9 +129,20 @@ endlocal & goto :EOF
 endlocal & goto :EOF
 
 :createMain
+	call :RunComposer
+
 	echo Prepare the files for packaging
+
+	IF NOT EXIST %FULLPATH%\vendor (
+		echo "Missing Framework install with composer"
+		pause
+   		goto end
+	)
+
 	md tmp
 	md tmp\admin
+	md tmp\admin\vendor
+	c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%vendor\*.*" "%FULLPATH%\tmp\admin\vendor" > NUL
 	c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%administrator\components\com_jfusion\*.*" "%FULLPATH%\tmp\admin" > NUL
 	c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%pluginpackages\*.*" "%FULLPATH%tmp\admin\packages\" > NUL
 	del "%FULLPATH%tmp\admin\jfusion.xml"
@@ -203,6 +218,19 @@ endlocal & goto :EOF
 
 	del %FILE%.tmp
 endlocal & goto :EOF
+
+:RunComposer
+	cd %FULLPATH%
+	call composer update --no-dev
+endlocal
+goto :EOF
+
+:CheckoutPlugin
+	REM setlocal enableextensions
+	REM setlocal EnableDelayedExpansion
+	call git clone "https://github.com/jfusion/org.jfusion.plugin.%1" "%PLUGIN_DIR%test_%1"
+endlocal
+goto :EOF
 
 :end
 echo Complete

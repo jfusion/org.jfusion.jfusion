@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/defines.php';
-require_once __DIR__ . '/libraries/import.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php');
 
@@ -16,6 +16,8 @@ $params = JComponentHelper::getParams('com_jfusion');
 $config = new Registry();
 
 $config->set('url', JUri::root());
+
+$config->set('plugin-path', JFUSION_PLUGIN_PATH);
 
 /**
  * Database settings

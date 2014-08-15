@@ -66,6 +66,7 @@
 			<folder>helpers</folder>
 			<folder>images</folder>
             <folder>libraries</folder>
+            <folder>vendor</folder>
 			<folder>models</folder>
 			<folder>views</folder>
             <folder>fields</folder>

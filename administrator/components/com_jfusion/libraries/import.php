@@ -24,7 +24,6 @@ if (!class_exists('\\JFusion\\Loader'))
 Loader::setup();
 
 Loader::registerNamespace('JFusion', JFUSIONPATH_PLATFORM);
-Loader::registerNamespace('JFusion', JFUSION_PLUGIN_AUTOLOADER_PATH);
 
 Loader::registerNamespace('Joomla', JFUSIONPATH_PLATFORM);
 Loader::registerNamespace('Psr', JFUSIONPATH_PLATFORM);
