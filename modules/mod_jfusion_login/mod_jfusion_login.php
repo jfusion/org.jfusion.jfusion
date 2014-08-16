@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * require the module helper
  */
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'helper.php';
+require_once dirname(__FILE__) . '/helper.php';
 $user = JFactory::getUser();
 /**
  * @ignore
@@ -36,7 +36,7 @@ $type = modjfusionLoginHelper::getType();
 $return = modjfusionLoginHelper::getReturnURL($params, $type);
 $twofactormethods = modjfusionLoginHelper::getTwoFactorMethods();
 //check if the JFusion component is installed
-$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
+$factory_file = JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 try {
 	if (file_exists($factory_file)) {
 	    /**

@@ -13,7 +13,7 @@ use Psr\Log\LogLevel;
 
 defined('_JEXEC') or trigger_error('Restricted access');
 
-$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
+$factory_file = JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 if(file_exists($factory_file)):
 	require_once $factory_file;
 else:

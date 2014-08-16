@@ -134,7 +134,7 @@ function jfusionParseRoute($segments)
 	        $jPluginParam->loadArray(unserialize(base64_decode($JFusionPluginParam)));
 	        $jname = $jPluginParam->get('jfusionplugin');
 
-		    require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
+		    require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 	
 	        if (!empty($jname)) {
 	            $public = \JFusion\Factory::getFront($jname);

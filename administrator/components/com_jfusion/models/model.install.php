@@ -22,8 +22,8 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Require the Joomla Installer model
  */
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_installer' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'install.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_installer/models/install.php';
 jimport('joomla.installer.helper');
 
 /**
@@ -126,11 +126,11 @@ class JFusionModelInstaller extends InstallerModelInstall
 			    // Cleanup the install files
 			    if (!is_file($package['packagefile'])) {
 				    $config = JFactory::getConfig();
-				    $package['packagefile'] = $config->get('tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
+				    $package['packagefile'] = $config->get('tmp_path') . '/' . $package['packagefile'];
 			    }
 			    if ($result['status'] && is_file($package['packagefile'])) {
 				    //save a copy of the plugin for safe keeping
-				    $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . basename($package['packagefile']);
+				    $dest = JPATH_ADMINISTRATOR . '/components/com_jfusion/packages/' . basename($package['packagefile']);
 				    if ($package['packagefile'] != $dest) {
 					    JFile::copy($package['packagefile'], $dest);
 				    }
@@ -171,7 +171,7 @@ class JFusionModelInstaller extends InstallerModelInstall
         // Cleanup the install files
         if (!is_file($package['packagefile'])) {
             $config = JFactory::getConfig();
-            $package['packagefile'] = $config->get('tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
+            $package['packagefile'] = $config->get('tmp_path') . '/' . $package['packagefile'];
         }
        // JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 

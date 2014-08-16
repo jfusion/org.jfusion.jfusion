@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
 * Require the Jfusion plugin factory
 */
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 
 /**
 * Defines the jfusion usergroup assignments parameter

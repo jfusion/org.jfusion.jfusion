@@ -25,7 +25,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  */
 jimport('joomla.plugin.plugin');
 jimport('joomla.html.pagination');
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 /**
  * ContentPlugin Class for jfusion
  *
@@ -106,16 +106,16 @@ class plgContentJfusion extends JPlugin
 		if (!defined('DISCUSSION_TEMPLATE_PATH')) {
 			define('DISCUSSBOT_URL_PATH', JUri::root(true) . 'plugins/content/jfusion/discussbot/');
 
-			define('DISCUSSBOT_PATH', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'discussbot' . DIRECTORY_SEPARATOR);
+			define('DISCUSSBOT_PATH', JPATH_SITE . '/plugins/content/jfusion/discussbot/');
 
 			//let's first check for customized files in Joomla template directory
 			$app = JFactory::getApplication();
-			$JoomlaTemplateOverride = JPATH_BASE . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR  . $app->getTemplate() . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'plg_content_jfusion' . DIRECTORY_SEPARATOR;
+			$JoomlaTemplateOverride = JPATH_BASE . '/templates/' . $app->getTemplate() . '/html/plg_content_jfusion/';
 			if (file_exists($JoomlaTemplateOverride)) {
 				define('DISCUSSION_TEMPLATE_PATH', $JoomlaTemplateOverride);
 				define('DISCUSSION_TEMPLATE_URL', JFusionFunction::getJoomlaURL() . 'templates/' . $app->getTemplate() . '/html/plg_content_jfusion/');
 			} else {
-				define('DISCUSSION_TEMPLATE_PATH', JPATH_BASE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'discussbot' . DIRECTORY_SEPARATOR . 'tmpl' . DIRECTORY_SEPARATOR . $this->template . DIRECTORY_SEPARATOR);
+				define('DISCUSSION_TEMPLATE_PATH', JPATH_BASE . '/plugins/content/jfusion/discussbot/tmpl/' . $this->template . '/');
 				define('DISCUSSION_TEMPLATE_URL', JFusionFunction::getJoomlaURL() . 'plugins/content/jfusion/discussbot/tmpl/' . $this->template . '/');
 			}
 		}

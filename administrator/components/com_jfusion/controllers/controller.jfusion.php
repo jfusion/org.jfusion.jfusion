@@ -23,8 +23,8 @@ defined('_JEXEC') or die('Restricted access');
  */
 jimport('joomla.application.component.controller');
 jimport('joomla.application.component.view');
-require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'import.php';
-require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . '/import.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . '/models/model.jfusionadmin.php';
 /**
  * JFusion Controller class
  *
@@ -476,7 +476,7 @@ class JFusionController extends JControllerLegacy
      */
     function installplugin()
     {
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
+        include_once JPATH_COMPONENT_ADMINISTRATOR . '/models/model.install.php';
         $model = new JFusionModelInstaller();
         $result = $model->install();
 
@@ -515,7 +515,7 @@ class JFusionController extends JControllerLegacy
 	function installlanguage()
 	{
 		JFactory::getLanguage()->load('com_installer');
-		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_installer' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'install.php';
+		require_once JPATH_ADMINISTRATOR . '/components/com_installer/models/install.php';
 		$installer = JModelLegacy::getInstance('Install', 'InstallerModel');
 
 		$installer->install();
@@ -531,7 +531,7 @@ class JFusionController extends JControllerLegacy
 	{
 		JFactory::getLanguage()->load('com_installer');
 
-		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_installer' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'manage.php';
+		require_once JPATH_ADMINISTRATOR . '/components/com_installer/models/manage.php';
 		$manager = JModelLegacy::getInstance('Manage', 'InstallerModel');
 
 		$eid = JFactory::getApplication()->input->getInt('eid', 0);
@@ -555,7 +555,7 @@ class JFusionController extends JControllerLegacy
 	        //initialise response element
 	        $result = array();
 
-		    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
+		    include_once JPATH_COMPONENT_ADMINISTRATOR . '/models/model.install.php';
 		    $model = new JFusionModelInstaller();
 		    $result = $model->copy($jname, $new_jname);
 
@@ -597,7 +597,7 @@ class JFusionController extends JControllerLegacy
 
 	        //check to see if an integration was selected
 	        if ($jname && $jname != 'joomla_int' && !$copys) {
-	            include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
+	            include_once JPATH_COMPONENT_ADMINISTRATOR . '/models/model.install.php';
 	            $model = new JFusionModelInstaller();
 	            $result = $model->uninstall($jname);
 
@@ -956,7 +956,7 @@ JS;
         $info->addAttribute('jfusionrevision', $RevisionCurrent);
 
         //get the current JFusion version number
-        $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
+        $filename = JFUSION_PLUGIN_PATH . '/' . $jname . '/jfusion.xml';
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
 	        $element = \JFusion\Framework::getXml($filename);

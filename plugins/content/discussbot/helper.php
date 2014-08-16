@@ -245,7 +245,7 @@ class JFusionDiscussBotHelper {
 		if (strpos($this->context, 'com_content') === 0) {
 			//make sure Joomla content helper is loaded
 			if (!class_exists('ContentHelperRoute')) {
-				require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_content' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
+				require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 			}
 			//take into account page breaks
 			$url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catid);
@@ -260,7 +260,7 @@ class JFusionDiscussBotHelper {
 			$url .= $query;
 		} else if (strpos($this->context, 'com_k2') === 0) {
 			if (!class_exists('K2HelperRoute')) {
-				require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
+				require_once JPATH_SITE . '/components/com_k2/helpers/route.php';
 			}
 			/** @noinspection PhpUndefinedClassInspection */
 			$url = urldecode(K2HelperRoute::getItemRoute($this->article->id . ':' . urlencode($this->article->alias), $this->article->catid . ':' . urlencode($this->article->category->alias)));

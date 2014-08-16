@@ -12,7 +12,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 jimport('joomla.application.module.helper');
-require_once (JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'helper.php');
+require_once (JPATH_SITE . '/components/com_jfusion/helpers/helper.php');
 /**
  * JFusionControllerConnect class
  *

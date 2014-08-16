@@ -206,7 +206,7 @@ HTML;
     public static function currentVersion($includeRev = false)
     {
         //get the current JFusion version number
-        $filename = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components'  . DIRECTORY_SEPARATOR .  'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusion.xml';
+        $filename = JPATH_ADMINISTRATOR . '/components/com_jfusion/jfusion.xml';
         $VersionCurrent = $RevisionCurrent = 0;
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number

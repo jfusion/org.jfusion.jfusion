@@ -20,10 +20,10 @@ defined('_JEXEC' ) or die('Restricted access' );
 /**
 * load the helper file
 */
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'helper.php');
+require_once(dirname(__FILE__) . '/helper.php');
 
 //check if the JFusion component is installed
-$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
+$factory_file = JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 try {
 	if (file_exists($factory_file)) {
 		/**

@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
  * load the JFusion framework
  */
 jimport('joomla.application.component.view');
-require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.frameless.php');
+require_once (JPATH_ADMINISTRATOR . '/components/com_jfusion/models/model.frameless.php');
 
 /**
  * Class that handles the frameless integration

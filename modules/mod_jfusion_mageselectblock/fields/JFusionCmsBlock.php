@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die ();
 
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 
 /**
  * Get the block list of the cms of Magento

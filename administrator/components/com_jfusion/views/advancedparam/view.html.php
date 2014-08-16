@@ -204,8 +204,11 @@ HTML;
 		global $jname;
 		$jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
 		if (isset($this->featureArray[$feature]) && !empty($jname)) {
-			$path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'Platform' . DIRECTORY_SEPARATOR . 'Joomla' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
-			$defaultPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $option . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'advancedparam' . DIRECTORY_SEPARATOR . 'paramfiles' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
+			/**
+			 * TODO Jname need to be real plugin name
+			 */
+			$path = JFUSION_PLUGIN_PATH . '/' . $jname . '/Platform/Joomla/' . $this->featureArray[$feature];
+			$defaultPath = JPATH_ADMINISTRATOR . '/components/' . $option . '/views/advancedparam/paramfiles/' . $this->featureArray[$feature];
 			$xml_path = (JFile::exists($path)) ? $path : $defaultPath;
 			$form = false;
 			if (JFile::exists($xml_path)) {
@@ -218,7 +221,7 @@ HTML;
 						 */
 						$form = JForm::getInstance($jname, $xml->form->asXML(), array('control' => "params[$jname]"));
 						//add JFusion's fields
-						$form->addFieldPath(JPATH_COMPONENT . DIRECTORY_SEPARATOR . 'fields');
+						$form->addFieldPath(JPATH_COMPONENT . '/fields');
 						if (isset($value[$jname])) {
 							$form->bind($value[$jname]);
 						}
@@ -342,8 +345,8 @@ HTML;
 			$jname = $value[$key]['jfusionplugin'];
 
 			if (isset($this->featureArray[$feature]) && !empty($jname)) {
-				$path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'Platform' . DIRECTORY_SEPARATOR . 'Joomla' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
-				$defaultPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $option . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'advancedparam' . DIRECTORY_SEPARATOR . 'paramfiles' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
+				$path = JFUSION_PLUGIN_PATH . '/' . $jname . '/Platform/Joomla/' . $this->featureArray[$feature];
+				$defaultPath = JPATH_ADMINISTRATOR . '/components/' . $option . '/views/advancedparam/paramfiles/' . $this->featureArray[$feature];
 				$xml_path = (file_exists($path)) ? $path : $defaultPath;
 				$xml = \JFusion\Framework::getXml($xml_path);
 				if ($xml) {
@@ -354,7 +357,7 @@ HTML;
 						 */
 						$form = JForm::getInstance($jname, $xml->form->asXML(), array('control' => "params[$jname]"));
 						//add JFusion's fields
-						$form->addFieldPath(JPATH_COMPONENT . DIRECTORY_SEPARATOR . 'fields');
+						$form->addFieldPath(JPATH_COMPONENT . '/fields');
 						//bind values
 						$form->bind($value[$key]);
 						$value[$key]['form'] = $form;

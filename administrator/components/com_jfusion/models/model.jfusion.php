@@ -170,7 +170,7 @@ class JFusionFunction
 		$option = $mainframe->input->get('option');
 
 		if ($option == 'com_k2') {
-			include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
+			include_once JPATH_SITE . '/components/com_k2/helpers/route.php';
 			/** @noinspection PhpUndefinedClassInspection */
 			$article_url = urldecode(K2HelperRoute::getItemRoute($contentitem->id . ':' . urlencode($contentitem->alias), $contentitem->catid . ':' . urlencode($contentitem->category->alias)));
 		} else {
@@ -193,7 +193,7 @@ class JFusionFunction
 				}
 			}
 
-			include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_content'  . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
+			include_once JPATH_SITE . '/components/com_content/helpers/route.php';
 			$article_url = ContentHelperRoute::getArticleRoute($contentitem->slug, $contentitem->catslug);
 		}
 

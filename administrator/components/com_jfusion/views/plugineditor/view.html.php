@@ -62,7 +62,7 @@ class jfusionViewplugineditor extends JViewLegacy
 	        // Keep the idea of instanciate the parameters only with the parameters of the XML file from the plugin needed but with a centralized method (\JFusion\Factory::createParams)
 	        $parametersInstance = \JFusion\Factory::createParams($jname);
 
-	        $file = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
+	        $file = JFUSION_PLUGIN_PATH . '/' . $jname . '/jfusion.xml';
 	        $form = new JForm($jname);
 	        if (file_exists($file)) {
 		        jimport('joomla.filesystem.file');
@@ -76,12 +76,12 @@ class jfusionViewplugineditor extends JViewLegacy
 		        jimport('joomla.form.form');
 		        jimport('joomla.form.helper');
 
-		        JFormHelper::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'fields');
-		        JFormHelper::addFieldPath(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'fields');
+		        JFormHelper::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR . '/fields');
+		        JFormHelper::addFieldPath(JFUSION_PLUGIN_PATH . '/' . $jname . '/fields');
 
 		        $form->load($fields);
 
-		        $file = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'Platform' . DIRECTORY_SEPARATOR . 'Joomla' . DIRECTORY_SEPARATOR . 'jfusion.xml';
+		        $file = JFUSION_PLUGIN_PATH . '/' . $jname . '/Platform/Joomla/jfusion.xml';
 		        if (file_exists($file)) {
 			        $content = file_get_contents($file);
 			        $xml = \JFusion\Framework::getXML($content, false);

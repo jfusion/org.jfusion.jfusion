@@ -2,7 +2,7 @@
 require_once __DIR__ . '/defines.php';
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_jfusion/models/model.jfusion.php');
 
 use JFusion\Factory;
 use Joomla\Registry\Registry;
@@ -50,7 +50,7 @@ $config->set('usergroups', $params->get('usergroups', false));
 
 Factory::$config = $config;
 
-require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.eventhook.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_jfusion/models/model.eventhook.php');
 
 $listener = new JFusionEventHook();
 

@@ -2,7 +2,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'fields' . DIRECTORY_SEPARATOR . 'jformfieldjfusionactiveplugins.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/fields/jformfieldjfusionactiveplugins.php';
 /**
  * Field class
  *

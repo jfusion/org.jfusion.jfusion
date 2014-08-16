@@ -22,7 +22,7 @@ defined('_JEXEC') or die('Restricted access');
  * Load the JFusion framework if installed
  */
 jimport('joomla.plugin.plugin');
-$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
+$factory_file = JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 if (file_exists($factory_file)) {
     /**
      * require the JFusion libraries

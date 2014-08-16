@@ -233,20 +233,20 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			$db->execute();
 
-			$adminpath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR;
+			$adminpath = JPATH_ADMINISTRATOR . '/components/com_jfusion/';
 			//we need to remove a couple parameter files if they exists to prevent duplicates from showing up, and other unused files.
 			$files2delete = array($adminpath . 'config.xml',
 				$adminpath . 'com_jfusion.xml',
-				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php',
-				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php',
-				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.abstractauth.php',
-				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.abstractuser.php',
-				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.abstractforum.php',
-				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php',
-				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'mysql.php',
-				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'mysql.reconnect.php',
-				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'mysqli.php',
-				$adminpath . 'models' . DIRECTORY_SEPARATOR . 'recaptchalib.php');
+				$adminpath . 'models/model.abstractpublic.php',
+				$adminpath . 'models/model.abstractadmin.php',
+				$adminpath . 'models/model.abstractauth.php',
+				$adminpath . 'models/model.abstractuser.php',
+				$adminpath . 'models/model.abstractforum.php',
+				$adminpath . 'models/model.jplugin.php',
+				$adminpath . 'models/mysql.php',
+				$adminpath . 'models/mysql.reconnect.php',
+				$adminpath . 'models/mysqli.php',
+				$adminpath . 'models/recaptchalib.php');
 
 			foreach ($files2delete as $f) {
 				if (file_exists($f)) {
@@ -306,13 +306,13 @@ class com_jfusionInstallerScript
 			/**
 			 * UPGRADES FOR 1.8
 			 */
-			$dir = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'plugins';
+			$dir = JPATH_ADMINISTRATOR . '/components/com_jfusion/plugins';
 			if (JFolder::exists($dir)) {
 				$folders = JFolder::folders($dir);
 				$results = true;
 				foreach ($folders as $folder) {
-					if (!JFolder::exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $folder) ) {
-						$r = JFolder::copy($dir . DIRECTORY_SEPARATOR . $folder, JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $folder);
+					if (!JFolder::exists(JFUSION_PLUGIN_PATH . '/' . $folder) ) {
+						$r = JFolder::copy($dir . '/' . $folder, JFUSION_PLUGIN_PATH . '/' . $folder);
 						if ($results === true) {
 							$results = $r;
 						}
@@ -781,7 +781,7 @@ HTML;
 HTML;
 		echo $html;
 
-		$basedir = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion';
+		$basedir = JPATH_ADMINISTRATOR . '/components/com_jfusion';
 		if(!empty($restorePluginOutput)) {
 			echo $restorePluginOutput;
 		}
@@ -831,7 +831,7 @@ HTML;
 				//install updates
 				$model = new JFusionModelInstaller(false);
 				try {
-					$result = $model->installZIP($basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_' . $plugin . '.zip');
+					$result = $model->installZIP($basedir . '/packages/jfusion_' . $plugin . '.zip');
 
 					$message = $result['message'];
 
@@ -873,21 +873,21 @@ HTML;
     <a class="btn" href="index.php?option=com_jfusion">CPanel</a>
     <br/><br/>
 	<?php
-		$basedir = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion';
+		$basedir = JPATH_ADMINISTRATOR . '/components/com_jfusion';
 		//install the JFusion packages
 		jimport('joomla.installer.helper');
 		$packages = array();
 
-		$packages['Login Module'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_mod_login.zip';
-		$packages['Activity Module'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_mod_activity.zip';
-		$packages['User Activity Module'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_mod_user_activity.zip';
-		$packages['Whos Online Module'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_mod_whosonline.zip';
+		$packages['Login Module'] = $basedir . '/packages/jfusion_mod_login.zip';
+		$packages['Activity Module'] = $basedir . '/packages/jfusion_mod_activity.zip';
+		$packages['User Activity Module'] = $basedir . '/packages/jfusion_mod_user_activity.zip';
+		$packages['Whos Online Module'] = $basedir . '/packages/jfusion_mod_whosonline.zip';
 
-		$packages['User Plugin'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_plugin_user.zip';
-		$packages['Authentication Plugin'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_plugin_auth.zip';
-		$packages['Search Plugin'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_plugin_search.zip';
-		$packages['System Plugin'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_plugin_system.zip';
-		$packages['Discussion Bot'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_plugin_content.zip';
+		$packages['User Plugin'] = $basedir . '/packages/jfusion_plugin_user.zip';
+		$packages['Authentication Plugin'] = $basedir . '/packages/jfusion_plugin_auth.zip';
+		$packages['Search Plugin'] = $basedir . '/packages/jfusion_plugin_search.zip';
+		$packages['System Plugin'] = $basedir . '/packages/jfusion_plugin_system.zip';
+		$packages['Discussion Bot'] = $basedir . '/packages/jfusion_plugin_content.zip';
 
 		foreach ($packages as $name => $filename) {
 			$package = JInstallerHelper::unpack($filename);
@@ -925,11 +925,11 @@ HTML;
 		echo '<br/><br/>';
 
 		//cleanup the packages directory
-		$package_dir = $basedir . DIRECTORY_SEPARATOR . 'packages';
+		$package_dir = $basedir . '/packages';
 		$folders = JFolder::folders($package_dir);
 		if ($folders) {
 			foreach ($folders as $folder) {
-				JFolder::delete($package_dir . DIRECTORY_SEPARATOR . $folder);
+				JFolder::delete($package_dir . '/' . $folder);
 			}
 		}
 
@@ -962,10 +962,10 @@ HTML;
 	private function init() {
 		JFactory::getLanguage()->load('com_jfusion', JPATH_BASE);
 
-		$administrator = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR;
+		$administrator = JPATH_ADMINISTRATOR . '/components/com_jfusion/';
 
-		require_once $administrator . DIRECTORY_SEPARATOR . 'import.php';
-		require_once $administrator . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
-		require_once $administrator . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
+		require_once $administrator . '/import.php';
+		require_once $administrator . 'models/model.jfusionadmin.php';
+		require_once $administrator . 'models/model.install.php';
 	}
 }

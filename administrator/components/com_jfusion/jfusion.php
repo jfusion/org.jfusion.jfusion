@@ -27,7 +27,7 @@ $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
 /**
  * Require the base controller
  */
-include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . 'controller.jfusion.php';
+include_once JPATH_COMPONENT_ADMINISTRATOR . '/controllers/controller.jfusion.php';
 JFusionFunction::initJavaScript();
 
 $controller = new JFusionController();
@@ -38,7 +38,7 @@ if (!$task) {
 }
 
 $tasklist = $controller->getTasks();
-require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'toolbar.jfusion.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . '/toolbar.jfusion.php';
 if (in_array($task, $tasklist)) {
 	if (!headers_sent()) {
 		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');

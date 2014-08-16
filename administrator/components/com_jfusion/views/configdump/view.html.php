@@ -495,14 +495,14 @@ class jfusionViewconfigdump extends JViewLegacy {
 
 	function getVersion()
 	{
-		$this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('COMPONENT'));
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'));
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_login' . DIRECTORY_SEPARATOR . 'mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'));
+		$this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . '/jfusion.xml', JText::_('COMPONENT'));
+		$this->getVersionNumber(JPATH_SITE . '/modules/mod_jfusion_activity/mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'));
+		$this->getVersionNumber(JPATH_SITE . '/modules/mod_jfusion_login/mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'));
 
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'));
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'));
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'));
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'));
+		$this->getVersionNumber(JPATH_SITE . '/plugins/authentication/jfusion/jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'));
+		$this->getVersionNumber(JPATH_SITE . '/plugins/user/jfusion/jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'));
+		$this->getVersionNumber(JPATH_SITE . '/plugins/search/jfusion/jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'));
+		$this->getVersionNumber(JPATH_SITE . '/plugins/content/jfusion/jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'));
 	}
 
 	/**

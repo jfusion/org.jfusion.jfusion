@@ -19,7 +19,7 @@ use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'defines.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . '/defines.php';
 jimport('joomla.application.component.view');
 
 /**
@@ -247,7 +247,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    $record->description = $JFusionParam->get('description');
 		    if(empty($record->description)){
 			    //get the default description
-			    $plugin_xml = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $record->name . DIRECTORY_SEPARATOR . 'jfusion.xml';
+			    $plugin_xml = JFUSION_PLUGIN_PATH . '/' . $record->name . '/jfusion.xml';
 			    if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
 				    $xml = \JFusion\Framework::getXml($plugin_xml);
 				    $description = $xml->description;
@@ -366,7 +366,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				if ($record->status == 1) {
 					//check to see if the plugin files exist
 
-					$plugin_xml = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $JFusionPlugin->getName() . DIRECTORY_SEPARATOR . 'jfusion.xml';
+					$plugin_xml = JFUSION_PLUGIN_PATH . '/' . $JFusionPlugin->getName() . '/jfusion.xml';
 					if(!file_exists($plugin_xml)) {
 						$record->status = 0;
 						\JFusion\Framework::raise(LogLevel::WARNING, JText::_('NO_FILES'), $record->name);

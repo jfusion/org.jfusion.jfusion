@@ -24,7 +24,7 @@ defined('_JEXEC') or die('Restricted access');
  * Load the JFusion framework
  */
 jimport('joomla.event.plugin');
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 /**
  * JFusion Authentication class
  *

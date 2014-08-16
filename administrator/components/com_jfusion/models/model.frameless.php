@@ -11,7 +11,7 @@
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'import.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 
 /**
  * Singleton static only class that creates instances for each specific JFusion plugin.
@@ -124,7 +124,7 @@ class JFusionFrameless {
 
 		$css = new stdClass();
 
-		$css->sourcepath = JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
+		$css->sourcepath = JPATH_SITE . '/components/com_jfusion/css/';
 		$css->url = 'components/com_jfusion/css/';
 
 		$css->files = array();
