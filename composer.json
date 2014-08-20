@@ -1,7 +1,7 @@
 {
     "require": {
         "php": ">=5.3.10",
-        "jfusion/framework": "~1",
-        "jfusion/platform-joomla": "~1"
+        "jfusion/framework": "dev-master",
+        "jfusion/platform-joomla": "dev-master"
     }
 }
