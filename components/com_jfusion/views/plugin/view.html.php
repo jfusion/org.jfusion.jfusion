@@ -73,7 +73,7 @@ class jfusionViewPlugin extends JViewLegacy {
 
         $data = JFusionFrameless::initData($this->jname);
 
-	    $platform = \JFusion\Factory::getPlayform('Joomla', $data->jname);
+	    $platform = \JFusion\Factory::getPlatform('Joomla', $data->jname);
 
 	    if (!$platform->isConfigured()) {
 		    throw new RuntimeException($data->jname . ' ' . JText::_('NOT_FOUND'));

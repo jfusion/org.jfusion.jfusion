@@ -108,7 +108,7 @@ class plgSystemJfusion extends JPlugin
 	                 * @ignore
 	                 * @var $platform \JFusion\Plugin\Platform\Joomla
 	                 */
-	                $platform = \JFusion\Factory::getPlayform('Joomla', $master->name);
+	                $platform = \JFusion\Factory::getPlatform('Joomla', $master->name);
 	                try {
 		                $changed = $platform->syncSessions($keepalive);
 		                if (!empty($changed)) {
@@ -130,7 +130,7 @@ class plgSystemJfusion extends JPlugin
 	                     * @ignore
 	                     * @var $platform \JFusion\Plugin\Platform\Joomla
 	                     */
-	                    $platform = \JFusion\Factory::getPlayform('Joomla', $plugin->name);
+	                    $platform = \JFusion\Factory::getPlatform('Joomla', $plugin->name);
 	                    try {
 		                    $changed = $platform->syncSessions($keepalive);
 		                    if (!empty($changed)) {
@@ -199,7 +199,7 @@ class plgSystemJfusion extends JPlugin
 			 * @ignore
 			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
-			$platform = \JFusion\Factory::getPlayform('Joomla', $master->name);
+			$platform = \JFusion\Factory::getPlatform('Joomla', $master->name);
 			if (method_exists($platform, 'setLanguageFrontEnd')) {
 				try {
 					$platform->setLanguageFrontEnd($userinfo);
@@ -213,7 +213,7 @@ class plgSystemJfusion extends JPlugin
 				 * @ignore
 				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
-				$platform = \JFusion\Factory::getPlayform('Joomla', $slave->name);
+				$platform = \JFusion\Factory::getPlatform('Joomla', $slave->name);
 				if (method_exists($platform, 'setLanguageFrontEnd')) {
 					try {
 						$platform->setLanguageFrontEnd($userinfo);

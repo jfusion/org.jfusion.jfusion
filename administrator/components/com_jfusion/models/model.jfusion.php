@@ -489,7 +489,7 @@ class JFusionFunction
 		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
-		$platform = Factory::getPlayform('Joomla', $jname);
+		$platform = Factory::getPlatform('Joomla', $jname);
 		switch ($feature) {
 			//Forum Features
 			case 'discussion':

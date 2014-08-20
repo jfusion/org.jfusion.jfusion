@@ -43,7 +43,7 @@ class modjfusionUserActivityHelper {
 	     * @ignore
 	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
-	    $platform = Factory::getPlayform('Joomla', $jname);
+	    $platform = Factory::getPlatform('Joomla', $jname);
 
 	    $joomlaUser = \JFusionFunction::getJoomlaUser((object)JFactory::getUser());
 

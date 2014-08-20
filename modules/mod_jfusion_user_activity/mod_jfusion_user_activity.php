@@ -45,7 +45,7 @@ try {
 		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
-		$platform = \JFusion\Factory::getPlayform('Joomla', $jname);
+		$platform = \JFusion\Factory::getPlatform('Joomla', $jname);
 		if($platform->isConfigured()) {
 			//configuration
 			$config['itemid'] = $params->get('itemid');

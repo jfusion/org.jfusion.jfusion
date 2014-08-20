@@ -89,7 +89,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 
 			    $db->setQuery($query);
 			    if ($db->loadResult()) {
-				    $syncdata = \JFusion\Usersync\Usersync::getSyncdata($syncid);
+				    $syncdata = \JFusion\User\Sync::getSyncdata($syncid);
 				    $this->syncdata = $syncdata;
 				    $mode = 'resume';
 			    } else {
@@ -106,7 +106,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 				    $syncid = JUserHelper::genRandomPassword(10);
 				    $sync_active = 0;
 			    } else {
-				    $sync_active = \JFusion\Usersync\Usersync::getSyncStatus($syncid);
+				    $sync_active = \JFusion\User\Sync::getSyncStatus($syncid);
 			    }
 			    //get the master data
 			    $JFusionPlugin = \JFusion\Factory::getAdmin($master->name);

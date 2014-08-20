@@ -154,9 +154,9 @@ class JFusionFrameless {
 		$document = JFactory::getDocument();
 
 		if (!$data->isPlugin) {
-			$platform = \JFusion\Factory::getPlayform('Joomla', null);
+			$platform = \JFusion\Factory::getPlatform('Joomla', null);
 		} else {
-			$platform = \JFusion\Factory::getPlayform('Joomla', $data->jname);
+			$platform = \JFusion\Factory::getPlatform('Joomla', $data->jname);
 
 			if (!$platform->isConfigured()) {
 				throw new RuntimeException($data->jname . ' ' . JText::_('NOT_FOUND'));

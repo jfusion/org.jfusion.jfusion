@@ -176,7 +176,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 	     * @ignore
 	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
-	    $platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
+	    $platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);
 	    try {
 		    $this->forumSelectOptions = $platform->getForumList();
 	    } catch (Exception $e) {

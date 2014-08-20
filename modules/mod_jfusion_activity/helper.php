@@ -51,7 +51,7 @@ class modjfusionActivityHelper
 	     * @ignore
 	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
-	    $platform = Factory::getPlayform('Joomla', $jname);
+	    $platform = Factory::getPlatform('Joomla', $jname);
 	    $front = Factory::getFront($jname);
         if (is_array($results)) {
             foreach ($results as $r) {

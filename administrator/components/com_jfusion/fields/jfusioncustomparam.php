@@ -47,7 +47,7 @@ class JFormFieldJFusionCustomParam extends JFormField
 				$command = explode('.', $this->fieldname, 2);
 				switch ($command[0]) {
 					case 'platform':
-						$JFusionPlugin = \JFusion\Factory::getPlayform('Joomla', $jname);
+						$JFusionPlugin = \JFusion\Factory::getPlatform('Joomla', $jname);
 						$this->fieldname = $command[1];
 						$type = 'platform';
 						break;

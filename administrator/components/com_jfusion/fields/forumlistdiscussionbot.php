@@ -56,7 +56,7 @@ class JFormFieldForumListDiscussionbot extends JFormField
 			     * @ignore
 			     * @var $platform \JFusion\Plugin\Platform\Joomla
 			     */
-			    $platform = \JFusion\Factory::getPlayform('Joomla', $jname);
+			    $platform = \JFusion\Factory::getPlatform('Joomla', $jname);
 			    if ($platform->isConfigured()) {
 				    if (method_exists($platform, 'getForumList')) {
 					    $forumlist = $platform->getForumList();

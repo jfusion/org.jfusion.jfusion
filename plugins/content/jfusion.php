@@ -193,7 +193,7 @@ class plgContentJfusion extends JPlugin
 							 * @ignore
 							 * @var $platform \JFusion\Plugin\Platform\Joomla
 							 */
-							$platform = Factory::getPlayform('Joomla', $this->jname);
+							$platform = Factory::getPlatform('Joomla', $this->jname);
 							$content = '<u>' . $this->article->title . '</u><br />';
 							if ($threadinfo->valid) {
 								$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
@@ -441,7 +441,7 @@ class plgContentJfusion extends JPlugin
 		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
-		$platform = Factory::getPlayform('Joomla', $this->jname);
+		$platform = Factory::getPlatform('Joomla', $this->jname);
 
 		//find any {jfusion_discuss...} to manually plug
 		$this->helper->debug('Finding all manually added plugs');
@@ -707,7 +707,7 @@ HTML;
 		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
-		$platform = Factory::getPlayform('Joomla', $this->jname);
+		$platform = Factory::getPlatform('Joomla', $this->jname);
 
 		//define some variables
 		$allowGuests = $this->params->get('quickreply_allow_guests', 0);
@@ -965,7 +965,7 @@ HTML;
 		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
-		$platform = Factory::getPlayform('Joomla', $this->jname);
+		$platform = Factory::getPlatform('Joomla', $this->jname);
 		$allowGuests = $this->params->get('quickreply_allow_guests', 0);
 		$JoomlaUser = JFusionFunction::getJoomlaUser((object)JFactory::getUser());
 		//make sure the user exists in the software before displaying the quick reply
@@ -1248,7 +1248,7 @@ HTML;
 					 * @ignore
 					 * @var $platform \JFusion\Plugin\Platform\Joomla
 					 */
-					$platform = Factory::getPlayform('Joomla', $this->jname);
+					$platform = Factory::getPlatform('Joomla', $this->jname);
 
 					if ($this->helper->view($view)) {
 						if ($link_mode == 'article' || $link_mode == 'always') {
@@ -1335,7 +1335,7 @@ HTML;
 		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
-		$platform = Factory::getPlayform('Joomla', $this->jname);
+		$platform = Factory::getPlatform('Joomla', $this->jname);
 		$threadinfo = $this->helper->getThreadInfo();
 
 		$sort = $this->params->get('sort_posts', 'ASC');

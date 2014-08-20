@@ -51,7 +51,7 @@ try {
 				 * @ignore
 				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
-				$platform = \JFusion\Factory::getPlayform('Joomla', $jname);
+				$platform = \JFusion\Factory::getPlatform('Joomla', $jname);
 				if($platform->isConfigured()) {
 					$output = new stdClass();
 					$title = $pluginParam->get('title', NULL);

@@ -119,7 +119,7 @@ try {
 		     * @ignore
 		     * @var $platform \JFusion\Plugin\Platform\Joomla
 		     */
-		    $platform = Factory::getPlayform('Joomla', $jname);
+		    $platform = Factory::getPlatform('Joomla', $jname);
 	        //check to see if we found a user
 	        if ($userlookup) {
 	            if ($params->get('avatar')) {

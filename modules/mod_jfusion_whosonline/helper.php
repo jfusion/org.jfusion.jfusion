@@ -56,7 +56,7 @@ class modjfusionWhosOnlineHelper {
 			 * @ignore
 			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
-			$platform = Factory::getPlayform('Joomla', $link_jname);
+			$platform = Factory::getPlatform('Joomla', $link_jname);
 			if(!$platform->isConfigured()) {
 				$output->error = $jname . ': ' . JText::_('NOT_CONFIGURED');
 			} else {

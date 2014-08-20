@@ -79,14 +79,14 @@ class jfusionViewsyncerror extends JViewLegacy
         $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', JFactory::getConfig()->get('list_limit'), 'int');
         $limitstart  = (int)$mainframe->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
 
-        $total = \JFusion\Usersync\Usersync::countLogData($this->syncid, 'error');
+        $total = \JFusion\User\Sync::countLogData($this->syncid, 'error');
         
         jimport('joomla.html.pagination');
 
 	    $this->pageNav = new JPagination($total, $limitstart, $limit);
-	    $this->syncdata = \JFusion\Usersync\Usersync::getSyncdata($this->syncid);
+	    $this->syncdata = \JFusion\User\Sync::getSyncdata($this->syncid);
 	    $this->filter = array('order' => $sort, 'dir' => $dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);
-	    $this->synclog = \JFusion\Usersync\Usersync::getLogData($this->syncid, 'error', $limitstart, $limit, $sort, $dir);
+	    $this->synclog = \JFusion\User\Sync::getLogData($this->syncid, 'error', $limitstart, $limit, $sort, $dir);
         parent::display($tpl);
     }
 }

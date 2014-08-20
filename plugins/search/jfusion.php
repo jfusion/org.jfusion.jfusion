@@ -135,7 +135,7 @@ class plgSearchJfusion extends JPlugin
 			 * @ignore
 			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
-			$platform = \JFusion\Factory::getPlayform('Joomla', $jname);
+			$platform = \JFusion\Factory::getPlatform('Joomla', $jname);
 			if (is_array($pluginParamValue)) {
 				$pluginParam = new JRegistry('');
 				$pluginParam->loadArray($pluginParamValue[$jname]);

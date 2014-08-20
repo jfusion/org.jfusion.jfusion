@@ -64,7 +64,7 @@ class jfusionViewsyncerrordetails extends JViewLegacy
 
         //check to see if the sync has already started
         $syncid = JFactory::getApplication()->input->get('syncid');
-        $syncdata = \JFusion\Usersync\Usersync::getSyncdata($syncid);
+        $syncdata = \JFusion\User\Sync::getSyncdata($syncid);
 
 
 	    $mainframe = JFactory::getApplication();
@@ -75,7 +75,7 @@ class jfusionViewsyncerrordetails extends JViewLegacy
 	    $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', JFactory::getConfig()->get('list_limit'), 'int');
 	    $limitstart  = (int)$mainframe->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
 
-        $synclog = \JFusion\Usersync\Usersync::getLogData($syncid, 'error', $limitstart, $limit, $sort, $dir);
+        $synclog = \JFusion\User\Sync::getLogData($syncid, 'error', $limitstart, $limit, $sort, $dir);
 	    $this->syncdata = $syncdata;
 	    $this->synclog = $synclog;
 	    $this->syncid = $syncid;

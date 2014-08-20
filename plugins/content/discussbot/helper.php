@@ -153,7 +153,7 @@ class JFusionDiscussBotHelper {
 			 * @ignore
 			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
-			$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
+			$platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);
 
 			$forumlist = $this->getForumList();
 			if (in_array($threadinfo->forumid, $forumlist)) {
@@ -189,7 +189,7 @@ class JFusionDiscussBotHelper {
 		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
-		$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
+		$platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);
 
 		if ($force_new) {
 			$threadinfo = $this->setThreadInfo(null);
@@ -289,7 +289,7 @@ class JFusionDiscussBotHelper {
 			 * @ignore
 			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
-			$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
+			$platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);
 			$full_list = $platform->getForumList();
 			$lists_instance = array();
 			foreach ($full_list as $a) {
@@ -338,7 +338,7 @@ class JFusionDiscussBotHelper {
 				 * @ignore
 				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
-				$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
+				$platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);
 				$forumid = $platform->getDefaultForum($this->params, $this->article);
 				if (empty($forumid)) {
 					$responce = array(0, JText::_('REASON_NO_FORUM_FOUND'));
@@ -605,7 +605,7 @@ JS;
 				 * @ignore
 				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
-				$platform = \JFusion\Factory::getPlayform('Joomla', $this->jname);
+				$platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);
 				$this->debug('Quick reply is enabled and thus loading any includes (js, css, etc).');
 				$js .= $platform->loadQuickReplyIncludes();
 			}
