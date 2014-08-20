@@ -491,7 +491,21 @@ class JFusionFunction
 		 */
 		$platform = Factory::getPlatform('Joomla', $jname);
 		switch ($feature) {
-			//Forum Features
+			case 'search':
+				$return = ($platform->methodDefined('getSearchQuery') || $platform->methodDefined('getSearchResults'));
+				break;
+			case 'whosonline':
+				$return = $platform->methodDefined('getOnlineUserQuery');
+				break;
+			case 'breadcrumb':
+				$return = $platform->methodDefined('getPathWay');
+				break;
+			case 'frontendlanguage':
+				$return = $platform->methodDefined('setLanguageFrontEnd');
+				break;
+			case 'frameless':
+				$return = $platform->methodDefined('getBuffer');
+				break;
 			case 'discussion':
 				$return = $platform->methodDefined('createThread');
 				break;
