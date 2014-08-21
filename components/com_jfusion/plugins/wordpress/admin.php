@@ -30,8 +30,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAdmin_wordpress extends JFusionAdmin
-{
+class JFusionAdmin_wordpress extends JFusionAdmin {
    /**
     * @var $helper JFusionHelper_wordpress
     */
@@ -41,16 +40,14 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     * returns the name of this JFusion plugin
     * @return string name of current JFusion plugin
     */
-   function getJname()
-   {
+   function getJname() {
       return 'wordpress';
    }
 
    /**
     * @return string
     */
-   function getTablename()
-   {
+   function getTablename() {
       return 'users';
    }
 
@@ -59,8 +56,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     * @param string $database_prefix
     * @return array
     */
-   function getUsergroupListWPA($db, $database_prefix)
-   {
+   function getUsergroupListWPA($db, $database_prefix) {
       $query = $db->getQuery(true)
          ->select('option_value')
          ->from('#__options')
@@ -70,9 +66,9 @@ class JFusionAdmin_wordpress extends JFusionAdmin
       $roles_ser = $db->loadResult();
       $roles = unserialize($roles_ser);
       $keys = array_keys($roles);
-      $usergroups=array();
-      $count= count($keys);
-      for($i=0;$i < $count;$i++) {
+      $usergroups = array();
+      $count = count($keys);
+      for ($i = 0; $i < $count; $i++) {
          $group = new stdClass;
          $group->id = $i;
          $group->name = $keys[$i];
@@ -86,8 +82,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     *
     * @return array|bool
     */
-   function setupFromPath($softwarePath)
-   {
+   function setupFromPath($softwarePath) {
       $myfile = $softwarePath . 'wp-config.php';
 
       $params = array();
@@ -121,7 +116,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
          $options = array('driver' => $driver, 'host' => $params['database_host'], 'user' => $params['database_user'],
             'password' => $params['database_password'], 'database' => $params['database_name'],
             'prefix' => $params['database_prefix']);
-         $db = JDatabaseDriver::getInstance($options );
+         $db = JDatabaseDriver::getInstance($options);
 
          //Find the url to Wordpress
          $query = $db->getQuery(true)
@@ -130,11 +125,11 @@ class JFusionAdmin_wordpress extends JFusionAdmin
             ->where('option_name = ' . $db->quote('siteurl'));
 
          $db->setQuery($query);
-         $siteurlraw = $db-> loadResult();
+         $siteurlraw = $db->loadResult();
          $params['source_url'] = $siteurlraw;
          if (substr($params['source_url'], -1) != '/') {
             //no slashes found, we need to add one
-            $params['source_url'] .=  '/' ;
+            $params['source_url'] .= '/';
          }
 
          //Find the url to Wordpress
@@ -144,7 +139,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
             ->where('option_name = ' . $db->quote('home'));
 
          $db->setQuery($query);
-         $home = $db-> loadResult();
+         $home = $db->loadResult();
 
 
          if (!defined('COOKIEHASH')) {
@@ -193,13 +188,13 @@ class JFusionAdmin_wordpress extends JFusionAdmin
           * @since 1.2.0
           */
          if (!defined('COOKIEPATH'))
-            define('COOKIEPATH', preg_replace('|https?://[^/]+|i', '', $home. '/'));
+            define('COOKIEPATH', preg_replace('|https?://[^/]+|i', '', $home . '/'));
 
          /**
           * @since 1.5.0
           */
          if (!defined('SITECOOKIEPATH'))
-            define('SITECOOKIEPATH', preg_replace('|https?://[^/]+|i', '', $siteurlraw. '/'));
+            define('SITECOOKIEPATH', preg_replace('|https?://[^/]+|i', '', $siteurlraw . '/'));
 
          /**
           * @since 2.6.0
@@ -207,14 +202,14 @@ class JFusionAdmin_wordpress extends JFusionAdmin
          if (!defined('ADMIN_COOKIE_PATH'))
             define('ADMIN_COOKIE_PATH', SITECOOKIEPATH . 'wp-admin');
 
-         if ( !defined('WP_CONTENT_URL') )
-            define( 'WP_CONTENT_URL', $siteurlraw . '/wp-content');
+         if (!defined('WP_CONTENT_URL'))
+            define('WP_CONTENT_URL', $siteurlraw . '/wp-content');
 
-         if ( !defined('WP_PLUGIN_URL') )
-            define( 'WP_PLUGIN_URL', WP_CONTENT_URL . '/plugins' ); // full url, no trailing slash
+         if (!defined('WP_PLUGIN_URL'))
+            define('WP_PLUGIN_URL', WP_CONTENT_URL . '/plugins'); // full url, no trailing slash
 
-         if ( !defined('PLUGINS_COOKIE_PATH') )
-            define( 'PLUGINS_COOKIE_PATH', preg_replace('|https?://[^/]+|i', '', WP_PLUGIN_URL));
+         if (!defined('PLUGINS_COOKIE_PATH'))
+            define('PLUGINS_COOKIE_PATH', preg_replace('|https?://[^/]+|i', '', WP_PLUGIN_URL));
 
          /**
           * @since 2.0.0
@@ -266,8 +261,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     *
     * @return array
     */
-   function getUserList($limitstart = 0, $limit = 0)
-   {
+   function getUserList($limitstart = 0, $limit = 0) {
       try {
          //getting the connection to the db
          $db = JFusionFactory::getDatabase($this->getJname());
@@ -290,8 +284,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
    /**
     * @return int
     */
-   function getUserCount()
-   {
+   function getUserCount() {
       try {
          //getting the connection to the db
          $db = JFusionFactory::getDatabase($this->getJname());
@@ -313,8 +306,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
    /**
     * @return array
     */
-   function getUsergroupList()
-   {
+   function getUsergroupList() {
       $usergroups = $this->helper->getUsergroupListWP();
       return $usergroups;
    }
@@ -322,13 +314,12 @@ class JFusionAdmin_wordpress extends JFusionAdmin
    /**
     * @return string|array
     */
-   function getDefaultUsergroup()
-   {
+   function getDefaultUsergroup() {
       $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
       if ($usergroups !== null) {
          $group = array();
          foreach ($usergroups as $usergroup) {
-            $group[] =  $this->helper->getUsergroupNameWP($usergroup);
+            $group[] = $this->helper->getUsergroupNameWP($usergroup);
          }
       } else {
          $group = '';
@@ -339,8 +330,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
    /**
     * @return bool
     */
-   function allowRegistration()
-   {
+   function allowRegistration() {
       $result = false;
       try {
          $db = JFusionFactory::getDatabase($this->getJname());
@@ -364,16 +354,14 @@ class JFusionAdmin_wordpress extends JFusionAdmin
    /**
     * @return bool
     */
-   function allowEmptyCookiePath()
-   {
+   function allowEmptyCookiePath() {
       return true;
    }
 
    /**
     * @return bool
     */
-   function allowEmptyCookieDomain()
-   {
+   function allowEmptyCookieDomain() {
       return true;
    }
 
@@ -382,8 +370,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     *
     * @return string UNKNOWN or JNO or JYES or ???
     */
-   function requireFileAccess()
-   {
+   function requireFileAccess() {
       return 'JNO';
    }
 
@@ -392,8 +379,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     *
     * @return bool
     */
-   function isMultiGroup()
-   {
+   function isMultiGroup() {
       return true;
    }
 }
