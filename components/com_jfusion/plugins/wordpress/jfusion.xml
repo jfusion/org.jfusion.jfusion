@@ -8,7 +8,7 @@
     <authorUrl>www.jfusion.org</authorUrl>
     <copyright>Copyright (C) 2010 JFusion. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <version>2.0.0-017</version>
+    <version>2.1.0-000</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
     <description>JFusion plugin for wordpress 3.x</description>
@@ -119,6 +119,7 @@
                 </field>
                 <field name="override" type="text" size="60" label="CURL_COOKIE_OVERRIDE" default="" description="CURL_COOKIE_OVERRIDE_DESC" />
                 <field name="leavealone" type="text" size="60" label="CURL_COOKIE_LEAVEALONE" default="" description="CURL_COOKIE_LEAVEALONE_DESC" />
+                <field name="cookie_stuff" type="hidden" size="0" label="" default="" description="" />
             </fieldset>
 
             <fieldset name="CURL_OPTIONS_LOGIN">
@@ -150,7 +151,7 @@
                     <option value="form">FORM</option>
                     <option value="brute_force">BRUTE_FORCE</option>
                 </field>
-                <field name="logout_url" type="text" size="60" label="CURL_LOGOUT_URL" default="wp-login.php" description="CURL_LOGOUT_URL_DESC" />
+                <field name="logout_url" type="text" size="60" label="CURL_LOGOUT_URL" default="/" description="CURL_LOGOUT_URL_DESC" />
                 <field name="relpathl" type="radio" class="btn-group" default="0" label="CURL_RELPATHL" description="CURL_RELPATHL_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -158,7 +159,6 @@
                 <field name="postfields" type="text" size="60" label="CURL_POSTFIELDS" default="" description="CURL_POSTFIELDS_DESC" />
             </fieldset>
 
-            <fieldset name="FRAMELESS_OPTIONS"/>
         </fields>
     </form>
 </extension>
