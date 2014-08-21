@@ -12,7 +12,7 @@ defined('_JEXEC' ) or die('Restricted access' );
 
 /**
  * JFusion Admin Class for mediawiki 1.1.x
- * For detailed descriptions on these functions please check the model.abstractadmin.php
+ * For detailed descriptions on these functions please check JFusionAdmin
  * @package JFusion_mediawiki
  */
 

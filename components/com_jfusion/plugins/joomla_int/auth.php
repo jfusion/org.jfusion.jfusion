@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Authentication class for the internal Joomla database
- * For detailed descriptions on these functions please check the model.abstractauth.php
+ * For detailed descriptions on these functions please check JFusionAuth
  * 
  * @category   JFusion
  * @package    JFusionPlugins

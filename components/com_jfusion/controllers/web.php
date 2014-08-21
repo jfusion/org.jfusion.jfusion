@@ -22,7 +22,7 @@ class JFusionControllerWeb extends JControllerLegacy
     /**
      * Displays the integrated software inside Joomla without a frame
      */
-    function display()
+    function display($cachable = false, $urlparams = array())
     {
         // Select which layout to use in the view
 	    JFactory::getApplication()->input->set('layout', 'default');
@@ -45,6 +45,6 @@ class JFusionControllerWeb extends JControllerLegacy
          */
         $view = $this->getView('web', 'html');
 	    $view->params = $params;
-        $view->display ();
+        $view->display();
     }
 }

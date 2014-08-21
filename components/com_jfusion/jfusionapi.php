@@ -797,7 +797,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function getApplication()
 	{
-		if (!defined('_JEXEC')) {
+		if (!defined('_JEXEC') && !defined('JPATH_PLATFORM')) {
 			/**
 			 * @TODO determine if we really need session_write_close or if it need to be selectable
 			 */
@@ -812,6 +812,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			// load joomla libraries
 			require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'defines.php';
 			define('_JREQUEST_NO_CLEAN', true); // we don't want to clean variables as it can "corrupt" them for some applications, it also clear any globals used...
+
+			define('JPATH_PLATFORM', JPATH_LIBRARIES);
 
 			if (!class_exists('JVersion')) {
 				include_once(JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'cms' . DIRECTORY_SEPARATOR . 'version' . DIRECTORY_SEPARATOR . 'version.php');

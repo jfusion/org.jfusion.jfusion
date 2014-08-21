@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion User Class for SMF 1.1.x
- * For detailed descriptions on these functions please check the model.abstractuser.php
+ * For detailed descriptions on these functions please check JFusionUser
  *
  * @category   JFusion
  * @package    JFusionPlugins

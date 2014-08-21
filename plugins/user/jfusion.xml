@@ -16,5 +16,20 @@
     <files>
         <filename plugin="jfusion">jfusion.php</filename>
     </files>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="mail_to_user"
+                       type="radio"
+                       default="1"
+                       label="PLG_JFUSION_MAILTOUSER_LABEL"
+                       description="PLG_JFUSION_MAILTOUSER_DESC">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
 </extension>
 

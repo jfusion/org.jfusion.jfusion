@@ -12,7 +12,7 @@ defined('_JEXEC' ) or die('Restricted access' );
 
 /**
  * JFusion Authentication Class for mediawiki 1.1.x
- * For detailed descriptions on these functions please check the model.abstractauth.php
+ * For detailed descriptions on these functions please check JFusionAuth
  * @package JFusion_mediawiki
  */
 class JFusionAuth_mediawiki extends JFusionAuth

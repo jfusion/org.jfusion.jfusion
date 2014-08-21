@@ -8,7 +8,7 @@
     <authorUrl>www.jfusion.org</authorUrl>
     <copyright>Copyright (C) 2013+ JFusion. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <version>2.0.0-017</version>
+    <version>2.0.0-018</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
     <description>JFusion plugin for eFront</description>
@@ -18,7 +18,7 @@
         <filename>admin.php</filename>
         <filename>auth.php</filename>
         <filename>index.html</filename>
-        <filename>efronthelper.php</filename>
+        <filename>helper.php</filename>
         <filename>forum.php</filename>
         <filename>jfusion.xml</filename>
         <filename>public.php</filename>

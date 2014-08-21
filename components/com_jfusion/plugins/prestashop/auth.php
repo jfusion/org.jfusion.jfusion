@@ -20,7 +20,7 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * JFusion Authentication Class for PrestaShop
- * For detailed descriptions on these functions please check the model.abstractauth.php
+ * For detailed descriptions on these functions please check JFusionAuth
  * 
  * @category   JFusion
  * @package    JFusionPlugins

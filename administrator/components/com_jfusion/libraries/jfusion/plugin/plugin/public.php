@@ -1049,8 +1049,6 @@ HTML;
 	 * @return array
 	 */
 	private function curlFrameless(&$data) {
-		require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.cookie.php');
-
 		$status = array('error' => array(), 'debug' => array());
 
 		$url = $data->source_url;
