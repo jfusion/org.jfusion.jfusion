@@ -7,6 +7,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 // Check to ensure this file is included in Joomla!
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die ();
 
 require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
@@ -44,7 +46,7 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 
 		$db->setQuery ( $query );
 		$params = $db->loadResult ();
-		$parametersInstance = new JRegistry ( $params, '' );
+		$parametersInstance = new Registry($params, '');
 		
 		$jname = $parametersInstance->get('magento_plugin', '');
 		if (! empty ( $jname )) {

@@ -15,6 +15,8 @@
  */
 
  // no direct access
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -33,7 +35,7 @@ class modjfusionLoginHelper
     /**
      * gets the return url
      *
-     * @param JRegistry $params params
+     * @param Registry $params params
      * @param string $type   type
      *
      * @return string url

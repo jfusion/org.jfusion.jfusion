@@ -27,9 +27,8 @@ class JFusionControllerWeb extends JControllerLegacy
         // Select which layout to use in the view
 	    JFactory::getApplication()->input->set('layout', 'default');
         /**
-        * @ignore
          * @var $menu JMenu
-        */
+         */
 	    $menu = JMenu::getInstance('site');
         $item = $menu->getActive();
         if ($item) {
@@ -40,7 +39,6 @@ class JFusionControllerWeb extends JControllerLegacy
 
         // Set the default view name from the Request
         /**
-         * @ignore
          * @var $view jfusionViewWeb
          */
         $view = $this->getView('web', 'html');

@@ -15,13 +15,14 @@
 */
 
 // no direct access
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die('Restricted access');
 
 //define output var for nicer code
 
 /**
- * @ignore
- * @var $params JRegistry
+ * @var $params Registry
  * @var $type string
  * @var $display_name string
  * @var $url_pm string

@@ -8,6 +8,7 @@
  */
 
 // no direct access
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or trigger_error('Restricted access');
@@ -16,8 +17,7 @@ require_once 'helper/default.php';
 try {
 	if (JPluginHelper::importPlugin('system', 'magelib')) {
 	    /**
-	     * @ignore
-	     * @var $params JRegistry
+	     * @var $params Registry
 	     */
 		$plgMageLib = new plgSystemMagelib();
 		$plgMageLib->destroyTemporaryJoomlaSession();

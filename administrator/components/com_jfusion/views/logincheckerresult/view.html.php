@@ -15,6 +15,7 @@
  */
 
 // no direct access
+use JFusion\Debugger\Debugger;
 use JFusion\User\Userinfo;
 
 defined('_JEXEC') or die('Restricted access');
@@ -164,7 +165,6 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 		// Create Authentication response
 		$response = new JAuthenticationResponse();
 		/**
-		 * @ignore
 		 * @var $plugin plgAuthenticationjfusion|plgUserJfusion
 		 */
 		foreach ($plugins as $plugin) {
@@ -247,7 +247,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 
 					$result = new stdClass;
 					$result->result = $results;
-					$result->debug = \JFusion\Factory::getDebugger('jfusion-loginchecker')->get();
+					$result->debug = Debugger::getInstance('jfusion-loginchecker')->get();
 
 					$this->auth_results[$plugin_name] = $result;
 				}

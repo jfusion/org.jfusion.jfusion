@@ -15,6 +15,7 @@
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
+use Joomla\Registry\Registry;
 
 /**
  * Helper class
@@ -42,6 +43,9 @@ class modjfusionWhosOnlineHelper {
 		if (is_numeric($link_itemid)) {
 			$menu = JMenu::getInstance('site');
 
+			/**
+			 * @var $menu_param Registry
+			 */
 			$menu_param = $menu->getParams($link_itemid);
 			$plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
 			$link_jname = $plugin_param['jfusionplugin'];
@@ -53,7 +57,6 @@ class modjfusionWhosOnlineHelper {
 			$output->error = JText::_('NO_MENU_ITEM');
 		} else{
 			/**
-			 * @ignore
 			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
 			$platform = Factory::getPlatform('Joomla', $link_jname);

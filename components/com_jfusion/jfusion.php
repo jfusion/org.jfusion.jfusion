@@ -38,7 +38,6 @@ if (JFile::exists($path)) {
 // Note we cannot use JString here as it causes function name conflicts with phpBB
 $classname = 'JFusionController' . ucfirst($controller);
 /**
- * @ignore
  * @var $controller JControllerLegacy
  */
 $controller = new $classname();

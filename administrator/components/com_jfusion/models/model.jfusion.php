@@ -202,7 +202,6 @@ class JFusionFunction
 			$app = JFactory::getApplication('site');
 			$router = $app->getRouter();
 			/**
-			 * @ignore
 			 * @var $uri JUri
 			 */
 			$uri = $router->build($article_url);
@@ -486,7 +485,6 @@ class JFusionFunction
 	public static function hasFeature($jname, $feature, $itemid = null) {
 		$return = false;
 		/**
-		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = Factory::getPlatform('Joomla', $jname);

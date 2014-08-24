@@ -22,7 +22,6 @@ class JFusion_Helper_Mageselectblock {
         $html = '';
 		if ($blockId) {
 			/**
-			 * @ignore
 			 * @var $model Mage_Cms_Helper_Wysiwyg_Images
 			 * @var $store Mage_Cms_Model_Page
 			 */
@@ -35,7 +34,6 @@ class JFusion_Helper_Mageselectblock {
 				$content = $block->getContent();
 
 				/**
-				 * @ignore
 				 * @var $processor Mage_Core_Model_Email_Template_Filter
 				 */
 

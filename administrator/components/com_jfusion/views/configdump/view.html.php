@@ -8,6 +8,8 @@
  */
 
 // no direct access
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
@@ -114,7 +116,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$master = \JFusion\Framework::getMaster();
 		if(count($rows) ) {
 			foreach($rows as $row) {
-				$row->params = new JRegistry($row->params);
+				$row->params = new Registry($row->params);
 
 				$new = $this->loadParams($row);
 
@@ -151,7 +153,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 		if ( JPluginHelper::isEnabled('content', 'jfusion') ) $rows[] = JPluginHelper::getPlugin('content', 'jfusion');
 
 		foreach($rows as $row) {
-			$row->params = new JRegistry($row->params);
+			$row->params = new Registry($row->params);
 			$new = $this->loadParams($row);
 
 			$this->clearParameters($new, 'joomla_plugin', $row->type);
@@ -170,7 +172,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$rows = $db->loadObjectList();
 		if ($rows) {
 			foreach($rows as $row) {
-				$row->params = new JRegistry($row->params);
+				$row->params = new Registry($row->params);
 				$new = $this->loadParams($row);
 
 				$this->clearParameters($new, 'jfusion_module', $row->module);
@@ -249,12 +251,12 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @return stdClass
 	 */
 	function loadParams($row) {
-		$JParameter = new JRegistry('');
+		$JParameter = new Registry('');
 		$new = new stdClass;
 		$new->params = new stdClass;
 		foreach($row as $key => $value) {
 			if ($key == 'params') {
-				if ($value instanceof JRegistry) {
+				if ($value instanceof Registry) {
 					$params = $value->toObject();
 
 					if (isset($params->JFusionPluginParam)) {

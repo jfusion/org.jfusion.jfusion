@@ -14,6 +14,8 @@
  * @link       http://www.jfusion.org
  */
 // no direct access
+use JFusion\Debugger\Debugger;
+
 defined('_JEXEC') or die('Restricted access');
 
 JFactory::getDocument()->addStyleSheet(JUri::root(true) . '/components/com_jfusion/css/debugger.css');
@@ -31,7 +33,7 @@ JFactory::getDocument()->addStyleSheet(JUri::root(true) . '/components/com_jfusi
 	$errorid = JFactory::getApplication()->input->get->get('errorid', '');
 	$error = unserialize($this->synclog[$errorid]->data);
 
-	$debugger = \JFusion\Factory::getDebugger('jfusion-syncerrordetails');
+	$debugger = Debugger::getInstance('jfusion-syncerrordetails');
 
 	//display the userlist info
 

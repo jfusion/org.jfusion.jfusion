@@ -14,15 +14,17 @@
  * @link       http://www.jfusion.org
  */
 // no direct access
+use JFusion\Debugger\Debugger;
+
 defined('_JEXEC') or die('Restricted access');
 
 JFactory::getDocument()->addStyleSheet(JUri::root(true) . '/components/com_jfusion/css/debugger.css');
 //please support JFusion
 echo JFusionFunctionAdmin::getDonationBanner();
 
-$joomlaid = \JFusion\Factory::getDebugger('jfusion-loginchecker')->get('joomlaid');
+$joomlaid = Debugger::getInstance('jfusion-loginchecker')->get('joomlaid');
 
-$debugger = \JFusion\Factory::getDebugger('jfusion-logincheckerresult');
+$debugger = Debugger::getInstance('jfusion-logincheckerresult');
 
 /**
  * Output information about the server for future support queries
@@ -77,7 +79,7 @@ $debugger = \JFusion\Factory::getDebugger('jfusion-logincheckerresult');
 		</div>
 		<?php
 
-		$authenticationDebugger = \JFusion\Factory::getDebugger('jfusion-authentication');
+		$authenticationDebugger = Debugger::getInstance('jfusion-authentication');
 
 		if (!$authenticationDebugger->isEmpty('debug')) {
 			$authenticationDebugger->setTitle($title);

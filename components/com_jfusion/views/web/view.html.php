@@ -8,6 +8,8 @@
  */
 
 // no direct access
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -38,7 +40,7 @@ class jfusionViewWeb extends JViewLegacy {
 	var $body;
 
 	/**
-	 * @var $params JRegistry
+	 * @var $params Registry
 	 */
 	var $params;
 

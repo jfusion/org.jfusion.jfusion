@@ -33,8 +33,8 @@ $config->set('debug', JFactory::getConfig()->get('debug'));
 /**
  * Database language
  */
-$config->set('language', JFactory::getConfig()->get('language'));
 $config->set('debug_lang', JFactory::getConfig()->get('debug_lang'));
+$config->set('language', JFactory::getConfig()->get('language'));
 
 /**
  * Uri settings
@@ -50,7 +50,7 @@ $config->set('usergroups', $params->get('usergroups', false));
 
 Factory::$config = $config;
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_jfusion/models/model.eventhook.php');
+require_once(__DIR__ . '/models/model.eventhook.php');
 
 $listener = new JFusionEventHook();
 

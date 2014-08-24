@@ -14,8 +14,10 @@
  */
 
 // no direct access
+use JFusion\Application\Application;
 use JFusion\Factory;
 use JFusion\Framework;
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
@@ -40,7 +42,7 @@ class modjfusionActivityHelper
      * @param array      &$results array of activity results
      * @param string     $jname    name of element
      * @param string     &$config  value of element
-     * @param JRegistry &$params  node of element
+     * @param Registry &$params  node of element
      *
      * @return string html
      */
@@ -48,7 +50,6 @@ class modjfusionActivityHelper
     public static function appendAutoOutput(&$results, $jname, &$config, &$params)
     {
 	    /**
-	     * @ignore
 	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = Factory::getPlatform('Joomla', $jname);
@@ -73,7 +74,7 @@ class modjfusionActivityHelper
                         $avatar = $platform->getAvatar($r->userid);
                     }
                     if (empty($avatar)) {
-                        $avatar = Factory::getApplication()->getDefaultAvatar();
+                        $avatar = Application::getInstance()->getDefaultAvatar();
                     }
 
                     $maxheight = $config['avatar_height'];

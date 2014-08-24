@@ -72,7 +72,11 @@ class jfusionViewcpanel extends JViewLegacy
             $JFusionCpanelRaw = $curl_disabled;
         }
 
-	    $xml = \JFusion\Framework::getXml($JFusionCpanelRaw, false);
+	    try {
+		    $xml = \JFusion\Framework::getXml($JFusionCpanelRaw, false);
+	    } catch (Exception $e) {
+		    $xml = null;
+	    }
 
         //end the outputbuffer
         ob_end_clean();

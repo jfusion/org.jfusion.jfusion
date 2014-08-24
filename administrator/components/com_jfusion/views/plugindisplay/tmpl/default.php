@@ -118,7 +118,6 @@ $images = 'components/com_jfusion/images/';
 								<select name="install_url" id="server_install_url" style="width: auto;">
 									<?php
 									/**
-									 * @ignore
 									 * @var $plugin SimpleXMLElement
 									 */
 									foreach ($this->VersionData as $plugin): ?>

@@ -14,6 +14,8 @@
  */
 
 // no direct access
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die('Restricted access');
 
 
@@ -57,8 +59,8 @@ function jfusionBuildRoute(&$query)
     }
 
     if (defined('ROUTED_JNAME')) {
-        $public = \JFusion\Factory::getFront(ROUTED_JNAME);
-        $public->buildRoute($segments);
+	    $platform = \JFusion\Factory::getPlatform('Joomla', ROUTED_JNAME);
+	    $platform->buildRoute($segments);
     }
 
     return $segments;
@@ -130,15 +132,15 @@ function jfusionParseRoute($segments)
 		    throw new RuntimeException(JText::_('ERROR_PLUGIN_CONFIG'));
 	    } else {
 	        //load custom plugin parameter
-	        $jPluginParam = new JRegistry('');
+	        $jPluginParam = new Registry('');
 	        $jPluginParam->loadArray(unserialize(base64_decode($JFusionPluginParam)));
 	        $jname = $jPluginParam->get('jfusionplugin');
 
 		    require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 	
 	        if (!empty($jname)) {
-	            $public = \JFusion\Factory::getFront($jname);
-	            $public->parseRoute($vars);
+	            $platform = \JFusion\Factory::getPlatform('Joomla', $jname);
+		        $platform->parseRoute($vars);
 	        }
 
 		    if (!defined('ROUTED_JNAME')) {

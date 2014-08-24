@@ -15,6 +15,7 @@
  */
 
 // no direct access
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
@@ -60,7 +61,7 @@ class plgSearchJfusion extends JPlugin
 		//get the software with search enabled
 		$plugins = \JFusion\Factory::getPlugins('both');
 		$searchplugin = JPluginHelper::getPlugin('search', 'jfusion');
-		$params = new JRegistry($searchplugin->params);
+		$params = new Registry($searchplugin->params);
 		$enabledPlugins = unserialize(base64_decode($params->get('JFusionPluginParam')));
 		if (is_array($plugins) && is_array($enabledPlugins)) {
 			foreach ($plugins as $plugin) {
@@ -104,7 +105,7 @@ class plgSearchJfusion extends JPlugin
 		}
 		//get the search plugin parameters
 		$plugin = JPluginHelper::getPlugin('search', 'jfusion');
-		$params = new JRegistry($plugin->params);
+		$params = new Registry($plugin->params);
 		$pluginParamValue = $params->get('JFusionPluginParam');
 		$pluginParamValue = unserialize(base64_decode($pluginParamValue));
 		//To hold all the search results
@@ -132,15 +133,14 @@ class plgSearchJfusion extends JPlugin
 
 		foreach ($searchPlugins AS $jname) {
 			/**
-			 * @ignore
 			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
 			$platform = \JFusion\Factory::getPlatform('Joomla', $jname);
 			if (is_array($pluginParamValue)) {
-				$pluginParam = new JRegistry('');
+				$pluginParam = new Registry('');
 				$pluginParam->loadArray($pluginParamValue[$jname]);
 			} else {
-				$pluginParam = new JRegistry('');
+				$pluginParam = new Registry('');
 			}
 			$itemid = $pluginParam->get('itemid');
 			try {

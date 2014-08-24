@@ -15,6 +15,8 @@
  */
 
 // no direct access
+use JFusion\Debugger\Debugger;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -59,7 +61,7 @@ class jfusionViewLogoutCheckerResult extends JViewLegacy
 	    $JFusionActivePlugin = 'joomla_int';
 	    $JFusionLoginCheckActive = true;
 
-	    \JFusion\Factory::getDebugger('jfusion-loginchecker')->set(null, array());
+	    Debugger::getInstance('jfusion-loginchecker')->set(null, array());
 
 	    $JFusionActivePlugin = 'joomla_int';
 	    $jfusion_user = array('type' => 'user', 'name' => 'jfusion', 'params' => '');
@@ -73,7 +75,7 @@ class jfusionViewLogoutCheckerResult extends JViewLegacy
 	        $plugin->onUserLogout($user, $options);
 	    }
 
-	    $this->debug = \JFusion\Factory::getDebugger('jfusion-loginchecker')->get();
+	    $this->debug = Debugger::getInstance('jfusion-loginchecker')->get();
         parent::display($tpl);
     }
     

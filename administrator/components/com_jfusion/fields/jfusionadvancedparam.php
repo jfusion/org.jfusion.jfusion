@@ -72,7 +72,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 
 		$link .= '&amp;' . $ename . '=' . $hash;
 
-		//Get JRegistry from given string
+		//Get Registry from given string
 		if (empty($this->value)) {
 			$params = array();
 		} else {

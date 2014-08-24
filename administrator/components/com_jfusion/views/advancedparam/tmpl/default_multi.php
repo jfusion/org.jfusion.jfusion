@@ -34,7 +34,6 @@ $uri->delVar('task');
 				<td colspan="2" style="padding:0; margin:0;">
 					<?php
 					/**
-					 * @ignore
 					 * @var $form JForm
 					 */
 					global $jname;

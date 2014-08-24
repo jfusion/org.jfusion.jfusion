@@ -105,7 +105,6 @@ class plgSystemJfusion extends JPlugin
                 $master = \JFusion\Framework::getMaster();
                 if (!empty($master) && $master->name != 'joomla_int' && $master->dual_login) {
 	                /**
-	                 * @ignore
 	                 * @var $platform \JFusion\Plugin\Platform\Joomla
 	                 */
 	                $platform = \JFusion\Factory::getPlatform('Joomla', $master->name);
@@ -127,7 +126,6 @@ class plgSystemJfusion extends JPlugin
                     //only call keepAlive if the plugin is activated for dual login
                     if ($plugin->dual_login) {
 	                    /**
-	                     * @ignore
 	                     * @var $platform \JFusion\Plugin\Platform\Joomla
 	                     */
 	                    $platform = \JFusion\Factory::getPlatform('Joomla', $plugin->name);
@@ -196,7 +194,6 @@ class plgSystemJfusion extends JPlugin
 			$master = \JFusion\Framework::getMaster();
 
 			/**
-			 * @ignore
 			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
 			$platform = \JFusion\Factory::getPlatform('Joomla', $master->name);
@@ -210,7 +207,6 @@ class plgSystemJfusion extends JPlugin
 			$slaves = \JFusion\Framework::getSlaves();
 			foreach($slaves as $slave) {
 				/**
-				 * @ignore
 				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
 				$platform = \JFusion\Factory::getPlatform('Joomla', $slave->name);

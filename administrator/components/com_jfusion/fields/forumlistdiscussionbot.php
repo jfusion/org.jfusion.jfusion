@@ -13,6 +13,8 @@
  * @link      http://www.jfusion.org
  */
 // Check to ensure this file is included in Joomla!
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die();
 /**
  * Require the Jfusion plugin factory
@@ -49,11 +51,10 @@ class JFormFieldForumListDiscussionbot extends JFormField
 
 		    $db->setQuery($query);
 		    $params = $db->loadResult();
-		    $jPluginParam = new JRegistry($params);
+		    $jPluginParam = new Registry($params);
 		    $jname = $jPluginParam->get('jname', false);
 		    if ($jname !== false) {
 			    /**
-			     * @ignore
 			     * @var $platform \JFusion\Plugin\Platform\Joomla
 			     */
 			    $platform = \JFusion\Factory::getPlatform('Joomla', $jname);

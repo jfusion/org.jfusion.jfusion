@@ -8,6 +8,7 @@
  */
 
 // no direct access
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or trigger_error('Restricted access');
@@ -15,8 +16,7 @@ defined('_JEXEC') or trigger_error('Restricted access');
 try {
 	if (JPluginHelper::importPlugin('system', 'magelib')) {
 	    /**
-	     * @ignore
-	     * @var $params JRegistry
+	     * @var $params Registry
 	     */
 		$template_selection = $params->get('template_selection', 1); // Use the Magento template by default
 		$moduleclass_sfx = $params->get('moduleclass_sfx');
@@ -44,7 +44,6 @@ try {
 
 			if ($template_selection) {
 				/**
-				 * @ignore
 				 * @var $layout Mage_Core_Model_Layout
 				 * @var $block Mage_Core_Block_Template
 				 */

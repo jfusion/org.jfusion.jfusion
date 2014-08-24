@@ -16,6 +16,7 @@
 // no direct access
 use JFusion\Factory;
 use JFusion\Framework;
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC' ) or die('Restricted access' );
@@ -40,7 +41,7 @@ require_once JPATH_ADMINISTRATOR . '/components/com_jfusion/import.php';
 class plgContentJfusion extends JPlugin
 {
 	/**
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	var $params = null;
 	var $mode = '';
@@ -85,9 +86,9 @@ class plgContentJfusion extends JPlugin
 		//retrieve plugin software for discussion bot
 		if ($this->params === null) {
 			if (is_array($params)) {
-				$this->params = new JRegistry($params['params']);
+				$this->params = new Registry($params['params']);
 			} else {
-				$this->params = new JRegistry($params->params);
+				$this->params = new Registry($params->params);
 			}
 		}
 
@@ -190,7 +191,6 @@ class plgContentJfusion extends JPlugin
 							//recheck validity without stipulation
 							$this->helper->debug('In test mode thus not creating the article');
 							/**
-							 * @ignore
 							 * @var $platform \JFusion\Plugin\Platform\Joomla
 							 */
 							$platform = Factory::getPlatform('Joomla', $this->jname);
@@ -438,7 +438,6 @@ class plgContentJfusion extends JPlugin
 		$content = '';
 		//get the jfusion forum object
 		/**
-		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = Factory::getPlatform('Joomla', $this->jname);
@@ -704,7 +703,6 @@ HTML;
 		$JoomlaUser = JFusionFunction::getJoomlaUser((object)JFactory::getUser());
 
 		/**
-		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = Factory::getPlatform('Joomla', $this->jname);
@@ -962,7 +960,6 @@ HTML;
 
 		//setup parameters
 		/**
-		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = Factory::getPlatform('Joomla', $this->jname);
@@ -1120,8 +1117,7 @@ HTML;
 			$this->helper->output = array();
 			$this->helper->output['buttons'] = array();
 			/**
-			 * @ignore
-			 * @var $article_params JRegistry
+			 * @var $article_params Registry
 			 */
 			$show_readmore = $readmore_catch = 0;
 			$readmore_param = null;
@@ -1245,7 +1241,6 @@ HTML;
 			if ($threadinfo->valid || $this->manual) {
 				if ($link_mode != 'never') {
 					/**
-					 * @ignore
 					 * @var $platform \JFusion\Plugin\Platform\Joomla
 					 */
 					$platform = Factory::getPlatform('Joomla', $this->jname);
@@ -1332,7 +1327,6 @@ HTML;
 		$post_output = array();
 
 		/**
-		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = Factory::getPlatform('Joomla', $this->jname);

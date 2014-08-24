@@ -14,13 +14,15 @@
  * @link       http://www.jfusion.org
  */
 // no direct access
+use JFusion\Debugger\Debugger;
+
 defined('_JEXEC') or die('Restricted access');
 
 JFactory::getDocument()->addStyleSheet(JUri::root(true) . '/components/com_jfusion/css/debugger.css');
 
 echo JFusionFunctionAdmin::getDonationBanner();
 
-$debugger = \JFusion\Factory::getDebugger('jfusion-logoutcheckerresult');
+$debugger = Debugger::getInstance('jfusion-logoutcheckerresult');
 $debugger->set(null, $this->debug);
 $debugger->setTitle(JText::_('LOGOUT') . ' ' . JText::_('DEBUG'));
 /**

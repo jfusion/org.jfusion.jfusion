@@ -8,13 +8,15 @@
  */
 
 // no direct access
+use JFusion\Debugger\Debugger;
+
 defined('_JEXEC') or die('Restricted access');
 
 JFactory::getDocument()->addStyleSheet(JUri::root(true) . '/components/com_jfusion/css/debugger.css');
 
 echo JFusionFunctionAdmin::getDonationBanner();
 
-$debugger = \JFusion\Factory::getDebugger('jfusion-configdump');
+$debugger = Debugger::getInstance('jfusion-configdump');
 
 $show = '';
 if (JFactory::getApplication()->input->get('show', false)) {

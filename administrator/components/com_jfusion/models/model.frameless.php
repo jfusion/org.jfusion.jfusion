@@ -148,8 +148,8 @@ class JFusionFrameless {
 		$mainframe = JFactory::getApplication();
 
 		/**
-		 * @ignore
 		 * @var $document JDocumentHtml
+		 * @var $platform JFusion\Plugin\Platform\Joomla
 		 */
 		$document = JFactory::getDocument();
 

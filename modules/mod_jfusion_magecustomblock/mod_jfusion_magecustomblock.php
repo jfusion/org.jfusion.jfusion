@@ -8,12 +8,12 @@
  */
 
 // no direct access
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or trigger_error('Restricted access');
 /**
- * @ignore
- * @var $params JRegistry
+ * @var $params Registry
  * @var $module object
  */
 try {
@@ -36,7 +36,6 @@ try {
 			$xml_output = $params->get('xml_output', '');
 
 			/**
-			 * @ignore
 			 * @var $layout Mage_Core_Model_Layout
 			 * @var $block Mage_Core_Block_Template
 			 */

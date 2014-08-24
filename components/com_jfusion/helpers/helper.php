@@ -8,6 +8,7 @@
  */
 
 // no direct access
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
@@ -18,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionHelper {
     /**
-     * @param JRegistry $params
+     * @param Registry $params
      * @param string $type
      *
      * @return string

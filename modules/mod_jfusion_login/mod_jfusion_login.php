@@ -18,6 +18,7 @@
 use JFusion\Factory;
 use JFusion\Framework;
 use JFusion\User\Userinfo;
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
@@ -28,8 +29,8 @@ defined('_JEXEC') or die('Restricted access');
 require_once dirname(__FILE__) . '/helper.php';
 $user = JFactory::getUser();
 /**
- * @ignore
- * @var $params JRegistry
+ * @var $params Registry
+ * @var $menu_param Registry
  */
 $params->def('greeting', 1);
 $type = modjfusionLoginHelper::getType();
@@ -116,7 +117,6 @@ try {
 
 	    if (!empty($jname) && $jname != 'joomla_int' && !$user->get('guest')) {
 		    /**
-		     * @ignore
 		     * @var $platform \JFusion\Plugin\Platform\Joomla
 		     */
 		    $platform = Factory::getPlatform('Joomla', $jname);

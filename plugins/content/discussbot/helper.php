@@ -14,7 +14,9 @@
  */
 
 // no direct access
+use JFusion\Debugger\Debugger;
 use JFusion\Framework;
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC' ) or die('Restricted access' );
@@ -33,7 +35,7 @@ defined('_JEXEC' ) or die('Restricted access' );
 class JFusionDiscussBotHelper {
 	var $article;
 	/**
-	 * @var JRegistry $params
+	 * @var Registry $params
 	 */
 	var $params;
 	var $jname;
@@ -57,11 +59,11 @@ class JFusionDiscussBotHelper {
 		'com_k2.itemlist');
 
 	/**
-	 * @param JRegistry $params
+	 * @param Registry $params
 	 * @param $mode
 	 */
 	public function __construct(&$params, $mode) {
-		$this->debugger = \JFusion\Factory::getDebugger('jfusion-content-plugin');
+		$this->debugger = Debugger::getInstance('jfusion-content-plugin');
 		$this->debugger->setTitle('Discussion bot debug info');
 
 		$this->params = $params;
@@ -150,7 +152,6 @@ class JFusionDiscussBotHelper {
 			$threadinfo->valid = false;
 			//make sure the forum and thread still exists
 			/**
-			 * @ignore
 			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
 			$platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);
@@ -186,7 +187,6 @@ class JFusionDiscussBotHelper {
 		$this->debug('Checking if thread exists');
 
 		/**
-		 * @ignore
 		 * @var $platform \JFusion\Plugin\Platform\Joomla
 		 */
 		$platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);
@@ -286,7 +286,6 @@ class JFusionDiscussBotHelper {
 
 		if (!isset($lists_instance)) {
 			/**
-			 * @ignore
 			 * @var $platform \JFusion\Plugin\Platform\Joomla
 			 */
 			$platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);
@@ -335,7 +334,6 @@ class JFusionDiscussBotHelper {
 				$responce = array(0, JText::_('REASON_NO_DEFAULT_USER'));
 			} else {
 				/**
-				 * @ignore
 				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
 				$platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);
@@ -390,7 +388,6 @@ class JFusionDiscussBotHelper {
 									$catid = $this->article->catid;
 									$JCat = JCategories::getInstance('Content');
 									/**
-									 * @ignore
 									 * @var $cat JCategoryNode
 									 */
 									$cat = $JCat->get($catid);
@@ -419,7 +416,6 @@ class JFusionDiscussBotHelper {
 													if (!$valid) {
 														//get the parent's parent id
 														/**
-														 * @ignore
 														 * @var $parent JCategoryNode
 														 */
 														$parent = $JCat->get($parent_id);
@@ -602,7 +598,6 @@ JS;
 			//Load quick reply includes if enabled
 			if ($this->params->get('enable_quickreply')) {
 				/**
-				 * @ignore
 				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
 				$platform = \JFusion\Factory::getPlatform('Joomla', $this->jname);

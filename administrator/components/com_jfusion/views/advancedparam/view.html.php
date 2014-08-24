@@ -14,6 +14,7 @@
  * @link       http://www.jfusion.org
  */
 // no direct access
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
@@ -153,7 +154,7 @@ HTML;
 	/**
 	 * Loads a single element
 	 *
-	 * @param JRegistry $params parameters
+	 * @param Registry $params parameters
 	 * @param string $feature feature
 	 *
 	 * @return string html
@@ -193,7 +194,7 @@ HTML;
 	 *
 	 * @param string $feature feature
 	 *
-	 * @return array|JRegistry html
+	 * @return array|Registry html
 	 */
 	function loadXMLParamSingle($feature)
 	{
@@ -212,11 +213,14 @@ HTML;
 			$xml_path = (JFile::exists($path)) ? $path : $defaultPath;
 			$form = false;
 			if (JFile::exists($xml_path)) {
-				$xml = \JFusion\Framework::getXml($xml_path);
+				try {
+					$xml = \JFusion\Framework::getXml($xml_path);
+				} catch (Exception $e) {
+					$xml = null;
+				}
 				if ($xml) {
 					if ($xml->form) {
 						/**
-						 * @ignore
 						 * @var $form JForm
 						 */
 						$form = JForm::getInstance($jname, $xml->form->asXML(), array('control' => "params[$jname]"));
@@ -348,11 +352,14 @@ HTML;
 				$path = JFUSION_PLUGIN_PATH . '/' . $jname . '/Platform/Joomla/' . $this->featureArray[$feature];
 				$defaultPath = JPATH_ADMINISTRATOR . '/components/' . $option . '/views/advancedparam/paramfiles/' . $this->featureArray[$feature];
 				$xml_path = (file_exists($path)) ? $path : $defaultPath;
-				$xml = \JFusion\Framework::getXml($xml_path);
+				try {
+					$xml = \JFusion\Framework::getXml($xml_path);
+				} catch (Exception $e) {
+					$xml = null;
+				}
 				if ($xml) {
 					if ($xml->form) {
 						/**
-						 * @ignore
 						 * @var $form JForm
 						 */
 						$form = JForm::getInstance($jname, $xml->form->asXML(), array('control' => "params[$jname]"));

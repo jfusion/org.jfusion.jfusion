@@ -14,6 +14,7 @@
 */
 
 // no direct access
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC' ) or die('Restricted access' );
@@ -32,8 +33,7 @@ try {
 		*/
 		require_once $factory_file;
 	    /**
-	     * @ignore
-	     * @var $params JRegistry
+	     * @var $params Registry
 	     * @var $config array
 	     */
 		$pluginParamValue = $params->get('JFusionPluginParam');
@@ -43,12 +43,11 @@ try {
 			$outputs = array();
 
 			foreach($pluginParamValue as $jname => $value) {
-				$pluginParam = new JRegistry('');
+				$pluginParam = new Registry('');
 				$pluginParam->loadArray($value);
 				$view = $pluginParam->get('view', 'auto');
 
 				/**
-				 * @ignore
 				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
 				$platform = \JFusion\Factory::getPlatform('Joomla', $jname);

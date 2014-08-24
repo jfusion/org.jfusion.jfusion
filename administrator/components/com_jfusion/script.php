@@ -1,4 +1,5 @@
 <?php
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 /**
@@ -482,7 +483,7 @@ class com_jfusionInstallerScript
 							$params = unserialize($params);
 							ob_end_clean();
 							if (is_array($params)) {
-								$params = new JRegistry($params);
+								$params = new Registry($params);
 								$row->params  = $params->toString();
 								$db->updateObject('#__jfusion', $row, 'id');
 							}

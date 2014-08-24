@@ -8,6 +8,8 @@
  */
 
 // no direct access
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -24,12 +26,12 @@ class jfusionViewPlugin extends JViewLegacy {
     var $jname;
 
 	/**
-	 * @var $params JRegistry
+	 * @var $params Registry
 	 */
 	var $params;
 
 	/**
-	 * @var $jPluginParam JRegistry
+	 * @var $jPluginParam Registry
 	 */
 	var $jPluginParam;
 
@@ -73,8 +75,10 @@ class jfusionViewPlugin extends JViewLegacy {
 
         $data = JFusionFrameless::initData($this->jname);
 
+	    /**
+	     * @var JFusion\Plugin\Platform\Joomla $platform
+	     */
 	    $platform = \JFusion\Factory::getPlatform('Joomla', $data->jname);
-
 	    if (!$platform->isConfigured()) {
 		    throw new RuntimeException($data->jname . ' ' . JText::_('NOT_FOUND'));
 	    }

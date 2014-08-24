@@ -12,6 +12,8 @@
  * @link      http://www.jfusion.org
  */
 // Check to ensure this file is included in Joomla!
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die();
 /**
  * Require the Jfusion plugin factory
@@ -54,7 +56,7 @@ class JFormFieldForumlist extends JFormField
 
 			$db->setQuery($query);
 			$params = $db->loadResult();
-			$parametersInstance = new JRegistry($params);
+			$parametersInstance = new Registry($params);
 			//load custom plugin parameter
 			$jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
 			$jname = $jPluginParamRaw['jfusionplugin'];
@@ -62,7 +64,6 @@ class JFormFieldForumlist extends JFormField
 			$control_name = $this->formControl . '[' . $this->group . ']';
 			if (!empty($jname)) {
 				/**
-				 * @ignore
 				 * @var $platform \JFusion\Plugin\Platform\Joomla
 				 */
 				$platform = \JFusion\Factory::getPlatform('Joomla', $jname);

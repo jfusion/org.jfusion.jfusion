@@ -13,7 +13,6 @@ defined('_JEXEC') or die('Restricted access');
 <div>
 <?php
 /**
- * @ignore
  * @var $config array
  */
 if (empty($results)) :

@@ -94,7 +94,11 @@ class jfusionViewversioncheck extends JViewLegacy
 		$jfusionurl->jnames = array();
 		$urls[md5($jfusionurl->url)] = $jfusionurl;
 		foreach ($plugins as $plugin) {
-			$xml = \JFusion\Framework::getXml(JFUSION_PLUGIN_PATH . '/' . $plugin->name . '/jfusion.xml');
+			try {
+				$xml = \JFusion\Framework::getXml(JFUSION_PLUGIN_PATH . '/' . $plugin->name . '/jfusion.xml');
+			} catch (Exception $e) {
+				$xml = null;
+			}
 			if($xml) {
 				$update = $xml->update;
 				if ($update) {
@@ -122,7 +126,11 @@ class jfusionViewversioncheck extends JViewLegacy
 
 		foreach ($urls as &$url) {
 			$url->data = \JFusion\Framework::getFileData($url->url);
-			$xml = \JFusion\Framework::getXml($url->data, false);
+			try {
+				$xml = \JFusion\Framework::getXml($url->data, false);
+			} catch (Exception $e) {
+				$xml = null;
+			}
 			if ($xml) {
 				if ($url->url == $jfusionurl->url) {
 					$php = new stdClass;

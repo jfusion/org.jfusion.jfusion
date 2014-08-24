@@ -55,13 +55,17 @@ class jfusionViewlanguages extends JViewLegacy
 	    $jversion = new JVersion();
         $data = \JFusion\Framework::getFileData('http://update.jfusion.org/jfusion/joomla/?version=' . $jversion->getShortVersion());
 
-	    $xml = \JFusion\Framework::getXml($data, false);
+	    try {
+		    $xml = \JFusion\Framework::getXml($data, false);
+	    } catch (Exception $e) {
+		    $xml = null;
+	    }
+
         if ($xml) {
 	        if ($xml->languages) {
 		        $languages = $xml->languages->children();
 
 		        /**
-		         * @ignore
 		         * @var $language SimpleXMLElement
 		         */
 		        foreach ($languages as $language) {

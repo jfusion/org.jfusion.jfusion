@@ -13,6 +13,8 @@
  * @link      http://www.jfusion.org
  */
 // Check to ensure this file is included in Joomla!
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die();
 /**
  * Require the Jfusion plugin factory
@@ -50,7 +52,7 @@ class JFormFieldForumListSearchPlugin extends JFormField
 
 	        $db->setQuery($query);
 	        $params = $db->loadResult();
-	        $parametersInstance = new JRegistry($params);
+	        $parametersInstance = new Registry($params);
 	        //load custom plugin parameter
 	        $jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
 
@@ -62,7 +64,6 @@ class JFormFieldForumListSearchPlugin extends JFormField
 
 	        if (!empty($jname)) {
 		        /**
-		         * @ignore
 		         * @var $platform \JFusion\Plugin\Platform\Joomla
 		         */
 		        $platform = \JFusion\Factory::getPlatform('Joomla', $jname);
@@ -70,7 +71,7 @@ class JFormFieldForumListSearchPlugin extends JFormField
 			        if (!isset($jPluginParamRaw[$jname])) {
 				        $jPluginParamRaw[$jname] = array();
 			        }
-			        $JPluginParam = new JRegistry('');
+			        $JPluginParam = new Registry('');
 			        $JPluginParam->loadArray($jPluginParamRaw[$jname]);
 			        if (method_exists($platform, 'getForumList')) {
 				        $forumlist = $platform->getForumList();

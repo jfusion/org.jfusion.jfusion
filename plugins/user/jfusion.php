@@ -15,6 +15,7 @@
  */
 
 // no direct access
+use JFusion\Debugger\Debugger;
 use JFusion\Factory;
 use JFusion\Framework;
 use Psr\Log\LogLevel;
@@ -122,7 +123,7 @@ class plgUserJfusion extends JPlugin
 		//return output if allowed
 		$isAdministrator = JFusionFunction::isAdministrator();
 		if ($isAdministrator === true) {
-			$debugger = Factory::getDebugger('jfusion-saveuser');
+			$debugger = Debugger::getInstance('jfusion-saveuser');
 			$this->raise('notice', $debugger->get('debug'));
 			$this->raise('error', $debugger->get('error'));
 		}
@@ -177,7 +178,7 @@ class plgUserJfusion extends JPlugin
 
 			$JFuser = new \JFusion\User\User();
 
-			$user['password'] = Factory::getApplication()->input->get('password', null, 'raw');
+			$user['password'] = JFactory::getApplication()->input->get('password', null, 'raw');
 
 			$result = $JFuser->login($user, $jfusionoptions);
 			if ($result) {
@@ -256,13 +257,16 @@ class plgUserJfusion extends JPlugin
 		$source_url = $params->get('source_url', '');
 		ob_end_clean();
 		$jfc = Factory::getCookies();
-		if ($allow_redirect_logout && !empty($redirecturl_logout)) // only redirect if we are in the frontend and allowed and have an URL
-		{
-			$jfc->executeRedirect($source_url, $redirecturl_logout);
-		} else {
-			$jfc->executeRedirect($source_url);
-		}
 
+		$mainframe = JFactory::getApplication();
+		if (!$mainframe->isAdmin()) {
+			if ($allow_redirect_logout && !empty($redirecturl_logout)) // only redirect if we are in the frontend and allowed and have an URL
+			{
+				$jfc->executeRedirect($source_url, $redirecturl_logout);
+			} else {
+				$jfc->executeRedirect($source_url);
+			}
+		}
 		return $result;
 	}
 
@@ -298,7 +302,7 @@ class plgUserJfusion extends JPlugin
 			//return output if allowed
 			$isAdministrator = JFusionFunction::isAdministrator();
 			if ($isAdministrator === true) {
-				$debugger = Factory::getDebugger('jfusion-deleteuser');
+				$debugger = Debugger::getInstance('jfusion-deleteuser');
 				$this->raise('notice', $debugger->get('debug'));
 				$this->raise('error', $debugger->get('error'));
 			}

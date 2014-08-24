@@ -65,6 +65,12 @@ class jfusionViewimportexport extends JViewLegacy
 
 	    $xml = \JFusion\Framework::getXml($ConfigList, false);
 
+	    try {
+		    $xml = \JFusion\Framework::getXml($ConfigList, false);
+	    } catch (Exception $e) {
+		    $xml = null;
+	    }
+
 	    $this->list = $xml;
 	    $this->jname = $jname;
         parent::display($tpl);

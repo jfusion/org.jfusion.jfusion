@@ -40,7 +40,6 @@ class modjfusionUserActivityHelper {
 		$output = new stdClass();
 
 	    /**
-	     * @ignore
 	     * @var $platform \JFusion\Plugin\Platform\Joomla
 	     */
 	    $platform = Factory::getPlatform('Joomla', $jname);

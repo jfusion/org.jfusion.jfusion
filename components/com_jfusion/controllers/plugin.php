@@ -9,6 +9,7 @@
 
 // no direct access
 use JFusion\Factory;
+use Joomla\Registry\Registry;
 
 defined('_JEXEC' ) or die('Restricted access' );
 
@@ -61,7 +62,7 @@ class JFusionControllerPlugin extends JControllerLegacy
 		//find out if there is an itemID with the view variable
 		$menuitemid = JFactory::getApplication()->input->getInt('Itemid');
 		//we do not want the front page menuitem as it will cause a 500 error in some cases
-		$jPluginParam = new JRegistry('');
+		$jPluginParam = new Registry('');
 		//added to prevent a notice of $jview being undefined;
 		if ($menuitemid && $menuitemid != 1) {
             $menu = JMenu::getInstance('site');
@@ -100,7 +101,6 @@ class JFusionControllerPlugin extends JControllerLegacy
 
             //load the view
 			/**
-			 * @ignore
 			 * @var $view jfusionViewPlugin
 			 */
             $view = $this->getView('plugin', 'html');

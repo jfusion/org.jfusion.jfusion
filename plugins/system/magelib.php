@@ -9,6 +9,7 @@
 
 // no direct access
 use JFusion\Framework;
+use Joomla\Registry\Registry;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or trigger_error('Restricted access');
@@ -39,7 +40,7 @@ class plgSystemMagelib {
      */
     function __construct() {
 		$plugin = JPluginHelper::getPlugin('system', 'magelib');
-		$this->params = new JRegistry($plugin->params);
+		$this->params = new Registry($plugin->params);
 		
 		$mage_plugin = $this->params->get('mage_plugin', 'magento');
 		$mage_path = \JFusion\Factory::getParams($mage_plugin )->get('source_path', false);

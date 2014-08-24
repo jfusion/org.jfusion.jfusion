@@ -9,24 +9,22 @@ use JFusion\Factory;
 
 use JFusion\Framework;
 use JFusion\User\Userinfo;
-use Joomla\Event\Event;
+use JFusion\Api\PlatformInterface;
+use JFusion\Application\ApplicationInterface;
 use JFusion\Event\LanguageInterface;
-use JFusion\Event\ApplicationInterface;
-use JFusion\Event\SessionInterface;
-use JFusion\Event\RouterInterface;
-use JFusion\Event\InstallerInterface;
-use JFusion\Event\PlatformInterface;
+use JFusion\Installer\PluginInterface;
+use JFusion\Router\RouterInterface;
+use JFusion\Session\SessionInterface;
 
-
+use Joomla\Event\Event;
 
 use Joomla\Uri\Uri;
 use Psr\Log\LogLevel;
 
-
 /**
  * Class JFusionFramework
  */
-class JFusionEventHook implements LanguageInterface, ApplicationInterface, SessionInterface, RouterInterface, InstallerInterface , PlatformInterface {
+class JFusionEventHook implements LanguageInterface, ApplicationInterface, SessionInterface, RouterInterface, PluginInterface , PlatformInterface {
 	/**
 	 * Loads a language file for framework
 	 *
@@ -137,17 +135,6 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 		$type = $event->getArgument('type', 'error');
 
 		JFactory::getApplication()->enqueueMessage($msg, $type);
-	}
-
-	/**
-	 * Is admin interface?
-	 *
-	 * @param   Event $event
-	 * @return  void
-	 */
-	public function onApplicationIsAdmin($event)
-	{
-		$event->addArgument('admin', JFactory::getApplication()->isAdmin());
 	}
 
 	/**

@@ -9,7 +9,6 @@
 
 defined('_JEXEC') or die('Restricted access');
 /**
- * @ignore
  * @var $task string
  */
 switch($task)

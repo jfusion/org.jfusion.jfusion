@@ -34,7 +34,6 @@ $uri->setVar('task', 'advancedparamsubmit');
 				<td colspan="2" style="padding:0; margin:0;">
 					<?php
 					/**
-					 * @ignore
 					 * @var $form JForm
 					 */
 					if (!empty($this->comp) && !empty($this->comp['form'])):

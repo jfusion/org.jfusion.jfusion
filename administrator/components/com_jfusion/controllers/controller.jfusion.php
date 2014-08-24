@@ -202,7 +202,6 @@ class JFusionController extends JControllerLegacy
 				throw new RuntimeException('NO_JNAME');
 		    }
 		    /**
-		     * @ignore
 		     * @var $view jfusionViewplugindisplay
 		     */
 		    $view = $this->getView('plugindisplay', 'html');
@@ -295,35 +294,19 @@ class JFusionController extends JControllerLegacy
     function syncresume()
     {
 	    try {
-		    $syncid = JFactory::getApplication()->input->get->get('syncid', '');
-		    $db = JFactory::getDBO();
+		    $syncid = JFactory::getApplication()->input->get->get('syncid', null);
 
-		    $query = $db->getQuery(true)
-			    ->select('syncid')
-			    ->from('#__jfusion_sync')
-			    ->where('syncid =' . $db->quote($syncid));
-
-		    $db->setQuery($query);
-
-		    $syncdata = array();
-		    if ($db->loadResult()) {
-			    $syncdata = \JFusion\User\Sync::getSyncdata($syncid);
-			    if (is_array($syncdata)) {
-				    //start the usersync
-				    $plugin_offset = (!empty($syncdata['plugin_offset'])) ? $syncdata['plugin_offset'] : 0;
-				    //start at the next user
-				    $user_offset = (!empty($syncdata['user_offset'])) ? $syncdata['user_offset'] : 0;
-				    if (JFactory::getApplication()->input->get('userbatch')) {
-					    $syncdata['userbatch'] = JFactory::getApplication()->input->get('userbatch');
-				    }
-				    \JFusion\User\Sync::syncExecute($syncdata, $syncdata['action'], $plugin_offset, $user_offset);
-			    } else {
-				    throw new RuntimeException(JText::_('SYNC_FAILED_TO_LOAD_SYNC_DATA'));
+		    $syncdata = \JFusion\User\Sync::getSyncdata($syncid);
+		    if ($syncdata->get('syncid')) {
+			    $userbatch = JFactory::getApplication()->input->get('userbatch');
+			    if ($userbatch) {
+				    $syncdata->set('userbatch', $userbatch);
 			    }
+			    \JFusion\User\Sync::syncExecute($syncdata, $syncdata->get('action'), $syncdata->get('plugin_offset', 0), $syncdata->get('user_offset', 0));
 		    } else {
 			    throw new RuntimeException(JText::sprintf('SYNC_ID_NOT_EXIST', $syncid));
 		    }
-	        echo new JResponseJson($syncdata);
+	        echo new JResponseJson($syncdata->toArray());
         } catch (Exception $e) {
 			echo new JResponseJson($e);
 		}
@@ -341,7 +324,7 @@ class JFusionController extends JControllerLegacy
 		    $syncid = JFactory::getApplication()->input->get->get('syncid', '');
 
 		    $syncdata = \JFusion\User\Sync::getSyncdata($syncid);
-		    echo new JResponseJson($syncdata);
+		    echo new JResponseJson($syncdata->toArray());
 	    } catch (Exception $e) {
 		    echo new JResponseJson($e);
 	    }
@@ -390,79 +373,18 @@ class JFusionController extends JControllerLegacy
 	        //check to see if the sync has already started
 	        $syncid = JFactory::getApplication()->input->get('syncid');
 	        $action = JFactory::getApplication()->input->get('action');
-	        if (!empty($syncid)) {
-	            //clear sync in progress catch in case we manually stopped the sync so that the sync will continue
-		        \JFusion\User\Sync::changeSyncStatus($syncid, 0);
-	        }
-	        $syncdata = array();
-	        $syncdata['completed'] = false;
-	        $syncdata['sync_errors'] = 0;
-	        $syncdata['total_to_sync'] = 0;
-	        $syncdata['synced_users'] = 0;
-	        $syncdata['userbatch'] = JFactory::getApplication()->input->getInt('userbatch', 100);
-		    if ($syncdata['userbatch'] < 1 ) {
-			    $syncdata['userbatch'] = 1;
+		    $slaves = JFactory::getApplication()->input->get('slave', array(), 'array');
+		    $userbatch = JFactory::getApplication()->input->getInt('userbatch', 100);
+
+		    $syncdata = \JFusion\User\Sync::initSyncData($syncid, $action);
+
+		    if ($userbatch > 0 ) {
+			    $syncdata->set('userbatch', $userbatch);
 		    }
-	        $syncdata['user_offset'] = 0;
-	        $syncdata['syncid'] = $syncid;
-	        $syncdata['action'] = $action;
 
-		    $db = JFactory::getDBO();
+		    \JFusion\User\Sync::initiate($syncdata, $slaves);
 
-		    $query = $db->getQuery(true)
-			    ->select('syncid')
-			    ->from('#__jfusion_sync')
-			    ->where('syncid =' . $db->quote($syncid));
-
-		    $db->setQuery($query);
-		    if (!$db->loadResult()) {
-			    //sync has not started, lets get going :)
-			    $slaves = JFactory::getApplication()->input->get('slave', array(), 'array');
-			    $master_plugin = \JFusion\Framework::getMaster();
-			    $master = $master_plugin->name;
-			    $JFusionMaster = \JFusion\Factory::getAdmin($master);
-			    if (empty($slaves)) {
-				    throw new RuntimeException(JText::_('SYNC_NODATA'));
-			    } else {
-				    //initialise the slave data array
-				    $slave_data = array();
-				    //lets find out which slaves need to be imported into the Master
-				    foreach ($slaves as $jname => $slave) {
-					    if ($slave['perform_sync'] == $jname) {
-						    $temp_data = array();
-						    $temp_data['jname'] = $jname;
-						    $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
-						    if ($action == 'master') {
-							    $temp_data['total'] = $JFusionPlugin->getUserCount();
-						    } else {
-							    $temp_data['total'] = $JFusionMaster->getUserCount();
-						    }
-						    $syncdata['total_to_sync']+= $temp_data['total'];
-						    //this doesn't change and used by usersync when limiting the number of users to grab at a time
-						    $temp_data['total_to_sync'] = $temp_data['total'];
-						    $temp_data['created'] = 0;
-						    $temp_data['deleted'] = 0;
-						    $temp_data['updated'] = 0;
-						    $temp_data['error'] = 0;
-						    $temp_data['unchanged'] = 0;
-						    //save the data
-						    $slave_data[] = $temp_data;
-						    //reset the variables
-						    unset($temp_data, $JFusionPlugin);
-					    }
-				    }
-				    //format the syncdata for storage in the JFusion sync table
-				    $syncdata['master'] = $master;
-				    $syncdata['slave_data'] = $slave_data;
-				    //save the submitted syncdata in order for AJAX updates to work
-				    \JFusion\User\Sync::saveSyncdata($syncdata);
-				    //start the usersync
-				    \JFusion\User\Sync::syncExecute($syncdata, $action, 0, 0);
-			    }
-		    } else {
-			    throw new RuntimeException(JText::_('SYNC_CANNOT_START'));
-		    }
-		    echo new JResponseJson($syncdata);
+		    echo new JResponseJson($syncdata->toArray());
 	    } catch (Exception $e) {
 		    echo new JResponseJson($e);
 	    }
@@ -485,7 +407,6 @@ class JFusionController extends JControllerLegacy
 	        try {
 		        $error = true;
 		        /**
-		         * @ignore
 		         * @var $view jfusionViewplugindisplay
 		         */
 		        $view = $this->getView('plugindisplay', 'html');
@@ -560,7 +481,6 @@ class JFusionController extends JControllerLegacy
 		    $result = $model->copy($jname, $new_jname);
 
 		    /**
-		     * @ignore
 		     * @var $view jfusionViewplugindisplay
 		     */
 		    $view = $this->getView('plugindisplay', 'html');
@@ -772,7 +692,6 @@ JS;
 			    }
 		    }
 		    /**
-		     * @ignore
 		     * @var $view jfusionViewplugindisplay
 		     */
 		    $view = $this->getView('plugindisplay', 'html');
@@ -797,48 +716,46 @@ JS;
 
 		    $filename = JFactory::getApplication()->input->get('url');
 
-		    if(!empty($filename)) {
-			    $filename = base64_decode($filename);
-			    $ConfigFile = \JFusion\Framework::getFileData($filename);
-			    if (!empty($ConfigFile)) {
-				    $xml = \JFusion\Framework::getXml($ConfigFile, false);
+		    try {
+			    if(!empty($filename)) {
+				    $filename = base64_decode($filename);
+				    $ConfigFile = \JFusion\Framework::getFileData($filename);
+				    if (!empty($ConfigFile)) {
+					    $xml = \JFusion\Framework::getXml($ConfigFile, false);
+				    }
+			    } else if($file['error'] > 0) {
+				    switch ($file['error']) {
+					    case UPLOAD_ERR_INI_SIZE:
+						    $error = JText::_('UPLOAD_ERR_INI_SIZE');
+						    break;
+					    case UPLOAD_ERR_FORM_SIZE:
+						    $error = JText::_('UPLOAD_ERR_FORM_SIZE');
+						    break;
+					    case UPLOAD_ERR_PARTIAL:
+						    $error = JText::_('UPLOAD_ERR_PARTIAL');
+						    break;
+					    case UPLOAD_ERR_NO_FILE:
+						    $error = JText::_('UPLOAD_ERR_NO_FILE');
+						    break;
+					    case UPLOAD_ERR_NO_TMP_DIR:
+						    $error = JText::_('UPLOAD_ERR_NO_TMP_DIR');
+						    break;
+					    case UPLOAD_ERR_CANT_WRITE:
+						    $error = JText::_('UPLOAD_ERR_CANT_WRITE');
+						    break;
+					    case UPLOAD_ERR_EXTENSION:
+						    $error = JText::_('UPLOAD_ERR_EXTENSION');
+						    break;
+					    default:
+						    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
+				    }
+				    throw new RuntimeException( JText::_('ERROR') . ': ' . $error);
+			    } else {
+				    $filename = $file['tmp_name'];
+				    $xml = \JFusion\Framework::getXml($filename);
 			    }
-		    } else if($file['error'] > 0) {
-			    switch ($file['error']) {
-				    case UPLOAD_ERR_INI_SIZE:
-					    $error = JText::_('UPLOAD_ERR_INI_SIZE');
-					    break;
-				    case UPLOAD_ERR_FORM_SIZE:
-					    $error = JText::_('UPLOAD_ERR_FORM_SIZE');
-					    break;
-				    case UPLOAD_ERR_PARTIAL:
-					    $error = JText::_('UPLOAD_ERR_PARTIAL');
-					    break;
-				    case UPLOAD_ERR_NO_FILE:
-					    $error = JText::_('UPLOAD_ERR_NO_FILE');
-					    break;
-				    case UPLOAD_ERR_NO_TMP_DIR:
-					    $error = JText::_('UPLOAD_ERR_NO_TMP_DIR');
-					    break;
-				    case UPLOAD_ERR_CANT_WRITE:
-					    $error = JText::_('UPLOAD_ERR_CANT_WRITE');
-					    break;
-				    case UPLOAD_ERR_EXTENSION:
-					    $error = JText::_('UPLOAD_ERR_EXTENSION');
-					    break;
-				    default:
-					    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
-			    }
-			    throw new RuntimeException( JText::_('ERROR') . ': ' . $error);
-		    } else {
-			    $filename = $file['tmp_name'];
-			    $xml = \JFusion\Framework::getXml($filename);
-		    }
-		    if(!$xml) {
-			    throw new RuntimeException(JText::_('ERROR_LOADING_FILE') . ': ' . $filename);
-		    } else {
+
 			    /**
-			     * @ignore
 			     * @var $val SimpleXMLElement
 			     */
 			    $info = $config = null;
@@ -873,7 +790,6 @@ JS;
 					    if ($pluginname == $original_name) {
 						    $conf = array();
 						    /**
-						     * @ignore
 						     * @var $val SimpleXMLElement
 						     */
 						    foreach ($config as $val) {
@@ -913,6 +829,7 @@ JS;
 								    throw $e;
 							    }
 						    }
+						    $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $jname . ': ' . JText::_('IMPORT_SUCCESS'));
 					    } else {
 						    throw new RuntimeException(JText::_('PLUGIN_DONT_MATCH_XMLFILE'));
 					    }
@@ -920,8 +837,9 @@ JS;
 					    throw new RuntimeException(JText::_('PLUGIN_NOT_FOUNED'));
 				    }
 			    }
+		    } catch (Exception $e) {
+			    throw new RuntimeException(JText::_('ERROR_LOADING_FILE') . ': ' . $filename);
 		    }
-		    $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $jname . ': ' . JText::_('IMPORT_SUCCESS'));
 	    } catch (Exception $e) {
 		    \JFusion\Framework::raise(LogLevel::WARNING, $e, $jname);
 		    $mainframe->redirect('index.php?option=com_jfusion&task=importexport&jname=' . $jname);

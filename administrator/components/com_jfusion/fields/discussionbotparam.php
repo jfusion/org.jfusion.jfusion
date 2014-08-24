@@ -8,6 +8,8 @@
 */
 
 // Check to ensure this file is included in Joomla!
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -51,7 +53,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 			$db->setQuery($query);
 			$results = $db->loadResult();
 			if($results) {
-				$registry = new JRegistry($results);
+				$registry = new Registry($results);
 				$params = $registry->toArray();
 				$jname = (isset($params['jname'])) ? $params['jname'] : '';
 			}
