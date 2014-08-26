@@ -81,7 +81,8 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 	<br/>
 	<?php
 
-	$debugger->setCallback(array($this, 'jfusion_plugin', null));
+	$debugger->getDispatcher()->addListener($this);
+	$debugger->setType('jfusion_plugin');
 	foreach($this->jfusion_plugin as $key => $value) {
 		$debugger->set(null, $value);
 		$debugger->setTitle(JText::_('JFUSION') . ' ' . $key . ' ' . JText::_('PLUGIN'));
@@ -94,7 +95,7 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 
 	foreach($this->jfusion_module as $key => $value) {
 		$debugger->set(null, $value);
-		$debugger->setCallback(array($this, 'jfusion_module', $key));
+		$debugger->setType($key);
 		$debugger->setTitle($key . ' ' . JText::_('MODULE'));
 		$debugger->displayHtml();
 		$textOutput[] = $debugger->getAsText();
@@ -105,7 +106,7 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 
 	foreach($this->joomla_plugin as $key => $value) {
 		$debugger->set(null, $value);
-		$debugger->setCallback(array($this, 'joomla_plugin', $key));
+		$debugger->setType($key);
 		$debugger->setTitle($key . ' ' . JText::_('PLUGIN'));
 		$debugger->displayHtml();
 		$textOutput[] = $debugger->getAsText();
@@ -113,7 +114,8 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 		<br>
 	<?php
 	}
-	$debugger->setCallback(array($this, 'menu_item', null));
+
+	$debugger->setType('menu_item');
 	foreach($this->menu_item as $key => $value) {
 		$debugger->set(null, $value);
 		$debugger->setTitle($key . ' ' . JText::_('PLUGIN'));
@@ -123,7 +125,7 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 		<br>
 	<?php
 	}
-	$debug=null;
+	$debug = null;
 	foreach ($textOutput as $value) {
 		if ($debug) {
 			$debug .= "\n\n" . $value;

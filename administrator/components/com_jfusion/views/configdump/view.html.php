@@ -8,6 +8,7 @@
  */
 
 // no direct access
+use JFusion\Debugger\DebuggerInterface;
 use Joomla\Registry\Registry;
 
 defined('_JEXEC') or die('Restricted access');
@@ -19,12 +20,11 @@ jimport('joomla.application.component.view');
  * @package JFusion
  */
 
-class jfusionViewconfigdump extends JViewLegacy {
+class jfusionViewconfigdump extends JViewLegacy implements DebuggerInterface {
 	/**
 	 * @var array
 	 */
 	var $checkvalue = array();
-
 
 	/**
 	 * @var array $joomla_plugin
@@ -65,43 +65,46 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$db = JFactory::getDBO();
 
 		// menuitem Checks
-		$this->checkvalue['menu_item']['*']['jfusionplugin'] = 'is_string|not_empty';
-		$this->checkvalue['menu_item']['*']['source_url'] = 'is_url';
-		$this->checkvalue['menu_item']['*']['visual_integration'] = 'is_string';
-		$this->checkvalue['menu_item']['*']['cookie_domain'] = 'is_string|is_cookie_domain';
-		$this->checkvalue['menu_item']['*']['cookie_path'] = 'is_string';
-		$this->checkvalue['menu_item']['*']['cookie_name'] = 'is_string';
+		$this->checkvalue['menu_item']['params']['jfusionplugin'] = 'is_string|not_empty';
+		$this->checkvalue['menu_item']['params']['source_url'] = 'is_url';
+		$this->checkvalue['menu_item']['params']['visual_integration'] = 'is_string';
+		$this->checkvalue['menu_item']['params']['cookie_domain'] = 'is_string|is_cookie_domain';
+		$this->checkvalue['menu_item']['params']['cookie_path'] = 'is_string';
+		$this->checkvalue['menu_item']['params']['cookie_name'] = 'is_string';
 
 		// jfusion module Checks
-		$this->checkvalue['jfusion_module']['mod_jfusion_user_activity']['jfusionplugin'] = 'is_string|not_empty';
-		$this->checkvalue['jfusion_module']['mod_jfusion_user_activity']['itemid'] = 'is_string|not_empty';
+		$this->checkvalue['mod_jfusion_login']['params']['itemidAvatarPMs'] = 'is_string|not_empty';
+		$this->checkvalue['mod_jfusion_login']['params']['itemid'] = 'is_string|not_empty';
 
-		$this->checkvalue['jfusion_module']['mod_jfusion_activity']['jfusionplugin'] = 'is_string|not_empty';
-		$this->checkvalue['jfusion_module']['mod_jfusion_activity']['itemid'] = 'is_string|not_empty';
+		$this->checkvalue['mod_jfusion_activity']['params']['jfusionplugin'] = 'is_string|not_empty';
+		$this->checkvalue['mod_jfusion_activity']['params']['itemid'] = 'is_string|not_empty';
 
-		$this->checkvalue['jfusion_module']['mod_jfusion_whosonline']['*']['jfusionplugin'] = 'is_string';
-		$this->checkvalue['jfusion_module']['mod_jfusion_whosonline']['*']['itemid'] = 'is_numeric|is_string|not_empty';
+		$this->checkvalue['mod_jfusion_user_activity']['params']['jfusionplugin'] = 'is_string|not_empty';
+		$this->checkvalue['mod_jfusion_user_activity']['params']['itemid'] = 'is_string|not_empty';
+
+		$this->checkvalue['mod_jfusion_whosonline']['params']['jfusionplugin'] = 'is_string|not_empty';
+		$this->checkvalue['mod_jfusion_whosonline']['params']['itemid'] = 'is_string|not_empty';
 
 		// joomla plugin Checks
-		$this->checkvalue['joomla_plugin']['search']['*']['itemid'] = 'is_string|not_empty';
-		$this->checkvalue['joomla_plugin']['search']['*']['title'] = 'is_string|empty';
-		$this->checkvalue['joomla_plugin']['search']['*']['jfusionplugin'] = 'is_string|not_empty';
+		$this->checkvalue['search']['params']['itemid'] = 'is_string|not_empty';
+		$this->checkvalue['search']['params']['title'] = 'is_string|empty';
+		$this->checkvalue['search']['params']['jfusionplugin'] = 'is_string|not_empty';
 
-		$this->checkvalue['joomla_plugin']['content']['itemid'] = 'is_string|not_empty';
-		$this->checkvalue['joomla_plugin']['content']['jname'] = 'is_string|not_empty';
-		$this->checkvalue['joomla_plugin']['content']['default_forum'] = 'is_numeric';
-		$this->checkvalue['joomla_plugin']['content']['default_userid'] = 'is_numeric';
+		$this->checkvalue['content']['params']['itemid'] = 'is_string|not_empty';
+		$this->checkvalue['content']['params']['jname'] = 'is_string|not_empty';
+		$this->checkvalue['content']['params']['default_forum'] = 'is_numeric';
+		$this->checkvalue['content']['params']['default_userid'] = 'is_numeric';
 
 		// jfusion plugin Checks
-		$this->checkvalue['jfusion_plugin']['*']['source_url'] = 'is_url';
-		$this->checkvalue['jfusion_plugin']['*']['source_path'] = 'is_string|is_dir|empty';
-		$this->checkvalue['jfusion_plugin']['*']['database_type'] = 'is_string|not_empty';
-		$this->checkvalue['jfusion_plugin']['*']['database_host'] = 'is_string|not_empty';
-		$this->checkvalue['jfusion_plugin']['*']['database_name'] = 'is_string|not_empty';
-		$this->checkvalue['jfusion_plugin']['*']['database_user'] = 'is_string|not_empty';
-		$this->checkvalue['jfusion_plugin']['*']['database_password'] = 'is_string|not_empty|mask';
-		$this->checkvalue['jfusion_plugin']['*']['database_prefix'] = 'is_string';
-		$this->checkvalue['jfusion_plugin']['*']['usergroups'] = 'is_validusergrouparray';
+		$this->checkvalue['jfusion_plugin']['params']['source_url'] = 'is_url';
+		$this->checkvalue['jfusion_plugin']['params']['source_path'] = 'is_string|is_dir|empty';
+		$this->checkvalue['jfusion_plugin']['params']['database_type'] = 'is_string|not_empty';
+		$this->checkvalue['jfusion_plugin']['params']['database_host'] = 'is_string|not_empty';
+		$this->checkvalue['jfusion_plugin']['params']['database_name'] = 'is_string|not_empty';
+		$this->checkvalue['jfusion_plugin']['params']['database_user'] = 'is_string|not_empty';
+		$this->checkvalue['jfusion_plugin']['params']['database_password'] = 'is_string|not_empty|mask';
+		$this->checkvalue['jfusion_plugin']['params']['database_prefix'] = 'is_string';
+		$this->checkvalue['jfusion_plugin']['usergroups'] = 'is_validusergrouparray';
 
 		$query = $db->getQuery(true)
 			->select('id, name, params, dual_login, original_name')
@@ -149,15 +152,19 @@ class jfusionViewconfigdump extends JViewLegacy {
 		}
 
 		$rows = array();
-		if ( JPluginHelper::isEnabled('search', 'jfusion') ) $rows[] = JPluginHelper::getPlugin('search', 'jfusion');
-		if ( JPluginHelper::isEnabled('content', 'jfusion') ) $rows[] = JPluginHelper::getPlugin('content', 'jfusion');
+		if (JPluginHelper::isEnabled('search', 'jfusion')) {
+			$rows[] = JPluginHelper::getPlugin('search', 'jfusion');
+		}
+		if (JPluginHelper::isEnabled('content', 'jfusion')) {
+			$rows[] = JPluginHelper::getPlugin('content', 'jfusion');
+		}
 
 		foreach($rows as $row) {
 			$row->params = new Registry($row->params);
 			$new = $this->loadParams($row);
 
-			$this->clearParameters($new, 'joomla_plugin', $row->type);
-			$this->addMissingParameters($new, 'joomla_plugin', $row->type);
+			$this->clearParameters($new, $row->type);
+			$this->addMissingParameters($new, $row->type);
 
 			$this->joomla_plugin[$row->type] = $new;
 		}
@@ -175,14 +182,13 @@ class jfusionViewconfigdump extends JViewLegacy {
 				$row->params = new Registry($row->params);
 				$new = $this->loadParams($row);
 
-				$this->clearParameters($new, 'jfusion_module', $row->module);
-				$this->addMissingParameters($new, 'jfusion_module', $row->module);
+				$this->clearParameters($new, $row->module);
+				$this->addMissingParameters($new, $row->module);
 
 				$name = !empty($row->title) ? $row->module . ' ' . $row->title : $row->module;
 				$this->jfusion_module[$name] = $new;
 			}
 		}
-
 
 		$app		= JFactory::getApplication();
 		$menus		= $app->getMenu('site');
@@ -206,44 +212,6 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$this->getVersion();
 
 		parent::display($tpl);
-	}
-
-	/**
-	 * @param $key
-	 * @param $value
-	 * @return array
-	 */
-	function jfusion_plugin($key, $value) {
-		return $this->check('jfusion_plugin', $key, $value);
-	}
-
-	/**
-	 * @param $key
-	 * @param $value
-	 * @return array
-	 */
-	function menu_item($key, $value) {
-		return $this->check('menu_item', $key, $value);
-	}
-
-	/**
-	 * @param $key
-	 * @param $value
-	 * @param $name
-	 * @return array
-	 */
-	function joomla_plugin($key, $value, $name) {
-		return $this->check('joomla_plugin', $key, $value, $name);
-	}
-
-	/**
-	 * @param $key
-	 * @param $value
-	 * @param $name
-	 * @return array
-	 */
-	function jfusion_module($key, $value, $name) {
-		return $this->check('jfusion_module', $key, $value, $name);
 	}
 
 	/**
@@ -295,17 +263,14 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 */
 	function clearParameters(&$new, $name, $type = null) {
 		if (JFactory::getApplication()->input->get('filter', false)) {
-			foreach($new->params as $key => $value) {
-				if (is_array($value) || is_object($value)) {
-					foreach($value as $akey => $avalue) {
-						if ( !isset($this->checkvalue[$name]['*'][$akey])
-							&& !isset($this->checkvalue[$name][$type][$akey])
-							&& !isset($this->checkvalue[$name][$type]['*'][$akey]) ) {
-							unset($new->params->$key->$akey);
-						}
+
+			if (isset($this->checkvalue[$name]['params'])) {
+				$filter = $this->checkvalue[$name]['params'];
+
+				foreach($new->params as $key => $value) {
+					if (!isset($filter[$key])) {
+						unset($new->params->$key);
 					}
-				} else if( !isset($this->checkvalue[$name]['*'][$key]) && !isset($this->checkvalue[$name][$type][$key]) ) {
-					unset($new->params->$key);
 				}
 			}
 		}
@@ -317,55 +282,49 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @param null $type
 	 */
 	function addMissingParameters(&$new, $name, $type = null) {
-		if (isset($this->checkvalue[$name]['*'])) {
-			foreach($this->checkvalue[$name]['*'] as $key => $value) {
-				if (!isset($new->params->$key)) {
-					$new->params->$key = null;
-				}
-			}
-		}
-		if (isset($this->checkvalue[$name][$type])) {
-			foreach($this->checkvalue[$name][$type] as $key => $value) {
-				if (!isset($new->params->$key) && $key != '*') {
-					$new->params->$key = null;
-				}
-			}
-		}
-		if (isset($this->checkvalue[$name][$type]['*'])) {
-			foreach($new->params as &$value) {
-				if (is_array($value) || is_object($value)) {
-					foreach($this->checkvalue[$name][$type]['*'] as $key2 => $value2) {
-						if (!isset($value->$key2)) {
-							if (is_array($value)) {
-								$value[$key2] = null;
-							} else {
-								$value->$key2 = null;
-							}
+		if (isset($this->checkvalue[$name])) {
+			$filter = $this->checkvalue[$name];
+
+			foreach($filter as $key => $rules) {
+				if (is_array($rules)) {
+					foreach($rules as $field => $rule) {
+						if (!isset($new->$key->$field)) {
+							$new->$key->$field = null;
 						}
 					}
+				} else {
+					$new->$key = null;
 				}
+
 			}
 		}
 	}
 
 	/**
-	 * @param $type
-	 * @param $key
-	 * @param $value
+	 * @param      $type
+	 * @param      $stack
+	 * @param      $key
+	 * @param      $value
 	 * @param null $name
+	 *
 	 * @return array
 	 */
-	function check($type, $key, $value, $name = null) {
+	function check($type, $stack, $key, $value, $name = null) {
 		$check = null;
 
-		if ($name != null && isset($this->checkvalue[$type][$name]['*'][$key])) {
-			$check = $this->checkvalue[$type][$name]['*'][$key];
-		} else if ($name != null && isset($this->checkvalue[$type][$name][$key])) {
-			$check = $this->checkvalue[$type][$name][$key];
-		} else if (isset($this->checkvalue[$type][$key])) {
-			$check = $this->checkvalue[$type][$key];
-		} else if (isset($this->checkvalue[$type]['*'][$key])) {
-			$check = $this->checkvalue[$type]['*'][$key];
+		$filter = $this->checkvalue[$type];
+		if (!empty($stack)) {
+			foreach($stack as $level) {
+				if (!is_numeric($level) && isset($filter[$level])) {
+					$filter = $filter[$level];
+				}
+			}
+		}
+
+		if (isset($filter[$key])) {
+			if (!is_array($filter[$key])) {
+				$check = $filter[$key];
+			}
 		}
 
 		if($check) {
@@ -528,5 +487,25 @@ class jfusionViewconfigdump extends JViewLegacy {
 			}
 			unset($parser);
 		}
+	}
+
+	/**
+	 * @param \Joomla\Event\Event $event
+	 *
+	 * @return  \Joomla\Event\Event
+	 */
+	function onDebuggerFilter($event)
+	{
+		$type = $event->getArgument('type');
+		$stack = $event->getArgument('stack');
+		$key = $event->getArgument('key');
+		$value = $event->getArgument('value');
+		$style = $event->getArgument('style');
+
+		$out = $this->check($type, $stack, $key, $value);
+		list($style, $value) = $out;
+
+		$event->setArgument('style', $style);
+		$event->setArgument('value', $value);
 	}
 }

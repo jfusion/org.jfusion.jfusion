@@ -125,13 +125,13 @@ try {
 	            }
 
 	            //define some other JFusion specific parameters
-	            $query = $platform->getActivityQuery($selectedforumssql, $config['result_order'], $config['result_limit']);
+	            $query = $platform->getActivityQuery($selectedforumssql, $config['result_order']);
 	            if (!empty($query)) {
 	                // load
 	                if($config['mode']==LAT) {
-	                    $db->setQuery($query[$config['mode'] . $config['lat_mode']]);
+	                    $db->setQuery($query[$config['mode'] . $config['lat_mode']], 0, $config['result_limit']);
 	                } else {
-	                    $db->setQuery($query[$config['mode']]);
+	                    $db->setQuery($query[$config['mode']], 0, $config['result_limit']);
 	                }
 
 		            try {
