@@ -31,15 +31,6 @@ class com_jfusionInstallerScript
 		$table_prefix = $db->getPrefix();
 
 		try {
-			if (array_search($table_prefix . 'jfusion_users', $table_list) == false) {
-				$query = 'CREATE TABLE #__jfusion_users (
-				      id int(11) NOT null,
-				      username varchar(50),
-				      PRIMARY KEY (id)
-				    ) DEFAULT CHARACTER SET utf8;';
-				$db->setQuery($query);
-				$db->execute();
-			}
 			//create the jfusion_user_plugin table if it does not exist already
 			if (array_search($table_prefix . 'jfusion_users_plugin', $table_list) == false) {
 				$query = 'CREATE TABLE #__jfusion_users_plugin (
@@ -611,14 +602,6 @@ HTML;
 		}
 
 		$query = 'DROP TABLE #__jfusion_sync_details';
-		$db->setQuery($query);
-		try {
-			$db->execute();
-		} catch (Exception $e ) {
-			echo $e->getMessage() . '<br />';
-		}
-
-		$query = 'DROP TABLE #__jfusion_users';
 		$db->setQuery($query);
 		try {
 			$db->execute();

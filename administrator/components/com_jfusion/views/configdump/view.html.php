@@ -107,7 +107,7 @@ class jfusionViewconfigdump extends JViewLegacy implements DebuggerInterface {
 		$this->checkvalue['jfusion_plugin']['usergroups'] = 'is_validusergrouparray';
 
 		$query = $db->getQuery(true)
-			->select('id, name, params, dual_login, original_name')
+			->select('id, name, params, dual_login, original_name, master, slave')
 			->from('#__jfusion')
 			->where('status = 1');
 
