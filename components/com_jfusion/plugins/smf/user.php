@@ -210,9 +210,9 @@ class JFusionUser_smf extends JFusionUser
 
 		    $query = $db->getQuery(true)
 			    ->delete('#__log_online')
-			    ->where('ID_MEMBER = ' . $userinfo->userid);
+			    ->where('ID_MEMBER = ' . (int)$userinfo->userid);
 
-		    $db->setQuery($query, 0 , 1);
+		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
