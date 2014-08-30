@@ -355,7 +355,7 @@ class JFusionDiscussBotHelper {
 									$responce = array(1, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
 								} elseif ($creationMode == 'view') {
 									//only create the article if we are in the article view
-									if (!$this->view(JFactory::getApplication()->input->get('view'))) {
+									if (!$this->showPosts(JFactory::getApplication()->input->get('view'))) {
 										$responce = array(0, JText::_('REASON_CREATED_ON_VIEW'));
 									}
 								} elseif ($creationMode == 'new' && !$skip_new_check) {
@@ -582,7 +582,7 @@ JS;
 				$js .= $JFusionForum->loadQuickReplyIncludes();
 			}
 
-			if ($this->view($view)) {
+			if ($this->showPosts($view)) {
 				$js .= <<<JS
 				window.addEvent('domready', function() {
         				JFusion.initializeDiscussbot();
@@ -648,14 +648,20 @@ JS;
 	 *
 	 * @return boolean
 	 */
-	public function view($view) {
-		if (strpos($this->context, 'com_k2') === 0) {
-			$views = array('item');
-		} else {
-			$views = array('article',
-				'featured',
-				'category');
-		}
+	public function showPosts($view) {
+		$views = $this->params->get('show_posts', array());
+		return in_array($view, $views);
+	}
+
+	/**
+	 * Returns the view for compare
+	 *
+	 * @param $view
+	 *
+	 * @return boolean
+	 */
+	public function displayLinkButtons($view) {
+		$views = $this->params->get('link_mode', array());
 		return in_array($view, $views);
 	}
 }

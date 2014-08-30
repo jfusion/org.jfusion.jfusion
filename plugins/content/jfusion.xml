@@ -8,8 +8,8 @@
     <copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
     <version>2.0.0-016</version>
-    <revision>$revision$</revision>
-    <timestamp>$timestamp$</timestamp>
+    <revision>61d9f38c773b68f5bffe4176fd7eb5f1895087c4</revision>
+    <timestamp>1405410950</timestamp>
     <description>
         This is a discussion bot plugin for JFusion which enables using compatible forum software as a comments backend.
         To use for a single article, place {jfusion_discuss id#} where id# is the id of the thread.  Enable auto mode in
@@ -41,11 +41,19 @@
                     <option value="_blank">NEW_WINDOW</option>
                     <option value="_self">SAME_WINDOW</option>
                 </field>
+<!--
                 <field name="link_mode" type="list" default="always" label="LINK_MODE" description="LINK_MODE_DESC">
                     <option value="always">LINK_MODE_ALWAYS_SHOW_LINK</option>
                     <option value="never">LINK_MODE_NEVER_SHOW_LINK</option>
-                    <option value="rticle">LINK_MODE_IN_ARTICLE_ONLY</option>
+                    <option value="article">LINK_MODE_IN_ARTICLE_ONLY</option>
                     <option value="blog">LINK_MODE_IN_BLOG_ONLY</option>
+                </field>
+-->
+                <field name="link_mode" type="list" multiple="multiple" default="article" label="LINK_MODE" description="LINK_MODE_DESC">
+                    <option value="article">ARTICLE</option>
+                    <option value="featured">FEATURED</option>
+                    <option value="category">CATEGORY</option>
+                    <option value="item">2K_ITEM</option>
                 </field>
                 <field name="blog_link_mode" type="radio" class="btn-group" default="forum" label="BLOG_LINK_MODE" description="BLOG_LINK_MODE_DESC">
                     <option value="forum">BLOG_LINK_MODE_FORUM</option>
@@ -74,10 +82,13 @@
                 </field>
             </fieldset>
             <fieldset name="DISCUSSBOT_POST_SETUP_DESC" label="DISCUSSBOT_POST_SETUP_DESC">
-                <field name="show_posts" type="radio" class="btn-group" default="0" label="SHOW_POSTS" description="SHOW_POSTS_DESC">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
+                <field name="show_posts" type="list" multiple="multiple" default="article" label="SHOW_POSTS" description="SHOW_POSTS_DESC">
+                    <option value="article">ARTICLE</option>
+                    <option value="featured">FEATURED</option>
+                    <option value="category">CATEGORY</option>
+                    <option value="item">2K_ITEM</option>
                 </field>
+
                 <field name="post_header" type="text" size="20" default="" label="POST_HEADER" description="POST_HEADER_DESC" />
                 <field name="no_posts_msg" type="text" size="20" default="" label="NO_POSTS_MSG" description="NO_POSTS_MSG_DESC" />
                 <field name="show_refresh_link" type="radio" class="btn-group" default="1" label="SHOW_REFRESH_LINK" description="SHOW_REFRESH_LINK_DESCR">

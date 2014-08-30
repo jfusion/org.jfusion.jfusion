@@ -309,6 +309,8 @@ JFusion.submitAjaxRequest = function (id, task, vars) {
 JFusion.toggleDiscussionVisibility = function (id, discusslink) {
     var showdiscussion, jfusionBtnShowreplies;
     var content = $('jfusioncontent' + id);
+
+    showdiscussion = 1;
     if (content) {
         var posts = content.getElement('.jfusionposts');
         if (posts) {
@@ -325,24 +327,20 @@ JFusion.toggleDiscussionVisibility = function (id, discusslink) {
                 if (discusslink !== undefined) {
                     showdiscussion = 1;
                 }
-                new Request.JSON({
-                    url: JFusion.articelUrl[id],
-                    noCache: true,
-                    onComplete: function () {
-                        if (discusslink !== undefined) {
-                            window.location = discusslink;
-                        }
-                    }
-                }).post({'tmpl': 'component',
-                        'ajax_request': 1,
-                        'show_discussion': showdiscussion});
             }
         }
-    } else {
-        if (discusslink !== undefined) {
-            window.location = discusslink;
-        }
     }
+    new Request.JSON({
+        url: JFusion.articelUrl[id],
+        noCache: true,
+        onComplete: function () {
+            if (discusslink !== undefined) {
+                window.location = discusslink;
+            }
+        }
+    }).post({'tmpl': 'component',
+            'ajax_request': 1,
+            'show_discussion': showdiscussion});
 };
 
 JFusion.quote = function (id, pid) {
