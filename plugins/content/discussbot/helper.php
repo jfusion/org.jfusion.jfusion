@@ -374,7 +374,7 @@ class JFusionDiscussBotHelper {
 									$responce = array(1, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
 								} elseif ($creationMode == 'view') {
 									//only create the article if we are in the article view
-									if (!$this->view(JFactory::getApplication()->input->get('view'))) {
+									if (!$this->showPosts(JFactory::getApplication()->input->get('view'))) {
 										$responce = array(0, JText::_('REASON_CREATED_ON_VIEW'));
 									}
 								} elseif ($creationMode == 'new' && !$skip_new_check) {
@@ -605,7 +605,7 @@ JS;
 				$js .= $platform->loadQuickReplyIncludes();
 			}
 
-			if ($this->view($view)) {
+			if ($this->showPosts($view)) {
 				$js .= <<<JS
 				window.addEvent('domready', function() {
         				JFusion.initializeDiscussbot();
