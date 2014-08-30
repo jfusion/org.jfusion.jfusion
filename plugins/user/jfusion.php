@@ -92,9 +92,6 @@ class plgUserJfusion extends JPlugin
 
 			$userinfo = JFusionFunction::getJoomlaUser((object)$user);
 
-			if (!isset($userinfo->group_id) && !empty($userinfo->groups)) {
-				$userinfo->group_id = $userinfo->groups[0];
-			}
 			//check to see if we need to update the master
 			$master = Framework::getMaster();
 			// Recover the old data of the user
