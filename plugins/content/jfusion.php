@@ -1068,7 +1068,6 @@ HTML;
 			$itemid = $this->params->get('itemid');
 			$link_text = $this->params->get('link_text');
 			$link_type= $this->params->get('link_type', 'text');
-			$link_mode= $this->params->get('link_mode', 'always');
 			$blog_link_mode = $this->params->get('blog_link_mode', 'forum');
 			$linkHTML = ($link_type == 'image') ? '<img style="border:0;" src="' . $link_text . '">' : $link_text;
 			if($this->params->get('show_reply_num')) {
