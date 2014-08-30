@@ -1256,7 +1256,7 @@ HTML;
 					}
 
 
-					if ($blog_link_mode == 'joomla') {
+					if ($blog_link_mode == 'joomla' && ($this->helper->showPosts('article') || $this->helper->showPosts('item'))) {
 						//see if there are any page breaks
 						$joomla_text = (isset($this->article->fulltext) && !empty($this->article->fulltext)) ? $this->article->fulltext : $this->article->text;
 						$pagebreaks = substr_count($joomla_text, 'system-pagebreak');
