@@ -13,18 +13,15 @@ use JFusion\Api\PlatformInterface;
 use JFusion\Application\ApplicationInterface;
 use JFusion\Event\LanguageInterface;
 use JFusion\Installer\PluginInterface;
-use JFusion\Router\RouterInterface;
-use JFusion\Session\SessionInterface;
 
 use Joomla\Event\Event;
 
-use Joomla\Uri\Uri;
 use Psr\Log\LogLevel;
 
 /**
  * Class JFusionFramework
  */
-class JFusionEventHook implements LanguageInterface, ApplicationInterface, SessionInterface, RouterInterface, PluginInterface , PlatformInterface {
+class JFusionEventHook implements LanguageInterface, ApplicationInterface, PluginInterface , PlatformInterface {
 	/**
 	 * Loads a language file for framework
 	 *
@@ -57,73 +54,6 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 	}
 
 	/**
-	 * Redirect to another URL.
-	 *
-	 * If the headers have not been sent the redirect will be accomplished using a "301 Moved Permanently"
-	 * or "303 See Other" code in the header pointing to the new location. If the headers have already been
-	 * sent this will be accomplished using a JavaScript statement.
-	 *
-	 * @param Event $event
-	 *
-	 * @return  void
-	 */
-	function onApplicationRedirect($event)
-	{
-		$url = $event->getArgument('url', null);
-		$moved = $event->getArgument('moved', null);
-		JFactory::getApplication()->redirect($url, $moved);
-	}
-
-	/**
-	 * Logout authentication function.
-	 *
-	 * Passed the current user information to the onUserLogout event and reverts the current
-	 * session record back to 'anonymous' parameters.
-	 * If any of the authentication plugins did not successfully complete
-	 * the logout routine then the whole method fails. Any errors raised
-	 * should be done in the plugin as this provides the ability to give
-	 * much more information about why the routine may have failed.
-	 *
-	 * @param Event $event
-	 *
-	 * @return  void
-	 */
-	function onApplicationLogout($event)
-	{
-		$userid = $event->getArgument('userid', null);
-
-		$status = JFactory::getApplication()->logout($userid);
-
-		$event->setArgument('status', ($status === true));
-	}
-
-	/**
-	 * Login authentication function.
-	 *
-	 * Username and encoded password are passed the onUserLogin event which
-	 * is responsible for the user validation. A successful validation updates
-	 * the current session record with the user's details.
-	 *
-	 * Username and encoded password are sent as credentials (along with other
-	 * possibilities) to each observer (authentication plugin) for user
-	 * validation.  Successful validation will update the current session with
-	 * the user details.
-	 *
-	 * @param Event $event
-	 *
-	 * @return  void
-	 */
-	public function onApplicationLogin($event)
-	{
-		$credentials = $event->getArgument('credentials', array());
-		$options = $event->getArgument('options', array());
-
-		$status = JFactory::getApplication()->login($credentials, $options);
-
-		$event->setArgument('status', ($status === true));
-	}
-
-	/**
 	 * Enqueue a system message.
 	 *
 	 * @param   Event $event
@@ -131,49 +61,7 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Sessi
 	 */
 	public function onApplicationEnqueueMessage($event)
 	{
-		$msg = $event->getArgument('messsage', null);
-		$type = $event->getArgument('type', 'error');
-
-		JFactory::getApplication()->enqueueMessage($msg, $type);
-	}
-
-	/**
-	 * Loads a language file for framework
-	 *
-	 * @param   Event $event
-	 * @return  void
-	 */
-	function onSessionClose($event)
-	{
-		JFactory::getSession()->close();
-	}
-
-	/**
-	 * Restart an expired or locked session.
-	 *
-	 * @param   Event $event
-	 * @return  void
-	 */
-	function onSessionRestart($event)
-	{
-		$status = JFactory::getSession()->restart();
-		$event->getArgument('status', $status);
-	}
-
-	/**
-	 * Function to convert an internal URI to a route
-	 *
-	 * @param   Event $event
-	 *
-	 * @return  void
-	 */
-	function  onRouterBuild($event)
-	{
-		$url = $event->getArgument('url', null);
-		$juri = JFactory::getApplication('site')->getRouter()->build($url);
-
-		$uri = new Uri((string) $juri);
-		$event->getArgument('uri', $uri);
+		JFactory::getApplication()->enqueueMessage($event->getArgument('message', null), $event->getArgument('type', 'message'));
 	}
 
 	/**

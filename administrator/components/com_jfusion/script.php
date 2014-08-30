@@ -255,17 +255,6 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			$db->execute();
 
-			/***
-			 * UPGRADES FOR 1.1.2 Stable
-			 ***/
-			/**
-			 * TODO: REMOVE?
-			//make id the primary key so that the username will be updated
-			$query = 'ALTER TABLE `#__jfusion_users` DROP PRIMARY KEY, ADD PRIMARY KEY ( `id` )';
-			$db->setQuery($query);
-			$db->execute();
-			*/
-
 			/**
 			 * UPGRADES FOR 1.5
 			 */

@@ -81,15 +81,15 @@ class JFusionModelInstaller extends InstallerModelInstall
 		return $msg;
 	}
 
-    /**
-     * Replaces original Install() method.
-     *
-     * @return array|bool Result of the JFusion plugin install
-     */
+	/**
+	 * Replaces original Install() method.
+	 *
+	 * @throws Exception
+	 * @return array|bool Result of the JFusion plugin install
+	 */
     function install()
     {
-    	$result = array();
-    	$result['status'] = false;
+	    $result = array('status' => false);
 	    $this->setState('action', 'install');
 	    $package = null;
 	    try {
@@ -136,12 +136,15 @@ class JFusionModelInstaller extends InstallerModelInstall
 				    }
 			    }
 		    }
-	    } catch (Exception $e) {
-		    $result['message'] = $this->raise('error', $e->getMessage());
-	    }
 
-	    if ( isset($package['packagefile']) && $package['extractdir'] ) {
-		    JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
+		    if ( isset($package['packagefile']) && $package['extractdir'] ) {
+			    JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
+		    }
+	    } catch (Exception $e) {
+		    if ( isset($package['packagefile']) && $package['extractdir'] ) {
+			    JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
+		    }
+		    throw $e;
 	    }
         //return the results array
         return $result;

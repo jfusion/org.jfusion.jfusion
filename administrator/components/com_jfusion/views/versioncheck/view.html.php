@@ -125,84 +125,86 @@ class jfusionViewversioncheck extends JViewLegacy
 		$this->JFusionVersion = JText::_('UNKNOWN');
 
 		foreach ($urls as &$url) {
-			$url->data = \JFusion\Framework::getFileData($url->url);
 			try {
+				$url->data = JFusionFunction::getFileData($url->url);
+
 				$xml = \JFusion\Framework::getXml($url->data, false);
+
+				if ($xml) {
+					if ($url->url == $jfusionurl->url) {
+						$php = new stdClass;
+						$php->oldversion = phpversion();
+						$php->version = (string)$xml->system->php;
+						$php->name = 'PHP';
+
+						if (version_compare(phpversion(), $php->version) == - 1) {
+							$php->class = 'bad0';
+							$this->server_compatible = false;
+						} else {
+							$php->class = 'good0';
+						}
+						$this->system[] = $php;
+
+						$joomla = new stdClass;
+						$version = new JVersion;
+						$joomla_version = $version->getShortVersion();
+						$joomla->oldversion = $joomla_version;
+						$joomla->version = (string)$xml->system->joomla;
+						$joomla->name = 'Joomla';
+
+						//remove any letters from the version
+						$joomla_versionclean = preg_replace('[A-Za-z !]', '', $joomla_version);
+						if (version_compare($joomla_versionclean, $joomla->version) == - 1) {
+							$joomla->class = 'bad1';
+							$this->server_compatible = false;
+						} else {
+							$joomla->class = 'good1';
+						}
+						$this->system[] = $joomla;
+
+						$mysql = new stdClass;
+						$db = JFactory::getDBO();
+						$mysql_version = $db->getVersion();
+
+						$mysql->oldversion = $mysql_version;
+						$mysql->version = (string)$xml->system->mysql;
+						$mysql->name = 'MySQL';
+
+						if (version_compare($mysql_version, $mysql->version) == - 1) {
+							$mysql->class = 'bad0';
+							$this->server_compatible = false;
+						} else {
+							$mysql->class = 'good0';
+						}
+						$this->system[] = $mysql;
+
+						//check the JFusion component,plugins and modules versions
+						$JFusion = $this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . '/jfusion.xml', JText::_('COMPONENT'), $xml->component[0]);
+						if ($xml->component->version) {
+							$this->JFusionVersion = (string)$xml->component->version;
+						}
+						$this->components[] = $JFusion;
+						$this->components[] = $this->getVersionNumber(JPATH_SITE . '/modules/mod_jfusion_activity/mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $xml->module->activity);
+						$this->components[] = $this->getVersionNumber(JPATH_SITE . '/modules/mod_jfusion_user_activity/mod_jfusion_user_activity.xml', JText::_('USER') . ' ' . JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $xml->module->useractivity);
+						$this->components[] = $this->getVersionNumber(JPATH_SITE . '/modules/mod_jfusion_whosonline/mod_jfusion_whosonline.xml', JText::_('WHOSONLINE') . ' ' . JText::_('MODULE'), $xml->module->whosonline);
+						$this->components[] = $this->getVersionNumber(JPATH_SITE . '/modules/mod_jfusion_login/mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'), $xml->module->login);
+
+						$this->components[] = $this->getVersionNumber(JPATH_SITE . '/plugins/authentication/jfusion/jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), $xml->plugin->auth);
+						$this->components[] = $this->getVersionNumber(JPATH_SITE . '/plugins/user/jfusion/jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), $xml->plugin->user);
+						$this->components[] = $this->getVersionNumber(JPATH_SITE . '/plugins/search/jfusion/jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), $xml->plugin->search);
+						$this->components[] = $this->getVersionNumber(JPATH_SITE . '/plugins/content/jfusion/jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), $xml->plugin->discussion);
+						$this->components[] = $this->getVersionNumber(JPATH_SITE . '/plugins/system/jfusion/jfusion.xml', JText::_('SYSTEM') . ' ' . JText::_('PLUGIN'), $xml->plugin->system);
+					}
+
+					foreach ($plugins as $key => $plugin) {
+						if (in_array($plugin->name, $url->jnames)) {
+							$this->jfusion_plugins[] = $this->getVersionNumber(JFUSION_PLUGIN_PATH . '/' . $plugin->name . '/jfusion.xml', $plugin->name, $xml->plugins->{$plugin->name});
+							unset($plugins[$key]);
+						}
+					}
+				}
 			} catch (Exception $e) {
 				$xml = null;
-			}
-			if ($xml) {
-				if ($url->url == $jfusionurl->url) {
-					$php = new stdClass;
-					$php->oldversion = phpversion();
-					$php->version = (string)$xml->system->php;
-					$php->name = 'PHP';
-
-					if (version_compare(phpversion(), $php->version) == - 1) {
-						$php->class = 'bad0';
-						$this->server_compatible = false;
-					} else {
-						$php->class = 'good0';
-					}
-					$this->system[] = $php;
-
-					$joomla = new stdClass;
-					$version = new JVersion;
-					$joomla_version = $version->getShortVersion();
-					$joomla->oldversion = $joomla_version;
-					$joomla->version = (string)$xml->system->joomla;
-					$joomla->name = 'Joomla';
-
-					//remove any letters from the version
-					$joomla_versionclean = preg_replace('[A-Za-z !]', '', $joomla_version);
-					if (version_compare($joomla_versionclean, $joomla->version) == - 1) {
-						$joomla->class = 'bad1';
-						$this->server_compatible = false;
-					} else {
-						$joomla->class = 'good1';
-					}
-					$this->system[] = $joomla;
-
-					$mysql = new stdClass;
-					$db = JFactory::getDBO();
-					$mysql_version = $db->getVersion();
-
-					$mysql->oldversion = $mysql_version;
-					$mysql->version = (string)$xml->system->mysql;
-					$mysql->name = 'MySQL';
-
-					if (version_compare($mysql_version, $mysql->version) == - 1) {
-						$mysql->class = 'bad0';
-						$this->server_compatible = false;
-					} else {
-						$mysql->class = 'good0';
-					}
-					$this->system[] = $mysql;
-
-					//check the JFusion component,plugins and modules versions
-					$JFusion = $this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . '/jfusion.xml', JText::_('COMPONENT'), $xml->component[0]);
-					if ($xml->component->version) {
-						$this->JFusionVersion = (string)$xml->component->version;
-					}
-					$this->components[] = $JFusion;
-					$this->components[] = $this->getVersionNumber(JPATH_SITE . '/modules/mod_jfusion_activity/mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $xml->module->activity);
-					$this->components[] = $this->getVersionNumber(JPATH_SITE . '/modules/mod_jfusion_user_activity/mod_jfusion_user_activity.xml', JText::_('USER') . ' ' . JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $xml->module->useractivity);
-					$this->components[] = $this->getVersionNumber(JPATH_SITE . '/modules/mod_jfusion_whosonline/mod_jfusion_whosonline.xml', JText::_('WHOSONLINE') . ' ' . JText::_('MODULE'), $xml->module->whosonline);
-					$this->components[] = $this->getVersionNumber(JPATH_SITE . '/modules/mod_jfusion_login/mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'), $xml->module->login);
-
-					$this->components[] = $this->getVersionNumber(JPATH_SITE . '/plugins/authentication/jfusion/jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), $xml->plugin->auth);
-					$this->components[] = $this->getVersionNumber(JPATH_SITE . '/plugins/user/jfusion/jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), $xml->plugin->user);
-					$this->components[] = $this->getVersionNumber(JPATH_SITE . '/plugins/search/jfusion/jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), $xml->plugin->search);
-					$this->components[] = $this->getVersionNumber(JPATH_SITE . '/plugins/content/jfusion/jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), $xml->plugin->discussion);
-					$this->components[] = $this->getVersionNumber(JPATH_SITE . '/plugins/system/jfusion/jfusion.xml', JText::_('SYSTEM') . ' ' . JText::_('PLUGIN'), $xml->plugin->system);
-				}
-
-				foreach ($plugins as $key => $plugin) {
-					if (in_array($plugin->name, $url->jnames)) {
-						$this->jfusion_plugins[] = $this->getVersionNumber(JFUSION_PLUGIN_PATH . '/' . $plugin->name . '/jfusion.xml', $plugin->name, $xml->plugins->{$plugin->name});
-						unset($plugins[$key]);
-					}
-				}
 			}
 		}
 		foreach ($plugins as $plugin) {

@@ -7,12 +7,12 @@ JFusion.View = {};
 JFusion.url = '';
 
 JFusion.onSuccess = function (JSONobject) {
+    Joomla.removeMessages();
     if (!JSONobject.success && JSONobject.message) {
         JFusion.confirm(JSONobject.message, Joomla.JText._('OK'));
     }
 
-    if (JSONobject.messages)
-    {
+    if (JSONobject.messages) {
         Joomla.renderMessages(JSONobject.messages);
     }
 };

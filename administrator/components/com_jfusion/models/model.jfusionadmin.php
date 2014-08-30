@@ -30,7 +30,6 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionFunctionAdmin
 {
-
     /**
      * Changes plugin status in both Joomla 1.5 and Joomla 1.6
      *
