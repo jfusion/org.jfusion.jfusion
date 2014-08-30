@@ -671,14 +671,20 @@ JS;
 	 *
 	 * @return boolean
 	 */
-	public function view($view) {
-		if (strpos($this->context, 'com_k2') === 0) {
-			$views = array('item');
-		} else {
-			$views = array('article',
-				'featured',
-				'category');
-		}
+	public function showPosts($view) {
+		$views = $this->params->get('show_posts', array());
+		return in_array($view, $views);
+	}
+
+	/**
+	 * Returns the view for compare
+	 *
+	 * @param $view
+	 *
+	 * @return boolean
+	 */
+	public function displayLinkButtons($view) {
+		$views = $this->params->get('link_mode', array());
 		return in_array($view, $views);
 	}
 }

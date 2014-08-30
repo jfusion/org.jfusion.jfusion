@@ -2,7 +2,8 @@
 /**
  * @var JFusionDiscussBotHelper $this
  */
-if($this->params->get('show_posts')) : ?>
+$view = ($override = JFactory::getApplication()->input->get('view_override')) ? $override : JFactory::getApplication()->input->get('view');
+if($this->showPosts($view)) : ?>
     <div class="jfusionPostHeader"><?php echo $this->params->get('post_header'); ?></div>
 
     <div class="jfusionPostArea">

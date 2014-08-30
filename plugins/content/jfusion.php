@@ -329,8 +329,9 @@ class plgContentJfusion extends JPlugin
 
 							//check for some specific ajax requests
 							if ($this->ajax_request) {
+								$view = ($override = JFactory::getApplication()->input->get('view_override')) ? $override : JFactory::getApplication()->input->get('view');
 								//check to see if this is an ajax call to update the pagination
-								if ($this->params->get('show_posts', 1) && $this->dbtask == 'update_posts') {
+								if ($this->helper->showPosts($view) && $this->dbtask == 'update_posts') {
 									$this->updatePosts();
 								}  else if ($this->dbtask == 'update_debug_info') {
 									$data->error = false;
@@ -483,7 +484,8 @@ class plgContentJfusion extends JPlugin
 
 		//check to see if the fulltext has a manual plug if we are in a blog view
 		if (isset($this->article->fulltext)) {
-			if (!$this->manual &&  !$this->helper->view(JFactory::getApplication()->input->get('view'))) {
+
+			if (!$this->manual &&  !$this->helper->showPosts(JFactory::getApplication()->input->get('view'))) {
 				preg_match('/\{jfusion_discuss (.*)\}/U', $this->article->fulltext, $match);
 				if (!empty($match)) {
 					$this->helper->debug('No plugs in text but found plugs in fulltext');
@@ -527,7 +529,7 @@ class plgContentJfusion extends JPlugin
 			if ($this->mode == 'auto') {
 				$this->helper->debug('In auto mode');
 				if ($this->valid) {
-					if ($threadinfo->valid || $this->creationMode == 'load' || ($this->creationMode == 'view' && $this->helper->view(JFactory::getApplication()->input->get('view'))) ) {
+					if ($threadinfo->valid || $this->creationMode == 'load' || ($this->creationMode == 'view' && $this->helper->showPosts(JFactory::getApplication()->input->get('view'))) ) {
 						$status = $this->helper->checkThreadExists();
 						if ($status['action'] == 'created') {
 							$threadinfo = $status['threadinfo'];
@@ -911,7 +913,7 @@ HTML;
 		$threadinfo = $this->helper->getThreadInfo();
 
 		//let's only show quick replies and posts on the article view
-		if ($this->helper->view(JFactory::getApplication()->input->get('view'))) {
+		if ($this->helper->showPosts(JFactory::getApplication()->input->get('view'))) {
 			$JSession = JFactory::getSession();
 
 			if (!$threadinfo->published && $this->creationMode != 'reply') {
@@ -1023,7 +1025,8 @@ HTML;
 			}
 
 			//add posts to content if enabled
-			if ($this->params->get('show_posts')) {
+			$view = ($override = JFactory::getApplication()->input->get('view_override')) ? $override : JFactory::getApplication()->input->get('view');
+			if ($this->helper->showPosts($view)) {
 				$this->helper->output['posts'] = $this->preparePosts();
 
 				if ($this->params->get('enable_pagination', 0)) {
@@ -1093,7 +1096,6 @@ HTML;
 			$itemid = $this->params->get('itemid');
 			$link_text = $this->params->get('link_text');
 			$link_type = $this->params->get('link_type', 'text');
-			$link_mode = $this->params->get('link_mode', 'always');
 			$blog_link_mode = $this->params->get('blog_link_mode', 'forum');
 			$linkHTML = ($link_type == 'image') ? '<img style="border:0;" src="' . $link_text . '">' : $link_text;
 			if($this->params->get('show_reply_num')) {
@@ -1150,7 +1152,7 @@ HTML;
 			//let's overwrite the read more link with our own
 			//needed as in the case of updating the buttons via ajax which calls the article view
 			$view = ($override = JFactory::getApplication()->input->get('view_override')) ? $override : JFactory::getApplication()->input->get('view');
-			if (!$this->helper->view($view) && $this->params->get('overwrite_readmore', 1)) {
+			if (!$this->helper->showPosts($view) && $this->params->get('overwrite_readmore', 1)) {
 				//make sure the read more link is enabled for this article
 
 				if (!empty($show_readmore) && !empty($readmore_catch)) {
@@ -1230,7 +1232,7 @@ HTML;
 				}
 			}
 
-			if($this->helper->view($view) && $this->params->get('show_posts') && $this->params->get('show_refresh_link', 1) && $threadinfo->published) {
+			if($this->helper->showPosts($view) && $this->params->get('show_refresh_link', 1) && $threadinfo->published) {
 				$this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
 				$this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts(' . $this->article->id . ');';
 				$this->helper->output['buttons']['refresh']['text'] = JText::_('REFRESH_POSTS');
@@ -1239,56 +1241,45 @@ HTML;
 
 			//create the discuss this link
 			if ($threadinfo->valid || $this->manual) {
-				if ($link_mode != 'never') {
+				if ($this->helper->displayLinkButtons($view)) {
 					/**
 					 * @var $platform \JFusion\Plugin\Platform\Joomla
 					 */
 					$platform = Factory::getPlatform('Joomla', $this->jname);
 
-					if ($this->helper->view($view)) {
-						if ($link_mode == 'article' || $link_mode == 'always') {
-							if ($this->params->get('enable_comment_in_forum_button', 0)) {
-								$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
-								$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
-								$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($platform->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
-								$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
-								$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
-							}
-						}
-					} elseif ($link_mode == 'blog' || $link_mode == 'always') {
-						if ($blog_link_mode == 'joomla') {
-							//see if there are any page breaks
-							$joomla_text = (isset($this->article->fulltext) && !empty($this->article->fulltext)) ? $this->article->fulltext : $this->article->text;
-							$pagebreaks = substr_count($joomla_text, 'system-pagebreak');
-							$query = ($pagebreaks) ? '&limitstart=' . $pagebreaks : '';
-							if ($article_access) {
-								$discuss_link = $this->helper->getArticleUrl('discussion', $query);
-							} else {
-								$return_url = base64_encode($this->helper->getArticleUrl('discussion', $query));
-								$discuss_link = JRoute::_('index.php?option=com_user&view=login&return=' . $return_url);
-							}
-							$this->helper->output['buttons']['discuss']['href'] = 'javascript: void(0);';
-							$this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(' . $this->article->id . ', \'' . $discuss_link . '\');';
-							$this->helper->output['buttons']['discuss']['target'] = '_self';
-						} else {
-							$this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($platform->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
-							$this->helper->output['buttons']['discuss']['target'] = $linkTarget;
-						}
-
-						$this->helper->output['buttons']['discuss']['text'] = $linkHTML;
-
-						if ($this->params->get('enable_comment_in_forum_button', 0)) {
-							$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
-							$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
-							$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($platform->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
-							$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
-							$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
-						}
+					if ($this->params->get('enable_comment_in_forum_button', 0)) {
+						$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
+						$commentLinkHTML = ($this->params->get('comment_in_forum_link_type') == 'image') ? '<img style="border:0;" src="' . $commentLinkText . '">' : $commentLinkText;
+						$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($platform->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
+						$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
+						$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
 					}
+
+
+					if ($blog_link_mode == 'joomla') {
+						//see if there are any page breaks
+						$joomla_text = (isset($this->article->fulltext) && !empty($this->article->fulltext)) ? $this->article->fulltext : $this->article->text;
+						$pagebreaks = substr_count($joomla_text, 'system-pagebreak');
+						$query = ($pagebreaks) ? '&limitstart=' . $pagebreaks : '';
+						if ($article_access) {
+							$discuss_link = $this->helper->getArticleUrl('discussion', $query);
+						} else {
+							$return_url = base64_encode($this->helper->getArticleUrl('discussion', $query));
+							$discuss_link = JRoute::_('index.php?option=com_user&view=login&return=' . $return_url);
+						}
+						$this->helper->output['buttons']['discuss']['href'] = 'javascript: void(0);';
+						$this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(' . $this->article->id . ', \'' . $discuss_link . '\');';
+						$this->helper->output['buttons']['discuss']['target'] = '_self';
+					} else {
+						$this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($platform->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
+						$this->helper->output['buttons']['discuss']['target'] = $linkTarget;
+					}
+
+					$this->helper->output['buttons']['discuss']['text'] = $linkHTML;
 				}
 
 				//show comments link
-				if ($this->helper->view($view) && $this->params->get('show_posts') && $this->params->get('show_toggle_posts_link', 1) && $threadinfo->published) {
+				if ($this->helper->showPosts($view) && $this->params->get('show_toggle_posts_link', 1) && $threadinfo->published) {
 					$this->helper->output['buttons']['showreplies']['href'] = 'javascript: void(0);';
 					$this->helper->output['buttons']['showreplies']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(' . $this->article->id . ');';
 
