@@ -37,6 +37,10 @@
                     <option value="2">EMAIL</option>
                     <option value="3">USERNAME_OR_EMAIL</option>
                 </field>
+                <field name="login_type" type="radio" class="btn-group" default="1" label="SMF_LOGIN_TYPE" description="SMF_LOGIN_TYPE_DESC">
+                    <option value="0">SMF_LOGIN_CURL</option>
+                    <option value="1">SMF_LOGIN_INDIRECT</option>
+                </field>
             </fieldset>
 
             <fieldset name="DATABASE_OPTIONS">

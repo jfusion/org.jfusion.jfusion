@@ -234,11 +234,67 @@ class JFusionUser_smf extends JFusionUser
     {
         $status = array('error' => array(), 'debug' => array());
         //do not create sessions for blocked users
-        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-        } else {
-            $status = $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
-        }
+	    try {
+		    if (!empty($userinfo->block) || !empty($userinfo->activation)) {
+			    $status['error'][] = JText::_('FUSION_BLOCKED_USER');
+		    } else {
+			    if ($this->params->get('login_type', 1)) {
+				    $db = JFusionFactory::getDatabase($this->getJname());
+
+				    $update = new stdClass();
+				    $update->ID_MEMBER = $userinfo->userid;
+				    $update->lastLogin = time();
+				    $update->memberIP = $_SERVER['REMOTE_ADDR'];
+
+				    $db->updateObject('#__members', $update, 'ID_MEMBER');
+
+				    $query = $db->getQuery(true)
+					    ->delete('#__log_online')
+					    ->where('session = ' . $db->quote('ip' . $_SERVER['REMOTE_ADDR']));
+
+				    $db->setQuery($query);
+				    $db->execute();
+
+				    $query = $db->getQuery(true)
+					    ->select('*')
+					    ->from('#__log_online')
+					    ->where('session = ' . $db->quote(session_id()));
+
+				    $db->setQuery($query);
+
+				    $log = $db->loadObject();
+				    if ($log) {
+					    $log->logTime = time();
+					    $log->ID_MEMBER = $userinfo->userid;
+					    $log->ip = $_SERVER['REMOTE_ADDR'];
+					    $log->url = '';
+
+					    $db->updateObject('#__log_online', $log, 'session');
+				    } else {
+					    $log = new stdClass();
+					    $log->session = session_id();
+					    $log->logTime = time();
+					    $log->ID_MEMBER = $userinfo->userid;
+					    $log->ip = $_SERVER['REMOTE_ADDR'];
+					    $log->url = '';
+
+					    $db->insertObject('#__log_online', $log, 'session');
+				    }
+
+				    $cookie_expire = $this->params->get('cookie_expire');
+
+				    // Get the data and path to set it on.
+				    $data = serialize(array($userinfo->userid, sha1($userinfo->password . $userinfo->password_salt), time() + $cookie_expire, 2));
+
+				    // Set the cookie, $_COOKIE, and session variable.
+				    $status['debug'][] = $this->addCookie($this->params->get('cookie_name'), $data, $cookie_expire, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
+			    } else {
+				    $status = $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
+			    }
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = $e->getMessage();
+	    }
         return $status;
     }
 
