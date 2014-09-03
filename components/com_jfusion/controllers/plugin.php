@@ -48,6 +48,9 @@ class JFusionControllerPlugin extends JControllerLegacy
 		if ($menuitemid && $menuitemid != 1) {
             $menu = JMenu::getInstance('site');
             $item = $menu->getItem($menuitemid);
+			if (!$item) {
+				throw new RuntimeException(JText::_('INVALID_MENUITEM'));
+			}
 			$jview = $item->params->get('visual_integration', 'wrapper');
 
 			//load custom plugin parameter
