@@ -224,15 +224,20 @@ class plgUserJfusion extends JPlugin
 		global $JFusionActive, $JFusionActivePlugin;
 		$JFusionActive = true;
 		$user = JFactory::getUser($user['id']);
-		$result = new stdClass();
-		$result->userid = $user->get('id');
-		$result->email = $user->get('email');
-		$result->username = $user->get('username');
+		$u = new stdClass();
+		$u->userid = $user->get('id');
+		$u->email = $user->get('email');
+		$u->username = $user->get('username');
 
 		$userinfo = new \JFusion\User\Userinfo('joomla_int');
-		$userinfo->bind($result);
+		$userinfo->bind($u);
 
-		if (empty($options['clientid'][0])) {
+		$mainframe = JFactory::getApplication();
+		if ($mainframe->isAdmin()) {
+			$options['clientid'] = array(1);
+		} else {
+			$options['clientid'] = array(0);
+
 			$JFuser = new \JFusion\User\User();
 
 			$result = $JFuser->logout($userinfo, $options);

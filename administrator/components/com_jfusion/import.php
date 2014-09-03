@@ -52,6 +52,7 @@ $config->set('usergroups', $params->get('usergroups', false));
 Factory::$config = $config;
 
 Factory::$config->set('apikey', Factory::getParams('joomla_int')->get('secret'));
+Factory::$config->set('plugin-url', JFusionFunction::getJoomlaURL() . 'components/com_jfusion/plugins/');
 
 require_once(__DIR__ . '/models/model.eventhook.php');
 

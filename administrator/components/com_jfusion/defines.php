@@ -10,6 +10,3 @@ define('JFUSION_PLUGIN_AUTOLOADER_PATH', JPATH_SITE . '/components/com_jfusion')
 
 define('JFUSIONPATH_SITE', JPATH_SITE . '/components/com_jfusion');
 define('JFUSIONPATH_ADMINISTRATOR', JPATH_ADMINISTRATOR . '/components/com_jfusion');
-
-// Relative URL to JFusion's plugin dir
-define('JFUSION_PLUGIN_DIR_URL', 'components/com_jfusion/plugins/');

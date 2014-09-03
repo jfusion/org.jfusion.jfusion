@@ -881,8 +881,10 @@ JS;
 		$info->addAttribute('jfusionversion', $VersionCurrent);
 		$info->addAttribute('jfusionrevision', $RevisionCurrent);
 
+		$JFusionPlugin = \JFusion\Factory::getAdmin($jname);
+
 		//get the current JFusion version number
-		$filename = JFUSION_PLUGIN_PATH . '/' . $jname . '/jfusion.xml';
+		$filename = JFUSION_PLUGIN_PATH . '/' . $JFusionPlugin->getName() . '/jfusion.xml';
 		if (file_exists($filename) && is_readable($filename)) {
 			//get the version number
 			$element = \JFusion\Framework::getXml($filename);

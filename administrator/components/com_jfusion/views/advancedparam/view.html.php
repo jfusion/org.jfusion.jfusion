@@ -205,10 +205,9 @@ HTML;
 		global $jname;
 		$jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
 		if (isset($this->featureArray[$feature]) && !empty($jname)) {
-			/**
-			 * TODO Jname need to be real plugin name
-			 */
-			$path = JFUSION_PLUGIN_PATH . '/' . $jname . '/Platform/Joomla/' . $this->featureArray[$feature];
+			$JFusionPlugin = \JFusion\Factory::getAdmin($jname);
+
+			$path = JFUSION_PLUGIN_PATH . '/' . $JFusionPlugin->getName() . '/Platform/Joomla/' . $this->featureArray[$feature];
 			$defaultPath = JPATH_ADMINISTRATOR . '/components/' . $option . '/views/advancedparam/paramfiles/' . $this->featureArray[$feature];
 			$xml_path = (JFile::exists($path)) ? $path : $defaultPath;
 			$form = false;
