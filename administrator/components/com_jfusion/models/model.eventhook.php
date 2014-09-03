@@ -11,8 +11,9 @@ use JFusion\Framework;
 use JFusion\User\Userinfo;
 use JFusion\Api\PlatformInterface;
 use JFusion\Application\ApplicationInterface;
-use JFusion\Event\LanguageInterface;
-use JFusion\Installer\PluginInterface;
+use JFusion\Installer\InstallerPluginInterface;
+use JFusion\Plugin\PluginInterface;
+use JFusion\FrameworkInterface;
 
 use Joomla\Event\Event;
 
@@ -21,7 +22,7 @@ use Psr\Log\LogLevel;
 /**
  * Class JFusionFramework
  */
-class JFusionEventHook implements LanguageInterface, ApplicationInterface, PluginInterface , PlatformInterface {
+class JFusionEventHook implements ApplicationInterface, PluginInterface, InstallerPluginInterface, PlatformInterface, FrameworkInterface {
 	/**
 	 * Loads a language file for framework
 	 *
@@ -29,8 +30,11 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Plugi
 	 *
 	 * @return bool|void
 	 */
-	public function onLanguageLoadFramework($event)
+	public function onFrameworkLoadLanguage($event)
 	{
+		/**
+		 * TODO: when language location for framework files is changed this need to be updated
+		 */
 		JFactory::getLanguage()->load('com_jfusion', JFUSIONPATH_ADMINISTRATOR);
 		JFactory::getLanguage()->load('com_jfusion', JFUSIONPATH_SITE);
 
@@ -45,12 +49,19 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Plugi
 	 *
 	 * @return  boolean if loaded or not
 	 */
-	public function onLanguageLoadPlugin($event)
+	public function onPluginLoadLanguage($event)
 	{
+		/**
+		 * TODO: when language location for plugin files is changed this need to be updated
+		 */
 		$jname = $event->getArgument('jname', null);
-		JFactory::getLanguage()->load('com_jfusion.plg_' . $jname, JFUSIONPATH_ADMINISTRATOR);
-		Factory::getLanguage()->load('com_jfusion.plg_' . $jname, JFUSIONPATH_ADMINISTRATOR);
-		return true;
+		if ($jname) {
+			JFactory::getLanguage()->load('com_jfusion.plg_' . $jname, JFUSIONPATH_ADMINISTRATOR);
+			Factory::getLanguage()->load('com_jfusion.plg_' . $jname, JFUSIONPATH_ADMINISTRATOR);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
