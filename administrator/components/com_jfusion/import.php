@@ -5,6 +5,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once(JPATH_ADMINISTRATOR . '/components/com_jfusion/models/model.jfusion.php');
 
 use JFusion\Factory;
+
 use Joomla\Registry\Registry;
 
 jimport('joomla.application.component.helper');
@@ -49,6 +50,8 @@ $config->set('updateusergroups', $params->get('updateusergroups', new stdClass()
 $config->set('usergroups', $params->get('usergroups', false));
 
 Factory::$config = $config;
+
+Factory::$config->set('apikey', Factory::getParams('joomla_int')->get('secret'));
 
 require_once(__DIR__ . '/models/model.eventhook.php');
 

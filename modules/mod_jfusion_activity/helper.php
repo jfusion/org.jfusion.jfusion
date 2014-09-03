@@ -13,13 +13,14 @@
  * @link       http://www.jfusion.org
  */
 
-// no direct access
-use JFusion\Application\Application;
 use JFusion\Factory;
 use JFusion\Framework;
+
 use Joomla\Registry\Registry;
+
 use Psr\Log\LogLevel;
 
+// no direct access
 defined('_JEXEC') or die('Restricted access');
 
 /**
