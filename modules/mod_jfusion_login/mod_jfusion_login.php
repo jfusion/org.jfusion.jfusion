@@ -126,7 +126,7 @@ try {
 	                // retrieve avatar
 	                $avatar_software = $params->get('avatar_software');
 	                if ($avatar_software != 'jfusion') {
-		                $avatar = Framework::getAltAvatar($avatar_software, $userlookup);
+		                $avatar = JFusionFunction::getAltAvatar($avatar_software, $userlookup);
 	                } else {
 		                $avatar = $platform->getAvatar($userlookup->userid);
 	                }
@@ -152,7 +152,7 @@ try {
 	            //retrieve avatar
 		        $avatar_software = $params->get('avatar_software');
 	            if ($avatar_software != 'jfusion' && $userlookup) {
-	                $avatar = Framework::getAltAvatar($avatar_software, $userlookup);
+	                $avatar = JFusionFunction::getAltAvatar($avatar_software, $userlookup);
 	            } else {
 	                $avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
 	            }

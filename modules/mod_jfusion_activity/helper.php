@@ -69,12 +69,12 @@ class modjfusionActivityHelper
                 if ($config['avatar']) {
                     // retrieve avatar
                     if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion' && $userlookup) {
-                        $avatar = Framework::getAltAvatar($config['avatar_software'], $userlookup);
+                        $avatar = JFusionFunction::getAltAvatar($config['avatar_software'], $userlookup);
                     } else {
                         $avatar = $platform->getAvatar($r->userid);
                     }
                     if (empty($avatar)) {
-                        $avatar = Application::getInstance()->getDefaultAvatar();
+	                    $avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
                     }
 
                     $maxheight = $config['avatar_height'];

@@ -119,7 +119,7 @@ class modjfusionWhosOnlineHelper {
 							$avatarSrc = $config['avatar_software'];
 							$avatar = '';
 							if(!empty($avatarSrc) && $avatarSrc != 'jfusion' && $userinfo instanceof Userinfo) {
-								$avatar = Framework::getAltAvatar($avatarSrc, $userinfo);
+								$avatar = JFusionFunction::getAltAvatar($avatarSrc, $userinfo);
 							} else if ($jfusion_userid) {
 								$avatar = $platform->getAvatar($jfusion_userid);
 							}

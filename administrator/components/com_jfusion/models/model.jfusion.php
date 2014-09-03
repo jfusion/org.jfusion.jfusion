@@ -835,4 +835,25 @@ JS;
 		ob_end_clean();
 		return $FileData;
 	}
+
+	/**
+	 * Retrieves the source of the avatar for a Joomla supported component
+	 *
+	 * @param string  $software    software name
+	 * @param \JFusion\User\Userinfo $userinfo
+	 *
+	 * @return string nothing
+	 */
+	public static function getAltAvatar($software, $userinfo)
+	{
+		$avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+		if ($userinfo) {
+			switch($software) {
+				case 'gravatar':
+					$avatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' . md5(strtolower($userinfo->email)) . '&size=40';
+					break;
+			}
+		}
+		return $avatar;
+	}
 }

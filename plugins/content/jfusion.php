@@ -1388,7 +1388,7 @@ HTML;
 			//avatar
 			if ($showavatar){
 				if (!empty($avatar_software) && $avatar_software != 'jfusion' && $userlookup) {
-					$post_output[$i]->avatar_src = Framework::getAltAvatar($avatar_software, $userlookup);
+					$post_output[$i]->avatar_src = JFusionFunction::getAltAvatar($avatar_software, $userlookup);
 				} else {
 					$post_output[$i]->avatar_src = $platform->getAvatar($userid);
 				}

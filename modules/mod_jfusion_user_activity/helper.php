@@ -58,7 +58,7 @@ class modjfusionUserActivityHelper {
 			//retrieve avatar
 			$avatar = '';
 			if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion' && $userinfo instanceof Userinfo) {
-				$avatar = Framework::getAltAvatar($config['avatar_software'], $userinfo);
+				$avatar = JFusionFunction::getAltAvatar($config['avatar_software'], $userinfo);
 			} else if ($userinfo instanceof Userinfo) {
 				$avatar = $platform->getAvatar($userinfo->userid);
 			}

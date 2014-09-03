@@ -65,18 +65,6 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Plugi
 	}
 
 	/**
-	 * get default url
-	 *
-	 * @param   Event $event
-	 *
-	 * @return  void
-	 */
-	public function onApplicationGetDefaultAvatar($event)
-	{
-		$event->addArgument('avatar', JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png');
-	}
-
-	/**
 	 * @param   Event $event
 	 *
 	 * @return  void
@@ -371,27 +359,6 @@ class JFusionEventHook implements LanguageInterface, ApplicationInterface, Plugi
 
 			$event->setArgument('url', $url);
 		}
-	}
-
-	/**
-	 * get default url
-	 *
-	 * @param Event $event
-	 *
-	 * @return  Event
-	 */
-	public function onApplicationRoute($event)
-	{
-		// TODO: Implement onApplicationRoute() method.
-		$url = $event->getArgument('url');
-		$itemid = $event->getArgument('itemid');
-		$jname = $event->getArgument('jname', '');
-		$route = $event->getArgument('route', true);
-		$xhtml = $event->getArgument('xhtml', true);
-
-		$url = JFusionFunction::routeURL($url, $itemid, $jname, $route, $xhtml);
-
-		$url = $event->setArgument('url', $url);
 	}
 
 	/**
