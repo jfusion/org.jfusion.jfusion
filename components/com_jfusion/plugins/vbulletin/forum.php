@@ -411,7 +411,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $query = $db->getQuery(true)
 				    ->select('a.postid , a.username, a.username as name, a.userid, CASE WHEN a.userid = 0 THEN 1 ELSE 0 END AS guest, a.title, a.dateline, a.pagetext, a.threadid, b.title AS threadtitle')
 				    ->from('#__post as a')
-			        ->innerJoin('#__thread` as b ON a.threadid = b.threadid')
+			        ->innerJoin('#__thread as b ON a.threadid = b.threadid')
 				    ->where('a.threadid = ' . $existingthread->threadid)
 				    ->where('a.postid != ' . $existingthread->postid)
 				    ->where('a.visible = 1')
