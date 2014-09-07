@@ -15,7 +15,6 @@
  */
 
 // no direct access
-use JFusion\Debugger\Debugger;
 use JFusion\Factory;
 use JFusion\Framework;
 use Psr\Log\LogLevel;
@@ -86,6 +85,9 @@ class plgUserJfusion extends JPlugin
 		//prevent any output by the plugins (this could prevent cookies from being passed to the header)
 		ob_start();
 		$Itemid_backup = JFactory::getApplication()->input->getInt('Itemid', 0);
+
+		$JFuser = new \JFusion\User\User();
+
 		global $JFusionActive;
 		if (!$JFusionActive) {
 			//A change has been made to a user without JFusion knowing about it
@@ -102,9 +104,6 @@ class plgUserJfusion extends JPlugin
 			$olduserinfo = JFusionFunction::getJoomlaUser((object)$olduserinfo);
 			$session->clear('olduser');
 
-
-			$JFuser = new \JFusion\User\User();
-
 			$JFuser->save($userinfo, $olduserinfo, $isnew);
 
 			//check to see if the Joomla database is still connected in case the plugin messed it up
@@ -120,7 +119,7 @@ class plgUserJfusion extends JPlugin
 		//return output if allowed
 		$isAdministrator = JFusionFunction::isAdministrator();
 		if ($isAdministrator === true) {
-			$debugger = Debugger::getInstance('jfusion-saveuser');
+			$debugger = $JFuser->getDebugger();
 			$this->raise('notice', $debugger->get('debug'));
 			$this->raise('error', $debugger->get('error'));
 		}
@@ -178,6 +177,10 @@ class plgUserJfusion extends JPlugin
 			$user['password'] = JFactory::getApplication()->input->get('password', null, 'raw');
 
 			$result = $JFuser->login($user, $jfusionoptions);
+
+			$debugger = Debugger::getInstance('jfusion-loginchecker');
+			$debugger->set(null, $JFuser->getDebugger()->get());
+
 			if ($result) {
 				//Clean up the joomla session table
 				$conf = JFactory::getConfig();
@@ -241,6 +244,9 @@ class plgUserJfusion extends JPlugin
 			$JFuser = new \JFusion\User\User();
 
 			$result = $JFuser->logout($userinfo, $options);
+
+			$debugger = Debugger::getInstance('jfusion-loginchecker');
+			$debugger->set(null, $JFuser->getDebugger()->get());
 		}
 
 		//destroy the joomla session itself
@@ -280,14 +286,14 @@ class plgUserJfusion extends JPlugin
 	 */
 	public function onUserAfterDelete($user, $success, $msg) {
 		$result = true;
+
+		$JFuser = new \JFusion\User\User();
 		if (!$success) {
 			$result = false;
 		} else {
 			$user = JFactory::getUser($user['id']);
 
 			$userinfo = JFusionFunction::getJoomlaUser((object)$user);
-
-			$JFuser = new \JFusion\User\User();
 
 			$result = $JFuser->delete($userinfo);
 
@@ -304,7 +310,7 @@ class plgUserJfusion extends JPlugin
 			//return output if allowed
 			$isAdministrator = JFusionFunction::isAdministrator();
 			if ($isAdministrator === true) {
-				$debugger = Debugger::getInstance('jfusion-deleteuser');
+				$debugger = $JFuser->getDebugger();
 				$this->raise('notice', $debugger->get('debug'));
 				$this->raise('error', $debugger->get('error'));
 			}
