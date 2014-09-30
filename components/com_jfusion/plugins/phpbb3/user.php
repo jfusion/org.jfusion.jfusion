@@ -42,16 +42,12 @@ class JFusionUser_phpbb3 extends JFusionUser
     function getUser($userinfo) {
 	    try {
 		    //get the identifier
-		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email');
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username', 'a.user_email');
 		    // Get a database object
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    //make the username case insensitive
-		    if ($identifier_type == 'a.username_clean') {
-			    $identifier = $this->filterUsername($identifier);
-		    }
 
 		    $query = $db->getQuery(true)
-			    ->select('a.user_id as userid, a.username as name, a.username_clean as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type')
+			    ->select('a.user_id as userid, a.username as name, a.username as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type')
 			    ->from('#__users as a')
 		        ->join('LEFT OUTER', '#__groups as b ON a.group_id = b.group_id')
 		        ->where($identifier_type . ' = ' . $db->quote($identifier));
@@ -735,8 +731,18 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 			    $username_clean = $this->filterUsername($userinfo->username);
 
-			    //prevent anonymous user being created
-			    if ($username_clean == 'anonymous') {
+			    $query = $db->getQuery(true)
+				    ->select('user_id as userid, username as username')
+				    ->from('#__users')
+				    ->where('username_clear = ' . $db->quote($username_clean));
+
+			    $db->setQuery($query);
+			    $result = $db->loadObject();
+			    if ($result) {
+					//username taken
+				    throw new RuntimeException('username taken: ' . $result->username . ' : ' . $username_clean . ' : ' . $result->userid);
+			    } else if ($username_clean == 'anonymous') {
+				    //prevent anonymous user being created
 				    throw new RuntimeException('reserved username');
 			    } else {
 				    //prepare the variables
