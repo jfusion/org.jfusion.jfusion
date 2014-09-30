@@ -36,14 +36,11 @@ class JFusionUser_phpbb3 extends JFusionUser
      */
     function getUser($userinfo) {
         //get the identifier
-        list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email');
+        list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username', 'a.user_email');
         // Get a database object
         $db = JFusionFactory::getDatabase($this->getJname());
-        //make the username case insensitive
-        if ($identifier_type == 'a.username_clean') {
-            $identifier = $this->filterUsername($identifier);
-        }
-        $query = 'SELECT a.user_id as userid, a.username as name, a.username_clean as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type ' . 'FROM #__users as a LEFT OUTER JOIN #__groups as b ON a.group_id = b.group_id ' . 'WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+
+        $query = 'SELECT a.user_id as userid, a.username as name, a.username as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type ' . 'FROM #__users as a LEFT OUTER JOIN #__groups as b ON a.group_id = b.group_id ' . 'WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
         $db->setQuery($query);
         $result = $db->loadObject();
         if ($result) {
@@ -600,8 +597,20 @@ class JFusionUser_phpbb3 extends JFusionUser
             $usergroup = $usergroups[0];
             $username_clean = $this->filterUsername($userinfo->username);
 
-            //prevent anonymous user being created
-            if ($username_clean == 'anonymous'){
+	        $query = $db->getQuery(true)
+		        ->select('user_id as userid, username as username')
+		        ->from('#__users')
+		        ->where('username_clear = ' . $db->quote($username_clean));
+
+	        $query = 'SELECT user_id as userid, username FROM #__users WHERE username_clean = ' . $db->Quote($username_clean);
+
+	        $db->setQuery($query);
+	        $result = $db->loadObject();
+	        if ($result) {
+		        //username taken
+		        $status['error'][] = 'username taken: ' . $result->username . ' : ' . $username_clean . ' : ' . $result->userid;
+	        } else if ($username_clean == 'anonymous') {
+	            //prevent anonymous user being create
                 $status['error'][] = 'reserved username';
             } else {
                 //prepare the variables
