@@ -280,7 +280,7 @@ class JFusionUser_joomla_ext extends JFusionUser
 				foreach ($usergroups as $group) {
 					$newgroup = new stdClass;
 					$newgroup->group_id = (int)$group;
-					$newgroup->user_id = (int)$user->user_id;
+					$newgroup->user_id = (int)$user->id;
 					$newgroup->group_leader = 0;
 					$newgroup->user_pending = 0;
 
