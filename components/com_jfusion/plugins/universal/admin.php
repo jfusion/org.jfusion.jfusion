@@ -250,15 +250,12 @@ class JFusionAdmin_universal extends JFusionAdmin
 						} else {
 							$fieldstype = '';
 						}
-						$fieldsvaluearray = array();
+						$fieldsvalueobject = new stdClass();
 						$fieldsvalue = '';
 						if ( isset($value->value->{$val->Field}) ) {
 							$fieldsvalue = $value->value->{$val->Field};
-							if (is_array($fieldsvalue)) {
-								$fieldsvaluearray = (array)$fieldsvalue;
-								foreach ($fieldsvaluearray as &$val2) {
-									$val2 = htmlentities($val2);
-								}
+							if (is_object($fieldsvalue)) {
+								$fieldsvalueobject = $fieldsvalue;
 							} else {
 								$fieldsvalue = htmlentities($fieldsvalue);
 							}
@@ -287,7 +284,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 						$output .= '<div id="' . $type . $val->Field . 'value">';
 						switch ($fieldstype) {
 							case 'CUSTOM':
-								$output .= '<textarea id="' . $control_name . $name . $type . 'value' . $val->Field . '" name="' . $control_name . '[' . $name . '][' . $type . '][value][' . $val->Field . ']" rows="8" cols="55">' . $fieldsvalue . '</textarea>';
+								$output .= '<textarea id="' . $control_name . $name . $type . 'value' . $val->Field . '" name="' . $control_name . '[' . $name . '][' . $type . '][value][' . $val->Field . ']" rows="8" cols="55">' . htmlentities($fieldsvalue) . '</textarea>';
 								break;
 							case 'DEFAULT':
 							case 'VALUE':
@@ -295,8 +292,8 @@ class JFusionAdmin_universal extends JFusionAdmin
 								$output .= '<input type="text" id="' . $control_name . $name . $type . 'value' . $val->Field . '" name="' . $control_name . '[' . $name . '][' . $type . '][value][' . $val->Field . ']" value="' . $fieldsvalue . '" size="100" class="inputbox" />';
 								break;
 							case 'ONOFF':
-								foreach ($fieldsvaluearray as $key2 => $val2) {
-									$output .= '<input type="text" id="' . $control_name . $name . $type . 'value' . $val->Field . $key2 . '" name="' . $control_name . '[' . $name . '][' . $type . '][value][' . $val->Field . '][' . $key2 . ']" value="' . $val2 . '" size="40" class="inputbox" />';
+								foreach ($fieldsvalueobject as $key2 => $val2) {
+									$output .= '<input type="text" id="' . $control_name . $name . $type . 'value' . $val->Field . $key2 . '" name="' . $control_name . '[' . $name . '][' . $type . '][value][' . $val->Field . '][' . $key2 . ']" value="' . htmlentities($val2) . '" size="40" class="inputbox" />';
 								}
 								break;
 						}
