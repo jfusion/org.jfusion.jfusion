@@ -600,7 +600,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 	        $query = $db->getQuery(true)
 		        ->select('user_id as userid, username as username')
 		        ->from('#__users')
-		        ->where('username_clear = ' . $db->quote($username_clean));
+		        ->where('username_clean = ' . $db->quote($username_clean));
 
 	        $query = 'SELECT user_id as userid, username FROM #__users WHERE username_clean = ' . $db->Quote($username_clean);
 
