@@ -136,7 +136,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     function getUserList($limitstart = 0, $limit = 0) {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT username_clean as username, user_email as email, user_id as userid from #__users WHERE user_email NOT LIKE \'\' and user_email IS NOT null';
+        $query = 'SELECT username, user_email as email, user_id as userid from #__users WHERE user_email NOT LIKE \'\' and user_email IS NOT null';
         $db->setQuery($query, $limitstart, $limit);
         //getting the results
         $userlist = $db->loadObjectList();
