@@ -148,7 +148,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
-			    ->select('username_clean as username, user_email as email, user_id as userid')
+			    ->select('username, user_email as email, user_id as userid')
 			    ->from('#__users')
 		        ->where('user_email NOT LIKE ' . $db->quote(''))
 			    ->where('user_email IS NOT null');
