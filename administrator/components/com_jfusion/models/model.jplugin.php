@@ -65,8 +65,7 @@ class JFusionJplugin
 		$match = false;
 
 		// If we are using phpass
-		if (strpos($userinfo->password, '$P$') === 0)
-		{
+		if (strpos($userinfo->password, '$P$') === 0) {
 			// Use PHPass's portable hashes with a cost of 10.
 			$phpass = new PasswordHash(10, true);
 
@@ -74,7 +73,7 @@ class JFusionJplugin
 		} else {
 			$testcrypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
 
-			$match = static::timingSafeCompare($userinfo->password, $testcrypt);
+			$match = JFusionJplugin::timingSafeCompare($userinfo->password, $testcrypt);
 		}
 		return $match;
 	}
@@ -857,7 +856,7 @@ class JFusionJplugin
     {
         $db = JFusionFactory::getDatabase($jname);
 
-	    $password = static::hashPassword($userinfo);
+	    $password = JFusionJplugin::hashPassword($userinfo);
 
         $query = 'UPDATE #__users SET password =' . $db->Quote($password) . ' WHERE id =' . $existinguser->userid;
         $db->setQuery($query);
@@ -1072,7 +1071,7 @@ class JFusionJplugin
                 $status['debug'][] = JText::_('USERNAME') . ':' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
                 //create a Joomla password hash if password_clear is available
                 if (!empty($userinfo->password_clear)) {
-	                $password = static::hashPassword($userinfo);
+	                $password = JFusionJplugin::hashPassword($userinfo);
                 } else {
                     //if password_clear is not available, store hashed password as is and also store the salt if present
                     if (isset($userinfo->password_salt)) {
