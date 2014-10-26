@@ -61,10 +61,7 @@ $custom_greeting = JText::sprintf($custom_greeting, $display_name);
 
 	<?php if (!empty($pmcount)) : ?>
 		<div align="center">
-			<?php echo JText::_('PM_START'); ?>
-			<a href="<?php echo $url_pm; ?>"><?php echo JText::sprintf('PM_LINK', $pmcount["total"]); ?></a>
-
-			<?php echo JText::sprintf('PM_END', $pmcount["unread"]); ?>
+			<?php echo JText::_('PM_START');?> <a href="<?php echo $url_pm; ?>"><?php echo JText::sprintf('PM_LINK', $pmcount["total"]); ?></a><?php echo JText::sprintf('PM_END', $pmcount["unread"]); ?>
 		</div>
 	<?php endif; ?>
 
