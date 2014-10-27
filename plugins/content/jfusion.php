@@ -134,6 +134,7 @@ class plgContentJfusion extends JPlugin
 	 */
 	public function onContentAfterSave($context, $article, $isNew)
 	{
+		$this->helper->debug('onContentAfterSave called, Context: ' . $context);
 		$this->helper->context = $context;
 		try {
 			if (substr($this->helper->context, -8) == '.article') {
@@ -146,8 +147,6 @@ class plgContentJfusion extends JPlugin
 
 					//make sure there is a plugin
 					if (!empty($this->jname)) {
-						$this->helper->debug('onContentAfterSave called');
-
 						//validate the article
 						// changed _validate to pass the $isNew flag, so that it will only check will happen depending on this flag
 						$threadinfo = $this->helper->getThreadInfo();
