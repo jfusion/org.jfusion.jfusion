@@ -50,6 +50,7 @@ class JFusionDiscussBotHelper {
 		'com_content.category',
 		'com_content.featured',
 		'com_content.article',
+		'com_content.form',
 		'com_k2.item',
 		'com_k2.itemlist');
 
@@ -76,6 +77,7 @@ class JFusionDiscussBotHelper {
 	public function setArticle(&$article)
 	{
 		$this->article = $article;
+		$this->debugger->set(null, array());
 		if (isset($this->article->id)) {
 			$session = JFactory::getSession();
 			$debug = $session->get('jfusion.discussion.debug.' . $this->article->id, false);
@@ -84,6 +86,22 @@ class JFusionDiscussBotHelper {
 			}
 			$session->clear('jfusion.discussion.debug.' . $this->article->id);
 		}
+	}
+
+	/**
+	 * @param bool $clear
+	 *
+	 * @return JFusionDebugger
+	 */
+	public function getDebugger($clear = true)
+	{
+		if (isset($this->article->id)) {
+			if ($clear) {
+				$session = JFactory::getSession();
+				$session->clear('jfusion.discussion.debug.' . $this->article->id);
+			}
+		}
+		return $this->debugger;
 	}
 
 	/**

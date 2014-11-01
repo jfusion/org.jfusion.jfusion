@@ -126,16 +126,17 @@ class plgContentJfusion extends JPlugin
 	 */
 	public function onContentAfterSave($context, $article, $isNew)
 	{
-		$this->helper->debug('onContentAfterSave called, Context: ' . $context);
 		$this->helper->context = $context;
 		try {
-			if (substr($this->helper->context, -8) == '.article') {
+			if (substr($this->helper->context, -8) == '.article' || substr($this->helper->context, -5) == '.form') {
 				//check to see if a valid $content object was passed on
 				if (!is_object($article)) {
 					throw new RuntimeException(JText::_('NO_CONTENT_DATA_FOUND'));
 				} else {
 					$this->article = $article;
 					$this->helper->setArticle($this->article);
+
+					$this->helper->debug('onContentAfterSave called, new: ' . (int)$isNew);
 
 					//make sure there is a plugin
 					if (!empty($this->jname)) {
@@ -232,6 +233,8 @@ class plgContentJfusion extends JPlugin
 						}
 						$this->helper->debug('onContentAfterSave complete', true);
 					}
+					$debugger = $this->helper->getDebugger();
+					JFusionFunction::raiseNotice($debugger->getAsHtml());
 				}
 			}
 		} catch (Exception $e) {
@@ -261,7 +264,6 @@ class plgContentJfusion extends JPlugin
 				$this->manual_threadid = 0;
 
 				$this->validity_reason = '';
-				$this->helper->debugger->set(null, array());
 				$this->helper->debug('onContentPrepare called');
 
 				//check to see if a valid $content object was passed on
@@ -598,10 +600,11 @@ class plgContentJfusion extends JPlugin
 	{
 		$html = '';
 		if ($this->params->get('debug', 0)) {
+			$debugger = $this->helper->getDebugger();
 			if ($this->ajax_request) {
-				$html = $this->helper->debugger->getAsHtml(null, false);
+				$html = $debugger->getAsHtml(null, false);
 			} else {
-				$html = $this->helper->debugger->getAsHtml();
+				$html = $debugger->getAsHtml();
 			}
 			if (!$this->ajax_request) {
 				$this->article->text .= <<<HTML
