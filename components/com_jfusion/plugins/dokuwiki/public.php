@@ -58,7 +58,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
      * 
      * @return void
      */
-    function getBuffer(&$data) {
+    function getBuffer(&$jfdata) {
         // We're going to want a few globals... these are all set later.
         global $INFO, $ACT, $ID, $QUERY, $USERNAME, $CLEAR, $QUIET, $USERINFO, $DOKU_PLUGINS, $PARSER_MODES, $TOC, $EVENT_HANDLER, $AUTH, $IMG, $JUMPTO;
         global $HTTP_RAW_POST_DATA, $RANGE, $HIGH, $MSG, $DATE, $PRE, $TEXT, $SUF, $AUTH_ACL, $QUIET, $SUM, $SRC, $IMG, $NS, $IDX, $REV, $INUSE, $NS, $AUTH_ACL;
@@ -133,11 +133,11 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
 
             ob_start();
             $rs = include_once ($index_file);
-            $data->buffer = ob_get_contents();
+	        $jfdata->buffer = ob_get_contents();
             ob_end_clean();
 
             if (ob_get_contents() !== false) {
-                $data->buffer = ob_get_contents().$data->buffer;
+	            $jfdata->buffer = ob_get_contents() . $jfdata->buffer;
                 ob_end_clean();
                 ob_start();
             }
