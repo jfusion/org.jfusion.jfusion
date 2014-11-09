@@ -136,10 +136,10 @@ class plgContentJfusion extends JPlugin
 					$this->article = $article;
 					$this->helper->setArticle($this->article);
 
-					$this->helper->debug('onContentAfterSave called, new: ' . (int)$isNew);
-
 					//make sure there is a plugin
 					if (!empty($this->jname)) {
+						$this->helper->debug('onContentAfterSave called, new ' . (int)$isNew);
+
 						//validate the article
 						// changed _validate to pass the $isNew flag, so that it will only check will happen depending on this flag
 						$threadinfo = $this->helper->getThreadInfo();
@@ -530,7 +530,7 @@ class plgContentJfusion extends JPlugin
 			} elseif ($this->mode == 'test') {
 				$this->helper->debug('In test mode');
 				//get the existing thread information
-				$content  = '<div class="jfusionclearfix" style="border:1px solid #ECF8FD; background-color:#ECF8FD; margin-top:10px; margin-bottom:10px;">';
+				$content = '<div class="jfusionclearfix" style="border:1px solid #ECF8FD; background-color:#ECF8FD; margin-top:10px; margin-bottom:10px;">';
 
 				if ($threadinfo->valid) {
 					$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="' . JFusionFunction::getJoomlaURL() . DISCUSSBOT_URL_PATH . 'images/check.png" style="margin-left:5px;"><br/>';
@@ -1070,6 +1070,7 @@ HTML;
 			$itemid = $this->params->get('itemid');
 			$link_text = $this->params->get('link_text');
 			$link_type= $this->params->get('link_type', 'text');
+			$link_mode= $this->params->get('link_mode', 'always');
 			$blog_link_mode = $this->params->get('blog_link_mode', 'forum');
 			$linkHTML = ($link_type == 'image') ? '<img style="border:0;" src="' . $link_text . '">' : $link_text;
 			if($this->params->get('show_reply_num')) {
