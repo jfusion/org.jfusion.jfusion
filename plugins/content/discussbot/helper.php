@@ -670,7 +670,7 @@ JS;
 	 * @param string|array $text
 	 * @param bool $save
 	 */
-	public function debug($text, $save = false)
+	public function debug($text, $save = true)
 	{
 		if ($this->params->get('debug', 0)) {
 			$this->debugger->add(null, $text);
