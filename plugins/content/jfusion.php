@@ -243,7 +243,7 @@ class plgContentJfusion extends JPlugin
 						$this->helper->debug('onContentAfterSave complete', true);
 					}
 					$debugger = $this->helper->getDebugger();
-					JFusionFunction::raiseNotice($debugger->getAsHtml());
+					Framework::raise(LogLevel::NOTICE, $debugger->getAsHtml());
 				}
 			}
 		} catch (Exception $e) {
