@@ -161,30 +161,28 @@ class plgContentJfusion extends JPlugin
 						if ($this->mode == 'auto' && empty($manually_plugged)) {
 							$this->helper->debug('In auto mode');
 							if ($this->valid) {
-								if (($this->creationMode == 'load') ||
-									($this->creationMode == 'new' && ($isNew || (!$isNew && $threadinfo->valid))) ||
+								if ($this->creationMode == 'new') {
+									if (JFactory::getDate('now', JFactory::getConfig()->get('offset'))->toUnix() < JFactory::getDate($this->article->publish_up)->toUnix() || !$this->article->state) {
+										$this->helper->debug('Article set to be published in the future or is unpublished thus creating an entry in the database so that the thread is created when appropriate.');
+										if ($isNew) {
+											//the publish date is set for the future so create an entry in the
+											//database so that the thread is created when the publish date arrives
+											$placeholder = new stdClass();
+											$placeholder->threadid = 0;
+											$placeholder->forumid = 0;
+											$placeholder->postid = 0;
+											JFusionFunction::updateDiscussionBotLookup($this->article->id, $placeholder, $this->jname);
+										}
+									} else if ($isNew || $threadinfo->new) {
+										//update/create thread
+										$this->helper->checkThreadExists();
+									}
+								} elseif (($this->creationMode == 'load') ||
 									($this->creationMode == 'reply' && $threadinfo->valid)) {
-
 									//update/create thread
 									$this->helper->checkThreadExists();
 								} else {
 									$this->helper->debug('Article did not meet requirements to update/create thread');
-								}
-							} elseif ($this->creationMode == 'new' && $isNew) {
-								$this->helper->debug('Failed validity test but creationMode is set to new and this is a new article');
-
-								$publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
-								$now = JFactory::getDate('now', JFactory::getConfig()->get('offset'))->toUnix();
-								if ($now < $publish_up || !$this->article->state) {
-									$this->helper->debug('Article set to be published in the future or is unpublished thus creating an entry in the database so that the thread is created when appropriate.');
-
-									//the publish date is set for the future so create an entry in the
-									//database so that the thread is created when the publish date arrives
-									$placeholder = new stdClass();
-									$placeholder->threadid = 0;
-									$placeholder->forumid = 0;
-									$placeholder->postid = 0;
-									JFusionFunction::updateDiscussionBotLookup($this->article->id, $placeholder, $this->jname);
 								}
 							}
 						} elseif ($this->mode == 'test' && empty($manually_plugged)) {
@@ -530,7 +528,13 @@ class plgContentJfusion extends JPlugin
 			if ($this->mode == 'auto') {
 				$this->helper->debug('In auto mode');
 				if ($this->valid) {
-					if ($threadinfo->valid || $this->creationMode == 'load' || ($this->creationMode == 'view' && $this->helper->showPosts(JFactory::getApplication()->input->get('view'))) ) {
+					$check = false;
+					if ($this->creationMode == 'new' && JFactory::getDate('now', JFactory::getConfig()->get('offset'))->toUnix() >= JFactory::getDate($this->article->publish_up)->toUnix() && $this->article->state) {
+						$check = true;
+					} else if ($threadinfo->valid || $this->creationMode == 'load' || ($this->creationMode == 'view' && $this->helper->showPosts(JFactory::getApplication()->input->get('view'))) ) {
+						$check = true;
+					}
+					if ($check) {
 						$status = $this->helper->checkThreadExists();
 						if ($status['action'] == 'created') {
 							$threadinfo = $status['threadinfo'];

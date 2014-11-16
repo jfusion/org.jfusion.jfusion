@@ -97,7 +97,7 @@ class JFusionDiscussBotHelper {
 	/**
 	 * @param bool $clear
 	 *
-	 * @return JFusionDebugger
+	 * @return Debugger
 	 */
 	public function getDebugger($clear = true)
 	{
@@ -157,6 +157,7 @@ class JFusionDiscussBotHelper {
 		$thread->valid = false;
 		$thread->published = false;
 		$thread->modified = 0;
+		$thread->new = false;
 
 		$this->replyCount = 0;
 		if ($threadinfo) {
@@ -166,6 +167,9 @@ class JFusionDiscussBotHelper {
 					$thread = $current;
 				}
  		    }
+			if ($threadinfo->threadid == 0 && $threadinfo->forumid == 0 && $threadinfo->postid == 0 && $threadinfo->modified != 0) {
+				$threadinfo->new = true;
+			}
 
 			$threadinfo->valid = false;
 			//make sure the forum and thread still exists
