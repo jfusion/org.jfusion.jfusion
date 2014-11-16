@@ -23,6 +23,10 @@ JFusion.getIFrameDocument = function(aID) {
 JFusion.adjustMyFrameHeight = function() {
     var frame = JFusion.getElement("jfusioniframe");
     frame.height = JFusion.getIFrameDocument("jfusioniframe").body.offsetHeight;
+};
+
+JFusion.scrollTop = function() {
+    var frame = JFusion.getElement("jfusioniframe");
 
     window.scrollTo(window.pageYOffset, JFusion.getOffsetTop(frame));
 };
