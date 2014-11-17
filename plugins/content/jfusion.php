@@ -515,7 +515,9 @@ class plgContentJfusion extends JPlugin
 				if ($this->valid) {
 					$check = false;
 					if ($this->creationMode == 'new' && JFactory::getDate('now', JFactory::getConfig()->get('offset'))->toUnix() >= JFactory::getDate($this->article->publish_up)->toUnix() && $this->article->state) {
-						$check = true;
+						if ($threadinfo->valid || $threadinfo->new) {
+							$check = true;
+						}
 					} else if ($threadinfo->valid || $this->creationMode == 'load' || ($this->creationMode == 'view' && $this->helper->showPosts(JFactory::getApplication()->input->get('view'))) ) {
 						$check = true;
 					}
