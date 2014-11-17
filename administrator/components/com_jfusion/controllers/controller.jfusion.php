@@ -68,9 +68,8 @@ class JFusionController extends JControllerLegacy
 				//Initialize the forum
 				$JFusionPlugin = \JFusion\Factory::getAdmin($jname);
 
-				if (substr($post['source_path'], -1) != DIRECTORY_SEPARATOR) {
-					$post['source_path'] .= DIRECTORY_SEPARATOR;
-				}
+				$post['source_path'] = rtrim($post['source_path'], '/\\');
+				$post['source_path'] .= DIRECTORY_SEPARATOR;
 
 				try {
 					$params = $JFusionPlugin->setupFromPath($post['source_path']);
