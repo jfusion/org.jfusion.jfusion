@@ -9,6 +9,7 @@
 
 // no direct access
 use JFusion\Debugger\DebuggerInterface;
+use JFusion\User\Groups;
 use Joomla\Registry\Registry;
 
 defined('_JEXEC') or die('Restricted access');
@@ -114,8 +115,8 @@ class jfusionViewconfigdump extends JViewLegacy implements DebuggerInterface {
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
-		$update = \JFusion\Framework::getUpdateUserGroups();
-		$usergroups = \JFusion\Framework::getUserGroups();
+		$update = Groups::getUpdate();
+		$usergroups = Groups::get();
 		$master = \JFusion\Framework::getMaster();
 		if(count($rows) ) {
 			foreach($rows as $row) {

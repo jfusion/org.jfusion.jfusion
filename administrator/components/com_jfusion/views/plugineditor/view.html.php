@@ -60,7 +60,7 @@ class jfusionViewplugineditor extends JViewLegacy
         $jname = JFactory::getApplication()->input->get('jname');
         if ($jname) {
 	        // Keep the idea of instanciate the parameters only with the parameters of the XML file from the plugin needed but with a centralized method (\JFusion\Factory::createParams)
-	        $parametersInstance = \JFusion\Factory::createParams($jname);
+	        $parametersInstance = \JFusion\Factory::getParams($jname);
 
 	        $JFusionPlugin = \JFusion\Factory::getAdmin($jname);
 

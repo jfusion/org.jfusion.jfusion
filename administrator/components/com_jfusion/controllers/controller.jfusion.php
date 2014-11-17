@@ -296,13 +296,13 @@ class JFusionController extends JControllerLegacy
 		try {
 			$syncid = JFactory::getApplication()->input->get->get('syncid', null);
 
-			$syncdata = \JFusion\User\Sync::getSyncdata($syncid);
+			$syncdata = \JFusion\User\Sync::getData($syncid);
 			if ($syncdata->get('syncid')) {
 				$userbatch = JFactory::getApplication()->input->get('userbatch');
 				if ($userbatch) {
 					$syncdata->set('userbatch', $userbatch);
 				}
-				\JFusion\User\Sync::syncExecute($syncdata, $syncdata->get('action'), $syncdata->get('plugin_offset', 0), $syncdata->get('user_offset', 0));
+				\JFusion\User\Sync::execute($syncdata);
 			} else {
 				throw new RuntimeException(JText::sprintf('SYNC_ID_NOT_EXIST', $syncid));
 			}
@@ -323,7 +323,7 @@ class JFusionController extends JControllerLegacy
 		try {
 			$syncid = JFactory::getApplication()->input->get->get('syncid', '');
 
-			$syncdata = \JFusion\User\Sync::getSyncdata($syncid);
+			$syncdata = \JFusion\User\Sync::getData($syncid);
 			echo new JResponseJson($syncdata->toArray());
 		} catch (Exception $e) {
 			echo new JResponseJson($e);
@@ -353,7 +353,7 @@ class JFusionController extends JControllerLegacy
 				$dir = $mainframe->getUserStateFromRequest($option . '.' . $client . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
 
 				//apply the submitted sync error instructions
-				\JFusion\User\Sync::syncError($syncid, $syncError, $limitstart, $limit, $sort, $dir);
+				\JFusion\User\Sync::resolveError($syncid, $syncError, $limitstart, $limit);
 			}
 			$this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid=' . $syncid);
 		} catch (Exception $e) {
@@ -376,7 +376,7 @@ class JFusionController extends JControllerLegacy
 			$slaves = JFactory::getApplication()->input->get('slave', array(), 'array');
 			$userbatch = JFactory::getApplication()->input->getInt('userbatch', 100);
 
-			$syncdata = \JFusion\User\Sync::initSyncData($syncid, $action);
+			$syncdata = \JFusion\User\Sync::initData($syncid, $action);
 
 			if ($userbatch > 0 ) {
 				$syncdata->set('userbatch', $userbatch);

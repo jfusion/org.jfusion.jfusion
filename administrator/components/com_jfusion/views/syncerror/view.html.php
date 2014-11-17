@@ -84,7 +84,7 @@ class jfusionViewsyncerror extends JViewLegacy
         jimport('joomla.html.pagination');
 
 	    $this->pageNav = new JPagination($total, $limitstart, $limit);
-	    $this->syncdata = \JFusion\User\Sync::getSyncdata($this->syncid);
+	    $this->syncdata = \JFusion\User\Sync::getData($this->syncid);
 	    $this->filter = array('order' => $sort, 'dir' => $dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);
 	    $this->synclog = \JFusion\User\Sync::getLogData($this->syncid, 'error', $limitstart, $limit, $sort, $dir);
         parent::display($tpl);

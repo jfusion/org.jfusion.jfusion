@@ -45,12 +45,16 @@ class JFusionModelInstaller extends InstallerModelInstall
 
 	var $raise = true;
 
-    /**
-     * Overridden constructor
-     *
-     * @access    protected
-     */
-    function __construct($raise=true)
+	/**
+	 * Overridden constructor
+	 *
+	 * @access    protected
+	 *
+	 * @param bool $raise
+	 *
+	 * @throws Exception
+	 */
+    function __construct($raise = true)
     {
 	    $this->raise = $raise;
         // Load the language file

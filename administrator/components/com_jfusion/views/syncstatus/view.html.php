@@ -71,7 +71,7 @@ class jfusionViewsyncstatus extends JViewLegacy
         $document->addStyleSheet('templates/' . $template . '/css/general.css');
 
 	    $this->syncid = JFactory::getApplication()->input->get('syncid');
-	    $syncdata = \JFusion\User\Sync::getSyncdata($this->syncid);
+	    $syncdata = \JFusion\User\Sync::getData($this->syncid);
 
         //append log
         $mainframe = JFactory::getApplication();

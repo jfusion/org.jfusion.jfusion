@@ -100,16 +100,17 @@ JFusion.render = function(index, plugin, newrow) {
 };
 
 JFusion.renderGroup = function(index, plugin, newrow) {
+    var element;
     if(plugin.name in JFusion.renderPlugin && typeof JFusion.renderPlugin[plugin.name] === 'function') {
         var pair = null;
         if (!newrow && plugin.name in JFusion.pairs && index in JFusion.pairs[plugin.name]) {
             pair = JFusion.pairs[plugin.name][index];
         }
-
-        return JFusion.renderPlugin[plugin.name](index, plugin, pair);
+        element = JFusion.renderPlugin[plugin.name](index, plugin, pair);
     } else {
-        return new Element('div');
+        element = new Element('div');
     }
+    return element;
 };
 
 JFusion.renderDefault = function(index, plugin, pair) {

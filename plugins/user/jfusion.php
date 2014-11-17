@@ -15,6 +15,7 @@
  */
 
 // no direct access
+use JFusion\Debugger\Debugger;
 use JFusion\Factory;
 use JFusion\Framework;
 use Psr\Log\LogLevel;

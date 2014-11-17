@@ -15,6 +15,7 @@
  */
 
 // no direct access
+use JFusion\User\Groups;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
@@ -71,7 +72,7 @@ class jfusionViewusergroups extends JViewLegacy {
 
 	        $groups = array();
 
-	        $update = \JFusion\Framework::getUpdateUserGroups();
+	        $update = Groups::getUpdate();
 
 	        $master = \JFusion\Framework::getMaster();
 
@@ -99,11 +100,11 @@ class jfusionViewusergroups extends JViewLegacy {
 	        $groups = json_encode($groups);
 	        $plugins = json_encode($this->plugins);
 
-	        $pairs = \JFusion\Framework::getUserGroups();
+	        $pairs = Groups::get();
 	        if ($pairs === false) {
 		        $pairs = new stdClass();
 	        }
-	        $pairs = json_encode(\JFusion\Framework::getUserGroups());
+	        $pairs = json_encode($pairs);
 
 	        $js=<<<JS
 	        JFusion.renderPlugin = [];
