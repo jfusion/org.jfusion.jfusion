@@ -125,12 +125,15 @@ class JFusionHelper_mediawiki extends JFusionPlugin
 
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'Defines.php';
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'IP.php';
+	    $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'IP.php';
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'WebRequest.php';
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'SiteConfiguration.php';
         defined ('MEDIAWIKI') or define('MEDIAWIKI', TRUE);
         defined ('MW_INSTALL_PATH') or define('MW_INSTALL_PATH', $source_path);
         foreach($paths as $path) {
-            include_once($path);
+	        if (file_exists($path)) {
+		        include_once($path);
+	        }
         }
         return $return;
     }

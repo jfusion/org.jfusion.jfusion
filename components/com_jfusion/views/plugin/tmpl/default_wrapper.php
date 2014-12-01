@@ -22,11 +22,16 @@ if ($wrapper_scroll == 'hidden') {
 }
 $pageclass_sfx = $this->params->get('pageclass_sfx', '');
 
+$onload = '';
+
 if($this->params->get('wrapper_autoheight', 1)) {
 	$onload = 'JFusion.adjustMyFrameHeight();';
-} else {
-	$onload = '';
 }
+
+if($this->params->get('wrapper_scrolltotop', 1)) {
+	$onload .= ' JFusion.scrollTop();';
+}
+
 $wrapper_width = $this->params->get('wrapper_width', '100%');
 $wrapper_height = $this->params->get('wrapper_height', '500');
 

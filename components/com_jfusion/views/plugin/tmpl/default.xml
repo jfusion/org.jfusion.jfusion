@@ -23,12 +23,12 @@
             <field name="wrapper_width" type="text" default="100%" size="10" description="WRAPPER_WIDTH" />
             <field name="wrapper_height" type="text" default="500" size="10" description="WRAPPER_HEIGHT" />
             <field name="wrapper_autoheight" type="radio" class="btn-group" default="1" description="WRAPPER_AUTOHEIGHT">
-                <option value="0">JNO</option>
                 <option value="1">JYES</option>
+                <option value="0">JNO</option>
             </field>
             <field name="wrapper_scrolltotop" type="radio" class="btn-group" default="1" description="WRAPPER_SCROLLTOTOP">
-                <option value="0">JNO</option>
                 <option value="1">JYES</option>
+                <option value="0">JNO</option>
             </field>
 			<field name="parse_css" type="radio" class="btn-group" default="1" label="PARSE_CSS" description="PARSE_CSS">
 				<option value="1">JYES</option>

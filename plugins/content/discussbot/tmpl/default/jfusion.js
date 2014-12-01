@@ -376,7 +376,7 @@ JFusion.pagination = function (id, limitstart) {
                 onError: function (JSONobject) {
                     JFusion.OnError(JSONobject, id);
                 }
-            }).post($('jfusionPaginationForm').toQueryString() + '&tmpl=component&ajax_request=1&dbtask=update_posts');
+            }).post(form.toQueryString() + '&tmpl=component&ajax_request=1&dbtask=update_posts');
         }
     }
 };
