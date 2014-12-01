@@ -1483,7 +1483,7 @@ HTML;
 			$footer = $pageNav->getListFooter();
 
 			$pagination =<<<HTML
-				<form method="post" id="jfusionPaginationForm" class="jfusionPagination" name="jfusionPagination" action="{$action_url}">
+				<form method="post" class="jfusionPagination" name="jfusionPagination" action="{$action_url}">
 					{$footer}
 				</form>
 HTML;
