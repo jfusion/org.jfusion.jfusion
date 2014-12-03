@@ -173,8 +173,11 @@ class modjfusionActivityHelper
                 }
 
 	            $r->output->newpost = '';
+	            
 	            try {
-		            $r->output->newpost = $forum->checkReadStatus($r);
+	            	if ($config['shownew']) {
+		            	$r->output->newpost = $forum->checkReadStatus($r);
+	            	} 
 	            } catch (Exception $e) {
 		            JFusionFunction::raiseError($e, $forum->getJname());
 	            }
