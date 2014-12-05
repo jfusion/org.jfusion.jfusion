@@ -187,10 +187,12 @@ class modjfusionActivityHelper
                 }
 
 	            $r->output->newpost = '';
-	            try {
-		            $r->output->newpost = $platform->checkReadStatus($r);
-	            } catch (Exception $e) {
-		            Framework::raise(LogLevel::ERROR, $e, $platform->getJname());
+	            if ($config['shownew']) {
+		            try {
+			            $r->output->newpost = $platform->checkReadStatus($r);
+		            } catch (Exception $e) {
+			            Framework::raise(LogLevel::ERROR, $e, $platform->getJname());
+		            }
 	            }
 
                 $r->output->body = $r->body;
