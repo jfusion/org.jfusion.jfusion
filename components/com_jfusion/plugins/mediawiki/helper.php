@@ -121,26 +121,37 @@ class JFusionHelper_mediawiki
      */
     function includeFramework(&$source_path) {
         //check for trailing slash and generate file path
-        if (substr($source_path, -1) == DS) {
-            //remove it so that we can make it compatible with mediawiki MW_INSTALL_PATH
-            $source_path = substr($source_path, 0, -1);
+
+        $return[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'DefaultSettings.php';
+        $return[] = $source_path . 'LocalSettings.php';
+
+        global $IP, $wgStylePath;
+        $IP = $source_path;
+
+        $params = JFusionFactory::getParams($this->getJname());
+        $source_url = $params->get('source_url');
+
+        $uri = new JURI($source_url);
+
+        $wgStylePath = $uri->getPath() .'skinns';
+
+//        $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'WebStart.php';
+
+        $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'AutoLoader.php';
+        $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'Defines.php';
+        $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'IP.php';
+        $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'IP.php';
+        $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'WebRequest.php';
+        $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'SiteConfiguration.php';
+
+        defined ('MEDIAWIKI') or define('MEDIAWIKI', TRUE);
+        defined ('MW_INSTALL_PATH') or define('MW_INSTALL_PATH', $source_path);
+        putenv('MW_INSTALL_PATH=' . $source_path);
+        foreach($paths as $path) {
+            if (file_exists($path)) {
+                include_once($path);
+            }
         }
-
-	    $return[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'DefaultSettings.php';
-	    $return[] = $source_path . 'LocalSettings.php';
-
-	    $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'Defines.php';
-	    $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'IP.php';
-	    $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'IP.php';
-	    $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'WebRequest.php';
-	    $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'SiteConfiguration.php';
-	    defined ('MEDIAWIKI') or define('MEDIAWIKI', TRUE);
-	    defined ('MW_INSTALL_PATH') or define('MW_INSTALL_PATH', $source_path);
-	    foreach($paths as $path) {
-		    if (file_exists($path)) {
-			    include_once($path);
-		    }
-	    }
         return $return;
     }
 }
