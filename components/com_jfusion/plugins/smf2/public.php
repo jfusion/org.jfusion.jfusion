@@ -100,7 +100,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
                 $query = 'SELECT value, variable FROM #__settings WHERE variable = \'smileys_url\' OR variable = \'smiley_sets_default\'';
                 $db->setQuery($query);
                 $settings = $db->loadObjectList('variable');
-                $query = 'SELECT code, filename FROM #__smileys ORDER BY smileyOrder';
+                $query = 'SELECT code, filename FROM #__smileys ORDER BY smiley_order';
                 $db->setQuery($query);
                 $smilies = $db->loadObjectList();
                 if (!empty($smilies)) {
