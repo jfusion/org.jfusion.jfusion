@@ -217,7 +217,7 @@ class JFusionForum_smf2 extends JFusionForum
 			    $query = $db->getQuery(true)
 				    ->select('*')
 				    ->from('#__members')
-			        ->where('id_member = ' . $puser_id);
+			        ->where('id_member = ' . $db->quote($puser_id));
 
 			    $db->setQuery($query);
 			    $db->execute();
@@ -229,7 +229,7 @@ class JFusionForum_smf2 extends JFusionForum
 				    $query = $db->getQuery(true)
 					    ->select('*')
 					    ->from('#__attachments')
-					    ->where('id_member = ' . $puser_id);
+					    ->where('id_member = ' . $db->quote($puser_id));
 
 				    $db->setQuery($query);
 				    $db->execute();
@@ -292,7 +292,7 @@ class JFusionForum_smf2 extends JFusionForum
 			$query = $db->getQuery(true)
 				->select('member_name, email_address')
 				->from('#__members')
-				->where('id_member = ' . $userid);
+				->where('id_member = ' . $db->quote($userid));
 
 			$db->setQuery($query);
 			$smfUser = $db->loadObject();
@@ -317,7 +317,7 @@ class JFusionForum_smf2 extends JFusionForum
 			$topic_row->num_views = 0;
 			$topic_row->locked = 0;
 
-			$db->insertObject('#__topics', $topic_row, 'id_topic' );
+			$db->insertObject('#__topics', $topic_row, 'id_topic');
 			$topicid = $db->insertid();
 
 			$post_row = new stdClass();
@@ -343,7 +343,7 @@ class JFusionForum_smf2 extends JFusionForum
 			$post_row->id_msg = $postid;
 			$post_row->id_msg_modified = $postid;
 
-			$db->updateObject('#__messages', $post_row, 'id_msg' );
+			$db->updateObject('#__messages', $post_row, 'id_msg');
 
 			$topic_row = new stdClass();
 
@@ -351,7 +351,7 @@ class JFusionForum_smf2 extends JFusionForum
 			$topic_row->id_last_msg		= $postid;
 			$topic_row->id_topic 		= $topicid;
 
-			$db->updateObject('#__topics', $topic_row, 'id_topic' );
+			$db->updateObject('#__topics', $topic_row, 'id_topic');
 
 			$forum_stats = new stdClass();
 			$forum_stats->id_board =  $forumid;
@@ -360,7 +360,7 @@ class JFusionForum_smf2 extends JFusionForum
 				->select('m.poster_time')
 				->from('#__messages AS m')
 				->innerJoin('#__boards AS b ON b.id_last_msg = m.id_msg')
-				->where('b.id_board = ' . $forumid);
+				->where('b.id_board = ' . $db->quote($forumid));
 
 			$db->setQuery($query);
 			$lastPostTime = (int) $db->loadResult();
@@ -386,7 +386,7 @@ class JFusionForum_smf2 extends JFusionForum
 			$forum_stats->num_posts =  $num->num_posts +1;
 			$forum_stats->num_topics =  $num->num_topics +1;
 
-			$db->updateObject('#__boards', $forum_stats, 'id_board' );
+			$db->updateObject('#__boards', $forum_stats, 'id_board');
 
 			if ($updateLastPost) {
 				$query = 'REPLACE INTO #__log_topics SET id_member = ' . $userid . ', id_topic = ' . $topicid . ', id_msg = ' . ($postid + 1);
@@ -432,22 +432,26 @@ class JFusionForum_smf2 extends JFusionForum
 	        $timestamp = time();
 			$userid = $dbparams->get('default_user');
 
-			$query = $db->getQuery(true)
-				->select('member_name')
-				->from('#__members')
-				->where('id_member = ' . $userid);
+			if ($userid) {
+				$query = $db->getQuery(true)
+					->select('member_name')
+					->from('#__members')
+					->where('id_member = ' . $db->quote($userid));
 
-			$db->setQuery($query);
-			$smfUser = $db->loadObject();
+				$db->setQuery($query);
+				$smfUser = $db->loadObject();
 
-			$post_row = new stdClass();
-			$post_row->subject			= $subject;
-			$post_row->body				= $text;
-			$post_row->modified_time 	= $timestamp;
-			$post_row->modified_name 	= $smfUser->member_name;
-			$post_row->id_msg_modified	= $postid;
-			$post_row->id_msg 			= $postid;
-			$db->updateObject('#__messages', $post_row, 'id_msg');
+				$post_row = new stdClass();
+				$post_row->subject			= $subject;
+				$post_row->body				= $text;
+				$post_row->modified_time 	= $timestamp;
+				$post_row->modified_name 	= $smfUser->member_name;
+				$post_row->id_msg_modified	= $postid;
+				$post_row->id_msg 			= $postid;
+				$db->updateObject('#__messages', $post_row, 'id_msg');
+			} else {
+				throw new RuntimeException('NO_DEFAULT_USER');
+			}
 		} catch (Exception $e) {
 			$status['error'] = $e->getMessage();
 		}
@@ -550,7 +554,7 @@ HTML;
 					->select('t.id_first_msg , t.num_replies, m.subject')
 					->from('#__messages')
 					->innerJoin('#__topics as t ON t.id_topic = m.id_topic')
-					->where('id_topic = ' . $ids->threadid)
+					->where('id_topic = ' . $db->quote($ids->threadid))
 					->where('m.id_msg = t.id_first_msg');
 
 				$db->setQuery($query);
@@ -565,7 +569,7 @@ HTML;
 					$query = $db->getQuery(true)
 						->select('member_name, email_address')
 						->from('#__members')
-						->where('id_member = ' . $userid);
+						->where('id_member = ' . $db->quote($userid));
 
 					$db->setQuery($query);
 					$smfUser = $db->loadObject();
@@ -598,7 +602,7 @@ HTML;
 				$post_row = new stdClass();
 				$post_row->id_msg = $postid;
 				$post_row->id_msg_modified = $postid;
-				$db->updateObject('#__messages', $post_row, 'id_msg' );
+				$db->updateObject('#__messages', $post_row, 'id_msg');
 
 				//store the postid
 				$status['postid'] = $postid;
@@ -610,7 +614,7 @@ HTML;
 					$topic_row->id_member_updated	= (int) $userid;
 					$topic_row->num_replies			= $topic->num_replies + 1;
 					$topic_row->id_topic			= $ids->threadid;
-					$db->updateObject('#__topics', $topic_row, 'id_topic' );
+					$db->updateObject('#__topics', $topic_row, 'id_topic');
 
 					$forum_stats = new stdClass();
 					$forum_stats->id_last_msg 		=  $postid;
@@ -619,13 +623,13 @@ HTML;
 					$query = $db->getQuery(true)
 						->select('num_posts')
 						->from('#__boards')
-						->where('id_member = ' . $ids->forumid);
+						->where('id_member = ' . $db->quote($ids->forumid));
 
 					$db->setQuery($query);
 					$num = $db->loadObject();
 					$forum_stats->num_posts = $num->num_posts + 1;
 					$forum_stats->id_board 			= $ids->forumid;
-					$db->updateObject('#__boards', $forum_stats, 'id_board' );
+					$db->updateObject('#__boards', $forum_stats, 'id_board');
 
 		            //update stats for threadmarking purposes
 	                $query = 'REPLACE INTO #__log_topics SET id_member = ' . $userid . ', id_topic = ' . $ids->threadid . ', id_msg = ' . ($postid + 1);
@@ -696,7 +700,7 @@ HTML;
 			$query = $db->getQuery(true)
 				->select('num_replies')
 				->from('#__topics')
-				->where('id_topic = ' . $existingthread->threadid);
+				->where('id_topic = ' . $db->quote($existingthread->threadid));
 
 			$db->setQuery($query);
 			$result = $db->loadResult();
