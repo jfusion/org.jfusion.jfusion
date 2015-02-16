@@ -54,7 +54,7 @@
 		<param name="js" default="" type="JFusionCustomParam" label=" " description=" "/>
 		<param name="mapuser" default="" type="JFusionCustomParam" label="USER_MAPING" description="USER_MAPING_DESCR"/>
 
-		<param name="user_auth" default="md5($userinfo->password_clear)" type="JFusionCustomParam" label="USER_AUTH" description="USER_AUTH_DESCR"/>
+		<param name="user_auth" default="return $this->comparePassword($userinfo->password, $this->generateEncryptedPassword($userinfo))" type="JFusionCustomParam" label="USER_AUTH" description="USER_AUTH_DESCR"/>
 
 		<param name="usergroupmap" default="" type="JFusionPair" label="USERGROUP_MAP" description="USERGROUP_MAP"/>
 

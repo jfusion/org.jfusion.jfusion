@@ -1266,7 +1266,7 @@ class JFusionJplugin
                     //check if the password needs to be updated
                     $model = JFusionFactory::getAuth($jname);
                     //if the passwords are not the same or if Joomla salt has inherited a colon which will confuse Joomla without JFusion; generate a new password hash
-                    if (!$model->checkPassword($existinguser)) {
+                    if ($model->checkPassword($existinguser) !== true) {
                         JFusionJplugin::updatePassword($userinfo, $existinguser, $status, $jname);
                         $changed = true;
                     } else {

@@ -108,7 +108,7 @@ class plgAuthenticationjfusion extends JPlugin
                 //check the master plugin for a valid password
                 $model = JFusionFactory::getAuth($master->name);
 
-                if ($model->checkPassword($userinfo)) {
+                if ($model->checkPassword($userinfo) === true) {
                     //found a match
                     $response->debug[] = $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS');
                     $response->status = JAUTHENTICATE_STATUS_SUCCESS;
@@ -148,7 +148,7 @@ class plgAuthenticationjfusion extends JPlugin
 	                    $check = $model->checkPassword($userinfo);
                     }
 
-                    if ($check) {
+                    if ($check === true) {
                         //found a match
                         $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS');
                         $response->status = JAUTHENTICATE_STATUS_SUCCESS;

@@ -346,7 +346,7 @@ class JFusionHelper_universal {
 			case 'CUSTOM':
 				$value = rtrim(trim($value),';');
 				ob_start();
-				$out = eval("return $value;");
+				$out = eval($value . ';');
 				$error = ob_get_contents();
 				ob_end_clean();
 				if (strlen($error)) {
