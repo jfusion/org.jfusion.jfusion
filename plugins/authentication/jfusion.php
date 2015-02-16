@@ -110,7 +110,7 @@ class plgAuthenticationjfusion extends JPlugin
 						    JFusionFunction::raiseError($e, $model->getJname());
 						    $check = false;
 					    }
-					    if ($check) {
+					    if ($check === true) {
 						    //found a match
 						    $debugger->add('debug', $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS'));
 						    $response->status = JAuthentication::STATUS_SUCCESS;
@@ -152,7 +152,7 @@ class plgAuthenticationjfusion extends JPlugin
 									    $check = $model->checkPassword($userinfo);
 								    }
 
-								    if ($check) {
+								    if ($check === true) {
 									    //found a match
 									    $debugger->add('debug', $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS'));
 									    $response->status = JAuthentication::STATUS_SUCCESS;

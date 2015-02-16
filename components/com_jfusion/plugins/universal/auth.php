@@ -31,16 +31,38 @@ class JFusionAuth_universal extends JFusionAuth {
      */
     function generateEncryptedPassword($userinfo)
     {
-		$user_auth = $this->params->get('user_auth');
-
-		$user_auth = rtrim(trim($user_auth),';');
-    	ob_start();
-		$testcrypt = eval('return '. $user_auth . ';');
-		$error = ob_get_contents();
-		ob_end_clean();
-		if ($testcrypt===false && strlen($error)) {
-			die($error);
-		}
+        $testcrypt = null;
+        $password = $this->helper->getFieldType('PASSWORD');
+        if(empty($password)) {
+            throw new RuntimeException(JText::_('UNIVERSAL_NO_PASSWORD_SET'));
+        } else {
+            $testcrypt = $this->helper->getHashedPassword($password->fieldtype, $password->value, $userinfo);
+        }
         return $testcrypt;
+    }
+
+    /**
+     * used by framework to ensure a password test
+     *
+     * @param object $userinfo userdata object containing the userdata
+     *
+     * @return boolean
+     */
+    function checkPassword($userinfo) {
+        $user_auth = $this->params->get('user_auth');
+
+        $user_auth = rtrim(trim($user_auth),';');
+        ob_start();
+        $check = eval($user_auth . ';');
+        $error = ob_get_contents();
+        ob_end_clean();
+        if ($check===false && strlen($error)) {
+            die($error);
+        }
+        if ($check === true) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
