@@ -36,29 +36,29 @@
                     <option value="2">EMAIL</option>
                     <option value="3">USERNAME_OR_EMAIL</option>
                 </field>
-
                 <field name="dataroot" type="text" default="" label="dataroot" description="" />
-                <field name="passwordsaltmain" type="hidden" default="" label="saltmain" description="" />
-                <field name="passwordsaltalt1" type="hidden" default="" label="s1" description="" />
-                <field name="passwordsaltalt2" type="hidden" default="" label="s2" description="" />
-                <field name="passwordsaltalt3" type="hidden" default="" label="s3" description="" />
-                <field name="passwordsaltalt4" type="hidden" default="" label="s4" description="" />
-                <field name="passwordsaltalt5" type="hidden" default="" label="s5" description="" />
-                <field name="passwordsaltalt6" type="hidden" default="" label="s6" description="" />
-                <field name="passwordsaltalt7" type="hidden" default="" label="s7" description="" />
-                <field name="passwordsaltalt8" type="hidden" default="" label="s8" description="" />
-                <field name="passwordsaltalt9" type="hidden" default="" label="s9" description="" />
-                <field name="passwordsaltalt10" type="hidden" default="" label="s10" description="" />
-                <field name="passwordsaltalt11" type="hidden" default="" label="s11" description="" />
-                <field name="passwordsaltalt12" type="hidden" default="" label="s12" description="" />
-                <field name="passwordsaltalt13" type="hidden" default="" label="s13" description="" />
-                <field name="passwordsaltalt14" type="hidden" default="" label="s14" description="" />
-                <field name="passwordsaltalt15" type="hidden" default="" label="s15" description="" />
-                <field name="passwordsaltalt16" type="hidden" default="" label="s16" description="" />
-                <field name="passwordsaltalt17" type="hidden" default="" label="s17" description="" />
-                <field name="passwordsaltalt18" type="hidden" default="" label="s18" description="" />
-                <field name="passwordsaltalt19" type="hidden" default="" label="s19" description="" />
-                <field name="passwordsaltalt20" type="hidden" default="" label="s20" description="" />
+                <field name="passwordsaltmain" type="text" default="" label="saltmain" description="" />
+                <field name="passwordsaltalt1" type="text" default="" label="s1" description="" />
+                <field name="passwordsaltalt2" type="text" default="" label="s2" description="" />
+                <field name="passwordsaltalt3" type="text" default="" label="s3" description="" />
+                <field name="passwordsaltalt4" type="text" default="" label="s4" description="" />
+                <field name="passwordsaltalt5" type="text" default="" label="s5" description="" />
+                <field name="passwordsaltalt6" type="text" default="" label="s6" description="" />
+                <field name="passwordsaltalt7" type="text" default="" label="s7" description="" />
+                <field name="passwordsaltalt8" type="text" default="" label="s8" description="" />
+                <field name="passwordsaltalt9" type="text" default="" label="s9" description="" />
+                <field name="passwordsaltalt10" type="text" default="" label="s10" description="" />
+                <field name="passwordsaltalt11" type="text" default="" label="s11" description="" />
+                <field name="passwordsaltalt12" type="text" default="" label="s12" description="" />
+                <field name="passwordsaltalt13" type="text" default="" label="s13" description="" />
+                <field name="passwordsaltalt14" type="text" default="" label="s14" description="" />
+                <field name="passwordsaltalt15" type="text" default="" label="s15" description="" />
+                <field name="passwordsaltalt16" type="text" default="" label="s16" description="" />
+                <field name="passwordsaltalt17" type="text" default="" label="s17" description="" />
+                <field name="passwordsaltalt18" type="text" default="" label="s18" description="" />
+                <field name="passwordsaltalt19" type="text" default="" label="s19" description="" />
+                <field name="passwordsaltalt20" type="text" default="" label="s20" description="" />
+
 
 
 
