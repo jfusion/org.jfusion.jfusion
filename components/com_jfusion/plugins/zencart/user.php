@@ -163,7 +163,7 @@ class JFusionUser_zencart extends JFusionUser
 	    $query1 = (string)$db->getQuery(true)
 		    ->update('#__customers')
 		    ->set('customers_password = ' . $db->quote($existinguser->password))
-		    ->where('customers_id  = ' . $db->Quote($existinguser->userid));
+		    ->where('customers_id  = ' . $db->quote($existinguser->userid));
 
 	    $query2 = (string)$db->getQuery(true)
 		    ->update('#__customers_info')
