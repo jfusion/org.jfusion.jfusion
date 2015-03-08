@@ -38,6 +38,7 @@
                 </field>
                 <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="dataroot" type="text" default="" label="dataroot" description="" />
+                <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="passwordsaltmain" type="text" default="" label="saltmain" description="" />
                 <field name="passwordsaltalt1" type="text" default="" label="s1" description="" />
                 <field name="passwordsaltalt2" type="text" default="" label="s2" description="" />
