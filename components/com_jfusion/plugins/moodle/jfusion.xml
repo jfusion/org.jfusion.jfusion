@@ -58,10 +58,6 @@
                 <field name="passwordsaltalt18" type="text" default="" label="s18" description="" />
                 <field name="passwordsaltalt19" type="text" default="" label="s19" description="" />
                 <field name="passwordsaltalt20" type="text" default="" label="s20" description="" />
-
-
-
-
             </fieldset>
 
             <fieldset name="DATABASE_OPTIONS">
