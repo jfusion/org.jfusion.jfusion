@@ -36,6 +36,7 @@
                     <option value="2">EMAIL</option>
                     <option value="3">USERNAME_OR_EMAIL</option>
                 </field>
+                <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="dataroot" type="text" default="" label="dataroot" description="" />
                 <field name="passwordsaltmain" type="text" default="" label="saltmain" description="" />
                 <field name="passwordsaltalt1" type="text" default="" label="s1" description="" />
