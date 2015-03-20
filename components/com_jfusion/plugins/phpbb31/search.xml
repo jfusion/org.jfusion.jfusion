@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<language filename="plg_search_jfusion" location="admin" />
+
+    <form>
+        <fields>
+            <fieldset name="basic">
+                <field name="title" type="text" default="" label="TITLE" description="TITLE_DESCR"/>
+                <field name="itemid" type="JFusionItemid" size="5" default="" label="ITEMID" description="ITEMID_DESCR" />
+                <field name="search_limit" type="text" size="5" default="50" label="SEARCH_LIMIT" description="SEARCH_LIMIT_DESCR"/>
+                <field name="forum_mode" type="radio" default="0" label="FORUM_MODE" description="FORUM_MODE_DESCR">
+                    <option value="0">FORUM_MODE_0</option>
+                    <option value="1">FORUM_MODE_1</option>
+                </field>
+
+                <field name="selected_forums" type="ForumListSearchPlugin" default="" label="SELECTED_FORUMS" description="SELECTED_FORUMS_DESCR" />
+            </fieldset>
+        </fields>
+    </form>
+</config>

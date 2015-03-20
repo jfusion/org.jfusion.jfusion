@@ -1,0 +1,30 @@
+services:
+#    jfusion.phpbbext.controller:
+#        class: jfusion\phpbbext\controller\main
+#        arguments:
+#            - @config
+#            - @controller.helper
+#            - @template
+#            - @user
+
+    jfusion.phpbbext.listener:
+        class: jfusion\phpbbext\event\main_listener
+        arguments:
+            - @config
+            - @user
+        tags:
+            - { name: event.listener }
+
+    auth.provider.jfusion:
+        class: jfusion\phpbbext\auth\provider\auth
+        arguments:
+            - @dbal.conn
+            - @config
+            - @passwords.manager
+            - @request
+            - @user
+            - @service_container
+            - %core.root_path%
+            - %core.php_ext%
+        tags:
+            - { name: auth.provider }

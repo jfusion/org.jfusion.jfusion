@@ -1,0 +1,3 @@
+#jfusion_phpbbext_controller:
+#    pattern: /phpbbext/{name}
+#    defaults: { _controller: jfusion.phpbbext.controller:handle }

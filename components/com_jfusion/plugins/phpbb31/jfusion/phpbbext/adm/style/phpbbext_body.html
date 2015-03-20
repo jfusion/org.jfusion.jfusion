@@ -1,0 +1,81 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_SETTINGS}</h1>
+
+<form id="acp_board" method="post" action="{U_ACTION}">
+	<fieldset>
+        <dl>
+            <dt>
+                <label for="jfusion_phpbbext_redirect_url">{L_ACP_JFUSION_PHPBBEXT_REDIRECT_URL}</label>
+            </dt>
+            <dd>
+                <input type="text" name="jfusion_phpbbext_redirect_url" value="{JFUSION_PHPBBEXT_REDIRECT_URL}"/>
+            </dd>
+        </dl>
+
+        <dl>
+            <dt>
+                <label for="jfusion_phpbbext_direct_access">{L_ACP_JFUSION_PHPBBEXT_DIRECT_ACCESS}</label>
+            </dt>
+            <dd>
+                <input type="radio" class="radio" name="jfusion_phpbbext_direct_access" value="1" <!-- IF JFUSION_PHPBBEXT_DIRECT_ACCESS -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
+                <input type="radio" class="radio" name="jfusion_phpbbext_direct_access" value="0" <!-- IF not JFUSION_PHPBBEXT_DIRECT_ACCESS -->checked="checked"<!-- ENDIF --> /> {L_NO}
+            </dd>
+        </dl>
+
+        <dl>
+            <dt>
+                <label for="jfusion_phpbbext_direct_access_groups">{L_ACP_JFUSION_PHPBBEXT_DIRECT_ACCESS_GROUPS}</label>
+            </dt>
+            <dd>
+                <input type="text" name="jfusion_phpbbext_direct_access_groups" value="{JFUSION_PHPBBEXT_DIRECT_ACCESS_GROUPS}"/>
+            </dd>
+        </dl>
+
+        <dl>
+            <dt>
+                <label for="jfusion_phpbbext_jname">{L_ACP_JFUSION_PHPBBEXT_JNAME}</label>
+            </dt>
+            <dd>
+                <input type="text" name="jfusion_phpbbext_jname" value="{JFUSION_PHPBBEXT_JNAME}"/>
+            </dd>
+        </dl>
+
+        <dl>
+            <dt>
+                <label for="jfusion_phpbbext_apipath">{L_ACP_JFUSION_PHPBBEXT_APIPATH}</label>
+            </dt>
+            <dd>
+                <input type="text" name="jfusion_phpbbext_apipath" value="{JFUSION_PHPBBEXT_APIPATH}"/>
+            </dd>
+        </dl>
+
+        <dl>
+            <dt>
+                <label for="jfusion_phpbbext_redirect_login">{L_ACP_JFUSION_PHPBBEXT_REDIRECT_LOGIN}</label>
+            </dt>
+            <dd>
+                <input type="radio" class="radio" name="jfusion_phpbbext_redirect_login" value="1" <!-- IF JFUSION_PHPBBEXT_REDIRECT_LOGIN -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
+                <input type="radio" class="radio" name="jfusion_phpbbext_redirect_login" value="0" <!-- IF not JFUSION_PHPBBEXT_REDIRECT_LOGIN -->checked="checked"<!-- ENDIF --> /> {L_NO}
+            </dd>
+        </dl>
+
+        <dl>
+            <dt>
+                <label for="jfusion_phpbbext_redirect_logout">{L_ACP_JFUSION_PHPBBEXT_REDIRECT_LOGOUT}</label>
+            </dt>
+            <dd>
+                <input type="radio" class="radio" name="jfusion_phpbbext_redirect_logout" value="1" <!-- IF JFUSION_PHPBBEXT_REDIRECT_LOGOUT -->checked="checked"<!-- ENDIF -->/> {L_YES} &nbsp;
+                <input type="radio" class="radio" name="jfusion_phpbbext_redirect_logout" value="0" <!-- IF not JFUSION_PHPBBEXT_REDIRECT_LOGOUT -->checked="checked"<!-- ENDIF --> /> {L_NO}
+            </dd>
+        </dl>
+
+		<p class="submit-buttons">
+			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+		</p>
+
+		{S_FORM_TOKEN}
+	</fieldset>
+</form>
+<!-- INCLUDE overall_footer.html -->
