@@ -8,7 +8,7 @@
     <authorUrl>www.jfusion.org</authorUrl>
     <copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <version>2.1.0-0</version>
+    <version>2.1.1-0</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
     <description>JFusion (1.1.0+) plugin for Moodle E-learning 1.x</description>
@@ -36,6 +36,30 @@
                     <option value="2">EMAIL</option>
                     <option value="3">USERNAME_OR_EMAIL</option>
                 </field>
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name="dataroot" type="text" default="" label="dataroot" description="" />
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name="passwordsaltmain" type="text" default="" label="saltmain" description="" />
+                <field name="passwordsaltalt1" type="text" default="" label="s1" description="" />
+                <field name="passwordsaltalt2" type="text" default="" label="s2" description="" />
+                <field name="passwordsaltalt3" type="text" default="" label="s3" description="" />
+                <field name="passwordsaltalt4" type="text" default="" label="s4" description="" />
+                <field name="passwordsaltalt5" type="text" default="" label="s5" description="" />
+                <field name="passwordsaltalt6" type="text" default="" label="s6" description="" />
+                <field name="passwordsaltalt7" type="text" default="" label="s7" description="" />
+                <field name="passwordsaltalt8" type="text" default="" label="s8" description="" />
+                <field name="passwordsaltalt9" type="text" default="" label="s9" description="" />
+                <field name="passwordsaltalt10" type="text" default="" label="s10" description="" />
+                <field name="passwordsaltalt11" type="text" default="" label="s11" description="" />
+                <field name="passwordsaltalt12" type="text" default="" label="s12" description="" />
+                <field name="passwordsaltalt13" type="text" default="" label="s13" description="" />
+                <field name="passwordsaltalt14" type="text" default="" label="s14" description="" />
+                <field name="passwordsaltalt15" type="text" default="" label="s15" description="" />
+                <field name="passwordsaltalt16" type="text" default="" label="s16" description="" />
+                <field name="passwordsaltalt17" type="text" default="" label="s17" description="" />
+                <field name="passwordsaltalt18" type="text" default="" label="s18" description="" />
+                <field name="passwordsaltalt19" type="text" default="" label="s19" description="" />
+                <field name="passwordsaltalt20" type="text" default="" label="s20" description="" />
             </fieldset>
 
             <fieldset name="DATABASE_OPTIONS">
@@ -151,29 +175,7 @@
                 <field name="moduleInstallation" label="MODULE_INSTALLATION" type="JFusionCustomParam" description="MODULE_INSTALLATION_DESCR" />
                 <field name="moduleActivation" type="JFusionCustomParam" label="ACTIVATION_MOODLE_MODULE" description="ACTIVATION_MOODLE_MODULE_DESC" />
 
-                <field name="dataroot" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltmain" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt1" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt2" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt3" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt4" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt5" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt6" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt7" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt8" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt9" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt10" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt11" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt12" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt13" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt14" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt15" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt16" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt17" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt18" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt19" type="hidden" default="" label="" description="" />
-                <field name="passwordsaltalt20" type="hidden" default="" label="" description="" />
-            </fieldset>
+                </fieldset>
 
             <fieldset name="FRAMELESS_OPTIONS"/>
         </fields>

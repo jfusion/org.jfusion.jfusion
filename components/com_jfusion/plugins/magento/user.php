@@ -171,43 +171,38 @@ class JFusionUser_magento extends JFusionUser {
 	 *
 	 * @return array|bool
 	 */
-	function fillMagentoDataObject($entity_type_code, $entity_id, $entity_type_id) {
-		$result = array();
-		try {
-			$result = $this->getMagentoDataObjectRaw($entity_type_code);
-			if ($result) {
-				// walk through the array and fill the object requested
-				/**
-				 * @TODO This can be smarter by reading types at once and put the data them in the right place
-				 *       for now I'm trying to get this working. optimising comes next
-				 */
-				$filled_object = array();
-				$db = JFusionFactory::getDataBase($this->getJname());
-				for ($i = 0;$i < count($result);$i++) {
-					$query = $db->getQuery(true)
-						->where('entity_id = ' . (int)$entity_id)
-						->where('entity_type_id = ' . (int)$entity_type_id);
+   function fillMagentoDataObject($entity_type_code, $entity_id, $entity_type_id) {
+      $result = array();
+      $result = $this->getMagentoDataObjectRaw($entity_type_code);
+      if ($result) {
+         // walk through the array and fill the object requested
+         $filled_object = array();
+         $db = JFusionFactory::getDataBase($this->getJname());
+         for ($i = 0;$i < count($result);$i++) {
+            $query = $db->getQuery(true)
+               ->where('entity_id = ' . (int)$entity_id)
+               ->where('entity_type_id = ' . (int)$entity_type_id)
+               ->where('attribute_id = ' . (int)$result[$i]['attribute_id']);
 
-					if ($result[$i]['backend_type'] == 'static') {
-						$query->select($result[$i]['attribute_code'])
-							->from('#__' . $entity_type_code . '_entity');
-					} else {
-						$query->select('value')
-							->from('#__' . $entity_type_code . '_entity_' . $result[$i]['backend_type']);
-					}
-					$db->setQuery($query);
-
-					$filled_object[$result[$i]['attribute_code']]['value'] = $db->loadResult();
-					$filled_object[$result[$i]['attribute_code']]['attribute_id'] = $result[$i]['attribute_id'];
-					$filled_object[$result[$i]['attribute_code']]['backend_type'] = $result[$i]['backend_type'];
-				}
-				$result = $filled_object;
-			}
-		} catch (Exception $e) {
-			JFusionFunction::raiseError($e, $this->getJname());
-		}
-		return $result;
-	}
+            if ($result[$i]['backend_type'] == 'static') {
+               $query->select($result[$i]['attribute_code'])
+                  ->from('#__' . $entity_type_code . '_entity');
+            } else {
+               $query->select('value')
+                  ->from('#__' . $entity_type_code . '_entity_' . $result[$i]['backend_type']);
+            }
+            $db->setQuery($query);
+            try {
+               $filled_object[$result[$i]['attribute_code']]['value'] = $db->loadResult();
+            } catch (Exception $e) {
+               $filled_object[$result[$i]['attribute_code']]['value'] = '';
+            }
+            $filled_object[$result[$i]['attribute_code']]['attribute_id'] = $result[$i]['attribute_id'];
+            $filled_object[$result[$i]['attribute_code']]['backend_type'] = $result[$i]['backend_type'];
+         }
+         $result = $filled_object;
+      }
+      return $result;
 	/**
 	 * @param object $userinfo
 	 * @return null|object
