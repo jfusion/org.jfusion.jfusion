@@ -33,11 +33,58 @@ createpackage(){
 			${ZIPCMD} a "${REVISION}/${TARGETDEST}" ${FULLPATH}/tmppackage/* -xr!*.svn* > /dev/null
 		fi
 	rm -r ${FULLPATH}/tmppackage
-	
+
 	cd ${FULLPATH}
 }
 
+checkoutplugins() {
+	checkoutplugin "dokuwiki"
+	checkoutplugin "efront"
+	checkoutplugin "elgg"
+	checkoutplugin "gallery2"
+	checkoutplugin "joomla_ext"
+	checkoutplugin "joomla_int"
+	checkoutplugin "magento"
+	checkoutplugin "mediawiki"
+	checkoutplugin "moodle"
+	checkoutplugin "mybb"
+	checkoutplugin "phpbb3"
+	checkoutplugin "prestashop"
+	checkoutplugin "smf"
+	checkoutplugin "smf2"
+	checkoutplugin "universal"
+	checkoutplugin "vbulletin"
+	checkoutplugin "wordpress"
+	checkoutplugin "zencart"
+}
+
+checkoutplugin() {
+	echo Building Plugin $1
+
+	if ! [ -d "${PLUGIN_DIR}" ]; then
+		mkdir "${PLUGIN_DIR}"
+    fi
+
+	cd "${PLUGIN_DIR}"
+
+	if ! [ -d "${PLUGIN_DIR}/$1" ]; then
+		git clone "https://github.com/jfusion/org.jfusion.plugin.$1" "${PLUGIN_DIR}$1"
+    fi
+
+	cd "${1}"
+
+	if [ $? -eq 0 ]; then
+		git fetch --all
+		git reset --hard origin/master
+
+		composer update --no-dev
+	fi
+}
+
 FULLPATH=$(dirname $(readlink -f $0))
+
+PLUGIN_DIR=${FULLPATH}/gitplugins/
+
 
 if [ -f "/usr/bin/7z" ]; then
    USEZIPCMD="7z"
@@ -46,16 +93,16 @@ elif [ -f "/usr/bin/zip" ]; then
    USEZIPCMD="zip"
    ZIPCMD="/usr/bin/zip"
 else
-    echo "No zip program found!  Install p7zip-full or zip!"
+    echo "No zip program found! Install p7zip-full or zip!"
     exit 0
 fi
 
-REVISION=Unknown
-if which git &> /dev/null; then
+if [ -f "/usr/bin/git" ]; then
 	REVISION=$(git rev-parse HEAD)
 else
-	echo "git is not available.  Install git command line client."
+    echo "git is not available. Install git command line client."
 fi
+
 TIMESTAMP=$(date +%s)
 
 case $1 in
@@ -72,13 +119,13 @@ case $1 in
 	clear)
 		$0 clear_main
 		$0 clear_packages
-		
+
 		;;
 	create_packages)
 		$0 clear_packages
 
 		echo "create the new packages for the plugins and module"
-		
+
 		#login module has folders thus has to be treated differently
 
 		createpackage modules/mod_jfusion_login/ administrator/components/com_jfusion/packages/jfusion_mod_login.zip mod_jfusion_login
@@ -128,7 +175,7 @@ case $1 in
 		rsync -r --exclude=".*/" pluginpackages/* tmp/admin/packages
 
 		rm tmp/admin/jfusion.xml
-		
+
 		mkdir tmp/admin/language
 		rsync -r  --exclude=".*/" administrator/language/en-GB/* tmp/admin/language/en-GB
 
@@ -137,39 +184,39 @@ case $1 in
 
 		mkdir tmp/front/language
 		rsync -r  --exclude=".*/" language/en-GB/* tmp/front/language/en-GB/
-		
+
 		rsync administrator/components/com_jfusion/jfusion.xml administrator/components/com_jfusion/script.php tmp/
-		
+
 		echo "Update the revision number"
 
 		echo "Revision set to $REVISION"
 		echo "Timestamp set to $TIMESTAMP"
-		
+
 		createxml tmp/jfusion
-		
+
 		echo "Create the new master package"
 
-		if [ "$USEZIPCMD" == "zip" ];
-		then
+		if [ "$USEZIPCMD" == "zip" ]; then
 			cd tmp
 			${ZIPCMD} -r ${FULLPATH}/jfusion_package.zip . > /dev/null
 		else
 			${ZIPCMD} a "${REVISION}/jfusion_package.zip" ${FULLPATH}/tmp/* -xr!*.svn* > /dev/null
 		fi
-	
+
 		echo "Remove temporary files"
 		cd ${FULLPATH}
 		rm -r tmp
-		
+
 		;;
 	create)
+		checkoutplugins
 		$0 create_packages
 		$0 create_main
 
 		;;
 
 	*)
-		echo "Usage ${REVISION}/create_package.sh {clear_packages|clear_main|clear|create_main|create_packages|create}"
+		echo "Usage: {clear_packages|clear_main|clear|create_main|create_packages|create}"
 		;;
 esac
 
