@@ -23,13 +23,13 @@ $config->set('plugin-path', JFUSION_PLUGIN_PATH);
 /**
  * Database settings
  */
-$config->set('host', JFactory::getConfig()->get('host'));
-$config->set('user', JFactory::getConfig()->get('user'));
-$config->set('password', JFactory::getConfig()->get('password'));
-$config->set('db', JFactory::getConfig()->get('db'));
-$config->set('dbprefix', JFactory::getConfig()->get('dbprefix'));
-$config->set('dbtype', JFactory::getConfig()->get('dbtype'));
-$config->set('debug', JFactory::getConfig()->get('debug'));
+$config->set('database.host', JFactory::getConfig()->get('host'));
+$config->set('database.user', JFactory::getConfig()->get('user'));
+$config->set('database.password', JFactory::getConfig()->get('password'));
+$config->set('database.name', JFactory::getConfig()->get('db'));
+$config->set('database.prefix', JFactory::getConfig()->get('dbprefix'));
+$config->set('database.driver', JFactory::getConfig()->get('dbtype'));
+$config->set('database.debug', JFactory::getConfig()->get('debug'));
 
 /**
  * Database language
