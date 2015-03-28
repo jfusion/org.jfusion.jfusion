@@ -4,6 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 require_once(JPATH_ADMINISTRATOR . '/components/com_jfusion/models/model.jfusion.php');
 
+use JFusion\Config;
 use JFusion\Factory;
 
 use Joomla\Registry\Registry;
@@ -18,7 +19,7 @@ $config = new Registry();
 
 $config->set('url', JUri::root());
 
-$config->set('plugin-path', JFUSION_PLUGIN_PATH);
+$config->set('plugin.path', JFUSION_PLUGIN_PATH);
 
 /**
  * Database settings
@@ -49,10 +50,10 @@ $config->set('live_site', JFactory::getConfig()->get('live_site'));
 $config->set('updateusergroups', $params->get('updateusergroups', new stdClass()));
 $config->set('usergroups', $params->get('usergroups', false));
 
-Factory::$config = $config;
+Config::set($config);
 
-Factory::$config->set('apikey', Factory::getParams('joomla_int')->get('secret'));
-Factory::$config->set('plugin-url', JFusionFunction::getJoomlaURL() . 'components/com_jfusion/plugins/');
+Config::get()->set('apikey', Factory::getParams('joomla_int')->get('secret'));
+Config::get()->set('plugin.url', JFusionFunction::getJoomlaURL() . 'components/com_jfusion/plugins/');
 
 require_once(__DIR__ . '/models/model.eventhook.php');
 

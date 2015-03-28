@@ -104,6 +104,81 @@ class JFusionController extends JControllerLegacy
 		}
 	}
 
+	function togglesetting()
+	{
+		try {
+			$responce = new \stdClass();
+			//split the value of the sort action
+			$name = JFactory::getApplication()->input->post->get('name');
+			$toggle = JFactory::getApplication()->input->post->get('toggle');
+			if ($name) {
+				$db = JFactory::getDbo();
+
+				if ($toggle == 'dual_login' || $toggle == 'check_encryption' || $toggle == 'status') {
+					$query = $db->getQuery(true)
+						->from('#__jfusion')
+						->select($db->quoteName($toggle))
+						->where('name = ' . $db->quote($name));
+					$db->setQuery($query);
+					$status = $db->loadResult();
+
+					switch ($toggle) {
+						case 'status':
+							if ($status == 2) {
+								$status = 1;
+							} else if ($status == 1) {
+								$status = 2;
+							}
+							break;
+						default:
+							$status = ($status==1) ? 0 : 1;
+							break;
+					}
+
+					$query = $db->getQuery(true)
+						->update('#__jfusion')
+						->set($db->quoteName($toggle) . ' = ' . (int)$status)
+						->where('name = ' . $db->quote($name));
+
+					$db->setQuery($query);
+					$db->execute();
+
+					$responce->status = $status;
+					$responce->name = $name;
+
+					switch ($toggle) {
+						case 'status':
+							if ($status == 2) {
+								$responce->class = 'enabled';
+								$responce->title = JText::_('ENABLED');
+							} else {
+								$responce->class = 'disabled';
+								$responce->title = JText::_('DISABLED');
+							}
+							break;
+						default:
+							if ($status) {
+								$responce->class = 'enabled';
+								$responce->title = JText::_('ENABLED');
+							} else {
+								$responce->class = 'disabled';
+								$responce->title = JText::_('DISABLED');
+							}
+							break;
+					}
+				} else {
+					throw new \RuntimeException('Invalid Toggle provided');
+				}
+			} else {
+				throw new \RuntimeException('No Name provided');
+			}
+			echo new JResponseJson($responce);
+		} catch (Exception $e) {
+			echo new JResponseJson($e);
+		}
+		exit();
+	}
+
 	/**
 	 * Function to change the master/slave/encryption settings in the jos_jfusion table
 	 *

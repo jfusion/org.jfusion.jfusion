@@ -23,35 +23,23 @@ $images = 'components/com_jfusion/images/';
 			<tr>
 				<th class="title" width="20px;">
 				</th>
-				<th class="title" align="left">
-					<?php echo JText::_('NAME');?>
+				<th class="title" align="left" style="min-width: 125px">
+					<?php echo JText::_('PLUGIN');?>
 				</th>
-				<th class="title" width="100px" align="center">
-					<?php echo JText::_('ACTIONS');?>
+				<th class="title configicon">
+					<div class="smallicon status_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('STATUS_TOOLTIP');?>"></div>
 				</th>
-				<th class="title" align="center">
-					<?php echo JText::_('DESCRIPTION');?>
+				<th class="title configicon">
+					<div class="smallicon encryption_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('CHECK_ENCRYPTION_TOOLTIP');?>"></div>
 				</th>
-				<th class="title" width="40px" align="center">
-					<?php echo JText::_('MASTER'); ?>
+				<th class="title configicon">
+					<div class="smallicon login_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('DUAL_LOGIN_TOOLTIP');?>"></div>
 				</th>
-				<th class="title" width="40px" align="center">
-					<?php echo JText::_('SLAVE'); ?>
+				<th class="title configicon">
+					<div class="smallicon registration_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('REGISTRATION_TOOLTIP');?>"></div>
 				</th>
-				<th class="title" width="20px" align="center">
-					<img src="<?php echo $images; ?>encryption.png" border="0" alt="<?php echo JText::_('CHECK_ENCRYPTION');?>"/>
-				</th>
-				<th class="title" width="20px" align="center">
-					<img src="<?php echo $images; ?>login.png" border="0" alt="<?php echo JText::_('DUAL_LOGIN');?>"/>
-				</th>
-				<th class="title" width="120px" align="center">
-					<?php echo JText::_('STATUS');?>
-				</th>
-				<th class="title" width="60px" align="center">
-					<?php echo JText::_('USERS');?>
-				</th>
-				<th class="title" width="60px" align="center">
-					<?php echo JText::_('REGISTRATION');?>
+				<th class="title" style="text-align: center; min-width: 60px;">
+					<div class="smallicon users_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('USERS_TOOLTIP');?>"></div>
 				</th>
 				<th class="title" align="center">
 					<?php echo JText::_('DEFAULT_USERGROUP');?>
@@ -59,26 +47,57 @@ $images = 'components/com_jfusion/images/';
 			</tr>
 		</thead>
 		<tbody id="sort_table">
-		<?php echo $this->generateListHTML($this->plugins); ?>
+			<?php echo $this->generateListHTML($this->plugins); ?>
 		</tbody>
 	</table>
 	<br />
 
 	<table style="width:100%;">
-		<tr>
-			<td style="text-align: left;">
-				<img src="<?php echo $images; ?>wizard_icon.png" border="0" alt="<?php echo JText::_('WIZARD');?>" style="margin-left: 10px;" /> = <?php echo JText::_('WIZARD');?>
-				<img src="<?php echo $images; ?>edit.png" border="0" alt="<?php echo JText::_('EDIT');?>" /> = <?php echo JText::_('EDIT');?>
-				<img src="<?php echo $images; ?>copy_icon.png" border="0" alt="<?php echo JText::_('COPY');?>" style="margin-left: 10px;" /> = <?php echo JText::_('COPY');?>
-				<img src="<?php echo $images; ?>delete_icon.png" border="0" alt="<?php echo JText::_('DELETE');?>" style="margin-left: 10px;" /> = <?php echo JText::_('DELETE');?>
-				<img src="<?php echo $images; ?>info.png" border="0" alt="<?php echo JText::_('INFO');?>" style="margin-left: 10px;" /> = <?php echo JText::_('INFO');?>
-				<img src="<?php echo $images; ?>encryption.png" border="0" alt="<?php echo JText::_('CHECK_ENCRYPTION');?>" style="margin-left: 10px;" /> = <?php echo JText::_('CHECK_ENCRYPTION');?>
-				<img src="<?php echo $images; ?>login.png" border="0" alt="<?php echo JText::_('DUAL_LOGIN');?>" style="margin-left: 10px;" /> = <?php echo JText::_('DUAL_LOGIN');?>
+		<tr style="vertical-align: text-top;">
+			<td style="width: 33%;">
+				<p>
+					<div class="smallicon wizard_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('WIZARD_TOOLTIP');?>"></div> = <?php echo JText::_('WIZARD');?>
+				</p>
+				<p>
+					<div class="smallicon edit_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('EDIT_TOOLTIP');?>"></div> = <?php echo JText::_('EDIT');?>
+				</p>
+				<p>
+					<div class="smallicon copy_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('COPY_TOOLTIP');?>"></div> = <?php echo JText::_('COPY');?>
+				</p>
+				<p>
+					<div class="smallicon delete_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('DELETE_TOOLTIP');?>"></div> = <?php echo JText::_('DELETE');?>
+				</p>
+				<p>
+					<div class="smallicon info_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('INFO_TOOLTIP');?>"></div> = <?php echo JText::_('INFO');?>
+				</p>
 			</td>
-			<td style="text-align: right;">
-				<img src="<?php echo $images; ?>tick.png" border="0" alt="<?php echo JText::_('ENABLED'); ?>" /> = <?php echo JText::_('ENABLED'); ?>
-				<img src="<?php echo $images; ?>cross.png" border="0" alt="<?php echo JText::_('DISABLED');?>" style="margin-left: 10px;" /> = <?php echo JText::_('DISABLED');?>
-				<img src="<?php echo $images; ?>cross_dim.png" border="0" alt="<?php echo JText::_('CONFIG_FIRST');?>" style="margin-left: 10px;" /> = <?php echo JText::_('CONFIG_FIRST');?>
+			<td style="width: 33%;">
+				<p>
+					<div class="smallicon encryption_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('CHECK_ENCRYPTION_TOOLTIP');?>"></div> = <?php echo JText::_('CHECK_ENCRYPTION');?>
+				</p>
+				<p>
+					<div class="smallicon login_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('DUAL_LOGIN_TOOLTIP');?>"></div> = <?php echo JText::_('DUAL_LOGIN');?>
+				</p>
+				<p>
+					<div class="smallicon status_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('STATUS_TOOLTIP');?>"></div> = <?php echo JText::_('STATUS');?>
+				</p>
+				<p>
+					<div class="smallicon registration_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('REGISTRATION_TOOLTIP');?>"></div> = <?php echo JText::_('REGISTRATION');?>
+				</p>
+				<p>
+					<div class="smallicon users_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('USERS_TOOLTIP');?>"></div> = <?php echo JText::_('USERS');?>
+				</p>
+			</td>
+			<td>
+				<p>
+					<div class="smallicon enabled" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('ENABLED_TOOLTIP');?>"></div> = <?php echo JText::_('ENABLED');?>
+				</p>
+				<p>
+					<div class="smallicon disabled" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('DISABLED_TOOLTIP');?>"></div> = <?php echo JText::_('DISABLED');?>
+				</p>
+				<p>
+					<div class="smallicon disabled dim" data-toggle="tooltip" data-container="body" data-placement="top" title="<?php echo JText::_('CONFIG_FIRST_TOOLTIP');?>"></div> = <?php echo JText::_('CONFIG_FIRST');?>
+				</p>
 			</td>
 		</tr>
 	</table>

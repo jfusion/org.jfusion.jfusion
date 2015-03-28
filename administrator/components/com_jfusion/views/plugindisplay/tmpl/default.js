@@ -2,28 +2,33 @@ if (typeof JFusion === 'undefined') {
     var JFusion = {};
 }
 
-JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
-    //change the image
-    new Request.JSON({
-        url: JFusion.url,
-        noCache: true,
-        onRequest: function () {
-            var element = $(jname + '_' + fieldname).getFirst().getFirst();
-            element.set('src', 'components/com_jfusion/images/spinner.gif');
-        },
-        onSuccess: function (JSONobject) {
-            JFusion.onSuccess(JSONobject);
+JFusion.toggleSetting = function (toggle, name) {
+    var a = jQuery('#' + name + '_' + toggle).find('a');
 
-            JFusion.updateList(JSONobject);
-        },
-        onError: function (JSONobject) {
-            JFusion.OnError(JSONobject);
-        }
-    }).get({'option': 'com_jfusion',
-            'task': 'changesettings',
-            'jname': jname,
-            'field_name': fieldname,
-            'field_value': fieldvalue});
+    var div = jQuery(a).find('div');
+
+    if (!div.hasClass('spinner')) {
+        var oldtitle = a.attr('title');
+        var oldclass = div.attr('class');
+
+        div.removeClass('disabled enabled');
+        div.addClass('spinner');
+
+        jQuery.post( JFusion.url + "?option=com_jfusion&task=togglesetting", { "toggle": toggle, "name": name }, null, 'json').done(function(data) {
+            if (data && data.success) {
+                a.attr('title', data.data.title);
+                div.addClass(data.data.class);
+            } else {
+                a.attr('title', oldtitle);
+                div.attr('class', oldclass);
+            }
+        }).fail(function() {
+            a.attr('title', oldtitle);
+            div.attr('class', oldclass);
+        }).always(function() {
+            div.removeClass('spinner');
+        });
+    }
 };
 
 JFusion.copyPlugin = function (jname) {

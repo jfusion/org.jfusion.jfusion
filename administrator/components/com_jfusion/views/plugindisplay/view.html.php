@@ -15,6 +15,9 @@
  */
 
 // no direct access
+use JFusion\Factory;
+use JFusion\Framework;
+use Joomla\Language\Text;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') or die('Restricted access');
@@ -93,226 +96,212 @@ class jfusionViewplugindisplay extends JViewLegacy {
         }
     }
 
-    /**
-     * @param $jname
-     * @param null|stdClass $record
-     *
-     * @return null|\stdClass
-     */
-    function initRecord($jname, $record = null) {
-	    $db = JFactory::getDBO();
-	    if (!$record) {
-		    $query = $db->getQuery(true)
-			    ->select('*')
-			    ->from('#__jfusion')
-			    ->where('name = ' . $db->quote($jname));
+	/**
+	 * @param $jname
+	 * @param null|stdClass $record
+	 *
+	 * @return null|\stdClass
+	 */
+	private function initRecord($jname, $record = null) {
+		$db = Factory::getDBO();
+		if (!$record) {
+			$query = $db->getQuery(true)
+				->select('*')
+				->from('#__jfusion')
+				->where('name = ' . $db->quote($jname));
 
-		    $db->setQuery($query);
-		    $record = $db->loadObject();
-	    }
-	    try {
-		    $JFusionPlugin = \JFusion\Factory::getAdmin($record->name);
-		    $JFusionParam = \JFusion\Factory::getParams($record->name);
+			$db->setQuery($query);
+			$record = $db->loadObject();
+		}
+		try {
+			$Admin = Factory::getAdmin($record->name);
+			$Param = Factory::getParams($record->name);
 
-		    if($record->status == 1) {
-			    //added check for database configuration to prevent error after moving sites
+			if($record->status >= 1) {
+				//added check for database configuration to prevent error after moving sites
 
-			    $status = 0;
-			    try {
-				    if ($JFusionPlugin->checkConfig()) {
-					    $status = 1;
-				    }
-			    } catch (Exception $e) {}
+				$status = 0;
+				try {
+					if ($Admin->checkConfig()) {
+						if ($record->status == 2) {
+							$status = 2;
+						} else {
+							$status = 1;
+						}
+					}
+				} catch (Exception $e) {}
 
-			    //do a check to see if the status field is correct
-			    if ($status != $record->status) {
-				    //update the status and deactivate the plugin
-				    $JFusionPlugin->updateStatus($status);
-			    }
-		    }
+				//do a check to see if the status field is correct
+				if ($status != $record->status) {
+					//update the status and deactivate the plugin
+					$Admin->updateStatus($status);
+					$record->status = $status;
+				}
+			}
 
-		    //set copy options
-		    if (!$JFusionPlugin->multiInstance() || $record->original_name) {
-			    //cannot copy joomla_int
-			    $record->copyimage = 'components/com_jfusion/images/copy_icon_dim.png';
-			    $record->copyscript =  'javascript:void(0)';
-		    } else {
-			    $record->copyimage = 'components/com_jfusion/images/copy_icon.png';
-			    $record->copyscript =  'javascript: JFusion.copyPlugin(\'' . $record->name . '\');';
-		    }
+			//set copy options
+			if (!$Admin->multiInstance() || $record->original_name) {
+				//cannot copy joomla_int
+				$record->copyclass = 'copy_icon dim';
+				$record->copyscript =  'javascript:void(0)';
+			} else {
+				$record->copyclass = 'copy_icon';
+				$record->copyscript =  'javascript: JFusion.copyPlugin(\'' . $record->name . '\');';
+			}
 
-		    //set uninstall options
-		    $query = $db->getQuery(true)
-			    ->select('count(*)')
-			    ->from('#__jfusion')
-			    ->where('original_name = ' . $db->quote($record->name));
+			//set uninstall options
+			$query = $db->getQuery(true)
+				->select('count(*)')
+				->from('#__jfusion')
+				->where('original_name = ' . $db->quote($record->name));
 
-		    $db->setQuery($query);
-		    $copys = $db->loadResult();
-		    if ($record->name == 'joomla_int' || $copys) {
-			    //cannot uninstall joomla_int
-			    $record->deleteimage = 'components/com_jfusion/images/delete_icon_dim.png';
-			    $record->deletescript =  'javascript:void(0)';
-		    } else {
-			    $record->deleteimage = 'components/com_jfusion/images/delete_icon.png';
-			    $record->deletescript =  'javascript: JFusion.deletePlugin(\'' . $record->name . '\');';
-		    }
+			$db->setQuery($query);
+			$copys = $db->loadResult();
+			if ($copys) {
+				//cannot uninstall joomla_int
+				$record->deleteclass = 'delete_icon dim';
+				$record->deletescript =  'javascript:void(0)';
+			} else {
+				$record->deleteclass = 'delete_icon';
+				$record->deletescript =  'javascript: JFusion.deletePlugin(\'' . $record->name . '\');';
+			}
 
-		    //set wizard options
-		    $record->wizard = JFusionFunction::hasFeature($record->name, 'wizard');
-		    if($record->wizard) {
-			    $record->wizardimage = 'components/com_jfusion/images/wizard_icon.png';
-			    $record->wizardscript =  'index.php?option=com_jfusion&task=wizard&jname=' . $record->name;
-		    } else {
-			    $record->wizardimage = 'components/com_jfusion/images/wizard_icon_dim.png';
-			    $record->wizardscript =  'javascript:void(0)';
-		    }
+			//set wizard options
+			$record->wizard = Framework::hasFeature($record->name, 'wizard');
+			if($record->wizard) {
+				$record->wizardclass = 'wizard_icon';
+				$record->wizardscript =  'index.php?option=com_jfusion&task=wizard&jname=' . $record->name;
+			} else {
+				$record->wizardclass = 'wizard_icon dim';
+				$record->wizardscript = 'javascript:void(0)';
+			}
 
-		    //set master options
-		    if($record->status != 1){
-			    $record->masterimage = 'components/com_jfusion/images/cross_dim.png';
-			    $record->masterscript =  'javascript:void(0)';
-			    $record->masteralt =  'unavailable';
-		    } elseif ($record->master == 1) {
-			    $record->masterimage = 'components/com_jfusion/images/tick.png';
-			    $record->masterscript =  'javascript: JFusion.changeSetting(\'master\',\'0\',\'' . $record->name . '\');';
-			    $record->masteralt =  'enabled';
-		    } else {
-			    $record->masterimage = 'components/com_jfusion/images/cross.png';
-			    $record->masterscript =  'javascript: JFusion.changeSetting(\'master\',\'1\',\'' . $record->name . '\');';
-			    $record->masteralt =  'disabled';
-		    }
+			//set check encryption options
+			if($record->status < 1) {
+				$record->encryptclass = 'disabled dim';
+				$record->encryptscript = 'javascript:void(0)';
+				$record->encryptmessage = Text::_('UNAVAILABLE');
+			} elseif ($record->check_encryption == 1) {
+				$record->encryptclass = 'enabled';
+				$record->encryptscript = 'javascript: JFusion.toggleSetting(\'check_encryption\', \'' . $record->name . '\');';
+				$record->encryptmessage = Text::_('ENABLED');
+			} else {
+				$record->encryptclass = 'disabled';
+				$record->encryptscript = 'javascript: JFusion.toggleSetting(\'check_encryption\', \'' . $record->name . '\');';
+				$record->encryptmessage = Text::_('DISABLED');
+			}
 
-		    //set slave options
-		    if($record->status != 1){
-			    $record->slaveimage = 'components/com_jfusion/images/cross_dim.png';
-			    $record->slavescript =  'javascript:void(0)';
-			    $record->slavealt =  'unavailable';
-		    } elseif ($record->slave == 1) {
-			    $record->slaveimage = 'components/com_jfusion/images/tick.png';
-			    $record->slavescript =  'javascript: JFusion.changeSetting(\'slave\',\'0\',\'' . $record->name . '\');';
-			    $record->slavealt =  'enabled';
-		    } else {
-			    $record->slaveimage = 'components/com_jfusion/images/cross.png';
-			    $record->slavescript =  'javascript: JFusion.changeSetting(\'slave\',\'1\',\'' . $record->name . '\');';
-			    $record->slavealt =  'disabled';
-		    }
+			//set dual login options
+			if($record->status < 1) {
+				$record->dualclass = 'disabled dim';
+				$record->dualscript = 'javascript:void(0)';
+				$record->dualmessage = Text::_('UNAVAILABLE');
+			} elseif ($record->dual_login == 1) {
+				$record->dualclass = 'enabled';
+				$record->dualscript = 'javascript: JFusion.toggleSetting(\'dual_login\', \'' . $record->name . '\');';
+				$record->dualmessage = Text::_('ENABLED');
+			} else {
+				$record->dualclass = 'disabled';
+				$record->dualscript = 'javascript: JFusion.toggleSetting(\'dual_login\', \'' . $record->name . '\');';
+				$record->dualmessage = Text::_('DISABLED');
+			}
 
-		    //set check encryption options
-		    if($record->status != 1) {
-			    $record->encryptimage = 'components/com_jfusion/images/cross_dim.png';
-			    $record->encryptscript =  'javascript:void(0)';
-			    $record->encryptalt =  'unavailable';
-		    } elseif ($record->check_encryption == 1) {
-			    $record->encryptimage = 'components/com_jfusion/images/tick.png';
-			    $record->encryptscript =  'javascript: JFusion.changeSetting(\'check_encryption\',\'0\',\'' . $record->name . '\');';
-			    $record->encryptalt =  'enabled';
-		    } else {
-			    $record->encryptimage = 'components/com_jfusion/images/cross.png';
-			    $record->encryptscript =  'javascript: JFusion.changeSetting(\'check_encryption\',\'1\',\'' . $record->name . '\');';
-			    $record->encryptalt =  'disabled';
-		    }
+			//display status
+			if ($record->status < 1) {
+				$record->statusclass = 'disabled dim';
+				if ($record->wizard) {
+					$record->statusscript =  'index.php?option=com_jfusion&task=wizard&jname=' . $record->name;
+				} else {
+					$record->statusscript =  'index.php?option=com_jfusion&task=plugineditor&jname=' . $record->name;
+				}
+				$record->statusmessage = Text::_('NO_CONFIG');
+			} else if ($record->status == 1) {
+				$record->statusclass = 'disabled';
+				$record->statusscript = 'javascript: JFusion.toggleSetting(\'status\', \'' . $record->name . '\');';
+				$record->statusmessage = Text::_('DISABLED');
+			} else {
+				$record->statusclass = 'enabled';
+				$record->statusscript = 'javascript: JFusion.toggleSetting(\'status\', \'' . $record->name . '\');';
+				$record->statusmessage = Text::_('ENABLED');
+			}
 
-		    //set dual login options
-		    if($record->status != 1){
-			    $record->dualimage = 'components/com_jfusion/images/cross_dim.png';
-			    $record->dualscript =  'javascript:void(0)';
-			    $record->dualalt =  'unavailable';
-		    } elseif ($record->dual_login == 1) {
-			    $record->dualimage = 'components/com_jfusion/images/tick.png';
-			    $record->dualscript =  'javascript: JFusion.changeSetting(\'dual_login\',\'0\',\'' . $record->name . '\');';
-			    $record->dualalt =  'enabled';
-		    } else {
-			    $record->dualimage = 'components/com_jfusion/images/cross.png';
-			    $record->dualscript =  'javascript: JFusion.changeSetting(\'dual_login\',\'1\',\'' . $record->name . '\');';
-			    $record->dualalt =  'disabled';
-		    }
+			//see if a plugin has copies
+			$query = $db->getQuery(true)
+				->select('*')
+				->from('#__jfusion')
+				->where('original_name = ' . $db->quote($record->name));
 
-		    //display status
-		    if ($record->status != 1) {
-			    $record->statusimage = 'components/com_jfusion/images/cross.png';
-			    $record->statusalt =  JText::_('NO_CONFIG');
-		    } else {
-			    $record->statusimage = 'components/com_jfusion/images/tick.png';
-			    $record->statusalt =  JText::_('GOOD_CONFIG');
-		    }
+			$db->setQuery($query);
+			$record->copies = $db->loadObjectList('name');
 
-		    //see if a plugin has copies
-		    $query = $db->getQuery(true)
-			    ->select('*')
-			    ->from('#__jfusion')
-			    ->where('original_name = ' . $db->quote($record->name));
+			//get the description
+			$record->description = $Param->get('description');
+			if(empty($record->description)) {
+				//get the default description
+				$plugin_xml = Framework::getPluginPath($record->name) . DIRECTORY_SEPARATOR . 'jfusion.xml';
+				if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
+					$xml = Framework::getXml($plugin_xml);
+					$description = $xml->description;
+					if(!empty($description)) {
+						$record->description = (string)$description;
+					}
+				}
+			}
 
-		    $db->setQuery($query);
-		    $record->copies = $db->loadObjectList('name');
+			if ($record->status < 1) {
+				$record->usercount = '';
+				$record->usermessage = '';
+			} else {
+				$record->usercount = $Admin->getUserCount();
+				$record->usermessage = Text::_('USERS');
+			}
 
-		    //get the description
-		    $record->description = $JFusionParam->get('description');
-		    if(empty($record->description)){
-			    //get the default description
-			    $plugin_xml = JFUSION_PLUGIN_PATH . '/' . $record->name . '/jfusion.xml';
-			    if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
-				    $xml = \JFusion\Framework::getXml($plugin_xml);
-				    $description = $xml->description;
-				    if(!empty($description)) {
-					    $record->description = (string)$description;
-				    }
-			    }
-		    }
+			//get the registration status
+			if ($record->status < 1) {
+				$record->registrationclass = '';
+				$record->registrationmessage = '';
+			} else {
+				try {
+					$record->registration = $Admin->allowRegistration();
+				} catch (Exception $e) {
+					Framework::raise(LogLevel::ERROR, $e, $Admin->getJname());
+					$record->registration = false;
+				}
 
-		    if ($record->status != 1) {
-			    $record->usercount = '';
-		    } else {
-			    $record->usercount = $JFusionPlugin->getUserCount();
-		    }
+				if (!empty($record->registration)) {
+					$record->registrationclass = 'enabled';
+					$record->registrationmessage = Text::_('ENABLED');
+				} else {
+					$record->registrationclass = 'disabled';
+					$record->registrationmessage = Text::_('DISABLED');
+				}
+			}
 
-		    //get the registration status
-		    if ($record->status != 1) {
-			    $record->registrationimage = 'components/com_jfusion/images/clear.png';
-			    $record->registrationalt =  '';
-		    } else {
-			    try {
-				    $record->registration = $JFusionPlugin->allowRegistration();
-			    } catch (Exception $e) {
-				    \JFusion\Framework::raise(LogLevel::ERROR, $e, $JFusionPlugin->getJname());
-				    $record->registration = false;
-			    }
+			if($record->status >= 1) {
+				try {
+					$usergroup = $Admin->getDefaultUsergroup();
+				} catch (Exception $e) {
+					Framework::raise(LogLevel::ERROR, $e, $Admin->getJname());
+					$usergroup = null;
+				}
 
-			    if (!empty($record->registration)) {
-				    $record->registrationimage = 'components/com_jfusion/images/tick.png';
-				    $record->registrationalt =  JText::_('ENABLED');
-			    } else {
-				    $record->registrationimage = 'components/com_jfusion/images/cross.png';
-				    $record->registrationalt =  JText::_('DISABLED');
-			    }
-		    }
-
-		    if($record->status == 1) {
-			    try {
-				    $usergroup = $JFusionPlugin->getDefaultUsergroup();
-			    } catch (Exception $e) {
-				    \JFusion\Framework::raise(LogLevel::ERROR, $e, $JFusionPlugin->getJname());
-				    $usergroup = null;
-			    }
-
-			    if ($usergroup) {
+				if ($usergroup) {
 					if (is_array($usergroup)) {
 						$usergroup = join(', ', $usergroup);
 					}
-
-				    $record->usergrouptext = $usergroup;
-			    } else {
-				    $record->usergrouptext = '<img src="components/com_jfusion/images/cross.png" border="0" alt="' . JText::_('DISABLED') . '" />' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP') ;
-				    \JFusion\Framework::raise(LogLevel::WARNING, JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP'), $record->name);
-			    }
-		    } else {
-			    $record->usergrouptext = '';
-		    }
-	    } catch (Exception $e) {
-		    $record = new stdClass;
-	    }
+					$record->usergrouptext = '<div class="smallicon enabled" title="' . Text::_('ENABLED') . '"></div>' . $usergroup;
+				} else {
+					$record->usergrouptext = '<div class="smallicon disabled" title="' . Text::_('DISABLED') . '"></div>' . Text::_('MISSING') . ' ' . Text::_('DEFAULT_USERGROUP') ;
+					Framework::raise(LogLevel::WARNING, Text::_('MISSING') . ' ' . Text::_('DEFAULT_USERGROUP'), $record->name);
+				}
+			} else {
+				$record->usergrouptext = '';
+			}
+		} catch (Exception $e) {
+			$record = new stdClass;
+		}
 		return  $record;
-    }
+	}
 
 	/**
 	 * @return array
@@ -377,7 +366,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 						$record->status = 1;
 					}
 
-					if ($record->master == '1' || $record->slave == '1') {
+					if ($record->status == 2) {
 						try {
 							$JFusionPlugin->debugConfig();
 						} catch (Exception $e) {
@@ -417,56 +406,154 @@ HTML;
 		return $html;
 	}
 
+
+
     /**
      * @param $record
      * @return string
      */
-    function generateRowHTML($record) {
-	    $wizard = JText::_('WIZARD');
-	    $edit = JText::_('EDIT');
-	    $copy = JText::_('COPY');
-	    $delete = JText::_('DELETE');
-	    $info = JText::_('INFO');
-	    $html =<<<HTML
-    	<td class="dragHandles" id="dragHandles">
-    		<div><img src="components/com_jfusion/images/draggable.png" name="handle"></div>
+	/**
+	 * @param $record
+	 * @return string
+	 */
+	private function generateRowHTML($record) {
+		$wizard = Text::_('WIZARD');
+		$edit = Text::_('EDIT');
+		$copy = Text::_('COPY');
+		$delete = Text::_('DELETE');
+		$info = Text::_('INFO');
+		$close = Text::_('CLOSE');
+
+		$infodata = $this->getInfo($record->name);
+
+		$html =<<<HTML
+    	<td class="dragHandles" style="vertical-align: middle;">
+    		<div class="smallicon"></div>
     	</td>
-        <td>
-        	{$record->name}
+
+        <td style="min-width: 125px;">
+			<div>
+	        	{$record->name}
+	        </div>
+	        <div>
+			    <a href="{$record->wizardscript}" data-toggle="tooltip" data-container="body" data-placement="top" title="{$wizard}"><div class="smallicon {$record->wizardclass}"></div></a>
+				<a href="'index.php?option=com_jfusion&task=plugineditor&jname=' . $record->name" data-toggle="tooltip" data-container="body" data-placement="top" title="{$edit}"><div class="smallicon edit_icon"></div></a>
+		        <a href="{$record->copyscript}" data-toggle="tooltip" data-container="body" data-placement="top" title="{$copy}"><div class="smallicon {$record->copyclass}"></div></a>
+		        <a href="{$record->deletescript}" data-toggle="tooltip" data-container="body" data-placement="top" title="{$delete}"><div class="smallicon {$record->deleteclass}"></div></a>
+				<a data-toggle="modal" data-target="#modal{$record->name}" href="#"><div class="smallicon info_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="{$info}"></div></a>
+			</div>
+        	<div class="overflowbox">
+        		{$record->description}
+			</div>
+			<div class="modal fade" id="modal{$record->name}">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">{$close}</span></button>
+			        <h4 class="modal-title">{$record->name} {$info}</h4>
+			      </div>
+			      <div class="modal-body">
+			    	{$infodata}
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">{$close}</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
         </td>
-		<td>
-		    <a href="{$record->wizardscript}" title="{$wizard}"><img src="{$record->wizardimage}" alt="{$wizard}" /></a>
-			<a href="index.php?option=com_jfusion&task=plugineditor&jname={$record->name}" title="{$edit}"><img src="components/com_jfusion/images/edit.png" alt="{$edit}" /></a>
-	        <a href="{$record->copyscript}" title="{$copy}"><img src="{$record->copyimage}" alt="{$copy}" /></a>
-	        <a href="{$record->deletescript}" title="{$delete}"><img src="{$record->deleteimage}" alt="{$delete}" /></a>
-			<a class="modal" title="{$info}"  href="index.php?option=com_jfusion&task=plugininfo&tmpl=component&jname={$record->name}" rel="{handler: 'iframe', size: {x: 375, y: 375}}"><img src="components/com_jfusion/images/info.png" alt="{$info}" /></a>
+		<td class="configicon" id="{$record->name}_status">
+			<a href="{$record->statusscript}" title="{$record->statusmessage}"><div class="smallicon {$record->statusclass}"></div></a>
 		</td>
-        <td>
-        	{$record->description}
+        <td class="configicon" id="{$record->name}_check_encryption">
+        	<a href="{$record->encryptscript}" title="{$record->encryptmessage}"><div class="smallicon {$record->encryptclass}"></div></a>
         </td>
-        <td id="{$record->name}_master">
-        	<a href="{$record->masterscript}"><img src="{$record->masterimage}" border="0" alt="{$record->masteralt}" /></a>
-		</td>
-        <td id="{$record->name}_slave">
-        	<a href="{$record->slavescript}"><img src="{$record->slaveimage}" border="0" alt="{$record->slavealt}" /></a>
+        <td class="configicon" id="{$record->name}_dual_login">
+        	<a href="{$record->dualscript}" title="{$record->dualmessage}"><div class="smallicon {$record->dualclass}"></div></a>
         </td>
-        <td id="{$record->name}_check_encryption">
-        	<a href="{$record->encryptscript}"><img src="{$record->encryptimage}" border="0" alt="{$record->encryptalt}" /></a>
+        <td class="configicon">
+        	<div class="smallicon {$record->registrationclass}" title="{$record->registrationmessage}"></div>
         </td>
-        <td id="{$record->name}_dual_login">
-        	<a href="{$record->dualscript}"><img src="{$record->dualimage}" border="0" alt="{$record->dualalt}" /></a>
-        </td>
-		<td>
-			<img src="{$record->statusimage}" border="0" alt="{$record->statusalt}" /><a href="index.php?option=com_jfusion&task=plugineditor&jname={$record->name}">{$record->statusalt}</a>
-		</td>
-       	<td>
-       		{$record->usercount}
+       	<td class="configicon">
+       		<div title="{$record->usermessage}">{$record->usercount}</div>
        	</td>
-        <td>
-        	<img src="{$record->registrationimage}" border="0" alt="{$record->registrationalt}" />{$record->registrationalt}
-        </td>
-		<td>{$record->usergrouptext}</td>
+		<td>
+			{$record->usergrouptext}
+		</td>
 HTML;
-	    return $html;
-    }
+		return $html;
+	}
+
+	/**
+	 * @param $name
+	 *
+	 * @return string
+	 */
+	private function getInfo($name) {
+		$admin = Factory::getAdmin($name);
+
+		$features = array();
+
+		$features['ADMIN']['FEATURE_WIZARD'] = $this->outputFeature(Framework::hasFeature($name, 'wizard'));
+		$features['ADMIN']['FEATURE_REQUIRE_FILE_ACCESS'] = $this->outputFeature($admin->requireFileAccess());
+		$features['ADMIN']['FEATURE_MULTI_USERGROUP'] = $this->outputFeature($admin->isMultiGroup());
+		$features['ADMIN']['FEATURE_MULTI_INSTANCE'] = $this->outputFeature($admin->multiInstance());
+
+		$features['USER']['FEATURE_DUAL_LOGIN'] = $this->outputFeature(Framework::hasFeature($name, 'duallogin'));
+		$features['USER']['FEATURE_DUAL_LOGOUT'] = $this->outputFeature(Framework::hasFeature($name, 'duallogout'));
+		$features['USER']['FEATURE_UPDATE_PASSWORD'] = $this->outputFeature(Framework::hasFeature($name, 'updatepassword'));
+		$features['USER']['FEATURE_UPDATE_USERNAME'] = $this->outputFeature(Framework::hasFeature($name, 'updateusername'));
+		$features['USER']['FEATURE_UPDATE_EMAIL'] = $this->outputFeature(Framework::hasFeature($name, 'updateemail'));
+		$features['USER']['FEATURE_UPDATE_USERGROUP'] = $this->outputFeature(Framework::hasFeature($name, 'updateusergroup'));
+		$features['USER']['FEATURE_UPDATE_LANGUAGE'] = $this->outputFeature(Framework::hasFeature($name, 'updateuserlanguage'));
+		$features['USER']['FEATURE_SESSION_SYNC'] = $this->outputFeature(Framework::hasFeature($name, 'syncsessions'));
+		$features['USER']['FEATURE_BLOCK_USER'] = $this->outputFeature(Framework::hasFeature($name, 'blockuser'));
+		$features['USER']['FEATURE_ACTIVATE_USER'] = $this->outputFeature(Framework::hasFeature($name, 'activateuser'));
+		$features['USER']['FEATURE_DELETE_USER'] = $this->outputFeature(Framework::hasFeature($name, 'deleteuser'));
+
+		$html = '<table>';
+
+		foreach ($features as $cname => $category) {
+			foreach ($category as $name => $value) {
+				$name = Text::_($name);
+				$html .=<<<HTML
+				<tr>
+					<td width="160px">
+						{$name}
+					</td>
+					<td>
+						{$value}
+					</td>
+				</tr>
+HTML;
+			}
+		}
+
+		$html .= '</table>';
+		return $html;
+	}
+
+	/**
+	 * @param $feature
+	 * @return string
+	 */
+	private function outputFeature($feature) {
+		if ($feature === true) {
+			$feature = 'JYES';
+		} else if ($feature === false) {
+			$feature = 'JNO';
+		}
+		switch ($feature) {
+			case 'JNO':
+				$class = 'disabled';
+				break;
+			case 'JYES':
+				$class = 'enabled';
+				break;
+			default:
+				$class = 'documentation_icon';
+				break;
+		}
+		return '<div class="smallicon ' . $class . '"></div> ' . Text::_($feature);
+	}
 }
