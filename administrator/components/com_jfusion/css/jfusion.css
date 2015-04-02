@@ -395,3 +395,493 @@ Joomla stuff
 .icon-48-importexport {
     background-image: url(../images/importexport.png);
 }
+
+/**
+* @package JFusion
+* @subpackage Views
+* @author JFusion development team
+* @copyright Copyright (C) 2008 JFusion. All rights reserved.
+* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+*/
+
+/** cpanel **/
+.jfusion #cpanel div.icon {
+    text-align: center;
+    margin-right: 5px;
+    float: left;
+    margin-bottom: 5px;
+}
+
+.jfusion #cpanel div.icon a {
+    display: block;
+    float: left;
+    border: 1px solid #f0f0f0;
+    height: 120px;
+    width: 120px;
+    color: #666;
+    vertical-align: middle;
+    text-decoration: none;
+}
+
+.jfusion #cpanel div.icon a:hover {
+    border: 1px solid #eee;
+    border-right-color: #ccc;
+    border-bottom-color: #ccc;
+    background-color: #CCE6FF;
+    color: #0B55C4;
+}
+
+.jfusion #cpanel img  {
+    padding: 10px 0;
+    margin: 0 auto;
+}
+.jfusion #cpanel span {
+    display: block;
+    text-align: center;
+}
+
+/** donate button **/
+#jfusionDonateButton {
+    position: relative;
+    width: 160px;
+    height: 30px;
+    margin-top: 0;
+    margin-left: 0;
+    z-index: 2;
+}
+
+a.jfusionDonateButton {
+    vertical-align:middle;
+    display: inline-block;
+    width: 160px;
+    height: 30px;
+    outline: none;
+    background: url(../images/donate.png) no-repeat 0 0;
+    z-index: 2;
+}
+
+a.jfusionDonateButton:hover {
+    background-position: 0 -30px;
+    z-index: 2;
+}
+
+/** sync **/
+.jfusion div.ajax_bar {
+    background-color: #e4ecf2;
+    border: 1px solid #d6d6d6;
+    border-left-color: #e4e4e4;
+    border-top-color: #e4e4e4;
+    margin-top: 0;
+    padding: 3px 5px;
+    vertical-align: middle;
+}
+
+.jfusion div.ajax_bar label {
+    display: inline;
+}
+
+
+.jfusion #log_res {
+    min-width: 950px;
+}
+
+/** donate button **/
+.jfusion #navButton {
+    position: relative;
+    width: 160px;
+    height: 30px;
+    margin-top: 0;
+    margin-left: 0;
+    z-index: 2;
+}
+
+.jfusion a.navButton {
+    vertical-align: middle;
+    display: inline-block;
+    width: 160px;
+    height: 30px;
+    outline: none;
+    background: url(../images/donate.png) no-repeat 0 0;
+    z-index: 2;
+}
+
+.jfusion a.navButton:hover {
+    background-position: 0 -30px;
+    z-index: 2;
+}
+
+.jfusion table.jfusionform {
+    background-color: #fff;
+    border: solid 1px #d5d5d5;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 15px;
+}
+
+.jfusion table.jfusionform th {
+    font-size: 1.091em;
+    padding: 6px 2px 4px 4px;
+    text-align: left;
+    height: 25px;
+    color: #000;
+    background-repeat: repeat;
+}
+
+.jfusion table.jfusionform td {
+    padding: 5px;
+    text-align: left;
+    font-size: 1.091em;
+}
+
+.jfusion table.jfusionlist {
+    width: 100%;
+    border-spacing: 1px;
+    background-color: #f3f3f3;
+    color: #666;
+}
+
+.jfusion table.jfusionlist td,
+.jfusion table.jfusionlist th {
+    padding: 4px;
+}
+
+.jfusion table.jfusionlist td {
+    padding-left: 8px;
+}
+
+.jfusion table.jfusionlist thead th {
+    text-align: center;
+    background: #f7f7f7;
+    color: #666;
+    border-bottom: 1px solid #CCC;
+    border-left: 1px solid #fff;
+}
+
+.jfusion table.jfusionlist thead th.left {
+    text-align: left;
+}
+
+.jfusion table.jfusionlist thead a:hover {
+    text-decoration: none;
+}
+
+.jfusion table.jfusionlist thead th img {
+    vertical-align: middle;
+    padding-left: 3px;
+}
+
+.jfusion table.jfusionlist tbody th {
+    font-weight: bold;
+}
+
+.jfusion table.jfusionlist tbody tr {
+    background-color: #fff;
+    text-align: left;
+}
+
+.jfusion table.jfusionlist tbody tr.row0:hover td,
+.jfusion table.jfusionlist tbody tr.row1:hover td	{
+    background-color: #e8f6fe;
+}
+
+.jfusion table.jfusionlist tbody tr td {
+    background: #F0F1DA;
+    border: 1px solid #fff;
+}
+
+.jfusion table.jfusionlist tbody tr.row1 td {
+    background: #f0f0f0;
+}
+
+.jfusion table.jfusionlist tbody tr.defaultusergroup td {
+    background: #8BCF6E;
+}
+
+.jfusion table.jfusionlist tfoot tr {
+    text-align: center;
+    color: #333;
+}
+
+.jfusion table.jfusionlist tfoot td,
+.jfusion table.jfusionlist tfoot th {
+    background-color: #f7f7f7;
+    border-top: 1px solid #999;
+    text-align: center;
+}
+
+.jfusion table.jfusionlist td.order {
+    text-align: center;
+    white-space: nowrap;
+    width: 200px;
+}
+
+.jfusion table.jfusionlist td.order span {
+    float: left;
+    width: 20px;
+    text-align: center;
+    background-repeat: no-repeat;
+    height: 13px;
+}
+
+.jfusion table.jfusionlist .pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 0 auto;
+}
+
+/* Tree indentation & nesting - Up to 10 levels deep so don't go crazy :) */
+.jfusion table.jfusionlist td.indent-4 {
+    padding-left: 4px;
+}
+.jfusion table.jfusionlist td.indent-19 {
+    padding-left: 19px;
+}
+.jfusion table.jfusionlist td.indent-34 {
+    padding-left: 34px;
+}
+.jfusion table.jfusionlist td.indent-49 {
+    padding-left: 49px;
+}
+.jfusion table.jfusionlist td.indent-64 {
+    padding-left: 64px;
+}
+.jfusion table.jfusionlist td.indent-79 {
+    padding-left: 79px;
+}
+.jfusion table.jfusionlist td.indent-94 {
+    padding-left: 94px;
+}
+.jfusion table.jfusionlist td.indent-109 {
+    padding-left: 109px;
+}
+.jfusion table.jfusionlist td.indent-124 {
+    padding-left: 124px;
+}
+.jfusion table.jfusionlist td.indent-139 {
+    padding-left: 139px;
+}
+
+.jfusion table.jfusionlist tr td.btns a {
+    text-decoration: underline;
+}
+
+.jfusion input {
+    width: auto;
+}
+
+.jfusion .settings td {
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+/**
+ * Jfusion tabs
+ */
+.jfusion .tabs dt {
+    float: left;
+}
+
+.jfusion dd[class="tabs"] {
+    clear:both;
+    border: 1px solid #b0d0e9;
+    padding: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+}
+
+.jfusion .tabs dt {
+    float: left;
+    background: #e8f0f5;
+    border: 1px solid #e8f0f5;
+    border-bottom: 0;
+    padding: 0 1em;
+    position: relative;
+    left: 35px;
+    margin-right: 1px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+}
+.jfusion .tabs dt.open {
+    border-color: #b0d0e9;
+    background: #fff;
+    border-bottom: 1px solid #fff;
+    margin: 0 0 -1px 0;
+}
+
+.jfusion .dumparea {
+    width: 100%;
+}
+
+.jfusion .loginchecker {
+    width: 800px;
+}
+
+.jfusion .login div {
+    display: table-cell;
+}
+
+.jfusion .success {
+    height: 50px;
+    background: #d9f9e2 url(../images/check_good_small.png) no-repeat left center;
+    padding-left: 50px;
+}
+
+.jfusion .error {
+    height: 50px;
+    background: #f9ded9 url(../images/check_bad_small.png) no-repeat left center;
+    padding-left: 50px;
+}
+
+/*
+Joomla stuff
+*/
+.icon-32-import-icon {
+    background-image: url(../images/import-icon.png);
+}
+
+.icon-32-export-icon {
+    background-image: url(../images/export-icon.png);
+}
+
+.icon-32-importexport-icon {
+    background-image: url(../images/importexport-icon.png);
+}
+
+.icon-48-configdump {
+    background-image: url(../images/configdump.png);
+}
+
+.icon-48-languages {
+    background-image: url(../images/language_icon.png);
+}
+
+.icon-48-login_checker {
+    background-image: url(../images/login_checker.png);
+}
+
+.icon-48-jfusion {
+    background-image: url(../images/jfusion.png);
+}
+
+.icon-48-synchistory {
+    background-image: url(../images/synchistory.png);
+}
+
+.icon-48-usersync {
+    background-image: url(../images/usersync.png);
+}
+
+.icon-48-controlpanel {
+    background-image: url(../images/controlpanel.png);
+}
+
+.icon-48-versioncheck {
+    background-image: url(../images/versioncheck.png);
+}
+
+.icon-48-importexport-icon {
+    background-image: url(../images/importexport-icon.png);
+}
+
+.icon-48-wizard {
+    background-image: url(../images/wizard.png);
+}
+
+.icon-48-importexport {
+    background-image: url(../images/importexport.png);
+}
+
+
+
+
+
+
+
+
+.ui-sortable-handle div {
+    height: 16px;
+    width: 16px;
+    background: url('../images/16x16/draggable.png') no-repeat;
+}
+
+.jfusion .smallicon {
+    height: 16px;
+    width: 16px;
+    display: inline-block;
+}
+
+.jfusion .remove {
+    background: url('../images/16x16/remove.png') no-repeat;
+}
+
+.jfusion .dim {
+    /*
+        -webkit-filter: blur(1px);
+        -moz-filter: blur(1px);
+    */
+    opacity: 0.5;
+    -webkit-filter: grayscale(100%);
+}
+
+.jfusion .disabled, .jfusion .error {
+    background: url('../images/16x16/nope.png') no-repeat;
+}
+
+.jfusion .updated {
+    background: url('../images/16x16/in.png') no-repeat;
+}
+
+.jfusion .enabled, .jfusion .unchanged {
+    background: url('../images/16x16/tick.png') no-repeat;
+}
+
+.jfusion .spinner {
+    background: url('../images/spinner.gif') no-repeat;
+}
+
+.jfusion .delete_icon {
+    background: url('../images/16x16/remove.png') no-repeat;
+}
+
+.jfusion .copy_icon {
+    background: url('../images/16x16/windows.png') no-repeat;
+}
+
+.jfusion .wizard_icon {
+    background: url('../images/16x16/play.png') no-repeat;
+}
+
+.jfusion .edit_icon {
+    background: url('../images/16x16/compose-4.png') no-repeat;
+}
+
+.jfusion .info_icon {
+    background: url('../images/16x16/book.png') no-repeat;
+}
+
+.jfusion .documentation_icon {
+    background: url('../images/16x16/book-lines.png') no-repeat;
+}
+
+.jfusion .encryption_icon {
+    background: url('../images/16x16/locked.png') no-repeat;
+}
+
+.jfusion .registration_icon {
+    background: url('../images/16x16/user-2-add.png') no-repeat;
+}
+
+.jfusion .users_icon {
+    background: url('../images/16x16/users.png') no-repeat;
+}
+
+.jfusion .status_icon {
+    background: url('../images/16x16/power.png') no-repeat;
+}
+
+.jfusion .login_icon {
+    background: url('../images/16x16/link.png') no-repeat;
+}

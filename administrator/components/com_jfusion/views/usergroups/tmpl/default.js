@@ -2,19 +2,49 @@ if (typeof JFusion === 'undefined') {
     var JFusion = {};
 }
 
+if (typeof JFusion.renderPlugin === 'undefined') {
+    JFusion.renderPlugin = [];
+}
+if (typeof JFusion.usergroups === 'undefined') {
+    JFusion.usergroups = [];
+}
+if (typeof JFusion.pairs === 'undefined') {
+    JFusion.pairs = [];
+}
+if (typeof JFusion.plugins === 'undefined') {
+    JFusion.plugins = [];
+}
+
 JFusion.createRows = function() {
-    if (JFusion.pairs && JFusion.pairs.joomla_int) {
-        Array.each(JFusion.pairs.joomla_int, function () {
-            JFusion.createRow(false);
+    (function( $ ) {
+        if (JFusion.pairs && $.isEmptyObject(JFusion.pairs) === false) {
+            var length = 0;
+            var name = null;
+
+            $.each(JFusion.pairs, function( key, pair ) {
+                if (pair.length > length) {
+                    length = pair.length;
+                    name = key;
+                }
+            });
+
+            if (length > 0 && name) {
+                $.each(JFusion.pairs[name], function() {
+                    JFusion.createRow(false);
+                });
+            } else {
+                JFusion.createRow(true);
+            }
+        } else {
+            JFusion.createRow(true);
+        }
+
+        JFusion.initSortables();
+        $('select').chosen({
+            disable_search_threshold : 10,
+            allow_single_deselect : true
         });
-    } else {
-        JFusion.createRow(true);
-    }
-    JFusion.initSortables();
-    jQuery('select').chosen({
-        disable_search_threshold : 10,
-        allow_single_deselect : true
-    });
+    })(jQuery);
 };
 
 JFusion.createDragHandle = function(index) {
@@ -58,45 +88,48 @@ JFusion.createRemove = function(index) {
 };
 
 JFusion.createRow = function(newrow) {
-    var sort_table = $('sort_table');
+    (function( $ ) {
+        var sort_table = $('#sort_table');
 
-    var index = sort_table.getChildren().length;
+        var index = $( sort_table ).children().length;
 
-    var classes = 'row' + (index % 2);
-    if (!index) {
-        classes += ' defaultusergroup';
-    }
+        var tr = $('<tr>');
+        tr.attr( 'id', 'usergroup' + index);
 
-    var tr = new Element('tr', { 'id': 'usergroup'+index,
-        'class': classes});
-    tr.appendChild(JFusion.createDragHandle(index));
+        tr.append(JFusion.createDragHandle(index));
 
-    Array.each(JFusion.plugins, function (plugin) {
-        tr.appendChild(JFusion.render(index, plugin, newrow));
-    });
+        $.each(JFusion.plugins, function( key, plugin ) {
+            tr.append(JFusion.render(index, plugin, newrow));
+        });
 
-    tr.appendChild(JFusion.createRemove(index));
+        tr.append(JFusion.createRemove(index));
 
-    sort_table.appendChild(tr);
+        sort_table.append(tr);
+    })(jQuery);
 };
 
 JFusion.render = function(index, plugin, newrow) {
-    var td = new Element('td');
+    return (function( $ ) {
+        var td = $('<td>');
 
-    var div = new Element('div', {'id': plugin.name});
+        var div = $('<div>');
+        div.attr('id', plugin.name);
 
-    var update = $('updateusergroups_'+plugin.name);
+        var update = $('#updateusergroups_' + plugin.name);
 
-    if (!plugin.master && index !== 0) {
-        if (update && !update.checked) {
-            div.hide();
+        var master = $(plugin).prop('master');
+
+        if (!master && index !== 0) {
+            if (update && !update.prop('checked')) {
+                div.hide();
+            }
         }
-    }
 
-    div.appendChild(JFusion.renderGroup(index, plugin, newrow));
+        div.append(JFusion.renderGroup(index, plugin, newrow));
 
-    td.appendChild(div);
-    return td;
+        td.append(div);
+        return td;
+    })(jQuery);
 };
 
 JFusion.renderGroup = function(index, plugin, newrow) {
@@ -106,7 +139,7 @@ JFusion.renderGroup = function(index, plugin, newrow) {
         if (!newrow && plugin.name in JFusion.pairs && index in JFusion.pairs[plugin.name]) {
             pair = JFusion.pairs[plugin.name][index];
         }
-        element = JFusion.renderPlugin[plugin.name](index, plugin, pair);
+        element = JFusion.renderPlugin[plugin.name](index, plugin, pair, JFusion.usergroups[plugin.name]);
     } else {
         element = new Element('div');
     }
