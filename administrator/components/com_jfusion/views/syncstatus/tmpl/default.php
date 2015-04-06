@@ -75,12 +75,12 @@ if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
 	        ?><tr class="row<?php echo ($row_count % 2); ?>"><?php
 	        $row_count++;
 	        ?>
-	        <td><?php echo $slave['jname']; ?></td>
-	        <td><?php echo $slave['total']; ?></td>
-	        <td><?php echo $slave['unchanged']; ?></td>
-	        <td><?php echo $slave['updated']; ?></td>
-	        <td><?php echo $slave['created']; ?></td>
-	        <td><?php echo $slave['error']; ?></td></tr>
+		    <td><?php echo $slave->jname; ?></td>
+		    <td><?php echo $slave->total; ?></td>
+		    <td><?php echo $slave->unchanged; ?></td>
+		    <td><?php echo $slave->updated; ?></td>
+		    <td><?php echo $slave->created; ?></td>
+		    <td><?php echo $slave->error; ?></td></tr>
 
 	        <?php
 	    } ?>

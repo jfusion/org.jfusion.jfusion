@@ -107,33 +107,27 @@ class jfusionViewconfigdump extends JViewLegacy implements DebuggerInterface {
 		$this->checkvalue['jfusion_plugin']['params']['database_prefix'] = 'is_string';
 		$this->checkvalue['jfusion_plugin']['usergroups'] = 'is_validusergrouparray';
 
-		$query = $db->getQuery(true)
-			->select('id, name, params, dual_login, original_name, master, slave')
-			->from('#__jfusion')
-			->where('status = 1');
-
-		$db->setQuery($query);
-		$rows = $db->loadObjectList();
+		$plugins = \JFusion\Factory::getPlugins();
 
 		$update = Groups::getUpdate();
 		$usergroups = Groups::get();
 		$master = \JFusion\Framework::getMaster();
-		if(count($rows) ) {
-			foreach($rows as $row) {
-				$row->params = new Registry($row->params);
+		if(count($plugins) ) {
+			foreach($plugins as $plugin) {
+				$plugin->params = new Registry($plugin->params);
 
-				$new = $this->loadParams($row);
+				$new = $this->loadParams($plugin);
 
 				$this->clearParameters($new, 'jfusion_plugin');
 
-				if ((isset($update->{$row->name}) && $update->{$row->name}) || ($master && $master->name == $row->name)) {
+				if ((isset($update->{$plugin->name}) && $update->{$plugin->name}) || ($master && $master->name == $plugin->name)) {
 					$new->updateusergroups = true;
 				} else {
 					$new->updateusergroups = false;
 				}
 
-				if (isset($usergroups->{$row->name})) {
-					$new->usergroups = $usergroups->{$row->name};
+				if (isset($usergroups->{$plugin->name})) {
+					$new->usergroups = $usergroups->{$plugin->name};
 				} else {
 					$new->usergroups = false;
 				}
@@ -148,7 +142,7 @@ class jfusionViewconfigdump extends JViewLegacy implements DebuggerInterface {
 					}
 				}
 
-				$this->jfusion_plugin[$row->name] = $new;
+				$this->jfusion_plugin[$plugin->name] = $new;
 			}
 		}
 

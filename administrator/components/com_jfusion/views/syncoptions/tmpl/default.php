@@ -72,7 +72,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 							<td><?php echo JText::_('SLAVE') ?></td>
 							<td><?php echo $slave['total']; ?></td>
 							<td>
-								<select id="plugin<?php echo $slave['jname']; ?>" name="slave[<?php echo $slave['jname']; ?>][perform_sync]">
+								<select id="plugin<?php echo $slave['jname']; ?>" name="slave[<?php echo $slave['jname']; ?>]">
 									<option value=""><?php echo JText::_('SYNC_EXCLUDE_PLUGIN'); ?></option>
 									<option value="<?php echo $slave['jname']; ?>"><?php echo JText::_('SYNC_INCLUDE_PLUGIN'); ?></option>
 								</select>
