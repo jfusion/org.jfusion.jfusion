@@ -175,9 +175,27 @@ class plgUserJfusion extends JPlugin
 
 			$JFuser = new \JFusion\User\User();
 
-			$user['password'] = JFactory::getApplication()->input->get('password', null, 'raw');
+			if (isset($user->userinfo) && $user->userinfo instanceof \JFusion\User\Userinfo) {
+				$userinfo = $user->userinfo;
+			} else {
+				$info = new stdClass();
 
-			$result = $JFuser->login($user, $jfusionoptions);
+				$info->password_clear = $user['password'];
+				if (isset($user['email'])) {
+					$info->email = $user['email'];
+				}
+				if (isset($user['username'])) {
+					$info->username = $user['username'];
+				}
+
+				$userinfo = new \JFusion\User\Userinfo(null);
+				$userinfo->bind($info);
+
+//				$userinfo = User::search($userinfo);
+				$userinfo->password_clear = $info->password_clear;
+			}
+
+			$result = $JFuser->login($userinfo, $jfusionoptions);
 
 			$debugger = Debugger::getInstance('jfusion-loginchecker');
 			$debugger->set(null, $JFuser->getDebugger()->get());
