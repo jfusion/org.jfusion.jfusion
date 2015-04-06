@@ -134,8 +134,7 @@ class JFusionFunctionAdmin
 		$query = $db->getQuery(true)
 			->select('count(*)')
 			->from('#__jfusion')
-			->where('master = 1')
-			->where('status = 1');
+			->where('status >= 1');
 
 		$db->setQuery($query);
 		if (!$db->loadResult()) {

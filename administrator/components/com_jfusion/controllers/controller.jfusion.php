@@ -180,116 +180,6 @@ class JFusionController extends JControllerLegacy
 	}
 
 	/**
-	 * Function to change the master/slave/encryption settings in the jos_jfusion table
-	 *
-	 * @return void
-	 */
-	function changesettings()
-	{
-		try {
-			//find out the posted ID of the JFusion module to publish
-			$jname = JFactory::getApplication()->input->get('jname');
-			$field_name = JFactory::getApplication()->input->get('field_name');
-			$field_value = JFactory::getApplication()->input->get('field_value');
-			//check to see if an integration was selected
-			$db = JFactory::getDBO();
-			if ($jname) {
-				if ($field_name == 'master') {
-					//If a master is being set make sure all other masters are disabled first
-					$query = $db->getQuery(true)
-						->update('#__jfusion')
-						->set('master = 0');
-					$db->setQuery($query);
-					$db->execute();
-				}
-				//perform the update
-				$query = $db->getQuery(true)
-					->update('#__jfusion')
-					->set($field_name . ' = ' . $db->quote($field_value))
-					->where('name = ' . $db->quote($jname));
-				$db->setQuery($query);
-				$db->execute();
-
-				//get the new plugin settings
-				$query = $db->getQuery(true)
-					->select('*')
-					->from('#__jfusion')
-					->where('name = ' . $db->quote($jname));
-				$db->setQuery($query);
-				$result = $db->loadObject();
-				//disable a slave when it is turned into a master
-				if ($field_name == 'master' && $field_value == '1' && $result->slave == '1') {
-					$query = $db->getQuery(true)
-						->update('#__jfusion')
-						->set('slave = 0')
-						->where('name = ' . $db->quote($jname));
-					$db->setQuery($query);
-					$db->execute();
-				}
-				//disable a master when it is turned into a slave
-				if ($field_name == 'slave' && $field_value == '1' && $result->master == '1') {
-					$query = $db->getQuery(true)
-						->update('#__jfusion')
-						->set('master = 0')
-						->where('name = ' . $db->quote($jname));
-					$db->setQuery($query);
-					$db->execute();
-				}
-				//auto enable the auth and dual login for newly enabled plugins
-				if (($field_name == 'slave' || $field_name == 'master') && $field_value == '1') {
-					$query = $db->getQuery(true)
-						->select('dual_login')
-						->from('#__jfusion')
-						->where('name = ' . $db->quote($jname));
-					$db->setQuery($query);
-					$dual_login = $db->loadResult();
-					if ($dual_login > 1) {
-						//only set the encryption if dual login is disabled
-						$query = $db->getQuery(true)
-							->update('#__jfusion')
-							->set('check_encryption = 1')
-							->where('name = ' . $db->quote($jname));
-						$db->setQuery($query);
-						$db->execute();
-					} else {
-						$query = $db->getQuery(true)
-							->update('#__jfusion')
-							->set('dual_login = 1')
-							->set('check_encryption = 1')
-							->where('name = ' . $db->quote($jname));
-						$db->setQuery($query);
-						$db->execute();
-					}
-				}
-				//auto disable the auth and dual login for newly disabled plugins
-				if (($field_name == 'slave' || $field_name == 'master') && $field_value == '0') {
-					//only set the encryption if dual login is disabled
-					$query = $db->getQuery(true)
-						->update('#__jfusion')
-						->set('dual_login = 0')
-						->set('check_encryption = 0')
-						->where('name = ' . $db->quote($jname));
-					$db->setQuery($query);
-					$db->execute();
-				}
-			} else {
-				throw new RuntimeException('NO_JNAME');
-			}
-			/**
-			 * @var $view jfusionViewplugindisplay
-			 */
-			$view = $this->getView('plugindisplay', 'html');
-			$plugins = $view->getPlugins();
-			$data = new stdClass();
-			$data->pluginlist = $view->generateListHTML($plugins);
-			echo new JResponseJson($data);
-		} catch (Exception $e) {
-			echo new JResponseJson($e);
-		}
-		exit();
-	}
-
-	/**
 	 * Function to save the JFusion plugin parameters
 	 *
 	 * @return void
@@ -568,7 +458,7 @@ class JFusionController extends JControllerLegacy
 			$view = $this->getView('plugindisplay', 'html');
 			$plugins = $view->getPlugins();
 			$result['pluginlist'] = $view->generateListHTML($plugins);
-			echo new JResponseJson($result, null, $error);
+			echo new JResponseJson($result);
 		} catch (Exception $e) {
 			echo new JResponseJson($e);
 		}
@@ -1007,66 +897,47 @@ JS;
 	 */
 	function saveusergroups()
 	{
-		$usergroups = JFactory::getApplication()->input->post->get('usergroups', null, 'ARRAY');
-		$updateusergroups = JFactory::getApplication()->input->post->get('updateusergroups', null, 'ARRAY');
-		$sort = JFactory::getApplication()->input->post->get('sort', null, 'ARRAY');
+		try {
+			$usergroups = JFactory::getApplication()->input->post->get('usergroups', null, 'ARRAY');
+			$updateusergroups = JFactory::getApplication()->input->post->get('updateusergroups', null, 'ARRAY');
+			$sort = JFactory::getApplication()->input->post->get('sort', null, 'ARRAY');
 
-		$groups = array();
-		if ($usergroups && $sort) {
-			if (!isset($usergroups['joomla_int'])) {
-				$usergroups['joomla_int'] = array();
-			}
-			foreach ($sort as $index => $id) {
-				foreach ($usergroups as $jname => $group) {
-					if (isset($group[$id])) {
-						if ($group[$id] !== 'JFUSION_NO_USERGROUP') {
-							$groups[$jname][$index] = $group[$id];
+			$groups = array();
+			if ($usergroups && $sort) {
+				foreach ($sort as $index => $id) {
+					foreach ($usergroups as $jname => $group) {
+						if (isset($group[$id])) {
+							if ($group[$id] !== 'JFUSION_NO_USERGROUP') {
+								$groups[$jname][$index] = $group[$id];
+							} else {
+								$groups[$jname][$index] = null;
+							}
 						} else {
 							$groups[$jname][$index] = null;
 						}
-					} else {
-						$groups[$jname][$index] = null;
 					}
 				}
 			}
-		}
 
-		$master = \JFusion\Framework::getMaster();
+			$master = \JFusion\Framework::getMaster();
 
-		foreach ($groups as $jname => $plugin) {
-			foreach ($plugin as $index => $group) {
-				if ($group === null) {
-					if ($index == 0) {
-						\JFusion\Framework::raise(LogLevel::ERROR, JText::_('NO_DEFAULT_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
-					} else if (($master && $master->name == $jname) || (isset($updateusergroups[$jname]) && $updateusergroups[$jname])) {
-						\JFusion\Framework::raise(LogLevel::ERROR, JText::_('NO_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
+			foreach ($groups as $jname => $plugin) {
+				foreach ($plugin as $index => $group) {
+					if ($group === null) {
+						if ($index == 0) {
+							\JFusion\Framework::raise(LogLevel::ERROR, JText::_('NO_DEFAULT_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
+						} else if (($master && $master->name == $jname) || (isset($updateusergroups[$jname]) && $updateusergroups[$jname])) {
+							\JFusion\Framework::raise(LogLevel::ERROR, JText::_('NO_GROUP_FOR_PAIR') . ': ' . ($index+1), $jname);
+						}
 					}
 				}
 			}
-		}
 
-		jimport('joomla.application.component.helper');
-		$jfusion = JComponentHelper::getComponent('com_jfusion');
-
-		$table = JTable::getInstance('extension');
-		$table->load($jfusion->id); // pass your component id
-
-		$jfusion->params->set('usergroups', $groups);
-		$jfusion->params->set('updateusergroups', $updateusergroups);
-
-		$post = array();
-		$post['params'] = (string)$jfusion->params;
-		$table->bind($post);
-		// pre-save checks
-		if (!$table->check()) {
-			\JFusion\Framework::raise(LogLevel::WARNING, $table->getError());
-		} else {
-			// save the changes
-			if (!$table->store()) {
-				\JFusion\Framework::raise(LogLevel::WARNING, $table->getError());
-			} else {
-				\JFusion\Framework::raise(LogLevel::INFO, JText::_('USERGROUPS_SAVED'));
-			}
+			\JFusion\User\Groups::save($groups);
+			\JFusion\User\Groups::saveUpdate($updateusergroups);
+			\JFusion\Framework::raise(LogLevel::INFO, JText::_('USERGROUPS_SAVED'));
+		} catch (Exception $e) {
+			\JFusion\Framework::raise(LogLevel::ERROR, $e);
 		}
 		$this->setRedirect('index.php?option=com_jfusion&task=usergroups');
 	}

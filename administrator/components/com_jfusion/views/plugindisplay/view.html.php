@@ -437,7 +437,7 @@ HTML;
 	        </div>
 	        <div>
 			    <a href="{$record->wizardscript}" data-toggle="tooltip" data-container="body" data-placement="top" title="{$wizard}"><div class="smallicon {$record->wizardclass}"></div></a>
-				<a href="'index.php?option=com_jfusion&task=plugineditor&jname=' . $record->name" data-toggle="tooltip" data-container="body" data-placement="top" title="{$edit}"><div class="smallicon edit_icon"></div></a>
+				<a href="index.php?option=com_jfusion&task=plugineditor&jname={$record->name}" data-toggle="tooltip" data-container="body" data-placement="top" title="{$edit}"><div class="smallicon edit_icon"></div></a>
 		        <a href="{$record->copyscript}" data-toggle="tooltip" data-container="body" data-placement="top" title="{$copy}"><div class="smallicon {$record->copyclass}"></div></a>
 		        <a href="{$record->deletescript}" data-toggle="tooltip" data-container="body" data-placement="top" title="{$delete}"><div class="smallicon {$record->deleteclass}"></div></a>
 				<a data-toggle="modal" data-target="#modal{$record->name}" href="#"><div class="smallicon info_icon" data-toggle="tooltip" data-container="body" data-placement="top" title="{$info}"></div></a>

@@ -111,16 +111,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 		//output the current configuration
 		$db = JFactory::getDBO();
 
-		$query = $db->getQuery(true)
-			->select('*')
-			->from('#__jfusion')
-			->where('master = 1', 'OR')
-			->where('slave = 1')
-			->where('check_encryption = 1')
-			->order('master DESC');
-
-		$db->setQuery($query);
-		$plugins = $db->loadObjectList();
+		$plugins = \JFusion\Factory::getPlugins();
 		foreach ($plugins as $plug) {
 			$plugin = new stdClass;
 			$plugin->name = $plug->name;

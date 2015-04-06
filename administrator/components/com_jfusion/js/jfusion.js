@@ -6,6 +6,22 @@ JFusion.Plugin = {};
 JFusion.View = {};
 JFusion.url = '';
 
+JFusion.Text = {
+    strings: {},
+    '_': function(key, def) {
+        if (typeof def === 'undefined') {
+            def = key.toUpperCase();
+        }
+        return typeof this.strings[key.toUpperCase()] !== 'undefined' ? this.strings[key.toUpperCase()] : def;
+    },
+    load: function(object) {
+        $.each(object, function( key, value ) {
+            JFusion.Text.strings[key.toUpperCase()] = value;
+        });
+        return this;
+    }
+};
+
 JFusion.onSuccess = function (JSONobject) {
     Joomla.removeMessages();
     if (!JSONobject.success && JSONobject.message) {
