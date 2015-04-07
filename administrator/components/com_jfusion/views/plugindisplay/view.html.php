@@ -445,7 +445,7 @@ HTML;
         	<div class="overflowbox">
         		{$record->description}
 			</div>
-			<div class="modal fade" id="modal{$record->name}">
+			<div class="modal fade" id="modal{$record->name}" style="display: none;">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">
