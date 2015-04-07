@@ -15,7 +15,7 @@ switch($task)
 {
 	case 'plugineditor':
         $jname = JFactory::getApplication()->input->get('jname');
-		JToolBarHelper::title($jname . ' ' . JText::_('PLUGIN_EDITOR'), 'controlpanel.png');
+		JToolBarHelper::title($jname . ' ' . JText::_('PLUGIN_EDITOR'), 'jfusion.png');
         JToolBarHelper::custom('importexport', 'importexport-icon.png', 'importexport-icon.png', JText::_('IMPORTEXPORT'), false);
 		JToolBarHelper::save('saveconfig');
 		JToolBarHelper::apply('applyconfig');
@@ -41,7 +41,7 @@ switch($task)
 
 		$db->setQuery($query);
 		$name = $db->loadResult();
-		JToolBarHelper::title($name . ' ' . JText::_('PLUGIN_EDITOR'), 'controlpanel.png');
+		JToolBarHelper::title($name . ' ' . JText::_('PLUGIN_EDITOR'), 'jfusion.png');
 		JToolBarHelper::save('joomlasave');
 		JToolBarHelper::apply('joomlaapply');
 		JToolBarHelper::cancel('joomladisplay');
@@ -52,7 +52,7 @@ switch($task)
 		JToolBarHelper::cancel('plugindisplay');
 		break;
 	case 'plugindisplay':
-		JToolBarHelper::title(JText::_('PLUGIN_CONFIGURATION'), 'controlpanel.png');
+		JToolBarHelper::title(JText::_('PLUGIN_CONFIGURATION'), 'plugins.png');
 		JToolBarHelper::cancel('cpanel');
 		break;
 	case 'syncoptions':
