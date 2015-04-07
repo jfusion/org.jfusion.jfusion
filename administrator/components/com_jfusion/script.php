@@ -471,12 +471,13 @@ HTML;
 					$message = $result['message'];
 
 					$color = '#dff0d8';
-					$image = '<img src="components/com_jfusion/images/check_good_small.png">';
+
+					$check = '<span style="font-size: 25pt; color: green;">&#x2714;</span>';
 				} catch (Exception $e) {
 					$message = $e->getMessage();
 
 					$color = '#f2dede';
-					$image = '<img src="components/com_jfusion/images/check_bad_small.png">';
+					$check = '<span style="font-size: 25pt; color: red;">&#x2716;</span>';
 				}
 
 				//remove plugin from install list
@@ -486,7 +487,7 @@ HTML;
 		            <table style="background-color:{$color}; width:100%;">
 		                <tr>
 		                    <td width="50px">
-		                        {$image}
+		                        {$check}
 		                    </td>
 		                    <td>
 		                        <h3>
@@ -530,18 +531,20 @@ HTML;
 			if (!$tmpInstaller->install($package['dir'])) {
 				$color = '#f2dede';
 				$message = JText::_('ERROR') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
-				$image = '<img src="components/com_jfusion/images/check_bad_small.png">';
+
+				$check = '<span style="font-size: 25pt; color: red;">&#x2716;</span>';
 			} else {
 				$color = '#dff0d8';
 				$message = JText::_('SUCCESS') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
-				$image = '<img src="components/com_jfusion/images/check_good_small.png">';
+
+				$check = '<span style="font-size: 25pt; color: green;">&#x2714;</span>';
 			}
 
 			$html = <<<HTML
 	            <table style="background-color:{$color};width:100%;">
 	                <tr style="height: 30px">
 	                    <td width="50px">
-	                        {$image}
+	                        {$check}
 	                    </td>
 	                    <td>
 	                        <h3>

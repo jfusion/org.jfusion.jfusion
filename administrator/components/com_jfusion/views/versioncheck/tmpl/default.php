@@ -65,7 +65,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 	<table style="background-color: #d9f9e2; width: 100%;">
 	    <tr>
 	        <td>
-	            <img src="components/com_jfusion/images/check_good.png">
+		        <span style="font-size: 40pt; color: green;">&#x2714;</span>
 	        </td>
 	        <td>
 	            <h2>
@@ -82,7 +82,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 	<table style="background-color:#f9ded9;">
 	    <tr>
 	        <td width="50px">
-	            <img src="components/com_jfusion/images/check_bad.png">
+		        <span style="font-size: 40pt; color: red;">&#x2716;</span>
 	        </td>
 	        <td>
 	            <h2>
@@ -289,7 +289,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 		<table style="background-color:#d9f9e2;width:100%;">
 		    <tr>
 		        <td>
-		            <img src="components/com_jfusion/images/check_good.png">
+			        <span style="font-size: 40pt; color: green;">&#x2714;</span>
 		        <td>
 		            <h2>
 		                <?php echo JText::_('JFUSION_UP2DATE'); ?>
@@ -304,7 +304,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 		<table style="background-color:#f9ded9;">
 		    <tr>
 		        <td width="50px">
-		            <img src="components/com_jfusion/images/check_bad.png">
+			        <span style="font-size: 40pt; color: red;">&#x2716;</span>
 		        </td>
 		        <td>
 		            <h2>

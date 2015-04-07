@@ -800,12 +800,10 @@ Joomla stuff
 
 
 
-
-.ui-sortable-handle div {
-    height: 16px;
-    width: 16px;
+.jfusion .dragHandles div {
     background: url('../images/16x16/draggable.png') no-repeat;
 }
+
 
 .jfusion .smallicon {
     height: 16px;
