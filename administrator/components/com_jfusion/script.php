@@ -402,7 +402,7 @@ HTML;
         <table style="background-color:#dff0d8;width:100%;">
             <tr>
                 <td width="50px">
-                    <img src="components/com_jfusion/images/check_good_small.png">
+                	<span style="font-size: 25pt; color: green;">&#x2714;</span>
                 </td>
                 <td>
                     <h3>
