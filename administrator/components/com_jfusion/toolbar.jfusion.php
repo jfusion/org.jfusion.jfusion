@@ -119,7 +119,7 @@ switch($task)
 
 //add our custom banner
 $bar = JToolBar::getInstance('toolbar');
-$bar->prependButton('Custom', '<img border="0" alt="Enabled" src="components/com_jfusion/images/jfusion_logo.png"/>');
+$bar->prependButton('Custom', '<img border="0" alt="Enabled" src="components/com_jfusion/images/jfusion_logo.png" style="max-height:42px"/>');
 
 JLoader::register('JFusionHelper', JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'jfusion.php');
 JFusionHelper::addSubmenu($task);
