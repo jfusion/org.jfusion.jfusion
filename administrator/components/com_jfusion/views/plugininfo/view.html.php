@@ -106,28 +106,27 @@ class jfusionViewplugininfo extends JViewLegacy
         }
     }
 
-    /**
-     * @param $feature
-     * @return string
-     */
-    function outputFeature($feature)
-    {
-    	if ($feature===true) {
-    		$feature = 'JYES';
-    	} else if ($feature===false) {
-    		$feature = 'JNO';
-    	}
-	    switch ($feature) {
-		    case 'JNO':
-		    	$images = 'cross.png';
-		        break;
-		    case 'JYES':
-		    	$images = 'tick.png';
-		        break;
-		    default:
-		    	$images = 'system-help.png';
-		        break;
+	/**
+	 * @param $feature
+	 * @return string
+	 */
+	function outputFeature($feature) {
+		if ($feature === true) {
+			$feature = 'JYES';
+		} else if ($feature === false) {
+			$feature = 'JNO';
 		}
-		return '<img src="components/com_jfusion/images/' . $images . '"/> ' . JText::_($feature);
-    }
+		switch ($feature) {
+			case 'JNO':
+				$help = '<span class="check" style="color: red;">&#x2716;</span>';
+				break;
+			case 'JYES':
+				$help = '<span class="check" style="color: green;">&#x2714;</span>';
+				break;
+			default:
+				$help = '<span class="check" style="color: blue;">?</span>';
+				break;
+		}
+		return $help . ' ' . JText::_($feature);
+	}
 }
