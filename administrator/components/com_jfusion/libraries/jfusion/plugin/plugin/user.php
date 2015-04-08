@@ -600,7 +600,7 @@ class JFusionUser extends JFusionPlugin
 		if ((empty($create_inactive) && !empty($userinfo->activation)) || (empty($create_blocked) && !empty($userinfo->block))) {
 			//block user creation
 			$this->debugger->add('debug', JText::_('SKIPPED_USER_CREATION'));
-			$this->debugger->set('debug', 'unchanged');
+			$this->debugger->set('action', 'unchanged');
 			$this->debugger->set('userinfo', null);
 		} else {
 			$this->debugger->add('debug', JText::_('NO_USER_FOUND_CREATING_ONE'));
