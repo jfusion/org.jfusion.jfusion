@@ -388,6 +388,9 @@ class JFusionUsersync
 										    }
 									    }
 								    }
+								    if (!isset($status['action'])) {
+									    $status['action'] = 'error';
+								    }
 								    $sync_log->action = $status['action'];
 
 								    //append the error to the log
