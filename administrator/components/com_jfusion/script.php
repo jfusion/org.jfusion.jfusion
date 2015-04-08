@@ -377,10 +377,7 @@ HTML;
     <table>
         <tr>
             <td width="100px">
-                <img src="components/com_jfusion/images/jfusion_large.png">
-            </td>
-            <td width="100px">
-                <img src="components/com_jfusion/images/manager.png" height="75" width="75">
+                <img src="components/com_jfusion/images/jfusion.png">
             </td>
             <td>
                 <h2>

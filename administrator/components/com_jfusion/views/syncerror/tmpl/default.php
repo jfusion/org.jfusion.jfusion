@@ -22,7 +22,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 	<table>
 		<tr>
 			<td width="100px">
-				<img src="components/com_jfusion/images/jfusion_large.png">
+				<img src="components/com_jfusion/images/jfusion.png">
 			</td>
 			<td width="100px">
 				<img src="components/com_jfusion/images/usersync.png">
