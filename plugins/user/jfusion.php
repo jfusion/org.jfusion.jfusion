@@ -142,7 +142,7 @@ class plgUserJfusion extends JPlugin
 		//prevent a login if AEC denied a user
 		if (!defined('AEC_AUTH_ERROR_UNAME')) {
 			jimport('joomla.user.helper');
-			global $JFusionActive, $JFusionLoginCheckActive;
+			global $JFusionActive;
 
 			$JFusionActive = true;
 
@@ -156,7 +156,7 @@ class plgUserJfusion extends JPlugin
 			}
 
 			$jfusionoptions['skipplugin'] = array();
-			if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
+			if (!\JFusion\Factory::getStatus()->get('active.logincheck', false) && $mainframe->isAdmin()) {
 				$slaves = Framework::getSlaves();
 				if ($slaves) {
 					foreach ($slaves as $slave) {
@@ -438,8 +438,7 @@ class plgUserJfusion extends JPlugin
 	 * @return string nothing
 	 */
 	public function raise($type, $message, $jname = '') {
-		global $JFusionLoginCheckActive;
-		if (!$JFusionLoginCheckActive) {
+		if (!\JFusion\Factory::getStatus()->get('active.logincheck', false)) {
 			Framework::raise($type, $message, $jname);
 		}
 	}

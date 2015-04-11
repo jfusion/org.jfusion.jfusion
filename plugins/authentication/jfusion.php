@@ -69,7 +69,7 @@ class plgAuthenticationjfusion extends JPlugin
 	 */
 	function onUserAuthenticate($credentials, $options, &$response){
 		jimport('joomla.user.helper');
-		global $JFusionLoginCheckActive;
+
 		$mainframe = JFactory::getApplication();
 
 		$Authentication = Authentication::getInstance();
@@ -96,7 +96,7 @@ class plgAuthenticationjfusion extends JPlugin
 			$response->status = JAuthentication::STATUS_SUCCESS;
 			$response->userinfo = $authResponce->userinfo;
 		} else {
-			if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
+			if (!\JFusion\Factory::getStatus()->get('active.logincheck', false) && $mainframe->isAdmin()) {
 				//Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour
 				$dispatcher = JEventDispatcher::getInstance();
 
@@ -126,7 +126,7 @@ class plgAuthenticationjfusion extends JPlugin
 			}
 		}
 
-		if (empty($JFusionLoginCheckActive)) {
+		if (!\JFusion\Factory::getStatus()->get('active.logincheck', false)) {
 			// Check the two factor authentication
 			if ($response->status == JAuthentication::STATUS_SUCCESS)
 			{
