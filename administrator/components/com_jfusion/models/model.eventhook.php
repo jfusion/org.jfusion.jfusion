@@ -108,8 +108,7 @@ class JFusionEventHook implements ApplicationInterface, PluginInterface, Install
 		$activePlugin = $event->getArgument('activePlugin');
 
 		if ($activePlugin) {
-			global $JFusionActivePlugin;
-			$JFusionActivePlugin = $activePlugin;
+			\JFusion\Factory::getStatus()->set('active.plugin', $activePlugin);
 		}
 
 		$mainframe = JFactory::getApplication();
@@ -180,8 +179,7 @@ class JFusionEventHook implements ApplicationInterface, PluginInterface, Install
 		$mainframe = JFactory::getApplication();
 
 		if ($activePlugin) {
-			global $JFusionActivePlugin;
-			$JFusionActivePlugin = $activePlugin;
+			\JFusion\Factory::getStatus()->set('active.plugin', $activePlugin);
 		}
 
 		$user = new stdClass;

@@ -191,7 +191,6 @@ class plgUserJfusion extends JPlugin
 				$userinfo = new \JFusion\User\Userinfo(null);
 				$userinfo->bind($info);
 
-//				$userinfo = User::search($userinfo);
 				$userinfo->password_clear = $info->password_clear;
 			}
 
@@ -221,6 +220,7 @@ class plgUserJfusion extends JPlugin
 					$allow_redirect_login = $params->get('allow_redirect_login', 0);
 					$redirecturl_login = $params->get('redirecturl_login', '');
 					$source_url = $params->get('source_url', '');
+
 					$cookies = Factory::getCookies();
 					if ($allow_redirect_login && !empty($redirecturl_login)) {
 						// only redirect if we are in the frontend and allowed and have an URL
@@ -240,12 +240,14 @@ class plgUserJfusion extends JPlugin
 	 * @return object
 	 */
 	public function onUserLogout($user, $options = array())	{
+		ob_start();
 		$result = true;
 
 		//initialise some vars
-		global $JFusionActive, $JFusionActivePlugin;
+		global $JFusionActive;
 		$JFusionActive = true;
 		$user = JFactory::getUser($user['id']);
+
 		$u = new stdClass();
 		$u->userid = $user->get('id');
 		$u->email = $user->get('email');
@@ -259,17 +261,17 @@ class plgUserJfusion extends JPlugin
 			$options['clientid'] = array(1);
 		} else {
 			$options['clientid'] = array(0);
-
-			$JFuser = new \JFusion\User\User();
-
-			$result = $JFuser->logout($userinfo, $options);
-
-			$debugger = Debugger::getInstance('jfusion-loginchecker');
-			$debugger->set(null, $JFuser->getDebugger()->get());
 		}
 
+		$JFuser = new \JFusion\User\User();
+
+		$result = $JFuser->logout($userinfo, $options);
+
+		$debugger = Debugger::getInstance('jfusion-loginchecker');
+		$debugger->set(null, $JFuser->getDebugger()->get());
+
 		//destroy the joomla session itself
-		if ($JFusionActivePlugin != 'joomla_int') {
+		if (\JFusion\Factory::getStatus()->get('active.plugin') != 'joomla_int') {
 			$JoomlaUser = Factory::getUser('joomla_int');
 			try {
 				$JoomlaUser->destroySession($userinfo, $options);
@@ -277,18 +279,16 @@ class plgUserJfusion extends JPlugin
 				Framework::raise(LogLevel::ERROR, $e, $JoomlaUser->getJname());
 			}
 		}
-
-		$params = Factory::getParams('joomla_int');
-		$allow_redirect_logout = $params->get('allow_redirect_logout', 0);
-		$redirecturl_logout = $params->get('redirecturl_logout', '');
-		$source_url = $params->get('source_url', '');
 		ob_end_clean();
-		$jfc = Factory::getCookies();
-
-		$mainframe = JFactory::getApplication();
 		if (!$mainframe->isAdmin()) {
-			if ($allow_redirect_logout && !empty($redirecturl_logout)) // only redirect if we are in the frontend and allowed and have an URL
-			{
+			$params = Factory::getParams('joomla_int');
+			$allow_redirect_logout = $params->get('allow_redirect_logout', 0);
+			$redirecturl_logout = $params->get('redirecturl_logout', '');
+			$source_url = $params->get('source_url', '');
+
+			$jfc = Factory::getCookies();
+			if ($allow_redirect_logout && !empty($redirecturl_logout)) {
+				// only redirect if we are in the frontend and allowed and have an URL
 				$jfc->executeRedirect($source_url, $redirecturl_logout);
 			} else {
 				$jfc->executeRedirect($source_url);

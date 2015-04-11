@@ -94,8 +94,9 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 		}
 
 		//prevent current joomla session from being destroyed
-		global $JFusionActivePlugin, $JFusionLoginCheckActive;
-		$JFusionActivePlugin = 'joomla_int';
+		global $JFusionLoginCheckActive;
+
+		\JFusion\Factory::getStatus()->set('active.plugin', 'joomla_int');
 		$JFusionLoginCheckActive = true;
 
 		$this->getPlugin();

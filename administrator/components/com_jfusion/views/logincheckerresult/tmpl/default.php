@@ -42,8 +42,9 @@ $debugger = Debugger::getInstance('jfusion-logincheckerresult');
 		<?php
 		$textOutput = array();
 		//prevent current joomla session from being destroyed
-		global $JFusionActivePlugin;
-		$JFusionActivePlugin = 'joomla_int';
+
+		\JFusion\Factory::getStatus()->set('active.plugin', 'joomla_int');
+
 		foreach ($this->plugins as $plugin) {
 			$debugger->set(null, $plugin);
 			$debugger->setTitle(JText::_('JFUSION') . ' ' . $plugin->name . ' ' . JText::_('PLUGIN'));
