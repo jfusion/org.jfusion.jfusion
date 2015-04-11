@@ -92,7 +92,6 @@ class plgAuthenticationjfusion extends JPlugin
 			$authResponce = $Authentication->authenticate($userinfo, $options);
 		}
 
-		var_dump($info);	 var_dump($userinfo);	    var_dump($authResponce); die();
 		if ($authResponce && $authResponce->status === Authentication::STATUS_SUCCESS) {
 			$response->status = JAuthentication::STATUS_SUCCESS;
 			$response->userinfo = $authResponce->userinfo;
