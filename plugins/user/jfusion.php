@@ -89,8 +89,7 @@ class plgUserJfusion extends JPlugin
 
 		$JFuser = new \JFusion\User\User();
 
-		global $JFusionActive;
-		if (!$JFusionActive) {
+		if (!\JFusion\Factory::getStatus()->get('active.jfusion', false)) {
 			//A change has been made to a user without JFusion knowing about it
 
 			$userinfo = JFusionFunction::getJoomlaUser((object)$user);
@@ -142,9 +141,8 @@ class plgUserJfusion extends JPlugin
 		//prevent a login if AEC denied a user
 		if (!defined('AEC_AUTH_ERROR_UNAME')) {
 			jimport('joomla.user.helper');
-			global $JFusionActive;
 
-			$JFusionActive = true;
+			\JFusion\Factory::getStatus()->set('active.jfusion', true);
 
 			$jfusionoptions = $options;
 
@@ -244,8 +242,7 @@ class plgUserJfusion extends JPlugin
 		$result = true;
 
 		//initialise some vars
-		global $JFusionActive;
-		$JFusionActive = true;
+		\JFusion\Factory::getStatus()->set('active.jfusion', true);
 		$user = JFactory::getUser($user['id']);
 
 		$u = new stdClass();
@@ -344,8 +341,7 @@ class plgUserJfusion extends JPlugin
 	 * @return bool
 	 */
 	public function onUserBeforeSave($olduser, $isnew, $new){
-		global $JFusionActive;
-		if (!$JFusionActive) {
+		if (!\JFusion\Factory::getStatus()->get('active.jfusion', false)) {
 			// Recover old data from user before to save it. The purpose is to provide it to the plugins if needed
 			$session = JFactory::getSession();
 			$session->set('olduser', $olduser);

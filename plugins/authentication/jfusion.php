@@ -17,7 +17,6 @@
 use JFusion\Authentication\Authentication;
 use JFusion\Factory;
 use JFusion\User\Userinfo;
-use JFusion\User\User;
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
