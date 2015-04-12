@@ -110,7 +110,7 @@ defined('_JEXEC') or die('Restricted access');
 					$i = 0;
 					foreach ($this->syncdata['log'] as $id => $details) {
 						switch($details->action) {
-							case 'uncahnged':
+							case 'unchanged':
 							case 'created':
 								$indicator = '<span style="font-size: 25pt; color: green;">&#x2714;</span>';
 								break;
@@ -121,6 +121,9 @@ defined('_JEXEC') or die('Restricted access');
 							default:
 							case 'error':
 								$indicator = '<span style="font-size: 25pt; color: red;">&#x2716;</span>';
+								break;
+							default:
+								$indicator = '<span style="font-size: 25pt; color: lightblue;">?</span>';
 						}
 						?>
 						<tr>
