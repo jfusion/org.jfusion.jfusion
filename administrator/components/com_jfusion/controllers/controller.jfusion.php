@@ -91,8 +91,10 @@ class JFusionController extends JControllerLegacy
 					} catch (Exception $e) {
 						\JFusion\Framework::raise(LogLevel::ERROR, $e, $JFusionPlugin->getJname());
 					}
-					$JFusionPlugin->updateStatus($status);
-					$this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, JText::_('WIZARD_SUCCESS'), 'message');
+					if (!$JFusionPlugin->isConfigured() || !$status) {
+						$JFusionPlugin->updateStatus($status);
+					}
+					$this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, JText::_('WIZARD_SUCCESS') . $status, 'message');
 				} else {
 					$this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname);
 				}
@@ -120,35 +122,35 @@ class JFusionController extends JControllerLegacy
 						->select($db->quoteName($toggle))
 						->where('name = ' . $db->quote($name));
 					$db->setQuery($query);
-					$status = $db->loadResult();
+					$setting = $db->loadResult();
 
 					switch ($toggle) {
 						case 'status':
-							if ($status == 2) {
-								$status = 1;
-							} else if ($status == 1) {
-								$status = 2;
+							if ($setting == 2) {
+								$setting = 1;
+							} else if ($setting == 1) {
+								$setting = 2;
 							}
 							break;
 						default:
-							$status = ($status==1) ? 0 : 1;
+							$setting = ($setting==1) ? 0 : 1;
 							break;
 					}
 
 					$query = $db->getQuery(true)
 						->update('#__jfusion')
-						->set($db->quoteName($toggle) . ' = ' . (int)$status)
+						->set($db->quoteName($toggle) . ' = ' . (int)$setting)
 						->where('name = ' . $db->quote($name));
 
 					$db->setQuery($query);
 					$db->execute();
 
-					$responce->status = $status;
+					$responce->status = $setting;
 					$responce->name = $name;
 
 					switch ($toggle) {
 						case 'status':
-							if ($status == 2) {
+							if ($setting == 2) {
 								$responce->class = 'enabled';
 								$responce->title = JText::_('ENABLED');
 							} else {
@@ -157,7 +159,7 @@ class JFusionController extends JControllerLegacy
 							}
 							break;
 						default:
-							if ($status) {
+							if ($setting) {
 								$responce->class = 'enabled';
 								$responce->title = JText::_('ENABLED');
 							} else {
@@ -207,36 +209,37 @@ class JFusionController extends JControllerLegacy
 					if ($JFusionPlugin->checkConfig()) {
 						$status = 1;
 					}
-					$JFusionPlugin->updateStatus($status);
-				} catch (Exception $e) {
-					$JFusionPlugin->updateStatus($status);
-					throw $e;
-				}
+					if (!$JFusionPlugin->isConfigured() || !$status) {
+						$JFusionPlugin->updateStatus($status);
+					}
+					if ($status) {
+						$msg = $jname . ': ' . JText::_('SAVE_SUCCESS');
+						$msgType = 'message';
+						//check for any custom commands
+						$customcommand = JFactory::getApplication()->input->get('customcommand');
+						if (!empty($customcommand)) {
+							$customarg1 = JFactory::getApplication()->input->getString('customarg1', null);
+							$customarg2 = JFactory::getApplication()->input->getString('customarg2', null);
 
-				if ($status) {
-					$msg = $jname . ': ' . JText::_('SAVE_SUCCESS');
-					$msgType = 'message';
-					//check for any custom commands
-					$customcommand = JFactory::getApplication()->input->get('customcommand');
-					if (!empty($customcommand)) {
-						$customarg1 = JFactory::getApplication()->input->getString('customarg1', null);
-						$customarg2 = JFactory::getApplication()->input->getString('customarg2', null);
+							$command = explode('.', $customcommand, 2);
+							switch ($command[0]) {
+								case 'platform':
+									$JFusionPlugin = \JFusion\Factory::getPlatform('Joomla', $jname);
+									$customcommand = $command[1];
+									break;
+								case 'admin':
+									$customcommand = $command[1];
+									break;
+							}
 
-						$command = explode('.', $customcommand, 2);
-						switch ($command[0]) {
-							case 'platform':
-								$JFusionPlugin = \JFusion\Factory::getPlatform('Joomla', $jname);
-								$customcommand = $command[1];
-								break;
-							case 'admin':
-								$customcommand = $command[1];
-								break;
-						}
-
-						if (method_exists($JFusionPlugin, $customcommand)) {
-							$JFusionPlugin->$customcommand($customarg1, $customarg2);
+							if (method_exists($JFusionPlugin, $customcommand)) {
+								$JFusionPlugin->$customcommand($customarg1, $customarg2);
+							}
 						}
 					}
+				} catch (Exception $e) {
+					$JFusionPlugin->updateStatus(0);
+					throw $e;
 				}
 			}
 		} catch (Exception $e) {
