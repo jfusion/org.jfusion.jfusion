@@ -78,7 +78,6 @@ class jfusionViewlanguages extends JViewLegacy
 			        $lang->translateurl = (string)$language->translateurl;
 			        $lang->currentdate = null;
 			        $lang->extension_id = null;
-			        $lang->class = 'row';
 
 			        $this->lang_repo[(string)$att['tag']] = $lang;
 		        }

@@ -53,13 +53,10 @@ JFusion.createDragHandle = function(index) {
         'class': 'dragHandles',
         'id' : 'dragHandles'
     });
-    var div = new Element('div');
 
-    var img = new Element('img', {
-        'src': 'components/com_jfusion/images/draggable.png',
-        'name' : 'handle'
+    var div = new Element('div', {
+        'class': 'smallicon'
     });
-    img.inject(div);
 
     var input = new Element('input', {
         'type': 'hidden',
@@ -74,16 +71,16 @@ JFusion.createDragHandle = function(index) {
 
 JFusion.createRemove = function(index) {
     var td = new Element('td');
-    var img = new Element('img', {
-        'src': 'components/com_jfusion/images/cross.png',
-        'name' : 'handle',
+    var span = new Element('span', {
+        'html': '&#x232b;',
+        'style': 'color:red; font-weight: bold; font-size: 15pt; cursor: pointer;',
         'events': {
             'click': function () {
                 $('sort_table').removeChild($('usergroup'+index));
             }
         }
     });
-    img.inject(td);
+    span.inject(td);
     return td;
 };
 
@@ -196,9 +193,9 @@ JFusion.initSortables = function () {
         onComplete: function () {
             $$('#sort_table tr').each(function (tr, index) {
                 if (index) {
-                    tr.setAttribute('class', 'row' + (index % 2));
+                    tr.setAttribute('class', '');
                 } else {
-                    tr.setAttribute('class', 'row' + (index % 2) + ' defaultusergroup');
+                    tr.setAttribute('class', 'defaultusergroup');
                 }
             });
             JFusion.updatePlugins();

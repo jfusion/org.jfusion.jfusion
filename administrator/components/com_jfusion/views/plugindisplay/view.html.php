@@ -390,18 +390,14 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	 * @return string
 	 */
 	function generateListHTML($plugins) {
-		$row_count = 0;
 		$html = '';
 		foreach($plugins as $record) {
 			$row = $this->generateRowHTML($record);
-
-			$count = ($row_count % 2);
 			$html .=<<<HTML
-			<tr id="{$record->name}" class="row{$count}">
+			<tr id="{$record->name}">
 				{$row}
 			</tr>
 HTML;
-			$row_count++;
 		}
 		return $html;
 	}

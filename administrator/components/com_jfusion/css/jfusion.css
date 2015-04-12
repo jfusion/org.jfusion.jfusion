@@ -181,8 +181,7 @@ a.jfusionDonateButton:hover {
     text-align: left;
 }
 
-.jfusion table.jfusionlist tbody tr.row0:hover td,
-.jfusion table.jfusionlist tbody tr.row1:hover td	{
+.jfusion table.jfusionlist tbody tr:hover td {
     background-color: #e8f6fe;
 }
 
@@ -191,11 +190,11 @@ a.jfusionDonateButton:hover {
     border: 1px solid #fff;
 }
 
-.jfusion table.jfusionlist tbody tr.row1 td {
+.jfusion table.jfusionlist tbody tr:nth-child(even) td {
     background: #f0f0f0;
 }
 
-.jfusion table.jfusionlist tbody tr.defaultusergroup td {
+.jfusion table.usergroups tbody tr:first-child td {
     background: #8BCF6E;
 }
 
@@ -394,7 +393,7 @@ Joomla stuff
 }
 
 .icon-48-wizard, .icon-wizard {
-    background-image: url(../images/wizard.png);
+    background-image: url(../images/16x16/play.png);
     background-size: contain;
 }
 
@@ -403,16 +402,13 @@ Joomla stuff
     background-size: contain;
 }
 
-
-
-
-
-
+.jfusion .dragHandles {
+    cursor: pointer;
+}
 
 .jfusion .dragHandles div {
     background: url('../images/16x16/draggable.png') no-repeat;
 }
-
 
 .jfusion .smallicon {
     height: 16px;
@@ -425,12 +421,7 @@ Joomla stuff
 }
 
 .jfusion .dim {
-    /*
-        -webkit-filter: blur(1px);
-        -moz-filter: blur(1px);
-    */
     opacity: 0.5;
-    -webkit-filter: grayscale(100%);
 }
 
 .jfusion .disabled, .jfusion .error {

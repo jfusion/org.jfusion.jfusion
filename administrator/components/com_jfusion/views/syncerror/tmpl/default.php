@@ -123,7 +123,7 @@ echo JFusionFunctionAdmin::getDonationBanner();
 			    $error = unserialize($details->data);
 
 			    ?>
-			    <tr class="row<?php echo ($row_count % 2); ?>">
+			    <tr>
 			    <?php
 	                $row_count++;
 				    //just some checks to prevent php notices

@@ -60,10 +60,9 @@ defined('_JEXEC') or die('Restricted access');
 			<tbody>
 				<?php
 				if(!empty($this->pairs)) :
-				$row_count = 0;
 				foreach($this->pairs as $joomlaid => $forumid) {
 				?>
-					<tr class="row<?php echo ($row_count % 2); ?>" id='joomla<?php echo $joomlaid; ?>'>
+					<tr id='joomla<?php echo $joomlaid; ?>'>
 						<td>
 							<?php
 							if(isset($this->joomlaoptions[$joomlaid])) echo $this->joomlaoptions[$joomlaid]->name;
@@ -80,7 +79,6 @@ defined('_JEXEC') or die('Restricted access');
 						</td>
 					</tr>
 					<?php
-				    $row_count++;
 				}
 				endif;
 				?>

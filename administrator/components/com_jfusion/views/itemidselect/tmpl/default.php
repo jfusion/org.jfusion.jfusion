@@ -44,13 +44,9 @@ defined('_JEXEC') or die('Restricted access');
 		</thead>
 		<tbody>
 	    <?php
-	    $row_count = 0;
 	    foreach ($this->menuitems as $row) {
 			?>
-			<tr class="row<?php echo ($row_count % 2); ?>">
-			<?php
-	        $row_count++;
-			?>
+			<tr>
 				<td>
 
 	                <a style="cursor: pointer;" onclick="window.parent.JFusion.submitParams('<?php echo $this->ename; ?>', '<?php echo $row->id; ?>');">
@@ -105,10 +101,9 @@ defined('_JEXEC') or die('Restricted access');
 	    </thead>
 		<tbody>
 	    <?php
-	    $row_count = 0;
 	    foreach ($this->directlinks as $row) {
 		?>
-			<tr class="row<?php echo ($row_count % 2); ?>">
+			<tr>
 	            <td>
 		            <a style="cursor: pointer;" onclick="window.parent.JFusion.submitParams('<?php echo $this->ename; ?>', '<?php echo $row->name; ?>');">
 		                <?php echo htmlspecialchars($row->name, ENT_QUOTES, 'UTF-8'); ?>
@@ -122,7 +117,6 @@ defined('_JEXEC') or die('Restricted access');
 	            </td>
 			</tr>
 		<?php
-	        $row_count++;
 		}
 		?>
 		</tbody>

@@ -18,7 +18,7 @@ $images = 'components/com_jfusion/images/';
 	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<input type="hidden" name="task" value="saveusergroups"/>
 
-		<table class="jfusionlist" style="border-spacing:1px;" id="sortables">
+		<table class="jfusionlist usergroups" style="border-spacing:1px;" id="sortables">
 			<thead>
 				<tr>
 					<th class="title" width="20px">

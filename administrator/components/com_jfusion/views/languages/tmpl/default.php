@@ -59,11 +59,11 @@ echo JFusionFunctionAdmin::getDonationBanner();
 			</tr>
 		</thead>
 		<tbody>
-		<?php $row_count = 0;
+		<?php
 		$scale = 1;
 		foreach ($this->lang_repo as $lang => $data) {
 			$percent = str_replace('%', '', $data->progress); ?>
-			<tr class="<?php echo $data->class.($row_count % 2); ?>">
+			<tr>
 				<td style="width:50px;">
 					<?php echo $lang; ?>
 				</td>
@@ -125,7 +125,6 @@ echo JFusionFunctionAdmin::getDonationBanner();
 				</td>
 			</tr>
 			<?php
-			$row_count++;
 		} ?>
 		</tbody>
 	</table>

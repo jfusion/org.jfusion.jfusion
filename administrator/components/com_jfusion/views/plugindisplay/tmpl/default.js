@@ -131,7 +131,6 @@ JFusion.initSortables = function () {
             //build a string of the order
             sortorder = '';
             $$('#sort_table tr').each(function (tr, index) {
-                tr.setAttribute('class', 'row' + (index % 2));
                 sortorder = sortorder +  tr.id  + '|';
             });
 
