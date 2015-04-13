@@ -199,7 +199,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 	        }
 
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $where = 'a.forum_id IN (' . implode(',', $forumids) . ') AND a.topic_approved = 1 AND b.post_approved = 1';
+		    $where = 'a.forum_id IN (' . implode(',', $forumids) . ') AND a.topic_posts_approved >= 1 AND b.post_visibility = 1';
 
 		    $numargs = func_num_args();
 		    if ($numargs > 3) {
@@ -694,7 +694,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 			$topic_row->topic_time = $timestamp;
 			$topic_row->forum_id = $forumid;
 			$topic_row->icon_id = false;
-			$topic_row->topic_approved	= 1;
+			$topic_row->topic_posts_approved	= 1;
 			$topic_row->topic_title = $subject;
 			$topic_row->topic_first_poster_name	= $phpbbUser->username;
 			$topic_row->topic_first_poster_colour = $phpbbUser->user_colour;
@@ -715,7 +715,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 			$post_row->icon_id			= 0;
 			$post_row->poster_ip		= $_SERVER['REMOTE_ADDR'];
 			$post_row->post_time		= $timestamp;
-			$post_row->post_approved	= 1;
+			$post_row->post_visibility	= 1;
 			$post_row->enable_bbcode	= 1;
 			$post_row->enable_smilies	= 1;
 			$post_row->enable_magic_url	= 1;
@@ -934,7 +934,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 
 				//get some topic information
 				$query = $db->getQuery(true)
-					->select('topic_title, topic_replies, topic_replies_real')
+					->select('topic_title, topic_posts_approved, topic_posts_unapproved')
 					->from('#__topics')
 					->where('topic_id = ' . $ids->threadid);
 
@@ -956,7 +956,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 
 				$timestamp = time();
 
-				$post_approved = ($userinfo->guest && $params->get('moderate_guests', 1)) ? 0 : 1;
+				$post_visibility = ($userinfo->guest && $params->get('moderate_guests', 1)) ? 0 : 1;
 
 				$post_row = new stdClass();
 				$post_row->forum_id			= $ids->forumid;
@@ -965,7 +965,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 				$post_row->icon_id			= 0;
 				$post_row->poster_ip		= $_SERVER['REMOTE_ADDR'];
 				$post_row->post_time		= $timestamp;
-				$post_row->post_approved	= $post_approved;
+				$post_row->post_visibility	= $post_visibility;
 				$post_row->enable_bbcode	= 1;
 				$post_row->enable_smilies	= 1;
 				$post_row->enable_magic_url	= 1;
@@ -987,7 +987,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 				$status['postid'] = $postid;
 
 				//only update the counters if the post is approved
-				if($post_approved) {
+				if($post_visibility) {
 					$topic_row = new stdClass();
 					$topic_row->topic_last_post_id			= $postid;
 					$topic_row->topic_last_post_time		= $timestamp;
@@ -995,8 +995,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 					$topic_row->topic_last_poster_name		= $phpbbUser->username;
 					$topic_row->topic_last_poster_colour	= $phpbbUser->user_colour;
 					$topic_row->topic_last_post_subject     = 'Re: ' . $topic->topic_title;
-					$topic_row->topic_replies				= $topic->topic_replies + 1;
-					$topic_row->topic_replies_real 			= $topic->topic_replies_real + 1;
+					$topic_row->topic_posts_approved		= $topic->topic_posts_approved + 1;
 					$topic_row->topic_id					= $ids->threadid;
 					$db->updateObject('#__topics', $topic_row, 'topic_id' );
 
@@ -1049,13 +1048,13 @@ class JFusionForum_phpbb31 extends JFusionForum
 				} else {
 					//update the for real count so that phpbb notes there are unapproved messages here
 					$topic_row = new stdClass();
-					$topic_row->topic_replies_real 			= $topic->topic_replies_real + 1;
+					$topic_row->topic_posts_unapproved 		= $topic->topic_posts_unapproved + 1;
 					$topic_row->topic_id					= $ids->threadid;
 					$db->updateObject('#__topics', $topic_row, 'topic_id' );
 				}
 
 				//update moderation status to tell discussion bot to notify user
-				$status['post_moderated'] = ($post_approved) ? 0 : 1;
+				$status['post_moderated'] = ($post_visibility) ? 0 : 1;
 			}
 		} catch (Exception $e) {
 			$status['error'][] = $e->getMessage();
@@ -1116,7 +1115,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 				->innerJoin('#__users as u ON p.poster_id = u.user_id')
 				->where('p.topic_id = ' . $existingthread->threadid)
 				->where('p.post_id != ' . $existingthread->postid)
-				->where('p.post_approved = 1')
+				->where('p.post_visibility = 1')
 				->order('p.post_time ' . $sort);
 
 			$db->setQuery($query, $start, $limit);
@@ -1143,7 +1142,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 				->select('count(*)')
 				->from('#__posts')
 				->where('topic_id = ' . $existingthread->threadid)
-				->where('post_approved = 1')
+				->where('post_visibility = 1')
 				->where('post_id != ' . $existingthread->postid);
 
 			$db->setQuery($query);

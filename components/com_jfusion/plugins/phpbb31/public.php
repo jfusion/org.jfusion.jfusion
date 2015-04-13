@@ -863,7 +863,7 @@ class JFusionPublic_phpbb31 extends JFusionPublic
      * @return void
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering) {
-        $where.= ' AND p.post_approved = 1';
+        $where.= ' AND p.post_visibility = 1';
         $forum = JFusionFactory::getForum($this->getJname());
         if ($pluginParam->get('forum_mode', 0)) {
             $selected_ids = $pluginParam->get('selected_forums', array());
