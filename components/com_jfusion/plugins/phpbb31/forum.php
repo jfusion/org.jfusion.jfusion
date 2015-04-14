@@ -693,14 +693,14 @@ class JFusionForum_phpbb31 extends JFusionForum
 			$topic_row->topic_poster = $userid;
 			$topic_row->topic_time = $timestamp;
 			$topic_row->forum_id = $forumid;
-			$topic_row->icon_id = false;
-			$topic_row->topic_posts_approved	= 1;
+//default			$topic_row->icon_id = 0;
+			$topic_row->topic_posts_approved = 1;
 			$topic_row->topic_title = $subject;
 			$topic_row->topic_first_poster_name	= $phpbbUser->username;
 			$topic_row->topic_first_poster_colour = $phpbbUser->user_colour;
-			$topic_row->topic_type = 0;
-			$topic_row->topic_time_limit = 0;
-			$topic_row->topic_attachment = 0;
+//default			$topic_row->topic_type = 0;
+//default			$topic_row->topic_time_limit = 0;
+//default			$topic_row->topic_attachment = 0;
 
 			$db->insertObject('#__topics', $topic_row, 'topic_id' );
 
@@ -712,23 +712,23 @@ class JFusionForum_phpbb31 extends JFusionForum
 			$post_row->forum_id			= $forumid;
 			$post_row->topic_id 		= $topicid;
 			$post_row->poster_id		= $userid;
-			$post_row->icon_id			= 0;
+//default			$post_row->icon_id			= 0;
 			$post_row->poster_ip		= $_SERVER['REMOTE_ADDR'];
 			$post_row->post_time		= $timestamp;
 			$post_row->post_visibility	= 1;
-			$post_row->enable_bbcode	= 1;
-			$post_row->enable_smilies	= 1;
-			$post_row->enable_magic_url	= 1;
-			$post_row->enable_sig		= 1;
+//default			$post_row->enable_bbcode	= 1;
+//default			$post_row->enable_smilies	= 1;
+//default			$post_row->enable_magic_url	= 1;
+//default			$post_row->enable_sig		= 1;
 			$post_row->post_username	= $phpbbUser->username;
 			$post_row->post_subject		= $subject;
 			$post_row->post_text		= $bbcode->text;
 			$post_row->post_checksum	= md5($bbcode->text);
-			$post_row->post_attachment	= 0;
+//default			$post_row->post_attachment	= 0;
 			$post_row->bbcode_bitfield	= $bbcode->bbcode_bitfield;
 			$post_row->bbcode_uid		= $bbcode->bbcode_uid;
 			$post_row->post_postcount	= 1;
-			$post_row->post_edit_locked	= 0;
+//default			$post_row->post_edit_locked	= 0;
 
 			$db->insertObject('#__posts', $post_row, 'post_id');
 
@@ -962,23 +962,23 @@ class JFusionForum_phpbb31 extends JFusionForum
 				$post_row->forum_id			= $ids->forumid;
 				$post_row->topic_id 		= $ids->threadid;
 				$post_row->poster_id		= $userid;
-				$post_row->icon_id			= 0;
+//default				$post_row->icon_id			= 0;
 				$post_row->poster_ip		= $_SERVER['REMOTE_ADDR'];
 				$post_row->post_time		= $timestamp;
 				$post_row->post_visibility	= $post_visibility;
-				$post_row->enable_bbcode	= 1;
-				$post_row->enable_smilies	= 1;
-				$post_row->enable_magic_url	= 1;
-				$post_row->enable_sig		= 1;
+//default				$post_row->enable_bbcode	= 1;
+//default				$post_row->enable_smilies	= 1;
+//default				$post_row->enable_magic_url	= 1;
+//default				$post_row->enable_sig		= 1;
 				$post_row->post_username	= $phpbbUser->username;
 				$post_row->post_subject		= 'Re: ' . $topic->topic_title;
 				$post_row->post_text		= $bbcode->text;
 				$post_row->post_checksum	= md5($bbcode->text);
-				$post_row->post_attachment	= 0;
+//default				$post_row->post_attachment	= 0;
 				$post_row->bbcode_bitfield	= $bbcode->bbcode_bitfield;
 				$post_row->bbcode_uid		= $bbcode->bbcode_uid;
 				$post_row->post_postcount	= 1;
-				$post_row->post_edit_locked	= 0;
+//default				$post_row->post_edit_locked	= 0;
 
 				$db->insertObject('#__posts', $post_row, 'post_id');
 
