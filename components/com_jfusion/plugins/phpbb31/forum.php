@@ -108,10 +108,10 @@ class JFusionForum_phpbb31 extends JFusionForum
 			    $db->execute();
 			    $result = $db->loadObject();
 			    if (!empty($result)) {
-				    if ($result->user_avatar_type == 1) {
+				    if ($result->user_avatar_type == 'avatar.driver.upload') {
 					    // AVATAR_UPLOAD
 					    $url = $this->params->get('source_url') . 'download/file.php?avatar=' . $result->user_avatar;
-				    } else if ($result->user_avatar_type == 3) {
+				    } else if ($result->user_avatar_type == 'avatar.driver.local') {
 					    // AVATAR_GALLERY
 					    $query = $db->getQuery(true)
 						    ->select('config_value')
@@ -126,7 +126,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 					    } else {
 						    $url = '';
 					    }
-				    } else if ($result->user_avatar_type == 2) {
+				    } else if ($result->user_avatar_type == 'avatar.driver.remote') {
 					    // AVATAR REMOTE URL
 					    $url = $result->user_avatar;
 				    } else {
