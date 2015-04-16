@@ -26,10 +26,10 @@ echo JFusionFunctionAdmin::getDonationBanner();
 					<div style="float:left;">
 						<div class="icon">
 							<a href="index.php?option=com_jfusion&task=plugineditor&jname=joomla_int" >
-								<img style="width: 64px; height:64px;" src="components/com_jfusion/images/joomla.png">
-	                                <span>
-	                                    <?php echo JText::_('JOOMLA_OPTIONS'); ?>
-	                                </span>
+								<img src="components/com_jfusion/images/64x64/joomla.png">
+                                <span>
+                                    <?php echo JText::_('JOOMLA_OPTIONS'); ?>
+                                </span>
 							</a>
 						</div>
 					</div>
@@ -37,9 +37,9 @@ echo JFusionFunctionAdmin::getDonationBanner();
 						<div class="icon">
 							<a href="index.php?option=com_jfusion&task=plugindisplay" >
 								<img src="components/com_jfusion/images/64x64/settings-3.png">
-	                                <span>
-	                                    <?php echo JText::_('CONFIGURE_PLUGINS'); ?>
-	                                </span>
+                                <span>
+                                    <?php echo JText::_('CONFIGURE_PLUGINS'); ?>
+                                </span>
 							</a>
 						</div>
 					</div>
@@ -47,10 +47,9 @@ echo JFusionFunctionAdmin::getDonationBanner();
 						<div class="icon">
 							<a href="index.php?option=com_jfusion&task=usergroups" >
 								<img src="components/com_jfusion/images/64x64/user-card.png">
-
-	                                <span>
-	                                    <?php echo JText::_('USERGROUPS'); ?>
-	                                </span>
+                                <span>
+                                    <?php echo JText::_('USERGROUPS'); ?>
+                                </span>
 							</a>
 						</div>
 					</div>
@@ -58,9 +57,9 @@ echo JFusionFunctionAdmin::getDonationBanner();
 						<div class="icon">
 							<a href="index.php?option=com_jfusion&task=syncoptions" >
 								<img src="components/com_jfusion/images/64x64/transfer.png">
-	                                <span>
-	                                    <?php echo JText::_('NEW_USER_SYNC'); ?>
-	                                </span>
+                                <span>
+                                    <?php echo JText::_('NEW_USER_SYNC'); ?>
+                                </span>
 							</a>
 						</div>
 					</div>
@@ -68,9 +67,9 @@ echo JFusionFunctionAdmin::getDonationBanner();
 						<div class="icon">
 							<a href="index.php?option=com_jfusion&task=synchistory" >
 								<img src="components/com_jfusion/images/64x64/document.png">
-	                                <span>
-	                                    <?php echo JText::_('USER_SYNC_HISTORY'); ?>
-	                                </span>
+                                <span>
+                                    <?php echo JText::_('USER_SYNC_HISTORY'); ?>
+                                </span>
 							</a>
 						</div>
 					</div>
@@ -79,9 +78,9 @@ echo JFusionFunctionAdmin::getDonationBanner();
 						<div class="icon">
 							<a href="index.php?option=com_jfusion&task=loginchecker" >
 								<img src="components/com_jfusion/images/64x64/watch.png">
-	                                <span>
-	                                    <?php echo JText::_('CP_LOGIN_CHECKER'); ?>
-	                                </span>
+                                <span>
+                                    <?php echo JText::_('CP_LOGIN_CHECKER'); ?>
+                                </span>
 							</a>
 						</div>
 					</div>
@@ -89,9 +88,9 @@ echo JFusionFunctionAdmin::getDonationBanner();
 						<div class="icon">
 							<a href="index.php?option=com_jfusion&task=configdump" >
 								<img src="components/com_jfusion/images/64x64/print.png">
-	                                <span>
-	                                    <?php echo JText::_('CONFIG_DUMP'); ?>
-	                                </span>
+                                <span>
+                                    <?php echo JText::_('CONFIG_DUMP'); ?>
+                                </span>
 							</a>
 						</div>
 					</div>
@@ -119,9 +118,9 @@ echo JFusionFunctionAdmin::getDonationBanner();
 						<div class="icon">
 							<a href="http://support.jfusion.org" >
 								<img src="components/com_jfusion/images/64x64/headphones.png">
-	                                <span>
-	                                    <?php echo JText::_('CP_HELP'); ?>
-	                                </span>
+                                <span>
+                                    <?php echo JText::_('CP_HELP'); ?>
+                                </span>
 							</a>
 						</div>
 					</div>
@@ -129,9 +128,9 @@ echo JFusionFunctionAdmin::getDonationBanner();
 						<div class="icon">
 							<a href="http://www.jfusion.org/docs" >
 								<img src="components/com_jfusion/images/64x64/book.png">
-	                                <span>
-	                                    <?php echo JText::_('DOCUMENTATION'); ?>
-	                                </span>
+                                <span>
+                                    <?php echo JText::_('DOCUMENTATION'); ?>
+                                </span>
 							</a>
 						</div>
 					</div>
