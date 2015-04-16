@@ -89,20 +89,20 @@ class JFusionForum_phpbb31 extends JFusionForum
     }
 
     /**
-     * @param int $puser_id
+     * @param int $userid
      *
      * @return int|string
      */
-    function getAvatar($puser_id) {
+    function getAvatar($userid) {
 	    $url = false;
 	    try {
-		    if ($puser_id) {
+		    if ($userid) {
 			    $db = JFusionFactory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
 				    ->select('user_avatar, user_avatar_type')
 				    ->from('#__users')
-				    ->where('user_id = ' . (int)$puser_id);
+				    ->where('user_id = ' . (int)$userid);
 
 			    $db->setQuery($query);
 			    $db->execute();
