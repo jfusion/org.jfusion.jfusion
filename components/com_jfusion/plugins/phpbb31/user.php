@@ -208,6 +208,7 @@ class JFusionUser_phpbb31 extends JFusionUser
 							chdir($source_path);
 							/* set scope for variables required later */
 							global $phpbb_root_path, $phpEx, $db, $config, $user, $auth, $cache, $template, $phpbb_hook, $module, $mode;
+							global $SID, $_SID, $_EXTRA_URL, $request, $phpbb_container;
 							if (!defined('UTF8_STRLEN')) {
 								define('UTF8_STRLEN', true);
 							}
