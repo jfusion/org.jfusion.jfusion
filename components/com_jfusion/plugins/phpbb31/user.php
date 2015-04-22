@@ -245,6 +245,10 @@ class JFusionUser_phpbb31 extends JFusionUser
 							}
 							//change the current directory back to Joomla.
 							chdir(JPATH_SITE);
+
+							if ($request) {
+								$request->enable_super_globals();
+							}
 						} else {
 							throw new RuntimeException(JText::sprintf('UNABLE_TO_FIND_FILE', 'common.php'));
 						}
