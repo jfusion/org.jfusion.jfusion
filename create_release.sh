@@ -7,6 +7,7 @@ createxml(){
 	sed "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>${TIMESTAMP}<\/timestamp>/g" ${FILE}.tmp > ${FILE}.xml
 	rm ${FILE}.tmp
 }
+
 createpackage(){
 	TARGETPATH=$1
 	TARGETDEST=$2
@@ -30,7 +31,7 @@ createpackage(){
 		  cd ${FULLPATH}/tmppackage
 			${ZIPCMD} -r ${FULLPATH}/${TARGETDEST} . -x *.svn*  > /dev/null
 		else
-			${ZIPCMD} a "${REVISION}/${TARGETDEST}" ${FULLPATH}/tmppackage/* -xr!*.svn* > /dev/null
+			${ZIPCMD} a "${FULLPATH}/${TARGETDEST}" ${FULLPATH}/tmppackage/* -xr!*.svn* > /dev/null
 		fi
 	rm -r ${FULLPATH}/tmppackage
 	
@@ -61,12 +62,15 @@ TIMESTAMP=$(date +%s)
 case $1 in
 	clear_packages)
 		echo "delete old package zip files"
+
 		rm ${FULLPATH}/administrator/components/com_jfusion/packages/*.zip
 
 		;;
 	clear_main)
 		echo "delete old main zip files"
-       	rm ${FULLPATH}/*.zip
+       	if [ -a "${FULLPATH}/jfusion_package.zip" ]; then
+   			rm ${FULLPATH}/jfusion_package.zip
+		fi
 
 		;;
 	clear)
@@ -155,7 +159,7 @@ case $1 in
 			cd tmp
 			${ZIPCMD} -r ${FULLPATH}/jfusion_package.zip . > /dev/null
 		else
-			${ZIPCMD} a "${REVISION}/jfusion_package.zip" ${FULLPATH}/tmp/* -xr!*.svn* > /dev/null
+			${ZIPCMD} a "${FULLPATH}/jfusion_package.zip" ${FULLPATH}/tmp/* -xr!*.svn* > /dev/null
 		fi
 	
 		echo "Remove temporary files"
@@ -170,7 +174,7 @@ case $1 in
 		;;
 
 	*)
-		echo "Usage ${REVISION}/create_package.sh {clear_packages|clear_main|clear|create_main|create_packages|create}"
+		echo "Usage ${FULLPATH}/create_package.sh {clear_packages|clear_main|clear|create_main|create_packages|create}"
 		;;
 esac
 
