@@ -15,9 +15,10 @@
     <update>http://update.jfusion.org/jfusion/joomla/</update>
 
     <files>
+        <folder>utf</folder>
+        <folder>jfusion</folder>
         <filename>admin.php</filename>
         <filename>auth.php</filename>
-        <filename>auth_jfusion.php</filename>
         <filename>forum.php</filename>
         <filename>hooks.php</filename>
         <filename>index.html</filename>
@@ -26,7 +27,6 @@
         <filename>search.xml</filename>
         <filename>user.php</filename>
         <filename>helper.php</filename>
-        <folder>utf</folder>
     </files>
 
     <form>
