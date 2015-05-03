@@ -1,5 +1,6 @@
 <?php
 
+use JFusion\Config;
 use JFusion\Factory;
 use JFusion\User\Userinfo;
 
@@ -82,7 +83,7 @@ class JFusionFunction
 			$source_url = $params->get('source_url');
 			$url = str_replace($source_url, '', $url);
 
-			$config = Factory::getConfig();
+			$config = Config::get();
 			$sefenabled = $config->get('sef');
 			$params = Factory::getParams($jname);
 			$sefmode = $params->get('sefmode', 1);

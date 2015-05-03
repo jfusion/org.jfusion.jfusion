@@ -588,7 +588,7 @@ class JFusionDiscussBotHelper {
 	}
 
 	/**
-	 * @internal @var $platform \JFusion\Plugin\Platform\Joomla
+	 * @var $platform \JFusion\Plugin\Platform\Joomla
 	 */
 	public function loadScripts()
 	{
