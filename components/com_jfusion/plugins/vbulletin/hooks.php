@@ -481,6 +481,7 @@ class executeJFusionHook
 		        $JFusionActivePlugin =  _VBJNAME;
 	        }
             // logout any joomla users
+	        JPluginHelper::importPlugin('authentication');
             $mainframe->logout();
             // clean up session
             $session = JFactory::getSession();
