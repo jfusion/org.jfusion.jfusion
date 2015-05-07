@@ -52,7 +52,8 @@ class JFusionFrameless {
 		$query = $uri->getQuery ();
 		$url = $uri->current ();
 		$data->fullURL = $query ? $url . '?' . $query : $url;
-		$data->fullURL = str_replace('&', '&amp;', $data->fullURL);
+		//htmlspecialchars needed to prevent potentual security problems
+		$data->fullURL = htmlspecialchars($data->fullURL);
 
 		/**
 		 * @ignore
