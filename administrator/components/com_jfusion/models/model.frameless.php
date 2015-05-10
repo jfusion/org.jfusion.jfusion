@@ -192,7 +192,7 @@ class JFusionFrameless {
 		$REQUEST = $_REQUEST; // backup variables
 
 		$platform->data = $data;
-		$platform->getBuffer($data);
+		$platform->getBuffer();
 
 		$_REQUEST = $REQUEST; // restore backup
 
@@ -200,50 +200,50 @@ class JFusionFrameless {
 		$session->set('session.token', $token);
 
 		//clear the page title
-		if (!empty($data->buffer)) {
+		if (!empty($platform->data->buffer)) {
 			$document->setTitle('');
 		}
 
 		//check to see if the Joomla database is still connected in case the plugin messed it up
 		JFusionFunction::reconnectJoomlaDb();
 
-		if ($data->buffer === 0) {
+		if ($platform->data->buffer === 0) {
 			throw new RuntimeException(JText::_('NO_FRAMELESS'));
 		}
 
-		if (! $data->buffer) {
+		if (!$platform->data->buffer) {
 			throw new RuntimeException(JText::_('NO_BUFFER'));
 		}
 
-		$data->buffer = static::parseEncoding($data->buffer);
+		$platform->data->buffer = static::parseEncoding($platform->data->buffer);
 
 		//we set the backtrack_limit to twice the buffer length just in case!
 		$backtrack_limit = ini_get ('pcre.backtrack_limit');
-		ini_set('pcre.backtrack_limit', strlen($data->buffer) * 2);
+		ini_set('pcre.backtrack_limit', strlen($platform->data->buffer) * 2);
 
-		$platform->parseBuffer($data);
+		$platform->parseBuffer();
 
 		// Check if we found something
-		if (!strlen($data->header) || !strlen($data->body)) {
-			if (!empty($data->buffer)) {
+		if (!strlen($platform->data->header) || !strlen($platform->data->body)) {
+			if (!empty($platform->data->buffer)) {
 				//non html output, return without parsing
-				die($data->buffer);
+				die($platform->data->buffer);
 			} else {
-				unset($data->buffer);
+				unset($platform->data->buffer);
 				//no output returned
 				throw new RuntimeException(JText::_ ('NO_HTML'));
 			}
 		}
 		else {
-			unset($data->buffer);
+			unset($platform->data->buffer);
 			// Add the header information
-			if (isset($data->header)) {
+			if (isset($platform->data->header)) {
 				$regex_header = array();
 				$replace_header = array();
 
 				//change the page title
 				$pattern = '#<title>(.*?)<\/title>#si';
-				preg_match($pattern, $data->header, $page_title);
+				preg_match($pattern, $platform->data->header, $page_title);
 
 				$document->setTitle(html_entity_decode($page_title [1], ENT_QUOTES, 'utf-8'));
 
@@ -255,7 +255,7 @@ class JFusionFrameless {
 
 				foreach ($meta as $m) {
 					$pattern = '#<meta name=["|\']' . $m . '["|\'](.*?)content=["|\'](.*?)["|\'](.*?)>#Si';
-					if (preg_match($pattern, $data->header, $page_meta)) {
+					if (preg_match($pattern, $platform->data->header, $page_meta)) {
 						if ($page_meta [2]) {
 							$document->setMetaData($m, $page_meta[2]);
 						}
@@ -265,7 +265,7 @@ class JFusionFrameless {
 				}
 
 				$pattern = '#<meta name=["|\']generator["|\'](.*?)content=["|\'](.*?)["|\'](.*?)>#Si';
-				if (preg_match($pattern, $data->header, $page_generator)) {
+				if (preg_match($pattern, $platform->data->header, $page_generator)) {
 					if ($page_generator [2]) {
 						$document->setGenerator($document->getGenerator () . ', ' . $page_generator[2]);
 					}
@@ -278,23 +278,23 @@ class JFusionFrameless {
 				$replace_header [] = '';
 
 				//remove above set meta data from software's header
-				$data->header = preg_replace($regex_header, $replace_header, $data->header);
+				$platform->data->header = preg_replace($regex_header, $replace_header, $platform->data->header);
 
-				$platform->parseHeader($data);
+				$platform->parseHeader();
 
-				if ($data->default_css) {
+				if ($platform->data->default_css) {
 					$document->addStyleSheet(JUri::base() . '/components/com_jfusion/css/default.css');
 				}
-				if ($data->default_css_overflow) {
-					$style = 'style="overflow: ' . $data->default_css_overflow . ';"';
-					$data->style = $style;
+				if ($platform->data->default_css_overflow) {
+					$style = 'style="overflow: ' . $platform->data->default_css_overflow . ';"';
+					$platform->data->style = $style;
 				} else {
-					$data->style = '';
+					$platform->data->style = '';
 				}
 
-				$platform->parseCSS($data, $data->header);
+				$platform->parseCSS($data->header);
 
-				$document->addCustomTag($data->header);
+				$document->addCustomTag($platform->data->header);
 
 				$pathway = $platform->getPathWay();
 				if (is_array($pathway)) {
@@ -306,15 +306,15 @@ class JFusionFrameless {
 			}
 
 			// Output the body
-			if (isset($data->body)) {
-				$platform->parseCSS($data, $data->body, true);
+			if (isset($platform->data->body)) {
+				$platform->parseCSS($platform->data->body, true);
 
 				// parse the URL's'
-				$platform->parseBody($data);
+				$platform->parseBody();
 			}
 
-			foreach($data->css->files as $key => $file) {
-				$document->addStyleSheet($file, 'text/css', $data->css->media[$key]);
+			foreach($platform->data->css->files as $key => $file) {
+				$document->addStyleSheet($file, 'text/css', $platform->data->css->media[$key]);
 			}
 
 			//set the base href (commented out by mariusvr as this caused errors for people using IE)
