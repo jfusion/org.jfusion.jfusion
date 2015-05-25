@@ -113,26 +113,6 @@ case $1 in
                			fi
         			fi
 				done
-
-
-#				createpackage components/com_jfusion/plugins/dokuwiki/ pluginpackages/jfusion_dokuwiki.zip
-#				createpackage components/com_jfusion/plugins/efront/ pluginpackages/jfusion_efront.zip
-#				createpackage components/com_jfusion/plugins/elgg/ pluginpackages/jfusion_elgg.zip
-#				createpackage components/com_jfusion/plugins/gallery2/ pluginpackages/jfusion_gallery2.zip
-#				createpackage components/com_jfusion/plugins/joomla_ext/ pluginpackages/jfusion_joomla_ext.zip
-#				createpackage components/com_jfusion/plugins/joomla_int/ pluginpackages/jfusion_joomla_int.zip
-#				createpackage components/com_jfusion/plugins/magento/ pluginpackages/jfusion_magento.zip
-#				createpackage components/com_jfusion/plugins/mediawiki/ pluginpackages/jfusion_mediawiki.zip
-#				createpackage components/com_jfusion/plugins/moodle/ pluginpackages/jfusion_moodle.zip
-#				createpackage components/com_jfusion/plugins/mybb/ pluginpackages/jfusion_mybb.zip
-#				createpackage components/com_jfusion/plugins/oscommerce/ pluginpackages/jfusion_oscommerce.zip
-#				createpackage components/com_jfusion/plugins/phpbb3/ pluginpackages/jfusion_phpbb3.zip
-#				createpackage components/com_jfusion/plugins/prestashop/ pluginpackages/jfusion_prestashop.zip
-#				createpackage components/com_jfusion/plugins/smf/ pluginpackages/jfusion_smf.zip
-#				createpackage components/com_jfusion/plugins/smf2/ pluginpackages/jfusion_smf2.zip
-#				createpackage components/com_jfusion/plugins/universal/ pluginpackages/jfusion_universal.zip
-#				createpackage components/com_jfusion/plugins/vbulletin/ pluginpackages/jfusion_vbulletin.zip
-#				createpackage components/com_jfusion/plugins/wordpress/ pluginpackages/jfusion_wordpress.zip
 		;;
 	create_main)
 		$0 clear_main
