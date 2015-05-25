@@ -82,39 +82,39 @@ case $1 in
 		
 		#login module has folders thus has to be treated differently
 
-				createpackage modules/mod_jfusion_login/ administrator/components/com_jfusion/packages/jfusion_mod_login.zip mod_jfusion_login
-				createpackage modules/mod_jfusion_activity/ administrator/components/com_jfusion/packages/jfusion_mod_activity.zip mod_jfusion_activity
-				createpackage modules/mod_jfusion_whosonline/ administrator/components/com_jfusion/packages/jfusion_mod_whosonline.zip mod_jfusion_whosonline
-				createpackage modules/mod_jfusion_user_activity/ administrator/components/com_jfusion/packages/jfusion_mod_user_activity.zip mod_jfusion_user_activity
+		createpackage modules/mod_jfusion_login/ administrator/components/com_jfusion/packages/jfusion_mod_login.zip mod_jfusion_login
+		createpackage modules/mod_jfusion_activity/ administrator/components/com_jfusion/packages/jfusion_mod_activity.zip mod_jfusion_activity
+		createpackage modules/mod_jfusion_whosonline/ administrator/components/com_jfusion/packages/jfusion_mod_whosonline.zip mod_jfusion_whosonline
+		createpackage modules/mod_jfusion_user_activity/ administrator/components/com_jfusion/packages/jfusion_mod_user_activity.zip mod_jfusion_user_activity
 
-				createpackage plugins/authentication/ administrator/components/com_jfusion/packages/jfusion_plugin_auth.zip
-				createpackage plugins/user/ administrator/components/com_jfusion/packages/jfusion_plugin_user.zip
-				createpackage plugins/search/ administrator/components/com_jfusion/packages/jfusion_plugin_search.zip
-				createpackage plugins/content/ administrator/components/com_jfusion/packages/jfusion_plugin_content.zip
-				createpackage "plugins/system/jfusion.*" administrator/components/com_jfusion/packages/jfusion_plugin_system.zip
-				
-				
-				createpackage modules/mod_jfusion_magecart/ side_projects/magento/jfusion_mod_magecart.zip mod_jfusion_magecart
-				createpackage modules/mod_jfusion_mageselectblock/ side_projects/magento/jfusion_mod_mageselectblock.zip mod_jfusion_mageselectblock
-				createpackage modules/mod_jfusion_magecustomblock/ side_projects/magento/jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
-				createpackage "plugins/system/magelib.*" side_projects/magento/jfusion_plugin_magelib.zip magelib
+		createpackage plugins/authentication/ administrator/components/com_jfusion/packages/jfusion_plugin_auth.zip
+		createpackage plugins/user/ administrator/components/com_jfusion/packages/jfusion_plugin_user.zip
+		createpackage plugins/search/ administrator/components/com_jfusion/packages/jfusion_plugin_search.zip
+		createpackage plugins/content/ administrator/components/com_jfusion/packages/jfusion_plugin_content.zip
+		createpackage "plugins/system/jfusion.*" administrator/components/com_jfusion/packages/jfusion_plugin_system.zip
 
-				cd  ${FULLPATH}
-				if [ -d "pluginpackages" ]; then
-					rm  pluginpackages -R
-        		fi
-				mkdir pluginpackages
 
-				for i in components/com_jfusion/plugins/*
-				do
-        			if [ -d "$i" ]; then
-        				if [ -e ${i}/jfusion.xml ]; then
-                			createpackage ${i}"/" pluginpackages/jfusion_$(basename "$i").zip
-               			else
-               				echo Error: ${i}/jfusion.xml was not found
-               			fi
-        			fi
-				done
+		createpackage modules/mod_jfusion_magecart/ side_projects/magento/jfusion_mod_magecart.zip mod_jfusion_magecart
+		createpackage modules/mod_jfusion_mageselectblock/ side_projects/magento/jfusion_mod_mageselectblock.zip mod_jfusion_mageselectblock
+		createpackage modules/mod_jfusion_magecustomblock/ side_projects/magento/jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
+		createpackage "plugins/system/magelib.*" side_projects/magento/jfusion_plugin_magelib.zip magelib
+
+		cd  ${FULLPATH}
+		if [ -d "pluginpackages" ]; then
+			rm  pluginpackages -R
+		fi
+		mkdir pluginpackages
+
+		for i in components/com_jfusion/plugins/*
+		do
+			if [ -d "$i" ]; then
+				if [ -e ${i}/jfusion.xml ]; then
+					createpackage ${i}"/" pluginpackages/jfusion_$(basename "$i").zip
+				else
+					echo Error: ${i}/jfusion.xml was not found
+				fi
+			fi
+		done
 		;;
 	create_main)
 		$0 clear_main
