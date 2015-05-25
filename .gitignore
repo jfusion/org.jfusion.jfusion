@@ -1,6 +1,7 @@
 .project
 .buildpath
 .idea
+*.zip
 
 composer.phar
 vendor/
