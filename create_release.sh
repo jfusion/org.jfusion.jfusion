@@ -65,7 +65,9 @@ case $1 in
 		;;
 	clear_main)
 		echo "delete old main zip files"
-		rm $FULLPATH/*.zip
+       	if [ -a "${FULLPATH}/jfusion_package.zip" ]; then
+   			rm ${FULLPATH}/jfusion_package.zip
+		fi
 
 		;;
 	clear)
