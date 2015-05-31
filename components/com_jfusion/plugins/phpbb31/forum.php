@@ -747,7 +747,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 			$db->updateObject('#__topics', $topic_row, 'topic_id' );
 
 			$query = $db->getQuery(true)
-				->select('forum_last_post_time, forum_topics, forum_topics_real, forum_posts')
+				->select('forum_last_post_time, forum_topics_approved, forum_posts_approved')
 				->from('#__forums')
 				->where('forum_id = ' . $forumid);
 
@@ -773,9 +773,8 @@ class JFusionForum_phpbb31 extends JFusionForum
 			}
 
 			$forum_stats->forum_id 			= $forumid;
-			$forum_stats->forum_topics 		= $num->forum_topics + 1;
-			$forum_stats->forum_topics_real = $num->forum_topics_real + 1;
-			$forum_stats->forum_posts 		= $num->forum_posts + 1;
+			$forum_stats->forum_topics_approved 		= $num->forum_topics_approved + 1;
+			$forum_stats->forum_posts_approved 		= $num->forum_posts_approved + 1;
 
 			$db->updateObject('#__forums', $forum_stats, 'forum_id' );
 
@@ -1000,7 +999,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 					$db->updateObject('#__topics', $topic_row, 'topic_id' );
 
 					$query = $db->getQuery(true)
-						->select('forum_posts')
+						->select('forum_posts_approved')
 						->from('#__forums')
 						->where('forum_id = ' . $ids->forumid);
 
@@ -1014,19 +1013,18 @@ class JFusionForum_phpbb31 extends JFusionForum
 					$forum_stats->forum_last_poster_id 		= (int) $userid;
 					$forum_stats->forum_last_poster_name 	= $phpbbUser->username;
 					$forum_stats->forum_last_poster_colour 	= $phpbbUser->user_colour;
-					$forum_stats->forum_posts				= $num->forum_posts + 1;
+					$forum_stats->forum_posts_approved		= $num->forum_posts_approved + 1;
 					$forum_stats->forum_id 					= $ids->forumid;
 
 					$query = $db->getQuery(true)
-						->select('forum_topics, forum_topics_real, forum_posts')
+						->select('forum_topics_approved, forum_posts_approved')
 						->from('#__forums')
 						->where('forum_id = ' . $ids->forumid);
 
 					$db->setQuery($query);
 					$num = $db->loadObject();
-					$forum_stats->forum_topics = $num->forum_topics + 1;
-					$forum_stats->forum_topics_real = $num->forum_topics_real + 1;
-					$forum_stats->forum_posts = $num->forum_posts + 1;
+					$forum_stats->forum_topics_approved = $num->forum_topics_approved + 1;
+					$forum_stats->forum_posts_approved = $num->forum_posts_approved + 1;
 					$db->updateObject('#__forums', $forum_stats, 'forum_id' );
 
 					//update some stats
