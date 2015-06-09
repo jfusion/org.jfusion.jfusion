@@ -698,6 +698,7 @@ class JFusionForum_phpbb31 extends JFusionForum
 			$topic_row->topic_title = $subject;
 			$topic_row->topic_first_poster_name	= $phpbbUser->username;
 			$topic_row->topic_first_poster_colour = $phpbbUser->user_colour;
+			$topic_row->topic_visibility = 1;
 //default			$topic_row->topic_type = 0;
 //default			$topic_row->topic_time_limit = 0;
 //default			$topic_row->topic_attachment = 0;
