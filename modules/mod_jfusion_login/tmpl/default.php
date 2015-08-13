@@ -37,7 +37,7 @@ if (JPluginHelper::isEnabled('authentication', 'openid')) {
 	JHTML::_('script', 'openid.js');
 }
 ?>
-<form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post" name="login" id="login-form" >
+<form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post" name="login" id="login-form" class="form-inline" >
 	<?php if ($params->get('pretext')) : ?>
 		<div class="pretext">
 			<p><?php echo $params->get('pretext'); ?></p>
@@ -118,7 +118,7 @@ if (JPluginHelper::isEnabled('authentication', 'openid')) {
 		</div>
 
 		<?php if ($params->get('lostpassword_show') || $params->get('lostusername_show') || $params->get('register_show')) : ?>
-			<ul>
+			<ul class="unstyled">
 				<?php if ($params->get('lostpassword_show')) : ?>
 					<li>
 						<a href="<?php echo $lostpassword_url; ?>"><?php echo JText::_('FORGOT_YOUR_PASSWORD'); ?></a>
