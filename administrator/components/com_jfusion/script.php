@@ -419,7 +419,7 @@ HTML;
 		}
 
 		$jfusion_plugins = array();
-		$jfusion_plugins['joomla_int'] = 'jomla_int';
+		$jfusion_plugins['joomla_int'] = 'joomla_int';
 		$jfusion_plugins['dokuwiki'] = 'A standards compliant, simple to use Wiki.';
 		$jfusion_plugins['efront'] = 'A modern learning system, bundled with key enterprise functionality.';
 		$jfusion_plugins['elgg'] = 'A leading open source social networking engine.';
