@@ -122,7 +122,7 @@ JS;
 
 	        parent::display();
         } else {
-            \JFusion\Framework::raise(LogLevel::WARNING, JText::_('NO_JFUSION_TABLE'));
+            \JFusion\Framework::raise(LogLevel::WARNING, JText::_('CONFIG_FIRST'));
         }
     }
 }
