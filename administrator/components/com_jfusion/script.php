@@ -240,7 +240,7 @@ class com_jfusionInstallerScript
 		$this->_uninstallPlugin('module', 'mod_jfusion_whosonline', '', 'JFusion Whos Online Module');
 
 		//see if any mods from jfusion plugins need to be removed
-		$plugins = \JFusion\Factory::getPlugins('all', true, false);
+		$plugins = \JFusion\Factory::getPlugins('all', 'joomla_int', 0);
 		foreach($plugins as $plugin) {
 			$model = new JFusionModelInstaller();
 			$result = $model->uninstall($plugin->name);
