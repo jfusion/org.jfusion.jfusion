@@ -344,7 +344,7 @@ class JFusionDiscussBotHelper {
                                     if ($this->isJ16) {
                                         //Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
                                         $catid =& $this->article->catid;
-                                        $JCat =& JCategories::getInstance('Content');
+                                        $JCat = JCategories::getInstance('Content');
                                         /**
                                          * @ignore
                                          * @var $cat JCategoryNode
