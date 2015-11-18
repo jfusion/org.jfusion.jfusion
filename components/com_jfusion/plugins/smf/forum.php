@@ -509,7 +509,7 @@ class JFusionForum_smf extends JFusionForum
 		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
         $timestamp = time();
-        $userid = $dbparams->get('default_user');
+        $userid = $dbparams->get('default_userid');
         $query = 'SELECT memberName FROM #__members WHERE ID_MEMBER = '.$userid;
         $jdb->setQuery($query);
         $smfUser = $jdb->loadObject();

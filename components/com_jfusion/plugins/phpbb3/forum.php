@@ -674,7 +674,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
         $bbcode = $helper->bbcode_parser($text);
 
         $timestamp = $dbparams->get('use_content_created_date', false) ? JFactory::getDate($contentitem->created)->toUnix() : time();
-		$userid = $dbparams->get('default_user');
+		$userid = $dbparams->get('default_userid');
 
 		$query = 'SELECT post_edit_count FROM #__posts WHERE post_id = '.$postid;
 		$jdb->setQuery($query);
