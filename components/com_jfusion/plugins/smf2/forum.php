@@ -623,7 +623,7 @@ HTML;
 					$query = $db->getQuery(true)
 						->select('num_posts')
 						->from('#__boards')
-						->where('id_member = ' . $db->quote($ids->forumid));
+						->where('id_board = ' . $db->quote($ids->forumid));
 
 					$db->setQuery($query);
 					$num = $db->loadObject();
