@@ -153,14 +153,20 @@ class JFusionForum_mybb extends JFusionForum {
      * @return string
      */
     function getAvatar($userid) {
+	    $url = '';
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
         // read unread count
         $db->setQuery('SELECT avatar FROM #__users WHERE uid = ' . (int)$userid);
         $avatar = $db->loadResult();
-        $avatar = substr($avatar, 2);
-        $params = JFusionFactory::getParams($this->getJname());
-        $url = $params->get('source_url') . $avatar;
+	    if (!empty($avatar)) {
+		    $avatar = substr($avatar, 2);
+		    if (!empty($avatar))
+		    {
+			    $params = JFusionFactory::getParams($this->getJname());
+			    $url = $params->get('source_url') . $avatar;
+		    }
+	    }
         return $url;
     }
 }
