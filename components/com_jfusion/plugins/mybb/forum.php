@@ -228,6 +228,7 @@ class JFusionForum_mybb extends JFusionForum {
      * @return string
      */
     function getAvatar($userid) {
+	    $url = '';
 	    try {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -240,12 +241,14 @@ class JFusionForum_mybb extends JFusionForum {
 
 		    $db->setQuery($query);
 		    $avatar = $db->loadResult();
-		    $avatar = substr($avatar, 2);
-
-		    $url = $this->params->get('source_url') . $avatar;
+		    if (!empty($avatar)) {
+			    $avatar = substr($avatar, 2);
+			    if (!empty($avatar)) {
+			        $url = $this->params->get('source_url') . $avatar;
+			    }
+		    }
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
-		    $url = '';
 	    }
         return $url;
     }
