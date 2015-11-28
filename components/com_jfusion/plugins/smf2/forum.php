@@ -430,7 +430,7 @@ class JFusionForum_smf2 extends JFusionForum
 			$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
 	        $timestamp = time();
-			$userid = $dbparams->get('default_user');
+			$userid = $dbparams->get('default_userid');
 
 			if ($userid) {
 				$query = $db->getQuery(true)
@@ -552,9 +552,9 @@ HTML;
 				//get some topic information
 				$query = $db->getQuery(true)
 					->select('t.id_first_msg , t.num_replies, m.subject')
-					->from('#__messages')
+					->from('#__messages as m')
 					->innerJoin('#__topics as t ON t.id_topic = m.id_topic')
-					->where('id_topic = ' . $db->quote($ids->threadid))
+					->where('t.id_topic = ' . $db->quote($ids->threadid))
 					->where('m.id_msg = t.id_first_msg');
 
 				$db->setQuery($query);
@@ -623,7 +623,7 @@ HTML;
 					$query = $db->getQuery(true)
 						->select('num_posts')
 						->from('#__boards')
-						->where('id_member = ' . $db->quote($ids->forumid));
+						->where('id_board = ' . $db->quote($ids->forumid));
 
 					$db->setQuery($query);
 					$num = $db->loadObject();

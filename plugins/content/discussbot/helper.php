@@ -336,7 +336,8 @@ class JFusionDiscussBotHelper {
 			}
 
 			//make sure there is a default user set
-			if ($this->params->get('default_userid', false) === false) {
+			$default_userid = $this->params->get('default_userid', false);
+			if (empty($default_userid)) {
 				$responce = array(0, JText::_('REASON_NO_DEFAULT_USER'));
 			} else {
 				$JFusionForum = JFusionFactory::getForum($this->jname);
