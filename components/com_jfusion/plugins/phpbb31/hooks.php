@@ -156,14 +156,14 @@ class JFusionHook {
 
 	    $get_vars = array();
 	    foreach ($list as $var) {
-		    $get_vars[$var] = $request->variable($var, null, false, \phpbb\request\request_interface::GET);
+		    $get_vars[$var] = $request->variable($var, "", false, \phpbb\request\request_interface::GET);
 	    }
 
 	    //Some params where changed to POST therefore we need to include some of those
         $post_include = array('i', 'mode');
         foreach ($post_include as $value) {
 			if ($request->is_set_post($value) && empty($get_vars[$value])) {
-	            $get_vars[$value] = $request->variable($value, null, false, \phpbb\request\request_interface::POST);
+	            $get_vars[$value] = $request->variable($value, "", false, \phpbb\request\request_interface::POST);
             }
         }
         //unset Joomla vars
@@ -171,7 +171,7 @@ class JFusionHook {
         $safeHtmlFilter = JFilterInput::getInstance(array(), array(), 1, 1);
         $query_array = array();
         foreach ($get_vars as $key => $value) {
-            $query_array[] = $safeHtmlFilter->clean($key, gettype($key)) . '=' . $safeHtmlFilter->clean($value, gettype($value));
+        	$query_array[] = $key . '=' . $value;
         }
         $query_string = implode('&', $query_array);
         $user->page['query_string'] = $query_string;
