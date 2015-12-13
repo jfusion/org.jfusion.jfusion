@@ -168,7 +168,6 @@ class JFusionHook {
         }
         //unset Joomla vars
         unset($get_vars['option'], $get_vars['Itemid'], $get_vars['jFusion_Route'], $get_vars['jfile']);
-        $safeHtmlFilter = JFilterInput::getInstance(array(), array(), 1, 1);
         $query_array = array();
         foreach ($get_vars as $key => $value) {
         	$query_array[] = $key . '=' . $value;
