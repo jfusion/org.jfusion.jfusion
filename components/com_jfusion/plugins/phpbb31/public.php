@@ -426,10 +426,6 @@ class JFusionPublic_phpbb31 extends JFusionPublic
             $regex_body[] = '#action="(.*?)"(.*?)>#m';
             $replace_body[] = ''; //$this->fixAction('$1', '$2', "' . $data->baseURL . '")';
             $callback_function[] = 'fixAction';   
-            //convert relative popup links to full url links
-            $regex_body[] = '#popup\(\'[\.\/].*?(.*?)\'#mS';
-            $replace_body[] = 'popup(\'' . $data->integratedURL . '$1\'';
-            $callback_function[] = '';    
             //fix for mcp links
 	        $mainframe = JFusionFactory::getApplication();
             $jfile = $mainframe->input->get('jfile');
@@ -728,14 +724,6 @@ class JFusionPublic_phpbb31 extends JFusionPublic
             $regex_header[] = '#<meta http-equiv="refresh" content="(.*?)"(.*?)>#m';
             $replace_header[] = '';
             $callback_header[] = 'fixRedirect';
-            //fix pm popup URL to be absolute for some phpBB templates
-            $regex_header[] = '#var url = \'[\.\/].*?(.*?)\';#mS';
-            $replace_header[] = 'var url = \'{$data->integratedURL}$1\';';
-            $callback_header[] = '';
-            //convert relative popup links to full url links
-            $regex_header[] = '#popup\(\'[\.\/].*?(.*?)\'#mS';
-            $replace_header[] = 'popup(\'' . $data->integratedURL . '$1\'';
-            $callback_header[] = '';
         }
 
         /**
