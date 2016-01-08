@@ -418,7 +418,8 @@ class JFusionPublic_phpbb31 extends JFusionPublic
             
             //convert relative links from images into absolute links
 
-            $regex_body[] = '#(src="|background="|url\(\'?)[\.\/].*?(.*?)("|\'?\))#mS';
+            $regex_body[] = '#(src="|background="|url\(\'?)[\.\/]*([^:]*?)(["\'\)]+)#mS';
+            
             $replace_body[] = '$1' . $data->integratedURL . '$2$3';
             $callback_function[] = '';
             //fix for form actions
@@ -720,7 +721,7 @@ class JFusionPublic_phpbb31 extends JFusionPublic
             $replace_header = array();
             $callback_header = array();
             //convert relative links into absolute links
-            $regex_header[] = '#(href="|src=")[\.\/].*?(.*?")#mS';
+            $regex_header[] = '#(href="|src=")[\.\/]+(.*?")#mS';
             $replace_header[] = '$1' . $data->integratedURL . '$2';
             $callback_header[] = '';
             //fix for URL redirects
