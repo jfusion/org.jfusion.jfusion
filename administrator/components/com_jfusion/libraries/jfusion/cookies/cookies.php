@@ -40,44 +40,30 @@ class JFusionCookies {
      *
      * @return array Cookie debug info
      */
-    function addCookie($cookie_name, $cookie_value = '', $cookie_expires_time = 0, $cookiepath = '', $cookiedomain = '', $cookie_secure = 0, $cookie_httponly = 0, $mask = false) {
+    function addCookie($cookie_name, $cookie_value = '', $cookie_expires_time = 0, $cookiepath = '', $cookiedomain = '', $cookie_secure = false, $cookie_httponly = false, $mask = false) {
     	if ($cookie_expires_time != 0) {
     		$cookie_expires_time = time() + intval($cookie_expires_time);
     	} else {
     		$cookie_expires_time = 0;
     	}
-    	
-    	// Versions of PHP prior to 5.2 do not support HttpOnly cookies and IE is buggy when specifying a blank domain so set the cookie manually
-		$cookie = $cookie_name . '=' . urlencode($cookie_value);
 
 	    list ($url, $cookiedomain) = $this->getApiUrl($cookiedomain);
 
-	    if (!empty($cookiedomain)) {
-		    $cookie .= '; domain=' . $cookiedomain;
-	    }
-
-	    if (!empty($cookiepath)) {
-		    $cookie .= '; path=' . $cookiepath;
-	    }
-
-		if ($cookie_expires_time > 0) {
-			$cookie .= '; expires=' . gmdate('D, d-M-Y H:i:s \\G\\M\\T', $cookie_expires_time);
-		}
-
-		if($cookie_secure == true) {
-			$cookie .= '; Secure';
-		}
-		if ($cookie_httponly == true) {
-			$cookie .= '; HttpOnly';
-		}
-		
+	    $cookie = new stdClass();
+	    $cookie->name = $cookie_name;
+	    $cookie->value = $cookie_value;
+	    $cookie->expire = $cookie_expires_time;
+	    $cookie->path = $cookiepath;
+	    $cookie->domain = $cookiedomain;
+	    $cookie->secure = $cookie_secure;
+	    $cookie->httponly = $cookie_httponly;
 		if ($url) {
 			$mainframe = JFusionFactory::getApplication();
-			if ( !$mainframe->isAdmin()) {
+			if (!$mainframe->isAdmin()) {
 				$this->_cookies[$url][] = $cookie;
 			}
 		} else {
-			header('Set-Cookie: ' . $cookie, false);
+			setcookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httponly);
 		}
 
         $debug = array();
