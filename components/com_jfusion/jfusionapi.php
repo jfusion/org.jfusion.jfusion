@@ -429,7 +429,7 @@ class JFusionAPI {
 			$return = json_decode(trim(base64_decode($input)), true);
 			ob_end_clean();
 		}
-		if (!$return instanceof stdClass) {
+		if (!is_array($return)) {
 			$this->error[] = 'JfusionAPI: error output: ' . $input;
 			return false;
 		} else if (isset($return->PHPSESSID)) {
@@ -627,12 +627,18 @@ class JFusionAPI_User extends JFusionAPIBase {
 	public function executeRegister()
 	{
 		if ($this->payload) {
-			if (isset($this->payload['userinfo']) && get_class($this->payload['userinfo']) == 'stdClass') {
-
+			$userinfo = null;
+			if (is_array($this->payload['userinfo'])) {
+				$userinfo = new stdClass();
+				foreach ($this->payload['userinfo'] as $key => $value){
+					$userinfo->$key = $value;
+				}
+			}
+			if ($userinfo instanceof stdClass) {
 				$joomla = JFusionAPIInternal::getInstance();
 
-				if (isset($userinfo['plugin'])) {
-					$joomla->setActivePlugin($userinfo['plugin']);
+				if (isset($userinfo->plugin)) {
+					$joomla->setActivePlugin($userinfo->plugin);
 				}
 
 				if (isset($this->payload['overwrite']) && $this->payload['overwrite']) {
@@ -641,7 +647,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 					$overwrite = 0;
 				}
 
-				$joomla->register($this->payload['userinfo'], $overwrite);
+				$joomla->register($userinfo, $overwrite);
 
 				$this->error = $joomla->error;
 				$this->debug = $joomla->debug;
@@ -659,7 +665,14 @@ class JFusionAPI_User extends JFusionAPIBase {
 	public function executeUpdate()
 	{
 		if ($this->payload) {
-			if ( isset($this->payload['userinfo']) && is_array($this->payload['userinfo'])) {
+			$userinfo = null;
+			if (isset($this->payload['userinfo']) && is_array($this->payload['userinfo'])) {
+				$userinfo = new stdClass();
+				foreach ($this->payload['userinfo'] as $key => $value){
+					$userinfo->$key = $value;
+				}
+			}
+			if ($userinfo instanceof stdClass) {
 				$joomla = JFusionAPIInternal::getInstance();
 
 				if (isset($this->payload['overwrite']) && $this->payload['overwrite']) {
@@ -668,7 +681,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 					$overwrite = 0;
 				}
 
-				$joomla->update($this->payload['userinfo'], $overwrite);
+				$joomla->update($userinfo, $overwrite);
 
 				$this->error = $joomla->error;
 				$this->debug = $joomla->debug;
@@ -1054,9 +1067,16 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		foreach ($plugins as $plugin) {
 			try {
 				$PluginUserUpdate = JFusionFactory::getUser($plugin->name);
-				$updateinfo = $userinfo[$plugin->name];
 
-				if (get_class($updateinfo) == 'stdClass') {
+				$updateinfo = null;
+				if (is_array($userinfo[$plugin->name])) {
+					$updateinfo = new stdClass();
+					foreach ($userinfo[$plugin->name] as $key => $value){
+						$updateinfo->$key = $value;
+					}
+				}
+
+				if ($updateinfo instanceof stdClass) {
 					$lookupUser = JFusionFunction::lookupUser($plugin->name, '', false, $updateinfo->username);
 
 					if($lookupUser) {
