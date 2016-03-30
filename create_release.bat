@@ -56,10 +56,10 @@ goto start
 :CLEAR_ALL
 	echo Clearing All Packages
 	call :clearMain
-	call :clearackages
+	call :clearPackages
 goto end
 
-:clearackages
+:clearPackages
 	echo Remove module and plugin packages
 	del "%FULLPATH%administrator\components\com_jfusion\packages\*.zip"
 endlocal & goto :EOF
