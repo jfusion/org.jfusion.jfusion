@@ -7,7 +7,7 @@
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
     <authorEmail>webmaster@jfusion.org</authorEmail>
     <authorUrl>www.jfusion.org</authorUrl>
-    <version>2.1.1-0</version>
+    <version>2.1.2</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
     <description>This is the optional JFusion login module. The only difference between this module and the standard Joomla module, is the forgot password and register URL links.</description>

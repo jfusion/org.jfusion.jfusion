@@ -7,7 +7,7 @@
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
     <authorEmail>webmaster@jfusion.org</authorEmail>
     <authorUrl>www.jfusion.org</authorUrl>
-    <version>2.1.1-0</version>
+    <version>2.1.2</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
     <description>JFusion's Who's Online Module displays the number of Guests and Registered Users (ones logged in) that are currently accessing JFusion Plugin software's.</description>
