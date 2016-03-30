@@ -1546,7 +1546,6 @@ class JFusionUser_phpbb3 extends JFusionUser
 						//check to see if member groups are different
 						if (count($userinfo->groups) != count($mastergroup->groups)) {
 							$found = false;
-							break;
 						} else {
 							foreach ($mastergroup->groups as $gid) {
 								if (!in_array($gid, $userinfo->groups)) {

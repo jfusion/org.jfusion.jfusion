@@ -7,7 +7,7 @@
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
     <authorEmail>webmaster@jfusion.org</authorEmail>
     <authorUrl>www.jfusion.org</authorUrl>
-    <version>2.1.1-0</version>
+    <version>2.1.2</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
     <description>This module will display the content of a custom block of Magento into Joomla. You need to have the magelib plugin system and Jfusion installed.</description>

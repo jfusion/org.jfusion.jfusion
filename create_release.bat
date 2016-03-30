@@ -7,11 +7,11 @@ setlocal enableextensions
 IF NOT EXIST administrator echo JFusion files not found. goto end
 
 echo Looking for required commands...
-IF NOT EXIST c:\WINDOWS\system32\7za.exe (
+IF NOT EXIST "C:\Windows\System32\7za.exe" (
 	echo "7za.exe does not exist!  Please see create_release_readme.txt".
 	goto end
 )
-IF NOT EXIST c:\WINDOWS\system32\sed.exe (
+IF NOT EXIST "C:\Program Files (x86)\GnuWin32\bin\sed.exe" (
 	echo "sed.exe does not exist! Please see create_release_readme.txt". 
 	goto end
 )
@@ -51,8 +51,8 @@ goto start
 
 :CLEAR_ALL
 	echo Clearing All Packages
-	call :clearMain
-	call :clearackages
+	call :clearMain0
+	call :clearPackages
 goto end
 
 :CLEAR_MAIN
@@ -73,7 +73,7 @@ goto end
 goto end
 
 :createPackages
-	call :clearackages
+	call :clearPackages
 
 	echo Create the new packages for the plugins and module
 
@@ -179,14 +179,14 @@ endlocal & goto :EOF
 	SET FILE=%1
 
 	move "%FILE%.xml" "%FILE%.tmp" >nul
-	c:\WINDOWS\system32\sed.exe "s/<revision>\$revision\$<\/revision>/<revision>%REVISION%<\/revision>/g" "%FILE%.tmp" > "%FILE%.xml"
+	"C:\Program Files (x86)\GnuWin32\bin\sed.exe" "s/<revision>\$revision\$<\/revision>/<revision>%REVISION%<\/revision>/g" "%FILE%.tmp" > "%FILE%.xml"
 	move "%FILE%.xml" "%FILE%.tmp" >nul
-	c:\WINDOWS\system32\sed.exe "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>%TIMESTAMP%<\/timestamp>/g" "%FILE%.tmp" > "%FILE%.xml"
+	"C:\Program Files (x86)\GnuWin32\bin\sed.exe" "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>%TIMESTAMP%<\/timestamp>/g" "%FILE%.tmp" > "%FILE%.xml"
 
 	del %FILE%.tmp
 endlocal & goto :EOF
 
-:clearackages
+:clearPackages
 	echo Remove module and plugin packages
 	if exist %FULLPATH%administrator\components\com_jfusion\packages\*.zip (
     	del "%FULLPATH%administrator\components\com_jfusion\packages\*.zip"

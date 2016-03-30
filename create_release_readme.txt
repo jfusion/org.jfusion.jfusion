@@ -3,7 +3,7 @@ HOW TO USE THE CREATE RELEASE SCRIPTS
 Windows:
 1) The following tools must be installed in which all can be obtained from the create_release_tools:
 	7za.exe -> copy to c:\WINDOWS\system32
-	sed.exe -> copy to c:\WINDOWS\system32
+	sed.exe -> copy to C:\Program Files (x86)\GnuWin32\bin
 	You must have Git, you can get it here http://git-scm.com/downloads you must install it so that you can use it from command line
 2) Make sure that your local copy is updated to the latest GIT revision (otherwise the revision number will be set to a range of revisions rather the latest)
 3) Run the bat file by either

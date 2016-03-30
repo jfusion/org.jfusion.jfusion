@@ -134,7 +134,7 @@ class JFusionAPI {
 		$type = strtolower($this->read('jftype'));
 		$task = ucfirst(strtolower($this->read('jftask')));
 
-		$data=array();
+		$data=new stdClass();
 		$encrypt = false;
 		//controller for when api gets called externally
 		if ($type) {
@@ -142,7 +142,7 @@ class JFusionAPI {
 			if ($class) {
 				$function = $type . $task;
 				if (method_exists($class, $function)) {
-					$data['payload'] = $class->$function();
+					$data->payload = $class->$function();
 
 					$this->error = $class->error;
 					$this->debug = $class->debug;
@@ -219,7 +219,7 @@ class JFusionAPI {
 	/**
 	 * @param $class
 	 * @param $task
-	 * @param array $payload
+	 * @param $payload
 	 * @param string $return
 	 *
 	 * @return bool
@@ -257,7 +257,6 @@ class JFusionAPI {
 				return $result;
 			}
 		}
-
 
 		return false;
 	}
@@ -335,7 +334,7 @@ class JFusionAPI {
 	{
 		if (isset($keyinfo->secret) && isset($keyinfo->hash) && function_exists('mcrypt_decrypt')) {
 			ob_start();
-			$decrypted = json_decode(trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $keyinfo->secret, base64_decode($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
+			$decrypted = json_decode(trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $keyinfo->secret, base64_decode($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)), true);
 			ob_end_clean();
 		} else {
 			$decrypted = false;
@@ -400,14 +399,14 @@ class JFusionAPI {
 	 */
 	private function doOutput($output, $encrypt = false)
 	{
-		$output['PHPSESSID'] = $this->sid;
-		$output['error'] = $this->error;
-		$output['debug'] = $this->debug;
+		$output->PHPSESSID = $this->sid;
+		$output->error = $this->error;
+		$output->debug = $this->debug;
 		$result = null;
 		if ($encrypt) {
 			$result = JFusionAPI::encrypt($this->createkey() , $output);
 			if ($result == null) {
-				$output['error'] = 'Encryption failed';
+				$output->error = 'Encryption failed';
 			}
 		}
 		if ($result == null) {
@@ -427,23 +426,23 @@ class JFusionAPI {
 		$return = JFusionAPI::decrypt($this->createkey() , $input);
 		if (!is_array($return)) {
 			ob_start();
-			$return = json_decode(trim(base64_decode($input)));
+			$return = json_decode(trim(base64_decode($input)), true);
 			ob_end_clean();
 		}
 		if (!is_array($return)) {
 			$this->error[] = 'JfusionAPI: error output: ' . $input;
 			return false;
-		} else if (isset($return['PHPSESSID'])) {
-			$this->sid = $return['PHPSESSID'];
+		} else if (isset($return->PHPSESSID)) {
+			$this->sid = $return->PHPSESSID;
 		}
 
-		if (isset($return['debug'])) {
-			$this->debug = $return['debug'];
+		if (isset($return->debug)) {
+			$this->debug = $return->debug;
 		}
-		if (isset($return['error']) && !empty($return['error'])) {
+		if (isset($return->error) && !empty($return->error)) {
 			return false;
-		} else if (isset($return['payload'])) {
-			return $return['payload'];
+		} else if (isset($return->payload)) {
+			return $return->payload;
 		}
 		return true;
 	}
@@ -477,12 +476,12 @@ class JFusionAPIBase {
 	{
 		if (!$encrypt && isset($_GET['jfpayload'])) {
 			ob_start();
-			$payload = json_decode(trim(base64_decode($_GET['jfpayload'])));
+			$payload = json_decode(trim(base64_decode($_GET['jfpayload'])), true);
 			ob_end_clean();
 		} else if ($encrypt && isset($_POST['jfpayload'])) {
 			$payload = JFusionAPI::decrypt($this->key , $_POST['jfpayload']);
 		}
-		if (isset($payload) && is_array($payload) ) {
+		if (isset($payload) && is_array($payload)) {
 			$this->payload = $payload;
 			return true;
 		}
@@ -628,12 +627,18 @@ class JFusionAPI_User extends JFusionAPIBase {
 	public function executeRegister()
 	{
 		if ($this->payload) {
-			if (isset($this->payload['userinfo']) && get_class($this->payload['userinfo']) == 'stdClass') {
-
+			$userinfo = null;
+			if (is_array($this->payload['userinfo'])) {
+				$userinfo = new stdClass();
+				foreach ($this->payload['userinfo'] as $key => $value){
+					$userinfo->$key = $value;
+				}
+			}
+			if ($userinfo instanceof stdClass) {
 				$joomla = JFusionAPIInternal::getInstance();
 
-				if (isset($userinfo['plugin'])) {
-					$joomla->setActivePlugin($userinfo['plugin']);
+				if (isset($userinfo->plugin)) {
+					$joomla->setActivePlugin($userinfo->plugin);
 				}
 
 				if (isset($this->payload['overwrite']) && $this->payload['overwrite']) {
@@ -642,7 +647,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 					$overwrite = 0;
 				}
 
-				$joomla->register($this->payload['userinfo'], $overwrite);
+				$joomla->register($userinfo, $overwrite);
 
 				$this->error = $joomla->error;
 				$this->debug = $joomla->debug;
@@ -660,7 +665,14 @@ class JFusionAPI_User extends JFusionAPIBase {
 	public function executeUpdate()
 	{
 		if ($this->payload) {
-			if ( isset($this->payload['userinfo']) && is_array($this->payload['userinfo'])) {
+			$userinfo = null;
+			if (isset($this->payload['userinfo']) && is_array($this->payload['userinfo'])) {
+				$userinfo = new stdClass();
+				foreach ($this->payload['userinfo'] as $key => $value){
+					$userinfo->$key = $value;
+				}
+			}
+			if ($userinfo instanceof stdClass) {
 				$joomla = JFusionAPIInternal::getInstance();
 
 				if (isset($this->payload['overwrite']) && $this->payload['overwrite']) {
@@ -669,7 +681,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 					$overwrite = 0;
 				}
 
-				$joomla->update($this->payload['userinfo'], $overwrite);
+				$joomla->update($userinfo, $overwrite);
 
 				$this->error = $joomla->error;
 				$this->debug = $joomla->debug;
@@ -730,11 +742,10 @@ class JFusionAPI_Cookie extends JFusionAPIBase {
 			$session = JFusionAPI::getSession('cookie', true);
 
 			if ( isset($session['cookies']) && count($session['cookies']) && is_array($session['cookies']) ) {
-				foreach($session['cookies'] as $value ) {
-					header('Set-Cookie: ' . $value, false);
+				foreach($session['cookies'] as $cookie ) {
+					setcookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
 				}
 			}
-
 			if ( count($this->payload['url']) ) {
 				foreach($this->payload['url'] as $key => $value ) {
 					unset($this->payload['url'][$key]);
@@ -1056,9 +1067,16 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		foreach ($plugins as $plugin) {
 			try {
 				$PluginUserUpdate = JFusionFactory::getUser($plugin->name);
-				$updateinfo = $userinfo[$plugin->name];
 
-				if (get_class($updateinfo) == 'stdClass') {
+				$updateinfo = null;
+				if (is_array($userinfo[$plugin->name])) {
+					$updateinfo = new stdClass();
+					foreach ($userinfo[$plugin->name] as $key => $value){
+						$updateinfo->$key = $value;
+					}
+				}
+
+				if ($updateinfo instanceof stdClass) {
 					$lookupUser = JFusionFunction::lookupUser($plugin->name, '', false, $updateinfo->username);
 
 					if($lookupUser) {

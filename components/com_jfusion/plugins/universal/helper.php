@@ -410,4 +410,17 @@ class JFusionHelper_universal extends JFusionPlugin {
 		}
 		return $out;
 	}
+
+	/**
+	 * @return boolean
+	 */
+	function isDualGroup() {
+		$userGroup = $this->getFieldType('GROUP');
+		$groupGroup = $this->getFieldType('GROUP', 'group');
+		if (isset($userGroup) && isset($groupGroup)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

@@ -49,7 +49,7 @@ class JFusionUser_universal extends JFusionUser
 
 			$db->setQuery($query);
 			$result = $db->loadObject();
-			if ($result ) {
+			if ($result) {
 				$result->activation = '';
 				if (isset($result->firstname)) {
 					$result->name = $result->firstname;
@@ -73,22 +73,29 @@ class JFusionUser_universal extends JFusionUser
 				}
 				unset($result->inactive, $result->active);
 
-				$group = $this->helper->getFieldType('GROUP', 'group');
-				$userid = $this->helper->getFieldType('USERID', 'group');
-				$groupt = $this->helper->getTable('group');
-				if ( !isset($result->group_id) && $group && $userid && $groupt ) {
+				if (isset($result->group_id)) {
+					$result->group_id = base64_encode($result->group_id);
+				}
+
+				$groupGroup = $this->helper->getFieldType('GROUP', 'group');
+				$groupUserid = $this->helper->getFieldType('USERID', 'group');
+				$groupTable = $this->helper->getTable('group');
+				if ($groupGroup && $groupUserid && $groupTable) {
 					$field = $this->helper->getQuery(array('GROUP'), 'group');
 
 					$query = $db->getQuery(true)
 						->select($field)
-						->from('#__' . $groupt)
-						->where($userid->field . ' = ' . $db->quote($result->userid));
+						->from('#__' . $groupTable)
+						->where($groupUserid->field . ' = ' . $db->quote($result->userid));
 
 					$db->setQuery($query);
-					$result2 = $db->loadObject();
+					$groups = $db->loadObjectList();
 
-					if ($result2) {
-						$result->group_id = base64_encode($result2->group_id);
+					foreach($groups as $group) {
+						if (!isset($result->group_id)) {
+							$result->group_id = base64_encode($group->group_id);
+						}
+						$result->groups[] = base64_encode($group->group_id);
 					}
 				}
 			}
@@ -304,81 +311,128 @@ class JFusionUser_universal extends JFusionUser
 		} else {
 			$db = JFusionFactory::getDatabase($this->getJname());
 
-			$userid = $this->helper->getFieldType('USERID');
-			$group = $this->helper->getFieldType('GROUP');
-
-			if ( isset($group) && isset($userid) ) {
-				$table = $this->helper->getTable();
-				$type = 'user';
-			} else {
-				$table = $this->helper->getTable('group');
-				$userid = $this->helper->getFieldType('USERID', 'group');
-				$group = $this->helper->getFieldType('GROUP', 'group');
-				$type = 'group';
+			$userUserid = $this->helper->getFieldType('USERID');
+			$userGroup = $this->helper->getFieldType('GROUP');
+			if (isset($userUserid) && isset($userGroup)) {
+				$userTable = $this->helper->getTable();
 			}
-			if ( !isset($userid) ) {
+
+			$groupUserid = $this->helper->getFieldType('USERID', 'group');
+			$groupGroup = $this->helper->getFieldType('GROUP', 'group');
+			if (isset($groupUserid) && isset($groupGroup)) {
+				$groupTable = $this->helper->getTable('group');
+			}
+
+			if (!isset($userUserid) && !isset($groupUserid)) {
 				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . JText::_('NO_USERID_MAPPED');
-			} else if ( !isset($group) ) {
+			} else if (!isset($userGroup) && !isset($groupGroup)) {
 				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . JText::_('NO_GROUP_MAPPED');
-			} else if ($type == 'user') {
-				$usergroup = $usergroups[0];
-
-				$query = $db->getQuery(true)
-					->update('#__' . $table)
-					->set($group->field . ' = ' . $db->quote(base64_decode($usergroup)))
-					->where($userid->field . '=' . $db->quote($existinguser->userid));
-
-				$db->setQuery($query);
-				$db->execute();
-
-				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
 			} else {
-				$maped = $this->helper->getMap('group');
-
-				$query = $db->getQuery(true)
-					->delete('#__' . $this->helper->getTable('group'))
-					->where($userid->field . ' = ' . $db->quote($userinfo->userid));
-
-				foreach ($maped as $value) {
-					$field = $value->field;
-					foreach ($value->type as $type) {
-						switch ($type) {
-							case 'DEFAULT':
-								if ($value->fieldtype == 'VALUE') {
-									$query->where($field . ' = ' . $db->quote($value->value));
-								}
-								break;
-						}
-					}
+				$usergroup = $usergroups[0];
+				if ($this->helper->isDualGroup()) {
+					$usergroups = $usergroup->groups;
+					$usergroup = $usergroup->defaultgroup;
 				}
+				if (isset($userTable)) {
+					$query = $db->getQuery(true)
+						->update('#__' . $userTable)
+						->set($userGroup->field . ' = ' . $db->quote(base64_decode($usergroup)))
+						->where($userUserid->field . '=' . $db->quote($existinguser->userid));
 
-				$db->setQuery($query);
-				$db->execute();
+					$db->setQuery($query);
+					$db->execute();
 
-				foreach ($usergroups as $usergroup) {
-					$addgroup = new stdClass;
-					foreach ($maped as $value) {
+					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+				}
+				if (isset($groupTable)) {
+					$groupMap = $this->helper->getMap('group');
+
+					$query = $db->getQuery(true)
+						->delete('#__' . $groupTable)
+						->where($groupUserid->field . ' = ' . $db->quote($userinfo->userid));
+
+					foreach ($groupMap as $value) {
 						$field = $value->field;
 						foreach ($value->type as $type) {
 							switch ($type) {
-								case 'USERID':
-									$addgroup->$field = $existinguser->userid;
-									break;
-								case 'GROUP':
-									$addgroup->$field = base64_decode($usergroup);
-									break;
 								case 'DEFAULT':
-									$addgroup->$field = $this->helper->getValue($value->fieldtype, $value->value, $userinfo);
+									if ($value->fieldtype == 'VALUE') {
+										$query->where($field . ' = ' . $db->quote($value->value));
+									}
 									break;
 							}
 						}
 					}
-					$db->insertObject('#__' . $this->helper->getTable('group'), $addgroup );
 
-					$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+					$db->setQuery($query);
+					$db->execute();
+
+					foreach ($usergroups as $usergroup) {
+						$addGroup = new stdClass;
+						foreach ($groupMap as $value) {
+							$field = $value->field;
+							foreach ($value->type as $type) {
+								switch ($type) {
+									case 'USERID':
+										$addGroup->$field = $existinguser->userid;
+										break;
+									case 'GROUP':
+										$addGroup->$field = base64_decode($usergroup);
+										break;
+									case 'DEFAULT':
+										$addGroup->$field = $this->helper->getValue($value->fieldtype, $value->value, $userinfo);
+										break;
+								}
+							}
+						}
+						$db->insertObject('#__' . $groupTable, $addGroup);
+
+						$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param object &$userinfo
+	 * @param object &$existinguser
+	 * @param array &$status
+	 *
+	 * @return bool
+	 */
+	function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
+	{
+		$update_groups = false;
+		if ($this->helper->isDualGroup()) {
+			$usergroups = $this->getCorrectUserGroups($userinfo);
+			$usergroup = $usergroups[0];
+
+			$groups = (isset($usergroup->groups)) ? $usergroup->groups : array();
+
+			//check to see if the default groups are different
+			if ($usergroup->defaultgroup != $existinguser->group_id ) {
+				$update_groups = true;
+			} else {
+				if (count($existinguser->groups) != count($groups)) {
+					$update_groups = true;
+				} else {
+					foreach ($groups as $gid) {
+						if (!in_array($gid, $existinguser->groups)) {
+							$update_groups = true;
+							break;
+						}
+					}
+				}
+			}
+
+			if ($update_groups) {
+				$this->updateUsergroup($userinfo, $existinguser, $status);
+			}
+		} else {
+			$update_groups = parent::executeUpdateUsergroup($userinfo, $existinguser, $status);
+		}
+		return $update_groups;
 	}
 
 	/**
@@ -542,6 +596,10 @@ class JFusionUser_universal extends JFusionUser
 				throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 			} else {
 				$usergroup = $usergroups[0];
+				if ($this->helper->isDualGroup()) {
+					$usergroups = $usergroup->groups;
+					$usergroup = $usergroup->defaultgroup;
+				}
 
 				$userid = $this->helper->getFieldType('USERID');
 				if(empty($userid)) {
@@ -565,8 +623,8 @@ class JFusionUser_universal extends JFusionUser
 										case 'USERID':
 											$query = 'SHOW COLUMNS FROM #__' . $this->helper->getTable() . ' where Field = ' . $db->quote($field) . ' AND Extra like \'%auto_increment%\'';
 											$db->setQuery($query);
-											$fieldslist = $db->loadObject();
-											if ($fieldslist) {
+											$fieldsList = $db->loadObject();
+											if ($fieldsList) {
 												$user->$field = NULL;
 											} else {
 												$f = $this->helper->getQuery(array('USERID'));
@@ -607,14 +665,14 @@ class JFusionUser_universal extends JFusionUser
 											$user->$field = $userinfo->email;
 											break;
 										case 'ACTIVE':
-											if ($userinfo->block){
+											if ($userinfo->block) {
 												$user->$field = $value->value->off;
 											} else {
 												$user->$field = $value->value->on;
 											}
 											break;
 										case 'INACTIVE':
-											if ($userinfo->block){
+											if ($userinfo->block) {
 												$user->$field = $value->value->on;
 											} else {
 												$user->$field = $value->value->off;
@@ -640,37 +698,38 @@ class JFusionUser_universal extends JFusionUser
 							//now append the new user data
 							$db->insertObject('#__' . $this->helper->getTable(), $user, $userid->field );
 
-							$group = $this->helper->getFieldType('GROUP');
-
-							if ( !isset($group) ) {
-								$groupuserid = $this->helper->getFieldType('USERID', 'group');
-								$group = $this->helper->getFieldType('GROUP', 'group');
-								if ( !isset($groupuserid) ) {
+							$groupTable = $this->helper->getTable('group');
+							if (isset($groupTable)) {
+								$groupUserid = $this->helper->getFieldType('USERID', 'group');
+								$groupGroup = $this->helper->getFieldType('GROUP', 'group');
+								if (!isset($groupUserid)) {
 									$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . JText::_('NO_USERID_MAPPED');
-								} else if ( !isset($group) ) {
+								} else if (!isset($groupGroup)) {
 									$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . JText::_('NO_GROUP_MAPPED');
 								} else {
-									$addgroup = new stdClass;
+									$groupMap = $this->helper->getMap('group');
 
-									$maped = $this->helper->getMap('group');
-									foreach ($maped as $value) {
-										$field = $value->field;
-										foreach ($value->type as $type) {
-											switch ($type) {
-												case 'USERID':
-													$field2 = $userid->field;
-													$addgroup->$field = $user->$field2;
-													break;
-												case 'GROUP':
-													$addgroup->$field = base64_decode($usergroup);
-													break;
-												case 'DEFAULT':
-													$addgroup->$field = $this->helper->getValue($value->fieldtype, $value->value, $userinfo);
-													break;
+									$addGroup = new stdClass;
+									foreach ($usergroups as $usergroup) {
+										foreach ($groupMap as $value) {
+											$field = $value->field;
+											foreach ($value->type as $type) {
+												switch ($type) {
+													case 'USERID':
+														$field2 = $userid->field;
+														$addGroup->$field = $user->$field2;
+														break;
+													case 'GROUP':
+														$addGroup->$field = base64_decode($usergroup);
+														break;
+													case 'DEFAULT':
+														$addGroup->$field = $this->helper->getValue($value->fieldtype, $value->value, $userinfo);
+														break;
+												}
 											}
 										}
+										$db->insertObject('#__' . $groupTable, $addGroup, $groupUserid->field);
 									}
-									$db->insertObject('#__' . $this->helper->getTable('group'), $addgroup, $groupuserid->field);
 								}
 							}
 							//return the good news
@@ -683,5 +742,53 @@ class JFusionUser_universal extends JFusionUser
 		} catch (Exception $e) {
 			$status['error'][] = JText::_('USER_CREATION_ERROR') . ': ' . $e->getMessage();
 		}
+	}
+
+	/**
+	 * Function That find the correct user group index
+	 *
+	 * @param stdClass $userinfo
+	 *
+	 * @return int
+	 */
+	function getUserGroupIndex($userinfo)
+	{
+		$index = 0;
+
+		if ($this->helper->isDualGroup()) {
+			$master = JFusionFunction::getMaster();
+			if ($master) {
+				$mastergroups = JFusionFunction::getUserGroups($master->name);
+
+				foreach ($mastergroups as $key => $mastergroup) {
+					if ($mastergroup) {
+						$found = true;
+						//check to see if the default groups are different
+						if ($mastergroup->defaultgroup != $userinfo->group_id ) {
+							$found = false;
+						} else {
+							//check to see if member groups are different
+							if (count($userinfo->groups) != count($mastergroup->groups)) {
+								$found = false;
+							} else {
+								foreach ($mastergroup->groups as $gid) {
+									if (!in_array($gid, $userinfo->groups)) {
+										$found = false;
+										break;
+									}
+								}
+							}
+						}
+						if ($found) {
+							$index = $key;
+							break;
+						}
+					}
+				}
+			}
+		} else {
+			$index = parent::getUserGroupIndex($userinfo);
+		}
+		return $index;
 	}
 }
