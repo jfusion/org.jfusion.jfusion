@@ -418,17 +418,14 @@ class JFusionPublic_phpbb31 extends JFusionPublic
             
             //convert relative links from images into absolute links
 
-            $regex_body[] = '#(src="|background="|url\(\'?)[\.\/].*?(.*?)("|\'?\))#mS';
+            $regex_body[] = '#(src="|background="|url\(\'?)[\.\/]*([^:]*?)(["\'\)]+)#mS';
+            
             $replace_body[] = '$1' . $data->integratedURL . '$2$3';
             $callback_function[] = '';
             //fix for form actions
             $regex_body[] = '#action="(.*?)"(.*?)>#m';
             $replace_body[] = ''; //$this->fixAction('$1', '$2', "' . $data->baseURL . '")';
             $callback_function[] = 'fixAction';   
-            //convert relative popup links to full url links
-            $regex_body[] = '#popup\(\'[\.\/].*?(.*?)\'#mS';
-            $replace_body[] = 'popup(\'' . $data->integratedURL . '$1\'';
-            $callback_function[] = '';    
             //fix for mcp links
 	        $mainframe = JFusionFactory::getApplication();
             $jfile = $mainframe->input->get('jfile');
@@ -720,21 +717,13 @@ class JFusionPublic_phpbb31 extends JFusionPublic
             $replace_header = array();
             $callback_header = array();
             //convert relative links into absolute links
-            $regex_header[] = '#(href="|src=")[\.\/].*?(.*?")#mS';
+            $regex_header[] = '#(href="|src=")[\.\/]+(.*?")#mS';
             $replace_header[] = '$1' . $data->integratedURL . '$2';
             $callback_header[] = '';
             //fix for URL redirects
             $regex_header[] = '#<meta http-equiv="refresh" content="(.*?)"(.*?)>#m';
             $replace_header[] = '';
             $callback_header[] = 'fixRedirect';
-            //fix pm popup URL to be absolute for some phpBB templates
-            $regex_header[] = '#var url = \'[\.\/].*?(.*?)\';#mS';
-            $replace_header[] = 'var url = \'{$data->integratedURL}$1\';';
-            $callback_header[] = '';
-            //convert relative popup links to full url links
-            $regex_header[] = '#popup\(\'[\.\/].*?(.*?)\'#mS';
-            $replace_header[] = 'popup(\'' . $data->integratedURL . '$1\'';
-            $callback_header[] = '';
         }
 
         /**
