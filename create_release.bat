@@ -51,8 +51,8 @@ goto start
 
 :CLEAR_ALL
 	echo Clearing All Packages
-	call :clearMain
-	call :clearackages
+	call :clearMain0
+	call :clearPackages
 goto end
 
 :CLEAR_MAIN
@@ -73,7 +73,7 @@ goto end
 goto end
 
 :createPackages
-	call :clearackages
+	call :clearPackages
 
 	echo Create the new packages for the plugins and module
 
@@ -186,7 +186,7 @@ endlocal & goto :EOF
 	del %FILE%.tmp
 endlocal & goto :EOF
 
-:clearackages
+:clearPackages
 	echo Remove module and plugin packages
 	if exist %FULLPATH%administrator\components\com_jfusion\packages\*.zip (
     	del "%FULLPATH%administrator\components\com_jfusion\packages\*.zip"
