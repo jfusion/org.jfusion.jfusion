@@ -12,9 +12,8 @@ IF NOT EXIST c:\WINDOWS\system32\7za.exe (
 	pause
 	goto end
 )
-IF NOT EXIST c:\WINDOWS\system32\sed.exe (
+IF NOT EXIST "C:\Program Files (x86)\GnuWin32\bin\sed.exe" (
 	echo "sed.exe does not exist! Please see create_release_readme.txt".
-	pause
 	goto end
 )
 IF NOT EXIST "C:\Program Files\Git\bin\git.exe"  (
@@ -212,9 +211,9 @@ endlocal & goto :EOF
 	SET FILE=%1
 
 	move "%FILE%.xml" "%FILE%.tmp" >nul
-	c:\WINDOWS\system32\sed.exe "s/<revision>\$revision\$<\/revision>/<revision>%REVISION%<\/revision>/g" "%FILE%.tmp" > "%FILE%.xml"
+	"C:\Program Files (x86)\GnuWin32\bin\sed.exe" "s/<revision>\$revision\$<\/revision>/<revision>%REVISION%<\/revision>/g" "%FILE%.tmp" > "%FILE%.xml"
 	move "%FILE%.xml" "%FILE%.tmp" >nul
-	c:\WINDOWS\system32\sed.exe "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>%TIMESTAMP%<\/timestamp>/g" "%FILE%.tmp" > "%FILE%.xml"
+	"C:\Program Files (x86)\GnuWin32\bin\sed.exe" "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>%TIMESTAMP%<\/timestamp>/g" "%FILE%.tmp" > "%FILE%.xml"
 
 	del %FILE%.tmp
 endlocal & goto :EOF
