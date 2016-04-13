@@ -103,7 +103,7 @@ class plgSystemJfusion extends JPlugin
             if ($mainframe->isSite() && !empty($syncsessions) && $task != 'logout' && $task != 'user.logout') {
                 //for master if not joomla_int
                 $master = \JFusion\Framework::getMaster();
-                if (!empty($master) && $master->name != 'joomla_int' && $master->dual_login) {
+                if ($master && $master->name != 'joomla_int' && $master->dual_login) {
 	                /**
 	                 * @var $platform \JFusion\Plugin\Platform\Joomla
 	                 */
@@ -192,18 +192,20 @@ class plgSystemJfusion extends JPlugin
 			$userinfo = JFusionFunction::getJoomlaUser(JFactory::getUser());
 
 			$master = \JFusion\Framework::getMaster();
-
-			/**
-			 * @var $platform \JFusion\Plugin\Platform\Joomla
-			 */
-			$platform = \JFusion\Factory::getPlatform('Joomla', $master->name);
-			if (method_exists($platform, 'setLanguageFrontEnd')) {
-				try {
-					$platform->setLanguageFrontEnd($userinfo);
-				} catch (Exception $e) {
-					\JFusion\Framework::raise(LogLevel::ERROR, $e, $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
+			if ($master) {
+				/**
+				 * @var $platform \JFusion\Plugin\Platform\Joomla
+				 */
+				$platform = \JFusion\Factory::getPlatform('Joomla', $master->name);
+				if (method_exists($platform, 'setLanguageFrontEnd')) {
+					try {
+						$platform->setLanguageFrontEnd($userinfo);
+					} catch (Exception $e) {
+						\JFusion\Framework::raise(LogLevel::ERROR, $e, $master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'));
+					}
 				}
 			}
+
 			$slaves = \JFusion\Framework::getSlaves();
 			foreach($slaves as $slave) {
 				/**

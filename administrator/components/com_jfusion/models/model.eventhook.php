@@ -246,7 +246,10 @@ class JFusionEventHook implements ApplicationInterface, PluginInterface, Install
 		$error = $debug = array();
 		if ($userinfo instanceof Userinfo) {
 			$plugins = Framework::getSlaves();
-			$plugins[] = Framework::getMaster();
+			$master  = Framework::getMaster();
+			if ($master) {
+				$plugins[] = $master;
+			}
 
 			foreach ($plugins as $key => $plugin) {
 				if ($userinfo->getJname() == $plugin->name) {
@@ -297,7 +300,10 @@ class JFusionEventHook implements ApplicationInterface, PluginInterface, Install
 		$error = $debug = array();
 		if ($userinfo instanceof Userinfo) {
 			$plugins = Framework::getSlaves();
-			$plugins[] = Framework::getMaster();
+			$master  = Framework::getMaster();
+			if ($master) {
+				$plugins[] = $master;
+			}
 
 			foreach ($plugins as $key => $plugin) {
 				if ($userinfo->getJname() == $plugin->name) {

@@ -94,8 +94,6 @@ class plgUserJfusion extends JPlugin
 
 			$userinfo = JFusionFunction::getJoomlaUser((object)$user);
 
-			//check to see if we need to update the master
-			$master = Framework::getMaster();
 			// Recover the old data of the user
 			// This is then used to determine if the username was changed
 			$session = JFactory::getSession();
@@ -360,7 +358,7 @@ class plgUserJfusion extends JPlugin
 	public function onUserAfterSave($user, $isnew, $success, $msg) {
 		if (!JPluginHelper::isEnabled('user', 'joomla')) {
 			$master = Framework::getMaster();
-			if ($master->name == 'joomla_int') {
+			if ($master && $master->name == 'joomla_int') {
 				// Initialise variables.
 				$app    = JFactory::getApplication();
 				$config = JFactory::getConfig();
