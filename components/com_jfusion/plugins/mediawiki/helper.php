@@ -136,6 +136,7 @@ class JFusionHelper_mediawiki extends JFusionPlugin
 
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'AutoLoader.php';
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'Defines.php';
+	    $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'GlobalFunctions.php';
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'IP.php';
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'IP.php';
         $paths[] = $source_path . 'includes'. DIRECTORY_SEPARATOR . 'WebRequest.php';
