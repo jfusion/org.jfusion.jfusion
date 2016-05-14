@@ -43,7 +43,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $username = $userinfo;
 		    }
 
-		    $username = $this->filterUsername($userinfo->username);
+		    $username = $this->filterUsername($username);
 
 		    // initialise some objects
 		    $db = JFusionFactory::getDatabase($this->getJname());
