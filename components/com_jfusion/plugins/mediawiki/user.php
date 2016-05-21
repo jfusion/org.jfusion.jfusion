@@ -426,67 +426,26 @@ class JFusionUser_mediawiki extends JFusionUser {
 
             $user->user_email_authenticated = $user->user_registration = $user->user_touched = gmdate( 'YmdHis', time() );
             $user->user_editcount = 0;
-            /*
-                    if ($userinfo->activation){
-                        $user->is_activated = 0;
-                        $user->validation_code = $userinfo->activation;
-                    } else {
-                        $user->is_activated = 1;
-                        $user->validation_code = '';
-                    }
-            */
+
             //now append the new user data
             if (!$db->insertObject('#__user', $user, 'user_id' )) {
                 //return the error
                 $status['error'] = JText::_('USER_CREATION_ERROR') . ': ' . $db->stderr();
             } else {
-                $wgDBprefix = $params->get('database_prefix');
-                $wgDBname = $params->get('database_name');
+	            //prepare the user variables
+	            foreach($usergroups as $usergroup) {
+		            //prepare the user variables
+		            $ug = new stdClass;
+		            $ug->ug_user = $user->user_id;
+		            $ug->ug_group = $usergroup;
 
-                if ( $wgDBprefix ) {
-                    $wfWikiID = $wgDBname.'-'.$wgDBprefix;
-                } else {
-                    $wfWikiID = $wgDBname;
-                }
-                /**
-                 * @ignore
-                 * @var $helper JFusionHelper_mediawiki
-                 */
-                $helper = JFusionFactory::getHelper($this->getJname());
-                $wgSecretKey = $helper->getConfig('wgSecretKey');
-                $wgProxyKey = $helper->getConfig('wgProxyKey');
-
-                if ( $wgSecretKey ) {
-                    $key = $wgSecretKey;
-                } elseif ( $wgProxyKey ) {
-                    $key = $wgProxyKey;
-                } else {
-                    $key = microtime();
-                }
-                //update the stats
-                $mToken = md5( $key . mt_rand( 0, 0x7fffffff ) . $wfWikiID . $user->user_id );
-
-                $query = 'UPDATE #__user SET user_token = '.$db->Quote($mToken).' WHERE user_id = '.$db->Quote($user->user_id);
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    //return the error
-                    $status['error'][] = JText::_('USER_CREATION_ERROR')  . ' ' .  $db->stderr();
-                } else {
-                    //prepare the user variables
-                    foreach($usergroups as $usergroup) {
-                        //prepare the user variables
-                        $ug = new stdClass;
-                        $ug->ug_user = $user->user_id;
-                        $ug->ug_group = $usergroup;
-
-                        if (!$db->insertObject('#__user_groups', $ug, 'ug_user' )) {
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        }
-                    }
-                    //return the good news
-                    $status['debug'][] = JText::_('USER_CREATION');
-                    $status['userinfo'] = $this->getUser($userinfo);
-                }
+		            if (!$db->insertObject('#__user_groups', $ug, 'ug_user' )) {
+			            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+		            }
+	            }
+	            //return the good news
+	            $status['debug'][] = JText::_('USER_CREATION');
+	            $status['userinfo'] = $this->getUser($userinfo);
             }
         }
     }
