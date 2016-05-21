@@ -371,6 +371,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 
 	    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
+
 /*
     function activateUser($userinfo, &$existinguser, &$status)
     {
@@ -381,11 +382,11 @@ class JFusionUser_mediawiki extends JFusionUser {
 			->set('validation_code = ' . $db->quote(''))
 		    ->where('user_id = ' . (int)$existinguser->userid);
 
-        $db->setQuery($query);
+        $db->setQu
+ery($query);
 		$db->execute():
 		$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
     }
-
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -443,48 +444,9 @@ class JFusionUser_mediawiki extends JFusionUser {
 
 			    $user->user_email_authenticated = $user->user_registration = $user->user_touched = gmdate('YmdHis', time());
 			    $user->user_editcount = 0;
-			    /*
-					if ($userinfo->activation){
-						$user->is_activated = 0;
-						$user->validation_code = $userinfo->activation;
-					} else {
-						$user->is_activated = 1;
-						$user->validation_code = '';
-					}
-			*/
+
 			    //now append the new user data
 			    $db->insertObject('#__user', $user, 'user_id' );
-
-			    $wgDBprefix = $this->params->get('database_prefix');
-			    $wgDBname = $this->params->get('database_name');
-
-			    if ($wgDBprefix) {
-				    $wfWikiID = $wgDBname . '-' . $wgDBprefix;
-			    } else {
-				    $wfWikiID = $wgDBname;
-			    }
-
-			    $wgSecretKey = $this->helper->getConfig('wgSecretKey');
-			    $wgProxyKey = $this->helper->getConfig('wgProxyKey');
-
-			    if ($wgSecretKey) {
-				    $key = $wgSecretKey;
-			    } elseif ($wgProxyKey) {
-				    $key = $wgProxyKey;
-			    } else {
-				    $key = microtime();
-			    }
-			    //update the stats
-			    $mToken = md5($key . mt_rand(0, 0x7fffffff) . $wfWikiID . $user->user_id);
-
-			    $query = $db->getQuery(true)
-				    ->update('#__user')
-				    ->set('is_activated = 0')
-				    ->set('user_token = ' . $db->quote($mToken))
-				    ->where('user_id = ' . $db->quote($user->user_id));
-
-			    $db->setQuery($query);
-			    $db->execute();
 
 			    //prepare the user variables
 			    foreach($usergroups as $usergroup) {
