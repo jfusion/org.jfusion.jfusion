@@ -140,13 +140,14 @@ class JFusionUser_mediawiki extends JFusionUser {
         $cookie_httponly = $params->get('httponly');
         $cookie_name = $helper->getCookieName();
         $expires = -3600;
-
+/*
+ * Not working session conflict between joomla and mediawiki, can posibly be fixed some how!
         $helper->startSession($options);
    		$_SESSION['wsUserID'] = 0;
    		$_SESSION['wsUserName'] = '';
    		$_SESSION['wsToken'] = '';
         $helper->closeSession();
-
+*/
         $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
         $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserID', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
         $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'Token', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
@@ -185,20 +186,24 @@ class JFusionUser_mediawiki extends JFusionUser {
             $cookie_httponly = $params->get('httponly');
 			$expires = $params->get('cookie_expires', 3100);
             $cookie_name = $helper->getCookieName();
-            $helper->startSession($options);
+
+			//Not working session conflict between joomla and mediawiki, can posibly be fixed some how!
+            //$helper->startSession($options);
 
 			$status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-            $_SESSION['wsUserName'] = $userinfo->username;
+			//Not working session conflict between joomla and mediawiki, can posibly be fixed some how!
+            //$_SESSION['wsUserName'] = $userinfo->username;
 
 			$status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-            $_SESSION['wsUserID'] = $userinfo->userid;
+			//Not working session conflict between joomla and mediawiki, can posibly be fixed some how!
+            //$_SESSION['wsUserID'] = $userinfo->userid;
 
-            $_SESSION[ 'wsToken'] = $userinfo->user_token;
-            if (!empty($options['remember'])) {
+//            $_SESSION[ 'wsToken'] = $userinfo->user_token;
+//            if (!empty($options['remember'])) {
 	            $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-            }
+//            }
 
-            $helper->closeSession();
+  //          $helper->closeSession();
         }
 		return $status;
 	}
