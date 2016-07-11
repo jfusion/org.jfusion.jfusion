@@ -39,10 +39,13 @@ class main_listener implements EventSubscriberInterface
 	* @param \phpbb\config\db	$config		Controller helper object
 	* @param \phpbb\user			$user	Template object
 	*/
-	public function __construct(\phpbb\config\db $config, \phpbb\user $user)
+	public function __construct(\phpbb\config\db $config, \phpbb\user $user, $root_path,  $php_ext)
 	{
 		$this->config = $config;
 		$this->user = $user;
+		$this->root_path = $root_path;
+		$this->php_ext = $php_ext;
+		
 	}
 
 	/**
@@ -53,12 +56,24 @@ class main_listener implements EventSubscriberInterface
 		$page = $this->user->page['page'];
 		$url = $this->config['jfusion_phpbbext_redirect_url'];
 		if (strpos($page, 'feed.php') !== 0 && !empty($url)) {
-			$groups = array();
+			$direct_access = array();
 			if ($this->config['jfusion_phpbbext_direct_access']) {
+				
+				if (!function_exists('group_memberships'))
+				{
+					include($this->root_path . 'includes/functions_user.' . $this->php_ext);
+				}
+				
+				$memberships = array();
+				foreach (group_memberships(false, $this->user->data['user_id']) as $grp)
+				{
+					$memberships[] = $grp["group_id"];
+				}
 				$groups = explode(',', $this->config['jfusion_phpbbext_direct_access_groups']);
+				$direct_access = array_intersect($groups, $memberships);
 			}
 
-			if (!in_array($this->user->data['group_id'], $groups)) {
+			if (empty($direct_access)) {
 				if (!defined('_JEXEC') && !defined('ADMIN_START') && !defined('IN_MOBIQUO')) {
 					if (strpos('?', $url) !== false && strpos('?', $page) !== false) {
 						$page = str_replace('?', '&', $page);
