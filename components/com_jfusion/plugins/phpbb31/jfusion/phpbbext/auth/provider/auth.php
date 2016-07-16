@@ -43,8 +43,8 @@ class auth extends \phpbb\auth\provider\db
 
 			if ($this->config['jfusion_phpbbext_redirect_login']) {
 				if ($this->request->is_set('redirect') && defined('IN_JOOMLA')) {
-					$itemid = JFusionFactory::getApplication()->input->getInt('Itemid');
-					$url = JFusionFunction::getPluginURL($itemid, false);
+					$itemid = \JFusionFactory::getApplication()->input->getInt('Itemid');
+					$url = \JFusionFunction::getPluginURL($itemid, false);
 					$redirect = str_replace('./', '', $this->request->variable('redirect', null));
 					if (strpos($redirect, 'mode=login') !== false) {
 						$redirect = 'index.php';
@@ -53,7 +53,7 @@ class auth extends \phpbb\auth\provider\db
 					$redirect = $url . "&jfile=" . $redirect;
 				} else {
 					//redirect to prevent fatal errors on some servers
-					$uri = JURI::getInstance();
+					$uri = \JURI::getInstance();
 					//remove sid from URL
 					$query = $uri->getQuery(true);
 					if (isset($query['sid'])) {
@@ -118,7 +118,7 @@ TODO: still needed?
 			$link = null;
 			if ($this->config['jfusion_phpbbext_redirect_logout']) {
 				//redirect to prevent fatal errors on some servers
-				$uri = JURI::getInstance();
+				$uri = \JURI::getInstance();
 				//remove sid from URL
 				$query = $uri->getQuery(true);
 				if (isset($query['sid'])) {

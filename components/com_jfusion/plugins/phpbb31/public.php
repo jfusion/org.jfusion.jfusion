@@ -411,10 +411,10 @@ class JFusionPublic_phpbb31 extends JFusionPublic
             $replace_body[] = '"' . $data->fullURL . '#$1"';
             $callback_function[] = '';
 
-            //parse URLS          
+            //parse URLS
             $regex_body[] = '#(?<=href=")(.*?)(?=")#m';
             $replace_body[] = '';
-            $callback_function[] = 'fixUrl';              
+            $callback_function[] = 'fixUrl';
             
             //convert relative links from images into absolute links
 
@@ -425,7 +425,7 @@ class JFusionPublic_phpbb31 extends JFusionPublic
             //fix for form actions
             $regex_body[] = '#action="(.*?)"(.*?)>#m';
             $replace_body[] = ''; //$this->fixAction('$1', '$2', "' . $data->baseURL . '")';
-            $callback_function[] = 'fixAction';   
+            $callback_function[] = 'fixAction';
             //fix for mcp links
 	        $mainframe = JFusionFactory::getApplication();
             $jfile = $mainframe->input->get('jfile');

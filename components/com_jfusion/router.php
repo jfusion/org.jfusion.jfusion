@@ -36,7 +36,7 @@ function jfusionBuildRoute(&$query)
         unset($query['jfile']);
     }
     foreach ($query as $key => $value) {
-        if ($key != 'option' && $key != 'Itemid') {
+        if ($key != 'option' && $key != 'Itemid' && $key != 'lang') {
             if (is_array($value)) {
                 foreach ($value as $array_key => $array_value) {
                     $segments[] = $key . '[' . $array_key . '],' . $array_value;
