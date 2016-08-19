@@ -58,7 +58,7 @@ class JFusionHelper_vbulletin
     function encryptApiData($data) {
         $key = $this->params->get('vb_secret', JFactory::getConfig()->getValue('config.secret'));
         $data['jfvbkey'] = $key;
-        return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, serialize($data), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
+        return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($key), serialize($data), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
     }
 
     /**
