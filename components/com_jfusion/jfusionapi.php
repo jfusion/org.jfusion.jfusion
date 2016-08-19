@@ -528,9 +528,6 @@ class JFusionAPI_Status extends JFusionAPIBase {
 	 */
 	public function getKey()
 	{
-//      $hash = sha1($hash); //to improve variance
-//		srand((double) microtime() * 1000000);
-//		$iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_NOFB), MCRYPT_RAND);
 		$iv = '';
 
 		$seed = hexdec(substr(md5(microtime()), -8)) & 0x7fffffff;
@@ -538,6 +535,8 @@ class JFusionAPI_Status extends JFusionAPIBase {
 		for($i = 0; $i < 32; $i++) {
 			$iv .= chr(mt_rand(0, 255));
 		}
+
+		$iv = md5($iv);
 
 		JFusionAPI::setSession('hash', $iv);
 		return $iv;
